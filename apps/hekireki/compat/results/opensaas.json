@@ -3,6 +3,7 @@
     {
       "orm": "drizzle",
       "fatal": false,
+      "notGenerated": false,
       "checks": {
         "model": {
           "ok": 9,
@@ -33,8 +34,75 @@
       "ddl": "same"
     },
     {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 9,
+          "total": 9
+        },
+        "update": {
+          "ok": 8,
+          "total": 8
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 9,
+          "total": 9
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
       "orm": "sqlalchemy",
       "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 8,
+          "total": 9
+        },
+        "update": {
+          "ok": 7,
+          "total": 7
+        },
+        "relations": {
+          "ok": 8,
+          "total": 8
+        },
+        "delete": {
+          "ok": 8,
+          "total": 8
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
       "checks": {
         "model": {
           "ok": 9,
@@ -67,6 +135,7 @@
     {
       "orm": "gorm",
       "fatal": false,
+      "notGenerated": false,
       "checks": {
         "model": {
           "ok": 9,
@@ -95,6 +164,592 @@
       },
       "findings": 0,
       "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 3,
+          "total": 9
+        },
+        "read": {
+          "ok": 3,
+          "total": 3
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 3,
+          "total": 3
+        }
+      },
+      "findings": 6,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 9,
+          "total": 9
+        },
+        "update": {
+          "ok": 8,
+          "total": 8
+        },
+        "relations": {
+          "ok": 10,
+          "total": 10
+        },
+        "delete": {
+          "ok": 9,
+          "total": 9
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 9,
+          "total": 9
+        },
+        "update": {
+          "ok": 8,
+          "total": 8
+        },
+        "relations": {
+          "ok": 10,
+          "total": 10
+        },
+        "delete": {
+          "ok": 9,
+          "total": 9
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 8,
+          "total": 9
+        },
+        "update": {
+          "ok": 7,
+          "total": 7
+        },
+        "relations": {
+          "ok": 8,
+          "total": 8
+        },
+        "delete": {
+          "ok": 8,
+          "total": 8
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 9,
+          "total": 9
+        },
+        "insert": {
+          "ok": 9,
+          "total": 9
+        },
+        "read": {
+          "ok": 9,
+          "total": 9
+        },
+        "update": {
+          "ok": 8,
+          "total": 8
+        },
+        "relations": {
+          "ok": 9,
+          "total": 9
+        },
+        "delete": {
+          "ok": 9,
+          "total": 9
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 10,
+            "total": 10
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 8,
+            "total": 9
+          },
+          "update": {
+            "ok": 7,
+            "total": 7
+          },
+          "relations": {
+            "ok": 8,
+            "total": 8
+          },
+          "delete": {
+            "ok": 8,
+            "total": 8
+          }
+        },
+        "findings": [
+          {
+            "model": "PageViewSource",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "LookupError: no row came back for the key the insert returned"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"PageViewSource_pkey\",\nADD CONSTRAINT \"PageViewSource_pkey\" PRIMARY KEY (\"date\", \"name\");"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 8,
+            "total": 9
+          },
+          "update": {
+            "ok": 7,
+            "total": 7
+          },
+          "relations": {
+            "ok": 8,
+            "total": 8
+          },
+          "delete": {
+            "ok": 8,
+            "total": 8
+          }
+        },
+        "findings": [
+          {
+            "model": "PageViewSource",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "DoesNotExist: PageViewSource matching query does not exist."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"ContactFormMessage\" DROP CONSTRAINT \"ContactFormMessage_userId_4f228352_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"File\" DROP CONSTRAINT \"File_userId_c21aef89_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"GptResponse\" DROP CONSTRAINT \"GptResponse_userId_c8946c57_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"PageViewSource_dailyStatsId_e4671f3a_fk_DailyStats_id\";\n\n-- DropForeignKey\nALTER TABLE \"Task\" DROP CONSTRAINT \"Task_userId_ac4d419d_fk_User_id\";\n\n-- DropIndex\nDROP INDEX \"ContactFormMessage_id_7a0273b4_like\";\n\n-- DropIndex\nDROP INDEX \"File_id_18df92bd_like\";\n\n-- DropIndex\nDROP INDEX \"GptResponse_id_2f35ad7f_like\";\n\n-- DropIndex\nDROP INDEX \"ProcessedWebhookEvent_id_19a46a2e_like\";\n\n-- DropIndex\nDROP INDEX \"ProcessedWebhookEvent_paymentProcessorEventId_1cd87e90_like\";\n\n-- DropIndex\nDROP INDEX \"Task_id_7ac5beee_like\";\n\n-- DropIndex\nDROP INDEX \"User_email_667201b5_like\";\n\n-- DropIndex\nDROP INDEX \"User_id_dba046ea_like\";\n\n-- DropIndex\nDROP INDEX \"User_paymentProcessorUserId_9a9f2591_like\";\n\n-- DropIndex\nDROP INDEX \"User_username_3851fdce_like\";\n\n-- AlterTable\nALTER TABLE \"ContactFormMessage\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isRead\" SET DEFAULT false,\nALTER COLUMN \"repliedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"DailyStats\" ALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"totalViews\" SET DEFAULT 0,\nALTER COLUMN \"prevDayViewsChangePercent\" SET DEFAULT '0',\nALTER COLUMN \"userCount\" SET DEFAULT 0,\nALTER COLUMN \"paidUserCount\" SET DEFAULT 0,\nALTER COLUMN \"userDelta\" SET DEFAULT 0,\nALTER COLUMN \"paidUserDelta\" SET DEFAULT 0,\nALTER COLUMN \"totalRevenue\" SET DEFAULT 0,\nALTER COLUMN \"totalProfit\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"File\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"GptResponse\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Logs\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"PageViewSource_pkey\",\nALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"PageViewSource_pkey\" PRIMARY KEY (\"date\", \"name\");\n\n-- AlterTable\nALTER TABLE \"ProcessedWebhookEvent\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Task\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"time\" SET DEFAULT '1',\nALTER COLUMN \"isDone\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isAdmin\" SET DEFAULT false,\nALTER COLUMN \"currentPeriodEnd\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"cancelAtPeriodEnd\" SET DEFAULT false,\nALTER COLUMN \"datePaid\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"credits\" SET DEFAULT 3;\n\n-- AddForeignKey\nALTER TABLE \"GptResponse\" ADD CONSTRAINT \"GptResponse_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Task\" ADD CONSTRAINT \"Task_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"File\" ADD CONSTRAINT \"File_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PageViewSource\" ADD CONSTRAINT \"PageViewSource_dailyStatsId_fkey\" FOREIGN KEY (\"dailyStatsId\") REFERENCES \"DailyStats\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactFormMessage\" ADD CONSTRAINT \"ContactFormMessage_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 10,
+            "total": 10
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"ContactFormMessage\" DROP CONSTRAINT \"fk_User_contact_form_messages\";\n\n-- DropForeignKey\nALTER TABLE \"File\" DROP CONSTRAINT \"fk_User_files\";\n\n-- DropForeignKey\nALTER TABLE \"GptResponse\" DROP CONSTRAINT \"fk_User_gpt_responses\";\n\n-- DropForeignKey\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"fk_DailyStats_sources\";\n\n-- DropForeignKey\nALTER TABLE \"Task\" DROP CONSTRAINT \"fk_User_tasks\";\n\n-- AlterTable\nALTER TABLE \"ContactFormMessage\" DROP CONSTRAINT \"ContactFormMessage_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"userId\" SET DATA TYPE TEXT,\nALTER COLUMN \"repliedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"ContactFormMessage_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"DailyStats\" DROP CONSTRAINT \"DailyStats_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE SERIAL,\nALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"totalViews\" SET DATA TYPE INTEGER,\nALTER COLUMN \"userCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"paidUserCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"userDelta\" SET DATA TYPE INTEGER,\nALTER COLUMN \"paidUserDelta\" SET DATA TYPE INTEGER,\nALTER COLUMN \"totalRevenue\" SET DATA TYPE DOUBLE PRECISION,\nALTER COLUMN \"totalProfit\" SET DATA TYPE DOUBLE PRECISION,\nADD CONSTRAINT \"DailyStats_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"File\" DROP CONSTRAINT \"File_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"userId\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"File_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"GptResponse\" DROP CONSTRAINT \"GptResponse_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"userId\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"GptResponse_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"Logs\" DROP CONSTRAINT \"Logs_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE SERIAL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"Logs_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"PageViewSource_pkey\",\nALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"dailyStatsId\" SET DATA TYPE INTEGER,\nALTER COLUMN \"visitors\" SET DATA TYPE INTEGER,\nADD CONSTRAINT \"PageViewSource_pkey\" PRIMARY KEY (\"date\", \"name\");\n\n-- AlterTable\nALTER TABLE \"ProcessedWebhookEvent\" DROP CONSTRAINT \"ProcessedWebhookEvent_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"ProcessedWebhookEvent_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"Task\" DROP CONSTRAINT \"Task_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"userId\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"Task_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"User\" DROP CONSTRAINT \"User_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"currentPeriodEnd\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"datePaid\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"credits\" SET DATA TYPE INTEGER,\nADD CONSTRAINT \"User_pkey\" PRIMARY KEY (\"id\");\n\n-- AddForeignKey\nALTER TABLE \"GptResponse\" ADD CONSTRAINT \"GptResponse_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Task\" ADD CONSTRAINT \"Task_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"File\" ADD CONSTRAINT \"File_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PageViewSource\" ADD CONSTRAINT \"PageViewSource_dailyStatsId_fkey\" FOREIGN KEY (\"dailyStatsId\") REFERENCES \"DailyStats\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactFormMessage\" ADD CONSTRAINT \"ContactFormMessage_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx_DailyStats_date\" RENAME TO \"DailyStats_date_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_ProcessedWebhookEvent_payment_processor_event_id\" RENAME TO \"ProcessedWebhookEvent_paymentProcessorEventId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_User_email\" RENAME TO \"User_email_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_User_payment_processor_user_id\" RENAME TO \"User_paymentProcessorUserId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_User_username\" RENAME TO \"User_username_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/opensaas; fi; exec /cache/bin/opensaas crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/opensaas; fi; exec /cache/bin/opensaas ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 3,
+            "total": 9
+          },
+          "read": {
+            "ok": 3,
+            "total": 3
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 3,
+            "total": 3
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xdc 0x1f\""
+          },
+          {
+            "model": "ProcessedWebhookEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0x9a\""
+          },
+          {
+            "model": "GptResponse",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "File",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ContactFormMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 10,
+            "total": 10
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 10,
+            "total": 10
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 8,
+            "total": 9
+          },
+          "update": {
+            "ok": 7,
+            "total": 7
+          },
+          "relations": {
+            "ok": 8,
+            "total": 8
+          },
+          "delete": {
+            "ok": 8,
+            "total": 8
+          }
+        },
+        "findings": [
+          {
+            "model": "PageViewSource",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "no row came back for the key the insert returned"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"ContactFormMessage\" DROP CONSTRAINT \"ContactFormMessage_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"File\" DROP CONSTRAINT \"File_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"GptResponse\" DROP CONSTRAINT \"GptResponse_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PageViewSource\" DROP CONSTRAINT \"PageViewSource_dailyStatsId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Task\" DROP CONSTRAINT \"Task_userId_fkey\";\n\n-- AddForeignKey\nALTER TABLE \"GptResponse\" ADD CONSTRAINT \"GptResponse_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Task\" ADD CONSTRAINT \"Task_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"File\" ADD CONSTRAINT \"File_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PageViewSource\" ADD CONSTRAINT \"PageViewSource_dailyStatsId_fkey\" FOREIGN KEY (\"dailyStatsId\") REFERENCES \"DailyStats\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactFormMessage\" ADD CONSTRAINT \"ContactFormMessage_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 9,
+            "total": 9
+          },
+          "insert": {
+            "ok": 9,
+            "total": 9
+          },
+          "read": {
+            "ok": 9,
+            "total": 9
+          },
+          "update": {
+            "ok": 8,
+            "total": 8
+          },
+          "relations": {
+            "ok": 9,
+            "total": 9
+          },
+          "delete": {
+            "ok": 9,
+            "total": 9
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
     }
   ]
 }

@@ -35,5 +35,6 @@ apps/hekireki/checks/*/.gradle/
 .vscode/
 *.swp
 
-# hekireki's compat runs (apps/hekireki/compat): plans, databases and copies of the generated code
-apps/hekireki/compat/.work/
+# hekireki compat: what a local mix run leaves in the Ecto harness
+apps/hekireki/compat/ecto/_build/
+apps/hekireki/compat/ecto/deps/

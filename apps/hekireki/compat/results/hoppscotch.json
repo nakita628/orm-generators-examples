@@ -1,0 +1,1364 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 20,
+          "total": 20
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 23,
+          "total": 23
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 20,
+          "total": 20
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 23,
+          "total": 23
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 1,
+          "total": 23
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 22,
+      "ddl": "same"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 1,
+          "total": 23
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 22,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 20,
+          "total": 20
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 23,
+          "total": 23
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 1,
+          "total": 23
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 22,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 1,
+          "total": 23
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 22,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 19,
+          "total": 20
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 20,
+          "total": 23
+        }
+      },
+      "findings": 4,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 1,
+          "total": 23
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 22,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 20,
+          "total": 20
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 23,
+          "total": 23
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 23,
+          "total": 23
+        },
+        "insert": {
+          "ok": 23,
+          "total": 23
+        },
+        "read": {
+          "ok": 23,
+          "total": 23
+        },
+        "update": {
+          "ok": 20,
+          "total": 20
+        },
+        "relations": {
+          "ok": 43,
+          "total": 43
+        },
+        "delete": {
+          "ok": 23,
+          "total": 23
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 20,
+            "total": 20
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 23,
+            "total": 23
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 20,
+            "total": 20
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 23,
+            "total": 23
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 1,
+            "total": 23
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Team\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1)."
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamCollection`) did not go in"
+          },
+          {
+            "model": "TeamEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"uid\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, v16, v17, v18, f, v19, {\"n\": 20, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 21, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:06.826+00, 2024-01-02 03:04:05.022+00, 2024-01-02 03:04:05.023+00)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserCollection`) did not go in"
+          },
+          {
+            "model": "MockServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"MockServer\" violates not-null constraint\nDETAIL:  Failing row contains (null, v50, v51, null, v52, USER, v54, 0, t, t, 0, 2024-01-02 03:04:05.055+00, 2026-11-21 15:22:06.835+00, 2026-11-21 15:22:06.835+00, 2024-01-02 03:04:05.056+00)."
+          },
+          {
+            "model": "MockServerLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "MockServerActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "InfraConfig",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InfraConfig\" violates not-null constraint\nDETAIL:  Failing row contains (null, v73, v74, f, v75, 2026-11-21 15:22:06.841+00, 2026-11-21 15:22:06.841+00)."
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InfraToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InfraToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v78, v79, 2764bf68-6fbf-40aa-8370-4c0116329dcd, 2024-01-02 03:04:05.08+00, 2026-11-21 15:22:06.843+00, 2026-11-21 15:22:06.843+00)."
+          },
+          {
+            "model": "PublishedDocs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PublishedDocs\" violates not-null constraint\nDETAIL:  Failing row contains (null, v81, v82, v83, v84, v85, t, {\"n\": 87, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, USER, v89, v90, v91, {\"n\": 92, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 93, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:06.844+00, 2026-11-21 15:22:06.844+00)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 1,
+            "total": 23
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Team\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1)."
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamCollection`) did not go in"
+          },
+          {
+            "model": "TeamEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"uid\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, v16, v17, v18, f, v19, {\"n\": 20, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 21, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:08.837+00, 2024-01-02 03:04:05.022+00, 2024-01-02 03:04:05.023+00)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserCollection`) did not go in"
+          },
+          {
+            "model": "MockServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"MockServer\" violates not-null constraint\nDETAIL:  Failing row contains (null, v50, v51, null, v52, USER, v54, 0, t, t, 0, 2024-01-02 03:04:05.055+00, 2026-11-21 15:22:08.84+00, 2026-11-21 15:22:08.84+00, 2024-01-02 03:04:05.056+00)."
+          },
+          {
+            "model": "MockServerLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "MockServerActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "InfraConfig",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InfraConfig\" violates not-null constraint\nDETAIL:  Failing row contains (null, v73, v74, f, v75, 2026-11-21 15:22:08.849+00, 2026-11-21 15:22:08.849+00)."
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InfraToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InfraToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v78, v79, 15d9bb45-48db-46ae-a06e-50f75932be37, 2024-01-02 03:04:05.08+00, 2026-11-21 15:22:08.85+00, 2026-11-21 15:22:08.85+00)."
+          },
+          {
+            "model": "PublishedDocs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PublishedDocs\" violates not-null constraint\nDETAIL:  Failing row contains (null, v81, v82, v83, v84, v85, t, {\"n\": 87, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, USER, v89, v90, v91, {\"n\": 92, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 93, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:08.85+00, 2026-11-21 15:22:08.85+00)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"WorkspaceType\" AS ENUM ('USER', 'TEAM');\n\n-- CreateEnum\nCREATE TYPE \"ReqType\" AS ENUM ('REST', 'GQL');\n\n-- CreateEnum\nCREATE TYPE \"TeamAccessRole\" AS ENUM ('OWNER', 'VIEWER', 'EDITOR');\n\n-- CreateEnum\nCREATE TYPE \"MockServerAction\" AS ENUM ('CREATED', 'DELETED', 'ACTIVATED', 'DEACTIVATED');\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_f07d339b_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"InvitedUsers_adminUid_bc3fd18e_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"MockServer\" DROP CONSTRAINT \"MockServer_creatorUid_54994471_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerActivity\" DROP CONSTRAINT \"MockServerActivity_mockServerID_058784a9_fk_MockServer_id\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerLog\" DROP CONSTRAINT \"MockServerLog_mockServerID_58cfe16f_fk_MockServer_id\";\n\n-- DropForeignKey\nALTER TABLE \"PersonalAccessToken\" DROP CONSTRAINT \"PersonalAccessToken_userUid_d6e63e57_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"Shortcode\" DROP CONSTRAINT \"Shortcode_creatorUid_a7938a86_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"TeamCollection_parentID_0793391c_fk_TeamCollection_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"TeamCollection_teamID_c85410f1_fk_Team_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamEnvironment\" DROP CONSTRAINT \"TeamEnvironment_teamID_632fb91c_fk_Team_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamInvitation\" DROP CONSTRAINT \"TeamInvitation_teamID_006e51d8_fk_Team_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"TeamMember_teamID_36cd33dc_fk_Team_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"TeamRequest_collectionID_e2f5a9a8_fk_TeamCollection_id\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"TeamRequest_teamID_23c6c9d8_fk_Team_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"UserCollection_parentID_e5a93e15_fk_UserCollection_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"UserCollection_userUid_e29d07a2_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"UserEnvironment\" DROP CONSTRAINT \"UserEnvironment_userUid_e4bb64da_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"UserHistory\" DROP CONSTRAINT \"UserHistory_userUid_3085a1a3_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"UserRequest_collectionID_7c1a51a1_fk_UserCollection_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"UserRequest_userUid_831b60be_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"UserSettings\" DROP CONSTRAINT \"UserSettings_userUid_eb2d4119_fk_User_uid\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_userUid_b8a1a313_fk_User_uid\";\n\n-- DropIndex\nDROP INDEX \"Account_id_ad803b20_like\";\n\n-- DropIndex\nDROP INDEX \"InfraConfig_id_a35cf562_like\";\n\n-- DropIndex\nDROP INDEX \"InfraConfig_name_43b39292_like\";\n\n-- DropIndex\nDROP INDEX \"InfraToken_id_20dfd22a_like\";\n\n-- DropIndex\nDROP INDEX \"InfraToken_token_3a10acea_like\";\n\n-- DropIndex\nDROP INDEX \"InvitedUsers_inviteeEmail_da374c1f_like\";\n\n-- DropIndex\nDROP INDEX \"MockServer_id_d9ce1c66_like\";\n\n-- DropIndex\nDROP INDEX \"MockServer_subdomain_df7b7d39_like\";\n\n-- DropIndex\nDROP INDEX \"MockServerActivity_id_252efd79_like\";\n\n-- DropIndex\nDROP INDEX \"MockServerLog_id_d830e229_like\";\n\n-- DropIndex\nDROP INDEX \"PersonalAccessToken_id_2bceb9a1_like\";\n\n-- DropIndex\nDROP INDEX \"PersonalAccessToken_token_9657854f_like\";\n\n-- DropIndex\nDROP INDEX \"PublishedDocs_id_2271b397_like\";\n\n-- DropIndex\nDROP INDEX \"Shortcode_id_67409d24_like\";\n\n-- DropIndex\nDROP INDEX \"Team_id_31db0205_like\";\n\n-- DropIndex\nDROP INDEX \"TeamCollection_id_44d0831d_like\";\n\n-- DropIndex\nDROP INDEX \"TeamEnvironment_id_1e5027bb_like\";\n\n-- DropIndex\nDROP INDEX \"TeamInvitation_id_7256e5b7_like\";\n\n-- DropIndex\nDROP INDEX \"TeamMember_id_882048ba_like\";\n\n-- DropIndex\nDROP INDEX \"TeamRequest_id_dffd3ac4_like\";\n\n-- DropIndex\nDROP INDEX \"User_email_667201b5_like\";\n\n-- DropIndex\nDROP INDEX \"User_uid_90551633_like\";\n\n-- DropIndex\nDROP INDEX \"UserCollection_id_027641c0_like\";\n\n-- DropIndex\nDROP INDEX \"UserEnvironment_id_5eba6e55_like\";\n\n-- DropIndex\nDROP INDEX \"UserHistory_id_16e66a2f_like\";\n\n-- DropIndex\nDROP INDEX \"UserRequest_id_4d636e4b_like\";\n\n-- DropIndex\nDROP INDEX \"UserSettings_id_5a892f7c_like\";\n\n-- DropIndex\nDROP INDEX \"UserSettings_userUid_eb2d4119_like\";\n\n-- DropIndex\nDROP INDEX \"VerificationToken_token_9a844c27_like\";\n\n-- AlterTable\nALTER TABLE \"Account\" ALTER COLUMN \"loggedIn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"loggedIn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"InfraConfig\" ALTER COLUMN \"isEncrypted\" SET DEFAULT false,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"InfraToken\" ALTER COLUMN \"expiresOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"InvitedUsers_pkey\",\nALTER COLUMN \"invitedOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"invitedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"MockServer\" DROP COLUMN \"workspaceType\",\nADD COLUMN     \"workspaceType\" \"WorkspaceType\" NOT NULL,\nALTER COLUMN \"delayInMs\" SET DEFAULT 0,\nALTER COLUMN \"isPublic\" SET DEFAULT true,\nALTER COLUMN \"isActive\" SET DEFAULT true,\nALTER COLUMN \"hitCount\" SET DEFAULT 0,\nALTER COLUMN \"lastHitAt\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"deletedAt\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"MockServerActivity\" DROP COLUMN \"action\",\nADD COLUMN     \"action\" \"MockServerAction\" NOT NULL,\nALTER COLUMN \"performedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"performedAt\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"MockServerLog\" ALTER COLUMN \"executedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"executedAt\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"PersonalAccessToken\" ALTER COLUMN \"expiresOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"PublishedDocs\" DROP COLUMN \"workspaceType\",\nADD COLUMN     \"workspaceType\" \"WorkspaceType\" NOT NULL,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"Shortcode\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"TeamCollection\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"TeamInvitation\" DROP COLUMN \"inviteeRole\",\nADD COLUMN     \"inviteeRole\" \"TeamAccessRole\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"TeamMember\" DROP COLUMN \"role\",\nADD COLUMN     \"role\" \"TeamAccessRole\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"TeamRequest\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"isAdmin\" SET DEFAULT false,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"lastLoggedOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"lastActiveOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"UserCollection\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ReqType\" NOT NULL,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"UserHistory\" DROP COLUMN \"reqType\",\nADD COLUMN     \"reqType\" \"ReqType\" NOT NULL,\nALTER COLUMN \"executedOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"executedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"UserRequest\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ReqType\" NOT NULL,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdOn\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"UserSettings\" ALTER COLUMN \"updatedOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_pkey\",\nALTER COLUMN \"expiresOn\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"InvitedUsers_inviteeEmail_key\" ON \"InvitedUsers\"(\"inviteeEmail\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Shortcode_id_key\" ON \"Shortcode\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- AddForeignKey\nALTER TABLE \"TeamMember\" ADD CONSTRAINT \"TeamMember_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamInvitation\" ADD CONSTRAINT \"TeamInvitation_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamEnvironment\" ADD CONSTRAINT \"TeamEnvironment_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserSettings\" ADD CONSTRAINT \"UserSettings_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserHistory\" ADD CONSTRAINT \"UserHistory_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserEnvironment\" ADD CONSTRAINT \"UserEnvironment_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InvitedUsers\" ADD CONSTRAINT \"InvitedUsers_adminUid_fkey\" FOREIGN KEY (\"adminUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServer\" ADD CONSTRAINT \"MockServer_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerLog\" ADD CONSTRAINT \"MockServerLog_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerActivity\" ADD CONSTRAINT \"MockServerActivity_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Shortcode\" ADD CONSTRAINT \"Shortcode_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PersonalAccessToken\" ADD CONSTRAINT \"PersonalAccessToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"MockServerA_mockSer_5191d1_idx\" RENAME TO \"MockServerActivity_mockServerID_idx\";\n\n-- RenameIndex\nALTER INDEX \"MockServerL_mockSer_c3c280_idx\" RENAME TO \"MockServerLog_mockServerID_executedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"MockServerL_mockSer_ff1bab_idx\" RENAME TO \"MockServerLog_mockServerID_idx\";\n\n-- RenameIndex\nALTER INDEX \"PublishedDo_collect_307101_idx\" RENAME TO \"PublishedDocs_collectionID_idx\";\n\n-- RenameIndex\nALTER INDEX \"TeamInvitat_teamID_b57bae_idx\" RENAME TO \"TeamInvitation_teamID_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 20,
+            "total": 20
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 23,
+            "total": 23
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"WorkspaceType\" AS ENUM ('USER', 'TEAM');\n\n-- CreateEnum\nCREATE TYPE \"ReqType\" AS ENUM ('REST', 'GQL');\n\n-- CreateEnum\nCREATE TYPE \"TeamAccessRole\" AS ENUM ('OWNER', 'VIEWER', 'EDITOR');\n\n-- CreateEnum\nCREATE TYPE \"MockServerAction\" AS ENUM ('CREATED', 'DELETED', 'ACTIVATED', 'DEACTIVATED');\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"fk_User_provider_accounts\";\n\n-- DropForeignKey\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"fk_User_invited_users\";\n\n-- DropForeignKey\nALTER TABLE \"MockServer\" DROP CONSTRAINT \"fk_User_mock_servers\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerActivity\" DROP CONSTRAINT \"fk_MockServer_activity_history\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerLog\" DROP CONSTRAINT \"fk_MockServer_request_logs\";\n\n-- DropForeignKey\nALTER TABLE \"PersonalAccessToken\" DROP CONSTRAINT \"fk_User_personal_access_tokens\";\n\n-- DropForeignKey\nALTER TABLE \"Shortcode\" DROP CONSTRAINT \"fk_User_shortcodes\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"fk_TeamCollection_children\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"fk_Team_collections\";\n\n-- DropForeignKey\nALTER TABLE \"TeamEnvironment\" DROP CONSTRAINT \"fk_Team_environments\";\n\n-- DropForeignKey\nALTER TABLE \"TeamInvitation\" DROP CONSTRAINT \"fk_Team_invitations\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"fk_Team_members\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"fk_TeamCollection_requests\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"fk_Team_requests\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"fk_UserCollection_children\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"fk_User_user_collections\";\n\n-- DropForeignKey\nALTER TABLE \"UserEnvironment\" DROP CONSTRAINT \"fk_User_environments\";\n\n-- DropForeignKey\nALTER TABLE \"UserHistory\" DROP CONSTRAINT \"fk_User_history\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"fk_UserCollection_requests\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"fk_User_user_requests\";\n\n-- DropForeignKey\nALTER TABLE \"UserSettings\" DROP CONSTRAINT \"fk_User_settings\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"fk_User_verification_tokens\";\n\n-- DropIndex\nDROP INDEX \"TeamCollection_teamID_parentID_orderIndex_key\";\n\n-- DropIndex\nDROP INDEX \"TeamMember_teamID_userUid_key\";\n\n-- DropIndex\nDROP INDEX \"TeamRequest_teamID_collectionID_orderIndex_key\";\n\n-- DropIndex\nDROP INDEX \"UserCollection_userUid_parentID_orderIndex_key\";\n\n-- DropIndex\nDROP INDEX \"UserRequest_userUid_collectionID_orderIndex_key\";\n\n-- AlterTable\nALTER TABLE \"Account\" ALTER COLUMN \"loggedIn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"InfraConfig\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"InfraToken\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"InvitedUsers_pkey\",\nALTER COLUMN \"invitedOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"MockServer\" DROP COLUMN \"workspaceType\",\nADD COLUMN     \"workspaceType\" \"WorkspaceType\" NOT NULL,\nALTER COLUMN \"delayInMs\" SET DATA TYPE INTEGER,\nALTER COLUMN \"hitCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"MockServerActivity\" DROP COLUMN \"action\",\nADD COLUMN     \"action\" \"MockServerAction\" NOT NULL,\nALTER COLUMN \"performedAt\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"MockServerLog\" ALTER COLUMN \"responseStatus\" SET DATA TYPE INTEGER,\nALTER COLUMN \"responseTime\" SET DATA TYPE INTEGER,\nALTER COLUMN \"executedAt\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"PersonalAccessToken\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"PublishedDocs\" DROP COLUMN \"workspaceType\",\nADD COLUMN     \"workspaceType\" \"WorkspaceType\" NOT NULL,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"Shortcode\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"TeamCollection\" ALTER COLUMN \"orderIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"TeamInvitation\" DROP COLUMN \"inviteeRole\",\nADD COLUMN     \"inviteeRole\" \"TeamAccessRole\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"TeamMember_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"TeamAccessRole\" NOT NULL,\nADD CONSTRAINT \"TeamMember_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"TeamRequest\" ALTER COLUMN \"orderIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"UserCollection\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ReqType\" NOT NULL,\nALTER COLUMN \"orderIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"UserHistory\" DROP COLUMN \"reqType\",\nADD COLUMN     \"reqType\" \"ReqType\" NOT NULL,\nALTER COLUMN \"executedOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"UserRequest\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ReqType\" NOT NULL,\nALTER COLUMN \"orderIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdOn\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_pkey\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Shortcode_id_key\" ON \"Shortcode\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"TeamCollection_teamID_parentID_orderIndex_key\" ON \"TeamCollection\"(\"teamID\", \"parentID\", \"orderIndex\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"TeamMember_teamID_userUid_key\" ON \"TeamMember\"(\"teamID\", \"userUid\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"TeamRequest_teamID_collectionID_orderIndex_key\" ON \"TeamRequest\"(\"teamID\", \"collectionID\", \"orderIndex\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"UserCollection_userUid_parentID_orderIndex_key\" ON \"UserCollection\"(\"userUid\", \"parentID\", \"orderIndex\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"UserRequest_userUid_collectionID_orderIndex_key\" ON \"UserRequest\"(\"userUid\", \"collectionID\", \"orderIndex\");\n\n-- AddForeignKey\nALTER TABLE \"TeamMember\" ADD CONSTRAINT \"TeamMember_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamInvitation\" ADD CONSTRAINT \"TeamInvitation_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamEnvironment\" ADD CONSTRAINT \"TeamEnvironment_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserSettings\" ADD CONSTRAINT \"UserSettings_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserHistory\" ADD CONSTRAINT \"UserHistory_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserEnvironment\" ADD CONSTRAINT \"UserEnvironment_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InvitedUsers\" ADD CONSTRAINT \"InvitedUsers_adminUid_fkey\" FOREIGN KEY (\"adminUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServer\" ADD CONSTRAINT \"MockServer_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerLog\" ADD CONSTRAINT \"MockServerLog_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerActivity\" ADD CONSTRAINT \"MockServerActivity_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Shortcode\" ADD CONSTRAINT \"Shortcode_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PersonalAccessToken\" ADD CONSTRAINT \"PersonalAccessToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx_InfraConfig_name\" RENAME TO \"InfraConfig_name_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_InfraToken_token\" RENAME TO \"InfraToken_token_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_InvitedUsers_invitee_email\" RENAME TO \"InvitedUsers_inviteeEmail_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_MockServer_subdomain\" RENAME TO \"MockServer_subdomain_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_PersonalAccessToken_token\" RENAME TO \"PersonalAccessToken_token_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_User_email\" RENAME TO \"User_email_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_UserSettings_user_uid\" RENAME TO \"UserSettings_userUid_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_VerificationToken_token\" RENAME TO \"VerificationToken_token_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 1,
+            "total": 23
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Team\" violates not-null constraint"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamCollection`) did not go in"
+          },
+          {
+            "model": "TeamEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"uid\" of relation \"User\" violates not-null constraint"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserCollection`) did not go in"
+          },
+          {
+            "model": "MockServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"MockServer\" violates not-null constraint"
+          },
+          {
+            "model": "MockServerLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "MockServerActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "InfraConfig",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"InfraConfig\" violates not-null constraint"
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InfraToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"InfraToken\" violates not-null constraint"
+          },
+          {
+            "model": "PublishedDocs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"PublishedDocs\" violates not-null constraint"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"TeamMember\": Execution Error: error returned from database: type \"teamaccessrole\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 1,
+            "total": 23
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Team\\\" violates not-null constraint\\n\\n    table: Team\\n    column: id\\n\\nFailing row contains (null, v1).\""
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamCollection`) did not go in"
+          },
+          {
+            "model": "TeamEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"uid\\\" of relation \\\"User\\\" violates not-null constraint\\n\\n    table: User\\n    column: uid\\n\\nFailing row contains (null, v16, v17, v18, f, v19, {\\\"n\\\": 20, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 21, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2026-11-21 15:22:27.484+00, 2024-01-02 03:04:05.022+00, 2024-01-02 03:04:05.023+00).\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserCollection`) did not go in"
+          },
+          {
+            "model": "MockServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"MockServer\\\" violates not-null constraint\\n\\n    table: MockServer\\n    column: id\\n\\nFailing row contains (null, v50, v51, null, v52, USER, v54, 0, t, t, 0, 2024-01-02 03:04:05.055+00, 2026-11-21 15:22:27.486+00, 2026-11-21 15:22:27.486+00, 2024-01-02 03:04:05.056+00).\""
+          },
+          {
+            "model": "MockServerLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "MockServerActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "InfraConfig",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"InfraConfig\\\" violates not-null constraint\\n\\n    table: InfraConfig\\n    column: id\\n\\nFailing row contains (null, v73, v74, f, v75, 2026-11-21 15:22:27.494+00, 2026-11-21 15:22:27.494+00).\""
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InfraToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"InfraToken\\\" violates not-null constraint\\n\\n    table: InfraToken\\n    column: id\\n\\nFailing row contains (null, v78, v79, e99dff7f-149f-4e24-a8d7-fafbabd0527e, 2024-01-02 03:04:05.08+00, 2026-11-21 15:22:27.494+00, 2026-11-21 15:22:27.494+00).\""
+          },
+          {
+            "model": "PublishedDocs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"PublishedDocs\\\" violates not-null constraint\\n\\n    table: PublishedDocs\\n    column: id\\n\\nFailing row contains (null, v81, v82, v83, v84, v85, t, {\\\"n\\\": 87, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, USER, v89, v90, v91, {\\\"n\\\": 92, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 93, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2026-11-21 15:22:27.494+00, 2026-11-21 15:22:27.494+00).\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 19,
+            "total": 20
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 20,
+            "total": 23
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"InvitedUsers\" WHERE \"InvitedUsers\".\"\" IS NULL\n                                                        ^\n"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"VerificationToken\" WHERE \"VerificationToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "update",
+            "text": "update of `adminEmail` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...Users\" SET \"adminEmail\" = $1 WHERE \"InvitedUsers\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"InvitedUsers\" WHERE \"InvitedUsers\".\"\" IS NULL\n                                                        ^\n"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 1,
+            "total": 23
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Team\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"Team\" (\"name\") values (v1))"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamCollection`) did not go in"
+          },
+          {
+            "model": "TeamEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"uid\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, v16, v17, v18, f, v19, {\"n\": 20, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 21, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:32.257+00, 2024-01-02 03:04:05.022+00, 2024-01-02 03:04:05.023+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"User\" (\"isAdmin\", \"displayName\", \"email\", \"photoURL\", \"refreshToken\", \"current"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InvitedUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserCollection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserCollection`) did not go in"
+          },
+          {
+            "model": "MockServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"MockServer\" violates not-null constraint\nDETAIL:  Failing row contains (null, v50, v51, null, v52, USER, v54, 0, t, t, 0, 2024-01-02 03:04:05.055+00, 2026-11-21 15:22:32.259+00, 2026-11-21 15:22:32.26+00, 2024-01-02 03:04:05.056+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"MockServer\" (\"delayInMs\", \"isPublic\", \"isActive\", \"hitCount\", \"name\", \"subdomain\", \"creatorUid\", \"collectionID\", \"workspaceType\", \"work"
+          },
+          {
+            "model": "MockServerLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "MockServerActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MockServer`) did not go in"
+          },
+          {
+            "model": "InfraConfig",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"InfraConfig\" violates not-null constraint\nDETAIL:  Failing row contains (null, v73, v74, f, v75, 2026-11-21 15:22:32.264+00, 2026-11-21 15:22:32.264+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"InfraConfig\" (\"isEncrypted\", \"name\", \"value\", \"lastSyncedEnvFileValue\", \"createdOn\", \"updatedOn\") values (0, v73, v74, v75, 2026-11-21 15:22:32.264+00:00, 2026-11-21 15:22:32.264+00:00))"
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "InfraToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"InfraToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v78, v79, a3477e32-3aaf-4c15-a727-9280c789413e, 2024-01-02 03:04:05.08+00, 2026-11-21 15:22:32.265+00, 2026-11-21 15:22:32.265+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"InfraToken\" (\"creatorUid\", \"label\", \"expiresOn\", \"token\", \"createdOn\", \"updatedOn\") values (v78, v79, 2024-01-02 03:04:05.080+00:00, a3477e32-3aaf-4c15-a727-92"
+          },
+          {
+            "model": "PublishedDocs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"PublishedDocs\" violates not-null constraint\nDETAIL:  Failing row contains (null, v81, v82, v83, v84, v85, t, {\"n\": 87, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, USER, v89, v90, v91, {\"n\": 92, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 93, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:22:32.265+00, 2026-11-21 15:22:32.265+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: hoppscotch_eloquent, SQL: insert into \"PublishedDocs\" (\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 20,
+            "total": 20
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 23,
+            "total": 23
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"InvitedUsers_adminUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MockServer\" DROP CONSTRAINT \"MockServer_creatorUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerActivity\" DROP CONSTRAINT \"MockServerActivity_mockServerID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MockServerLog\" DROP CONSTRAINT \"MockServerLog_mockServerID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PersonalAccessToken\" DROP CONSTRAINT \"PersonalAccessToken_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Shortcode\" DROP CONSTRAINT \"Shortcode_creatorUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"TeamCollection_parentID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamCollection\" DROP CONSTRAINT \"TeamCollection_teamID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamEnvironment\" DROP CONSTRAINT \"TeamEnvironment_teamID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamInvitation\" DROP CONSTRAINT \"TeamInvitation_teamID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"TeamMember_teamID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"TeamRequest_collectionID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamRequest\" DROP CONSTRAINT \"TeamRequest_teamID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"UserCollection_parentID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserCollection\" DROP CONSTRAINT \"UserCollection_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserEnvironment\" DROP CONSTRAINT \"UserEnvironment_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserHistory\" DROP CONSTRAINT \"UserHistory_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"UserRequest_collectionID_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserRequest\" DROP CONSTRAINT \"UserRequest_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserSettings\" DROP CONSTRAINT \"UserSettings_userUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_userUid_fkey\";\n\n-- AlterTable\nALTER TABLE \"InvitedUsers\" DROP CONSTRAINT \"InvitedUsers_inviteeEmail_key\";\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_token_key\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"InvitedUsers_inviteeEmail_key\" ON \"InvitedUsers\"(\"inviteeEmail\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- AddForeignKey\nALTER TABLE \"TeamMember\" ADD CONSTRAINT \"TeamMember_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamInvitation\" ADD CONSTRAINT \"TeamInvitation_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamCollection\" ADD CONSTRAINT \"TeamCollection_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"TeamCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamRequest\" ADD CONSTRAINT \"TeamRequest_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamEnvironment\" ADD CONSTRAINT \"TeamEnvironment_teamID_fkey\" FOREIGN KEY (\"teamID\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserSettings\" ADD CONSTRAINT \"UserSettings_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserHistory\" ADD CONSTRAINT \"UserHistory_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserEnvironment\" ADD CONSTRAINT \"UserEnvironment_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InvitedUsers\" ADD CONSTRAINT \"InvitedUsers_adminUid_fkey\" FOREIGN KEY (\"adminUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_collectionID_fkey\" FOREIGN KEY (\"collectionID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserRequest\" ADD CONSTRAINT \"UserRequest_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_parentID_fkey\" FOREIGN KEY (\"parentID\") REFERENCES \"UserCollection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCollection\" ADD CONSTRAINT \"UserCollection_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServer\" ADD CONSTRAINT \"MockServer_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerLog\" ADD CONSTRAINT \"MockServerLog_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MockServerActivity\" ADD CONSTRAINT \"MockServerActivity_mockServerID_fkey\" FOREIGN KEY (\"mockServerID\") REFERENCES \"MockServer\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Shortcode\" ADD CONSTRAINT \"Shortcode_creatorUid_fkey\" FOREIGN KEY (\"creatorUid\") REFERENCES \"User\"(\"uid\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PersonalAccessToken\" ADD CONSTRAINT \"PersonalAccessToken_userUid_fkey\" FOREIGN KEY (\"userUid\") REFERENCES \"User\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 23,
+            "total": 23
+          },
+          "insert": {
+            "ok": 23,
+            "total": 23
+          },
+          "read": {
+            "ok": 23,
+            "total": 23
+          },
+          "update": {
+            "ok": 20,
+            "total": 20
+          },
+          "relations": {
+            "ok": 43,
+            "total": 43
+          },
+          "delete": {
+            "ok": 23,
+            "total": 23
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

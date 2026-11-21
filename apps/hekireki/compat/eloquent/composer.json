@@ -1,0 +1,11 @@
+{
+  "description": "Runs the compat plan through the Eloquent models hekireki wrote (see harness.php).",
+  "require": {
+    "php": ">=8.2",
+    "illuminate/database": "~12.0",
+    "ramsey/uuid": "^4.7"
+  },
+  "config": {
+    "sort-packages": true
+  }
+}

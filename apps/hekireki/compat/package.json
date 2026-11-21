@@ -9,10 +9,13 @@
     "cuid": "3.0.0",
     "drizzle-kit": "catalog:",
     "drizzle-orm": "catalog:",
+    "kysely": "0.29.7",
     "mysql2": "3.24.4",
     "nanoid": "6.0.2",
+    "pg": "8.23.1",
     "postgres": "3.4.7",
     "prisma": "8.1.0-dev.9",
+    "typescript": "5.9.3",
     "ulidx": "2.4.1",
     "uuid": "14.0.3"
   }

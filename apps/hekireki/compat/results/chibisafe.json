@@ -1,0 +1,736 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 12,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 5,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 11,
+          "total": 13
+        },
+        "read": {
+          "ok": 11,
+          "total": 11
+        },
+        "update": {
+          "ok": 10,
+          "total": 10
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 11,
+          "total": 11
+        }
+      },
+      "findings": 2,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 13,
+          "total": 13
+        },
+        "insert": {
+          "ok": 13,
+          "total": 13
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_albums\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"zippedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"nsfw\" BOOLEAN NOT NULL DEFAULT false,\n    \"sortOrder\" TEXT\n);\nINSERT INTO \"new_albums\" (\"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\") SELECT \"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\" FROM \"albums\";\nDROP TABLE \"albums\";\nALTER TABLE \"new_albums\" RENAME TO \"albums\";\nCREATE UNIQUE INDEX \"albums_uuid_key\" ON \"albums\"(\"uuid\");\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"ip\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_bans\" (\"createdAt\", \"id\", \"ip\", \"reason\") SELECT \"createdAt\", \"id\", \"ip\", \"reason\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE TABLE \"new_files\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"name\" TEXT NOT NULL,\n    \"original\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"size\" TEXT NOT NULL,\n    \"hash\" TEXT NOT NULL,\n    \"ip\" TEXT NOT NULL,\n    \"sourceUrl\" TEXT,\n    \"isS3\" BOOLEAN NOT NULL DEFAULT false,\n    \"isWatched\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"quarantine\" BOOLEAN NOT NULL DEFAULT false,\n    CONSTRAINT \"files_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_files\" (\"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\" FROM \"files\";\nDROP TABLE \"files\";\nALTER TABLE \"new_files\" RENAME TO \"files\";\nCREATE UNIQUE INDEX \"files_uuid_key\" ON \"files\"(\"uuid\");\nCREATE TABLE \"new_invites\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"createdBy\" TEXT NOT NULL,\n    \"usedBy\" TEXT,\n    \"code\" TEXT NOT NULL,\n    \"used\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_invites\" (\"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\") SELECT \"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\" FROM \"invites\";\nDROP TABLE \"invites\";\nALTER TABLE \"new_invites\" RENAME TO \"invites\";\nCREATE UNIQUE INDEX \"invites_code_key\" ON \"invites\"(\"code\");\nCREATE TABLE \"new_links\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"albumId\" INTEGER NOT NULL,\n    \"identifier\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"enableDownload\" BOOLEAN NOT NULL DEFAULT false,\n    \"expiresAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_links\" (\"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"links\";\nDROP TABLE \"links\";\nALTER TABLE \"new_links\" RENAME TO \"links\";\nCREATE UNIQUE INDEX \"links_uuid_key\" ON \"links\"(\"uuid\");\nCREATE UNIQUE INDEX \"links_identifier_key\" ON \"links\"(\"identifier\");\nCREATE TABLE \"new_settings\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"rateLimitWindow\" INTEGER NOT NULL,\n    \"rateLimitMax\" INTEGER NOT NULL,\n    \"secret\" TEXT NOT NULL,\n    \"serviceName\" TEXT NOT NULL,\n    \"chunkSize\" TEXT NOT NULL,\n    \"chunkedUploadsTimeout\" INTEGER NOT NULL,\n    \"maxSize\" TEXT NOT NULL,\n    \"generateZips\" BOOLEAN NOT NULL,\n    \"generateOriginalFileNameWithIdentifier\" BOOLEAN NOT NULL DEFAULT false,\n    \"generatedFilenameLength\" INTEGER NOT NULL,\n    \"generatedAlbumLength\" INTEGER NOT NULL,\n    \"generatedLinksLength\" INTEGER NOT NULL DEFAULT 8,\n    \"saveDuplicatesToAlbum\" BOOLEAN NOT NULL DEFAULT false,\n    \"blockedExtensions\" TEXT NOT NULL,\n    \"blockNoExtension\" BOOLEAN NOT NULL,\n    \"publicMode\" BOOLEAN NOT NULL,\n    \"userAccounts\" BOOLEAN NOT NULL,\n    \"disableStatisticsCron\" BOOLEAN NOT NULL,\n    \"disableUpdateCheck\" BOOLEAN NOT NULL DEFAULT false,\n    \"backgroundImageURL\" TEXT NOT NULL,\n    \"logoURL\" TEXT NOT NULL,\n    \"metaDescription\" TEXT NOT NULL,\n    \"metaKeywords\" TEXT NOT NULL,\n    \"metaTwitterHandle\" TEXT NOT NULL,\n    \"metaDomain\" TEXT NOT NULL DEFAULT '',\n    \"serveUploadsFrom\" TEXT NOT NULL DEFAULT '',\n    \"enableMixedCaseFilenames\" BOOLEAN NOT NULL DEFAULT true,\n    \"usersStorageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"useNetworkStorage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useMinimalHomepage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useUrlShortener\" BOOLEAN NOT NULL DEFAULT false,\n    \"generateThumbnails\" BOOLEAN NOT NULL DEFAULT true,\n    \"privacyPolicyPageContent\" TEXT NOT NULL DEFAULT '',\n    \"termsOfServicePageContent\" TEXT NOT NULL DEFAULT '',\n    \"rulesPageContent\" TEXT NOT NULL DEFAULT '',\n    \"S3Region\" TEXT NOT NULL DEFAULT '',\n    \"S3Bucket\" TEXT NOT NULL DEFAULT '',\n    \"S3AccessKey\" TEXT NOT NULL DEFAULT '',\n    \"S3SecretKey\" TEXT NOT NULL DEFAULT '',\n    \"S3Endpoint\" TEXT NOT NULL DEFAULT '',\n    \"S3PathStyle\" BOOLEAN NOT NULL DEFAULT false,\n    \"S3PublicUrl\" TEXT NOT NULL DEFAULT '',\n    \"defaultSortOrder\" TEXT NOT NULL DEFAULT 'createdAt:desc'\n);\nINSERT INTO \"new_settings\" (\"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\") SELECT \"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\" FROM \"settings\";\nDROP TABLE \"settings\";\nALTER TABLE \"new_settings\" RENAME TO \"settings\";\nCREATE TABLE \"new_shortenedLinks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"destination\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"shortenedLinks_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_shortenedLinks\" (\"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"shortenedLinks\";\nDROP TABLE \"shortenedLinks\";\nALTER TABLE \"new_shortenedLinks\" RENAME TO \"shortenedLinks\";\nCREATE UNIQUE INDEX \"shortenedLinks_uuid_key\" ON \"shortenedLinks\"(\"uuid\");\nCREATE UNIQUE INDEX \"shortenedLinks_identifier_key\" ON \"shortenedLinks\"(\"identifier\");\nCREATE TABLE \"new_snippets\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"content\" TEXT NOT NULL,\n    \"language\" TEXT NOT NULL,\n    \"parentUuid\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_snippets\" (\"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\") SELECT \"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\" FROM \"snippets\";\nDROP TABLE \"snippets\";\nALTER TABLE \"new_snippets\" RENAME TO \"snippets\";\nCREATE UNIQUE INDEX \"snippets_uuid_key\" ON \"snippets\"(\"uuid\");\nCREATE UNIQUE INDEX \"snippets_identifier_key\" ON \"snippets\"(\"identifier\");\nCREATE TABLE \"new_statistics\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"batchId\" INTEGER,\n    \"type\" TEXT,\n    \"data\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_statistics\" (\"batchId\", \"createdAt\", \"data\", \"id\", \"type\") SELECT \"batchId\", \"createdAt\", \"data\", \"id\", \"type\" FROM \"statistics\";\nDROP TABLE \"statistics\";\nALTER TABLE \"new_statistics\" RENAME TO \"statistics\";\nCREATE TABLE \"new_tags\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_tags\" (\"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\" FROM \"tags\";\nDROP TABLE \"tags\";\nALTER TABLE \"new_tags\" RENAME TO \"tags\";\nCREATE UNIQUE INDEX \"tags_uuid_key\" ON \"tags\"(\"uuid\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"username\" TEXT NOT NULL,\n    \"password\" TEXT NOT NULL,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"storageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"apiKey\" TEXT,\n    \"passwordEditedAt\" DATETIME,\n    \"apiKeyEditedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_users\" (\"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\") SELECT \"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_uuid_key\" ON \"users\"(\"uuid\");\nCREATE UNIQUE INDEX \"users_username_key\" ON \"users\"(\"username\");\nCREATE UNIQUE INDEX \"users_apiKey_key\" ON \"users\"(\"apiKey\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 12,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": [
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`generateZips` (Boolean) came back as 1, expected true"
+          },
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`blockNoExtension` (Boolean) came back as 1, expected true"
+          },
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`publicMode` (Boolean) came back as 1, expected true"
+          },
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`userAccounts` (Boolean) came back as 1, expected true"
+          },
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`disableStatisticsCron` (Boolean) came back as 1, expected true"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new__albumsTofiles\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_albumsTofiles_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"albums\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_albumsTofiles_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__albumsTofiles\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_albumsTofiles\";\nDROP TABLE \"_albumsTofiles\";\nALTER TABLE \"new__albumsTofiles\" RENAME TO \"_albumsTofiles\";\nCREATE UNIQUE INDEX \"_albumsTofiles_AB_unique\" ON \"_albumsTofiles\"(\"A\", \"B\");\nCREATE INDEX \"_albumsTofiles_B_index\" ON \"_albumsTofiles\"(\"B\");\nCREATE TABLE \"new__filesTotags\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_filesTotags_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_filesTotags_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"tags\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__filesTotags\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_filesTotags\";\nDROP TABLE \"_filesTotags\";\nALTER TABLE \"new__filesTotags\" RENAME TO \"_filesTotags\";\nCREATE UNIQUE INDEX \"_filesTotags_AB_unique\" ON \"_filesTotags\"(\"A\", \"B\");\nCREATE INDEX \"_filesTotags_B_index\" ON \"_filesTotags\"(\"B\");\nCREATE TABLE \"new__rolesTousers\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_rolesTousers_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"roles\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_rolesTousers_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__rolesTousers\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_rolesTousers\";\nDROP TABLE \"_rolesTousers\";\nALTER TABLE \"new__rolesTousers\" RENAME TO \"_rolesTousers\";\nCREATE UNIQUE INDEX \"_rolesTousers_AB_unique\" ON \"_rolesTousers\"(\"A\", \"B\");\nCREATE INDEX \"_rolesTousers_B_index\" ON \"_rolesTousers\"(\"B\");\nCREATE TABLE \"new_albums\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"zippedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"nsfw\" BOOLEAN NOT NULL DEFAULT false,\n    \"sortOrder\" TEXT\n);\nINSERT INTO \"new_albums\" (\"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\") SELECT \"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\" FROM \"albums\";\nDROP TABLE \"albums\";\nALTER TABLE \"new_albums\" RENAME TO \"albums\";\nCREATE UNIQUE INDEX \"albums_uuid_key\" ON \"albums\"(\"uuid\");\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"ip\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_bans\" (\"createdAt\", \"id\", \"ip\", \"reason\") SELECT \"createdAt\", \"id\", \"ip\", \"reason\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE TABLE \"new_files\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"name\" TEXT NOT NULL,\n    \"original\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"size\" TEXT NOT NULL,\n    \"hash\" TEXT NOT NULL,\n    \"ip\" TEXT NOT NULL,\n    \"sourceUrl\" TEXT,\n    \"isS3\" BOOLEAN NOT NULL DEFAULT false,\n    \"isWatched\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"quarantine\" BOOLEAN NOT NULL DEFAULT false,\n    CONSTRAINT \"files_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_files\" (\"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\" FROM \"files\";\nDROP TABLE \"files\";\nALTER TABLE \"new_files\" RENAME TO \"files\";\nCREATE UNIQUE INDEX \"files_uuid_key\" ON \"files\"(\"uuid\");\nCREATE TABLE \"new_invites\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"createdBy\" TEXT NOT NULL,\n    \"usedBy\" TEXT,\n    \"code\" TEXT NOT NULL,\n    \"used\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_invites\" (\"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\") SELECT \"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\" FROM \"invites\";\nDROP TABLE \"invites\";\nALTER TABLE \"new_invites\" RENAME TO \"invites\";\nCREATE UNIQUE INDEX \"invites_code_key\" ON \"invites\"(\"code\");\nCREATE TABLE \"new_links\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"albumId\" INTEGER NOT NULL,\n    \"identifier\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"enableDownload\" BOOLEAN NOT NULL DEFAULT false,\n    \"expiresAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_links\" (\"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"links\";\nDROP TABLE \"links\";\nALTER TABLE \"new_links\" RENAME TO \"links\";\nCREATE UNIQUE INDEX \"links_uuid_key\" ON \"links\"(\"uuid\");\nCREATE UNIQUE INDEX \"links_identifier_key\" ON \"links\"(\"identifier\");\nCREATE TABLE \"new_quarantineFiles\" (\n    \"fileId\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    CONSTRAINT \"quarantineFiles_fileId_fkey\" FOREIGN KEY (\"fileId\") REFERENCES \"files\" (\"uuid\") ON DELETE RESTRICT ON UPDATE CASCADE\n);\nINSERT INTO \"new_quarantineFiles\" (\"fileId\", \"name\", \"reason\") SELECT \"fileId\", \"name\", \"reason\" FROM \"quarantineFiles\";\nDROP TABLE \"quarantineFiles\";\nALTER TABLE \"new_quarantineFiles\" RENAME TO \"quarantineFiles\";\nCREATE UNIQUE INDEX \"quarantineFiles_fileId_key\" ON \"quarantineFiles\"(\"fileId\");\nCREATE TABLE \"new_settings\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"rateLimitWindow\" INTEGER NOT NULL,\n    \"rateLimitMax\" INTEGER NOT NULL,\n    \"secret\" TEXT NOT NULL,\n    \"serviceName\" TEXT NOT NULL,\n    \"chunkSize\" TEXT NOT NULL,\n    \"chunkedUploadsTimeout\" INTEGER NOT NULL,\n    \"maxSize\" TEXT NOT NULL,\n    \"generateZips\" BOOLEAN NOT NULL,\n    \"generateOriginalFileNameWithIdentifier\" BOOLEAN NOT NULL DEFAULT false,\n    \"generatedFilenameLength\" INTEGER NOT NULL,\n    \"generatedAlbumLength\" INTEGER NOT NULL,\n    \"generatedLinksLength\" INTEGER NOT NULL DEFAULT 8,\n    \"saveDuplicatesToAlbum\" BOOLEAN NOT NULL DEFAULT false,\n    \"blockedExtensions\" TEXT NOT NULL,\n    \"blockNoExtension\" BOOLEAN NOT NULL,\n    \"publicMode\" BOOLEAN NOT NULL,\n    \"userAccounts\" BOOLEAN NOT NULL,\n    \"disableStatisticsCron\" BOOLEAN NOT NULL,\n    \"disableUpdateCheck\" BOOLEAN NOT NULL DEFAULT false,\n    \"backgroundImageURL\" TEXT NOT NULL,\n    \"logoURL\" TEXT NOT NULL,\n    \"metaDescription\" TEXT NOT NULL,\n    \"metaKeywords\" TEXT NOT NULL,\n    \"metaTwitterHandle\" TEXT NOT NULL,\n    \"metaDomain\" TEXT NOT NULL DEFAULT '',\n    \"serveUploadsFrom\" TEXT NOT NULL DEFAULT '',\n    \"enableMixedCaseFilenames\" BOOLEAN NOT NULL DEFAULT true,\n    \"usersStorageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"useNetworkStorage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useMinimalHomepage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useUrlShortener\" BOOLEAN NOT NULL DEFAULT false,\n    \"generateThumbnails\" BOOLEAN NOT NULL DEFAULT true,\n    \"privacyPolicyPageContent\" TEXT NOT NULL DEFAULT '',\n    \"termsOfServicePageContent\" TEXT NOT NULL DEFAULT '',\n    \"rulesPageContent\" TEXT NOT NULL DEFAULT '',\n    \"S3Region\" TEXT NOT NULL DEFAULT '',\n    \"S3Bucket\" TEXT NOT NULL DEFAULT '',\n    \"S3AccessKey\" TEXT NOT NULL DEFAULT '',\n    \"S3SecretKey\" TEXT NOT NULL DEFAULT '',\n    \"S3Endpoint\" TEXT NOT NULL DEFAULT '',\n    \"S3PathStyle\" BOOLEAN NOT NULL DEFAULT false,\n    \"S3PublicUrl\" TEXT NOT NULL DEFAULT '',\n    \"defaultSortOrder\" TEXT NOT NULL DEFAULT 'createdAt:desc'\n);\nINSERT INTO \"new_settings\" (\"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\") SELECT \"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\" FROM \"settings\";\nDROP TABLE \"settings\";\nALTER TABLE \"new_settings\" RENAME TO \"settings\";\nCREATE TABLE \"new_shortenedLinks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"destination\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"shortenedLinks_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_shortenedLinks\" (\"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"shortenedLinks\";\nDROP TABLE \"shortenedLinks\";\nALTER TABLE \"new_shortenedLinks\" RENAME TO \"shortenedLinks\";\nCREATE UNIQUE INDEX \"shortenedLinks_uuid_key\" ON \"shortenedLinks\"(\"uuid\");\nCREATE UNIQUE INDEX \"shortenedLinks_identifier_key\" ON \"shortenedLinks\"(\"identifier\");\nCREATE TABLE \"new_snippets\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"content\" TEXT NOT NULL,\n    \"language\" TEXT NOT NULL,\n    \"parentUuid\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_snippets\" (\"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\") SELECT \"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\" FROM \"snippets\";\nDROP TABLE \"snippets\";\nALTER TABLE \"new_snippets\" RENAME TO \"snippets\";\nCREATE UNIQUE INDEX \"snippets_uuid_key\" ON \"snippets\"(\"uuid\");\nCREATE UNIQUE INDEX \"snippets_identifier_key\" ON \"snippets\"(\"identifier\");\nCREATE TABLE \"new_statistics\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"batchId\" INTEGER,\n    \"type\" TEXT,\n    \"data\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_statistics\" (\"batchId\", \"createdAt\", \"data\", \"id\", \"type\") SELECT \"batchId\", \"createdAt\", \"data\", \"id\", \"type\" FROM \"statistics\";\nDROP TABLE \"statistics\";\nALTER TABLE \"new_statistics\" RENAME TO \"statistics\";\nCREATE TABLE \"new_tags\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_tags\" (\"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\" FROM \"tags\";\nDROP TABLE \"tags\";\nALTER TABLE \"new_tags\" RENAME TO \"tags\";\nCREATE UNIQUE INDEX \"tags_uuid_key\" ON \"tags\"(\"uuid\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"username\" TEXT NOT NULL,\n    \"password\" TEXT NOT NULL,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"storageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"apiKey\" TEXT,\n    \"passwordEditedAt\" DATETIME,\n    \"apiKeyEditedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_users\" (\"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\") SELECT \"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_uuid_key\" ON \"users\"(\"uuid\");\nCREATE UNIQUE INDEX \"users_username_key\" ON \"users\"(\"username\");\nCREATE UNIQUE INDEX \"users_apiKey_key\" ON \"users\"(\"apiKey\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- RedefineIndex\nDROP INDEX \"sqlite_autoindex_roles_1\";\nCREATE UNIQUE INDEX \"roles_name_key\" ON \"roles\"(\"name\");"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropTable\nPRAGMA foreign_keys=off;\nDROP TABLE \"_albums_tofiles\";\nPRAGMA foreign_keys=on;\n\n-- DropTable\nPRAGMA foreign_keys=off;\nDROP TABLE \"_files_totags\";\nPRAGMA foreign_keys=on;\n\n-- DropTable\nPRAGMA foreign_keys=off;\nDROP TABLE \"_roles_tousers\";\nPRAGMA foreign_keys=on;\n\n-- CreateTable\nCREATE TABLE \"_rolesTousers\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_rolesTousers_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"roles\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_rolesTousers_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- CreateTable\nCREATE TABLE \"_filesTotags\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_filesTotags_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_filesTotags_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"tags\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- CreateTable\nCREATE TABLE \"_albumsTofiles\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_albumsTofiles_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"albums\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_albumsTofiles_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_albums\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"zippedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"nsfw\" BOOLEAN NOT NULL DEFAULT false,\n    \"sortOrder\" TEXT\n);\nINSERT INTO \"new_albums\" (\"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\") SELECT \"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\" FROM \"albums\";\nDROP TABLE \"albums\";\nALTER TABLE \"new_albums\" RENAME TO \"albums\";\nCREATE UNIQUE INDEX \"albums_uuid_key\" ON \"albums\"(\"uuid\");\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"ip\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_bans\" (\"createdAt\", \"id\", \"ip\", \"reason\") SELECT \"createdAt\", \"id\", \"ip\", \"reason\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE TABLE \"new_files\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"name\" TEXT NOT NULL,\n    \"original\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"size\" TEXT NOT NULL,\n    \"hash\" TEXT NOT NULL,\n    \"ip\" TEXT NOT NULL,\n    \"sourceUrl\" TEXT,\n    \"isS3\" BOOLEAN NOT NULL DEFAULT false,\n    \"isWatched\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"quarantine\" BOOLEAN NOT NULL DEFAULT false,\n    CONSTRAINT \"files_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_files\" (\"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\" FROM \"files\";\nDROP TABLE \"files\";\nALTER TABLE \"new_files\" RENAME TO \"files\";\nCREATE UNIQUE INDEX \"files_uuid_key\" ON \"files\"(\"uuid\");\nCREATE TABLE \"new_invites\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"createdBy\" TEXT NOT NULL,\n    \"usedBy\" TEXT,\n    \"code\" TEXT NOT NULL,\n    \"used\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_invites\" (\"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\") SELECT \"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\" FROM \"invites\";\nDROP TABLE \"invites\";\nALTER TABLE \"new_invites\" RENAME TO \"invites\";\nCREATE UNIQUE INDEX \"invites_code_key\" ON \"invites\"(\"code\");\nCREATE TABLE \"new_links\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"albumId\" INTEGER NOT NULL,\n    \"identifier\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"enableDownload\" BOOLEAN NOT NULL DEFAULT false,\n    \"expiresAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_links\" (\"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"links\";\nDROP TABLE \"links\";\nALTER TABLE \"new_links\" RENAME TO \"links\";\nCREATE UNIQUE INDEX \"links_uuid_key\" ON \"links\"(\"uuid\");\nCREATE UNIQUE INDEX \"links_identifier_key\" ON \"links\"(\"identifier\");\nCREATE TABLE \"new_quarantineFiles\" (\n    \"fileId\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    CONSTRAINT \"quarantineFiles_fileId_fkey\" FOREIGN KEY (\"fileId\") REFERENCES \"files\" (\"uuid\") ON DELETE RESTRICT ON UPDATE CASCADE\n);\nINSERT INTO \"new_quarantineFiles\" (\"fileId\", \"name\", \"reason\") SELECT \"fileId\", \"name\", \"reason\" FROM \"quarantineFiles\";\nDROP TABLE \"quarantineFiles\";\nALTER TABLE \"new_quarantineFiles\" RENAME TO \"quarantineFiles\";\nCREATE UNIQUE INDEX \"quarantineFiles_fileId_key\" ON \"quarantineFiles\"(\"fileId\");\nCREATE TABLE \"new_settings\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"rateLimitWindow\" INTEGER NOT NULL,\n    \"rateLimitMax\" INTEGER NOT NULL,\n    \"secret\" TEXT NOT NULL,\n    \"serviceName\" TEXT NOT NULL,\n    \"chunkSize\" TEXT NOT NULL,\n    \"chunkedUploadsTimeout\" INTEGER NOT NULL,\n    \"maxSize\" TEXT NOT NULL,\n    \"generateZips\" BOOLEAN NOT NULL,\n    \"generateOriginalFileNameWithIdentifier\" BOOLEAN NOT NULL DEFAULT false,\n    \"generatedFilenameLength\" INTEGER NOT NULL,\n    \"generatedAlbumLength\" INTEGER NOT NULL,\n    \"generatedLinksLength\" INTEGER NOT NULL DEFAULT 8,\n    \"saveDuplicatesToAlbum\" BOOLEAN NOT NULL DEFAULT false,\n    \"blockedExtensions\" TEXT NOT NULL,\n    \"blockNoExtension\" BOOLEAN NOT NULL,\n    \"publicMode\" BOOLEAN NOT NULL,\n    \"userAccounts\" BOOLEAN NOT NULL,\n    \"disableStatisticsCron\" BOOLEAN NOT NULL,\n    \"disableUpdateCheck\" BOOLEAN NOT NULL DEFAULT false,\n    \"backgroundImageURL\" TEXT NOT NULL,\n    \"logoURL\" TEXT NOT NULL,\n    \"metaDescription\" TEXT NOT NULL,\n    \"metaKeywords\" TEXT NOT NULL,\n    \"metaTwitterHandle\" TEXT NOT NULL,\n    \"metaDomain\" TEXT NOT NULL DEFAULT '',\n    \"serveUploadsFrom\" TEXT NOT NULL DEFAULT '',\n    \"enableMixedCaseFilenames\" BOOLEAN NOT NULL DEFAULT true,\n    \"usersStorageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"useNetworkStorage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useMinimalHomepage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useUrlShortener\" BOOLEAN NOT NULL DEFAULT false,\n    \"generateThumbnails\" BOOLEAN NOT NULL DEFAULT true,\n    \"privacyPolicyPageContent\" TEXT NOT NULL DEFAULT '',\n    \"termsOfServicePageContent\" TEXT NOT NULL DEFAULT '',\n    \"rulesPageContent\" TEXT NOT NULL DEFAULT '',\n    \"S3Region\" TEXT NOT NULL DEFAULT '',\n    \"S3Bucket\" TEXT NOT NULL DEFAULT '',\n    \"S3AccessKey\" TEXT NOT NULL DEFAULT '',\n    \"S3SecretKey\" TEXT NOT NULL DEFAULT '',\n    \"S3Endpoint\" TEXT NOT NULL DEFAULT '',\n    \"S3PathStyle\" BOOLEAN NOT NULL DEFAULT false,\n    \"S3PublicUrl\" TEXT NOT NULL DEFAULT '',\n    \"defaultSortOrder\" TEXT NOT NULL DEFAULT 'createdAt:desc'\n);\nINSERT INTO \"new_settings\" (\"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\") SELECT \"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\" FROM \"settings\";\nDROP TABLE \"settings\";\nALTER TABLE \"new_settings\" RENAME TO \"settings\";\nCREATE TABLE \"new_shortenedLinks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"destination\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"shortenedLinks_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_shortenedLinks\" (\"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"shortenedLinks\";\nDROP TABLE \"shortenedLinks\";\nALTER TABLE \"new_shortenedLinks\" RENAME TO \"shortenedLinks\";\nCREATE UNIQUE INDEX \"shortenedLinks_uuid_key\" ON \"shortenedLinks\"(\"uuid\");\nCREATE UNIQUE INDEX \"shortenedLinks_identifier_key\" ON \"shortenedLinks\"(\"identifier\");\nCREATE TABLE \"new_snippets\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"content\" TEXT NOT NULL,\n    \"language\" TEXT NOT NULL,\n    \"parentUuid\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_snippets\" (\"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\") SELECT \"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\" FROM \"snippets\";\nDROP TABLE \"snippets\";\nALTER TABLE \"new_snippets\" RENAME TO \"snippets\";\nCREATE UNIQUE INDEX \"snippets_uuid_key\" ON \"snippets\"(\"uuid\");\nCREATE UNIQUE INDEX \"snippets_identifier_key\" ON \"snippets\"(\"identifier\");\nCREATE TABLE \"new_statistics\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"batchId\" INTEGER,\n    \"type\" TEXT,\n    \"data\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_statistics\" (\"batchId\", \"createdAt\", \"data\", \"id\", \"type\") SELECT \"batchId\", \"createdAt\", \"data\", \"id\", \"type\" FROM \"statistics\";\nDROP TABLE \"statistics\";\nALTER TABLE \"new_statistics\" RENAME TO \"statistics\";\nCREATE TABLE \"new_tags\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_tags\" (\"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\" FROM \"tags\";\nDROP TABLE \"tags\";\nALTER TABLE \"new_tags\" RENAME TO \"tags\";\nCREATE UNIQUE INDEX \"tags_uuid_key\" ON \"tags\"(\"uuid\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"username\" TEXT NOT NULL,\n    \"password\" TEXT NOT NULL,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"storageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"apiKey\" TEXT,\n    \"passwordEditedAt\" DATETIME,\n    \"apiKeyEditedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_users\" (\"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\") SELECT \"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_uuid_key\" ON \"users\"(\"uuid\");\nCREATE UNIQUE INDEX \"users_username_key\" ON \"users\"(\"username\");\nCREATE UNIQUE INDEX \"users_apiKey_key\" ON \"users\"(\"apiKey\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_rolesTousers_AB_unique\" ON \"_rolesTousers\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_rolesTousers_B_index\" ON \"_rolesTousers\"(\"B\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_filesTotags_AB_unique\" ON \"_filesTotags\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_filesTotags_B_index\" ON \"_filesTotags\"(\"B\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_albumsTofiles_AB_unique\" ON \"_albumsTofiles\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_albumsTofiles_B_index\" ON \"_albumsTofiles\"(\"B\");\n\n-- RedefineIndex\nDROP INDEX \"idx_roles_name\";\nCREATE UNIQUE INDEX \"roles_name_key\" ON \"roles\"(\"name\");"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateTable\nCREATE TABLE \"_rolesTousers\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_rolesTousers_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"roles\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_rolesTousers_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- CreateTable\nCREATE TABLE \"_filesTotags\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_filesTotags_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_filesTotags_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"tags\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- CreateTable\nCREATE TABLE \"_albumsTofiles\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_albumsTofiles_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"albums\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_albumsTofiles_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_albums\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"zippedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"nsfw\" BOOLEAN NOT NULL DEFAULT false,\n    \"sortOrder\" TEXT\n);\nINSERT INTO \"new_albums\" (\"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\") SELECT \"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\" FROM \"albums\";\nDROP TABLE \"albums\";\nALTER TABLE \"new_albums\" RENAME TO \"albums\";\nCREATE UNIQUE INDEX \"albums_uuid_key\" ON \"albums\"(\"uuid\");\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"ip\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_bans\" (\"createdAt\", \"id\", \"ip\", \"reason\") SELECT \"createdAt\", \"id\", \"ip\", \"reason\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE TABLE \"new_files\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"name\" TEXT NOT NULL,\n    \"original\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"size\" TEXT NOT NULL,\n    \"hash\" TEXT NOT NULL,\n    \"ip\" TEXT NOT NULL,\n    \"sourceUrl\" TEXT,\n    \"isS3\" BOOLEAN NOT NULL DEFAULT false,\n    \"isWatched\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"quarantine\" BOOLEAN NOT NULL DEFAULT false,\n    CONSTRAINT \"files_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_files\" (\"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\" FROM \"files\";\nDROP TABLE \"files\";\nALTER TABLE \"new_files\" RENAME TO \"files\";\nCREATE UNIQUE INDEX \"files_uuid_key\" ON \"files\"(\"uuid\");\nCREATE TABLE \"new_invites\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"createdBy\" TEXT NOT NULL,\n    \"usedBy\" TEXT,\n    \"code\" TEXT NOT NULL,\n    \"used\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_invites\" (\"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\") SELECT \"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\" FROM \"invites\";\nDROP TABLE \"invites\";\nALTER TABLE \"new_invites\" RENAME TO \"invites\";\nCREATE UNIQUE INDEX \"invites_code_key\" ON \"invites\"(\"code\");\nCREATE TABLE \"new_links\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"albumId\" INTEGER NOT NULL,\n    \"identifier\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"enableDownload\" BOOLEAN NOT NULL DEFAULT false,\n    \"expiresAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_links\" (\"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"links\";\nDROP TABLE \"links\";\nALTER TABLE \"new_links\" RENAME TO \"links\";\nCREATE UNIQUE INDEX \"links_uuid_key\" ON \"links\"(\"uuid\");\nCREATE UNIQUE INDEX \"links_identifier_key\" ON \"links\"(\"identifier\");\nCREATE TABLE \"new_quarantineFiles\" (\n    \"fileId\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    CONSTRAINT \"quarantineFiles_fileId_fkey\" FOREIGN KEY (\"fileId\") REFERENCES \"files\" (\"uuid\") ON DELETE RESTRICT ON UPDATE CASCADE\n);\nINSERT INTO \"new_quarantineFiles\" (\"fileId\", \"name\", \"reason\") SELECT \"fileId\", \"name\", \"reason\" FROM \"quarantineFiles\";\nDROP TABLE \"quarantineFiles\";\nALTER TABLE \"new_quarantineFiles\" RENAME TO \"quarantineFiles\";\nCREATE UNIQUE INDEX \"quarantineFiles_fileId_key\" ON \"quarantineFiles\"(\"fileId\");\nCREATE TABLE \"new_shortenedLinks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"destination\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"shortenedLinks_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_shortenedLinks\" (\"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"shortenedLinks\";\nDROP TABLE \"shortenedLinks\";\nALTER TABLE \"new_shortenedLinks\" RENAME TO \"shortenedLinks\";\nCREATE UNIQUE INDEX \"shortenedLinks_uuid_key\" ON \"shortenedLinks\"(\"uuid\");\nCREATE UNIQUE INDEX \"shortenedLinks_identifier_key\" ON \"shortenedLinks\"(\"identifier\");\nCREATE TABLE \"new_snippets\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"content\" TEXT NOT NULL,\n    \"language\" TEXT NOT NULL,\n    \"parentUuid\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_snippets\" (\"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\") SELECT \"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\" FROM \"snippets\";\nDROP TABLE \"snippets\";\nALTER TABLE \"new_snippets\" RENAME TO \"snippets\";\nCREATE UNIQUE INDEX \"snippets_uuid_key\" ON \"snippets\"(\"uuid\");\nCREATE UNIQUE INDEX \"snippets_identifier_key\" ON \"snippets\"(\"identifier\");\nCREATE TABLE \"new_statistics\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"batchId\" INTEGER,\n    \"type\" TEXT,\n    \"data\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_statistics\" (\"batchId\", \"createdAt\", \"data\", \"id\", \"type\") SELECT \"batchId\", \"createdAt\", \"data\", \"id\", \"type\" FROM \"statistics\";\nDROP TABLE \"statistics\";\nALTER TABLE \"new_statistics\" RENAME TO \"statistics\";\nCREATE TABLE \"new_tags\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_tags\" (\"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\" FROM \"tags\";\nDROP TABLE \"tags\";\nALTER TABLE \"new_tags\" RENAME TO \"tags\";\nCREATE UNIQUE INDEX \"tags_uuid_key\" ON \"tags\"(\"uuid\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"username\" TEXT NOT NULL,\n    \"password\" TEXT NOT NULL,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"storageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"apiKey\" TEXT,\n    \"passwordEditedAt\" DATETIME,\n    \"apiKeyEditedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_users\" (\"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\") SELECT \"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_uuid_key\" ON \"users\"(\"uuid\");\nCREATE UNIQUE INDEX \"users_username_key\" ON \"users\"(\"username\");\nCREATE UNIQUE INDEX \"users_apiKey_key\" ON \"users\"(\"apiKey\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_rolesTousers_AB_unique\" ON \"_rolesTousers\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_rolesTousers_B_index\" ON \"_rolesTousers\"(\"B\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_filesTotags_AB_unique\" ON \"_filesTotags\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_filesTotags_B_index\" ON \"_filesTotags\"(\"B\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"_albumsTofiles_AB_unique\" ON \"_albumsTofiles\"(\"A\", \"B\");\n\n-- CreateIndex\nCREATE INDEX \"_albumsTofiles_B_index\" ON \"_albumsTofiles\"(\"B\");\n\n-- RedefineIndex\nDROP INDEX \"sqlite_autoindex_roles_1\";\nCREATE UNIQUE INDEX \"roles_name_key\" ON \"roles\"(\"name\");"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 11,
+            "total": 13
+          },
+          "read": {
+            "ok": 11,
+            "total": 11
+          },
+          "update": {
+            "ok": 10,
+            "total": 10
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 11,
+            "total": 11
+          }
+        },
+        "findings": [
+          {
+            "model": "files",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "quarantineFiles",
+            "check": "insert",
+            "text": "not inserted: the parent row (`files`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 13,
+            "total": 13
+          },
+          "insert": {
+            "ok": 13,
+            "total": 13
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 6,
+            "total": 6
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new__albumsTofiles\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_albumsTofiles_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"albums\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_albumsTofiles_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__albumsTofiles\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_albumsTofiles\";\nDROP TABLE \"_albumsTofiles\";\nALTER TABLE \"new__albumsTofiles\" RENAME TO \"_albumsTofiles\";\nCREATE UNIQUE INDEX \"_albumsTofiles_AB_unique\" ON \"_albumsTofiles\"(\"A\", \"B\");\nCREATE INDEX \"_albumsTofiles_B_index\" ON \"_albumsTofiles\"(\"B\");\nCREATE TABLE \"new__filesTotags\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_filesTotags_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"files\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_filesTotags_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"tags\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__filesTotags\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_filesTotags\";\nDROP TABLE \"_filesTotags\";\nALTER TABLE \"new__filesTotags\" RENAME TO \"_filesTotags\";\nCREATE UNIQUE INDEX \"_filesTotags_AB_unique\" ON \"_filesTotags\"(\"A\", \"B\");\nCREATE INDEX \"_filesTotags_B_index\" ON \"_filesTotags\"(\"B\");\nCREATE TABLE \"new__rolesTousers\" (\n    \"A\" INTEGER NOT NULL,\n    \"B\" INTEGER NOT NULL,\n    CONSTRAINT \"_rolesTousers_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"roles\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE,\n    CONSTRAINT \"_rolesTousers_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new__rolesTousers\" (\"A\", \"B\") SELECT \"A\", \"B\" FROM \"_rolesTousers\";\nDROP TABLE \"_rolesTousers\";\nALTER TABLE \"new__rolesTousers\" RENAME TO \"_rolesTousers\";\nCREATE UNIQUE INDEX \"_rolesTousers_AB_unique\" ON \"_rolesTousers\"(\"A\", \"B\");\nCREATE INDEX \"_rolesTousers_B_index\" ON \"_rolesTousers\"(\"B\");\nCREATE TABLE \"new_albums\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"zippedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"nsfw\" BOOLEAN NOT NULL DEFAULT false,\n    \"sortOrder\" TEXT\n);\nINSERT INTO \"new_albums\" (\"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\") SELECT \"createdAt\", \"description\", \"editedAt\", \"id\", \"name\", \"nsfw\", \"sortOrder\", \"userId\", \"uuid\", \"zippedAt\" FROM \"albums\";\nDROP TABLE \"albums\";\nALTER TABLE \"new_albums\" RENAME TO \"albums\";\nCREATE UNIQUE INDEX \"albums_uuid_key\" ON \"albums\"(\"uuid\");\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"ip\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_bans\" (\"createdAt\", \"id\", \"ip\", \"reason\") SELECT \"createdAt\", \"id\", \"ip\", \"reason\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE TABLE \"new_files\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"name\" TEXT NOT NULL,\n    \"original\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"size\" TEXT NOT NULL,\n    \"hash\" TEXT NOT NULL,\n    \"ip\" TEXT NOT NULL,\n    \"sourceUrl\" TEXT,\n    \"isS3\" BOOLEAN NOT NULL DEFAULT false,\n    \"isWatched\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME,\n    \"quarantine\" BOOLEAN NOT NULL DEFAULT false,\n    CONSTRAINT \"files_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_files\" (\"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"hash\", \"id\", \"ip\", \"isS3\", \"isWatched\", \"name\", \"original\", \"quarantine\", \"size\", \"sourceUrl\", \"type\", \"userId\", \"uuid\" FROM \"files\";\nDROP TABLE \"files\";\nALTER TABLE \"new_files\" RENAME TO \"files\";\nCREATE UNIQUE INDEX \"files_uuid_key\" ON \"files\"(\"uuid\");\nCREATE TABLE \"new_invites\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"createdBy\" TEXT NOT NULL,\n    \"usedBy\" TEXT,\n    \"code\" TEXT NOT NULL,\n    \"used\" BOOLEAN NOT NULL DEFAULT false,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_invites\" (\"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\") SELECT \"code\", \"createdAt\", \"createdBy\", \"editedAt\", \"id\", \"used\", \"usedBy\" FROM \"invites\";\nDROP TABLE \"invites\";\nALTER TABLE \"new_invites\" RENAME TO \"invites\";\nCREATE UNIQUE INDEX \"invites_code_key\" ON \"invites\"(\"code\");\nCREATE TABLE \"new_links\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"albumId\" INTEGER NOT NULL,\n    \"identifier\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"enableDownload\" BOOLEAN NOT NULL DEFAULT false,\n    \"expiresAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_links\" (\"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"albumId\", \"createdAt\", \"editedAt\", \"enableDownload\", \"enabled\", \"expiresAt\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"links\";\nDROP TABLE \"links\";\nALTER TABLE \"new_links\" RENAME TO \"links\";\nCREATE UNIQUE INDEX \"links_uuid_key\" ON \"links\"(\"uuid\");\nCREATE UNIQUE INDEX \"links_identifier_key\" ON \"links\"(\"identifier\");\nCREATE TABLE \"new_quarantineFiles\" (\n    \"fileId\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"reason\" TEXT,\n    CONSTRAINT \"quarantineFiles_fileId_fkey\" FOREIGN KEY (\"fileId\") REFERENCES \"files\" (\"uuid\") ON DELETE RESTRICT ON UPDATE CASCADE\n);\nINSERT INTO \"new_quarantineFiles\" (\"fileId\", \"name\", \"reason\") SELECT \"fileId\", \"name\", \"reason\" FROM \"quarantineFiles\";\nDROP TABLE \"quarantineFiles\";\nALTER TABLE \"new_quarantineFiles\" RENAME TO \"quarantineFiles\";\nCREATE UNIQUE INDEX \"quarantineFiles_fileId_key\" ON \"quarantineFiles\"(\"fileId\");\nCREATE TABLE \"new_settings\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"rateLimitWindow\" INTEGER NOT NULL,\n    \"rateLimitMax\" INTEGER NOT NULL,\n    \"secret\" TEXT NOT NULL,\n    \"serviceName\" TEXT NOT NULL,\n    \"chunkSize\" TEXT NOT NULL,\n    \"chunkedUploadsTimeout\" INTEGER NOT NULL,\n    \"maxSize\" TEXT NOT NULL,\n    \"generateZips\" BOOLEAN NOT NULL,\n    \"generateOriginalFileNameWithIdentifier\" BOOLEAN NOT NULL DEFAULT false,\n    \"generatedFilenameLength\" INTEGER NOT NULL,\n    \"generatedAlbumLength\" INTEGER NOT NULL,\n    \"generatedLinksLength\" INTEGER NOT NULL DEFAULT 8,\n    \"saveDuplicatesToAlbum\" BOOLEAN NOT NULL DEFAULT false,\n    \"blockedExtensions\" TEXT NOT NULL,\n    \"blockNoExtension\" BOOLEAN NOT NULL,\n    \"publicMode\" BOOLEAN NOT NULL,\n    \"userAccounts\" BOOLEAN NOT NULL,\n    \"disableStatisticsCron\" BOOLEAN NOT NULL,\n    \"disableUpdateCheck\" BOOLEAN NOT NULL DEFAULT false,\n    \"backgroundImageURL\" TEXT NOT NULL,\n    \"logoURL\" TEXT NOT NULL,\n    \"metaDescription\" TEXT NOT NULL,\n    \"metaKeywords\" TEXT NOT NULL,\n    \"metaTwitterHandle\" TEXT NOT NULL,\n    \"metaDomain\" TEXT NOT NULL DEFAULT '',\n    \"serveUploadsFrom\" TEXT NOT NULL DEFAULT '',\n    \"enableMixedCaseFilenames\" BOOLEAN NOT NULL DEFAULT true,\n    \"usersStorageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"useNetworkStorage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useMinimalHomepage\" BOOLEAN NOT NULL DEFAULT false,\n    \"useUrlShortener\" BOOLEAN NOT NULL DEFAULT false,\n    \"generateThumbnails\" BOOLEAN NOT NULL DEFAULT true,\n    \"privacyPolicyPageContent\" TEXT NOT NULL DEFAULT '',\n    \"termsOfServicePageContent\" TEXT NOT NULL DEFAULT '',\n    \"rulesPageContent\" TEXT NOT NULL DEFAULT '',\n    \"S3Region\" TEXT NOT NULL DEFAULT '',\n    \"S3Bucket\" TEXT NOT NULL DEFAULT '',\n    \"S3AccessKey\" TEXT NOT NULL DEFAULT '',\n    \"S3SecretKey\" TEXT NOT NULL DEFAULT '',\n    \"S3Endpoint\" TEXT NOT NULL DEFAULT '',\n    \"S3PathStyle\" BOOLEAN NOT NULL DEFAULT false,\n    \"S3PublicUrl\" TEXT NOT NULL DEFAULT '',\n    \"defaultSortOrder\" TEXT NOT NULL DEFAULT 'createdAt:desc'\n);\nINSERT INTO \"new_settings\" (\"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\") SELECT \"S3AccessKey\", \"S3Bucket\", \"S3Endpoint\", \"S3PathStyle\", \"S3PublicUrl\", \"S3Region\", \"S3SecretKey\", \"backgroundImageURL\", \"blockNoExtension\", \"blockedExtensions\", \"chunkSize\", \"chunkedUploadsTimeout\", \"defaultSortOrder\", \"disableStatisticsCron\", \"disableUpdateCheck\", \"enableMixedCaseFilenames\", \"generateOriginalFileNameWithIdentifier\", \"generateThumbnails\", \"generateZips\", \"generatedAlbumLength\", \"generatedFilenameLength\", \"generatedLinksLength\", \"id\", \"logoURL\", \"maxSize\", \"metaDescription\", \"metaDomain\", \"metaKeywords\", \"metaTwitterHandle\", \"privacyPolicyPageContent\", \"publicMode\", \"rateLimitMax\", \"rateLimitWindow\", \"rulesPageContent\", \"saveDuplicatesToAlbum\", \"secret\", \"serveUploadsFrom\", \"serviceName\", \"termsOfServicePageContent\", \"useMinimalHomepage\", \"useNetworkStorage\", \"useUrlShortener\", \"userAccounts\", \"usersStorageQuota\" FROM \"settings\";\nDROP TABLE \"settings\";\nALTER TABLE \"new_settings\" RENAME TO \"settings\";\nCREATE TABLE \"new_shortenedLinks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"destination\" TEXT NOT NULL,\n    \"views\" INTEGER NOT NULL DEFAULT 0,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    CONSTRAINT \"shortenedLinks_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\" (\"id\") ON DELETE SET NULL ON UPDATE CASCADE\n);\nINSERT INTO \"new_shortenedLinks\" (\"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\") SELECT \"createdAt\", \"destination\", \"id\", \"identifier\", \"userId\", \"uuid\", \"views\" FROM \"shortenedLinks\";\nDROP TABLE \"shortenedLinks\";\nALTER TABLE \"new_shortenedLinks\" RENAME TO \"shortenedLinks\";\nCREATE UNIQUE INDEX \"shortenedLinks_uuid_key\" ON \"shortenedLinks\"(\"uuid\");\nCREATE UNIQUE INDEX \"shortenedLinks_identifier_key\" ON \"shortenedLinks\"(\"identifier\");\nCREATE TABLE \"new_snippets\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER,\n    \"identifier\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"description\" TEXT,\n    \"content\" TEXT NOT NULL,\n    \"language\" TEXT NOT NULL,\n    \"parentUuid\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_snippets\" (\"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\") SELECT \"content\", \"createdAt\", \"description\", \"editedAt\", \"id\", \"identifier\", \"language\", \"name\", \"parentUuid\", \"userId\", \"uuid\" FROM \"snippets\";\nDROP TABLE \"snippets\";\nALTER TABLE \"new_snippets\" RENAME TO \"snippets\";\nCREATE UNIQUE INDEX \"snippets_uuid_key\" ON \"snippets\"(\"uuid\");\nCREATE UNIQUE INDEX \"snippets_identifier_key\" ON \"snippets\"(\"identifier\");\nCREATE TABLE \"new_statistics\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"batchId\" INTEGER,\n    \"type\" TEXT,\n    \"data\" TEXT,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP\n);\nINSERT INTO \"new_statistics\" (\"batchId\", \"createdAt\", \"data\", \"id\", \"type\") SELECT \"batchId\", \"createdAt\", \"data\", \"id\", \"type\" FROM \"statistics\";\nDROP TABLE \"statistics\";\nALTER TABLE \"new_statistics\" RENAME TO \"statistics\";\nCREATE TABLE \"new_tags\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"userId\" INTEGER NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_tags\" (\"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\") SELECT \"createdAt\", \"editedAt\", \"id\", \"name\", \"userId\", \"uuid\" FROM \"tags\";\nDROP TABLE \"tags\";\nALTER TABLE \"new_tags\" RENAME TO \"tags\";\nCREATE UNIQUE INDEX \"tags_uuid_key\" ON \"tags\"(\"uuid\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"uuid\" TEXT NOT NULL,\n    \"username\" TEXT NOT NULL,\n    \"password\" TEXT NOT NULL,\n    \"enabled\" BOOLEAN NOT NULL DEFAULT true,\n    \"storageQuota\" TEXT NOT NULL DEFAULT '0',\n    \"apiKey\" TEXT,\n    \"passwordEditedAt\" DATETIME,\n    \"apiKeyEditedAt\" DATETIME,\n    \"createdAt\" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,\n    \"editedAt\" DATETIME\n);\nINSERT INTO \"new_users\" (\"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\") SELECT \"apiKey\", \"apiKeyEditedAt\", \"createdAt\", \"editedAt\", \"enabled\", \"id\", \"password\", \"passwordEditedAt\", \"storageQuota\", \"username\", \"uuid\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_uuid_key\" ON \"users\"(\"uuid\");\nCREATE UNIQUE INDEX \"users_username_key\" ON \"users\"(\"username\");\nCREATE UNIQUE INDEX \"users_apiKey_key\" ON \"users\"(\"apiKey\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "notGenerated": true
+    }
+  ]
+}

@@ -1,0 +1,1951 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 64,
+          "total": 64
+        },
+        "read": {
+          "ok": 64,
+          "total": 64
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 64,
+          "total": 64
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 64,
+          "total": 64
+        },
+        "read": {
+          "ok": 60,
+          "total": 64
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 64,
+          "total": 64
+        }
+      },
+      "findings": 7,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 14,
+          "total": 64
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 50,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 14,
+          "total": 64
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 50,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 57,
+          "total": 64
+        },
+        "read": {
+          "ok": 57,
+          "total": 57
+        },
+        "update": {
+          "ok": 54,
+          "total": 54
+        },
+        "relations": {
+          "ok": 46,
+          "total": 46
+        },
+        "delete": {
+          "ok": 57,
+          "total": 57
+        }
+      },
+      "findings": 7,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 14,
+          "total": 64
+        },
+        "read": {
+          "ok": 13,
+          "total": 14
+        },
+        "update": {
+          "ok": 10,
+          "total": 10
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 51,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 63,
+          "total": 64
+        },
+        "read": {
+          "ok": 63,
+          "total": 63
+        },
+        "update": {
+          "ok": 57,
+          "total": 59
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 61,
+          "total": 63
+        }
+      },
+      "findings": 5,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 14,
+          "total": 64
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 50,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 64,
+          "total": 64
+        },
+        "read": {
+          "ok": 64,
+          "total": 64
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 64,
+          "total": 64
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 64,
+          "total": 64
+        },
+        "read": {
+          "ok": 64,
+          "total": 64
+        },
+        "update": {
+          "ok": 60,
+          "total": 60
+        },
+        "relations": {
+          "ok": 51,
+          "total": 51
+        },
+        "delete": {
+          "ok": 64,
+          "total": 64
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 64,
+            "total": 64
+          },
+          "read": {
+            "ok": 64,
+            "total": 64
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 64,
+            "total": 64
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"computed_update_run_history_origin_run_ids_gin\";\n\n-- CreateIndex\nCREATE INDEX \"computed_update_run_history_origin_run_ids_gin\" ON \"computed_update_run_history\" USING GIN (\"origin_run_ids\");"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 64,
+            "total": 64
+          },
+          "read": {
+            "ok": 60,
+            "total": 64
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 64,
+            "total": 64
+          }
+        },
+        "findings": [
+          {
+            "model": "ComputedUpdateStageLedger",
+            "check": "read",
+            "text": "`seq` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "ComputedFieldActivity",
+            "check": "read",
+            "text": "`generation` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "ComputedFieldActivity",
+            "check": "read",
+            "text": "`estimated_complexity` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "ComputedFieldActivity",
+            "check": "read",
+            "text": "`estimated_dirty_records` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "ComputedTableActivity",
+            "check": "read",
+            "text": "`estimated_complexity` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "ComputedTableActivity",
+            "check": "read",
+            "text": "`generation` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "Attachments",
+            "check": "read",
+            "text": "`size` is typed `bigint` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 14,
+            "total": 64
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"space\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1, v2, 3, 2024-01-02 03:04:05.004, 2026-11-21 15:50:35.804, v5, v6, 2026-11-21 15:50:35.804, t)."
+          },
+          {
+            "model": "DataDbConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"data_db_connection\" violates not-null constraint\nDETAIL:  Failing row contains (null, postgres, v8, v9, v10, v11, v12, pending, v13, {\"n\": 14, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.015, v16, healthy, v17, 2024-01-02 03:04:05.018, 2024-01-02 03:04:05.019, 0, v20, 2026-11-21 15:50:35.806, 2026-11-21 15:50:35.806)."
+          },
+          {
+            "model": "SpaceDataDbBinding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceDataDbMigrationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Base",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "BaseDataDbMoveJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "PinResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"pin_resource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v49, v50, 2026-11-21 15:50:35.812, v51, 52.5)."
+          },
+          {
+            "model": "TableMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"computed_update_outbox\" violates not-null constraint\nDETAIL:  Failing row contains (null, v128, production, v129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v131, {\"n\": 132, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 133, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v134, 0, 8, 2026-11-21 15:50:35.827, 2024-01-02 03:04:05.135, v136, v137, 0, v138, {\"n\": 139, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v140, {}, 0, 0, {}, {}, 141, 2024-01-02 03:04:05.142, 0, v143, 2026-11-21 15:50:35.827, 2026-11-21 15:50:35.827)."
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "Ops",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ops\" violates not-null constraint\nDETAIL:  Failing row contains (null, v235, v236, v237, 238, v239, 2026-11-21 15:50:35.859, v240)."
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v241, v242, 2026-11-21 15:50:35.86)."
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"users\" violates not-null constraint\nDETAIL:  Failing row contains (null, v243, v244, v245, v246, v247, v248, t, t, t, v252, v253, 2024-01-02 03:04:05.254, 2024-01-02 03:04:05.255, 2026-11-21 15:50:35.861, 2024-01-02 03:04:05.256, 2026-11-21 15:50:35.861, 2024-01-02 03:04:05.257, v258)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"attachments\" violates not-null constraint\nDETAIL:  Failing row contains (null, v262, v263, 9007199254740264, v265, v266, 267, 268, 2024-01-02 03:04:05.269, 2026-11-21 15:50:35.863, v270, v271, v272)."
+          },
+          {
+            "model": "AttachmentsTable",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"attachments_table\" violates not-null constraint\nDETAIL:  Failing row contains (null, v273, v274, v275, v276, v277, v278, 2026-11-21 15:50:35.864, v279, v280, 2026-11-21 15:50:35.864)."
+          },
+          {
+            "model": "Collaborator",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"collaborator\" violates not-null constraint\nDETAIL:  Failing row contains (null, v281, v282, v283, v284, v285, v286, 2026-11-21 15:50:35.865, 2026-11-21 15:50:35.865, v287)."
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"invitation\" violates not-null constraint\nDETAIL:  Failing row contains (null, v288, v289, v290, v291, v292, 2024-01-02 03:04:05.293, v294, 2026-11-21 15:50:35.866, 2026-11-21 15:50:35.866, v295, 2024-01-02 03:04:05.296)."
+          },
+          {
+            "model": "InvitationRecord",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"invitation_record\" violates not-null constraint\nDETAIL:  Failing row contains (null, v297, v298, v299, v300, v301, v302, 2026-11-21 15:50:35.867)."
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"notification\" violates not-null constraint\nDETAIL:  Failing row contains (null, v303, v304, v305, v306, v307, info, v308, f, 2026-11-21 15:50:35.868, v309)."
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"access_token\" violates not-null constraint\nDETAIL:  Failing row contains (null, v310, v311, v312, v313, v314, v315, v316, v317, t, 2024-01-02 03:04:05.319, 2024-01-02 03:04:05.32, 2026-11-21 15:50:35.869, 2026-11-21 15:50:35.869)."
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauth_app\" violates not-null constraint\nDETAIL:  Failing row contains (null, v325, v326, v327, v328, v329, v330, v331, f, f, 2026-11-21 15:50:35.873, 2026-11-21 15:50:35.873, v332)."
+          },
+          {
+            "model": "OAuthAppAuthorized",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppSecret",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RecordHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"record_history\" violates not-null constraint\nDETAIL:  Failing row contains (null, v342, v343, v344, v345, v346, 2026-11-21 15:50:35.877, v347)."
+          },
+          {
+            "model": "Trash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v348, v349, v350, 2026-11-21 15:50:35.877, v351)."
+          },
+          {
+            "model": "TableTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"table_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v352, v353, v354, 2026-11-21 15:50:35.878, v355)."
+          },
+          {
+            "model": "RecordTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"record_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v356, v357, v358, 2026-11-21 15:50:35.879, v359, deleted, 2024-01-02 03:04:05.36, v361, 2024-01-02 03:04:05.362, v363, v364)."
+          },
+          {
+            "model": "Plugin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"plugin\" violates not-null constraint\nDETAIL:  Failing row contains (null, v369, v370, v371, v372, v373, v374, v375, v376, v377, v378, v379, v380, v381, 2026-11-21 15:50:35.883, 2026-11-21 15:50:35.883, v382, v383)."
+          },
+          {
+            "model": "PluginInstall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Plugin`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"dashboard\" violates not-null constraint\nDETAIL:  Failing row contains (null, v391, v392, v393, v394, 2026-11-21 15:50:35.885, 2026-11-21 15:50:35.885, v395, 2024-01-02 03:04:05.396)."
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"comment\" violates not-null constraint\nDETAIL:  Failing row contains (null, v397, v398, v399, v400, v401, 2024-01-02 03:04:05.402, 2026-11-21 15:50:35.886, v403, 2026-11-21 15:50:35.886)."
+          },
+          {
+            "model": "CommentSubscription",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"comment_subscription\" violates not-null constraint\nDETAIL:  Failing row contains (null, v404, v405, v406, 2026-11-21 15:50:35.887)."
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"integration\" violates not-null constraint\nDETAIL:  Failing row contains (null, v407, v408, v409, t, 2026-11-21 15:50:35.887, 2026-11-21 15:50:35.887)."
+          },
+          {
+            "model": "PluginPanel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "PluginContextMenu",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "UserLastVisit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"user_last_visit\" violates not-null constraint\nDETAIL:  Failing row contains (null, v419, v420, v421, v422, 2026-11-21 15:50:35.89)."
+          },
+          {
+            "model": "UserBaseOrder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"template\" violates not-null constraint\nDETAIL:  Failing row contains (null, v424, v425, v426, v427, v428, {v429}, 2026-11-21 15:50:35.892, v430, 2026-11-21 15:50:35.892, v431, t, t, t, v435, 436.5, 0, {\"n\": 437, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 0, v438, 1, {\"n\": 439, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 440, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 441, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v442, v443)."
+          },
+          {
+            "model": "TemplateCategory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"template_category\" violates not-null constraint\nDETAIL:  Failing row contains (null, v444, 2026-11-21 15:50:35.893, v445, 2026-11-21 15:50:35.893, v446, 447.5, v448, industry, v449)."
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"task\" violates not-null constraint\nDETAIL:  Failing row contains (null, v450, v451, v452, 2026-11-21 15:50:35.894, 2026-11-21 15:50:35.894, v453, v454)."
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"task_reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v462, v463, 2026-11-21 15:50:35.896)."
+          },
+          {
+            "model": "BaseNode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_node\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, v467, v468, v469, 470.5, 2026-11-21 15:50:35.9, v471, 2026-11-21 15:50:35.9, v472)."
+          },
+          {
+            "model": "BaseNodeFolder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_node_folder\" violates not-null constraint\nDETAIL:  Failing row contains (null, v473, v474, 2026-11-21 15:50:35.901, v475, 2026-11-21 15:50:35.901, v476, 2024-01-02 03:04:05.477)."
+          },
+          {
+            "model": "BaseShare",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_share\" violates not-null constraint\nDETAIL:  Failing row contains (null, v478, v479, v480, v481, t, t, t, t, 2026-11-21 15:50:35.902, v485, 2026-11-21 15:50:35.902)."
+          },
+          {
+            "model": "ShortLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"short_link\" violates not-null constraint\nDETAIL:  Failing row contains (null, v486, v487, v488, 2026-11-21 15:50:35.903, v489, 2024-01-02 03:04:05.49)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"computed_update_run_history_origin_run_ids_gin\";\n\n-- CreateIndex\nCREATE INDEX \"computed_update_run_history_origin_run_ids_gin\" ON \"computed_update_run_history\" USING GIN (\"origin_run_ids\");"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 14,
+            "total": 64
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"space\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1, v2, 3, 2024-01-02 03:04:05.004, 2026-11-21 15:50:38.333, v5, v6, 2026-11-21 15:50:38.351, t)."
+          },
+          {
+            "model": "DataDbConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"data_db_connection\" violates not-null constraint\nDETAIL:  Failing row contains (null, postgres, v8, v9, v10, v11, v12, pending, v13, {\"n\": 14, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.015, v16, healthy, v17, 2024-01-02 03:04:05.018, 2024-01-02 03:04:05.019, 0, v20, 2026-11-21 15:50:38.352, 2026-11-21 15:50:38.352)."
+          },
+          {
+            "model": "SpaceDataDbBinding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceDataDbMigrationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Base",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "BaseDataDbMoveJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "PinResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"pin_resource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v49, v50, 2026-11-21 15:50:38.355, v51, 52.5)."
+          },
+          {
+            "model": "TableMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"computed_update_outbox\" violates not-null constraint\nDETAIL:  Failing row contains (null, v128, production, v129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v131, {\"n\": 132, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 133, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v134, 0, 8, 2026-11-21 15:50:38.362, 2024-01-02 03:04:05.135, v136, v137, 0, v138, {\"n\": 139, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v140, {}, 0, 0, {}, {}, 141, 2024-01-02 03:04:05.142, 0, v143, 2026-11-21 15:50:38.362, 2026-11-21 15:50:38.362)."
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "Ops",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ops\" violates not-null constraint\nDETAIL:  Failing row contains (null, v235, v236, v237, 238, v239, 2026-11-21 15:50:38.382, v240)."
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v241, v242, 2026-11-21 15:50:38.383)."
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"users\" violates not-null constraint\nDETAIL:  Failing row contains (null, v243, v244, v245, v246, v247, v248, t, t, t, v252, v253, 2024-01-02 03:04:05.254, 2024-01-02 03:04:05.255, 2026-11-21 15:50:38.383, 2024-01-02 03:04:05.256, 2026-11-21 15:50:38.383, 2024-01-02 03:04:05.257, v258)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"attachments\" violates not-null constraint\nDETAIL:  Failing row contains (null, v262, v263, 9007199254740264, v265, v266, 267, 268, 2024-01-02 03:04:05.269, 2026-11-21 15:50:38.384, v270, v271, v272)."
+          },
+          {
+            "model": "AttachmentsTable",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"attachments_table\" violates not-null constraint\nDETAIL:  Failing row contains (null, v273, v274, v275, v276, v277, v278, 2026-11-21 15:50:38.384, v279, v280, 2026-11-21 15:50:38.384)."
+          },
+          {
+            "model": "Collaborator",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"collaborator\" violates not-null constraint\nDETAIL:  Failing row contains (null, v281, v282, v283, v284, v285, v286, 2026-11-21 15:50:38.385, 2026-11-21 15:50:38.385, v287)."
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"invitation\" violates not-null constraint\nDETAIL:  Failing row contains (null, v288, v289, v290, v291, v292, 2024-01-02 03:04:05.293, v294, 2026-11-21 15:50:38.385, 2026-11-21 15:50:38.385, v295, 2024-01-02 03:04:05.296)."
+          },
+          {
+            "model": "InvitationRecord",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"invitation_record\" violates not-null constraint\nDETAIL:  Failing row contains (null, v297, v298, v299, v300, v301, v302, 2026-11-21 15:50:38.385)."
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"notification\" violates not-null constraint\nDETAIL:  Failing row contains (null, v303, v304, v305, v306, v307, info, v308, f, 2026-11-21 15:50:38.386, v309)."
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"access_token\" violates not-null constraint\nDETAIL:  Failing row contains (null, v310, v311, v312, v313, v314, v315, v316, v317, t, 2024-01-02 03:04:05.319, 2024-01-02 03:04:05.32, 2026-11-21 15:50:38.386, 2026-11-21 15:50:38.386)."
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauth_app\" violates not-null constraint\nDETAIL:  Failing row contains (null, v325, v326, v327, v328, v329, v330, v331, f, f, 2026-11-21 15:50:38.388, 2026-11-21 15:50:38.388, v332)."
+          },
+          {
+            "model": "OAuthAppAuthorized",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppSecret",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RecordHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"record_history\" violates not-null constraint\nDETAIL:  Failing row contains (null, v342, v343, v344, v345, v346, 2026-11-21 15:50:38.39, v347)."
+          },
+          {
+            "model": "Trash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v348, v349, v350, 2026-11-21 15:50:38.39, v351)."
+          },
+          {
+            "model": "TableTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"table_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v352, v353, v354, 2026-11-21 15:50:38.39, v355)."
+          },
+          {
+            "model": "RecordTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"record_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v356, v357, v358, 2026-11-21 15:50:38.39, v359, deleted, 2024-01-02 03:04:05.36, v361, 2024-01-02 03:04:05.362, v363, v364)."
+          },
+          {
+            "model": "Plugin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"plugin\" violates not-null constraint\nDETAIL:  Failing row contains (null, v369, v370, v371, v372, v373, v374, v375, v376, v377, v378, v379, v380, v381, 2026-11-21 15:50:38.392, 2026-11-21 15:50:38.393, v382, v383)."
+          },
+          {
+            "model": "PluginInstall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Plugin`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"dashboard\" violates not-null constraint\nDETAIL:  Failing row contains (null, v391, v392, v393, v394, 2026-11-21 15:50:38.393, 2026-11-21 15:50:38.393, v395, 2024-01-02 03:04:05.396)."
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"comment\" violates not-null constraint\nDETAIL:  Failing row contains (null, v397, v398, v399, v400, v401, 2024-01-02 03:04:05.402, 2026-11-21 15:50:38.394, v403, 2026-11-21 15:50:38.394)."
+          },
+          {
+            "model": "CommentSubscription",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"comment_subscription\" violates not-null constraint\nDETAIL:  Failing row contains (null, v404, v405, v406, 2026-11-21 15:50:38.394)."
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"integration\" violates not-null constraint\nDETAIL:  Failing row contains (null, v407, v408, v409, t, 2026-11-21 15:50:38.394, 2026-11-21 15:50:38.395)."
+          },
+          {
+            "model": "PluginPanel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "PluginContextMenu",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "UserLastVisit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"user_last_visit\" violates not-null constraint\nDETAIL:  Failing row contains (null, v419, v420, v421, v422, 2026-11-21 15:50:38.395)."
+          },
+          {
+            "model": "UserBaseOrder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"template\" violates not-null constraint\nDETAIL:  Failing row contains (null, v424, v425, v426, v427, v428, {v429}, 2026-11-21 15:50:38.396, v430, 2026-11-21 15:50:38.396, v431, t, t, t, v435, 436.5, 0, {\"n\": 437, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 0, v438, 1, {\"n\": 439, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 440, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 441, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v442, v443)."
+          },
+          {
+            "model": "TemplateCategory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"template_category\" violates not-null constraint\nDETAIL:  Failing row contains (null, v444, 2026-11-21 15:50:38.396, v445, 2026-11-21 15:50:38.396, v446, 447.5, v448, industry, v449)."
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"task\" violates not-null constraint\nDETAIL:  Failing row contains (null, v450, v451, v452, 2026-11-21 15:50:38.397, 2026-11-21 15:50:38.397, v453, v454)."
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"task_reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v462, v463, 2026-11-21 15:50:38.398)."
+          },
+          {
+            "model": "BaseNode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_node\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, v467, v468, v469, 470.5, 2026-11-21 15:50:38.4, v471, 2026-11-21 15:50:38.4, v472)."
+          },
+          {
+            "model": "BaseNodeFolder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_node_folder\" violates not-null constraint\nDETAIL:  Failing row contains (null, v473, v474, 2026-11-21 15:50:38.4, v475, 2026-11-21 15:50:38.4, v476, 2024-01-02 03:04:05.477)."
+          },
+          {
+            "model": "BaseShare",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"base_share\" violates not-null constraint\nDETAIL:  Failing row contains (null, v478, v479, v480, v481, t, t, t, t, 2026-11-21 15:50:38.4, v485, 2026-11-21 15:50:38.4)."
+          },
+          {
+            "model": "ShortLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"short_link\" violates not-null constraint\nDETAIL:  Failing row contains (null, v486, v487, v488, 2026-11-21 15:50:38.401, v489, 2024-01-02 03:04:05.49)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ProvisionState\" AS ENUM ('pending', 'ready', 'error', 'deleting');\n\n-- CreateEnum\nCREATE TYPE \"DataDbProvider\" AS ENUM ('postgres');\n\n-- CreateEnum\nCREATE TYPE \"DataDbConnectionStatus\" AS ENUM ('pending', 'validating', 'ready', 'error', 'migrating', 'disabled');\n\n-- CreateEnum\nCREATE TYPE \"DataDbConnectionHealthState\" AS ENUM ('healthy', 'read_only', 'unreachable', 'degraded');\n\n-- CreateEnum\nCREATE TYPE \"SpaceDataDbBindingMode\" AS ENUM ('default', 'byodb');\n\n-- CreateEnum\nCREATE TYPE \"SpaceDataDbBindingState\" AS ENUM ('ready', 'validating', 'initializing', 'migrating', 'error', 'disabled');\n\n-- CreateEnum\nCREATE TYPE \"SpaceDataDbMigrationJobState\" AS ENUM ('pending', 'waiting_worker', 'preflight', 'freezing_writes', 'copying', 'validating', 'switching', 'succeeded', 'failed', 'canceled', 'rolled_back');\n\n-- CreateEnum\nCREATE TYPE \"BaseDataDbMoveJobState\" AS ENUM ('pending', 'waiting_worker', 'copying_base_schema', 'copying_shared_rows', 'validating', 'switching', 'succeeded', 'failed', 'cancelled');\n\n-- DropForeignKey\nALTER TABLE \"account\" DROP CONSTRAINT \"account_user_id_2c86f506_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"base\" DROP CONSTRAINT \"base_space_id_ee7fde3e_fk_space_id\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_base_id_1206ad83_fk_base_id\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_source_space_id_5bb174e6_fk_space_id\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_target_space_id_db134be3_fk_space_id\";\n\n-- DropForeignKey\nALTER TABLE \"base_node\" DROP CONSTRAINT \"base_node_parent_id_e2a4a6f8_fk_base_node_id\";\n\n-- DropForeignKey\nALTER TABLE \"computed_update_dead_letter_seed\" DROP CONSTRAINT \"computed_update_dead_task_id_43f19c12_fk_computed_\";\n\n-- DropForeignKey\nALTER TABLE \"computed_update_outbox_seed\" DROP CONSTRAINT \"computed_update_outb_task_id_5356851d_fk_computed_\";\n\n-- DropForeignKey\nALTER TABLE \"field\" DROP CONSTRAINT \"field_table_id_355279d2_fk_table_meta_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_authorized\" DROP CONSTRAINT \"oauth_app_authorized_client_id_39e2720e_fk_oauth_app_client_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_secret\" DROP CONSTRAINT \"oauth_app_secret_client_id_215c22a8_fk_oauth_app_client_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_token\" DROP CONSTRAINT \"oauth_app_token_app_secret_id_d4df35dc_fk_oauth_app_secret_id\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_token\" DROP CONSTRAINT \"oauth_app_token_client_id_20277af4_fk_oauth_app_client_id\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_context_menu\" DROP CONSTRAINT \"plugin_context_menu_table_id_98ff7ca8_fk_table_meta_id\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_install\" DROP CONSTRAINT \"plugin_install_plugin_id_27f1c9df_fk_plugin_id\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_panel\" DROP CONSTRAINT \"plugin_panel_table_id_64d0d764_fk_table_meta_id\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_binding\" DROP CONSTRAINT \"space_data_db_bindin_data_db_connection_i_3d58511f_fk_data_db_c\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_binding\" DROP CONSTRAINT \"space_data_db_binding_space_id_58011180_fk_space_id\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migrat_source_connection_id_26de4156_fk_data_db_c\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migrat_target_connection_id_0a691643_fk_data_db_c\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migration_job_space_id_3afc2222_fk_space_id\";\n\n-- DropForeignKey\nALTER TABLE \"table_meta\" DROP CONSTRAINT \"table_meta_base_id_82c140e0_fk_base_id\";\n\n-- DropForeignKey\nALTER TABLE \"task_run\" DROP CONSTRAINT \"task_run_task_id_1678825e_fk_task_id\";\n\n-- DropForeignKey\nALTER TABLE \"user_base_order\" DROP CONSTRAINT \"user_base_order_base_id_49a32997_fk_base_id\";\n\n-- DropForeignKey\nALTER TABLE \"user_base_order\" DROP CONSTRAINT \"user_base_order_user_id_e20b95ef_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"view\" DROP CONSTRAINT \"view_table_id_6984689a_fk_table_meta_id\";\n\n-- DropIndex\nDROP INDEX \"access_token_id_e7295fb3_like\";\n\n-- DropIndex\nDROP INDEX \"account_id_babe019f_like\";\n\n-- DropIndex\nDROP INDEX \"attachments_id_8e81f52d_like\";\n\n-- DropIndex\nDROP INDEX \"attachments_token_1386df1d_like\";\n\n-- DropIndex\nDROP INDEX \"attachments_table_id_de76fb29_like\";\n\n-- DropIndex\nDROP INDEX \"base_id_52a0a38f_like\";\n\n-- DropIndex\nDROP INDEX \"base_data_db_move_job_id_9b8d0ef7_like\";\n\n-- DropIndex\nDROP INDEX \"base_node_id_4e25d212_like\";\n\n-- DropIndex\nDROP INDEX \"base_node_folder_id_cdb11cc7_like\";\n\n-- DropIndex\nDROP INDEX \"base_share_id_988ff35b_like\";\n\n-- DropIndex\nDROP INDEX \"base_share_share_id_f882396d_like\";\n\n-- DropIndex\nDROP INDEX \"collaborator_id_bc3084a4_like\";\n\n-- DropIndex\nDROP INDEX \"comment_id_e1ff5423_like\";\n\n-- DropIndex\nDROP INDEX \"comment_subscription_id_cfaf3ea1_like\";\n\n-- DropIndex\nDROP INDEX \"computed_field_activity_field_id_d81c0b46_like\";\n\n-- DropIndex\nDROP INDEX \"computed_table_activity_table_id_76636f7a_like\";\n\n-- DropIndex\nDROP INDEX \"computed_update_dead_letter_id_6b2af0a2_like\";\n\n-- DropIndex\nDROP INDEX \"computed_update_outbox_id_dac9a913_like\";\n\n-- DropIndex\nDROP INDEX \"computed_update_outbox_seed_id_93db6394_like\";\n\n-- DropIndex\nDROP INDEX \"computed_update_pause_scope_id_6b614adc_like\";\n\n-- DropIndex\nDROP INDEX \"computed_update_run_history_task_id_9437bae2_like\";\n\n-- DropIndex\nDROP INDEX \"dashboard_id_2c30f3ed_like\";\n\n-- DropIndex\nDROP INDEX \"data_db_connection_id_024925cb_like\";\n\n-- DropIndex\nDROP INDEX \"data_db_connection_url_fingerprint_2a3bc487_like\";\n\n-- DropIndex\nDROP INDEX \"field_id_e798c92c_like\";\n\n-- DropIndex\nDROP INDEX \"integration_id_ac6368ad_like\";\n\n-- DropIndex\nDROP INDEX \"invitation_id_81c44944_like\";\n\n-- DropIndex\nDROP INDEX \"invitation_record_id_5fc7c382_like\";\n\n-- DropIndex\nDROP INDEX \"notification_id_2ec17b22_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_client_id_d35d2c24_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_id_463d3138_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_authorized_id_8442cfc1_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_secret_id_bac14172_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_secret_secret_e22a7aa8_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_token_id_e1d7fa10_like\";\n\n-- DropIndex\nDROP INDEX \"oauth_app_token_refresh_token_sign_c7cc987f_like\";\n\n-- DropIndex\nDROP INDEX \"ops_id_dd2c73fb_like\";\n\n-- DropIndex\nDROP INDEX \"pin_resource_id_6599c332_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_id_7fdb3d23_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_secret_9dd4fa19_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_context_menu_id_c318c97c_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_context_menu_plugin_install_id_daa6b273_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_install_id_9262994f_like\";\n\n-- DropIndex\nDROP INDEX \"plugin_panel_id_46f1a85c_like\";\n\n-- DropIndex\nDROP INDEX \"record_history_id_7dbd4f79_like\";\n\n-- DropIndex\nDROP INDEX \"record_removal_tombstone_id_9528ef2e_like\";\n\n-- DropIndex\nDROP INDEX \"record_trash_id_f1eccee9_like\";\n\n-- DropIndex\nDROP INDEX \"reference_id_4f575742_like\";\n\n-- DropIndex\nDROP INDEX \"schema_operation_id_639be3b8_like\";\n\n-- DropIndex\nDROP INDEX \"schema_operation_idempotency_key_10140196_like\";\n\n-- DropIndex\nDROP INDEX \"setting_name_0d217d8f_like\";\n\n-- DropIndex\nDROP INDEX \"short_link_code_91bfd51f_like\";\n\n-- DropIndex\nDROP INDEX \"short_link_id_47eb7e19_like\";\n\n-- DropIndex\nDROP INDEX \"space_id_9a896ba0_like\";\n\n-- DropIndex\nDROP INDEX \"space_data_db_binding_id_d5b58109_like\";\n\n-- DropIndex\nDROP INDEX \"space_data_db_binding_space_id_58011180_like\";\n\n-- DropIndex\nDROP INDEX \"space_data_db_migration_job_id_68296f7c_like\";\n\n-- DropIndex\nDROP INDEX \"table_meta_id_9843e53f_like\";\n\n-- DropIndex\nDROP INDEX \"table_trash_id_9a9029d8_like\";\n\n-- DropIndex\nDROP INDEX \"task_id_290f60eb_like\";\n\n-- DropIndex\nDROP INDEX \"task_reference_id_2efd777f_like\";\n\n-- DropIndex\nDROP INDEX \"task_run_id_849e0e35_like\";\n\n-- DropIndex\nDROP INDEX \"template_base_id_771cca34_like\";\n\n-- DropIndex\nDROP INDEX \"template_id_347da308_like\";\n\n-- DropIndex\nDROP INDEX \"template_slug_85009445_like\";\n\n-- DropIndex\nDROP INDEX \"template_category_id_44ba5b6b_like\";\n\n-- DropIndex\nDROP INDEX \"template_category_key_addd3c4a_like\";\n\n-- DropIndex\nDROP INDEX \"template_category_name_b1234fd5_like\";\n\n-- DropIndex\nDROP INDEX \"trash_id_47d5b6ef_like\";\n\n-- DropIndex\nDROP INDEX \"user_base_order_id_2e5f8b9b_like\";\n\n-- DropIndex\nDROP INDEX \"user_last_visit_id_9d312e2e_like\";\n\n-- DropIndex\nDROP INDEX \"users_email_0ea73cca_like\";\n\n-- DropIndex\nDROP INDEX \"users_id_605f60ff_like\";\n\n-- DropIndex\nDROP INDEX \"users_phone_2b77170a_like\";\n\n-- DropIndex\nDROP INDEX \"view_id_50a63c0c_like\";\n\n-- DropIndex\nDROP INDEX \"view_share_id_9bbf6ecc_like\";\n\n-- DropIndex\nDROP INDEX \"waitlist_email_677f5020_like\";\n\n-- AlterTable\nALTER TABLE \"access_token\" ALTER COLUMN \"expired_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_used_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"account\" ALTER COLUMN \"connection_id\" SET DEFAULT '',\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"attachments\" ALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"attachments_table\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"base\" ALTER COLUMN \"v2_enabled\" SET DEFAULT false,\nDROP COLUMN \"provision_state\",\nADD COLUMN     \"provision_state\" \"ProvisionState\" NOT NULL DEFAULT 'ready',\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"base_data_db_move_job\" DROP COLUMN \"state\",\nADD COLUMN     \"state\" \"BaseDataDbMoveJobState\" NOT NULL DEFAULT 'pending',\nALTER COLUMN \"started_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"base_node\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"base_node_folder\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"base_share\" ALTER COLUMN \"enabled\" SET DEFAULT true,\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"collaborator\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"comment\" ALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"comment_subscription\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_field_activity\" ALTER COLUMN \"active_task_count\" SET DEFAULT 0,\nALTER COLUMN \"processing_task_count\" SET DEFAULT 0,\nALTER COLUMN \"generation\" SET DEFAULT 0,\nALTER COLUMN \"estimated_complexity\" SET DEFAULT 0,\nALTER COLUMN \"estimated_dirty_records\" SET DEFAULT 0,\nALTER COLUMN \"has_all_target_records\" SET DEFAULT false,\nALTER COLUMN \"queued_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"started_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_completed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_table_activity\" ALTER COLUMN \"calculating_field_count\" SET DEFAULT 0,\nALTER COLUMN \"queued_field_count\" SET DEFAULT 0,\nALTER COLUMN \"estimated_complexity\" SET DEFAULT 0,\nALTER COLUMN \"recent_completions\" SET DEFAULT '[]',\nALTER COLUMN \"generation\" SET DEFAULT 0,\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_task_field_ref\" ALTER COLUMN \"was_processing\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_update_dead_letter\" ALTER COLUMN \"worker_lane\" SET DEFAULT 'production',\nALTER COLUMN \"attempts\" SET DEFAULT 0,\nALTER COLUMN \"max_attempts\" SET DEFAULT 8,\nALTER COLUMN \"next_run_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"locked_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"estimated_complexity\" SET DEFAULT 0,\nALTER COLUMN \"origin_run_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"run_total_steps\" SET DEFAULT 0,\nALTER COLUMN \"run_completed_steps_before\" SET DEFAULT 0,\nALTER COLUMN \"affected_table_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"affected_field_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"source_changed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"stage_depth\" SET DEFAULT 0,\nALTER COLUMN \"failed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_update_outbox\" ALTER COLUMN \"worker_lane\" SET DEFAULT 'production',\nALTER COLUMN \"attempts\" SET DEFAULT 0,\nALTER COLUMN \"max_attempts\" SET DEFAULT 8,\nALTER COLUMN \"next_run_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"next_run_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"locked_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"estimated_complexity\" SET DEFAULT 0,\nALTER COLUMN \"origin_run_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"run_total_steps\" SET DEFAULT 0,\nALTER COLUMN \"run_completed_steps_before\" SET DEFAULT 0,\nALTER COLUMN \"affected_table_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"affected_field_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"source_changed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"stage_depth\" SET DEFAULT 0,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_update_pause_scope\" ALTER COLUMN \"paused_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"paused_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"resume_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"write_policy\" SET DEFAULT 'allow_bounded',\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"computed_update_run_history\" ALTER COLUMN \"origin_run_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"affected_table_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"affected_field_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"source_field_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"seed_record_count\" SET DEFAULT 0,\nALTER COLUMN \"stage_depth\" SET DEFAULT 0,\nALTER COLUMN \"run_total_steps\" SET DEFAULT 0,\nALTER COLUMN \"run_completed_steps_before\" SET DEFAULT 0,\nALTER COLUMN \"estimated_complexity\" SET DEFAULT 0,\nALTER COLUMN \"attempts\" SET DEFAULT 0,\nALTER COLUMN \"source_changed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"enqueued_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"started_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"duration_ms\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"computed_update_stage_ledger\" ALTER COLUMN \"seq\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"dashboard\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"data_db_connection\" DROP COLUMN \"provider\",\nADD COLUMN     \"provider\" \"DataDbProvider\" NOT NULL DEFAULT 'postgres',\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"DataDbConnectionStatus\" NOT NULL DEFAULT 'pending',\nALTER COLUMN \"last_validated_at\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"health_state\",\nADD COLUMN     \"health_state\" \"DataDbConnectionHealthState\" NOT NULL DEFAULT 'healthy',\nALTER COLUMN \"health_changed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_health_check_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"consecutive_health_failures\" SET DEFAULT 0,\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"field\" DROP COLUMN \"provision_state\",\nADD COLUMN     \"provision_state\" \"ProvisionState\" NOT NULL DEFAULT 'ready',\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"integration\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"invitation\" ALTER COLUMN \"expired_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"invitation_record\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"notification\" ALTER COLUMN \"severity\" SET DEFAULT 'info',\nALTER COLUMN \"is_read\" SET DEFAULT false,\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"oauth_app\" ALTER COLUMN \"allow_device_flow\" SET DEFAULT false,\nALTER COLUMN \"dynamic_registration\" SET DEFAULT false,\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"oauth_app_authorized\" ALTER COLUMN \"authorized_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"oauth_app_secret\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_used_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"oauth_app_token\" ALTER COLUMN \"expired_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ops\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"pin_resource\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"plugin\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"plugin_context_menu\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"plugin_install\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"plugin_panel\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"record_history\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"record_removal_tombstone\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"record_trash\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"reason\" SET DEFAULT 'deleted',\nALTER COLUMN \"record_created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"record_last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"reference\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"schema_operation\" ALTER COLUMN \"attempts\" SET DEFAULT 0,\nALTER COLUMN \"max_attempts\" SET DEFAULT 8,\nALTER COLUMN \"next_run_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"setting\" DROP CONSTRAINT \"setting_pkey\",\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"short_link\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"space\" ALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"space_data_db_binding\" DROP COLUMN \"mode\",\nADD COLUMN     \"mode\" \"SpaceDataDbBindingMode\" NOT NULL DEFAULT 'default',\nDROP COLUMN \"state\",\nADD COLUMN     \"state\" \"SpaceDataDbBindingState\" NOT NULL DEFAULT 'ready',\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_history_flushed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_removal_flushed_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"space_data_db_migration_job\" ALTER COLUMN \"target_mode\" SET DEFAULT 'migrate-space',\nALTER COLUMN \"switch_on_completion\" SET DEFAULT false,\nDROP COLUMN \"state\",\nADD COLUMN     \"state\" \"SpaceDataDbMigrationJobState\" NOT NULL DEFAULT 'pending',\nALTER COLUMN \"started_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completed_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"table_meta\" DROP COLUMN \"provision_state\",\nADD COLUMN     \"provision_state\" \"ProvisionState\" NOT NULL DEFAULT 'ready',\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"table_query_observation_shard\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"table_trash\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"task\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"task_reference\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"task_run\" ALTER COLUMN \"depends_on_run_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"started_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"template\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"usage_count\" SET DEFAULT 0,\nALTER COLUMN \"visit_count\" SET DEFAULT 0,\nALTER COLUMN \"version\" SET DEFAULT 1;\n\n-- AlterTable\nALTER TABLE \"template_category\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"kind\" SET DEFAULT 'industry';\n\n-- AlterTable\nALTER TABLE \"trash\" ALTER COLUMN \"deleted_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"user_base_order\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"user_last_visit\" ALTER COLUMN \"last_visit_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"last_visit_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"users\" ALTER COLUMN \"last_sign_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deactivated_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"permanent_deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"view\" ALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_modified_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"waitlist\" DROP CONSTRAINT \"waitlist_pkey\",\nALTER COLUMN \"invite_time\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"created_time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_time\" SET DATA TYPE TIMESTAMP(3);\n\n-- CreateIndex\nCREATE INDEX \"base_data_db_move_job_base_id_state_idx\" ON \"base_data_db_move_job\"(\"base_id\", \"state\");\n\n-- CreateIndex\nCREATE INDEX \"base_data_db_move_job_state_idx\" ON \"base_data_db_move_job\"(\"state\");\n\n-- CreateIndex\nCREATE INDEX \"base_data_db_move_job_source_space_id_state_idx\" ON \"base_data_db_move_job\"(\"source_space_id\", \"state\");\n\n-- CreateIndex\nCREATE INDEX \"base_data_db_move_job_target_space_id_state_idx\" ON \"base_data_db_move_job\"(\"target_space_id\", \"state\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"setting_name_key\" ON \"setting\"(\"name\");\n\n-- CreateIndex\nCREATE INDEX \"space_data_db_migration_job_space_id_state_idx\" ON \"space_data_db_migration_job\"(\"space_id\", \"state\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"waitlist_email_key\" ON \"waitlist\"(\"email\");\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_binding\" ADD CONSTRAINT \"space_data_db_binding_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_binding\" ADD CONSTRAINT \"space_data_db_binding_data_db_connection_id_fkey\" FOREIGN KEY (\"data_db_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_source_connection_id_fkey\" FOREIGN KEY (\"source_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_target_connection_id_fkey\" FOREIGN KEY (\"target_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_source_space_id_fkey\" FOREIGN KEY (\"source_space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_target_space_id_fkey\" FOREIGN KEY (\"target_space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base\" ADD CONSTRAINT \"base_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"table_meta\" ADD CONSTRAINT \"table_meta_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"field\" ADD CONSTRAINT \"field_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"computed_update_outbox_seed\" ADD CONSTRAINT \"computed_update_outbox_seed_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"computed_update_outbox\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"computed_update_dead_letter_seed\" ADD CONSTRAINT \"computed_update_dead_letter_seed_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"computed_update_dead_letter\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"view\" ADD CONSTRAINT \"view_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"account\" ADD CONSTRAINT \"account_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_authorized\" ADD CONSTRAINT \"oauth_app_authorized_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_secret\" ADD CONSTRAINT \"oauth_app_secret_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_token\" ADD CONSTRAINT \"oauth_app_token_app_secret_id_fkey\" FOREIGN KEY (\"app_secret_id\") REFERENCES \"oauth_app_secret\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_token\" ADD CONSTRAINT \"oauth_app_token_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_install\" ADD CONSTRAINT \"plugin_install_plugin_id_fkey\" FOREIGN KEY (\"plugin_id\") REFERENCES \"plugin\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_panel\" ADD CONSTRAINT \"plugin_panel_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_context_menu\" ADD CONSTRAINT \"plugin_context_menu_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_base_order\" ADD CONSTRAINT \"user_base_order_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_base_order\" ADD CONSTRAINT \"user_base_order_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"task_run\" ADD CONSTRAINT \"task_run_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"task\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_node\" ADD CONSTRAINT \"base_node_parent_id_fkey\" FOREIGN KEY (\"parent_id\") REFERENCES \"base_node\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"access_toke_client__b534ff_idx\" RENAME TO \"access_token_client_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"access_toke_user_id_702b81_idx\" RENAME TO \"access_token_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"attachments_attachm_2e881f_idx\" RENAME TO \"attachments_table_attachment_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"attachments_table_i_aa9bcb_idx\" RENAME TO \"attachments_table_table_id_record_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"attachments_table_i_fb03ae_idx\" RENAME TO \"attachments_table_table_id_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_order_d72b27_idx\" RENAME TO \"base_order_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_space_i_53301d_idx\" RENAME TO \"base_space_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_data_d_base_id_3603db_idx\" RENAME TO \"base_data_db_move_job_base_id_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_data_d_source__b1e87b_idx\" RENAME TO \"base_data_db_move_job_source_space_id_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_data_d_state_913dba_idx\" RENAME TO \"base_data_db_move_job_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_data_d_target__2d392d_idx\" RENAME TO \"base_data_db_move_job_target_space_id_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_node_f_base_id_74314f_idx\" RENAME TO \"base_node_folder_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"base_share_base_id_914eda_idx\" RENAME TO \"base_share_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"collaborato_princip_869baa_idx\" RENAME TO \"collaborator_principal_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"collaborato_resourc_aac2f9_idx\" RENAME TO \"collaborator_resource_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"collaborator_resource_type_resource_id_principal_id_principal_t\" RENAME TO \"collaborator_resource_type_resource_id_principal_id_princip_key\";\n\n-- RenameIndex\nALTER INDEX \"comment_table_i_3cf591_idx\" RENAME TO \"comment_table_id_record_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"comment_sub_table_i_09de60_idx\" RENAME TO \"comment_subscription_table_id_record_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_fi_base_id_ffbeed_idx\" RENAME TO \"computed_field_activity_base_id_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_fi_table_i_41b420_idx\" RENAME TO \"computed_field_activity_table_id_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_ta_base_id_357b9d_idx\" RENAME TO \"computed_table_activity_base_id_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_ta_field_i_fa1afa_idx\" RENAME TO \"computed_task_field_ref_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_ta_table_i_51c3dd_idx\" RENAME TO \"computed_task_field_ref_table_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_base_id_464e5d_idx\" RENAME TO \"computed_update_dead_letter_base_id_seed_table_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_plan_ha_adce60_idx\" RENAME TO \"computed_update_dead_letter_plan_hash_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_run_id_129b04_idx\" RENAME TO \"computed_update_dead_letter_run_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_base_id_e625f7_idx\" RENAME TO \"computed_update_outbox_base_id_seed_table_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_plan_ha_73c0c5_idx\" RENAME TO \"computed_update_outbox_plan_hash_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_run_id_aa0989_idx\" RENAME TO \"computed_update_outbox_run_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_status_79c8e2_idx\" RENAME TO \"computed_update_outbox_status_next_run_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_worker__b3de0d_idx\" RENAME TO \"computed_update_outbox_worker_lane_status_next_run_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_task_id_55f827_idx\" RENAME TO \"computed_update_outbox_seed_task_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_resume__703503_idx\" RENAME TO \"computed_update_pause_scope_resume_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_base_id_60b97d_idx\" RENAME TO \"computed_update_run_history_base_id_completed_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_complet_ff6a34_idx\" RENAME TO \"computed_update_run_history_completed_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_origin__9780f0_gin\" RENAME TO \"computed_update_run_history_origin_run_ids_gin\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_run_id_7b1a2d_idx\" RENAME TO \"computed_update_run_history_run_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"computed_up_scope_i_f68d12_idx\" RENAME TO \"computed_update_stage_ledger_scope_id_kind_seq_idx\";\n\n-- RenameIndex\nALTER INDEX \"dashboard_base_id_a82fe7_idx\" RENAME TO \"dashboard_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"field_lookup__0a45d9_idx\" RENAME TO \"field_lookup_linked_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"field_table_i_788faa_idx\" RENAME TO \"field_table_id_deleted_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"invitation_base_id_d67e25_idx\" RENAME TO \"invitation_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"invitation_space_i_e55be1_idx\" RENAME TO \"invitation_space_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"invitation__base_id_eca906_idx\" RENAME TO \"invitation_record_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"invitation__invitat_95424a_idx\" RENAME TO \"invitation_record_invitation_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"invitation__space_i_1672f9_idx\" RENAME TO \"invitation_record_space_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_created_fe84ba_idx\" RENAME TO \"notification_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"notificatio_to_user_01b220_idx\" RENAME TO \"notification_to_user_id_is_read_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"oauth_app_t_client__7067ad_idx\" RENAME TO \"oauth_app_token_client_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"ops_collect_99b151_idx\" RENAME TO \"ops_collection_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"pin_resourc_order_5dff9e_idx\" RENAME TO \"pin_resource_order_idx\";\n\n-- RenameIndex\nALTER INDEX \"plugin_inst_base_id_dab19f_idx\" RENAME TO \"plugin_install_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"plugin_inst_positio_aa5449_idx\" RENAME TO \"plugin_install_position_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"record_hist_table_i_7f8749_idx\" RENAME TO \"record_history_table_id_record_id_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"record_hist_table_i_b5c924_idx\" RENAME TO \"record_history_table_id_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"record_remo_table_i_c2e9ce_idx\" RENAME TO \"record_removal_tombstone_table_id_record_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"record_tras_table_i_c95ab6_idx\" RENAME TO \"record_trash_table_id_record_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"reference_from_fi_e90dd3_idx\" RENAME TO \"reference_from_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"reference_to_fiel_566e54_idx\" RENAME TO \"reference_to_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"schema_oper_base_id_869d88_idx\" RENAME TO \"schema_operation_base_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"schema_oper_resourc_e25061_idx\" RENAME TO \"schema_operation_resource_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"schema_oper_status_56190e_idx\" RENAME TO \"schema_operation_status_next_run_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"schema_oper_table_i_5e8680_idx\" RENAME TO \"schema_operation_table_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"short_link_deleted_e46f67_idx\" RENAME TO \"short_link_deleted_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"space_data__data_db_466c83_idx\" RENAME TO \"space_data_db_binding_data_db_connection_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"space_data__source__d2860c_idx\" RENAME TO \"space_data_db_migration_job_source_connection_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"space_data__space_i_12cdb5_idx\" RENAME TO \"space_data_db_migration_job_space_id_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"space_data__target__94e8ee_idx\" RENAME TO \"space_data_db_migration_job_target_connection_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_meta_base_id_6f6a70_idx\" RENAME TO \"table_meta_base_id_deleted_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_meta_db_tabl_41aee6_idx\" RENAME TO \"table_meta_db_table_name_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_meta_order_8a4c7a_idx\" RENAME TO \"table_meta_order_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_query_base_id_601dad_idx\" RENAME TO \"table_query_observation_shard_base_start_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_query_query_k_6dab78_idx\" RENAME TO \"table_query_observation_shard_search_activity_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_query_table_i_4dd1a9_idx\" RENAME TO \"table_query_observation_shard_table_start_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_query_window__91a1af_idx\" RENAME TO \"table_query_observation_shard_window_start_idx\";\n\n-- RenameIndex\nALTER INDEX \"table_trash_table_i_446c16_idx\" RENAME TO \"table_trash_table_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_type_deed54_idx\" RENAME TO \"task_type_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_refere_from_fi_39267a_idx\" RENAME TO \"task_reference_from_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_refere_to_fiel_bd9f57_idx\" RENAME TO \"task_reference_to_field_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_run_status_1cad44_idx\" RENAME TO \"task_run_status_base_id_created_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_run_status_b64626_idx\" RENAME TO \"task_run_status_last_modified_time_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_run_task_id_760a9f_idx\" RENAME TO \"task_run_task_id_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"template_ca_parent__c92299_idx\" RENAME TO \"template_category_parent_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"user_base_o_base_id_15e26f_idx\" RENAME TO \"user_base_order_base_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"user_base_o_user_id_73815a_idx\" RENAME TO \"user_base_order_user_id_order_idx\";\n\n-- RenameIndex\nALTER INDEX \"user_last_v_user_id_7d82ba_idx\" RENAME TO \"user_last_visit_user_id_resource_type_parent_resource_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"view_order_316c6d_idx\" RENAME TO \"view_order_idx\";\n\n-- RenameIndex\nALTER INDEX \"view_table_i_a487ce_idx\" RENAME TO \"view_table_id_deleted_time_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 57,
+            "total": 64
+          },
+          "read": {
+            "ok": 57,
+            "total": 57
+          },
+          "update": {
+            "ok": 54,
+            "total": 54
+          },
+          "relations": {
+            "ok": 46,
+            "total": 46
+          },
+          "delete": {
+            "ok": 57,
+            "total": 57
+          }
+        },
+        "findings": [
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateDeadLetter",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "ComputedUpdateDeadLetterSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateDeadLetter`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateRunHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v429\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"oauth_app\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/teable; fi; exec /cache/bin/teable crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/teable; fi; exec /cache/bin/teable ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 14,
+            "total": 64
+          },
+          "read": {
+            "ok": 13,
+            "total": 14
+          },
+          "update": {
+            "ok": 10,
+            "total": 10
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": [
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"space\\\" violates not-null constraint\\n\\n    table: space\\n    column: id\\n\\nFailing row contains (null, v1, v2, 3, 2024-01-02 03:04:05.004, 2026-11-21 15:50:48.687, v5, v6, 2026-11-21 15:50:48.687, t).\""
+          },
+          {
+            "model": "DataDbConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"data_db_connection\\\" violates not-null constraint\\n\\n    table: data_db_connection\\n    column: id\\n\\nFailing row contains (null, postgres, v8, v9, v10, v11, v12, pending, v13, {\\\"n\\\": 14, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2024-01-02 03:04:05.015, v16, healthy, v17, 2024-01-02 03:04:05.018, 2024-01-02 03:04:05.019, 0, v20, 2026-11-21 15:50:48.698, 2026-11-21 15:50:48.698).\""
+          },
+          {
+            "model": "SpaceDataDbBinding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceDataDbMigrationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Base",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "BaseDataDbMoveJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "PinResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"pin_resource\\\" violates not-null constraint\\n\\n    table: pin_resource\\n    column: id\\n\\nFailing row contains (null, v49, v50, 2026-11-21 15:50:48.702, v51, 52.5).\""
+          },
+          {
+            "model": "TableMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"computed_update_outbox\\\" violates not-null constraint\\n\\n    table: computed_update_outbox\\n    column: id\\n\\nFailing row contains (null, v128, production, v129, {\\\"n\\\": 130, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v131, {\\\"n\\\": 132, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 133, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v134, 0, 8, 2026-11-21 15:50:48.715, 2024-01-02 03:04:05.135, v136, v137, 0, v138, {\\\"n\\\": 139, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v"
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "ComputedTableActivity",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "cannot load `[]` as type :map for field :recent_completions in %Teable.ComputedTableActivity{__meta__: #Ecto.Schema.Metadata<:loaded, \"computed_table_activity\">, table_id: nil, base_id: nil, status: nil, calculating_field_count: 0, queued_field_count: 0, estimated_complexity: 0, recent_completions: nil, generation: 0, updated_at: nil}"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "Ops",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ops\\\" violates not-null constraint\\n\\n    table: ops\\n    column: id\\n\\nFailing row contains (null, v235, v236, v237, 238, v239, 2026-11-21 15:50:48.732, v240).\""
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"reference\\\" violates not-null constraint\\n\\n    table: reference\\n    column: id\\n\\nFailing row contains (null, v241, v242, 2026-11-21 15:50:48.732).\""
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"users\\\" violates not-null constraint\\n\\n    table: users\\n    column: id\\n\\nFailing row contains (null, v243, v244, v245, v246, v247, v248, t, t, t, v252, v253, 2024-01-02 03:04:05.254, 2024-01-02 03:04:05.255, 2026-11-21 15:50:48.732, 2024-01-02 03:04:05.256, 2026-11-21 15:50:48.732, 2024-01-02 03:04:05.257, v258).\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"attachments\\\" violates not-null constraint\\n\\n    table: attachments\\n    column: id\\n\\nFailing row contains (null, v262, v263, 9007199254740264, v265, v266, 267, 268, 2024-01-02 03:04:05.269, 2026-11-21 15:50:48.733, v270, v271, v272).\""
+          },
+          {
+            "model": "AttachmentsTable",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"attachments_table\\\" violates not-null constraint\\n\\n    table: attachments_table\\n    column: id\\n\\nFailing row contains (null, v273, v274, v275, v276, v277, v278, 2026-11-21 15:50:48.733, v279, v280, 2026-11-21 15:50:48.733).\""
+          },
+          {
+            "model": "Collaborator",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"collaborator\\\" violates not-null constraint\\n\\n    table: collaborator\\n    column: id\\n\\nFailing row contains (null, v281, v282, v283, v284, v285, v286, 2026-11-21 15:50:48.733, 2026-11-21 15:50:48.733, v287).\""
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"invitation\\\" violates not-null constraint\\n\\n    table: invitation\\n    column: id\\n\\nFailing row contains (null, v288, v289, v290, v291, v292, 2024-01-02 03:04:05.293, v294, 2026-11-21 15:50:48.733, 2026-11-21 15:50:48.733, v295, 2024-01-02 03:04:05.296).\""
+          },
+          {
+            "model": "InvitationRecord",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"invitation_record\\\" violates not-null constraint\\n\\n    table: invitation_record\\n    column: id\\n\\nFailing row contains (null, v297, v298, v299, v300, v301, v302, 2026-11-21 15:50:48.734).\""
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"notification\\\" violates not-null constraint\\n\\n    table: notification\\n    column: id\\n\\nFailing row contains (null, v303, v304, v305, v306, v307, info, v308, f, 2026-11-21 15:50:48.734, v309).\""
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"access_token\\\" violates not-null constraint\\n\\n    table: access_token\\n    column: id\\n\\nFailing row contains (null, v310, v311, v312, v313, v314, v315, v316, v317, t, 2024-01-02 03:04:05.319, 2024-01-02 03:04:05.32, 2026-11-21 15:50:48.734, 2026-11-21 15:50:48.734).\""
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"oauth_app\\\" violates not-null constraint\\n\\n    table: oauth_app\\n    column: id\\n\\nFailing row contains (null, v325, v326, v327, v328, v329, v330, v331, f, f, 2026-11-21 15:50:48.736, 2026-11-21 15:50:48.736, v332).\""
+          },
+          {
+            "model": "OAuthAppAuthorized",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppSecret",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RecordHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"record_history\\\" violates not-null constraint\\n\\n    table: record_history\\n    column: id\\n\\nFailing row contains (null, v342, v343, v344, v345, v346, 2026-11-21 15:50:48.737, v347).\""
+          },
+          {
+            "model": "Trash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"trash\\\" violates not-null constraint\\n\\n    table: trash\\n    column: id\\n\\nFailing row contains (null, v348, v349, v350, 2026-11-21 15:50:48.737, v351).\""
+          },
+          {
+            "model": "TableTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"table_trash\\\" violates not-null constraint\\n\\n    table: table_trash\\n    column: id\\n\\nFailing row contains (null, v352, v353, v354, 2026-11-21 15:50:48.737, v355).\""
+          },
+          {
+            "model": "RecordTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"record_trash\\\" violates not-null constraint\\n\\n    table: record_trash\\n    column: id\\n\\nFailing row contains (null, v356, v357, v358, 2026-11-21 15:50:48.737, v359, deleted, 2024-01-02 03:04:05.36, v361, 2024-01-02 03:04:05.362, v363, v364).\""
+          },
+          {
+            "model": "Plugin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"plugin\\\" violates not-null constraint\\n\\n    table: plugin\\n    column: id\\n\\nFailing row contains (null, v369, v370, v371, v372, v373, v374, v375, v376, v377, v378, v379, v380, v381, 2026-11-21 15:50:48.738, 2026-11-21 15:50:48.738, v382, v383).\""
+          },
+          {
+            "model": "PluginInstall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Plugin`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"dashboard\\\" violates not-null constraint\\n\\n    table: dashboard\\n    column: id\\n\\nFailing row contains (null, v391, v392, v393, v394, 2026-11-21 15:50:48.739, 2026-11-21 15:50:48.739, v395, 2024-01-02 03:04:05.396).\""
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"comment\\\" violates not-null constraint\\n\\n    table: comment\\n    column: id\\n\\nFailing row contains (null, v397, v398, v399, v400, v401, 2024-01-02 03:04:05.402, 2026-11-21 15:50:48.739, v403, 2026-11-21 15:50:48.739).\""
+          },
+          {
+            "model": "CommentSubscription",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"comment_subscription\\\" violates not-null constraint\\n\\n    table: comment_subscription\\n    column: id\\n\\nFailing row contains (null, v404, v405, v406, 2026-11-21 15:50:48.739).\""
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"integration\\\" violates not-null constraint\\n\\n    table: integration\\n    column: id\\n\\nFailing row contains (null, v407, v408, v409, t, 2026-11-21 15:50:48.739, 2026-11-21 15:50:48.739).\""
+          },
+          {
+            "model": "PluginPanel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "PluginContextMenu",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "UserLastVisit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"user_last_visit\\\" violates not-null constraint\\n\\n    table: user_last_visit\\n    column: id\\n\\nFailing row contains (null, v419, v420, v421, v422, 2026-11-21 15:50:48.74).\""
+          },
+          {
+            "model": "UserBaseOrder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"template\\\" violates not-null constraint\\n\\n    table: template\\n    column: id\\n\\nFailing row contains (null, v424, v425, v426, v427, v428, {v429}, 2026-11-21 15:50:48.74, v430, 2026-11-21 15:50:48.74, v431, t, t, t, v435, 436.5, 0, {\\\"n\\\": 437, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 0, v438, 1, {\\\"n\\\": 439, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 440, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 441, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v442, v"
+          },
+          {
+            "model": "TemplateCategory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"template_category\\\" violates not-null constraint\\n\\n    table: template_category\\n    column: id\\n\\nFailing row contains (null, v444, 2026-11-21 15:50:48.741, v445, 2026-11-21 15:50:48.741, v446, 447.5, v448, industry, v449).\""
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"task\\\" violates not-null constraint\\n\\n    table: task\\n    column: id\\n\\nFailing row contains (null, v450, v451, v452, 2026-11-21 15:50:48.741, 2026-11-21 15:50:48.741, v453, v454).\""
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"task_reference\\\" violates not-null constraint\\n\\n    table: task_reference\\n    column: id\\n\\nFailing row contains (null, v462, v463, 2026-11-21 15:50:48.741).\""
+          },
+          {
+            "model": "BaseNode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"base_node\\\" violates not-null constraint\\n\\n    table: base_node\\n    column: id\\n\\nFailing row contains (null, null, v467, v468, v469, 470.5, 2026-11-21 15:50:48.744, v471, 2026-11-21 15:50:48.744, v472).\""
+          },
+          {
+            "model": "BaseNodeFolder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"base_node_folder\\\" violates not-null constraint\\n\\n    table: base_node_folder\\n    column: id\\n\\nFailing row contains (null, v473, v474, 2026-11-21 15:50:48.744, v475, 2026-11-21 15:50:48.744, v476, 2024-01-02 03:04:05.477).\""
+          },
+          {
+            "model": "BaseShare",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"base_share\\\" violates not-null constraint\\n\\n    table: base_share\\n    column: id\\n\\nFailing row contains (null, v478, v479, v480, v481, t, t, t, t, 2026-11-21 15:50:48.744, v485, 2026-11-21 15:50:48.744).\""
+          },
+          {
+            "model": "ShortLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"short_link\\\" violates not-null constraint\\n\\n    table: short_link\\n    column: id\\n\\nFailing row contains (null, v486, v487, v488, 2026-11-21 15:50:48.744, v489, 2024-01-02 03:04:05.49).\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 63,
+            "total": 64
+          },
+          "read": {
+            "ok": 63,
+            "total": 63
+          },
+          "update": {
+            "ok": 57,
+            "total": 59
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 61,
+            "total": 63
+          }
+        },
+        "findings": [
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "Setting",
+            "check": "update",
+            "text": "update of `content` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\" = $1, \"last_modified_time\" = $2 WHERE \"setting\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Setting",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"setting\" WHERE \"setting\".\"\" IS NULL\n                                              ^\n"
+          },
+          {
+            "model": "Waitlist",
+            "check": "update",
+            "text": "update of `invite` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ATE \"waitlist\" SET \"invite\" = $1 WHERE \"waitlist\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Waitlist",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"waitlist\" WHERE \"waitlist\".\"\" IS NULL\n                                                ^\n"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 14,
+            "total": 64
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"space\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1, v2, 3, 2024-01-02 03:04:05.004, 2026-11-21 15:50:53.271, v5, v6, 2026-11-21 15:50:53.274, t). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"space\" (\"name\", \"avatar\", \"credit\", \"deleted_time\", \"created_by\", \"last_modified_by\", \"is_template\", \"created_time\", \"last_modified_time\") values (v1, v2, 3, 2024-01-02 03:04:05.004+00:00, v5, v6, 1, 20"
+          },
+          {
+            "model": "DataDbConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"data_db_connection\" violates not-null constraint\nDETAIL:  Failing row contains (null, postgres, v8, v9, v10, v11, v12, pending, v13, {\"n\": 14, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.015, v16, healthy, v17, 2024-01-02 03:04:05.018, 2024-01-02 03:04:05.019, 0, v20, 2026-11-21 15:50:53.286, 2026-11-21 15:50:53.286). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"data_db_connection\" (\"provider\","
+          },
+          {
+            "model": "SpaceDataDbBinding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceDataDbMigrationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Base",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "BaseDataDbMoveJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "PinResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"pin_resource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v49, v50, 2026-11-21 15:50:53.288, v51, 52.5). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"pin_resource\" (\"type\", \"resource_id\", \"created_by\", \"order\", \"created_time\") values (v49, v50, v51, 52.5, 2026-11-21 15:50:53.288+00:00))"
+          },
+          {
+            "model": "TableMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"computed_update_outbox\" violates not-null constraint\nDETAIL:  Failing row contains (null, v128, production, v129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v131, {\"n\": 132, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 133, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v134, 0, 8, 2026-11-21 15:50:53.295, 2024-01-02 03:04:05.135, v136, v137, 0, v138, {\"n\": 139, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v140, {}, 0, 0, {}, {}, 141, 2024-01-02 03:04:05.14"
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "Ops",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"ops\" violates not-null constraint\nDETAIL:  Failing row contains (null, v235, v236, v237, 238, v239, 2026-11-21 15:50:53.306, v240). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"ops\" (\"collection\", \"doc_id\", \"doc_type\", \"version\", \"operation\", \"created_by\", \"created_time\") values (v235, v236, v237, 238, v239, v240, 2026-11-21 15:50:53.306+00:00))"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v241, v242, 2026-11-21 15:50:53.306). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"reference\" (\"from_field_id\", \"to_field_id\", \"created_time\") values (v241, v242, 2026-11-21 15:50:53.306+00:00))"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"users\" violates not-null constraint\nDETAIL:  Failing row contains (null, v243, v244, v245, v246, v247, v248, t, t, t, v252, v253, 2024-01-02 03:04:05.254, 2024-01-02 03:04:05.255, 2026-11-21 15:50:53.306, 2024-01-02 03:04:05.256, 2026-11-21 15:50:53.306, 2024-01-02 03:04:05.257, v258). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"users\" (\"name\", \"password\", \"salt\", \"phone\", \"email\", \"avatar\", \"is_system\", \"is_admin"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"attachments\" violates not-null constraint\nDETAIL:  Failing row contains (null, v262, v263, 9007199254740264, v265, v266, 267, 268, 2024-01-02 03:04:05.269, 2026-11-21 15:50:53.307, v270, v271, v272). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"attachments\" (\"token\", \"hash\", \"size\", \"mimetype\", \"path\", \"width\", \"height\", \"deleted_time\", \"created_by\", \"last_modified_by\", \"thumbnail_path\", \"created_time\") values (v26"
+          },
+          {
+            "model": "AttachmentsTable",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"attachments_table\" violates not-null constraint\nDETAIL:  Failing row contains (null, v273, v274, v275, v276, v277, v278, 2026-11-21 15:50:53.307, v279, v280, 2026-11-21 15:50:53.307). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"attachments_table\" (\"attachment_id\", \"name\", \"token\", \"table_id\", \"record_id\", \"field_id\", \"created_by\", \"last_modified_by\", \"created_time\", \"last_modified_time\") values (v273, v274, v275, "
+          },
+          {
+            "model": "Collaborator",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"collaborator\" violates not-null constraint\nDETAIL:  Failing row contains (null, v281, v282, v283, v284, v285, v286, 2026-11-21 15:50:53.307, 2026-11-21 15:50:53.307, v287). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"collaborator\" (\"role_name\", \"resource_type\", \"resource_id\", \"principal_id\", \"principal_type\", \"created_by\", \"last_modified_by\", \"created_time\", \"last_modified_time\") values (v281, v282, v283, v284, v2"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"invitation\" violates not-null constraint\nDETAIL:  Failing row contains (null, v288, v289, v290, v291, v292, 2024-01-02 03:04:05.293, v294, 2026-11-21 15:50:53.308, 2026-11-21 15:50:53.308, v295, 2024-01-02 03:04:05.296). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"invitation\" (\"base_id\", \"space_id\", \"type\", \"role\", \"invitation_code\", \"expired_time\", \"create_by\", \"last_modified_by\", \"deleted_time\", \"created_time\", "
+          },
+          {
+            "model": "InvitationRecord",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"invitation_record\" violates not-null constraint\nDETAIL:  Failing row contains (null, v297, v298, v299, v300, v301, v302, 2026-11-21 15:50:53.308). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"invitation_record\" (\"invitation_id\", \"base_id\", \"space_id\", \"type\", \"inviter\", \"accepter\", \"created_time\") values (v297, v298, v299, v300, v301, v302, 2026-11-21 15:50:53.308+00:00))"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"notification\" violates not-null constraint\nDETAIL:  Failing row contains (null, v303, v304, v305, v306, v307, info, v308, f, 2026-11-21 15:50:53.308, v309). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"notification\" (\"severity\", \"is_read\", \"from_user_id\", \"to_user_id\", \"type\", \"message\", \"message_i18n\", \"url_path\", \"created_by\", \"created_time\") values (info, 0, v303, v304, v305, v306, v307, v308, v309, 2026-11-21 1"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"access_token\" violates not-null constraint\nDETAIL:  Failing row contains (null, v310, v311, v312, v313, v314, v315, v316, v317, t, 2024-01-02 03:04:05.319, 2024-01-02 03:04:05.32, 2026-11-21 15:50:53.309, 2026-11-21 15:50:53.309). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"access_token\" (\"name\", \"description\", \"user_id\", \"scopes\", \"space_ids\", \"base_ids\", \"sign\", \"client_id\", \"has_full_access\", \"expired_time\", \"l"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"oauth_app\" violates not-null constraint\nDETAIL:  Failing row contains (null, v325, v326, v327, v328, v329, v330, v331, f, f, 2026-11-21 15:50:53.31, 2026-11-21 15:50:53.31, v332). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"oauth_app\" (\"allow_device_flow\", \"dynamic_registration\", \"name\", \"logo\", \"homepage\", \"description\", \"client_id\", \"redirect_uris\", \"scopes\", \"created_by\", \"created_time\", \"last_modified_time\") v"
+          },
+          {
+            "model": "OAuthAppAuthorized",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppSecret",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RecordHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"record_history\" violates not-null constraint\nDETAIL:  Failing row contains (null, v342, v343, v344, v345, v346, 2026-11-21 15:50:53.311, v347). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"record_history\" (\"table_id\", \"record_id\", \"field_id\", \"before\", \"after\", \"created_by\", \"created_time\") values (v342, v343, v344, v345, v346, v347, 2026-11-21 15:50:53.311+00:00))"
+          },
+          {
+            "model": "Trash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v348, v349, v350, 2026-11-21 15:50:53.311, v351). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"trash\" (\"resource_type\", \"resource_id\", \"parent_id\", \"deleted_by\", \"deleted_time\") values (v348, v349, v350, v351, 2026-11-21 15:50:53.311+00:00))"
+          },
+          {
+            "model": "TableTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"table_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v352, v353, v354, 2026-11-21 15:50:53.312, v355). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"table_trash\" (\"table_id\", \"resource_type\", \"snapshot\", \"created_by\", \"created_time\") values (v352, v353, v354, v355, 2026-11-21 15:50:53.312+00:00))"
+          },
+          {
+            "model": "RecordTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"record_trash\" violates not-null constraint\nDETAIL:  Failing row contains (null, v356, v357, v358, 2026-11-21 15:50:53.312, v359, deleted, 2024-01-02 03:04:05.36, v361, 2024-01-02 03:04:05.362, v363, v364). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"record_trash\" (\"reason\", \"table_id\", \"record_id\", \"snapshot\", \"created_by\", \"record_created_time\", \"record_created_by\", \"record_last_modified_time\", \"record_last_modif"
+          },
+          {
+            "model": "Plugin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"plugin\" violates not-null constraint\nDETAIL:  Failing row contains (null, v369, v370, v371, v372, v373, v374, v375, v376, v377, v378, v379, v380, v381, 2026-11-21 15:50:53.313, 2026-11-21 15:50:53.313, v382, v383). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"plugin\" (\"name\", \"description\", \"detail_desc\", \"logo\", \"help_url\", \"status\", \"positions\", \"url\", \"secret\", \"masked_secret\", \"i18n\", \"config\", \"plugin_user\", \""
+          },
+          {
+            "model": "PluginInstall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Plugin`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"dashboard\" violates not-null constraint\nDETAIL:  Failing row contains (null, v391, v392, v393, v394, 2026-11-21 15:50:53.314, 2026-11-21 15:50:53.314, v395, 2024-01-02 03:04:05.396). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"dashboard\" (\"name\", \"base_id\", \"layout\", \"created_by\", \"last_modified_by\", \"deleted_time\", \"created_time\", \"last_modified_time\") values (v391, v392, v393, v394, v395, 2024-01-02 03:04:05.396"
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"comment\" violates not-null constraint\nDETAIL:  Failing row contains (null, v397, v398, v399, v400, v401, 2024-01-02 03:04:05.402, 2026-11-21 15:50:53.314, v403, 2026-11-21 15:50:53.314). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"comment\" (\"table_id\", \"record_id\", \"quote_Id\", \"content\", \"reaction\", \"deleted_time\", \"created_by\", \"created_time\", \"last_modified_time\") values (v397, v398, v399, v400, v401, 2024-01-02"
+          },
+          {
+            "model": "CommentSubscription",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"comment_subscription\" violates not-null constraint\nDETAIL:  Failing row contains (null, v404, v405, v406, 2026-11-21 15:50:53.314). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"comment_subscription\" (\"table_id\", \"record_id\", \"created_by\", \"created_time\") values (v404, v405, v406, 2026-11-21 15:50:53.314+00:00))"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"integration\" violates not-null constraint\nDETAIL:  Failing row contains (null, v407, v408, v409, t, 2026-11-21 15:50:53.314, 2026-11-21 15:50:53.314). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"integration\" (\"resource_id\", \"config\", \"type\", \"enable\", \"created_time\", \"last_modified_time\") values (v407, v408, v409, 1, 2026-11-21 15:50:53.314+00:00, 2026-11-21 15:50:53.314+00:00))"
+          },
+          {
+            "model": "PluginPanel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "PluginContextMenu",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "UserLastVisit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"user_last_visit\" violates not-null constraint\nDETAIL:  Failing row contains (null, v419, v420, v421, v422, 2026-11-21 15:50:53.315). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"user_last_visit\" (\"user_id\", \"resource_type\", \"resource_id\", \"parent_resource_id\", \"last_visit_time\") values (v419, v420, v421, v422, 2026-11-21 15:50:53.315+00:00))"
+          },
+          {
+            "model": "UserBaseOrder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $9 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"template\" (\"usage_count\", \"visit_count\", \"version\", \"base_id\", \"cover\", \"name\", \"description\", \"markdown_description\", \"category_id\", \"created_by\", \"last_modified_by\", \"is_system\", \"is_published\", \"featured\", \"snapshot\", \"order\", \"publish_info\", \"kind\", \"ma"
+          },
+          {
+            "model": "TemplateCategory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"template_category\" violates not-null constraint\nDETAIL:  Failing row contains (null, v444, 2026-11-21 15:50:53.316, v445, 2026-11-21 15:50:53.316, v446, 447.5, v448, industry, v449). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"template_category\" (\"kind\", \"name\", \"created_by\", \"last_modified_by\", \"order\", \"parent_id\", \"key\", \"created_time\", \"last_modified_time\") values (industry, v444, v445, v446, 447.5, v448, v449"
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"task\" violates not-null constraint\nDETAIL:  Failing row contains (null, v450, v451, v452, 2026-11-21 15:50:53.316, 2026-11-21 15:50:53.316, v453, v454). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"task\" (\"type\", \"status\", \"snapshot\", \"created_by\", \"last_modified_by\", \"created_time\", \"last_modified_time\") values (v450, v451, v452, v453, v454, 2026-11-21 15:50:53.316+00:00, 2026-11-21 15:50:53.316+00:00))"
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"task_reference\" violates not-null constraint\nDETAIL:  Failing row contains (null, v462, v463, 2026-11-21 15:50:53.317). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"task_reference\" (\"from_field_id\", \"to_field_id\", \"created_time\") values (v462, v463, 2026-11-21 15:50:53.317+00:00))"
+          },
+          {
+            "model": "BaseNode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"base_node\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, v467, v468, v469, 470.5, 2026-11-21 15:50:53.318, v471, 2026-11-21 15:50:53.318, v472). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"base_node\" (\"parent_id\", \"base_id\", \"resource_type\", \"resource_id\", \"order\", \"created_by\", \"last_modified_by\", \"created_time\", \"last_modified_time\") values (?, v467, v468, v469, 470.5, v471, v472, 2026-"
+          },
+          {
+            "model": "BaseNodeFolder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"base_node_folder\" violates not-null constraint\nDETAIL:  Failing row contains (null, v473, v474, 2026-11-21 15:50:53.318, v475, 2026-11-21 15:50:53.318, v476, 2024-01-02 03:04:05.477). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"base_node_folder\" (\"base_id\", \"name\", \"created_by\", \"last_modified_by\", \"deleted_time\", \"created_time\", \"last_modified_time\") values (v473, v474, v475, v476, 2024-01-02 03:04:05.477+00:00, "
+          },
+          {
+            "model": "BaseShare",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"base_share\" violates not-null constraint\nDETAIL:  Failing row contains (null, v478, v479, v480, v481, t, t, t, t, 2026-11-21 15:50:53.319, v485, 2026-11-21 15:50:53.319). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"base_share\" (\"enabled\", \"base_id\", \"share_id\", \"password\", \"node_id\", \"allow_save\", \"allow_copy\", \"allow_edit\", \"created_by\", \"created_time\", \"last_modified_time\") values (1, v478, v479, v480, v481, 1, "
+          },
+          {
+            "model": "ShortLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"short_link\" violates not-null constraint\nDETAIL:  Failing row contains (null, v486, v487, v488, 2026-11-21 15:50:53.319, v489, 2024-01-02 03:04:05.49). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: teable_eloquent, SQL: insert into \"short_link\" (\"code\", \"type\", \"resource_id\", \"created_by\", \"deleted_time\", \"created_time\") values (v486, v487, v488, v489, 2024-01-02 03:04:05.490+00:00, 2026-11-21 15:50:53.319+00:00))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 64,
+            "total": 64
+          },
+          "read": {
+            "ok": 64,
+            "total": 64
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 64,
+            "total": 64
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"account\" DROP CONSTRAINT \"account_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"base\" DROP CONSTRAINT \"base_space_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_base_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_source_space_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"base_data_db_move_job\" DROP CONSTRAINT \"base_data_db_move_job_target_space_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"base_node\" DROP CONSTRAINT \"base_node_parent_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"computed_update_dead_letter_seed\" DROP CONSTRAINT \"computed_update_dead_letter_seed_task_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"computed_update_outbox_seed\" DROP CONSTRAINT \"computed_update_outbox_seed_task_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"field\" DROP CONSTRAINT \"field_table_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_authorized\" DROP CONSTRAINT \"oauth_app_authorized_client_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_secret\" DROP CONSTRAINT \"oauth_app_secret_client_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_token\" DROP CONSTRAINT \"oauth_app_token_app_secret_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauth_app_token\" DROP CONSTRAINT \"oauth_app_token_client_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_context_menu\" DROP CONSTRAINT \"plugin_context_menu_table_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_install\" DROP CONSTRAINT \"plugin_install_plugin_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"plugin_panel\" DROP CONSTRAINT \"plugin_panel_table_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_binding\" DROP CONSTRAINT \"space_data_db_binding_data_db_connection_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_binding\" DROP CONSTRAINT \"space_data_db_binding_space_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migration_job_source_connection_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migration_job_space_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"space_data_db_migration_job\" DROP CONSTRAINT \"space_data_db_migration_job_target_connection_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"table_meta\" DROP CONSTRAINT \"table_meta_base_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"task_run\" DROP CONSTRAINT \"task_run_task_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"user_base_order\" DROP CONSTRAINT \"user_base_order_base_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"user_base_order\" DROP CONSTRAINT \"user_base_order_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"view\" DROP CONSTRAINT \"view_table_id_fkey\";\n\n-- AlterTable\nALTER TABLE \"setting\" DROP CONSTRAINT \"setting_name_key\";\n\n-- AlterTable\nALTER TABLE \"waitlist\" DROP CONSTRAINT \"waitlist_email_key\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"setting_name_key\" ON \"setting\"(\"name\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"waitlist_email_key\" ON \"waitlist\"(\"email\");\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_binding\" ADD CONSTRAINT \"space_data_db_binding_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_binding\" ADD CONSTRAINT \"space_data_db_binding_data_db_connection_id_fkey\" FOREIGN KEY (\"data_db_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_source_connection_id_fkey\" FOREIGN KEY (\"source_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"space_data_db_migration_job\" ADD CONSTRAINT \"space_data_db_migration_job_target_connection_id_fkey\" FOREIGN KEY (\"target_connection_id\") REFERENCES \"data_db_connection\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_source_space_id_fkey\" FOREIGN KEY (\"source_space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_data_db_move_job\" ADD CONSTRAINT \"base_data_db_move_job_target_space_id_fkey\" FOREIGN KEY (\"target_space_id\") REFERENCES \"space\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base\" ADD CONSTRAINT \"base_space_id_fkey\" FOREIGN KEY (\"space_id\") REFERENCES \"space\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"table_meta\" ADD CONSTRAINT \"table_meta_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"field\" ADD CONSTRAINT \"field_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"computed_update_outbox_seed\" ADD CONSTRAINT \"computed_update_outbox_seed_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"computed_update_outbox\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"computed_update_dead_letter_seed\" ADD CONSTRAINT \"computed_update_dead_letter_seed_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"computed_update_dead_letter\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"view\" ADD CONSTRAINT \"view_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"account\" ADD CONSTRAINT \"account_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_authorized\" ADD CONSTRAINT \"oauth_app_authorized_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_secret\" ADD CONSTRAINT \"oauth_app_secret_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_token\" ADD CONSTRAINT \"oauth_app_token_app_secret_id_fkey\" FOREIGN KEY (\"app_secret_id\") REFERENCES \"oauth_app_secret\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauth_app_token\" ADD CONSTRAINT \"oauth_app_token_client_id_fkey\" FOREIGN KEY (\"client_id\") REFERENCES \"oauth_app\"(\"client_id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_install\" ADD CONSTRAINT \"plugin_install_plugin_id_fkey\" FOREIGN KEY (\"plugin_id\") REFERENCES \"plugin\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_panel\" ADD CONSTRAINT \"plugin_panel_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"plugin_context_menu\" ADD CONSTRAINT \"plugin_context_menu_table_id_fkey\" FOREIGN KEY (\"table_id\") REFERENCES \"table_meta\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_base_order\" ADD CONSTRAINT \"user_base_order_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_base_order\" ADD CONSTRAINT \"user_base_order_base_id_fkey\" FOREIGN KEY (\"base_id\") REFERENCES \"base\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"task_run\" ADD CONSTRAINT \"task_run_task_id_fkey\" FOREIGN KEY (\"task_id\") REFERENCES \"task\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"base_node\" ADD CONSTRAINT \"base_node_parent_id_fkey\" FOREIGN KEY (\"parent_id\") REFERENCES \"base_node\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 64,
+            "total": 64
+          },
+          "read": {
+            "ok": 64,
+            "total": 64
+          },
+          "update": {
+            "ok": 60,
+            "total": 60
+          },
+          "relations": {
+            "ok": 51,
+            "total": 51
+          },
+          "delete": {
+            "ok": 64,
+            "total": 64
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

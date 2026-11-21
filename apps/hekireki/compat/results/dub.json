@@ -1,0 +1,1545 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 40,
+          "total": 40
+        },
+        "read": {
+          "ok": 40,
+          "total": 40
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 110,
+          "total": 110
+        },
+        "delete": {
+          "ok": 40,
+          "total": 40
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 40,
+          "total": 40
+        },
+        "read": {
+          "ok": 28,
+          "total": 40
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 40,
+          "total": 40
+        }
+      },
+      "findings": 34,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 16,
+          "total": 40
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 24,
+      "ddl": "error"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 16,
+          "total": 40
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 24,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 40,
+          "total": 40
+        },
+        "read": {
+          "ok": 40,
+          "total": 40
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 110,
+          "total": 110
+        },
+        "delete": {
+          "ok": 40,
+          "total": 40
+        }
+      },
+      "findings": 0,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 16,
+          "total": 40
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 24,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 16,
+          "total": 40
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 24,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 40,
+          "total": 40
+        },
+        "read": {
+          "ok": 40,
+          "total": 40
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 110,
+          "total": 110
+        },
+        "delete": {
+          "ok": 35,
+          "total": 40
+        }
+      },
+      "findings": 5,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 16,
+          "total": 40
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 24,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 40,
+          "total": 40
+        },
+        "insert": {
+          "ok": 40,
+          "total": 40
+        },
+        "read": {
+          "ok": 40,
+          "total": 40
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 110,
+          "total": 110
+        },
+        "delete": {
+          "ok": 40,
+          "total": 40
+        }
+      },
+      "findings": 0,
+      "ddl": "error"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 40,
+            "total": 40
+          },
+          "read": {
+            "ok": 40,
+            "total": 40
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 110,
+            "total": 110
+          },
+          "delete": {
+            "ok": 40,
+            "total": 40
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE `Account` DROP FOREIGN KEY `Account_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Customer` DROP FOREIGN KEY `Customer_linkId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Customer` DROP FOREIGN KEY `Customer_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Dashboard` DROP FOREIGN KEY `Dashboard_folderId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Dashboard` DROP FOREIGN KEY `Dashboard_linkId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Dashboard` DROP FOREIGN KEY `Dashboard_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Dashboard` DROP FOREIGN KEY `Dashboard_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `DefaultDomains` DROP FOREIGN KEY `DefaultDomains_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Domain` DROP FOREIGN KEY `Domain_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Folder` DROP FOREIGN KEY `Folder_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderAccessRequest` DROP FOREIGN KEY `FolderAccessRequest_folderId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderAccessRequest` DROP FOREIGN KEY `FolderAccessRequest_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderUser` DROP FOREIGN KEY `FolderUser_folderId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderUser` DROP FOREIGN KEY `FolderUser_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderWebhook` DROP FOREIGN KEY `FolderWebhook_folderId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `FolderWebhook` DROP FOREIGN KEY `FolderWebhook_webhookId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `InstalledIntegration` DROP FOREIGN KEY `InstalledIntegration_integrationId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `InstalledIntegration` DROP FOREIGN KEY `InstalledIntegration_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `InstalledIntegration` DROP FOREIGN KEY `InstalledIntegration_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Integration` DROP FOREIGN KEY `Integration_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Integration` DROP FOREIGN KEY `Integration_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Invoice` DROP FOREIGN KEY `Invoice_workspaceId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Link` DROP FOREIGN KEY `Link_domain_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Link` DROP FOREIGN KEY `Link_folderId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Link` DROP FOREIGN KEY `Link_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Link` DROP FOREIGN KEY `Link_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `LinkTag` DROP FOREIGN KEY `LinkTag_linkId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `LinkTag` DROP FOREIGN KEY `LinkTag_tagId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `LinkWebhook` DROP FOREIGN KEY `LinkWebhook_linkId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `LinkWebhook` DROP FOREIGN KEY `LinkWebhook_webhookId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `NotificationPreference` DROP FOREIGN KEY `NotificationPreference_projectUserId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthApp` DROP FOREIGN KEY `OAuthApp_integrationId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthCode` DROP FOREIGN KEY `OAuthCode_clientId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthCode` DROP FOREIGN KEY `OAuthCode_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthCode` DROP FOREIGN KEY `OAuthCode_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthRefreshToken` DROP FOREIGN KEY `OAuthRefreshToken_accessTokenId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `OAuthRefreshToken` DROP FOREIGN KEY `OAuthRefreshToken_installationId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ProjectInvite` DROP FOREIGN KEY `ProjectInvite_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ProjectUsers` DROP FOREIGN KEY `ProjectUsers_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ProjectUsers` DROP FOREIGN KEY `ProjectUsers_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `RegisteredDomain` DROP FOREIGN KEY `RegisteredDomain_domainId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `RegisteredDomain` DROP FOREIGN KEY `RegisteredDomain_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `RestrictedToken` DROP FOREIGN KEY `RestrictedToken_installationId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `RestrictedToken` DROP FOREIGN KEY `RestrictedToken_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `RestrictedToken` DROP FOREIGN KEY `RestrictedToken_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `SentEmail` DROP FOREIGN KEY `SentEmail_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Session` DROP FOREIGN KEY `Session_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Tag` DROP FOREIGN KEY `Tag_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Token` DROP FOREIGN KEY `Token_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `UserNotificationPreferences` DROP FOREIGN KEY `UserNotificationPreferences_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `UtmTemplate` DROP FOREIGN KEY `UtmTemplate_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `UtmTemplate` DROP FOREIGN KEY `UtmTemplate_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Webhook` DROP FOREIGN KEY `Webhook_installationId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Webhook` DROP FOREIGN KEY `Webhook_projectId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `YearInReview` DROP FOREIGN KEY `YearInReview_workspaceId_fkey`;\n\n-- DropIndex\nDROP INDEX `Customer_email_name_idx` ON `Customer`;\n\n-- DropIndex\nDROP INDEX `Link_projectId_folderId_archived_createdAt_idx` ON `Link`;\n\n-- AlterTable\nALTER TABLE `Customer` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Dashboard` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Domain` MODIFY `lastChecked` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Folder` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `FolderAccessRequest` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `FolderUser` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `FolderWebhook` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `InstalledIntegration` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Integration` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Invoice` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Job` MODIFY `scheduledAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Link` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `LinkTag` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `LinkWebhook` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `OAuthCode` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `OAuthRefreshToken` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Project` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `usageLastChecked` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `ProjectInvite` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `ProjectUsers` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `RegisteredDomain` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `RestrictedToken` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `SentEmail` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Tag` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Token` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `User` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `UtmTemplate` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Webhook` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `YearInReview` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `jackson_store` MODIFY `createdAt` TIMESTAMP(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0);\n\n-- CreateIndex\nCREATE FULLTEXT INDEX `Customer_email_name_idx` ON `Customer`(`email`, `name`);\n\n-- CreateIndex\nCREATE INDEX `Link_projectId_folderId_archived_createdAt_idx` ON `Link`(`projectId`, `folderId`, `archived`, `createdAt` DESC);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 40,
+            "total": 40
+          },
+          "read": {
+            "ok": 28,
+            "total": 40
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 40,
+            "total": 40
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "read",
+            "text": "`conversionEnabled` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Project",
+            "check": "read",
+            "text": "`webhookEnabled` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Project",
+            "check": "read",
+            "text": "`dotLinkClaimed` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Domain",
+            "check": "read",
+            "text": "`verified` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Domain",
+            "check": "read",
+            "text": "`primary` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Domain",
+            "check": "read",
+            "text": "`archived` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "User",
+            "check": "read",
+            "text": "`isMachine` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "User",
+            "check": "read",
+            "text": "`sentMail` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`archived` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`trackConversion` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`proxy` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`rewrite` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`doIndex` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`publicStats` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Link",
+            "check": "read",
+            "text": "`saleAmount` is typed `Generated<bigint>` but came back as number"
+          },
+          {
+            "model": "Customer",
+            "check": "read",
+            "text": "`saleAmount` is typed `Generated<bigint>` but came back as number"
+          },
+          {
+            "model": "Dashboard",
+            "check": "read",
+            "text": "`doIndex` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Dashboard",
+            "check": "read",
+            "text": "`showConversions` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`dubsh` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`chatgpt` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`sptifi` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`gitnew` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`callink` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`amznid` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`ggllink` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`figpage` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "read",
+            "text": "`loooooooong` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Integration",
+            "check": "read",
+            "text": "`verified` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Integration",
+            "check": "read",
+            "text": "`comingSoon` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "jackson_ttl",
+            "check": "read",
+            "text": "`expiresAt` is typed `bigint` but came back as number"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "read",
+            "text": "`dubLinks` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "read",
+            "text": "`linkUsageSummary` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "read",
+            "text": "`domainConfigurationUpdates` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "read",
+            "text": "`pkce` is typed `Generated<boolean>` but came back as number"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 16,
+            "total": 40
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Domain`) did not go in"
+          },
+          {
+            "model": "RegisteredDomain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "FolderUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FolderAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ProjectUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectUsers`) did not go in"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "OAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`InstalledIntegration`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Token",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FolderWebhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1969, in _exec_single_context\n    self.dialect.do_execute(\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 952, in do_execute\n    cursor.execute(statement, parameters)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/cursors.py\", line 170, in execute\n    result = self._query(query)\n             ^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/cursors.py\", line 335, in _query\n    conn.query(q)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/connections.py\", line 591, in query\n    self._affected_rows = self._read_query_result(unbuffered=unbuffered)\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/connections.py\", line 867, in _read_query_result\n    result.read()\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/connections.py\", line 1300, in read\n    first_packet = self.connection._read_packet()\n                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/connections.py\", line 820, in _read_packet\n    packet.raise_for_error()\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/pymysql/protocol.py\", line 219, in raise_for_error\n    err.r"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 16,
+            "total": 40
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Domain`) did not go in"
+          },
+          {
+            "model": "RegisteredDomain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "FolderUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FolderAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ProjectUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectUsers`) did not go in"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "OAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`InstalledIntegration`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Token",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FolderWebhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/mysql/base.py\", line 76, in execute\n    return self.cursor.execute(query, args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/cursors.py\", line 179, in execute\n    res = self._query(mogrified_query)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/cursors.py\", line 330, in _query\n    db.query(q)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/connections.py\", line 280, in query\n    _mysql.connection.query(self, query)\nMySQLdb.OperationalError: (1170, \"BLOB/TEXT column 'id' used in key specification without a key length\")\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/py"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 40,
+            "total": 40
+          },
+          "read": {
+            "ok": 40,
+            "total": 40
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 110,
+            "total": 110
+          },
+          "delete": {
+            "ok": 40,
+            "total": 40
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "error": "Error 1170 (42000): BLOB/TEXT column 'slug' used in key specification without a key length"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 16,
+            "total": 40
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Domain`) did not go in"
+          },
+          {
+            "model": "RegisteredDomain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "FolderUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FolderAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ProjectUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectUsers`) did not go in"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "OAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`InstalledIntegration`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Token",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FolderWebhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"Domain\": Execution Error: error returned from database: 1101 (42000): BLOB, TEXT, GEOMETRY or JSON column 'deepviewData' can't have a default value"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 16,
+            "total": 40
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `Domain` (`primary`,`placeholder`,`projectId`,`appleAppSiteAssociation`,`archived`,`assetLinks`,`deepviewData`,`expiredUrl`,`linkRetentionDays`,`logo`,`notFoundUrl`,`slug`,`verified`,`lastChecked`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `User` (`name`,`image`,`source`,`email`,`defaultWorkspace`,`emailVerified`,`invalidLoginAttempts`,`isMachine`,`lockedAt`,`passwordHash`,`sentMail`,`createdAt`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Domain`) did not go in"
+          },
+          {
+            "model": "RegisteredDomain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `RegisteredDomain` (`expiresAt`,`projectId`,`slug`,`autoRenewalDisabledAt`,`renewalFee`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `DefaultDomains` (`projectId`,`amznid`,`callink`,`chatgpt`,`dubsh`,`figpage`,`ggllink`,`gitnew`,`loooooooong`,`sptifi`) VALUES (?,?,?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "FolderUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FolderAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `Integration` (`name`,`description`,`category`,`projectId`,`logo`,`slug`,`verified`,`comingSoon`,`developer`,`guideUrl`,`installUrl`,`readme`,`screenshots`,`website`,`createdAt`,`updatedAt`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `YearInReview` (`year`,`workspaceId`,`totalClicks`,`totalLinks`,`sentAt`,`topCountries`,`topLinks`,`createdAt`) VALUES (?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ProjectUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectUsers`) did not go in"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "OAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`InstalledIntegration`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Token",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FolderWebhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `FolderWebhook` (`folderId`,`webhookId`,`createdAt`) VALUES (?,?,?)\""
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1364) Field 'id' doesn't have a default value\\n\\n    query: INSERT INTO `SentEmail` (`type`,`projectId`,`createdAt`) VALUES (?,?,?)\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 40,
+            "total": 40
+          },
+          "read": {
+            "ok": 40,
+            "total": 40
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 110,
+            "total": 110
+          },
+          "delete": {
+            "ok": 35,
+            "total": 40
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'ProjectInvite.' in 'where clause'"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'VerificationToken.' in 'where clause'"
+          },
+          {
+            "model": "EmailVerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'EmailVerificationToken.' in 'where clause'"
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'PasswordResetToken.' in 'where clause'"
+          },
+          {
+            "model": "ProjectInvite",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'ProjectInvite.' in 'where clause'"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 16,
+            "total": 40
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `Domain` (`verified`, `primary`, `archived`, `deepviewData`, `slug`, `placeholder`, `expiredUrl`, `notFoundUrl`, `logo`, `appleAppSiteAssociation`, `assetLinks`, `linkRetentionDays`, `projectId`, `lastChecked`, `updatedAt`, `createdAt`) values (0, 0, 0, {}, v24, v25, v26, v27, v28, {\"n\":29,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, {\"n\":30,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, 31, "
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `User` (`isMachine`, `invalidLoginAttempts`, `sentMail`, `name`, `email`, `emailVerified`, `image`, `passwordHash`, `lockedAt`, `defaultWorkspace`, `source`, `createdAt`) values (0, 0, 0, v32, v33, 2024-01-02 03:04:05.034, v35, v36, 2024-01-02 03:04:05.037, v38, v39, 2026-11-21 15:18:37.001))"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Domain`) did not go in"
+          },
+          {
+            "model": "RegisteredDomain",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `RegisteredDomain` (`renewalFee`, `slug`, `projectId`, `domainId`, `autoRenewalDisabledAt`, `expiresAt`, `updatedAt`, `createdAt`) values (1200, v89, v1, ?, 2024-01-02 03:04:05.090, 2024-01-02 03:04:05.091, 2026-11-21 15:18:37.012, 2026-11-21 15:18:37.012))"
+          },
+          {
+            "model": "DefaultDomains",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `DefaultDomains` (`dubsh`, `chatgpt`, `sptifi`, `gitnew`, `callink`, `amznid`, `ggllink`, `figpage`, `loooooooong`, `projectId`) values (1, 1, 1, 1, 1, 1, 1, 1, 0, v1))"
+          },
+          {
+            "model": "FolderUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FolderAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `Integration` (`verified`, `comingSoon`, `userId`, `projectId`, `name`, `slug`, `description`, `readme`, `developer`, `website`, `logo`, `screenshots`, `installUrl`, `guideUrl`, `category`, `updatedAt`, `createdAt`) values (0, 0, ?, v1, v93, v94, v95, v96, v97, v98, v99, {\"n\":100,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, v101, v102, v103, 2026-11-21 15:18:37.013, 2026-11-21 15:18:37"
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `YearInReview` (`year`, `totalLinks`, `totalClicks`, `topLinks`, `topCountries`, `workspaceId`, `sentAt`, `createdAt`) values (130, 131, 132, {\"n\":133,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, {\"n\":134,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, v1, 2024-01-02 03:04:05.135, 2026-11-21 15:18:37.026))"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ProjectUsers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectUsers`) did not go in"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "OAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`InstalledIntegration`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Token",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FolderWebhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `FolderWebhook` (`folderId`, `webhookId`, `createdAt`) values (v40, v194, 2026-11-21 15:18:37.042))"
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: dub_eloquent, SQL: insert into `SentEmail` (`type`, `projectId`, `createdAt`) values (v204, v1, 2026-11-21 15:18:37.044))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 40,
+            "total": 40
+          },
+          "insert": {
+            "ok": 40,
+            "total": 40
+          },
+          "read": {
+            "ok": 40,
+            "total": 40
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 110,
+            "total": 110
+          },
+          "delete": {
+            "ok": 40,
+            "total": 40
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "error": "Invalid default value for 'scheduledAt'"
+      }
+    },
+    {
+      "orm": "exposed",
+      "notGenerated": true
+    }
+  ]
+}

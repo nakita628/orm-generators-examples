@@ -1,0 +1,817 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 22,
+          "total": 22
+        },
+        "read": {
+          "ok": 22,
+          "total": 22
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 72,
+          "total": 72
+        },
+        "delete": {
+          "ok": 22,
+          "total": 22
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 22,
+          "total": 22
+        },
+        "read": {
+          "ok": 17,
+          "total": 22
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 22,
+          "total": 22
+        }
+      },
+      "findings": 7,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 20,
+          "total": 22
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 13,
+          "total": 13
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 20,
+          "total": 22
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 13,
+          "total": 13
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 2,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 22,
+          "total": 22
+        },
+        "read": {
+          "ok": 22,
+          "total": 22
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 72,
+          "total": 72
+        },
+        "delete": {
+          "ok": 22,
+          "total": 22
+        }
+      },
+      "findings": 0,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 5,
+          "total": 22
+        },
+        "read": {
+          "ok": 5,
+          "total": 5
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 5,
+          "total": 5
+        }
+      },
+      "findings": 17,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 22,
+          "total": 22
+        },
+        "read": {
+          "ok": 22,
+          "total": 22
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 72,
+          "total": 72
+        },
+        "delete": {
+          "ok": 21,
+          "total": 22
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 20,
+          "total": 22
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 13,
+          "total": 13
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 2,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 22,
+          "total": 22
+        },
+        "read": {
+          "ok": 22,
+          "total": 22
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 72,
+          "total": 72
+        },
+        "delete": {
+          "ok": 22,
+          "total": 22
+        }
+      },
+      "findings": 0,
+      "ddl": "error"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 22,
+            "total": 22
+          },
+          "read": {
+            "ok": 22,
+            "total": 22
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 72,
+            "total": 72
+          },
+          "delete": {
+            "ok": 22,
+            "total": 22
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE `Account` DROP FOREIGN KEY `Account_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `BetaTokens` DROP FOREIGN KEY `BetaTokens_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `Bookmark_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `Bookmark_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Challenge` DROP FOREIGN KEY `Challenge_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_parentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_rootChallengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_rootSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Donation` DROP FOREIGN KEY `Donation_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ImageUpload` DROP FOREIGN KEY `ImageUpload_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_fromUserId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_sharedSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_toUserId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_moderatorId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_reporterId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_solutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ReportIssue` DROP FOREIGN KEY `ReportIssue_reportId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Session` DROP FOREIGN KEY `Session_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `SharedSolution_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `SharedSolution_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ShortURL` DROP FOREIGN KEY `ShortURL_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `Submission_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `Submission_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `TrackChallenge_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `TrackChallenge_trackId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_sharedSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_submissionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_ChallengeToTag` DROP FOREIGN KEY `_ChallengeToTag_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_ChallengeToTag` DROP FOREIGN KEY `_ChallengeToTag_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_RoleToUser` DROP FOREIGN KEY `_RoleToUser_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_RoleToUser` DROP FOREIGN KEY `_RoleToUser_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_TrackToUser` DROP FOREIGN KEY `_TrackToUser_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_TrackToUser` DROP FOREIGN KEY `_TrackToUser_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_UserToUserLink` DROP FOREIGN KEY `_UserToUserLink_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_UserToUserLink` DROP FOREIGN KEY `_UserToUserLink_B_fkey`;\n\n-- AlterTable\nALTER TABLE `Bookmark` MODIFY `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Challenge` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Comment` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Donation` MODIFY `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `ImageUpload` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Notification` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Report` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `SharedSolution` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `ShortURL` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Submission` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `User` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `UserLink` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 22,
+            "total": 22
+          },
+          "read": {
+            "ok": 17,
+            "total": 22
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 22,
+            "total": 22
+          }
+        },
+        "findings": [
+          {
+            "model": "SharedSolution",
+            "check": "read",
+            "text": "`isPinned` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Comment",
+            "check": "read",
+            "text": "`visible` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Submission",
+            "check": "read",
+            "text": "`isSuccessful` (Boolean) came back as 1, expected true"
+          },
+          {
+            "model": "Submission",
+            "check": "read",
+            "text": "`isSuccessful` is typed `boolean` but came back as number"
+          },
+          {
+            "model": "Track",
+            "check": "read",
+            "text": "`visible` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Track",
+            "check": "read",
+            "text": "`isComingSoon` is typed `Generated<boolean>` but came back as number"
+          },
+          {
+            "model": "Notification",
+            "check": "read",
+            "text": "`isRead` is typed `Generated<boolean>` but came back as number"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 20,
+            "total": 22
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 13,
+            "total": 13
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "OperationalError: (1364, \"Field 'id' doesn't have a default value\")"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE `Account` DROP FOREIGN KEY `Account_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `BetaTokens` DROP FOREIGN KEY `BetaTokens_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `Bookmark_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `Bookmark_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Challenge` DROP FOREIGN KEY `Challenge_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_parentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_rootChallengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_rootSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `Comment_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Donation` DROP FOREIGN KEY `Donation_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ImageUpload` DROP FOREIGN KEY `ImageUpload_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_fromUserId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_sharedSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `Notification_toUserId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_moderatorId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_reporterId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_solutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `Report_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ReportIssue` DROP FOREIGN KEY `ReportIssue_reportId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Session` DROP FOREIGN KEY `Session_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `SharedSolution_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `SharedSolution_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `ShortURL` DROP FOREIGN KEY `ShortURL_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `Submission_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `Submission_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `TrackChallenge_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `TrackChallenge_trackId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_challengeId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_commentId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_sharedSolutionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_submissionId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `Vote_userId_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_ChallengeToTag` DROP FOREIGN KEY `_ChallengeToTag_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_ChallengeToTag` DROP FOREIGN KEY `_ChallengeToTag_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_RoleToUser` DROP FOREIGN KEY `_RoleToUser_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_RoleToUser` DROP FOREIGN KEY `_RoleToUser_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_TrackToUser` DROP FOREIGN KEY `_TrackToUser_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_TrackToUser` DROP FOREIGN KEY `_TrackToUser_B_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_UserToUserLink` DROP FOREIGN KEY `_UserToUserLink_A_fkey`;\n\n-- DropForeignKey\nALTER TABLE `_UserToUserLink` DROP FOREIGN KEY `_UserToUserLink_B_fkey`;"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 20,
+            "total": 22
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 13,
+            "total": 13
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: (1048, \"Column 'id' cannot be null\")"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/mysql/base.py\", line 76, in execute\n    return self.cursor.execute(query, args)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/cursors.py\", line 179, in execute\n    res = self._query(mogrified_query)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/cursors.py\", line 330, in _query\n    db.query(q)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/MySQLdb/connections.py\", line 280, in query\n    _mysql.connection.query(self, query)\nMySQLdb.OperationalError: (1170, \"BLOB/TEXT column 'name' used in key specification without a key length\")\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 22,
+            "total": 22
+          },
+          "read": {
+            "ok": 22,
+            "total": 22
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 72,
+            "total": 72
+          },
+          "delete": {
+            "ok": 22,
+            "total": 22
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "error": "Error 1170 (42000): BLOB/TEXT column 'email' used in key specification without a key length"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typehero; fi; exec /cache/bin/typehero crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typehero; fi; exec /cache/bin/typehero ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 5,
+            "total": 22
+          },
+          "read": {
+            "ok": 5,
+            "total": 5
+          },
+          "update": {
+            "ok": 3,
+            "total": 3
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 5,
+            "total": 5
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1366) Incorrect string value: '\\\\xD0Hu\\\\x1D\\\\x13\\\\x02...' for column 'id' at row 1\\n\\n    query: INSERT INTO `User` (`name`,`status`,`image`,`banReason`,`bio`,`email`,`emailVerified`,`createdAt`,`updatedAt`,`id`) VALUES (?,?,?,?,?,?,?,?,?,?)\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1366) Incorrect string value: '\\\\x9F\\\\x07\\\\x01\\\\xFE\\\\xB4\\\\xA9...' for column 'id' at row 1\\n\\n    query: INSERT INTO `Role` (`role`,`id`) VALUES (?,?)\""
+          },
+          {
+            "model": "UserLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1366) Incorrect string value: '\\\\xF3\\d\\\\x94\\\\xFD\\\\x82D...' for column 'id' at row 1\\n\\n    query: INSERT INTO `UserLink` (`url`,`createdAt`,`updatedAt`,`id`) VALUES (?,?,?,?)\""
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"(1366) Incorrect string value: '\\\\xD5DI\\\\xFD%@...' for column 'id' at row 1\\n\\n    query: INSERT INTO `Tag` (`tag`,`id`) VALUES (?,?)\""
+          },
+          {
+            "model": "Challenge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Submission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Vote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Bookmark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ReportIssue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ImageUpload",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TrackChallenge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Challenge`) did not go in"
+          },
+          {
+            "model": "Donation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 22,
+            "total": 22
+          },
+          "read": {
+            "ok": 22,
+            "total": 22
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 72,
+            "total": 72
+          },
+          "delete": {
+            "ok": 21,
+            "total": 22
+          }
+        },
+        "findings": [
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: Mysql2::Error: Unknown column 'VerificationToken.' in 'where clause'"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 20,
+            "total": 22
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 13,
+            "total": 13
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: typehero_eloquent, SQL: insert into `Account` (`userId`, `type`, `provider`, `providerAccountId`, `refresh_token`, `access_token`, `expires_at`, `token_type`, `scope`, `id_token`, `session_state`) values (a3478968-c646-4113-b21d-f26c9105b018, v6, v7, v8, v9, v10, 11, v12, v13, v14, v15))"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[HY000]: General error: 1364 Field 'id' doesn't have a default value (Connection: default, Host: hekireki-compat-mysql, Port: 3306, Database: typehero_eloquent, SQL: insert into `Session` (`sessionToken`, `userId`, `expires`) values (v16, a3478968-c646-4113-b21d-f26c9105b018, 2024-01-02 03:04:05.017))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 22,
+            "total": 22
+          },
+          "read": {
+            "ok": 22,
+            "total": 22
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 72,
+            "total": 72
+          },
+          "delete": {
+            "ok": 22,
+            "total": 22
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "error": "Invalid default value for 'createdAt'"
+      }
+    },
+    {
+      "orm": "exposed",
+      "notGenerated": true
+    }
+  ]
+}

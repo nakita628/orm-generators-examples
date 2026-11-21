@@ -1,0 +1,1417 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 31,
+          "total": 31
+        },
+        "read": {
+          "ok": 31,
+          "total": 31
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 62,
+          "total": 62
+        },
+        "delete": {
+          "ok": 31,
+          "total": 31
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 31,
+          "total": 31
+        },
+        "read": {
+          "ok": 31,
+          "total": 31
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 31,
+          "total": 31
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 2,
+          "total": 31
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 29,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 2,
+          "total": 31
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 29,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 31,
+          "total": 31
+        },
+        "read": {
+          "ok": 31,
+          "total": 31
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 62,
+          "total": 62
+        },
+        "delete": {
+          "ok": 31,
+          "total": 31
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 2,
+          "total": 31
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 29,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 31,
+          "total": 31
+        },
+        "read": {
+          "ok": 31,
+          "total": 31
+        },
+        "update": {
+          "ok": 19,
+          "total": 24
+        },
+        "relations": {
+          "ok": 62,
+          "total": 62
+        },
+        "delete": {
+          "ok": 18,
+          "total": 31
+        }
+      },
+      "findings": 18,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 2,
+          "total": 31
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 29,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 31,
+          "total": 31
+        },
+        "read": {
+          "ok": 31,
+          "total": 31
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 62,
+          "total": 62
+        },
+        "delete": {
+          "ok": 31,
+          "total": 31
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 30,
+          "total": 31
+        },
+        "read": {
+          "ok": 30,
+          "total": 30
+        },
+        "update": {
+          "ok": 23,
+          "total": 23
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 30,
+          "total": 30
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 31,
+            "total": 31
+          },
+          "read": {
+            "ok": 31,
+            "total": 31
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 62,
+            "total": 62
+          },
+          "delete": {
+            "ok": 31,
+            "total": 31
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"Result_typebotId_hasStarted_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"Typebot_isArchived_createdAt_idx\";\n\n-- CreateIndex\nCREATE INDEX \"Result_typebotId_hasStarted_createdAt_idx\" ON \"Result\"(\"typebotId\", \"hasStarted\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"Typebot_isArchived_createdAt_idx\" ON \"Typebot\"(\"isArchived\", \"createdAt\" DESC);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 31,
+            "total": 31
+          },
+          "read": {
+            "ok": 31,
+            "total": 31
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 31,
+            "total": 31
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 2,
+            "total": 31
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:42.619, 2026-11-21 15:52:42.619, 2026-11-21 15:52:42.619, v1, v2, 2024-01-02 03:04:05.003, v4, v5, {\"n\": 6, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v7, MOUSE, v9, {\"n\": 10, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 11, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v12, 2024-01-02 03:04:05.013)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:42.624, 2026-11-21 15:52:42.624, v31, v32, FREE, v33, 0, 0, 2024-01-02 03:04:05.034, 2024-01-02 03:04:05.035, 2024-01-02 03:04:05.036, 2024-01-02 03:04:05.037, 38, 39, 40, f, f, f, t, 42, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.044)."
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WorkspaceInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CustomDomain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "UserCredentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DashboardFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Typebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PublicTypebot`) did not go in"
+          },
+          {
+            "model": "Result",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Log",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Answer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "AnswerV2",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "ClaimableCustomPlan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ChatSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ChatSession\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:42.651, 2026-11-21 15:52:42.651, {\"n\": 135, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, t)."
+          },
+          {
+            "model": "ThemeTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "BannedIp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SuppressedEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SuppressedEmail\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:42.654, 2026-11-21 15:52:42.654, v140, 0, 2024-01-02 03:04:05.141, v142)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"Result_typebotId_hasStarted_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"Typebot_isArchived_createdAt_idx\";\n\n-- CreateIndex\nCREATE INDEX \"Result_typebotId_hasStarted_createdAt_idx\" ON \"Result\"(\"typebotId\", \"hasStarted\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"Typebot_isArchived_createdAt_idx\" ON \"Typebot\"(\"isArchived\", \"createdAt\" DESC);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 2,
+            "total": 31
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:44.598, 2026-11-21 15:52:44.69, 2026-11-21 15:52:44.598, v1, v2, 2024-01-02 03:04:05.003, v4, v5, {\"n\": 6, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v7, MOUSE, v9, {\"n\": 10, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 11, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v12, 2024-01-02 03:04:05.013)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:44.692, 2026-11-21 15:52:44.699, v31, v32, FREE, v33, 0, 0, 2024-01-02 03:04:05.034, 2024-01-02 03:04:05.035, 2024-01-02 03:04:05.036, 2024-01-02 03:04:05.037, 38, 39, 40, f, f, f, t, 42, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.044)."
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WorkspaceInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CustomDomain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "UserCredentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DashboardFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Typebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PublicTypebot`) did not go in"
+          },
+          {
+            "model": "Result",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Log",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Answer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "AnswerV2",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "ClaimableCustomPlan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ChatSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ChatSession\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:44.709, 2026-11-21 15:52:44.709, {\"n\": 135, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, t)."
+          },
+          {
+            "model": "ThemeTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "BannedIp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SuppressedEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SuppressedEmail\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:52:44.71, 2026-11-21 15:52:44.71, v140, 0, 2024-01-02 03:04:05.141, v142)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ChatProvider\" AS ENUM ('WHATSAPP', 'DIALOG360');\n\n-- CreateEnum\nCREATE TYPE \"WorkspaceRole\" AS ENUM ('ADMIN', 'MEMBER', 'GUEST');\n\n-- CreateEnum\nCREATE TYPE \"GraphNavigation\" AS ENUM ('MOUSE', 'TRACKPAD');\n\n-- CreateEnum\nCREATE TYPE \"Plan\" AS ENUM ('FREE', 'STARTER', 'PRO', 'LIFETIME', 'OFFERED', 'CUSTOM', 'UNLIMITED', 'ENTERPRISE');\n\n-- CreateEnum\nCREATE TYPE \"CollaborationType\" AS ENUM ('READ', 'WRITE', 'FULL_ACCESS');\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_f07d339b_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Answer\" DROP CONSTRAINT \"Answer_resultId_ae3fd6d4_fk_Result_id\";\n\n-- DropForeignKey\nALTER TABLE \"AnswerV2\" DROP CONSTRAINT \"AnswerV2_resultId_d5c3e0dd_fk_Result_id\";\n\n-- DropForeignKey\nALTER TABLE \"ApiToken\" DROP CONSTRAINT \"ApiToken_ownerId_ea15a6c9_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"BannedIp_responsibleTypebotId_8ada1a41_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"BannedIp_userId_1118420e_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"ClaimableCustomPlan\" DROP CONSTRAINT \"ClaimableCustomPlan_workspaceId_9d83e995_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_typebotId_0c26322e_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_userId_1baa1855_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Credentials\" DROP CONSTRAINT \"Credentials_workspaceId_99bc153c_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"CustomDomain\" DROP CONSTRAINT \"CustomDomain_workspaceId_6255fcee_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"DashboardFolder_parentFolderId_144f0500_fk_DashboardFolder_id\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"DashboardFolder_workspaceId_eda74153_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"Invitation_typebotId_6e0ce1d5_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"Log\" DROP CONSTRAINT \"Log_resultId_3b09252e_fk_Result_id\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_userId_e2ae26f2_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_workspaceId_08cdb646_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"PublicTypebot\" DROP CONSTRAINT \"PublicTypebot_typebotId_205d43dd_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"Result\" DROP CONSTRAINT \"Result_typebotId_8c96bc35_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_2a6073cb_fk_PublicTyp\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_9a66bdad_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"SetVariableHistoryItem_resultId_a0dfa568_fk_Result_id\";\n\n-- DropForeignKey\nALTER TABLE \"Space\" DROP CONSTRAINT \"Space_workspaceId_a9d37bbe_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"ThemeTemplate\" DROP CONSTRAINT \"ThemeTemplate_workspaceId_186fc07f_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_folderId_48f6f228_fk_DashboardFolder_id\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_spaceId_3097f9b8_fk_Space_id\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_workspaceId_6dabc9da_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserCredentials\" DROP CONSTRAINT \"UserCredentials_userId_c1fb9cdb_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"VisitedEdge_resultId_e52090fe_fk_Result_id\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_typebotId_f2052df7_fk_Typebot_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceInvitation\" DROP CONSTRAINT \"WorkspaceInvitation_workspaceId_ce21da87_fk_Workspace_id\";\n\n-- DropIndex\nDROP INDEX \"Account_id_ad803b20_like\";\n\n-- DropIndex\nDROP INDEX \"ApiToken_id_a249245a_like\";\n\n-- DropIndex\nDROP INDEX \"ApiToken_token_c1f019d5_like\";\n\n-- DropIndex\nDROP INDEX \"BannedIp_id_86f06e80_like\";\n\n-- DropIndex\nDROP INDEX \"BannedIp_ip_e2ed3948_like\";\n\n-- DropIndex\nDROP INDEX \"ChatSession_id_1f83368b_like\";\n\n-- DropIndex\nDROP INDEX \"ClaimableCustomPlan_id_9d5894c4_like\";\n\n-- DropIndex\nDROP INDEX \"ClaimableCustomPlan_workspaceId_9d83e995_like\";\n\n-- DropIndex\nDROP INDEX \"Coupon_code_e9351a93_like\";\n\n-- DropIndex\nDROP INDEX \"Credentials_id_fdc30ac2_like\";\n\n-- DropIndex\nDROP INDEX \"CustomDomain_name_059af701_like\";\n\n-- DropIndex\nDROP INDEX \"DashboardFolder_id_f5a37edc_like\";\n\n-- DropIndex\nDROP INDEX \"Log_id_a7bcd4a8_like\";\n\n-- DropIndex\nDROP INDEX \"PublicTypebot_id_f360e144_like\";\n\n-- DropIndex\nDROP INDEX \"PublicTypebot_typebotId_205d43dd_like\";\n\n-- DropIndex\nDROP INDEX \"Result_id_b71ecddd_like\";\n\n-- DropIndex\nDROP INDEX \"Session_id_dca8fd02_like\";\n\n-- DropIndex\nDROP INDEX \"Session_sessionToken_d49e626e_like\";\n\n-- DropIndex\nDROP INDEX \"Space_id_c5c0f24a_like\";\n\n-- DropIndex\nDROP INDEX \"SuppressedEmail_email_cf72e82a_like\";\n\n-- DropIndex\nDROP INDEX \"SuppressedEmail_id_9bd21faa_like\";\n\n-- DropIndex\nDROP INDEX \"ThemeTemplate_id_f1d5599f_like\";\n\n-- DropIndex\nDROP INDEX \"Typebot_customDomain_b6d91e48_like\";\n\n-- DropIndex\nDROP INDEX \"Typebot_id_8247ad95_like\";\n\n-- DropIndex\nDROP INDEX \"Typebot_publicId_cd315f25_like\";\n\n-- DropIndex\nDROP INDEX \"User_email_667201b5_like\";\n\n-- DropIndex\nDROP INDEX \"User_id_dba046ea_like\";\n\n-- DropIndex\nDROP INDEX \"UserCredentials_id_3274486a_like\";\n\n-- DropIndex\nDROP INDEX \"VerificationToken_token_9a844c27_like\";\n\n-- DropIndex\nDROP INDEX \"Webhook_id_8caccdee_like\";\n\n-- DropIndex\nDROP INDEX \"Workspace_id_8014e8e1_like\";\n\n-- DropIndex\nDROP INDEX \"Workspace_stripeId_5ce6b258_like\";\n\n-- DropIndex\nDROP INDEX \"WorkspaceInvitation_id_dbd6e234_like\";\n\n-- AlterTable\nALTER TABLE \"Answer\" DROP CONSTRAINT \"Answer_resultId_blockId_groupId_key\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"AnswerV2\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ApiToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"BannedIp\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ChatSession\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ClaimableCustomPlan\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"claimedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isYearly\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"CollaborationType\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"Coupon\" ALTER COLUMN \"dateRedeemed\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Credentials\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"CustomDomain\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"DashboardFolder\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"Invitation_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"CollaborationType\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"Log\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"PublicTypebot\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Result\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isArchived\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\",\nDROP COLUMN \"provider\",\nADD COLUMN     \"provider\" \"ChatProvider\" NOT NULL,\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Session\" ALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"SetVariableHistoryItem_resultId_index_key\";\n\n-- AlterTable\nALTER TABLE \"Space\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"SuppressedEmail\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"transientGeneralBounceCount\" SET DEFAULT 0,\nALTER COLUMN \"suppressedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ThemeTemplate\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Typebot\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isArchived\" SET DEFAULT false,\nALTER COLUMN \"isClosed\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastActivityAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"emailVerified\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"graphNavigation\",\nADD COLUMN     \"graphNavigation\" \"GraphNavigation\",\nALTER COLUMN \"termsAcceptedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserCredentials\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_pkey\",\nALTER COLUMN \"failedAttempts\" SET DEFAULT 0,\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"VisitedEdge_pkey\";\n\n-- AlterTable\nALTER TABLE \"Webhook\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Workspace\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"plan\",\nADD COLUMN     \"plan\" \"Plan\" NOT NULL DEFAULT 'FREE',\nALTER COLUMN \"additionalChatsIndex\" SET DEFAULT 0,\nALTER COLUMN \"additionalStorageIndex\" SET DEFAULT 0,\nALTER COLUMN \"chatsLimitFirstEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"storageLimitFirstEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"chatsLimitSecondEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"storageLimitSecondEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"isQuarantined\" SET DEFAULT false,\nALTER COLUMN \"isSuspended\" SET DEFAULT false,\nALTER COLUMN \"isPastDue\" SET DEFAULT false,\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"WorkspaceInvitation\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"WorkspaceRole\" NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Answer_resultId_blockId_groupId_key\" ON \"Answer\"(\"resultId\", \"blockId\", \"groupId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Coupon_code_key\" ON \"Coupon\"(\"code\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\" ON \"RuntimeMediaIdCache\"(\"publicTypebotId\", \"provider\", \"url\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"SetVariableHistoryItem_resultId_index_key\" ON \"SetVariableHistoryItem\"(\"resultId\", \"index\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiToken\" ADD CONSTRAINT \"ApiToken_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Space\" ADD CONSTRAINT \"Space_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceInvitation\" ADD CONSTRAINT \"WorkspaceInvitation_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomDomain\" ADD CONSTRAINT \"CustomDomain_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credentials\" ADD CONSTRAINT \"Credentials_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCredentials\" ADD CONSTRAINT \"UserCredentials_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_parentFolderId_fkey\" FOREIGN KEY (\"parentFolderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_folderId_fkey\" FOREIGN KEY (\"folderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_spaceId_fkey\" FOREIGN KEY (\"spaceId\") REFERENCES \"Space\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invitation\" ADD CONSTRAINT \"Invitation_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PublicTypebot\" ADD CONSTRAINT \"PublicTypebot_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" ADD CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_fkey\" FOREIGN KEY (\"publicTypebotId\") REFERENCES \"PublicTypebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Result\" ADD CONSTRAINT \"Result_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SetVariableHistoryItem\" ADD CONSTRAINT \"SetVariableHistoryItem_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VisitedEdge\" ADD CONSTRAINT \"VisitedEdge_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Log\" ADD CONSTRAINT \"Log_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Answer\" ADD CONSTRAINT \"Answer_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AnswerV2\" ADD CONSTRAINT \"AnswerV2_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ClaimableCustomPlan\" ADD CONSTRAINT \"ClaimableCustomPlan_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ThemeTemplate\" ADD CONSTRAINT \"ThemeTemplate_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_responsibleTypebotId_fkey\" FOREIGN KEY (\"responsibleTypebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"AnswerV2_blockId_f98bf8_idx\" RENAME TO \"AnswerV2_blockId_idx\";\n\n-- RenameIndex\nALTER INDEX \"Log_resultI_3f3853_idx\" RENAME TO \"Log_resultId_idx\";\n\n-- RenameIndex\nALTER INDEX \"PublicTypeb_lastAct_d2b4a7_idx\" RENAME TO \"PublicTypebot_lastActivityAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Result_typebot_5a13db_idx\" RENAME TO \"Result_typebotId_hasStarted_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Result_typebot_9b71ac_idx\" RENAME TO \"Result_typebotId_isCompleted_idx\";\n\n-- RenameIndex\nALTER INDEX \"RuntimeMedi_expires_fef2a7_idx\" RENAME TO \"RuntimeMediaIdCache_expiresAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Typebot_isArchi_c6e7e4_idx\" RENAME TO \"Typebot_isArchived_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Typebot_workspa_ee5dbe_idx\" RENAME TO \"Typebot_workspaceId_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 31,
+            "total": 31
+          },
+          "read": {
+            "ok": 31,
+            "total": 31
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 62,
+            "total": 62
+          },
+          "delete": {
+            "ok": 31,
+            "total": 31
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ChatProvider\" AS ENUM ('WHATSAPP', 'DIALOG360');\n\n-- CreateEnum\nCREATE TYPE \"WorkspaceRole\" AS ENUM ('ADMIN', 'MEMBER', 'GUEST');\n\n-- CreateEnum\nCREATE TYPE \"GraphNavigation\" AS ENUM ('MOUSE', 'TRACKPAD');\n\n-- CreateEnum\nCREATE TYPE \"Plan\" AS ENUM ('FREE', 'STARTER', 'PRO', 'LIFETIME', 'OFFERED', 'CUSTOM', 'UNLIMITED', 'ENTERPRISE');\n\n-- CreateEnum\nCREATE TYPE \"CollaborationType\" AS ENUM ('READ', 'WRITE', 'FULL_ACCESS');\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"fk_User_accounts\";\n\n-- DropForeignKey\nALTER TABLE \"Answer\" DROP CONSTRAINT \"fk_Result_answers\";\n\n-- DropForeignKey\nALTER TABLE \"AnswerV2\" DROP CONSTRAINT \"fk_Result_answers_v2\";\n\n-- DropForeignKey\nALTER TABLE \"ApiToken\" DROP CONSTRAINT \"fk_User_api_tokens\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"fk_Typebot_banned_ips\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"fk_User_banned_ips\";\n\n-- DropForeignKey\nALTER TABLE \"ClaimableCustomPlan\" DROP CONSTRAINT \"fk_Workspace_claimable_custom_plan\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"fk_Typebot_collaborators\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"fk_User_collaborators_on_typebots\";\n\n-- DropForeignKey\nALTER TABLE \"Credentials\" DROP CONSTRAINT \"fk_Workspace_credentials\";\n\n-- DropForeignKey\nALTER TABLE \"CustomDomain\" DROP CONSTRAINT \"fk_Workspace_custom_domains\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"fk_DashboardFolder_children_folder\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"fk_Workspace_folders\";\n\n-- DropForeignKey\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"fk_Typebot_invitations\";\n\n-- DropForeignKey\nALTER TABLE \"Log\" DROP CONSTRAINT \"fk_Result_logs\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"fk_User_workspaces\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"fk_Workspace_members\";\n\n-- DropForeignKey\nALTER TABLE \"PublicTypebot\" DROP CONSTRAINT \"fk_Typebot_published_typebot\";\n\n-- DropForeignKey\nALTER TABLE \"Result\" DROP CONSTRAINT \"fk_Typebot_results\";\n\n-- DropForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"fk_PublicTypebot_media_ids_cache\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"fk_User_sessions\";\n\n-- DropForeignKey\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"fk_Result_set_variable_history\";\n\n-- DropForeignKey\nALTER TABLE \"Space\" DROP CONSTRAINT \"fk_Workspace_spaces\";\n\n-- DropForeignKey\nALTER TABLE \"ThemeTemplate\" DROP CONSTRAINT \"fk_Workspace_theme_templates\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"fk_DashboardFolder_typebots\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"fk_Space_typebots\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"fk_Workspace_typebots\";\n\n-- DropForeignKey\nALTER TABLE \"UserCredentials\" DROP CONSTRAINT \"fk_User_credentials\";\n\n-- DropForeignKey\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"fk_Result_edges\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"fk_Typebot_webhooks\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceInvitation\" DROP CONSTRAINT \"fk_Workspace_invitations\";\n\n-- DropIndex\nDROP INDEX \"Result_typebotId_hasStarted_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\";\n\n-- DropIndex\nDROP INDEX \"Typebot_isArchived_createdAt_idx\";\n\n-- AlterTable\nALTER TABLE \"Account\" ALTER COLUMN \"expires_at\" SET DATA TYPE INTEGER,\nALTER COLUMN \"refresh_token_expires_in\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"Answer\" DROP CONSTRAINT \"Answer_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"AnswerV2\" DROP CONSTRAINT \"AnswerV2_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE SERIAL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"AnswerV2_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"ApiToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"BannedIp\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ChatSession\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ClaimableCustomPlan\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"claimedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"price\" SET DATA TYPE INTEGER,\nALTER COLUMN \"chatsLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"storageLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"seatsLimit\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"CollaborationType\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"Coupon\" ALTER COLUMN \"dateRedeemed\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Credentials\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"CustomDomain\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"DashboardFolder\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"Invitation_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"CollaborationType\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"Log\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"PublicTypebot\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Result\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"RuntimeMediaIdCache_pkey\",\nDROP COLUMN \"provider\",\nADD COLUMN     \"provider\" \"ChatProvider\" NOT NULL,\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Session\" ALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"SetVariableHistoryItem_pkey\",\nALTER COLUMN \"index\" SET DATA TYPE INTEGER,\nALTER COLUMN \"blockIndex\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"Space\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"SuppressedEmail\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"transientGeneralBounceCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"suppressedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ThemeTemplate\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Typebot\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"riskLevel\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastActivityAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"emailVerified\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"graphNavigation\",\nADD COLUMN     \"graphNavigation\" \"GraphNavigation\",\nALTER COLUMN \"termsAcceptedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserCredentials\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_pkey\",\nALTER COLUMN \"failedAttempts\" SET DATA TYPE INTEGER,\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"VisitedEdge_pkey\",\nALTER COLUMN \"index\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"Webhook\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Workspace\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"plan\",\nADD COLUMN     \"plan\" \"Plan\" NOT NULL DEFAULT 'FREE',\nALTER COLUMN \"additionalChatsIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"additionalStorageIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"chatsLimitFirstEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"storageLimitFirstEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"chatsLimitSecondEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"storageLimitSecondEmailSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"customChatsLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"customStorageLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"customSeatsLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"chatsHardLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"lastActivityAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"WorkspaceInvitation\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"WorkspaceRole\" NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Coupon_code_key\" ON \"Coupon\"(\"code\");\n\n-- CreateIndex\nCREATE INDEX \"Result_typebotId_hasStarted_createdAt_idx\" ON \"Result\"(\"typebotId\", \"hasStarted\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\" ON \"RuntimeMediaIdCache\"(\"publicTypebotId\", \"provider\", \"url\");\n\n-- CreateIndex\nCREATE INDEX \"Typebot_isArchived_createdAt_idx\" ON \"Typebot\"(\"isArchived\", \"createdAt\" DESC);\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiToken\" ADD CONSTRAINT \"ApiToken_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Space\" ADD CONSTRAINT \"Space_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceInvitation\" ADD CONSTRAINT \"WorkspaceInvitation_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomDomain\" ADD CONSTRAINT \"CustomDomain_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credentials\" ADD CONSTRAINT \"Credentials_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCredentials\" ADD CONSTRAINT \"UserCredentials_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_parentFolderId_fkey\" FOREIGN KEY (\"parentFolderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_folderId_fkey\" FOREIGN KEY (\"folderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_spaceId_fkey\" FOREIGN KEY (\"spaceId\") REFERENCES \"Space\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invitation\" ADD CONSTRAINT \"Invitation_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PublicTypebot\" ADD CONSTRAINT \"PublicTypebot_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" ADD CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_fkey\" FOREIGN KEY (\"publicTypebotId\") REFERENCES \"PublicTypebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Result\" ADD CONSTRAINT \"Result_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SetVariableHistoryItem\" ADD CONSTRAINT \"SetVariableHistoryItem_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VisitedEdge\" ADD CONSTRAINT \"VisitedEdge_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Log\" ADD CONSTRAINT \"Log_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Answer\" ADD CONSTRAINT \"Answer_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AnswerV2\" ADD CONSTRAINT \"AnswerV2_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ClaimableCustomPlan\" ADD CONSTRAINT \"ClaimableCustomPlan_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ThemeTemplate\" ADD CONSTRAINT \"ThemeTemplate_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_responsibleTypebotId_fkey\" FOREIGN KEY (\"responsibleTypebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx_ApiToken_token\" RENAME TO \"ApiToken_token_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_BannedIp_ip\" RENAME TO \"BannedIp_ip_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_ClaimableCustomPlan_workspace_id\" RENAME TO \"ClaimableCustomPlan_workspaceId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_PublicTypebot_typebot_id\" RENAME TO \"PublicTypebot_typebotId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_Session_session_token\" RENAME TO \"Session_sessionToken_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_SuppressedEmail_email\" RENAME TO \"SuppressedEmail_email_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_Typebot_custom_domain\" RENAME TO \"Typebot_customDomain_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_Typebot_public_id\" RENAME TO \"Typebot_publicId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_User_email\" RENAME TO \"User_email_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_VerificationToken_token\" RENAME TO \"VerificationToken_token_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_Workspace_stripe_id\" RENAME TO \"Workspace_stripeId_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typebot; fi; exec /cache/bin/typebot crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typebot; fi; exec /cache/bin/typebot ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 2,
+            "total": 31
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"User\\\" violates not-null constraint\\n\\n    table: User\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:52:57.109, 2026-11-21 15:52:57.109, 2026-11-21 15:52:57.109, v1, v2, 2024-01-02 03:04:05.003, v4, v5, {\\\"n\\\": 6, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v7, MOUSE, v9, {\\\"n\\\": 10, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 11, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v12, 2024-01-02 03:04:05.013).\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Workspace\\\" violates not-null constraint\\n\\n    table: Workspace\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:52:57.122, 2026-11-21 15:52:57.122, v31, v32, FREE, v33, 0, 0, 2024-01-02 03:04:05.034, 2024-01-02 03:04:05.035, 2024-01-02 03:04:05.036, 2024-01-02 03:04:05.037, 38, 39, 40, f, f, f, t, 42, {\\\"n\\\": 43, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2024-01-02 03:04:05.044).\""
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WorkspaceInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CustomDomain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "UserCredentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DashboardFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Typebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PublicTypebot`) did not go in"
+          },
+          {
+            "model": "Result",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Log",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Answer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "AnswerV2",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "ClaimableCustomPlan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ChatSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ChatSession\\\" violates not-null constraint\\n\\n    table: ChatSession\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:52:57.138, 2026-11-21 15:52:57.138, {\\\"n\\\": 135, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, t).\""
+          },
+          {
+            "model": "ThemeTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "BannedIp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SuppressedEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"SuppressedEmail\\\" violates not-null constraint\\n\\n    table: SuppressedEmail\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:52:57.139, 2026-11-21 15:52:57.139, v140, 0, 2024-01-02 03:04:05.141, v142).\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 31,
+            "total": 31
+          },
+          "read": {
+            "ok": 31,
+            "total": 31
+          },
+          "update": {
+            "ok": 19,
+            "total": 24
+          },
+          "relations": {
+            "ok": 62,
+            "total": 62
+          },
+          "delete": {
+            "ok": 18,
+            "total": 31
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ratorsOnTypebots\" WHERE \"CollaboratorsOnTypebots\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Workspace",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"MemberInWorkspace\" WHERE \"MemberInWorkspace\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"MemberInWorkspace\" WHERE \"MemberInWorkspace\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "update",
+            "text": "update of `value` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...Token\" SET \"value\" = $1 WHERE \"VerificationToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"VerificationToken\" WHERE \"VerificationToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Typebot",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\"RuntimeMediaIdCache\" WHERE \"RuntimeMediaIdCache\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Invitation",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"Invitation\" WHERE \"Invitation\".\"\" IS NULL\n                                                    ^\n"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ratorsOnTypebots\" WHERE \"CollaboratorsOnTypebots\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\"RuntimeMediaIdCache\" WHERE \"RuntimeMediaIdCache\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "update",
+            "text": "update of `mediaId` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...e\" SET \"mediaId\" = $1 WHERE \"RuntimeMediaIdCache\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\"RuntimeMediaIdCache\" WHERE \"RuntimeMediaIdCache\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Result",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"Answer\" WHERE \"Answer\".\"\" IS NULL\n                                            ^\n"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "update",
+            "text": "update of `variableId` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ... \"variableId\" = $1 WHERE \"SetVariableHistoryItem\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...riableHistoryItem\" WHERE \"SetVariableHistoryItem\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "update",
+            "text": "update of `edgeId` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...isitedEdge\" SET \"edgeId\" = $1 WHERE \"VisitedEdge\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"VisitedEdge\" WHERE \"VisitedEdge\".\"\" IS NULL\n                                                      ^\n"
+          },
+          {
+            "model": "Answer",
+            "check": "update",
+            "text": "update of `variableId` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...createdAt\" = $1, \"variableId\" = $2 WHERE \"Answer\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Answer",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"Answer\" WHERE \"Answer\".\"\" IS NULL\n                                            ^\n"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 2,
+            "total": 31
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:53:01.991, 2026-11-21 15:53:01.991, 2026-11-21 15:53:01.988, v1, v2, 2024-01-02 03:04:05.003, v4, v5, {\"n\": 6, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v7, MOUSE, v9, {\"n\": 10, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 11, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v12, 2024-01-02 03:04:05.013). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: typebot_el"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:53:02.002, 2026-11-21 15:53:02.002, v31, v32, FREE, v33, 0, 0, 2024-01-02 03:04:05.034, 2024-01-02 03:04:05.035, 2024-01-02 03:04:05.036, 2024-01-02 03:04:05.037, 38, 39, 40, f, f, f, t, 42, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.044). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: typebot_eloquent, SQL: insert into \"Workspace"
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WorkspaceInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CustomDomain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "UserCredentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DashboardFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Typebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PublicTypebot`) did not go in"
+          },
+          {
+            "model": "Result",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Log",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Answer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "AnswerV2",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "ClaimableCustomPlan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ChatSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"ChatSession\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:53:02.011, 2026-11-21 15:53:02.011, {\"n\": 135, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, t). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: typebot_eloquent, SQL: insert into \"ChatSession\" (\"state\", \"isReplying\", \"updatedAt\", \"createdAt\") values ({\"n\":135,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, 1, 2026-11-21 15:53:02.011+00:00, 2026-11-21 15:53:02.011+00:00"
+          },
+          {
+            "model": "ThemeTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "BannedIp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SuppressedEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"SuppressedEmail\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:53:02.012, 2026-11-21 15:53:02.012, v140, 0, 2024-01-02 03:04:05.141, v142). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: typebot_eloquent, SQL: insert into \"SuppressedEmail\" (\"transientGeneralBounceCount\", \"email\", \"suppressedAt\", \"lastWebhookId\", \"updatedAt\", \"createdAt\") values (0, v140, 2024-01-02 03:04:05.141+00:00, v142, 2026-11-21 15:53:02.012+00:"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 31,
+            "total": 31
+          },
+          "read": {
+            "ok": 31,
+            "total": 31
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 62,
+            "total": 62
+          },
+          "delete": {
+            "ok": 31,
+            "total": 31
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Answer\" DROP CONSTRAINT \"Answer_resultId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AnswerV2\" DROP CONSTRAINT \"AnswerV2_resultId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiToken\" DROP CONSTRAINT \"ApiToken_ownerId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"BannedIp_responsibleTypebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BannedIp\" DROP CONSTRAINT \"BannedIp_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ClaimableCustomPlan\" DROP CONSTRAINT \"ClaimableCustomPlan_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_typebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Credentials\" DROP CONSTRAINT \"Credentials_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CustomDomain\" DROP CONSTRAINT \"CustomDomain_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"DashboardFolder_parentFolderId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardFolder\" DROP CONSTRAINT \"DashboardFolder_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"Invitation_typebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Log\" DROP CONSTRAINT \"Log_resultId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PublicTypebot\" DROP CONSTRAINT \"PublicTypebot_typebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Result\" DROP CONSTRAINT \"Result_typebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"SetVariableHistoryItem_resultId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Space\" DROP CONSTRAINT \"Space_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ThemeTemplate\" DROP CONSTRAINT \"ThemeTemplate_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_folderId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_spaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Typebot\" DROP CONSTRAINT \"Typebot_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserCredentials\" DROP CONSTRAINT \"UserCredentials_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"VisitedEdge_resultId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_typebotId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceInvitation\" DROP CONSTRAINT \"WorkspaceInvitation_workspaceId_fkey\";\n\n-- AlterTable\nALTER TABLE \"Answer\" DROP CONSTRAINT \"Answer_resultId_blockId_groupId_key\";\n\n-- AlterTable\nALTER TABLE \"CollaboratorsOnTypebots\" DROP CONSTRAINT \"CollaboratorsOnTypebots_userId_typebotId_key\";\n\n-- AlterTable\nALTER TABLE \"Invitation\" DROP CONSTRAINT \"Invitation_email_typebotId_key\";\n\n-- AlterTable\nALTER TABLE \"MemberInWorkspace\" DROP CONSTRAINT \"MemberInWorkspace_userId_workspaceId_key\";\n\n-- AlterTable\nALTER TABLE \"RuntimeMediaIdCache\" DROP CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\";\n\n-- AlterTable\nALTER TABLE \"SetVariableHistoryItem\" DROP CONSTRAINT \"SetVariableHistoryItem_resultId_index_key\";\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_token_key\";\n\n-- AlterTable\nALTER TABLE \"VisitedEdge\" DROP CONSTRAINT \"VisitedEdge_resultId_index_key\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Answer_resultId_blockId_groupId_key\" ON \"Answer\"(\"resultId\", \"blockId\", \"groupId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"CollaboratorsOnTypebots_userId_typebotId_key\" ON \"CollaboratorsOnTypebots\"(\"userId\", \"typebotId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Invitation_email_typebotId_key\" ON \"Invitation\"(\"email\", \"typebotId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"MemberInWorkspace_userId_workspaceId_key\" ON \"MemberInWorkspace\"(\"userId\", \"workspaceId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"RuntimeMediaIdCache_publicTypebotId_provider_url_key\" ON \"RuntimeMediaIdCache\"(\"publicTypebotId\", \"provider\", \"url\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"SetVariableHistoryItem_resultId_index_key\" ON \"SetVariableHistoryItem\"(\"resultId\", \"index\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VisitedEdge_resultId_index_key\" ON \"VisitedEdge\"(\"resultId\", \"index\");\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiToken\" ADD CONSTRAINT \"ApiToken_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Space\" ADD CONSTRAINT \"Space_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MemberInWorkspace\" ADD CONSTRAINT \"MemberInWorkspace_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceInvitation\" ADD CONSTRAINT \"WorkspaceInvitation_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomDomain\" ADD CONSTRAINT \"CustomDomain_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credentials\" ADD CONSTRAINT \"Credentials_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserCredentials\" ADD CONSTRAINT \"UserCredentials_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_parentFolderId_fkey\" FOREIGN KEY (\"parentFolderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardFolder\" ADD CONSTRAINT \"DashboardFolder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_folderId_fkey\" FOREIGN KEY (\"folderId\") REFERENCES \"DashboardFolder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Typebot\" ADD CONSTRAINT \"Typebot_spaceId_fkey\" FOREIGN KEY (\"spaceId\") REFERENCES \"Space\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invitation\" ADD CONSTRAINT \"Invitation_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CollaboratorsOnTypebots\" ADD CONSTRAINT \"CollaboratorsOnTypebots_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PublicTypebot\" ADD CONSTRAINT \"PublicTypebot_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RuntimeMediaIdCache\" ADD CONSTRAINT \"RuntimeMediaIdCache_publicTypebotId_fkey\" FOREIGN KEY (\"publicTypebotId\") REFERENCES \"PublicTypebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Result\" ADD CONSTRAINT \"Result_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SetVariableHistoryItem\" ADD CONSTRAINT \"SetVariableHistoryItem_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VisitedEdge\" ADD CONSTRAINT \"VisitedEdge_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Log\" ADD CONSTRAINT \"Log_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Answer\" ADD CONSTRAINT \"Answer_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AnswerV2\" ADD CONSTRAINT \"AnswerV2_resultId_fkey\" FOREIGN KEY (\"resultId\") REFERENCES \"Result\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_typebotId_fkey\" FOREIGN KEY (\"typebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ClaimableCustomPlan\" ADD CONSTRAINT \"ClaimableCustomPlan_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ThemeTemplate\" ADD CONSTRAINT \"ThemeTemplate_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_responsibleTypebotId_fkey\" FOREIGN KEY (\"responsibleTypebotId\") REFERENCES \"Typebot\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BannedIp\" ADD CONSTRAINT \"BannedIp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 30,
+            "total": 31
+          },
+          "read": {
+            "ok": 30,
+            "total": 30
+          },
+          "update": {
+            "ok": 23,
+            "total": 23
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 30,
+            "total": 30
+          }
+        },
+        "findings": [
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: column \"provider\" is of type \"ChatProvider\" but expression is of type character varying\n  Hint: You will need to rewrite or cast the expression.\n  Position: 102"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

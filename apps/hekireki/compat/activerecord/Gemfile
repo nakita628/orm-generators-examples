@@ -1,0 +1,15 @@
+# Runs the compat plan through the Active Record models hekireki wrote (see harness.rb).
+source "https://rubygems.org"
+
+gem "activerecord", "~> 8.1"
+gem "pg", "~> 1.6"
+gem "mysql2", "~> 0.5"
+gem "sqlite3", "~> 2.9"
+# json 3.0 made JSON.parse's options keyword-only; Active Support 8.1 still passes them
+# positionally.
+gem "json", "< 3"
+# Generated ulid(), cuid(), cuid(2) and nanoid() attribute defaults call these.
+gem "ulid", "~> 1.4"
+gem "cuid", "~> 1.0"
+gem "cuid2", "~> 1.0"
+gem "nanoid", "~> 2.0"

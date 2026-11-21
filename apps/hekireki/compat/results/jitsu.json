@@ -1,0 +1,1579 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 39,
+          "total": 39
+        },
+        "read": {
+          "ok": 39,
+          "total": 39
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 39,
+          "total": 39
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 39,
+          "total": 39
+        },
+        "read": {
+          "ok": 34,
+          "total": 39
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 39,
+          "total": 39
+        }
+      },
+      "findings": 15,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 16,
+          "total": 39
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 23,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 16,
+          "total": 39
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 23,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 27,
+          "total": 39
+        },
+        "read": {
+          "ok": 27,
+          "total": 27
+        },
+        "update": {
+          "ok": 23,
+          "total": 23
+        },
+        "relations": {
+          "ok": 10,
+          "total": 10
+        },
+        "delete": {
+          "ok": 27,
+          "total": 27
+        }
+      },
+      "findings": 12,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 14,
+          "total": 39
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 10,
+          "total": 10
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 25,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 16,
+          "total": 39
+        },
+        "read": {
+          "ok": 16,
+          "total": 16
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 23,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 33,
+          "total": 39
+        },
+        "read": {
+          "ok": 33,
+          "total": 33
+        },
+        "update": {
+          "ok": 25,
+          "total": 25
+        },
+        "relations": {
+          "ok": 36,
+          "total": 36
+        },
+        "delete": {
+          "ok": 33,
+          "total": 33
+        }
+      },
+      "findings": 6,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 15,
+          "total": 39
+        },
+        "read": {
+          "ok": 15,
+          "total": 15
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 15,
+          "total": 15
+        }
+      },
+      "findings": 24,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 39,
+          "total": 39
+        },
+        "read": {
+          "ok": 39,
+          "total": 39
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 44,
+          "total": 44
+        },
+        "delete": {
+          "ok": 39,
+          "total": 39
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 39,
+          "total": 39
+        },
+        "insert": {
+          "ok": 39,
+          "total": 39
+        },
+        "read": {
+          "ok": 39,
+          "total": 39
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 39,
+          "total": 39
+        },
+        "delete": {
+          "ok": 39,
+          "total": 39
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 39,
+            "total": 39
+          },
+          "read": {
+            "ok": 39,
+            "total": 39
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 39,
+            "total": 39
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"ConfigurationObject_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObjectLink_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"Workspace_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- DropIndex\nDROP INDEX \"reprocessing_jobs_created_at_idx\";\n\n-- DropIndex\nDROP INDEX \"source_task_sync_id_started_at_idx\";\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObject_updatedAt_idx\" ON \"ConfigurationObject\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObjectLink_updatedAt_idx\" ON \"ConfigurationObjectLink\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"Workspace_updatedAt_idx\" ON \"Workspace\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);\n\n-- CreateIndex\nCREATE INDEX \"reprocessing_jobs_created_at_idx\" ON \"reprocessing_jobs\"(\"created_at\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"source_task_sync_id_started_at_idx\" ON \"source_task\"(\"sync_id\", \"started_at\" DESC);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 39,
+            "total": 39
+          },
+          "read": {
+            "ok": 34,
+            "total": 39
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 39,
+            "total": 39
+          }
+        },
+        "findings": [
+          {
+            "model": "reverse_sync_control",
+            "check": "read",
+            "text": "`run_order` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "reverse_sync_control",
+            "check": "read",
+            "text": "`base_sequence` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "reverse_sync_control",
+            "check": "read",
+            "text": "`next_sequence` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "reverse_sync_control",
+            "check": "read",
+            "text": "`checkpoint_sequence` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "reverse_sync_control",
+            "check": "read",
+            "text": "`finish_sequence` is typed `bigint | null` but came back as string"
+          },
+          {
+            "model": "StatusChange",
+            "check": "read",
+            "text": "`id` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "NotificationState",
+            "check": "read",
+            "text": "`statusChangeId` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "Notification",
+            "check": "read",
+            "text": "`statusChangeId` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`current_line` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`total_lines` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`success_count` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`error_count` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`skipped_count` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`total_bytes` is typed `Generated<bigint | null>` but came back as string"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "read",
+            "text": "`processed_bytes` is typed `Generated<bigint | null>` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 16,
+            "total": 39
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"EmailLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.922, {\"n\": 1, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v2, v3, v4, v5)."
+          },
+          {
+            "model": "UserProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"UserProfile\" violates not-null constraint\nDETAIL:  Failing row contains (null, v6, v7, f, 2026-11-21 15:25:42.923, 2026-11-21 15:25:42.923, v8, v9, v10)."
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.925, 2026-11-21 15:25:42.925, v11, f, v12, {})."
+          },
+          {
+            "model": "UserPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OAuthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.931, 2026-11-21 15:25:42.931, v18, v19, {v20})."
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "InvitationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InvitationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v35, v36, 2026-11-21 15:25:42.937, 2026-11-21 15:25:42.937, v37, v38, owner)."
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConnectorPackage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ConnectorPackage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v42, airbyte, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, \\x62797465732d3434, 2026-11-21 15:25:42.94, 2026-11-21 15:25:42.94)."
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.941, v45, info, v46, v47, v48, {\"n\": 49, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v50, v51, v52, {\"n\": 53, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "GlobalProps",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"GlobalProps\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.942, 2026-11-21 15:25:42.942, v54, {\"n\": 55, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OidcProvider\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:42.989, 2026-11-21 15:25:42.989, v147, v148, v149, v150, v151, v152, v153, v154, v155, {openid,profile,email,offline_access}, v156, v157, email, email, name, groups, t, t)."
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "reprocessing_jobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"reprocessing_jobs\" violates not-null constraint\nDETAIL:  Failing row contains (null, {\"n\": 159, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v160, 2024-01-02 03:04:05.161+00, 2024-01-02 03:04:05.162+00, 2024-01-02 03:04:05.163+00, v164, 0, 0, v165)."
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`reprocessing_jobs`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"ConfigurationObject_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObjectLink_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"Workspace_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- DropIndex\nDROP INDEX \"reprocessing_jobs_created_at_idx\";\n\n-- DropIndex\nDROP INDEX \"source_task_sync_id_started_at_idx\";\n\n-- AlterTable\nALTER TABLE \"NotificationState\" DROP CONSTRAINT \"NotificationState_pkey\",\nADD CONSTRAINT \"NotificationState_pkey\" PRIMARY KEY (\"channelId\", \"actorId\", \"type\", \"tableName\");\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderState\" DROP CONSTRAINT \"ProfileBuilderState_pkey\",\nADD CONSTRAINT \"ProfileBuilderState_pkey\" PRIMARY KEY (\"profileBuilderId\", \"profileBuilderVersion\", \"totalInstances\", \"instanceIndex\");\n\n-- AlterTable\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_pkey\",\nADD CONSTRAINT \"WorkspaceAccess_pkey\" PRIMARY KEY (\"userId\", \"workspaceId\");\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObject_updatedAt_idx\" ON \"ConfigurationObject\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObjectLink_updatedAt_idx\" ON \"ConfigurationObjectLink\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"Workspace_updatedAt_idx\" ON \"Workspace\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);\n\n-- CreateIndex\nCREATE INDEX \"reprocessing_jobs_created_at_idx\" ON \"reprocessing_jobs\"(\"created_at\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"source_task_sync_id_started_at_idx\" ON \"source_task\"(\"sync_id\", \"started_at\" DESC);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 16,
+            "total": 39
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"EmailLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.25, {\"n\": 1, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v2, v3, v4, v5)."
+          },
+          {
+            "model": "UserProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"UserProfile\" violates not-null constraint\nDETAIL:  Failing row contains (null, v6, v7, f, 2026-11-21 15:25:45.276, 2026-11-21 15:25:45.276, v8, v9, v10)."
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.277, 2026-11-21 15:25:45.277, v11, f, v12, {})."
+          },
+          {
+            "model": "UserPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OAuthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.279, 2026-11-21 15:25:45.279, v18, v19, {v20})."
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "InvitationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"InvitationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v35, v36, 2026-11-21 15:25:45.281, 2026-11-21 15:25:45.281, v37, v38, owner)."
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConnectorPackage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ConnectorPackage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v42, airbyte, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, \\x62797465732d3434, 2026-11-21 15:25:45.282, 2026-11-21 15:25:45.282)."
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.283, v45, info, v46, v47, v48, {\"n\": 49, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v50, v51, v52, {\"n\": 53, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "GlobalProps",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"GlobalProps\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.283, 2026-11-21 15:25:45.283, v54, {\"n\": 55, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OidcProvider\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:25:45.306, 2026-11-21 15:25:45.306, v147, v148, v149, v150, v151, v152, v153, v154, v155, {openid,profile,email,offline_access}, v156, v157, email, email, name, groups, t, t)."
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "reprocessing_jobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"reprocessing_jobs\" violates not-null constraint\nDETAIL:  Failing row contains (null, {\"n\": 159, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v160, 2024-01-02 03:04:05.161+00, 2024-01-02 03:04:05.162+00, 2024-01-02 03:04:05.163+00, v164, 0, 0, v165)."
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`reprocessing_jobs`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"WorkspaceRole\" AS ENUM ('owner', 'editor', 'analyst');\n\n-- CreateEnum\nCREATE TYPE \"reverse_sync_mode\" AS ENUM ('upsert', 'mirror');\n\n-- CreateEnum\nCREATE TYPE \"reverse_sync_extraction\" AS ENUM ('cursor', 'full');\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObject\" DROP CONSTRAINT \"ConfigurationObject_workspaceId_f7ed1858_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectL_fromId_ee4d5b5e_fk_Configura\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectLink_toId_6e3bb065_fk_ConfigurationObject_id\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectLink_workspaceId_37e78ca7_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"OAuthAccessToken\" DROP CONSTRAINT \"OAuthAccessToken_refreshTokenId_29af9173_fk_UserApiToken_id\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"OidcLoginGroup_oidcProviderId_8a16fa75_fk_OidcProvider_id\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"OidcLoginGroup_workspaceId_388989e0_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"ProfileBuilder_destinationId_ef6801fb_fk_ConfigurationObject_id\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"ProfileBuilder_workspaceId_514a8f96_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"ProfileBuilderFuncti_functionId_36967987_fk_Configura\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"ProfileBuilderFuncti_profileBuilderId_5fb47987_fk_ProfileBu\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"UserApiToken_oauthClientId_12990bc9_fk_OAuthClient_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"UserApiToken_userId_a05d04b1_fk_UserProfile_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserPassword\" DROP CONSTRAINT \"UserPassword_userId_fbff0ed1_fk_UserProfile_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"UserPreferences_userId_9fae55b0_fk_UserProfile_id\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"UserPreferences_workspaceId_831efe6b_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_userId_ec7255d6_fk_UserProfile_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_workspaceId_8526fad6_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceOptions\" DROP CONSTRAINT \"WorkspaceOptions_workspaceId_fc60cb0b_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"WorkspaceUserProperties_userId_9502e799_fk_UserProfile_id\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"WorkspaceUserProperties_workspaceId_a63e3753_fk_Workspace_id\";\n\n-- DropForeignKey\nALTER TABLE \"reprocessing_workers\" DROP CONSTRAINT \"reprocessing_workers_job_id_e054404f_fk_reprocessing_jobs_id\";\n\n-- DropIndex\nDROP INDEX \"AuditLog_id_517bbadb_like\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObject_id_fe671e00_like\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObjectLink_id_0edb0292_like\";\n\n-- DropIndex\nDROP INDEX \"ConnectorPackage_id_62a7cd7b_like\";\n\n-- DropIndex\nDROP INDEX \"EmailLog_id_87931b25_like\";\n\n-- DropIndex\nDROP INDEX \"GlobalProps_id_f6402aae_like\";\n\n-- DropIndex\nDROP INDEX \"InvitationToken_id_15a69518_like\";\n\n-- DropIndex\nDROP INDEX \"OAuthAccessToken_id_80f9b330_like\";\n\n-- DropIndex\nDROP INDEX \"OAuthClient_id_c5056039_like\";\n\n-- DropIndex\nDROP INDEX \"OidcLoginGroup_id_8df51e72_like\";\n\n-- DropIndex\nDROP INDEX \"OidcProvider_id_22c5b574_like\";\n\n-- DropIndex\nDROP INDEX \"ProfileBuilder_id_748b4951_like\";\n\n-- DropIndex\nDROP INDEX \"ProfileBuilderFunction_id_0f561992_like\";\n\n-- DropIndex\nDROP INDEX \"ProfileBuilderState2_profileBuilderId_ebb39d55_like\";\n\n-- DropIndex\nDROP INDEX \"UserApiToken_id_317b59bb_like\";\n\n-- DropIndex\nDROP INDEX \"UserPassword_id_a40b2b59_like\";\n\n-- DropIndex\nDROP INDEX \"UserPassword_userId_fbff0ed1_like\";\n\n-- DropIndex\nDROP INDEX \"UserPreferences_id_61b2be92_like\";\n\n-- DropIndex\nDROP INDEX \"UserProfile_id_a6e3d31d_like\";\n\n-- DropIndex\nDROP INDEX \"Workspace_id_8014e8e1_like\";\n\n-- DropIndex\nDROP INDEX \"WorkspaceOptions_id_850f5fa4_like\";\n\n-- DropIndex\nDROP INDEX \"kv_key_9d384247_like\";\n\n-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- DropIndex\nDROP INDEX \"reprocessing_jobs_id_70f4a7ee_like\";\n\n-- DropIndex\nDROP INDEX \"reverse_sync_target_owner_target_hash_1b48b25a_like\";\n\n-- DropIndex\nDROP INDEX \"source_check_key_4629c8c2_like\";\n\n-- DropIndex\nDROP INDEX \"source_task_task_id_72b6e5b2_like\";\n\n-- AlterTable\nALTER TABLE \"AuditLog\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"severity\" SET DEFAULT 'info';\n\n-- AlterTable\nALTER TABLE \"ConfigurationObject\" ALTER COLUMN \"deleted\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ConfigurationObjectLink\" ALTER COLUMN \"deleted\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"type\" SET DEFAULT 'push';\n\n-- AlterTable\nALTER TABLE \"ConnectorPackage\" ALTER COLUMN \"packageType\" SET DEFAULT 'airbyte',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"EmailLog\" ALTER COLUMN \"time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"FunctionsServer\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"GlobalProps\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"InvitationToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL DEFAULT 'owner';\n\n-- AlterTable\nALTER TABLE \"Notification\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"NotificationState\" ALTER COLUMN \"flappingSince\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"lastNotification\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"OAuthAccessToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"OAuthClient\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"OidcLoginGroup\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"allowAllUsers\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"OidcProvider\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"scopes\" SET DEFAULT ARRAY['openid', 'profile', 'email', 'offline_access']::TEXT[],\nALTER COLUMN \"usernameClaim\" SET DEFAULT 'email',\nALTER COLUMN \"emailClaim\" SET DEFAULT 'email',\nALTER COLUMN \"nameClaim\" SET DEFAULT 'name',\nALTER COLUMN \"groupClaim\" SET DEFAULT 'groups',\nALTER COLUMN \"enabled\" SET DEFAULT true,\nALTER COLUMN \"autoDiscovery\" SET DEFAULT true;\n\n-- AlterTable\nALTER TABLE \"ProfileBuilder\" ALTER COLUMN \"deleted\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"version\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderFunction\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderState\" ALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastTimestamp\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderState2\" ALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"RateLimitCounter\" DROP CONSTRAINT \"RateLimitCounter_pkey\",\nALTER COLUMN \"windowStart\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"count\" SET DEFAULT 0,\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMPTZ(3),\nADD CONSTRAINT \"RateLimitCounter_pkey\" PRIMARY KEY (\"bucketKey\", \"windowStart\");\n\n-- AlterTable\nALTER TABLE \"StatusChange\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"counts\" SET DEFAULT 0,\nALTER COLUMN \"queueSize\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"UserApiToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserPassword\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"changeAtNextLogin\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"UserPreferences\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserProfile\" ALTER COLUMN \"admin\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Workspace\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleted\" SET DEFAULT false,\nALTER COLUMN \"featuresEnabled\" SET DEFAULT ARRAY[]::TEXT[];\n\n-- AlterTable\nALTER TABLE \"WorkspaceAccess\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL DEFAULT 'owner';\n\n-- AlterTable\nALTER TABLE \"WorkspaceOptions\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"WorkspaceUserProperties\" ALTER COLUMN \"lastUsed\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"kv\" ALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"reprocessing_jobs\" ALTER COLUMN \"total_files\" SET DEFAULT 0,\nALTER COLUMN \"total_workers\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"reprocessing_workers\" ALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"current_line\" SET DEFAULT 0,\nALTER COLUMN \"assigned_files\" SET DEFAULT 0,\nALTER COLUMN \"processed_files\" SET DEFAULT 0,\nALTER COLUMN \"total_lines\" SET DEFAULT 0,\nALTER COLUMN \"success_count\" SET DEFAULT 0,\nALTER COLUMN \"error_count\" SET DEFAULT 0,\nALTER COLUMN \"skipped_count\" SET DEFAULT 0,\nALTER COLUMN \"total_bytes\" SET DEFAULT 0,\nALTER COLUMN \"processed_bytes\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"reverse_sync_control\" ALTER COLUMN \"run_order\" SET DEFAULT 0,\nALTER COLUMN \"detached\" SET DEFAULT false,\nALTER COLUMN \"phase\" SET DEFAULT 'new',\nDROP COLUMN \"mode\",\nADD COLUMN     \"mode\" \"reverse_sync_mode\" NOT NULL,\nDROP COLUMN \"extraction\",\nADD COLUMN     \"extraction\" \"reverse_sync_extraction\" NOT NULL,\nALTER COLUMN \"base_sequence\" SET DEFAULT 0,\nALTER COLUMN \"next_sequence\" SET DEFAULT 0,\nALTER COLUMN \"checkpoint_sequence\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"source_catalog\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"source_check\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"source_spec\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"source_state\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"source_task\" ALTER COLUMN \"started_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"started_at\" SET DATA TYPE TIMESTAMPTZ(3),\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updated_at\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- AlterTable\nALTER TABLE \"task_log\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMPTZ(3);\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPassword\" ADD CONSTRAINT \"UserPassword_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceOptions\" ADD CONSTRAINT \"WorkspaceOptions_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_oauthClientId_fkey\" FOREIGN KEY (\"oauthClientId\") REFERENCES \"OAuthClient\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OAuthAccessToken\" ADD CONSTRAINT \"OAuthAccessToken_refreshTokenId_fkey\" FOREIGN KEY (\"refreshTokenId\") REFERENCES \"UserApiToken\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObject\" ADD CONSTRAINT \"ConfigurationObject_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_fromId_fkey\" FOREIGN KEY (\"fromId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_toId_fkey\" FOREIGN KEY (\"toId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_destinationId_fkey\" FOREIGN KEY (\"destinationId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_profileBuilderId_fkey\" FOREIGN KEY (\"profileBuilderId\") REFERENCES \"ProfileBuilder\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_functionId_fkey\" FOREIGN KEY (\"functionId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_oidcProviderId_fkey\" FOREIGN KEY (\"oidcProviderId\") REFERENCES \"OidcProvider\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reprocessing_workers\" ADD CONSTRAINT \"reprocessing_workers_job_id_fkey\" FOREIGN KEY (\"job_id\") REFERENCES \"reprocessing_jobs\"(\"id\") ON DELETE CASCADE ON UPDATE NO ACTION;\n\n-- RenameIndex\nALTER INDEX \"AuditLog_timesta_5ad64d_idx\" RENAME TO \"AuditLog_timestamp_idx\";\n\n-- RenameIndex\nALTER INDEX \"AuditLog_type_4494c3_idx\" RENAME TO \"AuditLog_type_idx\";\n\n-- RenameIndex\nALTER INDEX \"AuditLog_workspa_af3416_idx\" RENAME TO \"AuditLog_workspaceId_timestamp_idx\";\n\n-- RenameIndex\nALTER INDEX \"Configurati_updated_5e0f56_idx\" RENAME TO \"ConfigurationObject_updatedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Configurati_updated_e3843b_idx\" RENAME TO \"ConfigurationObjectLink_updatedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"Configurati_workspa_c4a725_idx\" RENAME TO \"ConfigurationObjectLink_workspaceId_idx\";\n\n-- RenameIndex\nALTER INDEX \"Notificatio_actorId_50701a_idx\" RENAME TO \"Notification_actorId_type_tableName_idx\";\n\n-- RenameIndex\nALTER INDEX \"Notificatio_timesta_257090_idx\" RENAME TO \"Notification_timestamp_idx\";\n\n-- RenameIndex\nALTER INDEX \"OAuthAccess_expires_21be1e_idx\" RENAME TO \"OAuthAccessToken_expiresAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"OAuthAccess_refresh_6c76f1_idx\" RENAME TO \"OAuthAccessToken_refreshTokenId_idx\";\n\n-- RenameIndex\nALTER INDEX \"OidcLoginGr_oidcPro_aa6930_idx\" RENAME TO \"OidcLoginGroup_oidcProviderId_idx\";\n\n-- RenameIndex\nALTER INDEX \"OidcLoginGr_workspa_34f373_idx\" RENAME TO \"OidcLoginGroup_workspaceId_idx\";\n\n-- RenameIndex\nALTER INDEX \"RateLimitCo_expires_f9fd90_idx\" RENAME TO \"RateLimitCounter_expiresAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"StatusChang_actorId_393666_idx\" RENAME TO \"StatusChange_actorId_type_tableName_idx\";\n\n-- RenameIndex\nALTER INDEX \"StatusChang_started_3d0ba1_idx\" RENAME TO \"StatusChange_startedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"StatusChang_timesta_bd27e6_idx\" RENAME TO \"StatusChange_timestamp_idx\";\n\n-- RenameIndex\nALTER INDEX \"UserProfile_externa_6cca4d_idx\" RENAME TO \"UserProfile_externalId_idx\";\n\n-- RenameIndex\nALTER INDEX \"Workspace_updated_7b50a1_idx\" RENAME TO \"Workspace_updatedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"WorkspaceOp_workspa_d5ab0d_idx\" RENAME TO \"WorkspaceOptions_workspaceId_namespace_idx\";\n\n-- RenameIndex\nALTER INDEX \"kv_expires_c1bff6_idx\" RENAME TO \"kv_expires_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"reprocessin_created_a405b7_idx\" RENAME TO \"reprocessing_jobs_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"reprocessin_job_id_6ccabf_idx\" RENAME TO \"reprocessing_workers_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"reprocessin_job_id_829c6e_idx\" RENAME TO \"reprocessing_workers_job_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"reverse_syn_sync_id_f9e211_idx\" RENAME TO \"reverse_sync_control_sync_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"source_task_started_f40f10_idx\" RENAME TO \"source_task_started_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"source_task_sync_id_55c948_idx\" RENAME TO \"source_task_sync_id_started_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"source_task_sync_id_8d87d2_idx\" RENAME TO \"source_task_sync_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_log_sync_id_f23ad3_idx\" RENAME TO \"task_log_sync_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_log_task_id_11a0e9_idx\" RENAME TO \"task_log_task_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"task_log_timesta_0d371c_idx\" RENAME TO \"task_log_timestamp_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 27,
+            "total": 39
+          },
+          "read": {
+            "ok": 27,
+            "total": 27
+          },
+          "update": {
+            "ok": 23,
+            "total": 23
+          },
+          "relations": {
+            "ok": 10,
+            "total": 10
+          },
+          "delete": {
+            "ok": 27,
+            "total": 27
+          }
+        },
+        "findings": [
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v20\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "FunctionsServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v176\"]\" (SQLSTATE 22P02)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"WorkspaceRole\" AS ENUM ('owner', 'editor', 'analyst');\n\n-- CreateEnum\nCREATE TYPE \"reverse_sync_mode\" AS ENUM ('upsert', 'mirror');\n\n-- CreateEnum\nCREATE TYPE \"reverse_sync_extraction\" AS ENUM ('cursor', 'full');\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObject\" DROP CONSTRAINT \"fk_Workspace_configuration_object\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"fk_ConfigurationObject_from_links\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"fk_ConfigurationObject_to_links\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"fk_Workspace_configuration_object_link\";\n\n-- DropForeignKey\nALTER TABLE \"OAuthAccessToken\" DROP CONSTRAINT \"fk_UserApiToken_access_tokens\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"fk_OidcProvider_oidc_login_groups\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"fk_Workspace_oidc_login_groups\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"fk_ConfigurationObject_profile_builder\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"fk_Workspace_profile_builders\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"fk_ConfigurationObject_profile_builder_function\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"fk_ProfileBuilder_functions\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"fk_OAuthClient_tokens\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"fk_UserProfile_tokens\";\n\n-- DropForeignKey\nALTER TABLE \"UserPassword\" DROP CONSTRAINT \"fk_UserProfile_password\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"fk_UserProfile_user_preferences\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"fk_Workspace_preferences\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"fk_UserProfile_workspace_access\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"fk_Workspace_workspace_access\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceOptions\" DROP CONSTRAINT \"fk_Workspace_workspace_options\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"fk_UserProfile_workspace_user_properties\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"fk_Workspace_workspace_user_properties\";\n\n-- DropIndex\nDROP INDEX \"AuditLog_workspaceId_timestamp_idx\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObject_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"ConfigurationObjectLink_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"Workspace_updatedAt_idx\";\n\n-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- DropIndex\nDROP INDEX \"reprocessing_jobs_created_at_idx\";\n\n-- DropIndex\nDROP INDEX \"source_task_sync_id_started_at_idx\";\n\n-- AlterTable\nALTER TABLE \"AuditLog\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"timestamp\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ConfigurationObject\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ConfigurationObjectLink\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ConnectorPackage\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"EmailLog\" ALTER COLUMN \"time\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"time\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"FunctionsServer\" DROP COLUMN \"connections\",\nADD COLUMN     \"connections\" TEXT[],\nDROP COLUMN \"emptyConnections\",\nADD COLUMN     \"emptyConnections\" TEXT[],\nDROP COLUMN \"profileBuilders\",\nADD COLUMN     \"profileBuilders\" TEXT[],\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"GlobalProps\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"InvitationToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL DEFAULT 'owner';\n\n-- AlterTable\nALTER TABLE \"Notification\" DROP CONSTRAINT \"Notification_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL,\nALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nADD CONSTRAINT \"Notification_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"NotificationState\" DROP CONSTRAINT \"NotificationState_pkey\",\nADD CONSTRAINT \"NotificationState_pkey\" PRIMARY KEY (\"channelId\", \"actorId\", \"type\", \"tableName\");\n\n-- AlterTable\nALTER TABLE \"OAuthAccessToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"OAuthClient\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"redirectUris\",\nADD COLUMN     \"redirectUris\" TEXT[];\n\n-- AlterTable\nALTER TABLE \"OidcLoginGroup\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"OidcProvider\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"scopes\",\nADD COLUMN     \"scopes\" TEXT[] DEFAULT ARRAY['openid', 'profile', 'email', 'offline_access']::TEXT[];\n\n-- AlterTable\nALTER TABLE \"ProfileBuilder\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"version\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderFunction\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderState\" DROP CONSTRAINT \"ProfileBuilderState_pkey\",\nALTER COLUMN \"profileBuilderVersion\" SET DATA TYPE INTEGER,\nALTER COLUMN \"instanceIndex\" SET DATA TYPE INTEGER,\nALTER COLUMN \"totalInstances\" SET DATA TYPE INTEGER,\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastTimestamp\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"processedUsers\" SET DATA TYPE INTEGER,\nALTER COLUMN \"totalUsers\" SET DATA TYPE INTEGER,\nALTER COLUMN \"errorUsers\" SET DATA TYPE INTEGER,\nALTER COLUMN \"speed\" SET DATA TYPE DOUBLE PRECISION,\nADD CONSTRAINT \"ProfileBuilderState_pkey\" PRIMARY KEY (\"profileBuilderId\", \"profileBuilderVersion\", \"totalInstances\", \"instanceIndex\");\n\n-- AlterTable\nALTER TABLE \"ProfileBuilderState2\" ALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"RateLimitCounter\" ALTER COLUMN \"count\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"StatusChange\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"counts\" SET DATA TYPE INTEGER,\nALTER COLUMN \"queueSize\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"UserApiToken\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserPassword\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserPreferences\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UserProfile\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Workspace\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"featuresEnabled\",\nADD COLUMN     \"featuresEnabled\" TEXT[] DEFAULT ARRAY[]::TEXT[];\n\n-- AlterTable\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"WorkspaceRole\" NOT NULL DEFAULT 'owner',\nADD CONSTRAINT \"WorkspaceAccess_pkey\" PRIMARY KEY (\"userId\", \"workspaceId\");\n\n-- AlterTable\nALTER TABLE \"WorkspaceOptions\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"WorkspaceUserProperties\" ALTER COLUMN \"lastUsed\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastUsed\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"kv\" ALTER COLUMN \"expires_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"reprocessing_jobs\" ALTER COLUMN \"total_files\" SET DATA TYPE INTEGER,\nALTER COLUMN \"total_workers\" SET DATA TYPE INTEGER;\n\n-- AlterTable\nALTER TABLE \"reprocessing_workers\" DROP CONSTRAINT \"reprocessing_workers_pkey\",\nALTER COLUMN \"worker_index\" SET DATA TYPE INTEGER,\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"assigned_files\" SET DATA TYPE INTEGER,\nALTER COLUMN \"processed_files\" SET DATA TYPE INTEGER,\nADD CONSTRAINT \"reprocessing_workers_pkey\" PRIMARY KEY (\"job_id\", \"worker_index\");\n\n-- AlterTable\nALTER TABLE \"reverse_sync_control\" DROP COLUMN \"mode\",\nADD COLUMN     \"mode\" \"reverse_sync_mode\" NOT NULL,\nDROP COLUMN \"extraction\",\nADD COLUMN     \"extraction\" \"reverse_sync_extraction\" NOT NULL;\n\n-- AlterTable\nALTER TABLE \"source_catalog\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"source_check\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"source_spec\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"source_state\" ALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"source_task\" ALTER COLUMN \"started_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updated_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"task_log\" DROP CONSTRAINT \"task_log_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL,\nALTER COLUMN \"timestamp\" SET DEFAULT CURRENT_TIMESTAMP,\nADD CONSTRAINT \"task_log_pkey\" PRIMARY KEY (\"id\");\n\n-- CreateIndex\nCREATE INDEX \"AuditLog_workspaceId_timestamp_idx\" ON \"AuditLog\"(\"workspaceId\", \"timestamp\");\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObject_updatedAt_idx\" ON \"ConfigurationObject\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"ConfigurationObjectLink_updatedAt_idx\" ON \"ConfigurationObjectLink\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"Workspace_updatedAt_idx\" ON \"Workspace\"(\"updatedAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);\n\n-- CreateIndex\nCREATE INDEX \"reprocessing_jobs_created_at_idx\" ON \"reprocessing_jobs\"(\"created_at\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"source_task_sync_id_started_at_idx\" ON \"source_task\"(\"sync_id\", \"started_at\" DESC);\n\n-- RenameForeignKey\nALTER TABLE \"reprocessing_workers\" RENAME CONSTRAINT \"fk_reprocessing_jobs_reprocessing_workers\" TO \"reprocessing_workers_job_id_fkey\";\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPassword\" ADD CONSTRAINT \"UserPassword_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceOptions\" ADD CONSTRAINT \"WorkspaceOptions_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_oauthClientId_fkey\" FOREIGN KEY (\"oauthClientId\") REFERENCES \"OAuthClient\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OAuthAccessToken\" ADD CONSTRAINT \"OAuthAccessToken_refreshTokenId_fkey\" FOREIGN KEY (\"refreshTokenId\") REFERENCES \"UserApiToken\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObject\" ADD CONSTRAINT \"ConfigurationObject_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_fromId_fkey\" FOREIGN KEY (\"fromId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_toId_fkey\" FOREIGN KEY (\"toId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_destinationId_fkey\" FOREIGN KEY (\"destinationId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_profileBuilderId_fkey\" FOREIGN KEY (\"profileBuilderId\") REFERENCES \"ProfileBuilder\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_functionId_fkey\" FOREIGN KEY (\"functionId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_oidcProviderId_fkey\" FOREIGN KEY (\"oidcProviderId\") REFERENCES \"OidcProvider\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx_UserPassword_user_id\" RENAME TO \"UserPassword_userId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_Workspace_slug\" RENAME TO \"Workspace_slug_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 14,
+            "total": 39
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 10,
+            "total": 10
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"EmailLog\" violates not-null constraint"
+          },
+          {
+            "model": "UserProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"UserProfile\" violates not-null constraint"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Workspace\" violates not-null constraint"
+          },
+          {
+            "model": "UserPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OAuthClient\" violates not-null constraint"
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "InvitationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"InvitationToken\" violates not-null constraint"
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConnectorPackage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"ConnectorPackage\" violates not-null constraint"
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"AuditLog\" violates not-null constraint"
+          },
+          {
+            "model": "GlobalProps",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"GlobalProps\" violates not-null constraint"
+          },
+          {
+            "model": "task_log",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OidcProvider\" violates not-null constraint"
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "reprocessing_jobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"reprocessing_jobs\" violates not-null constraint"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`reprocessing_jobs`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"WorkspaceAccess\": Execution Error: error returned from database: type \"workspacerole\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 16,
+            "total": 39
+          },
+          "read": {
+            "ok": 16,
+            "total": 16
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"EmailLog\\\" violates not-null constraint\\n\\n    table: EmailLog\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.241, {\\\"n\\\": 1, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v2, v3, v4, v5).\""
+          },
+          {
+            "model": "UserProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"UserProfile\\\" violates not-null constraint\\n\\n    table: UserProfile\\n    column: id\\n\\nFailing row contains (null, v6, v7, f, 2026-11-21 15:26:07.254, 2026-11-21 15:26:07.254, v8, v9, v10).\""
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Workspace\\\" violates not-null constraint\\n\\n    table: Workspace\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.254, 2026-11-21 15:26:07.254, v11, f, v12, {}).\""
+          },
+          {
+            "model": "UserPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"OAuthClient\\\" violates not-null constraint\\n\\n    table: OAuthClient\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.256, 2026-11-21 15:26:07.256, v18, v19, {v20}).\""
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "InvitationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"InvitationToken\\\" violates not-null constraint\\n\\n    table: InvitationToken\\n    column: id\\n\\nFailing row contains (null, v35, v36, 2026-11-21 15:26:07.266, 2026-11-21 15:26:07.266, v37, v38, owner).\""
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConnectorPackage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ConnectorPackage\\\" violates not-null constraint\\n\\n    table: ConnectorPackage\\n    column: id\\n\\nFailing row contains (null, v42, airbyte, {\\\"n\\\": 43, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, \\\\x62797465732d3434, 2026-11-21 15:26:07.267, 2026-11-21 15:26:07.267).\""
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"AuditLog\\\" violates not-null constraint\\n\\n    table: AuditLog\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.267, v45, info, v46, v47, v48, {\\\"n\\\": 49, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v50, v51, v52, {\\\"n\\\": 53, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "GlobalProps",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"GlobalProps\\\" violates not-null constraint\\n\\n    table: GlobalProps\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.267, 2026-11-21 15:26:07.267, v54, {\\\"n\\\": 55, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"OidcProvider\\\" violates not-null constraint\\n\\n    table: OidcProvider\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:26:07.284, 2026-11-21 15:26:07.284, v147, v148, v149, v150, v151, v152, v153, v154, v155, {openid,profile,email,offline_access}, v156, v157, email, email, name, groups, t, t).\""
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "reprocessing_jobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"reprocessing_jobs\\\" violates not-null constraint\\n\\n    table: reprocessing_jobs\\n    column: id\\n\\nFailing row contains (null, {\\\"n\\\": 159, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v160, 2024-01-02 03:04:05.161+00, 2024-01-02 03:04:05.162+00, 2024-01-02 03:04:05.163+00, v164, 0, 0, v165).\""
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`reprocessing_jobs`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 33,
+            "total": 39
+          },
+          "read": {
+            "ok": 33,
+            "total": 33
+          },
+          "update": {
+            "ok": 25,
+            "total": 25
+          },
+          "relations": {
+            "ok": 36,
+            "total": 36
+          },
+          "delete": {
+            "ok": 33,
+            "total": 33
+          }
+        },
+        "findings": [
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: changes is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "task_log",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: logger is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "FunctionsServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: class is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 15,
+            "total": 39
+          },
+          "read": {
+            "ok": 15,
+            "total": 15
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 15,
+            "total": 15
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"EmailLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:26:12.385, {\"n\": 1, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v2, v3, v4, v5). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"EmailLog\" (\"email\", \"error\", \"previewUrl\", \"messageId\", \"status\", \"time\") values ({\"n\":1,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, v2, v3, v4, v5, 2026-11-21 15:26:12.385+00:00))"
+          },
+          {
+            "model": "UserProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"UserProfile\" violates not-null constraint\nDETAIL:  Failing row contains (null, v6, v7, f, 2026-11-21 15:26:12.399, 2026-11-21 15:26:12.399, v8, v9, v10). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"UserProfile\" (\"admin\", \"name\", \"email\", \"loginProvider\", \"externalUsername\", \"externalId\", \"updatedAt\", \"createdAt\") values (0, v6, v7, v8, v9, v10, 2026-11-21 15:26:12.399+00:00, 2026-11-21 15:26:12.399+00:00))"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Workspace\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:26:12.399, 2026-11-21 15:26:12.399, v11, f, v12, {}). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"Workspace\" (\"deleted\", \"name\", \"slug\", \"updatedAt\", \"createdAt\") values (0, v11, v12, 2026-11-21 15:26:12.399+00:00, 2026-11-21 15:26:12.399+00:00))"
+          },
+          {
+            "model": "UserPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "WorkspaceOptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceAccess",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkspaceUserProperties",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $3 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"OAuthClient\" (\"clientSecretHash\", \"name\", \"redirectUris\", \"updatedAt\", \"createdAt\") values (v18, v19, Array, 2026-11-21 15:26:12.401+00:00, 2026-11-21 15:26:12.401+00:00))"
+          },
+          {
+            "model": "UserApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProfile`) did not go in"
+          },
+          {
+            "model": "OAuthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserApiToken`) did not go in"
+          },
+          {
+            "model": "InvitationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"InvitationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v35, v36, 2026-11-21 15:26:12.406, 2026-11-21 15:26:12.406, v37, v38, owner). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"InvitationToken\" (\"role\", \"workspaceId\", \"email\", \"token\", \"usedBy\", \"updatedAt\", \"createdAt\") values (owner, v35, v36, v37, v38, 2026-11-21 15:26:12.406+00:00, 2026-11-21 15:26:12.406+00:00))"
+          },
+          {
+            "model": "ConfigurationObject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConfigurationObjectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ConnectorPackage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"ConnectorPackage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v42, airbyte, {\"n\": 43, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, \\x62797465732d3434, 2026-11-21 15:26:12.407, 2026-11-21 15:26:12.407). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"ConnectorPackage\" (\"packageType\", \"packageId\", \"meta\", \"logoSvg\", \"updatedAt\", \"createdAt\") values (airbyte, v42, {\"n\":43,\"tags\":[\"a\",\"b\"],\"nested\":{\""
+          },
+          {
+            "model": "AuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"AuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:26:12.407, v45, info, v46, v47, v48, {\"n\": 49, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v50, v51, v52, {\"n\": 53, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"AuditLog\" (\"severity\", \"type\", \"userId\", \"workspaceId\", \"objectId\", \"changes\", \"authType\", \"tokenId\", \"ip\", \"requestHeade"
+          },
+          {
+            "model": "GlobalProps",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"GlobalProps\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:26:12.407, 2026-11-21 15:26:12.407, v54, {\"n\": 55, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"GlobalProps\" (\"name\", \"value\", \"updatedAt\", \"createdAt\") values (v54, {\"n\":55,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, 2026-11-21 15:26:12.407+00:00, 2026-11-21 15:26:12.407+00:00))"
+          },
+          {
+            "model": "ProfileBuilder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ProfileBuilderFunction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProfileBuilder`) did not go in"
+          },
+          {
+            "model": "OidcProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"OidcProvider\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:26:12.433, 2026-11-21 15:26:12.433, v147, v148, v149, v150, v151, v152, v153, v154, v155, {openid,profile,email,offline_access}, v156, v157, email, email, name, groups, t, t). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"OidcProvider\" (\"usernameClaim\", \"emailClaim\", \"nameClaim\", \"groupClaim\", \"enabled\", \"autoDiscovery\", \"na"
+          },
+          {
+            "model": "OidcLoginGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "reprocessing_jobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"reprocessing_jobs\" violates not-null constraint\nDETAIL:  Failing row contains (null, {\"n\": 159, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v160, 2024-01-02 03:04:05.161+00, 2024-01-02 03:04:05.162+00, 2024-01-02 03:04:05.163+00, v164, 0, 0, v165). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"reprocessing_jobs\" (\"total_files\", \"total_workers\", \"config\", \"status\", \"created_at\", \"started_at\", \"completed_at\", \"k8s_job"
+          },
+          {
+            "model": "reprocessing_workers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`reprocessing_jobs`) did not go in"
+          },
+          {
+            "model": "FunctionsServer",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $4 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: jitsu_eloquent, SQL: insert into \"FunctionsServer\" (\"workspaceId\", \"class\", \"deploymentId\", \"connections\", \"emptyConnections\", \"profileBuilders\", \"updatedAt\", \"createdAt\") values (v173, v174, v175, Array, Array, Array, 2024-01-02 03:04:05.179+00:00, 2026-11-21 15:26:12.434+00:00))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 39,
+            "total": 39
+          },
+          "read": {
+            "ok": 39,
+            "total": 39
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 44,
+            "total": 44
+          },
+          "delete": {
+            "ok": 39,
+            "total": 39
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"ConfigurationObject\" DROP CONSTRAINT \"ConfigurationObject_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectLink_fromId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectLink_toId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConfigurationObjectLink\" DROP CONSTRAINT \"ConfigurationObjectLink_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OAuthAccessToken\" DROP CONSTRAINT \"OAuthAccessToken_refreshTokenId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"OidcLoginGroup_oidcProviderId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OidcLoginGroup\" DROP CONSTRAINT \"OidcLoginGroup_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"ProfileBuilder_destinationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilder\" DROP CONSTRAINT \"ProfileBuilder_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"ProfileBuilderFunction_functionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ProfileBuilderFunction\" DROP CONSTRAINT \"ProfileBuilderFunction_profileBuilderId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"UserApiToken_oauthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserApiToken\" DROP CONSTRAINT \"UserApiToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserPassword\" DROP CONSTRAINT \"UserPassword_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"UserPreferences_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserPreferences\" DROP CONSTRAINT \"UserPreferences_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceAccess\" DROP CONSTRAINT \"WorkspaceAccess_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceOptions\" DROP CONSTRAINT \"WorkspaceOptions_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"WorkspaceUserProperties_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceUserProperties\" DROP CONSTRAINT \"WorkspaceUserProperties_workspaceId_fkey\";\n\n-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPreferences\" ADD CONSTRAINT \"UserPreferences_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPassword\" ADD CONSTRAINT \"UserPassword_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceOptions\" ADD CONSTRAINT \"WorkspaceOptions_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceAccess\" ADD CONSTRAINT \"WorkspaceAccess_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceUserProperties\" ADD CONSTRAINT \"WorkspaceUserProperties_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"UserProfile\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserApiToken\" ADD CONSTRAINT \"UserApiToken_oauthClientId_fkey\" FOREIGN KEY (\"oauthClientId\") REFERENCES \"OAuthClient\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OAuthAccessToken\" ADD CONSTRAINT \"OAuthAccessToken_refreshTokenId_fkey\" FOREIGN KEY (\"refreshTokenId\") REFERENCES \"UserApiToken\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObject\" ADD CONSTRAINT \"ConfigurationObject_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_fromId_fkey\" FOREIGN KEY (\"fromId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConfigurationObjectLink\" ADD CONSTRAINT \"ConfigurationObjectLink_toId_fkey\" FOREIGN KEY (\"toId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilder\" ADD CONSTRAINT \"ProfileBuilder_destinationId_fkey\" FOREIGN KEY (\"destinationId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_profileBuilderId_fkey\" FOREIGN KEY (\"profileBuilderId\") REFERENCES \"ProfileBuilder\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ProfileBuilderFunction\" ADD CONSTRAINT \"ProfileBuilderFunction_functionId_fkey\" FOREIGN KEY (\"functionId\") REFERENCES \"ConfigurationObject\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OidcLoginGroup\" ADD CONSTRAINT \"OidcLoginGroup_oidcProviderId_fkey\" FOREIGN KEY (\"oidcProviderId\") REFERENCES \"OidcProvider\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 39,
+            "total": 39
+          },
+          "insert": {
+            "ok": 39,
+            "total": 39
+          },
+          "read": {
+            "ok": 39,
+            "total": 39
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 39,
+            "total": 39
+          },
+          "delete": {
+            "ok": 39,
+            "total": 39
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"kv_key_pattern_idx\";\n\n-- CreateIndex\nCREATE INDEX \"kv_key_pattern_idx\" ON \"kv\"(\"key\" text_pattern_ops);"
+      }
+    }
+  ]
+}

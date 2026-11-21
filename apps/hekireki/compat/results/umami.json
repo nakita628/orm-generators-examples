@@ -1,0 +1,1242 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 60,
+          "total": 60
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 25,
+          "total": 29
+        },
+        "read": {
+          "ok": 25,
+          "total": 25
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 25,
+          "total": 25
+        }
+      },
+      "findings": 4,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 25,
+          "total": 29
+        },
+        "read": {
+          "ok": 25,
+          "total": 25
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 25,
+          "total": 25
+        }
+      },
+      "findings": 4,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 58,
+          "total": 60
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 2,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 1,
+          "total": 29
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 28,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 60,
+          "total": 60
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 25,
+          "total": 29
+        },
+        "read": {
+          "ok": 25,
+          "total": 25
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 52,
+          "total": 52
+        },
+        "delete": {
+          "ok": 25,
+          "total": 25
+        }
+      },
+      "findings": 4,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 60,
+          "total": 60
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 29,
+          "total": 29
+        },
+        "read": {
+          "ok": 29,
+          "total": 29
+        },
+        "update": {
+          "ok": 27,
+          "total": 27
+        },
+        "relations": {
+          "ok": 0,
+          "total": 60
+        },
+        "delete": {
+          "ok": 29,
+          "total": 29
+        }
+      },
+      "findings": 60,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 60,
+            "total": 60
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"annotation\" DROP CONSTRAINT \"annotation_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"api_key\" DROP CONSTRAINT \"api_key_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_event_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"heatmap_event\" DROP CONSTRAINT \"heatmap_event_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segment\" DROP CONSTRAINT \"segment_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay\" DROP CONSTRAINT \"session_replay_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay_saved\" DROP CONSTRAINT \"session_replay_saved_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"two_factor_auth_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"two_factor_backup_code_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"two_factor_otp_used_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"two_factor_rate_limit_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_created_by_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website_event\" DROP CONSTRAINT \"website_event_session_id_fkey\";"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 25,
+            "total": 29
+          },
+          "read": {
+            "ok": 25,
+            "total": 25
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 25,
+            "total": 25
+          }
+        },
+        "findings": [
+          {
+            "model": "TwoFactorAuth",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_auth\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v144, f, 2026-11-21 15:54:06.451585+00, 2026-11-21 15:54:06.451586+00)."
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_backup_code\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v145, f, 2026-11-21 15:54:06.45323+00)."
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_otp_used\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v146, 2024-01-02 03:04:05.147+00)."
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_rate_limit\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, 0, 2024-01-02 03:04:05.148+00, 2026-11-21 15:54:06.455054+00)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"annotation\" DROP CONSTRAINT \"annotation_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"api_key\" DROP CONSTRAINT \"api_key_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_event_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"heatmap_event\" DROP CONSTRAINT \"heatmap_event_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segment\" DROP CONSTRAINT \"segment_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay\" DROP CONSTRAINT \"session_replay_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay_saved\" DROP CONSTRAINT \"session_replay_saved_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"two_factor_auth_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"two_factor_backup_code_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"two_factor_otp_used_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"two_factor_rate_limit_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_created_by_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website_event\" DROP CONSTRAINT \"website_event_session_id_fkey\";\n\n-- AlterTable\nALTER TABLE \"session_link\" DROP CONSTRAINT \"session_link_pkey\",\nADD CONSTRAINT \"session_link_pkey\" PRIMARY KEY (\"website_id\", \"distinct_id\", \"session_id\");"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 25,
+            "total": 29
+          },
+          "read": {
+            "ok": 25,
+            "total": 25
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 25,
+            "total": 25
+          }
+        },
+        "findings": [
+          {
+            "model": "TwoFactorAuth",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_auth\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v144, f, 2026-11-21 15:54:08.792454+00, 2026-11-21 15:54:08.792523+00)."
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_backup_code\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v145, f, 2026-11-21 15:54:08.792788+00)."
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_otp_used\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v146, 2024-01-02 03:04:05.147+00)."
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"two_factor_rate_limit\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, 0, 2024-01-02 03:04:05.148+00, 2026-11-21 15:54:08.793367+00)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"annotation\" DROP CONSTRAINT \"annotation_website_id_e1569eaa_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"api_key\" DROP CONSTRAINT \"api_key_user_id_2b8305f7_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_team_id_2d604e93_fk_team_team_id\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_user_id_53330b0b_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_event_id_e4d74497_fk_website_event_event_id\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_id_32eb3b7a_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"heatmap_event\" DROP CONSTRAINT \"heatmap_event_website_id_b99acfb8_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_team_id_2a6e6264_fk_team_team_id\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_user_id_094e570f_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_team_id_1e96d7a9_fk_team_team_id\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_user_id_3f93eb67_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_user_id_07ece6b6_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_website_id_c50a50b1_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_session_id_d9baaad2_fk_session_session_id\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_website_id_737737d2_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"segment\" DROP CONSTRAINT \"segment_website_id_7dc63279_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_session_id_59c344d8_fk_session_session_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_website_id_ccfbb5c1_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay\" DROP CONSTRAINT \"session_replay_website_id_9ed7a125_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay_saved\" DROP CONSTRAINT \"session_replay_saved_website_id_a0470c73_fk_website_website_id\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_team_id_7586960d_fk_team_team_id\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_user_id_d53f15c4_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"two_factor_auth_user_id_263c9112_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"two_factor_backup_code_user_id_f805e49d_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"two_factor_otp_used_user_id_b76b07ca_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"two_factor_rate_limit_user_id_2758a362_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_created_by_c6c859fb_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_team_id_3bb713cc_fk_team_team_id\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_user_id_f6b862c8_fk_user_user_id\";\n\n-- DropForeignKey\nALTER TABLE \"website_event\" DROP CONSTRAINT \"website_event_session_id_f5ec2f22_fk_session_session_id\";\n\n-- DropIndex\nDROP INDEX \"api_key_key_hash_5905e40e_like\";\n\n-- DropIndex\nDROP INDEX \"app_setting_key_d5b5067a_like\";\n\n-- DropIndex\nDROP INDEX \"share_slug_b4e39793_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_auth_id_e5b58cbe_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_backup_code_id_840c59c0_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_otp_used_id_c70db39f_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_rate_limit_id_f79d9e82_like\";\n\n-- DropIndex\nDROP INDEX \"user_username_cf016618_like\";\n\n-- AlterTable\nALTER TABLE \"annotation\" ALTER COLUMN \"all_day\" SET DEFAULT true,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"api_key\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"board\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"error_event\" ALTER COLUMN \"received_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"error_issue\" ALTER COLUMN \"grouping_version\" SET DEFAULT 1,\nALTER COLUMN \"status\" SET DEFAULT 'unresolved',\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"event_data\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"heatmap_event\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"link\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"pixel\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"report\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"revenue\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"segment\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session\" ALTER COLUMN \"country\" SET DATA TYPE CHAR(2),\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_data\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_link\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_replay\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_replay_saved\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"share\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"team\" ALTER COLUMN \"two_factor_required\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"team_user\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"two_factor_auth\" ALTER COLUMN \"is_enabled\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"two_factor_backup_code\" ALTER COLUMN \"used\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"two_factor_rate_limit\" ALTER COLUMN \"attempts\" SET DEFAULT 0;\n\n-- AlterTable\nALTER TABLE \"user\" ALTER COLUMN \"two_factor_required\" SET DEFAULT false,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"website\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"recorder_enabled\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"website_event\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"event_type\" SET DEFAULT 1;\n\n-- RenameIndex\nALTER INDEX \"annotation_website_d9747d_idx\" RENAME TO \"annotation_website_id_date_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_key_user_id_a1a83e_idx\" RENAME TO \"api_key_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"board_created_366b44_idx\" RENAME TO \"board_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"board_team_id_ed9f3e_idx\" RENAME TO \"board_team_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"board_user_id_dec714_idx\" RENAME TO \"board_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"error_event_website_aacddd_idx\" RENAME TO \"error_event_website_id_issue_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"error_event_website_e7a032_idx\" RENAME TO \"error_event_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"error_issue_website_f16968_idx\" RENAME TO \"error_issue_website_id_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"event_data_created_b784f3_idx\" RENAME TO \"event_data_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"event_data_website_148703_idx\" RENAME TO \"event_data_website_event_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"event_data_website_4e7210_idx\" RENAME TO \"event_data_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"event_data_website_877eb7_idx\" RENAME TO \"event_data_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"event_data_website_c9be42_idx\" RENAME TO \"event_data_website_id_created_at_data_key_idx\";\n\n-- RenameIndex\nALTER INDEX \"heatmap_eve_visit_i_54e51b_idx\" RENAME TO \"heatmap_event_visit_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"heatmap_eve_website_0819e5_idx\" RENAME TO \"heatmap_event_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"heatmap_eve_website_0eddab_idx\" RENAME TO \"heatmap_event_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"heatmap_eve_website_d5f013_idx\" RENAME TO \"heatmap_event_website_id_url_path_event_type_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"link_created_745f9c_idx\" RENAME TO \"link_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"link_team_id_6d8c41_idx\" RENAME TO \"link_team_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"link_user_id_01798e_idx\" RENAME TO \"link_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"pixel_created_e6f5c5_idx\" RENAME TO \"pixel_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"pixel_team_id_ef9bd1_idx\" RENAME TO \"pixel_team_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"pixel_user_id_df7349_idx\" RENAME TO \"pixel_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"report_name_b1cd9c_idx\" RENAME TO \"report_name_idx\";\n\n-- RenameIndex\nALTER INDEX \"report_type_9eba38_idx\" RENAME TO \"report_type_idx\";\n\n-- RenameIndex\nALTER INDEX \"report_user_id_b99432_idx\" RENAME TO \"report_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"report_website_c8335c_idx\" RENAME TO \"report_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"revenue_session_643765_idx\" RENAME TO \"revenue_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"revenue_website_0686eb_idx\" RENAME TO \"revenue_website_id_session_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"revenue_website_84f0ac_idx\" RENAME TO \"revenue_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"revenue_website_9cd8a2_idx\" RENAME TO \"revenue_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"segment_website_14dc53_idx\" RENAME TO \"segment_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_created_7ce68b_idx\" RENAME TO \"session_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_12868f_idx\" RENAME TO \"session_website_id_created_at_city_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_1ea93e_idx\" RENAME TO \"session_website_id_created_at_country_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_66e505_idx\" RENAME TO \"session_website_id_created_at_os_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_6db141_idx\" RENAME TO \"session_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_744f11_idx\" RENAME TO \"session_website_id_created_at_region_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_92da25_idx\" RENAME TO \"session_website_id_created_at_screen_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_a5b147_idx\" RENAME TO \"session_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_c61223_idx\" RENAME TO \"session_website_id_created_at_device_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_d067e2_idx\" RENAME TO \"session_website_id_created_at_browser_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_website_d0f0cf_idx\" RENAME TO \"session_website_id_created_at_language_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_dat_created_6028aa_idx\" RENAME TO \"session_data_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_dat_session_30f6e4_idx\" RENAME TO \"session_data_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_dat_session_98adab_idx\" RENAME TO \"session_data_session_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_dat_website_570738_idx\" RENAME TO \"session_data_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_dat_website_5a4470_idx\" RENAME TO \"session_data_website_id_created_at_data_key_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_lin_website_076297_idx\" RENAME TO \"session_link_website_id_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_session_34722b_idx\" RENAME TO \"session_replay_session_id_chunk_index_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_session_e5f4d5_idx\" RENAME TO \"session_replay_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_visit_i_6ff12e_idx\" RENAME TO \"session_replay_visit_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_0f6982_idx\" RENAME TO \"session_replay_website_id_visit_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_37afd9_idx\" RENAME TO \"session_replay_website_id_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_aa0734_idx\" RENAME TO \"session_replay_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_d85eb9_idx\" RENAME TO \"session_replay_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_visit_i_6a94bd_idx\" RENAME TO \"session_replay_saved_visit_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_08b1f0_idx\" RENAME TO \"session_replay_saved_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"session_rep_website_51d447_idx\" RENAME TO \"session_replay_saved_website_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"share_entity__7630b2_idx\" RENAME TO \"share_entity_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"team_user_team_id_7c9bc6_idx\" RENAME TO \"team_user_team_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"team_user_user_id_df7275_idx\" RENAME TO \"team_user_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"two_factor__user_id_e678e3_idx\" RENAME TO \"two_factor_backup_code_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_created_4a0a5c_idx\" RENAME TO \"website_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_created_c80723_idx\" RENAME TO \"website_created_by_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_team_id_29f177_idx\" RENAME TO \"website_team_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_user_id_75da74_idx\" RENAME TO \"website_user_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_created_0332c1_idx\" RENAME TO \"website_event_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_session_0ee0d3_idx\" RENAME TO \"website_event_session_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_visit_i_e05bda_idx\" RENAME TO \"website_event_visit_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_18c6a3_idx\" RENAME TO \"website_event_website_id_created_at_referrer_domain_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_3169e9_idx\" RENAME TO \"website_event_website_id_created_at_hostname_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_41e456_idx\" RENAME TO \"website_event_website_id_created_at_page_title_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_4496ce_idx\" RENAME TO \"website_event_website_id_created_at_event_name_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_7a7fb1_idx\" RENAME TO \"website_event_website_id_visit_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_a4a2af_idx\" RENAME TO \"website_event_website_id_session_id_created_at_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_ad2414_idx\" RENAME TO \"website_event_website_id_created_at_url_path_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_b3d8c5_idx\" RENAME TO \"website_event_website_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_e5fc25_idx\" RENAME TO \"website_event_website_id_created_at_tag_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_f22c4a_idx\" RENAME TO \"website_event_website_id_created_at_url_query_idx\";\n\n-- RenameIndex\nALTER INDEX \"website_eve_website_f39bbe_idx\" RENAME TO \"website_event_website_id_created_at_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 58,
+            "total": 60
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": [
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "relation `user` loaded nothing, though the related row is there"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "relation `createUser` failed to load",
+            "detail": "ERROR: unterminated quoted identifier at or near \"\" = $1\" (SQLSTATE 42601)"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"user\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/umami; fi; exec /cache/bin/umami crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/umami; fi; exec /cache/bin/umami ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 1,
+            "total": 29
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000001\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000013\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "SessionLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000025\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000027\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Website",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000032\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "WebsiteEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Session`) did not go in"
+          },
+          {
+            "model": "EventData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "SessionData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "TeamUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Annotation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Revenue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000099\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Pixel",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000104\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Board",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000108\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Share",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000113\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "SessionReplay",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "SessionReplaySaved",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "HeatmapEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "TwoFactorAuth",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ErrorIssue",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000151\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "ErrorEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000157\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "ErrorRateLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000174\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 60,
+            "total": 60
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 25,
+            "total": 29
+          },
+          "read": {
+            "ok": 25,
+            "total": 25
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 52,
+            "total": 52
+          },
+          "delete": {
+            "ok": 25,
+            "total": 25
+          }
+        },
+        "findings": [
+          {
+            "model": "TwoFactorAuth",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"two_factor_auth\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v144, f, 2026-11-21 15:54:25.436+00, 2026-11-21 15:54:25.436+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: umami_eloquent, SQL: insert into \"two_factor_auth\" (\"is_enabled\", \"user_id\", \"secret\", \"updated_at\", \"created_at\") values (0, 00000000-0000-4000-8000-000000000001, v144, 2026-11-21 15:54:25.436+00:00, 2026-11-21 15:54:25."
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"two_factor_backup_code\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v145, f, 2026-11-21 15:54:25.437+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: umami_eloquent, SQL: insert into \"two_factor_backup_code\" (\"used\", \"user_id\", \"code_hash\", \"created_at\") values (0, 00000000-0000-4000-8000-000000000001, v145, 2026-11-21 15:54:25.437+00:00))"
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"two_factor_otp_used\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, v146, 2024-01-02 03:04:05.147+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: umami_eloquent, SQL: insert into \"two_factor_otp_used\" (\"user_id\", \"otp\", \"expires_at\") values (00000000-0000-4000-8000-000000000001, v146, 2024-01-02 03:04:05.147+00:00))"
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"two_factor_rate_limit\" violates not-null constraint\nDETAIL:  Failing row contains (null, 00000000-0000-4000-8000-000000000001, 0, 2024-01-02 03:04:05.148+00, 2026-11-21 15:54:25.438+00). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: umami_eloquent, SQL: insert into \"two_factor_rate_limit\" (\"attempts\", \"user_id\", \"locked_until\", \"updated_at\") values (0, 00000000-0000-4000-8000-000000000001, 2024-01-02 03:04:05.148+00:00, 2026-11-21 15:54:25.438+00:00)"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 60,
+            "total": 60
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"annotation\" DROP CONSTRAINT \"annotation_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"api_key\" DROP CONSTRAINT \"api_key_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"board_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_event_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"event_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"heatmap_event\" DROP CONSTRAINT \"heatmap_event_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"link_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"pixel_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"report_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"revenue_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segment\" DROP CONSTRAINT \"segment_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_session_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"session_data_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay\" DROP CONSTRAINT \"session_replay_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay_saved\" DROP CONSTRAINT \"session_replay_saved_website_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"team_user_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"two_factor_auth_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"two_factor_backup_code_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"two_factor_otp_used_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"two_factor_rate_limit_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_created_by_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_team_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"website_user_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"website_event\" DROP CONSTRAINT \"website_event_session_id_fkey\";"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 29,
+            "total": 29
+          },
+          "read": {
+            "ok": 29,
+            "total": 29
+          },
+          "update": {
+            "ok": 27,
+            "total": 27
+          },
+          "relations": {
+            "ok": 0,
+            "total": 60
+          },
+          "delete": {
+            "ok": 29,
+            "total": 29
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `websites` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `createdBy` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `links` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `pixels` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `teams` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `reports` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `boards` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `twoFactorAuth` (toOneBack)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `twoFactorBackupCodes` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `twoFactorOtpUseds` (toMany)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `twoFactorRateLimit` (toOneBack)"
+          },
+          {
+            "model": "User",
+            "check": "relations",
+            "text": "no relation for `apiKeys` (toMany)"
+          },
+          {
+            "model": "ApiKey",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Session",
+            "check": "relations",
+            "text": "no relation for `websiteEvents` (toMany)"
+          },
+          {
+            "model": "Session",
+            "check": "relations",
+            "text": "no relation for `sessionData` (toMany)"
+          },
+          {
+            "model": "Session",
+            "check": "relations",
+            "text": "no relation for `revenue` (toMany)"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `websites` (toMany)"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `members` (toMany)"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `links` (toMany)"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `pixels` (toMany)"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `boards` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `createUser` (toOne)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `team` (toOne)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `annotations` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `eventData` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `reports` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `revenue` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `segments` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `sessionData` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `sessionReplays` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `sessionReplaysSaved` (toMany)"
+          },
+          {
+            "model": "Website",
+            "check": "relations",
+            "text": "no relation for `heatmapEvents` (toMany)"
+          },
+          {
+            "model": "WebsiteEvent",
+            "check": "relations",
+            "text": "no relation for `eventData` (toMany)"
+          },
+          {
+            "model": "WebsiteEvent",
+            "check": "relations",
+            "text": "no relation for `session` (toOne)"
+          },
+          {
+            "model": "EventData",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "EventData",
+            "check": "relations",
+            "text": "no relation for `websiteEvent` (toOne)"
+          },
+          {
+            "model": "SessionData",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "SessionData",
+            "check": "relations",
+            "text": "no relation for `session` (toOne)"
+          },
+          {
+            "model": "TeamUser",
+            "check": "relations",
+            "text": "no relation for `team` (toOne)"
+          },
+          {
+            "model": "TeamUser",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Report",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Report",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "Annotation",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "Segment",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "Revenue",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "Revenue",
+            "check": "relations",
+            "text": "no relation for `session` (toOne)"
+          },
+          {
+            "model": "Link",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Link",
+            "check": "relations",
+            "text": "no relation for `team` (toOne)"
+          },
+          {
+            "model": "Pixel",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Pixel",
+            "check": "relations",
+            "text": "no relation for `team` (toOne)"
+          },
+          {
+            "model": "Board",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "Board",
+            "check": "relations",
+            "text": "no relation for `team` (toOne)"
+          },
+          {
+            "model": "SessionReplay",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "SessionReplaySaved",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "HeatmapEvent",
+            "check": "relations",
+            "text": "no relation for `website` (toOne)"
+          },
+          {
+            "model": "TwoFactorAuth",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "relations",
+            "text": "no relation for `user` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

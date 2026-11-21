@@ -1,0 +1,911 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 14,
+          "total": 14
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 30,
+          "total": 30
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 14,
+          "total": 14
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 13,
+          "total": 14
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 28,
+          "total": 28
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 2,
+      "ddl": "same"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 13,
+          "total": 14
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 28,
+          "total": 28
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 4,
+          "total": 14
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 11,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 4,
+          "total": 14
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 11,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 14,
+          "total": 14
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 10,
+          "total": 12
+        },
+        "relations": {
+          "ok": 30,
+          "total": 30
+        },
+        "delete": {
+          "ok": 11,
+          "total": 14
+        }
+      },
+      "findings": 6,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 13,
+          "total": 14
+        },
+        "read": {
+          "ok": 13,
+          "total": 13
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 28,
+          "total": 28
+        },
+        "delete": {
+          "ok": 13,
+          "total": 13
+        }
+      },
+      "findings": 2,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 14,
+          "total": 14
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 30,
+          "total": 30
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 14,
+          "total": 14
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 28,
+          "total": 28
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 1,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 14,
+            "total": 14
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 30,
+            "total": 30
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 14,
+            "total": 14
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 13,
+            "total": 14
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 28,
+            "total": 28
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v21, v22, v23, v24, v25, 26, v27, v28, v29, v30)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 13,
+            "total": 14
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 28,
+            "total": 28
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v21, v22, v23, v24, v25, 26, v27, v28, v29, v30)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"Theme\" AS ENUM ('dark', 'light', 'auto');\n\n-- CreateEnum\nCREATE TYPE \"AiTaggingMethod\" AS ENUM ('DISABLED', 'GENERATE', 'EXISTING', 'PREDEFINED');\n\n-- CreateEnum\nCREATE TYPE \"LinksRouteTo\" AS ENUM ('ORIGINAL', 'PDF', 'READABLE', 'MONOLITH', 'SCREENSHOT', 'DETAILS');\n\n-- CreateEnum\nCREATE TYPE \"SubscriptionProvider\" AS ENUM ('STRIPE', 'APPLE', 'GOOGLE');\n\n-- CreateEnum\nCREATE TYPE \"DashboardSectionType\" AS ENUM ('STATS', 'RECENT_LINKS', 'PINNED_LINKS', 'COLLECTION');\n\n-- CreateEnum\nCREATE TYPE \"AppMigrationStatus\" AS ENUM ('APPLIED', 'PENDING', 'FAILED');\n\n-- DropForeignKey\nALTER TABLE \"AccessToken\" DROP CONSTRAINT \"AccessToken_userId_423cdb8a_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_f07d339b_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_createdById_51eb895c_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_ownerId_3fd2b03c_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_parentId_85c3a8f6_fk_Collection_id\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardSection\" DROP CONSTRAINT \"DashboardSection_collectionId_68ed6d6b_fk_Collection_id\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardSection\" DROP CONSTRAINT \"DashboardSection_userId_94bfc824_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Highlight\" DROP CONSTRAINT \"Highlight_linkId_6f80e04b_fk_Link_id\";\n\n-- DropForeignKey\nALTER TABLE \"Highlight\" DROP CONSTRAINT \"Highlight_userId_5743b799_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Link\" DROP CONSTRAINT \"Link_collectionId_117da85d_fk_Collection_id\";\n\n-- DropForeignKey\nALTER TABLE \"Link\" DROP CONSTRAINT \"Link_createdById_583740de_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"RssSubscription\" DROP CONSTRAINT \"RssSubscription_collectionId_be12dcff_fk_Collection_id\";\n\n-- DropForeignKey\nALTER TABLE \"Subscription\" DROP CONSTRAINT \"Subscription_userId_127d5591_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"Tag\" DROP CONSTRAINT \"Tag_ownerId_8e590e9e_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_parentSubscriptionId_37456859_fk_Subscription_id\";\n\n-- DropForeignKey\nALTER TABLE \"UsersAndCollections\" DROP CONSTRAINT \"UsersAndCollections_collectionId_5e361e10_fk_Collection_id\";\n\n-- DropForeignKey\nALTER TABLE \"UsersAndCollections\" DROP CONSTRAINT \"UsersAndCollections_userId_5e07a982_fk_User_id\";\n\n-- DropForeignKey\nALTER TABLE \"_LinkToTag\" DROP CONSTRAINT \"_LinkToTag_A_a21a06e6_fk_Link_id\";\n\n-- DropForeignKey\nALTER TABLE \"_LinkToTag\" DROP CONSTRAINT \"_LinkToTag_B_af93cc20_fk_Tag_id\";\n\n-- DropForeignKey\nALTER TABLE \"_PinnedLinks\" DROP CONSTRAINT \"_PinnedLinks_A_a92d3419_fk_Link_id\";\n\n-- DropForeignKey\nALTER TABLE \"_PinnedLinks\" DROP CONSTRAINT \"_PinnedLinks_B_06cedc43_fk_User_id\";\n\n-- DropIndex\nDROP INDEX \"AccessToken_token_c2ffd353_like\";\n\n-- DropIndex\nDROP INDEX \"Account_id_ad803b20_like\";\n\n-- DropIndex\nDROP INDEX \"AppMigration_name_63ad8e22_like\";\n\n-- DropIndex\nDROP INDEX \"EmailVerificationCode_identifier_d5de8e2c_like\";\n\n-- DropIndex\nDROP INDEX \"PasswordResetToken_token_b8e63d94_like\";\n\n-- DropIndex\nDROP INDEX \"Subscription_googlePurchaseToken_6c751dc8_like\";\n\n-- DropIndex\nDROP INDEX \"Subscription_storeOriginalTransactionId_ba30cc5a_like\";\n\n-- DropIndex\nDROP INDEX \"Subscription_stripeSubscriptionId_c0998590_like\";\n\n-- DropIndex\nDROP INDEX \"User_email_667201b5_like\";\n\n-- DropIndex\nDROP INDEX \"User_username_3851fdce_like\";\n\n-- DropIndex\nDROP INDEX \"VerificationToken_token_9a844c27_like\";\n\n-- AlterTable\nALTER TABLE \"AccessToken\" ALTER COLUMN \"revoked\" SET DEFAULT false,\nALTER COLUMN \"isSession\" SET DEFAULT false,\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUsedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"AppMigration\" DROP COLUMN \"status\",\nADD COLUMN     \"status\" \"AppMigrationStatus\" NOT NULL,\nALTER COLUMN \"finishedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Collection\" ALTER COLUMN \"description\" SET DEFAULT '',\nALTER COLUMN \"color\" SET DEFAULT '#0ea5e9',\nALTER COLUMN \"isPublic\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"DashboardSection\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"DashboardSectionType\" NOT NULL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"EmailVerificationCode\" DROP CONSTRAINT \"EmailVerificationCode_pkey\",\nALTER COLUMN \"attempts\" SET DEFAULT 0,\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Highlight\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Link\" ALTER COLUMN \"name\" SET DEFAULT '',\nALTER COLUMN \"type\" SET DEFAULT 'url',\nALTER COLUMN \"description\" SET DEFAULT '',\nALTER COLUMN \"clientSide\" SET DEFAULT false,\nALTER COLUMN \"aiTagged\" SET DEFAULT false,\nALTER COLUMN \"lastPreserved\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"importDate\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"PasswordResetToken\" DROP CONSTRAINT \"PasswordResetToken_pkey\",\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"RssSubscription\" ALTER COLUMN \"lastBuildDate\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Subscription\" DROP COLUMN \"provider\",\nADD COLUMN     \"provider\" \"SubscriptionProvider\" NOT NULL,\nALTER COLUMN \"currentPeriodStart\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"currentPeriodEnd\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"quantity\" SET DEFAULT 1,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"Tag\" ALTER COLUMN \"aiGenerated\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"User\" ALTER COLUMN \"emailVerified\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"locale\" SET DEFAULT 'en',\nALTER COLUMN \"collectionOrder\" SET DEFAULT ARRAY[]::INTEGER[],\nDROP COLUMN \"linksRouteTo\",\nADD COLUMN     \"linksRouteTo\" \"LinksRouteTo\" NOT NULL DEFAULT 'ORIGINAL',\nDROP COLUMN \"aiTaggingMethod\",\nADD COLUMN     \"aiTaggingMethod\" \"AiTaggingMethod\" NOT NULL DEFAULT 'DISABLED',\nALTER COLUMN \"aiPredefinedTags\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"aiTagExistingLinks\" SET DEFAULT false,\nDROP COLUMN \"theme\",\nADD COLUMN     \"theme\" \"Theme\" NOT NULL DEFAULT 'dark',\nALTER COLUMN \"readableFontFamily\" SET DEFAULT 'sans-serif',\nALTER COLUMN \"readableFontSize\" SET DEFAULT '20px',\nALTER COLUMN \"readableLineHeight\" SET DEFAULT '1.8',\nALTER COLUMN \"readableLineWidth\" SET DEFAULT 'normal',\nALTER COLUMN \"preventDuplicateLinks\" SET DEFAULT false,\nALTER COLUMN \"archiveAsScreenshot\" SET DEFAULT true,\nALTER COLUMN \"archiveAsMonolith\" SET DEFAULT true,\nALTER COLUMN \"archiveAsPDF\" SET DEFAULT true,\nALTER COLUMN \"archiveAsReadable\" SET DEFAULT true,\nALTER COLUMN \"archiveAsWaybackMachine\" SET DEFAULT false,\nALTER COLUMN \"lastPickedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"acceptPromotionalEmails\" SET DEFAULT false,\nALTER COLUMN \"shareUsageAnalytics\" SET DEFAULT true,\nALTER COLUMN \"trialEndEmailSent\" SET DEFAULT false,\nALTER COLUMN \"sessionVersion\" SET DEFAULT 0,\nALTER COLUMN \"passwordRetries\" SET DEFAULT 0,\nALTER COLUMN \"passwordRetryAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"UsersAndCollections\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_pkey\",\nALTER COLUMN \"expires\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"_LinkToTag\" RENAME CONSTRAINT \"_LinkToTag_pkey\" TO \"_LinkToTag_AB_pkey\";\n\n-- AlterTable\nALTER TABLE \"_PinnedLinks\" RENAME CONSTRAINT \"_PinnedLinks_pkey\" TO \"_PinnedLinks_AB_pkey\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"EmailVerificationCode_identifier_key\" ON \"EmailVerificationCode\"(\"identifier\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"PasswordResetToken_token_key\" ON \"PasswordResetToken\"(\"token\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_parentSubscriptionId_fkey\" FOREIGN KEY (\"parentSubscriptionId\") REFERENCES \"Subscription\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UsersAndCollections\" ADD CONSTRAINT \"UsersAndCollections_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UsersAndCollections\" ADD CONSTRAINT \"UsersAndCollections_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Link\" ADD CONSTRAINT \"Link_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Link\" ADD CONSTRAINT \"Link_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tag\" ADD CONSTRAINT \"Tag_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Subscription\" ADD CONSTRAINT \"Subscription_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessToken\" ADD CONSTRAINT \"AccessToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RssSubscription\" ADD CONSTRAINT \"RssSubscription_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Highlight\" ADD CONSTRAINT \"Highlight_linkId_fkey\" FOREIGN KEY (\"linkId\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Highlight\" ADD CONSTRAINT \"Highlight_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardSection\" ADD CONSTRAINT \"DashboardSection_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardSection\" ADD CONSTRAINT \"DashboardSection_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PinnedLinks\" ADD CONSTRAINT \"_PinnedLinks_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PinnedLinks\" ADD CONSTRAINT \"_PinnedLinks_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_LinkToTag\" ADD CONSTRAINT \"_LinkToTag_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_LinkToTag\" ADD CONSTRAINT \"_LinkToTag_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"Tag\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"Collection_ownerId_90b2fd_idx\" RENAME TO \"Collection_ownerId_idx\";\n\n-- RenameIndex\nALTER INDEX \"Link_collect_64e25f_idx\" RENAME TO \"Link_collectionId_idx\";\n\n-- RenameIndex\nALTER INDEX \"Link_collect_666f2e_idx\" RENAME TO \"Link_collectionId_collectionOrder_id_idx\";\n\n-- RenameIndex\nALTER INDEX \"Tag_ownerId_b38150_idx\" RENAME TO \"Tag_ownerId_idx\";\n\n-- RenameIndex\nALTER INDEX \"UsersAndCol_userId_f987ce_idx\" RENAME TO \"UsersAndCollections_userId_idx\";\n\n-- RenameIndex\nALTER INDEX \"DLinkToTag_B_31970b_idx\" RENAME TO \"_LinkToTag_B_index\";\n\n-- RenameIndex\nALTER INDEX \"DPinnedLink_B_8e72f0_idx\" RENAME TO \"_PinnedLinks_B_index\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 4,
+            "total": 14
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Collection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UsersAndCollections",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RssSubscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Highlight",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "DashboardSection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"User\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/linkwarden; fi; exec /cache/bin/linkwarden crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/linkwarden; fi; exec /cache/bin/linkwarden ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 4,
+            "total": 14
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"80a37734-a4b5-4891-967f-a7b0878ea31a\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Collection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UsersAndCollections",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RssSubscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Highlight",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "DashboardSection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 14,
+            "total": 14
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 10,
+            "total": 12
+          },
+          "relations": {
+            "ok": 30,
+            "total": 30
+          },
+          "delete": {
+            "ok": 11,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"VerificationToken\" WHERE \"VerificationToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "EmailVerificationCode",
+            "check": "update",
+            "text": "update of `code` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...1, \"updatedAt\" = $2 WHERE \"EmailVerificationCode\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "EmailVerificationCode",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ilVerificationCode\" WHERE \"EmailVerificationCode\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "update",
+            "text": "update of `identifier` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...= $1, \"updatedAt\" = $2 WHERE \"PasswordResetToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...M \"PasswordResetToken\" WHERE \"PasswordResetToken\".\"\" IS NULL\n                                                             ^\n"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 13,
+            "total": 14
+          },
+          "read": {
+            "ok": 13,
+            "total": 13
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 28,
+            "total": 28
+          },
+          "delete": {
+            "ok": 13,
+            "total": 13
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v21, v22, v23, v24, v25, 26, v27, v28, v29, v30). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: linkwarden_eloquent, SQL: insert into \"Account\" (\"userId\", \"type\", \"provider\", \"providerAccountId\", \"refresh_token\", \"access_token\", \"expires_at\", \"token_type\", \"scope\", \"id_token\", \"session_state\") values (1, v21, v22, v23, v24, v25, 26, v27, v28, v29, v30))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 14,
+            "total": 14
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 30,
+            "total": 30
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"AccessToken\" DROP CONSTRAINT \"AccessToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_ownerId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Collection\" DROP CONSTRAINT \"Collection_parentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardSection\" DROP CONSTRAINT \"DashboardSection_collectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardSection\" DROP CONSTRAINT \"DashboardSection_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Highlight\" DROP CONSTRAINT \"Highlight_linkId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Highlight\" DROP CONSTRAINT \"Highlight_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Link\" DROP CONSTRAINT \"Link_collectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Link\" DROP CONSTRAINT \"Link_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RssSubscription\" DROP CONSTRAINT \"RssSubscription_collectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Subscription\" DROP CONSTRAINT \"Subscription_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tag\" DROP CONSTRAINT \"Tag_ownerId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_parentSubscriptionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UsersAndCollections\" DROP CONSTRAINT \"UsersAndCollections_collectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UsersAndCollections\" DROP CONSTRAINT \"UsersAndCollections_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_LinkToTag\" DROP CONSTRAINT \"_LinkToTag_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_LinkToTag\" DROP CONSTRAINT \"_LinkToTag_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_PinnedLinks\" DROP CONSTRAINT \"_PinnedLinks_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_PinnedLinks\" DROP CONSTRAINT \"_PinnedLinks_B_fkey\";\n\n-- AlterTable\nALTER TABLE \"EmailVerificationCode\" DROP CONSTRAINT \"EmailVerificationCode_identifier_key\";\n\n-- AlterTable\nALTER TABLE \"PasswordResetToken\" DROP CONSTRAINT \"PasswordResetToken_token_key\";\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_token_key\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"EmailVerificationCode_identifier_key\" ON \"EmailVerificationCode\"(\"identifier\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"PasswordResetToken_token_key\" ON \"PasswordResetToken\"(\"token\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_parentSubscriptionId_fkey\" FOREIGN KEY (\"parentSubscriptionId\") REFERENCES \"Subscription\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Collection\" ADD CONSTRAINT \"Collection_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UsersAndCollections\" ADD CONSTRAINT \"UsersAndCollections_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UsersAndCollections\" ADD CONSTRAINT \"UsersAndCollections_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Link\" ADD CONSTRAINT \"Link_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Link\" ADD CONSTRAINT \"Link_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tag\" ADD CONSTRAINT \"Tag_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Subscription\" ADD CONSTRAINT \"Subscription_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessToken\" ADD CONSTRAINT \"AccessToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RssSubscription\" ADD CONSTRAINT \"RssSubscription_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Highlight\" ADD CONSTRAINT \"Highlight_linkId_fkey\" FOREIGN KEY (\"linkId\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Highlight\" ADD CONSTRAINT \"Highlight_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardSection\" ADD CONSTRAINT \"DashboardSection_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardSection\" ADD CONSTRAINT \"DashboardSection_collectionId_fkey\" FOREIGN KEY (\"collectionId\") REFERENCES \"Collection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PinnedLinks\" ADD CONSTRAINT \"_PinnedLinks_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PinnedLinks\" ADD CONSTRAINT \"_PinnedLinks_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_LinkToTag\" ADD CONSTRAINT \"_LinkToTag_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Link\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_LinkToTag\" ADD CONSTRAINT \"_LinkToTag_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"Tag\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 14,
+            "total": 14
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 28,
+            "total": 28
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

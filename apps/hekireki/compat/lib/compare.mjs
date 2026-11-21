@@ -13,6 +13,7 @@ export function compare(plan, out) {
   }
   const byModel = new Map(out.models.map((r) => [r.model, r]))
   const rows = new Map()
+  const pending = []
 
   for (const m of plan.models) {
     const r = byModel.get(m.name) ?? { missing: true }
@@ -58,6 +59,9 @@ export function compare(plan, out) {
           add('read', `\`${f.column}\` (${typeName(f)}) ${problem}`)
         }
       } else if (f.write === 'parent') {
+        // A parent that did not go in leaves nothing to hold the key to (a database without
+        // foreign keys takes whatever the ORM wrote).
+        if (f.fk.available && !rows.has(f.fk.model)) continue
         const parent = f.fk.available ? rows.get(f.fk.model) : null
         const expected = parent ? parent[f.fk.column] : null
         const problem = differs(f, expected, got)
@@ -76,6 +80,11 @@ export function compare(plan, out) {
         }
       }
     }
+    for (const t of r.read.typeMismatches ?? []) {
+      readOk = false
+      add('read', `\`${t.column}\` is typed \`${t.declared}\` but came back as ${t.got}`)
+    }
+    for (const note of r.notes ?? []) add('types', note)
     if (!readOk) counts.read.ok--
 
     if (m.update) {
@@ -86,16 +95,35 @@ export function compare(plan, out) {
       else if (!ok) add('update', `\`${m.update.column}\` ${differs(f, m.update.value, r.update.value)} after the update`)
     }
 
-    for (const rel of r.relations ?? []) {
-      if (rel.skipped) continue
-      tally('relations', rel.found && rel.ok)
-      if (!rel.found) add('relations', `no relation for \`${rel.name}\` (${rel.kind})`)
-      else if (!rel.ok) add('relations', `relation \`${rel.name}\` did not load the related row${rel.loaded != null ? ` (loaded ${rel.loaded})` : ''}`, rel.error)
-    }
+    pending.push({ m, r, add })
 
     if (r.delete) {
       tally('delete', r.delete.ok)
       if (!r.delete.ok) add('delete', 'delete failed', r.delete.error)
+    }
+  }
+  // Relations, once every row is known: a relation has to load a row exactly when the row on the
+  // other side holds the matching key.
+  for (const { m, r, add } of pending) {
+    const mine = rows.get(m.name)
+    for (const rel of r.relations ?? []) {
+      if (rel.skipped) continue
+      if (!rel.found) {
+        tally('relations', false)
+        add('relations', `no relation for \`${rel.name}\` (${rel.kind})`)
+        continue
+      }
+      const def = m.relations.find((x) => x.name === rel.name)
+      const other = rows.get(def.model)
+      const expected =
+        Boolean(mine && other) &&
+        def.columns.length > 0 &&
+        def.columns.every((c, i) => mine[c] != null && String(mine[c]) === String(other[def.references[i]]))
+      const loaded = rel.loaded ?? 0
+      const ok = !rel.error && (expected ? loaded > 0 : loaded === 0)
+      tally('relations', ok)
+      if (rel.error) add('relations', `relation \`${rel.name}\` failed to load`, rel.error)
+      else if (!ok) add('relations', expected ? `relation \`${rel.name}\` loaded nothing, though the related row is there` : `relation \`${rel.name}\` loaded ${loaded} row(s), though none matches`)
     }
   }
   return { counts, findings }
@@ -162,7 +190,8 @@ function badDefault(f, got) {
     const t = Date.parse(got)
     if (Number.isNaN(t)) return `is ${show(got)}, not a date`
     const drift = Math.abs(Date.now() - t)
-    if (drift > 10 * 60_000) return `is ${got}, ${Math.round(drift / 3_600_000)}h away from now (a time zone)`
+    const allowed = f.native?.[0] === 'Date' ? 26 * 3_600_000 : 10 * 60_000 // a date drops the time of day
+    if (drift > allowed) return `is ${got}, ${Math.round(drift / 3_600_000)}h away from now (a time zone)`
   }
   if (f.default === 'uuid' && typeof got === 'string' && !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(got)) return `is ${show(got)}, not a UUID`
   if (f.default === 'cuid' && typeof got === 'string' && !/^[a-z0-9]{20,32}$/.test(got)) return `is ${show(got)}, not a cuid`

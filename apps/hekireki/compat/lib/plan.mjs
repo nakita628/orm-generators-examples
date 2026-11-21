@@ -9,12 +9,17 @@ import { getDMMF } from '@prisma/get-dmmf'
 
 /** @param {string} source the schema.prisma text */
 export async function makePlan(source) {
-  const provider = /datasource\s+\w+\s*\{[^}]*provider\s*=\s*"(\w+)"/s.exec(source)?.[1]
+  // Line comments out first: a schema may keep another datasource commented out above its own.
+  const code = source.replace(/\/\/.*$/gm, '')
+  const provider = /datasource\s+\w+\s*\{[^}]*provider\s*=\s*"(\w+)"/s.exec(code)?.[1]
   if (!provider) throw new Error('no datasource provider in the schema')
   const dialect = { postgresql: 'postgresql', postgres: 'postgresql', mysql: 'mysql', sqlite: 'sqlite' }[provider]
   if (!dialect) throw new Error(`unsupported provider ${provider}`)
 
   const { datamodel } = await getDMMF({ datamodel: source })
+  // A view is in the DMMF's models with nothing to tell it apart; it is read-only, so it is left out.
+  const views = new Set([...code.matchAll(/^\s*view\s+(\w+)\s*\{/gm)].map((m) => m[1]))
+  datamodel.models = datamodel.models.filter((m) => !views.has(m.name))
   const enums = Object.fromEntries(datamodel.enums.map((e) => [e.name, e.values.map((v) => v.dbName ?? v.name)]))
   const byName = new Map(datamodel.models.map((m) => [m.name, m]))
   const table = (m) => m.dbName ?? m.name
@@ -89,6 +94,9 @@ export async function makePlan(source) {
   })
 
   const ordered = order(models)
+  // Columns another model's key points at: changing one after the insert would leave the rows
+  // inserted later pointing at a value that is gone.
+  const referenced = new Set(models.flatMap((m) => m.fields.filter((f) => f.fk).map((f) => `${f.fk.model}.${f.fk.column}`)))
   let n = 0
   for (const m of ordered) {
     for (const f of m.fields) {
@@ -104,7 +112,16 @@ export async function makePlan(source) {
       }
     }
     // One column the harness changes after the insert, to see an update go through.
-    const target = m.fields.find((f) => f.write === 'value' && !f.id && !f.unique && !f.list && ['String', 'Int', 'Boolean'].includes(f.type))
+    const target = m.fields.find(
+      (f) =>
+        f.write === 'value' &&
+        !f.id &&
+        !f.unique &&
+        !f.list &&
+        !referenced.has(`${m.name}.${f.column}`) &&
+        f.native?.[0] !== 'Char' &&
+        ['String', 'Int', 'Boolean'].includes(f.type),
+    )
     m.update = target ? { column: target.column, value: updated(target, enums, dialect) } : null
   }
   return { dialect, enums, models: ordered }
@@ -160,14 +177,22 @@ function sample(f, enums, n, dialect) {
         return String(9007199254740000 + n)
       case 'Float':
         return n + 0.5
-      case 'Decimal':
-        return `${n}.25`
+      case 'Decimal': {
+        // As many fraction digits as the column keeps: @db.Decimal(p, s) rounds to s.
+        const scale = nativeArgs?.[1] !== undefined ? Number(nativeArgs[1]) : 2
+        return scale === 0 ? String(n) : `${n}.${'25'.padEnd(scale, '0').slice(0, scale)}`
+      }
       case 'Boolean':
         return true
       case 'DateTime':
         if (nativeName === 'Date') return `2024-01-${String((n % 27) + 1).padStart(2, '0')}T00:00:00.000Z`
         if (nativeName === 'Time' || nativeName === 'Timetz') return '1970-01-01T12:34:56.000Z'
-        return `2024-01-02T03:04:05.${String(n % 1000).padStart(3, '0')}Z`
+        // A precision below 3 (@db.Timestamp(0), @db.Timestamptz(1)) keeps fewer digits.
+        {
+          const precision = nativeArgs?.[0] !== undefined ? Math.min(3, Number(nativeArgs[0])) : 3
+          const ms = String(n % 1000).padStart(3, '0').slice(0, precision).padEnd(3, '0')
+          return `2024-01-02T03:04:05.${ms}Z`
+        }
       case 'Json':
         return { n, tags: ['a', 'b'], nested: { ok: true } }
       case 'Bytes':

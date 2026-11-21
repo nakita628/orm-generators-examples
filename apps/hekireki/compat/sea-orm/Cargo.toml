@@ -1,0 +1,25 @@
+[package]
+name = "compat"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+# Runs the compat plan through the entities hekireki-sea-orm wrote (copied to src/models at run
+# time, with src/registry.rs listing them). The sea-orm features and the crates the generated
+# defaults call are those of checks/sea-orm/Cargo.toml, with the three sqlx drivers.
+[dependencies]
+sea-orm = { version = "1.1", features = ["postgres-array", "with-json", "with-chrono", "with-uuid", "with-rust_decimal", "with-bigdecimal", "sqlx-postgres", "sqlx-mysql", "sqlx-sqlite", "runtime-tokio-rustls"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+uuid = { version = "1", features = ["v4", "v7"] }
+ulid = "1"
+cuid2 = "0.1"
+nanoid = "0.4"
+chrono = { version = "0.4", default-features = false, features = ["clock"] }
+async-trait = "0.1"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+base64 = "0.22"
+rust_decimal = "1"
+
+[profile.dev]
+debug = false

@@ -1,0 +1,1284 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 104,
+          "total": 104
+        },
+        "delete": {
+          "ok": 38,
+          "total": 38
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 37,
+          "total": 38
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 38,
+          "total": 38
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 104,
+          "total": 104
+        },
+        "delete": {
+          "ok": 38,
+          "total": 38
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 18,
+          "total": 38
+        },
+        "read": {
+          "ok": 18,
+          "total": 18
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 32,
+          "total": 32
+        },
+        "delete": {
+          "ok": 18,
+          "total": 18
+        }
+      },
+      "findings": 20,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 17,
+          "total": 38
+        },
+        "read": {
+          "ok": 17,
+          "total": 17
+        },
+        "update": {
+          "ok": 13,
+          "total": 13
+        },
+        "relations": {
+          "ok": 30,
+          "total": 30
+        },
+        "delete": {
+          "ok": 17,
+          "total": 17
+        }
+      },
+      "findings": 21,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 18,
+          "total": 38
+        },
+        "read": {
+          "ok": 16,
+          "total": 18
+        },
+        "update": {
+          "ok": 12,
+          "total": 12
+        },
+        "relations": {
+          "ok": 26,
+          "total": 26
+        },
+        "delete": {
+          "ok": 16,
+          "total": 16
+        }
+      },
+      "findings": 22,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 28,
+          "total": 31
+        },
+        "relations": {
+          "ok": 104,
+          "total": 104
+        },
+        "delete": {
+          "ok": 30,
+          "total": 38
+        }
+      },
+      "findings": 11,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 7,
+          "total": 38
+        },
+        "read": {
+          "ok": 2,
+          "total": 7
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 36,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 104,
+          "total": 104
+        },
+        "delete": {
+          "ok": 38,
+          "total": 38
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 38,
+          "total": 38
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 31,
+          "total": 31
+        },
+        "relations": {
+          "ok": 102,
+          "total": 102
+        },
+        "delete": {
+          "ok": 38,
+          "total": 38
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 104,
+            "total": 104
+          },
+          "delete": {
+            "ok": 38,
+            "total": 38
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"IntegrationType\" AS ENUM ('app', 'mail', 'custom');\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_impactScore_idx\";\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_state_relevanceScore_idx\";\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_impactScore_idx\" ON \"project_insights\"(\"projectId\", \"impactScore\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_state_relevanceScore_idx\" ON \"project_insights\"(\"projectId\", \"state\", \"relevanceScore\" DESC);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 37,
+            "total": 38
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 38,
+            "total": 38
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "read",
+            "text": "`types` is typed `Generated<ProjectType[]>` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 104,
+            "total": 104
+          },
+          "delete": {
+            "ok": 38,
+            "total": 38
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"IntegrationType\" AS ENUM ('app', 'mail', 'custom');\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_impactScore_idx\";\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_state_relevanceScore_idx\";\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_impactScore_idx\" ON \"project_insights\"(\"projectId\", \"impactScore\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_state_relevanceScore_idx\" ON \"project_insights\"(\"projectId\", \"state\", \"relevanceScore\" DESC);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 18,
+            "total": 38
+          },
+          "read": {
+            "ok": 18,
+            "total": 18
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 32,
+            "total": 32
+          },
+          "delete": {
+            "ok": 18,
+            "total": 18
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: column \"types\" is of type \"ProjectType\"[] but expression is of type text[]\nLINE 1: ...'v33', 'f78849c5-d41d-4108-adb0-0c8229dccaff', 0, '{}'::text...\n                                                             ^\nHINT:  You will need to rewrite or cast the expression."
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "MemberProject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Cohort",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ReportLayout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "ShareReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EventMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "CustomEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "NotificationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ExportWatermark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Import",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "GscConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ProjectType\" AS ENUM ('website', 'app', 'backend');\n\n-- CreateEnum\nCREATE TYPE \"ProjectScope\" AS ENUM ('all', 'selected');\n\n-- CreateEnum\nCREATE TYPE \"AccessLevel\" AS ENUM ('read', 'write', 'admin');\n\n-- CreateEnum\nCREATE TYPE \"ClientType\" AS ENUM ('read', 'write', 'root');\n\n-- CreateEnum\nCREATE TYPE \"Interval\" AS ENUM ('hour', 'day', 'month', 'minute', 'week');\n\n-- CreateEnum\nCREATE TYPE \"ChartType\" AS ENUM ('linear', 'bar', 'histogram', 'pie', 'metric', 'area', 'map', 'funnel', 'retention', 'conversion', 'sankey', 'distribution');\n\n-- CreateEnum\nCREATE TYPE \"Metric\" AS ENUM ('sum', 'average', 'min', 'max', 'count');\n\n-- CreateEnum\nCREATE TYPE \"IntegrationType\" AS ENUM ('app', 'mail', 'custom');\n\n-- CreateEnum\nCREATE TYPE \"ImportStatus\" AS ENUM ('pending', 'processing', 'completed', 'failed');\n\n-- CreateEnum\nCREATE TYPE \"InsightState\" AS ENUM ('active', 'suppressed', 'closed');\n\n-- DropForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" DROP CONSTRAINT \"D_IntegrationToNotifi_B_7b46d8bc_fk_notifica\";\n\n-- DropForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" DROP CONSTRAINT \"_IntegrationToNotificationRule_A_74b5ac76_fk_integrations_id\";\n\n-- DropForeignKey\nALTER TABLE \"accounts\" DROP CONSTRAINT \"accounts_userId_fdd558ec_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"chat_messages\" DROP CONSTRAINT \"chat_messages_conversationId_b8147e0f_fk_conversations_id\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"clients_organizationId_0a0c6bd1_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"clients_projectId_83325579_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"cohorts\" DROP CONSTRAINT \"cohorts_projectId_043f9205_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_organizationId_62ebef5f_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_projectId_a9b2a149_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_userId_23063e31_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"custom_events\" DROP CONSTRAINT \"custom_events_projectId_3a35aa57_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"dashboards_organizationId_b965a8d6_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"dashboards_projectId_dc964adb_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"event_meta\" DROP CONSTRAINT \"event_meta_projectId_3e92cbb5_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"export_watermarks_integrationId_d1c25321_fk_integrations_id\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"export_watermarks_projectId_bfed4566_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"gsc_connections\" DROP CONSTRAINT \"gsc_connections_projectId_6e92dcc8_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"imports\" DROP CONSTRAINT \"imports_projectId_dc67d64d_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"insight_events\" DROP CONSTRAINT \"insight_events_insightId_aa1cf51d_fk_project_insights_id\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"integrations_organizationId_73ca088e_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"integrations_projectId_835f14d6_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"invites_createdById_6b6717c4_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"invites_organizationId_4658a5db_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"member_projects_memberId_576208d3_fk_members_id\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"member_projects_projectId_76b483cb_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_invitedById_6256b473_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_organizationId_1fb06a0d_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_userId_cb4a08c2_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"notification_rules\" DROP CONSTRAINT \"notification_rules_projectId_58232bad_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_integrationId_0446aa00_fk_integrations_id\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_notificationRuleId_12c6aa41_fk_notificat\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_projectId_af7b2cbb_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"organizations_createdByUserId_0d9b91cc_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"organizations_subscriptionCreatedByUserId_228cbb45_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"projects\" DROP CONSTRAINT \"projects_organizationId_d2c21acd_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"references\" DROP CONSTRAINT \"references_projectId_2e74c7e8_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"report_layouts\" DROP CONSTRAINT \"report_layouts_reportId_e1c5ffaf_fk_reports_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_dashboardId_d05522f7_fk_dashboards_id\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_projectId_941bee39_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"reset_password\" DROP CONSTRAINT \"reset_password_accountId_064808d2_fk_accounts_id\";\n\n-- DropForeignKey\nALTER TABLE \"sessions\" DROP CONSTRAINT \"sessions_userId_e50af64b_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_dashboardId_0dfd06c7_fk_dashboards_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_organizationId_c8c6e81d_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_projectId_d5374115_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_organizationId_acdbe830_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_projectId_f3aa6f22_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_reportId_4fb98b87_fk_reports_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_organizationId_b45edfa9_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_projectId_8558ff23_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_organizationId_a7af3df1_fk_organizations_id\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_projectId_e123e565_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor\" DROP CONSTRAINT \"two_factor_userId_cd16f42d_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_challenges\" DROP CONSTRAINT \"two_factor_challenges_userId_d2ce7de8_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"user_totp\" DROP CONSTRAINT \"user_totp_userId_4167aaa4_fk_users_id\";\n\n-- DropIndex\nDROP INDEX \"__code_migrations_id_d4146751_like\";\n\n-- DropIndex\nDROP INDEX \"__code_migrations_name_8c4f9d5d_like\";\n\n-- DropIndex\nDROP INDEX \"accounts_id_774736c0_like\";\n\n-- DropIndex\nDROP INDEX \"chat_messages_id_fdd14cde_like\";\n\n-- DropIndex\nDROP INDEX \"conversations_id_65f7c9ea_like\";\n\n-- DropIndex\nDROP INDEX \"dashboards_id_c806b57a_like\";\n\n-- DropIndex\nDROP INDEX \"gsc_connections_projectId_6e92dcc8_like\";\n\n-- DropIndex\nDROP INDEX \"invites_id_309c6db0_like\";\n\n-- DropIndex\nDROP INDEX \"organizations_id_61bd698f_like\";\n\n-- DropIndex\nDROP INDEX \"organizations_slug_aaafa6fa_like\";\n\n-- DropIndex\nDROP INDEX \"projects_id_a0f92e8b_like\";\n\n-- DropIndex\nDROP INDEX \"reset_password_id_974d9c98_like\";\n\n-- DropIndex\nDROP INDEX \"salts_salt_cb6acf33_like\";\n\n-- DropIndex\nDROP INDEX \"sessions_id_778b715b_like\";\n\n-- DropIndex\nDROP INDEX \"sessions_token_112e8439_like\";\n\n-- DropIndex\nDROP INDEX \"share_dashboards_dashboardId_0dfd06c7_like\";\n\n-- DropIndex\nDROP INDEX \"share_dashboards_id_3087bc2c_like\";\n\n-- DropIndex\nDROP INDEX \"share_reports_id_737d0615_like\";\n\n-- DropIndex\nDROP INDEX \"share_widgets_id_d97fd499_like\";\n\n-- DropIndex\nDROP INDEX \"shares_id_8638ad33_like\";\n\n-- DropIndex\nDROP INDEX \"shares_projectId_e123e565_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_id_93ad3ae1_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_userId_cd16f42d_like\";\n\n-- DropIndex\nDROP INDEX \"two_factor_challenges_id_92187c8c_like\";\n\n-- DropIndex\nDROP INDEX \"user_totp_id_84d08ebc_like\";\n\n-- DropIndex\nDROP INDEX \"user_totp_userId_4167aaa4_like\";\n\n-- DropIndex\nDROP INDEX \"users_email_0ea73cca_like\";\n\n-- DropIndex\nDROP INDEX \"users_id_605f60ff_like\";\n\n-- DropIndex\nDROP INDEX \"verifications_id_9f56bc89_like\";\n\n-- AlterTable\nALTER TABLE \"_IntegrationToNotificationRule\" RENAME CONSTRAINT \"_IntegrationToNotificationRule_pkey\" TO \"_IntegrationToNotificationRule_AB_pkey\";\n\n-- AlterTable\nALTER TABLE \"__code_migrations\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"accounts\" ALTER COLUMN \"accessTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"refreshTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"chat_messages\" ALTER COLUMN \"parts\" SET DATA TYPE JSON,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"clients\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ClientType\" NOT NULL DEFAULT 'write',\nALTER COLUMN \"ignoreCorsAndSecret\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"cohorts\" ALTER COLUMN \"definition\" SET DEFAULT '{}',\nALTER COLUMN \"isStatic\" SET DEFAULT false,\nALTER COLUMN \"profileCount\" SET DEFAULT 0,\nALTER COLUMN \"lastComputedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"conversations\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"custom_events\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"dashboards\" ALTER COLUMN \"filters\" SET DEFAULT '[]',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"email_unsubscribes\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"event_meta\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"export_watermarks\" ALTER COLUMN \"lastInsertedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastEventId\" SET DEFAULT '',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"gsc_connections\" ALTER COLUMN \"siteUrl\" SET DEFAULT '',\nALTER COLUMN \"accessTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastSyncedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"imports\" DROP COLUMN \"status\",\nADD COLUMN     \"status\" \"ImportStatus\" NOT NULL,\nALTER COLUMN \"totalEvents\" SET DEFAULT 0,\nALTER COLUMN \"processedEvents\" SET DEFAULT 0,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"insight_events\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"integrations\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"invites\" ALTER COLUMN \"projectAccess\" SET DEFAULT '[]',\nDROP COLUMN \"projectScope\",\nADD COLUMN     \"projectScope\" \"ProjectScope\" NOT NULL DEFAULT 'all',\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"member_projects\" DROP COLUMN \"level\",\nADD COLUMN     \"level\" \"AccessLevel\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"members\" DROP COLUMN \"projectScope\",\nADD COLUMN     \"projectScope\" \"ProjectScope\" NOT NULL DEFAULT 'all',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"notification_rules\" ALTER COLUMN \"sendToApp\" SET DEFAULT false,\nALTER COLUMN \"sendToEmail\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"notifications\" ALTER COLUMN \"isReadAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"sendToApp\" SET DEFAULT false,\nALTER COLUMN \"sendToEmail\" SET DEFAULT false;\n\n-- AlterTable\nALTER TABLE \"organizations\" ALTER COLUMN \"onboarding\" SET DEFAULT 'completed',\nALTER COLUMN \"subscriptionStartsAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionEndsAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionCanceledAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionPeriodEventsCount\" SET DEFAULT 0,\nALTER COLUMN \"subscriptionPeriodEventsCountExceededAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionPeriodEventsLimit\" SET DEFAULT 0,\nALTER COLUMN \"subscriptionSaveDiscountAppliedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionPauseAtPeriodEnd\" SET DEFAULT false,\nALTER COLUMN \"subscriptionResumesAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionFirstStartedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"usageWarningSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"usageExceededSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"windDownStartedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleteAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"project_insights\" DROP COLUMN \"state\",\nADD COLUMN     \"state\" \"InsightState\" NOT NULL DEFAULT 'active',\nALTER COLUMN \"displayName\" SET DEFAULT '',\nALTER COLUMN \"payload\" SET DEFAULT '{}',\nALTER COLUMN \"impactScore\" SET DEFAULT 0,\nALTER COLUMN \"emailWorthy\" SET DEFAULT false,\nALTER COLUMN \"referenceWorthy\" SET DEFAULT false,\nALTER COLUMN \"enrichedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"version\" SET DEFAULT 1,\nALTER COLUMN \"windowStart\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"windowEnd\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"firstDetectedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"firstDetectedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUpdatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastUpdatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastSeenAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastSeenAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"projects\" ALTER COLUMN \"eventsCount\" SET DEFAULT 0,\nDROP COLUMN \"types\",\nADD COLUMN     \"types\" \"ProjectType\"[] DEFAULT ARRAY[]::\"ProjectType\"[],\nALTER COLUMN \"cors\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"crossDomain\" SET DEFAULT false,\nALTER COLUMN \"allowUnsafeRevenueTracking\" SET DEFAULT false,\nALTER COLUMN \"aiStoreContent\" SET DEFAULT true,\nALTER COLUMN \"filters\" SET DEFAULT '[]',\nALTER COLUMN \"firstEventAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"noDataNotifiedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"dataStoppedNotifiedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleteAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"references\" ALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"report_layouts\" ALTER COLUMN \"gridColumns\" SET DEFAULT 12,\nALTER COLUMN \"x\" SET DEFAULT 0,\nALTER COLUMN \"y\" SET DEFAULT 0,\nALTER COLUMN \"w\" SET DEFAULT 8,\nALTER COLUMN \"h\" SET DEFAULT 6,\nALTER COLUMN \"minW\" SET DEFAULT 4,\nALTER COLUMN \"minH\" SET DEFAULT 4,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"reports\" DROP COLUMN \"interval\",\nADD COLUMN     \"interval\" \"Interval\" NOT NULL,\nALTER COLUMN \"range\" SET DEFAULT '30d',\nDROP COLUMN \"chartType\",\nADD COLUMN     \"chartType\" \"ChartType\" NOT NULL,\nALTER COLUMN \"lineType\" SET DEFAULT 'monotone',\nALTER COLUMN \"globalFilters\" SET DEFAULT '[]',\nDROP COLUMN \"metric\",\nADD COLUMN     \"metric\" \"Metric\" NOT NULL DEFAULT 'sum',\nALTER COLUMN \"previous\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"reset_password\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"salts\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"sessions\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_pkey\",\nALTER COLUMN \"public\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_pkey\",\nALTER COLUMN \"public\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_pkey\",\nALTER COLUMN \"public\" SET DEFAULT true,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_pkey\",\nALTER COLUMN \"public\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"two_factor\" ALTER COLUMN \"verified\" SET DEFAULT true,\nALTER COLUMN \"failedVerificationCount\" SET DEFAULT 0,\nALTER COLUMN \"lockedUntil\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"two_factor_challenges\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"user_totp\" ALTER COLUMN \"enabledAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"users\" ALTER COLUMN \"emailVerified\" SET DEFAULT false,\nALTER COLUMN \"twoFactorEnabled\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deletedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"verifications\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_moduleKey_windowKind_state_idx\" ON \"project_insights\"(\"projectId\", \"moduleKey\", \"windowKind\", \"state\");\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_state_relevanceScore_idx\" ON \"project_insights\"(\"projectId\", \"state\", \"relevanceScore\" DESC);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"project_insights_projectId_moduleKey_dimensionKey_windowKin_key\" ON \"project_insights\"(\"projectId\", \"moduleKey\", \"dimensionKey\", \"windowKind\", \"state\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_dashboards_id_key\" ON \"share_dashboards\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_reports_id_key\" ON \"share_reports\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_widgets_id_key\" ON \"share_widgets\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"shares_id_key\" ON \"shares\"(\"id\");\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"chat_messages\" ADD CONSTRAINT \"chat_messages_conversationId_fkey\" FOREIGN KEY (\"conversationId\") REFERENCES \"conversations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_createdByUserId_fkey\" FOREIGN KEY (\"createdByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_subscriptionCreatedByUserId_fkey\" FOREIGN KEY (\"subscriptionCreatedByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_totp\" ADD CONSTRAINT \"user_totp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor\" ADD CONSTRAINT \"two_factor_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor_challenges\" ADD CONSTRAINT \"two_factor_challenges_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"accounts\" ADD CONSTRAINT \"accounts_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"sessions\" ADD CONSTRAINT \"sessions_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_invitedById_fkey\" FOREIGN KEY (\"invitedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"members\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"projects\" ADD CONSTRAINT \"projects_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"cohorts\" ADD CONSTRAINT \"cohorts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"report_layouts\" ADD CONSTRAINT \"report_layouts_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"event_meta\" ADD CONSTRAINT \"event_meta_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"custom_events\" ADD CONSTRAINT \"custom_events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"references\" ADD CONSTRAINT \"references_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notification_rules\" ADD CONSTRAINT \"notification_rules_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_notificationRuleId_fkey\" FOREIGN KEY (\"notificationRuleId\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reset_password\" ADD CONSTRAINT \"reset_password_accountId_fkey\" FOREIGN KEY (\"accountId\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"imports\" ADD CONSTRAINT \"imports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"insight_events\" ADD CONSTRAINT \"insight_events_insightId_fkey\" FOREIGN KEY (\"insightId\") REFERENCES \"project_insights\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"gsc_connections\" ADD CONSTRAINT \"gsc_connections_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"DIntegratio_B_fe2134_idx\" RENAME TO \"_IntegrationToNotificationRule_B_index\";\n\n-- RenameIndex\nALTER INDEX \"chat_messag_convers_1be66e_idx\" RENAME TO \"chat_messages_conversationId_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"cohorts_project_69e11f_idx\" RENAME TO \"cohorts_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"conversatio_project_aec8d2_idx\" RENAME TO \"conversations_projectId_updatedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"conversatio_userId_a1f997_idx\" RENAME TO \"conversations_userId_updatedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"export_wate_integra_f2f09e_idx\" RENAME TO \"export_watermarks_integrationId_idx\";\n\n-- RenameIndex\nALTER INDEX \"insight_eve_insight_351e8c_idx\" RENAME TO \"insight_events_insightId_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"integration_organiz_b3afbf_idx\" RENAME TO \"integrations_organizationId_idx\";\n\n-- RenameIndex\nALTER INDEX \"integration_project_6f6ef2_idx\" RENAME TO \"integrations_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"member_proj_project_163518_idx\" RENAME TO \"member_projects_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"organizatio_windDow_f616e0_idx\" RENAME TO \"organizations_windDownStartedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"project_ins_project_40f0a9_idx\" RENAME TO \"project_insights_projectId_moduleKey_windowKind_state_idx\";\n\n-- RenameIndex\nALTER INDEX \"project_ins_project_c3039b_idx\" RENAME TO \"project_insights_projectId_state_relevanceScore_idx\";\n\n-- RenameIndex\nALTER INDEX \"project_ins_project_d1084f_idx\" RENAME TO \"project_insights_projectId_impactScore_idx\";\n\n-- RenameIndex\nALTER INDEX \"project_insights_projectId_moduleKey_dimensionKey_windowKind_st\" RENAME TO \"project_insights_projectId_moduleKey_dimensionKey_windowKin_key\";\n\n-- RenameIndex\nALTER INDEX \"two_factor__userId_e66984_idx\" RENAME TO \"two_factor_challenges_userId_idx\";\n\n-- RenameIndex\nALTER INDEX \"verificatio_identif_da5428_idx\" RENAME TO \"verifications_identifier_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 17,
+            "total": 38
+          },
+          "read": {
+            "ok": 17,
+            "total": 17
+          },
+          "update": {
+            "ok": 13,
+            "total": 13
+          },
+          "relations": {
+            "ok": 30,
+            "total": 30
+          },
+          "delete": {
+            "ok": 17,
+            "total": 17
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "UserTotp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v44\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "MemberProject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Cohort",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ReportLayout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "ShareReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EventMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "CustomEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "NotificationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ExportWatermark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Import",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "GscConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ProjectType\" AS ENUM ('website', 'app', 'backend');\n\n-- CreateEnum\nCREATE TYPE \"ProjectScope\" AS ENUM ('all', 'selected');\n\n-- CreateEnum\nCREATE TYPE \"AccessLevel\" AS ENUM ('read', 'write', 'admin');\n\n-- CreateEnum\nCREATE TYPE \"ClientType\" AS ENUM ('read', 'write', 'root');\n\n-- CreateEnum\nCREATE TYPE \"Interval\" AS ENUM ('hour', 'day', 'month', 'minute', 'week');\n\n-- CreateEnum\nCREATE TYPE \"ChartType\" AS ENUM ('linear', 'bar', 'histogram', 'pie', 'metric', 'area', 'map', 'funnel', 'retention', 'conversion', 'sankey', 'distribution');\n\n-- CreateEnum\nCREATE TYPE \"Metric\" AS ENUM ('sum', 'average', 'min', 'max', 'count');\n\n-- CreateEnum\nCREATE TYPE \"IntegrationType\" AS ENUM ('app', 'mail', 'custom');\n\n-- CreateEnum\nCREATE TYPE \"ImportStatus\" AS ENUM ('pending', 'processing', 'completed', 'failed');\n\n-- CreateEnum\nCREATE TYPE \"InsightState\" AS ENUM ('active', 'suppressed', 'closed');\n\n-- DropForeignKey\nALTER TABLE \"_integration_to_notification_rules\" DROP CONSTRAINT \"fk__integration_to_notification_rules_integration\";\n\n-- DropForeignKey\nALTER TABLE \"_integration_to_notification_rules\" DROP CONSTRAINT \"fk__integration_to_notification_rules_notification_rule\";\n\n-- DropForeignKey\nALTER TABLE \"accounts\" DROP CONSTRAINT \"fk_users_accounts\";\n\n-- DropForeignKey\nALTER TABLE \"chat_messages\" DROP CONSTRAINT \"fk_conversations_messages\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"fk_organizations_client\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"fk_projects_clients\";\n\n-- DropForeignKey\nALTER TABLE \"cohorts\" DROP CONSTRAINT \"fk_projects_cohorts\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"fk_organizations_conversations\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"fk_projects_conversations\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"fk_users_conversations\";\n\n-- DropForeignKey\nALTER TABLE \"custom_events\" DROP CONSTRAINT \"fk_projects_custom_events\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"fk_organizations_dashboard\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"fk_projects_dashboards\";\n\n-- DropForeignKey\nALTER TABLE \"event_meta\" DROP CONSTRAINT \"fk_projects_meta\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"fk_integrations_export_watermarks\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"fk_projects_export_watermarks\";\n\n-- DropForeignKey\nALTER TABLE \"gsc_connections\" DROP CONSTRAINT \"fk_projects_gsc_connection\";\n\n-- DropForeignKey\nALTER TABLE \"imports\" DROP CONSTRAINT \"fk_projects_imports\";\n\n-- DropForeignKey\nALTER TABLE \"insight_events\" DROP CONSTRAINT \"fk_project_insights_events\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"fk_organizations_integrations\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"fk_projects_integrations\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"fk_organizations_invites\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"fk_users_invites\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"fk_members_projects\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"fk_projects_member_projects\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"fk_organizations_members\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"fk_users_membership\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"fk_users_sent_invites\";\n\n-- DropForeignKey\nALTER TABLE \"notification_rules\" DROP CONSTRAINT \"fk_projects_notification_rules\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"fk_integrations_notifications\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"fk_notification_rules_notifications\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"fk_projects_notifications\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"fk_users_created_organizations\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"fk_users_subscriptions\";\n\n-- DropForeignKey\nALTER TABLE \"projects\" DROP CONSTRAINT \"fk_organizations_projects\";\n\n-- DropForeignKey\nALTER TABLE \"references\" DROP CONSTRAINT \"fk_projects_references\";\n\n-- DropForeignKey\nALTER TABLE \"report_layouts\" DROP CONSTRAINT \"fk_reports_layout\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"fk_dashboards_reports\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"fk_projects_reports\";\n\n-- DropForeignKey\nALTER TABLE \"reset_password\" DROP CONSTRAINT \"fk_accounts_reset_passwords\";\n\n-- DropForeignKey\nALTER TABLE \"sessions\" DROP CONSTRAINT \"fk_users_sessions\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"fk_dashboards_share\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"fk_organizations_share_dashboard\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"fk_projects_share_dashboards\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"fk_organizations_share_report\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"fk_projects_share_reports\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"fk_reports_share\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"fk_organizations_share_widget\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"fk_projects_share_widgets\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"fk_organizations_share_overview\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"fk_projects_share\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor\" DROP CONSTRAINT \"fk_users_two_factor\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_challenges\" DROP CONSTRAINT \"fk_users_two_factor_challenges\";\n\n-- DropForeignKey\nALTER TABLE \"user_totp\" DROP CONSTRAINT \"fk_users_totp\";\n\n-- DropIndex\nDROP INDEX \"custom_events_projectId_name_key\";\n\n-- DropIndex\nDROP INDEX \"members_organizationId_userId_key\";\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_impactScore_idx\";\n\n-- DropIndex\nDROP INDEX \"project_insights_projectId_state_relevanceScore_idx\";\n\n-- AlterTable\nALTER TABLE \"__code_migrations\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"accounts\" ALTER COLUMN \"accessTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"refreshTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"chat_messages\" ALTER COLUMN \"parts\" SET DATA TYPE JSON,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"clients\" DROP CONSTRAINT \"clients_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"ClientType\" NOT NULL DEFAULT 'write',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"clients_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"cohorts\" DROP CONSTRAINT \"cohorts_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"profileCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"lastComputedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"cohorts_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"conversations\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"custom_events\" DROP CONSTRAINT \"custom_events_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"custom_events_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"dashboards\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"email_unsubscribes\" DROP CONSTRAINT \"email_unsubscribes_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"email_unsubscribes_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"event_meta\" DROP CONSTRAINT \"event_meta_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"event_meta_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"export_watermarks_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"integrationId\",\nADD COLUMN     \"integrationId\" UUID NOT NULL,\nALTER COLUMN \"lastInsertedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"export_watermarks_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"gsc_connections\" DROP CONSTRAINT \"gsc_connections_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"accessTokenExpiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastSyncedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"gsc_connections_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"imports\" DROP CONSTRAINT \"imports_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"ImportStatus\" NOT NULL,\nALTER COLUMN \"totalEvents\" SET DATA TYPE INTEGER,\nALTER COLUMN \"processedEvents\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"imports_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"insight_events\" DROP CONSTRAINT \"insight_events_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"insightId\",\nADD COLUMN     \"insightId\" UUID NOT NULL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"insight_events_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"integrations\" DROP CONSTRAINT \"integrations_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"integrations_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"invites\" DROP COLUMN \"projectScope\",\nADD COLUMN     \"projectScope\" \"ProjectScope\" NOT NULL DEFAULT 'all',\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"member_projects_pkey\",\nDROP COLUMN \"memberId\",\nADD COLUMN     \"memberId\" UUID NOT NULL,\nDROP COLUMN \"level\",\nADD COLUMN     \"level\" \"AccessLevel\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"member_projects_pkey\" PRIMARY KEY (\"memberId\", \"projectId\");\n\n-- AlterTable\nALTER TABLE \"members\" DROP CONSTRAINT \"members_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"projectScope\",\nADD COLUMN     \"projectScope\" \"ProjectScope\" NOT NULL DEFAULT 'all',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"members_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"notification_rules\" DROP CONSTRAINT \"notification_rules_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"notification_rules_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"isReadAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nDROP COLUMN \"integrationId\",\nADD COLUMN     \"integrationId\" UUID,\nDROP COLUMN \"notificationRuleId\",\nADD COLUMN     \"notificationRuleId\" UUID,\nADD CONSTRAINT \"notifications_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"organizations\" ALTER COLUMN \"subscriptionStartsAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionEndsAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionCanceledAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionPeriodEventsCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"subscriptionPeriodEventsCountExceededAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionPeriodEventsLimit\" SET DATA TYPE INTEGER,\nALTER COLUMN \"subscriptionSaveDiscountAppliedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionResumesAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"subscriptionFirstStartedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"usageWarningSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"usageExceededSentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"windDownStartedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleteAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"project_insights\" DROP CONSTRAINT \"project_insights_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"state\",\nADD COLUMN     \"state\" \"InsightState\" NOT NULL DEFAULT 'active',\nALTER COLUMN \"impactScore\" SET DATA TYPE DOUBLE PRECISION,\nALTER COLUMN \"relevanceScore\" SET DATA TYPE DOUBLE PRECISION,\nALTER COLUMN \"enrichedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"enrichVersion\" SET DATA TYPE INTEGER,\nALTER COLUMN \"version\" SET DATA TYPE INTEGER,\nDROP COLUMN \"threadId\",\nADD COLUMN     \"threadId\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"windowStart\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"windowEnd\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"firstDetectedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"firstDetectedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastUpdatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastUpdatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"lastSeenAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"lastSeenAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"project_insights_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"projects\" ALTER COLUMN \"eventsCount\" SET DATA TYPE INTEGER,\nDROP COLUMN \"types\",\nADD COLUMN     \"types\" \"ProjectType\"[] DEFAULT ARRAY[]::\"ProjectType\"[],\nDROP COLUMN \"cors\",\nADD COLUMN     \"cors\" TEXT[] DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"firstEventAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"noDataNotifiedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"dataStoppedNotifiedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deleteAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"references\" DROP CONSTRAINT \"references_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nALTER COLUMN \"date\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"date\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"references_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"report_layouts\" DROP CONSTRAINT \"report_layouts_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"reportId\",\nADD COLUMN     \"reportId\" UUID NOT NULL,\nALTER COLUMN \"gridColumns\" SET DATA TYPE INTEGER,\nALTER COLUMN \"x\" SET DATA TYPE INTEGER,\nALTER COLUMN \"y\" SET DATA TYPE INTEGER,\nALTER COLUMN \"w\" SET DATA TYPE INTEGER,\nALTER COLUMN \"h\" SET DATA TYPE INTEGER,\nALTER COLUMN \"minW\" SET DATA TYPE INTEGER,\nALTER COLUMN \"minH\" SET DATA TYPE INTEGER,\nALTER COLUMN \"maxW\" SET DATA TYPE INTEGER,\nALTER COLUMN \"maxH\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"report_layouts_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_pkey\",\nDROP COLUMN \"id\",\nADD COLUMN     \"id\" UUID NOT NULL DEFAULT gen_random_uuid(),\nDROP COLUMN \"interval\",\nADD COLUMN     \"interval\" \"Interval\" NOT NULL,\nDROP COLUMN \"chartType\",\nADD COLUMN     \"chartType\" \"ChartType\" NOT NULL,\nDROP COLUMN \"metric\",\nADD COLUMN     \"metric\" \"Metric\" NOT NULL DEFAULT 'sum',\nALTER COLUMN \"funnelWindow\" SET DATA TYPE DOUBLE PRECISION,\nDROP COLUMN \"visibleSeries\",\nADD COLUMN     \"visibleSeries\" TEXT[],\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"reports_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"reset_password\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"salts\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"sessions\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_pkey\",\nDROP COLUMN \"reportId\",\nADD COLUMN     \"reportId\" UUID NOT NULL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_pkey\",\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"two_factor\" ALTER COLUMN \"failedVerificationCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"lockedUntil\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"two_factor_challenges\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"user_totp\" DROP COLUMN \"recoveryCodes\",\nADD COLUMN     \"recoveryCodes\" TEXT[],\nALTER COLUMN \"enabledAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"users\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deletedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"verifications\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- DropTable\nDROP TABLE \"_integration_to_notification_rules\";\n\n-- CreateTable\nCREATE TABLE \"_IntegrationToNotificationRule\" (\n    \"A\" UUID NOT NULL,\n    \"B\" UUID NOT NULL,\n\n    CONSTRAINT \"_IntegrationToNotificationRule_AB_pkey\" PRIMARY KEY (\"A\",\"B\")\n);\n\n-- CreateIndex\nCREATE INDEX \"_IntegrationToNotificationRule_B_index\" ON \"_IntegrationToNotificationRule\"(\"B\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"custom_events_projectId_name_key\" ON \"custom_events\"(\"projectId\", \"name\");\n\n-- CreateIndex\nCREATE INDEX \"export_watermarks_integrationId_idx\" ON \"export_watermarks\"(\"integrationId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"export_watermarks_projectId_integrationId_key\" ON \"export_watermarks\"(\"projectId\", \"integrationId\");\n\n-- CreateIndex\nCREATE INDEX \"insight_events_insightId_createdAt_idx\" ON \"insight_events\"(\"insightId\", \"createdAt\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"members_organizationId_userId_key\" ON \"members\"(\"organizationId\", \"userId\");\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_impactScore_idx\" ON \"project_insights\"(\"projectId\", \"impactScore\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_moduleKey_windowKind_state_idx\" ON \"project_insights\"(\"projectId\", \"moduleKey\", \"windowKind\", \"state\");\n\n-- CreateIndex\nCREATE INDEX \"project_insights_projectId_state_relevanceScore_idx\" ON \"project_insights\"(\"projectId\", \"state\", \"relevanceScore\" DESC);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"project_insights_projectId_moduleKey_dimensionKey_windowKin_key\" ON \"project_insights\"(\"projectId\", \"moduleKey\", \"dimensionKey\", \"windowKind\", \"state\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"report_layouts_reportId_key\" ON \"report_layouts\"(\"reportId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_reports_reportId_key\" ON \"share_reports\"(\"reportId\");\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"chat_messages\" ADD CONSTRAINT \"chat_messages_conversationId_fkey\" FOREIGN KEY (\"conversationId\") REFERENCES \"conversations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_createdByUserId_fkey\" FOREIGN KEY (\"createdByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_subscriptionCreatedByUserId_fkey\" FOREIGN KEY (\"subscriptionCreatedByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_totp\" ADD CONSTRAINT \"user_totp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor\" ADD CONSTRAINT \"two_factor_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor_challenges\" ADD CONSTRAINT \"two_factor_challenges_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"accounts\" ADD CONSTRAINT \"accounts_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"sessions\" ADD CONSTRAINT \"sessions_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_invitedById_fkey\" FOREIGN KEY (\"invitedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"members\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"projects\" ADD CONSTRAINT \"projects_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"cohorts\" ADD CONSTRAINT \"cohorts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"report_layouts\" ADD CONSTRAINT \"report_layouts_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"event_meta\" ADD CONSTRAINT \"event_meta_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"custom_events\" ADD CONSTRAINT \"custom_events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"references\" ADD CONSTRAINT \"references_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notification_rules\" ADD CONSTRAINT \"notification_rules_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_notificationRuleId_fkey\" FOREIGN KEY (\"notificationRuleId\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reset_password\" ADD CONSTRAINT \"reset_password_accountId_fkey\" FOREIGN KEY (\"accountId\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"imports\" ADD CONSTRAINT \"imports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"insight_events\" ADD CONSTRAINT \"insight_events_insightId_fkey\" FOREIGN KEY (\"insightId\") REFERENCES \"project_insights\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"gsc_connections\" ADD CONSTRAINT \"gsc_connections_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx___code_migrations_name\" RENAME TO \"__code_migrations_name_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_gsc_connections_project_id\" RENAME TO \"gsc_connections_projectId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_organizations_slug\" RENAME TO \"organizations_slug_key\";\n\n-- RenameIndex\nALTER INDEX \"project_insights_projectId_moduleKey_dimensionKey_windowKind_st\" RENAME TO \"project_insights_projectId_moduleKey_dimensionKey_windowKin_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_report_layouts_report_id\" RENAME TO \"report_layouts_reportId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_sessions_token\" RENAME TO \"sessions_token_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_share_dashboards_dashboard_id\" RENAME TO \"share_dashboards_dashboardId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_share_dashboards_id\" RENAME TO \"share_dashboards_id_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_share_reports_id\" RENAME TO \"share_reports_id_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_share_reports_report_id\" RENAME TO \"share_reports_reportId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_share_widgets_id\" RENAME TO \"share_widgets_id_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_shares_id\" RENAME TO \"shares_id_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_shares_project_id\" RENAME TO \"shares_projectId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_two_factor_user_id\" RENAME TO \"two_factor_userId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_user_totp_user_id\" RENAME TO \"user_totp_userId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_users_email\" RENAME TO \"users_email_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/openpanel; fi; exec /cache/bin/openpanel crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/openpanel; fi; exec /cache/bin/openpanel ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 18,
+            "total": 38
+          },
+          "read": {
+            "ok": 16,
+            "total": 18
+          },
+          "update": {
+            "ok": 12,
+            "total": 12
+          },
+          "relations": {
+            "ok": 26,
+            "total": 26
+          },
+          "delete": {
+            "ok": 16,
+            "total": 16
+          }
+        },
+        "findings": [
+          {
+            "model": "Project",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "cannot load `[]` as type :map for field :filters in %OpenPanel.Project{__meta__: #Ecto.Schema.Metadata<:loaded, \"projects\">, id: nil, name: nil, events_count: 0, types: nil, domain: nil, cors: nil, cross_domain: false, allow_unsafe_revenue_tracking: false, ai_store_content: true, filters: nil, first_event_at: nil, no_data_notified_at: nil, data_stopped_notified_at: nil, delete_at: nil, organization_id: nil, organization: #Ecto.Association.NotLoaded<association :organization is not loaded>, share: #Ecto.Association.NotLoaded<association :share is not loaded>, gsc_connection: #Ecto.Association.N"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "MemberProject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "cannot load `[]` as type :map for field :project_access in %OpenPanel.Invite{__meta__: #Ecto.Schema.Metadata<:loaded, \"invites\">, id: nil, email: nil, project_access: nil, project_scope: :all, expires_at: nil, role: nil, created_by_id: nil, organization_id: nil, created_by: #Ecto.Association.NotLoaded<association :created_by is not loaded>, organization: #Ecto.Association.NotLoaded<association :organization is not loaded>, inserted_at: nil, updated_at: nil}"
+          },
+          {
+            "model": "Cohort",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ReportLayout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "ShareReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EventMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "CustomEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "NotificationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ExportWatermark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Import",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "InsightEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"Ya1d0/WjTd6BejySFiwGYQ==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "GscConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 28,
+            "total": 31
+          },
+          "relations": {
+            "ok": 104,
+            "total": 104
+          },
+          "delete": {
+            "ok": 30,
+            "total": 38
+          }
+        },
+        "findings": [
+          {
+            "model": "Organization",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "Project",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "Dashboard",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "Report",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "update",
+            "text": "update of `password` failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "update",
+            "text": "update of `password` failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareReport",
+            "check": "update",
+            "text": "update of `password` failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareReport",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          },
+          {
+            "model": "ShareWidget",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveModel::MissingAttributeError: can't write unknown attribute ``"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 7,
+            "total": 38
+          },
+          "read": {
+            "ok": 2,
+            "total": 7
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "CodeMigration",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "User",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "Organization",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "Project",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "UserTotp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactor",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorChallenge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "MemberProject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Member`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Cohort",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Client",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ReportLayout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareOverview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ShareDashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "ShareReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EventMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "CustomEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "NotificationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ExportWatermark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ResetPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Account`) did not go in"
+          },
+          {
+            "model": "Import",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ProjectInsight",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "InsightEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectInsight`) did not go in"
+          },
+          {
+            "model": "GscConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EmailUnsubscribe",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 104,
+            "total": 104
+          },
+          "delete": {
+            "ok": 38,
+            "total": 38
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" DROP CONSTRAINT \"_IntegrationToNotificationRule_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" DROP CONSTRAINT \"_IntegrationToNotificationRule_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"accounts\" DROP CONSTRAINT \"accounts_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"chat_messages\" DROP CONSTRAINT \"chat_messages_conversationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"clients_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"clients\" DROP CONSTRAINT \"clients_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"cohorts\" DROP CONSTRAINT \"cohorts_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"conversations\" DROP CONSTRAINT \"conversations_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"custom_events\" DROP CONSTRAINT \"custom_events_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"dashboards_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"dashboards\" DROP CONSTRAINT \"dashboards_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"event_meta\" DROP CONSTRAINT \"event_meta_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"export_watermarks_integrationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"export_watermarks\" DROP CONSTRAINT \"export_watermarks_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"gsc_connections\" DROP CONSTRAINT \"gsc_connections_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"imports\" DROP CONSTRAINT \"imports_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"insight_events\" DROP CONSTRAINT \"insight_events_insightId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"integrations_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"integrations\" DROP CONSTRAINT \"integrations_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"invites_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"invites\" DROP CONSTRAINT \"invites_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"member_projects_memberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"member_projects\" DROP CONSTRAINT \"member_projects_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_invitedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"members\" DROP CONSTRAINT \"members_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"notification_rules\" DROP CONSTRAINT \"notification_rules_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_integrationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_notificationRuleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"notifications\" DROP CONSTRAINT \"notifications_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"organizations_createdByUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"organizations\" DROP CONSTRAINT \"organizations_subscriptionCreatedByUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"projects\" DROP CONSTRAINT \"projects_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"references\" DROP CONSTRAINT \"references_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"report_layouts\" DROP CONSTRAINT \"report_layouts_reportId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_dashboardId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"reports\" DROP CONSTRAINT \"reports_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"reset_password\" DROP CONSTRAINT \"reset_password_accountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"sessions\" DROP CONSTRAINT \"sessions_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_dashboardId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_reportId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor\" DROP CONSTRAINT \"two_factor_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_challenges\" DROP CONSTRAINT \"two_factor_challenges_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"user_totp\" DROP CONSTRAINT \"user_totp_userId_fkey\";\n\n-- AlterTable\nALTER TABLE \"share_dashboards\" DROP CONSTRAINT \"share_dashboards_id_key\";\n\n-- AlterTable\nALTER TABLE \"share_reports\" DROP CONSTRAINT \"share_reports_id_key\";\n\n-- AlterTable\nALTER TABLE \"share_widgets\" DROP CONSTRAINT \"share_widgets_id_key\";\n\n-- AlterTable\nALTER TABLE \"shares\" DROP CONSTRAINT \"shares_id_key\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_dashboards_id_key\" ON \"share_dashboards\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_reports_id_key\" ON \"share_reports\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"share_widgets_id_key\" ON \"share_widgets\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"shares_id_key\" ON \"shares\"(\"id\");\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"conversations\" ADD CONSTRAINT \"conversations_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"chat_messages\" ADD CONSTRAINT \"chat_messages_conversationId_fkey\" FOREIGN KEY (\"conversationId\") REFERENCES \"conversations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_createdByUserId_fkey\" FOREIGN KEY (\"createdByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"organizations\" ADD CONSTRAINT \"organizations_subscriptionCreatedByUserId_fkey\" FOREIGN KEY (\"subscriptionCreatedByUserId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_totp\" ADD CONSTRAINT \"user_totp_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor\" ADD CONSTRAINT \"two_factor_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"two_factor_challenges\" ADD CONSTRAINT \"two_factor_challenges_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"accounts\" ADD CONSTRAINT \"accounts_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"sessions\" ADD CONSTRAINT \"sessions_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_invitedById_fkey\" FOREIGN KEY (\"invitedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"members\" ADD CONSTRAINT \"members_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"members\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"member_projects\" ADD CONSTRAINT \"member_projects_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invites\" ADD CONSTRAINT \"invites_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"projects\" ADD CONSTRAINT \"projects_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"cohorts\" ADD CONSTRAINT \"cohorts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"clients\" ADD CONSTRAINT \"clients_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"dashboards\" ADD CONSTRAINT \"dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reports\" ADD CONSTRAINT \"reports_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"report_layouts\" ADD CONSTRAINT \"report_layouts_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"shares\" ADD CONSTRAINT \"shares_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"dashboards\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_dashboards\" ADD CONSTRAINT \"share_dashboards_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_reportId_fkey\" FOREIGN KEY (\"reportId\") REFERENCES \"reports\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_reports\" ADD CONSTRAINT \"share_reports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"share_widgets\" ADD CONSTRAINT \"share_widgets_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"event_meta\" ADD CONSTRAINT \"event_meta_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"custom_events\" ADD CONSTRAINT \"custom_events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"references\" ADD CONSTRAINT \"references_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notification_rules\" ADD CONSTRAINT \"notification_rules_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"notifications\" ADD CONSTRAINT \"notifications_notificationRuleId_fkey\" FOREIGN KEY (\"notificationRuleId\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"organizations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"integrations\" ADD CONSTRAINT \"integrations_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"export_watermarks\" ADD CONSTRAINT \"export_watermarks_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"reset_password\" ADD CONSTRAINT \"reset_password_accountId_fkey\" FOREIGN KEY (\"accountId\") REFERENCES \"accounts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"imports\" ADD CONSTRAINT \"imports_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"insight_events\" ADD CONSTRAINT \"insight_events_insightId_fkey\" FOREIGN KEY (\"insightId\") REFERENCES \"project_insights\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"gsc_connections\" ADD CONSTRAINT \"gsc_connections_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"integrations\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_IntegrationToNotificationRule\" ADD CONSTRAINT \"_IntegrationToNotificationRule_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"notification_rules\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 38,
+            "total": 38
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 31,
+            "total": 31
+          },
+          "relations": {
+            "ok": 102,
+            "total": 102
+          },
+          "delete": {
+            "ok": 38,
+            "total": 38
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- RenameIndex\nALTER INDEX \"project_insights_projectid_modulekey_dimensionkey_windowkin_key\" RENAME TO \"project_insights_projectId_moduleKey_dimensionKey_windowKin_key\";"
+      }
+    }
+  ]
+}

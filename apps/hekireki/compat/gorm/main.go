@@ -363,6 +363,8 @@ func toGo(f Field, v any) any {
 		}
 	case "Float":
 		return number(v)
+	case "Decimal":
+		return number(v)
 	case "Bytes":
 		b, _ := base64.StdEncoding.DecodeString(fmt.Sprint(v))
 		return b

@@ -1,0 +1,794 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 1,
+          "total": 19
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 18,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 64,
+          "total": 64
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"api_requests_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_path_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_userId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"campaigns_audienceCondition_idx\";\n\n-- DropIndex\nDROP INDEX \"contacts_data_idx\";\n\n-- DropIndex\nDROP INDEX \"events_data_idx\";\n\n-- DropIndex\nDROP INDEX \"segments_condition_idx\";\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_userId_createdAt_idx\" ON \"api_requests\"(\"userId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_statusCode_createdAt_idx\" ON \"api_requests\"(\"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_path_createdAt_idx\" ON \"api_requests\"(\"path\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_createdAt_idx\" ON \"api_requests\"(\"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_statusCode_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"campaigns_audienceCondition_idx\" ON \"campaigns\" USING GIN (\"audienceCondition\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"contacts_data_idx\" ON \"contacts\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"events_data_idx\" ON \"events\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"segments_condition_idx\" ON \"segments\" USING GIN (\"condition\" jsonb_ops);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"api_requests_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_path_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_userId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"campaigns_audienceCondition_idx\";\n\n-- DropIndex\nDROP INDEX \"contacts_data_idx\";\n\n-- DropIndex\nDROP INDEX \"events_data_idx\";\n\n-- DropIndex\nDROP INDEX \"segments_condition_idx\";\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_userId_createdAt_idx\" ON \"api_requests\"(\"userId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_statusCode_createdAt_idx\" ON \"api_requests\"(\"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_path_createdAt_idx\" ON \"api_requests\"(\"path\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_createdAt_idx\" ON \"api_requests\"(\"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_statusCode_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"campaigns_audienceCondition_idx\" ON \"campaigns\" USING GIN (\"audienceCondition\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"contacts_data_idx\" ON \"contacts\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"events_data_idx\" ON \"events\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"segments_condition_idx\" ON \"segments\" USING GIN (\"condition\" jsonb_ops);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ProjectDisabledReason\" AS ENUM ('PAYMENT_FAILED', 'EMAIL_REPUTATION', 'PHISHING_DETECTED', 'CARD_VERIFICATION_FAILED', 'CARD_VERIFICATION_REQUIRED', 'MANUAL');\n\n-- CreateEnum\nCREATE TYPE \"CardVerificationStatus\" AS ENUM ('PENDING', 'VERIFIED', 'REQUIRES_ACTION', 'FAILED');\n\n-- CreateEnum\nCREATE TYPE \"AuthMethod\" AS ENUM ('PASSWORD', 'GOOGLE_OAUTH', 'GITHUB_OAUTH');\n\n-- CreateEnum\nCREATE TYPE \"Role\" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');\n\n-- CreateEnum\nCREATE TYPE \"TemplateType\" AS ENUM ('TRANSACTIONAL', 'MARKETING', 'HEADLESS');\n\n-- CreateEnum\nCREATE TYPE \"TrackingMode\" AS ENUM ('ENABLED', 'DISABLED', 'MARKETING_ONLY');\n\n-- CreateEnum\nCREATE TYPE \"CampaignStatus\" AS ENUM ('DRAFT', 'SCHEDULED', 'SENDING', 'SENT', 'CANCELLED');\n\n-- CreateEnum\nCREATE TYPE \"CampaignAudienceType\" AS ENUM ('ALL', 'FILTERED', 'SEGMENT');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowTriggerType\" AS ENUM ('EVENT', 'MANUAL', 'SCHEDULE');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowStepType\" AS ENUM ('TRIGGER', 'SEND_EMAIL', 'DELAY', 'WAIT_FOR_EVENT', 'CONDITION', 'EXIT', 'WEBHOOK', 'UPDATE_CONTACT');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowExecutionStatus\" AS ENUM ('RUNNING', 'WAITING', 'COMPLETED', 'EXITED', 'FAILED', 'CANCELLED');\n\n-- CreateEnum\nCREATE TYPE \"StepExecutionStatus\" AS ENUM ('PENDING', 'SCHEDULED', 'WAITING', 'RUNNING', 'COMPLETED', 'SKIPPED', 'FAILED');\n\n-- CreateEnum\nCREATE TYPE \"SegmentType\" AS ENUM ('DYNAMIC', 'STATIC');\n\n-- CreateEnum\nCREATE TYPE \"EmailSourceType\" AS ENUM ('TRANSACTIONAL', 'CAMPAIGN', 'WORKFLOW', 'INBOUND');\n\n-- CreateEnum\nCREATE TYPE \"EmailStatus\" AS ENUM ('SCHEDULED', 'CANCELLED', 'PENDING', 'SENDING', 'SENT', 'DELIVERED', 'RECEIVED', 'OPENED', 'CLICKED', 'BOUNCED', 'COMPLAINED', 'FAILED');\n\n-- DropForeignKey\nALTER TABLE \"api_requests\" DROP CONSTRAINT \"api_requests_projectId_bc4d2fc3_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"campaigns_projectId_23715434_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"campaigns_segmentId_1093d3db_fk_segments_id\";\n\n-- DropForeignKey\nALTER TABLE \"contacts\" DROP CONSTRAINT \"contacts_projectId_1db540e0_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"domains\" DROP CONSTRAINT \"domains_projectId_34098d28_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_campaignId_06c4808d_fk_campaigns_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_contactId_fe9ed6d8_fk_contacts_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_projectId_3d0991a0_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_templateId_c11ecb0c_fk_templates_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_workflowExecutionId_c24d04a6_fk_workflow_executions_id\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_workflowStepExecutio_b271ec12_fk_workflow_\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_contactId_08e919fe_fk_contacts_id\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_emailId_a853d8af_fk_emails_id\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_projectId_f7ce145e_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"idempotency_keys\" DROP CONSTRAINT \"idempotency_keys_projectId_d09f82bd_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"memberships_projectId_a9a61a58_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"memberships_userId_743a71f1_fk_users_id\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"segment_memberships_contactId_ec456365_fk_contacts_id\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"segment_memberships_segmentId_61e8a4e4_fk_segments_id\";\n\n-- DropForeignKey\nALTER TABLE \"segments\" DROP CONSTRAINT \"segments_projectId_f20db0aa_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"templates\" DROP CONSTRAINT \"templates_projectId_b02790ec_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_contactId_b563aaab_fk_contacts_id\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_projectId_90c3e433_fk_projects_id\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_workflowId_443e3e8b_fk_workflows_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_contactId_5bbaba0e_fk_contacts_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_currentStepId_1d8955e0_fk_workflow_steps_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_workflowId_fad2575f_fk_workflows_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"workflow_step_execut_executionId_13bfc652_fk_workflow_\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"workflow_step_executions_stepId_0cc5ece1_fk_workflow_steps_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"workflow_steps_templateId_4dab45c3_fk_templates_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"workflow_steps_workflowId_b3d5475a_fk_workflows_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"workflow_transitions_fromStepId_39874c00_fk_workflow_steps_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"workflow_transitions_toStepId_11e4ba93_fk_workflow_steps_id\";\n\n-- DropForeignKey\nALTER TABLE \"workflows\" DROP CONSTRAINT \"workflows_projectId_b30c4bb8_fk_projects_id\";\n\n-- DropIndex\nDROP INDEX \"api_requests_id_7d9a49f4_like\";\n\n-- DropIndex\nDROP INDEX \"campaigns_id_744f1471_like\";\n\n-- DropIndex\nDROP INDEX \"contacts_id_ddbb45d9_like\";\n\n-- DropIndex\nDROP INDEX \"domains_id_c956511a_like\";\n\n-- DropIndex\nDROP INDEX \"emails_id_bc518ad8_like\";\n\n-- DropIndex\nDROP INDEX \"emails_messageId_429a5221_like\";\n\n-- DropIndex\nDROP INDEX \"events_id_b3c5d47d_like\";\n\n-- DropIndex\nDROP INDEX \"idempotency_keys_id_ad334726_like\";\n\n-- DropIndex\nDROP INDEX \"projects_customer_d3cecd7c_like\";\n\n-- DropIndex\nDROP INDEX \"projects_id_a0f92e8b_like\";\n\n-- DropIndex\nDROP INDEX \"projects_public_1546570b_like\";\n\n-- DropIndex\nDROP INDEX \"projects_secret_f90abe66_like\";\n\n-- DropIndex\nDROP INDEX \"projects_subscription_b19a7639_like\";\n\n-- DropIndex\nDROP INDEX \"segments_id_08f07deb_like\";\n\n-- DropIndex\nDROP INDEX \"templates_id_004957dd_like\";\n\n-- DropIndex\nDROP INDEX \"throttle_claims_id_ad32cce2_like\";\n\n-- DropIndex\nDROP INDEX \"users_email_0ea73cca_like\";\n\n-- DropIndex\nDROP INDEX \"users_id_605f60ff_like\";\n\n-- DropIndex\nDROP INDEX \"workflow_executions_id_b6aa9f7f_like\";\n\n-- DropIndex\nDROP INDEX \"workflow_step_executions_id_d8efd9db_like\";\n\n-- DropIndex\nDROP INDEX \"workflow_steps_id_ff280f0d_like\";\n\n-- DropIndex\nDROP INDEX \"workflow_transitions_id_8b3997c4_like\";\n\n-- DropIndex\nDROP INDEX \"workflows_id_8a17a84d_like\";\n\n-- AlterTable\nALTER TABLE \"api_requests\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"campaigns\" DROP COLUMN \"status\",\nADD COLUMN     \"status\" \"CampaignStatus\" NOT NULL DEFAULT 'DRAFT',\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"TemplateType\" NOT NULL DEFAULT 'MARKETING',\nDROP COLUMN \"audienceType\",\nADD COLUMN     \"audienceType\" \"CampaignAudienceType\" NOT NULL DEFAULT 'ALL',\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"totalRecipients\" SET DEFAULT 0,\nALTER COLUMN \"sentCount\" SET DEFAULT 0,\nALTER COLUMN \"deliveredCount\" SET DEFAULT 0,\nALTER COLUMN \"openedCount\" SET DEFAULT 0,\nALTER COLUMN \"clickedCount\" SET DEFAULT 0,\nALTER COLUMN \"bouncedCount\" SET DEFAULT 0,\nALTER COLUMN \"complainedCount\" SET DEFAULT 0,\nALTER COLUMN \"unsubscribedCount\" SET DEFAULT 0,\nALTER COLUMN \"archived\" SET DEFAULT false,\nALTER COLUMN \"sentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"contacts\" ALTER COLUMN \"subscribed\" SET DEFAULT true,\nALTER COLUMN \"snoozedUntil\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"domains\" ALTER COLUMN \"verified\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"emails\" DROP COLUMN \"sourceType\",\nADD COLUMN     \"sourceType\" \"EmailSourceType\" NOT NULL,\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"EmailStatus\" NOT NULL DEFAULT 'PENDING',\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"sentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deliveredAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"openedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"clickedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"bouncedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"complainedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"unsubscribedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"opens\" SET DEFAULT 0,\nALTER COLUMN \"clicks\" SET DEFAULT 0,\nALTER COLUMN \"simulated\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"events\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"idempotency_keys\" ALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"memberships\" DROP COLUMN \"role\",\nADD COLUMN     \"role\" \"Role\" NOT NULL DEFAULT 'MEMBER',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"projects\" ALTER COLUMN \"disabled\" SET DEFAULT false,\nDROP COLUMN \"disabledReason\",\nADD COLUMN     \"disabledReason\" \"ProjectDisabledReason\",\nDROP COLUMN \"cardVerification\",\nADD COLUMN     \"cardVerification\" \"CardVerificationStatus\",\nALTER COLUMN \"cardVerificationAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"cardVerificationAttempts\" SET DEFAULT 0,\nDROP COLUMN \"tracking\",\nADD COLUMN     \"tracking\" \"TrackingMode\" NOT NULL DEFAULT 'ENABLED',\nALTER COLUMN \"language\" SET DEFAULT 'en',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"segment_memberships\" ALTER COLUMN \"enteredAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"enteredAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"exitedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"segments\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"SegmentType\" NOT NULL DEFAULT 'DYNAMIC',\nALTER COLUMN \"trackMembership\" SET DEFAULT false,\nALTER COLUMN \"memberCount\" SET DEFAULT 0,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"templates\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"TemplateType\" NOT NULL DEFAULT 'MARKETING',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"throttle_claims\" ALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"users\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"AuthMethod\" NOT NULL,\nALTER COLUMN \"emailVerified\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"workflow_executions\" DROP COLUMN \"status\",\nADD COLUMN     \"status\" \"WorkflowExecutionStatus\" NOT NULL DEFAULT 'RUNNING',\nALTER COLUMN \"startedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"workflow_step_executions\" DROP COLUMN \"status\",\nADD COLUMN     \"status\" \"StepExecutionStatus\" NOT NULL DEFAULT 'PENDING',\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"executeAfter\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"workflow_steps\" DROP COLUMN \"type\",\nADD COLUMN     \"type\" \"WorkflowStepType\" NOT NULL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"workflow_transitions\" ALTER COLUMN \"priority\" SET DEFAULT 0,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"workflows\" ALTER COLUMN \"enabled\" SET DEFAULT false,\nDROP COLUMN \"triggerType\",\nADD COLUMN     \"triggerType\" \"WorkflowTriggerType\" NOT NULL,\nALTER COLUMN \"allowReentry\" SET DEFAULT false,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- CreateIndex\nCREATE INDEX \"campaigns_projectId_status_idx\" ON \"campaigns\"(\"projectId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"emails_campaignId_status_idx\" ON \"emails\"(\"campaignId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"emails_status_idx\" ON \"emails\"(\"status\");\n\n-- CreateIndex\nCREATE INDEX \"emails_projectId_sourceType_createdAt_idx\" ON \"emails\"(\"projectId\", \"sourceType\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"projects_cardVerification_cardVerificationAt_idx\" ON \"projects\"(\"cardVerification\", \"cardVerificationAt\");\n\n-- CreateIndex\nCREATE INDEX \"templates_projectId_type_idx\" ON \"templates\"(\"projectId\", \"type\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_workflowId_status_idx\" ON \"workflow_executions\"(\"workflowId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_contactId_status_idx\" ON \"workflow_executions\"(\"contactId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_status_currentStepId_idx\" ON \"workflow_executions\"(\"status\", \"currentStepId\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_step_executions_executionId_status_idx\" ON \"workflow_step_executions\"(\"executionId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_step_executions_status_scheduledFor_idx\" ON \"workflow_step_executions\"(\"status\", \"scheduledFor\");\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"domains\" ADD CONSTRAINT \"domains_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"contacts\" ADD CONSTRAINT \"contacts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"templates\" ADD CONSTRAINT \"templates_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segments\" ADD CONSTRAINT \"segments_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflows\" ADD CONSTRAINT \"workflows_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_fromStepId_fkey\" FOREIGN KEY (\"fromStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_toStepId_fkey\" FOREIGN KEY (\"toStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_currentStepId_fkey\" FOREIGN KEY (\"currentStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_executionId_fkey\" FOREIGN KEY (\"executionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_stepId_fkey\" FOREIGN KEY (\"stepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_campaignId_fkey\" FOREIGN KEY (\"campaignId\") REFERENCES \"campaigns\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowExecutionId_fkey\" FOREIGN KEY (\"workflowExecutionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowStepExecutionId_fkey\" FOREIGN KEY (\"workflowStepExecutionId\") REFERENCES \"workflow_step_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_emailId_fkey\" FOREIGN KEY (\"emailId\") REFERENCES \"emails\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"idempotency_keys\" ADD CONSTRAINT \"idempotency_keys_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"api_requests\" ADD CONSTRAINT \"api_requests_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"api_request_created_ef9ef3_idx\" RENAME TO \"api_requests_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_request_path_7207b5_idx\" RENAME TO \"api_requests_path_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_request_project_8aec4b_idx\" RENAME TO \"api_requests_projectId_statusCode_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_request_project_b9a356_idx\" RENAME TO \"api_requests_projectId_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_request_statusC_b7fd04_idx\" RENAME TO \"api_requests_statusCode_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"api_request_userId_d71c6e_idx\" RENAME TO \"api_requests_userId_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"campaigns_audienc_f6bc28_gin\" RENAME TO \"campaigns_audienceCondition_idx\";\n\n-- RenameIndex\nALTER INDEX \"campaigns_project_0a3b3e_idx\" RENAME TO \"campaigns_projectId_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"campaigns_project_92b406_idx\" RENAME TO \"campaigns_projectId_archived_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"campaigns_schedul_fb2871_idx\" RENAME TO \"campaigns_scheduledFor_idx\";\n\n-- RenameIndex\nALTER INDEX \"campaigns_segment_fe619a_idx\" RENAME TO \"campaigns_segmentId_idx\";\n\n-- RenameIndex\nALTER INDEX \"contacts_data_9e4cd8_gin\" RENAME TO \"contacts_data_idx\";\n\n-- RenameIndex\nALTER INDEX \"contacts_project_3e4f40_idx\" RENAME TO \"contacts_projectId_subscribed_idx\";\n\n-- RenameIndex\nALTER INDEX \"contacts_project_ea6d9c_idx\" RENAME TO \"contacts_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"contacts_snoozed_0118e1_idx\" RENAME TO \"contacts_snoozedUntil_idx\";\n\n-- RenameIndex\nALTER INDEX \"domains_project_60f029_idx\" RENAME TO \"domains_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"domains_project_e6c91e_idx\" RENAME TO \"domains_projectId_verified_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_campaig_a4a55d_idx\" RENAME TO \"emails_campaignId_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_campaig_c36816_idx\" RENAME TO \"emails_campaignId_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_contact_42c51d_idx\" RENAME TO \"emails_contactId_bouncedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_contact_4b6921_idx\" RENAME TO \"emails_contactId_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_contact_9cf400_idx\" RENAME TO \"emails_contactId_complainedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_contact_c44ddd_idx\" RENAME TO \"emails_contactId_clickedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_contact_cdaf59_idx\" RENAME TO \"emails_contactId_openedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_created_8cd7e2_idx\" RENAME TO \"emails_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_project_03a4db_idx\" RENAME TO \"emails_projectId_sourceType_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_project_3c8bba_idx\" RENAME TO \"emails_projectId_contactId_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_status_ce5769_idx\" RENAME TO \"emails_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_workflo_60a7e7_idx\" RENAME TO \"emails_workflowExecutionId_idx\";\n\n-- RenameIndex\nALTER INDEX \"emails_workflo_ae78fa_idx\" RENAME TO \"emails_workflowStepExecutionId_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_contact_3228d2_idx\" RENAME TO \"events_contactId_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_contact_a50a84_idx\" RENAME TO \"events_contactId_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_contact_f6c830_idx\" RENAME TO \"events_contactId_name_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_created_8e9954_idx\" RENAME TO \"events_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_data_1624d9_gin\" RENAME TO \"events_data_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_emailId_9507af_idx\" RENAME TO \"events_emailId_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_project_10f232_idx\" RENAME TO \"events_projectId_name_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_project_2f285d_idx\" RENAME TO \"events_projectId_contactId_name_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"events_project_f775c6_idx\" RENAME TO \"events_projectId_name_createdAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"idempotency_expires_818398_idx\" RENAME TO \"idempotency_keys_expiresAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"projects_cardVer_5a0fdd_idx\" RENAME TO \"projects_cardVerification_cardVerificationAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"segment_mem_contact_1e4b68_idx\" RENAME TO \"segment_memberships_contactId_exitedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"segment_mem_entered_59ba52_idx\" RENAME TO \"segment_memberships_enteredAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"segment_mem_segment_0305e1_idx\" RENAME TO \"segment_memberships_segmentId_exitedAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"segments_conditi_504a5b_gin\" RENAME TO \"segments_condition_idx\";\n\n-- RenameIndex\nALTER INDEX \"segments_project_1c7de7_idx\" RENAME TO \"segments_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"templates_project_265edc_idx\" RENAME TO \"templates_projectId_type_idx\";\n\n-- RenameIndex\nALTER INDEX \"templates_project_7f5fdc_idx\" RENAME TO \"templates_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"throttle_cl_contact_4ec319_idx\" RENAME TO \"throttle_claims_contactId_idx\";\n\n-- RenameIndex\nALTER INDEX \"throttle_cl_emailId_c5d268_idx\" RENAME TO \"throttle_claims_emailId_idx\";\n\n-- RenameIndex\nALTER INDEX \"throttle_cl_expires_5cf3e3_idx\" RENAME TO \"throttle_claims_expiresAt_idx\";\n\n-- RenameIndex\nALTER INDEX \"throttle_cl_workflo_9d5ac9_idx\" RENAME TO \"throttle_claims_workflowId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_ex_contact_e6cc49_idx\" RENAME TO \"workflow_executions_contactId_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_ex_status_5e65d9_idx\" RENAME TO \"workflow_executions_status_currentStepId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_ex_workflo_0d53bb_idx\" RENAME TO \"workflow_executions_workflowId_contactId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_ex_workflo_23db9c_idx\" RENAME TO \"workflow_executions_workflowId_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_executi_41437d_idx\" RENAME TO \"workflow_step_executions_executionId_status_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_schedul_fc4de4_idx\" RENAME TO \"workflow_step_executions_scheduledFor_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_status_1ba65a_idx\" RENAME TO \"workflow_step_executions_status_scheduledFor_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_stepId_f9fda0_idx\" RENAME TO \"workflow_step_executions_stepId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_templat_67ffa4_idx\" RENAME TO \"workflow_steps_templateId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_st_workflo_62645b_idx\" RENAME TO \"workflow_steps_workflowId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_tr_fromSte_181561_idx\" RENAME TO \"workflow_transitions_fromStepId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflow_tr_toStepI_46c265_idx\" RENAME TO \"workflow_transitions_toStepId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflows_project_14b75d_idx\" RENAME TO \"workflows_projectId_idx\";\n\n-- RenameIndex\nALTER INDEX \"workflows_project_802046_idx\" RENAME TO \"workflows_projectId_enabled_idx\";"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateEnum\nCREATE TYPE \"ProjectDisabledReason\" AS ENUM ('PAYMENT_FAILED', 'EMAIL_REPUTATION', 'PHISHING_DETECTED', 'CARD_VERIFICATION_FAILED', 'CARD_VERIFICATION_REQUIRED', 'MANUAL');\n\n-- CreateEnum\nCREATE TYPE \"CardVerificationStatus\" AS ENUM ('PENDING', 'VERIFIED', 'REQUIRES_ACTION', 'FAILED');\n\n-- CreateEnum\nCREATE TYPE \"AuthMethod\" AS ENUM ('PASSWORD', 'GOOGLE_OAUTH', 'GITHUB_OAUTH');\n\n-- CreateEnum\nCREATE TYPE \"Role\" AS ENUM ('OWNER', 'ADMIN', 'MEMBER');\n\n-- CreateEnum\nCREATE TYPE \"TemplateType\" AS ENUM ('TRANSACTIONAL', 'MARKETING', 'HEADLESS');\n\n-- CreateEnum\nCREATE TYPE \"TrackingMode\" AS ENUM ('ENABLED', 'DISABLED', 'MARKETING_ONLY');\n\n-- CreateEnum\nCREATE TYPE \"CampaignStatus\" AS ENUM ('DRAFT', 'SCHEDULED', 'SENDING', 'SENT', 'CANCELLED');\n\n-- CreateEnum\nCREATE TYPE \"CampaignAudienceType\" AS ENUM ('ALL', 'FILTERED', 'SEGMENT');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowTriggerType\" AS ENUM ('EVENT', 'MANUAL', 'SCHEDULE');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowStepType\" AS ENUM ('TRIGGER', 'SEND_EMAIL', 'DELAY', 'WAIT_FOR_EVENT', 'CONDITION', 'EXIT', 'WEBHOOK', 'UPDATE_CONTACT');\n\n-- CreateEnum\nCREATE TYPE \"WorkflowExecutionStatus\" AS ENUM ('RUNNING', 'WAITING', 'COMPLETED', 'EXITED', 'FAILED', 'CANCELLED');\n\n-- CreateEnum\nCREATE TYPE \"StepExecutionStatus\" AS ENUM ('PENDING', 'SCHEDULED', 'WAITING', 'RUNNING', 'COMPLETED', 'SKIPPED', 'FAILED');\n\n-- CreateEnum\nCREATE TYPE \"SegmentType\" AS ENUM ('DYNAMIC', 'STATIC');\n\n-- CreateEnum\nCREATE TYPE \"EmailSourceType\" AS ENUM ('TRANSACTIONAL', 'CAMPAIGN', 'WORKFLOW', 'INBOUND');\n\n-- CreateEnum\nCREATE TYPE \"EmailStatus\" AS ENUM ('SCHEDULED', 'CANCELLED', 'PENDING', 'SENDING', 'SENT', 'DELIVERED', 'RECEIVED', 'OPENED', 'CLICKED', 'BOUNCED', 'COMPLAINED', 'FAILED');\n\n-- DropForeignKey\nALTER TABLE \"api_requests\" DROP CONSTRAINT \"fk_projects_api_requests\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"fk_projects_campaigns\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"fk_segments_campaigns\";\n\n-- DropForeignKey\nALTER TABLE \"contacts\" DROP CONSTRAINT \"fk_projects_contacts\";\n\n-- DropForeignKey\nALTER TABLE \"domains\" DROP CONSTRAINT \"fk_projects_domains\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_campaigns_emails\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_contacts_emails\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_projects_emails\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_templates_emails\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_workflow_executions_emails\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"fk_workflow_step_executions_emails\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"fk_contacts_events\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"fk_emails_events\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"fk_projects_events\";\n\n-- DropForeignKey\nALTER TABLE \"idempotency_keys\" DROP CONSTRAINT \"fk_projects_idempotency_keys\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"fk_projects_members\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"fk_users_memberships\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"fk_contacts_segment_memberships\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"fk_segments_memberships\";\n\n-- DropForeignKey\nALTER TABLE \"segments\" DROP CONSTRAINT \"fk_projects_segments\";\n\n-- DropForeignKey\nALTER TABLE \"templates\" DROP CONSTRAINT \"fk_projects_templates\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"fk_contacts_throttle_claims\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"fk_projects_throttle_claims\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"fk_workflows_throttle_claims\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"fk_contacts_workflow_executions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"fk_workflow_steps_current_workflow_executions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"fk_workflows_executions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"fk_workflow_executions_step_executions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"fk_workflow_steps_executions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"fk_templates_workflow_steps\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"fk_workflows_steps\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"fk_workflow_steps_incoming_transitions\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"fk_workflow_steps_outgoing_transitions\";\n\n-- DropForeignKey\nALTER TABLE \"workflows\" DROP CONSTRAINT \"fk_projects_workflows\";\n\n-- DropIndex\nDROP INDEX \"api_requests_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_path_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_projectId_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_statusCode_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"api_requests_userId_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"campaigns_audienceCondition_idx\";\n\n-- DropIndex\nDROP INDEX \"campaigns_projectId_archived_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"campaigns_projectId_status_idx\";\n\n-- DropIndex\nDROP INDEX \"contacts_data_idx\";\n\n-- DropIndex\nDROP INDEX \"contacts_projectId_email_key\";\n\n-- DropIndex\nDROP INDEX \"contacts_projectId_subscribed_idx\";\n\n-- DropIndex\nDROP INDEX \"domains_projectId_domain_key\";\n\n-- DropIndex\nDROP INDEX \"domains_projectId_verified_idx\";\n\n-- DropIndex\nDROP INDEX \"emails_projectId_contactId_idx\";\n\n-- DropIndex\nDROP INDEX \"emails_projectId_sourceType_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"events_contactId_name_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"events_data_idx\";\n\n-- DropIndex\nDROP INDEX \"events_projectId_contactId_name_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"events_projectId_name_createdAt_idx\";\n\n-- DropIndex\nDROP INDEX \"events_projectId_name_idx\";\n\n-- DropIndex\nDROP INDEX \"idempotency_keys_projectId_key_key\";\n\n-- DropIndex\nDROP INDEX \"segments_condition_idx\";\n\n-- DropIndex\nDROP INDEX \"templates_projectId_type_idx\";\n\n-- DropIndex\nDROP INDEX \"workflows_projectId_enabled_idx\";\n\n-- AlterTable\nALTER TABLE \"api_requests\" ALTER COLUMN \"statusCode\" SET DATA TYPE INTEGER,\nALTER COLUMN \"duration\" SET DATA TYPE INTEGER,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"requestSize\" SET DATA TYPE INTEGER,\nALTER COLUMN \"responseSize\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"campaigns_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"CampaignStatus\" NOT NULL DEFAULT 'DRAFT',\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"TemplateType\" NOT NULL DEFAULT 'MARKETING',\nDROP COLUMN \"audienceType\",\nADD COLUMN     \"audienceType\" \"CampaignAudienceType\" NOT NULL DEFAULT 'ALL',\nALTER COLUMN \"segmentId\" SET DATA TYPE TEXT,\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"totalRecipients\" SET DATA TYPE INTEGER,\nALTER COLUMN \"sentCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"deliveredCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"openedCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"clickedCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"bouncedCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"complainedCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"unsubscribedCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"sentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"campaigns_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"contacts\" DROP CONSTRAINT \"contacts_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"snoozedUntil\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"contacts_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"domains\" DROP CONSTRAINT \"domains_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"domains_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"contactId\" SET DATA TYPE TEXT,\nDROP COLUMN \"sourceType\",\nADD COLUMN     \"sourceType\" \"EmailSourceType\" NOT NULL,\nALTER COLUMN \"templateId\" SET DATA TYPE TEXT,\nALTER COLUMN \"campaignId\" SET DATA TYPE TEXT,\nALTER COLUMN \"workflowExecutionId\" SET DATA TYPE TEXT,\nALTER COLUMN \"workflowStepExecutionId\" SET DATA TYPE TEXT,\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"EmailStatus\" NOT NULL DEFAULT 'PENDING',\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"sentAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"deliveredAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"openedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"clickedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"bouncedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"complainedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"unsubscribedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"opens\" SET DATA TYPE INTEGER,\nALTER COLUMN \"clicks\" SET DATA TYPE INTEGER,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"emails_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"events\" DROP CONSTRAINT \"events_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"contactId\" SET DATA TYPE TEXT,\nALTER COLUMN \"emailId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"events_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"idempotency_keys\" DROP CONSTRAINT \"idempotency_keys_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"statusCode\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"idempotency_keys_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"memberships\" DROP CONSTRAINT \"memberships_pkey\",\nALTER COLUMN \"userId\" SET DATA TYPE TEXT,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nDROP COLUMN \"role\",\nADD COLUMN     \"role\" \"Role\" NOT NULL DEFAULT 'MEMBER',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"memberships_pkey\" PRIMARY KEY (\"userId\", \"projectId\");\n\n-- AlterTable\nALTER TABLE \"projects\" DROP CONSTRAINT \"projects_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"disabledReason\",\nADD COLUMN     \"disabledReason\" \"ProjectDisabledReason\",\nDROP COLUMN \"cardVerification\",\nADD COLUMN     \"cardVerification\" \"CardVerificationStatus\",\nALTER COLUMN \"cardVerificationAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"cardVerificationAttempts\" SET DATA TYPE INTEGER,\nALTER COLUMN \"billingLimitWorkflows\" SET DATA TYPE INTEGER,\nALTER COLUMN \"billingLimitCampaigns\" SET DATA TYPE INTEGER,\nALTER COLUMN \"billingLimitTransactional\" SET DATA TYPE INTEGER,\nALTER COLUMN \"billingLimitInbound\" SET DATA TYPE INTEGER,\nDROP COLUMN \"tracking\",\nADD COLUMN     \"tracking\" \"TrackingMode\" NOT NULL DEFAULT 'ENABLED',\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"projects_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"segment_memberships_pkey\",\nALTER COLUMN \"contactId\" SET DATA TYPE TEXT,\nALTER COLUMN \"segmentId\" SET DATA TYPE TEXT,\nALTER COLUMN \"enteredAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"enteredAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"exitedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"segment_memberships_pkey\" PRIMARY KEY (\"contactId\", \"segmentId\");\n\n-- AlterTable\nALTER TABLE \"segments\" DROP CONSTRAINT \"segments_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"SegmentType\" NOT NULL DEFAULT 'DYNAMIC',\nALTER COLUMN \"memberCount\" SET DATA TYPE INTEGER,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"segments_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"templates\" DROP CONSTRAINT \"templates_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"TemplateType\" NOT NULL DEFAULT 'MARKETING',\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"templates_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"contactId\" SET DATA TYPE TEXT,\nALTER COLUMN \"workflowId\" SET DATA TYPE TEXT,\nALTER COLUMN \"windowSeconds\" SET DATA TYPE INTEGER,\nALTER COLUMN \"expiresAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"throttle_claims_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"users\" DROP CONSTRAINT \"users_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"AuthMethod\" NOT NULL,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"users_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"workflowId\" SET DATA TYPE TEXT,\nALTER COLUMN \"contactId\" SET DATA TYPE TEXT,\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"WorkflowExecutionStatus\" NOT NULL DEFAULT 'RUNNING',\nALTER COLUMN \"currentStepId\" SET DATA TYPE TEXT,\nALTER COLUMN \"startedAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"workflow_executions_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"workflow_step_executions_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"executionId\" SET DATA TYPE TEXT,\nALTER COLUMN \"stepId\" SET DATA TYPE TEXT,\nDROP COLUMN \"status\",\nADD COLUMN     \"status\" \"StepExecutionStatus\" NOT NULL DEFAULT 'PENDING',\nALTER COLUMN \"scheduledFor\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"executeAfter\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"startedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"completedAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"workflow_step_executions_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"workflow_steps_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"type\",\nADD COLUMN     \"type\" \"WorkflowStepType\" NOT NULL,\nALTER COLUMN \"workflowId\" SET DATA TYPE TEXT,\nALTER COLUMN \"templateId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"workflow_steps_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"workflow_transitions_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"fromStepId\" SET DATA TYPE TEXT,\nALTER COLUMN \"toStepId\" SET DATA TYPE TEXT,\nALTER COLUMN \"priority\" SET DATA TYPE INTEGER,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"workflow_transitions_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"workflows\" DROP CONSTRAINT \"workflows_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nDROP COLUMN \"triggerType\",\nADD COLUMN     \"triggerType\" \"WorkflowTriggerType\" NOT NULL,\nALTER COLUMN \"throttleWindowSeconds\" SET DATA TYPE INTEGER,\nALTER COLUMN \"projectId\" SET DATA TYPE TEXT,\nALTER COLUMN \"createdAt\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"createdAt\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"updatedAt\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"workflows_pkey\" PRIMARY KEY (\"id\");\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_userId_createdAt_idx\" ON \"api_requests\"(\"userId\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_statusCode_createdAt_idx\" ON \"api_requests\"(\"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_path_createdAt_idx\" ON \"api_requests\"(\"path\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_createdAt_idx\" ON \"api_requests\"(\"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"api_requests_projectId_statusCode_createdAt_idx\" ON \"api_requests\"(\"projectId\", \"statusCode\", \"createdAt\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"campaigns_projectId_status_idx\" ON \"campaigns\"(\"projectId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"campaigns_projectId_archived_createdAt_idx\" ON \"campaigns\"(\"projectId\", \"archived\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"campaigns_audienceCondition_idx\" ON \"campaigns\" USING GIN (\"audienceCondition\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"contacts_projectId_subscribed_idx\" ON \"contacts\"(\"projectId\", \"subscribed\");\n\n-- CreateIndex\nCREATE INDEX \"contacts_data_idx\" ON \"contacts\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"contacts_projectId_email_key\" ON \"contacts\"(\"projectId\", \"email\");\n\n-- CreateIndex\nCREATE INDEX \"domains_projectId_verified_idx\" ON \"domains\"(\"projectId\", \"verified\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"domains_projectId_domain_key\" ON \"domains\"(\"projectId\", \"domain\");\n\n-- CreateIndex\nCREATE INDEX \"emails_projectId_contactId_idx\" ON \"emails\"(\"projectId\", \"contactId\");\n\n-- CreateIndex\nCREATE INDEX \"emails_campaignId_status_idx\" ON \"emails\"(\"campaignId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"emails_status_idx\" ON \"emails\"(\"status\");\n\n-- CreateIndex\nCREATE INDEX \"emails_projectId_sourceType_createdAt_idx\" ON \"emails\"(\"projectId\", \"sourceType\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"events_projectId_name_idx\" ON \"events\"(\"projectId\", \"name\");\n\n-- CreateIndex\nCREATE INDEX \"events_projectId_contactId_name_createdAt_idx\" ON \"events\"(\"projectId\", \"contactId\", \"name\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"events_contactId_name_createdAt_idx\" ON \"events\"(\"contactId\", \"name\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"events_projectId_name_createdAt_idx\" ON \"events\"(\"projectId\", \"name\", \"createdAt\");\n\n-- CreateIndex\nCREATE INDEX \"events_data_idx\" ON \"events\" USING GIN (\"data\" jsonb_ops);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"idempotency_keys_projectId_key_key\" ON \"idempotency_keys\"(\"projectId\", \"key\");\n\n-- CreateIndex\nCREATE INDEX \"projects_cardVerification_cardVerificationAt_idx\" ON \"projects\"(\"cardVerification\", \"cardVerificationAt\");\n\n-- CreateIndex\nCREATE INDEX \"segments_condition_idx\" ON \"segments\" USING GIN (\"condition\" jsonb_ops);\n\n-- CreateIndex\nCREATE INDEX \"templates_projectId_type_idx\" ON \"templates\"(\"projectId\", \"type\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_workflowId_status_idx\" ON \"workflow_executions\"(\"workflowId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_contactId_status_idx\" ON \"workflow_executions\"(\"contactId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_executions_status_currentStepId_idx\" ON \"workflow_executions\"(\"status\", \"currentStepId\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_step_executions_executionId_status_idx\" ON \"workflow_step_executions\"(\"executionId\", \"status\");\n\n-- CreateIndex\nCREATE INDEX \"workflow_step_executions_status_scheduledFor_idx\" ON \"workflow_step_executions\"(\"status\", \"scheduledFor\");\n\n-- CreateIndex\nCREATE INDEX \"workflows_projectId_enabled_idx\" ON \"workflows\"(\"projectId\", \"enabled\");\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"domains\" ADD CONSTRAINT \"domains_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"contacts\" ADD CONSTRAINT \"contacts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"templates\" ADD CONSTRAINT \"templates_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segments\" ADD CONSTRAINT \"segments_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflows\" ADD CONSTRAINT \"workflows_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_fromStepId_fkey\" FOREIGN KEY (\"fromStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_toStepId_fkey\" FOREIGN KEY (\"toStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_currentStepId_fkey\" FOREIGN KEY (\"currentStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_executionId_fkey\" FOREIGN KEY (\"executionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_stepId_fkey\" FOREIGN KEY (\"stepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_campaignId_fkey\" FOREIGN KEY (\"campaignId\") REFERENCES \"campaigns\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowExecutionId_fkey\" FOREIGN KEY (\"workflowExecutionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowStepExecutionId_fkey\" FOREIGN KEY (\"workflowStepExecutionId\") REFERENCES \"workflow_step_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_emailId_fkey\" FOREIGN KEY (\"emailId\") REFERENCES \"emails\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"idempotency_keys\" ADD CONSTRAINT \"idempotency_keys_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"api_requests\" ADD CONSTRAINT \"api_requests_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- RenameIndex\nALTER INDEX \"idx_emails_message_id\" RENAME TO \"emails_messageId_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_projects_customer\" RENAME TO \"projects_customer_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_projects_public\" RENAME TO \"projects_public_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_projects_secret\" RENAME TO \"projects_secret_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_projects_subscription\" RENAME TO \"projects_subscription_key\";\n\n-- RenameIndex\nALTER INDEX \"idx_users_email\" RENAME TO \"users_email_key\";"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/plunk; fi; exec /cache/bin/plunk crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/plunk; fi; exec /cache/bin/plunk ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 1,
+            "total": 19
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0x98\""
+          },
+          {
+            "model": "Project",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xf3 0x02 0xfd 0xbc\""
+          },
+          {
+            "model": "Membership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Contact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "SegmentMembership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Contact`) did not go in"
+          },
+          {
+            "model": "Campaign",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Workflow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "WorkflowStep",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowTransition",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowStep`) did not go in"
+          },
+          {
+            "model": "WorkflowExecution",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowStepExecution",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowExecution`) did not go in"
+          },
+          {
+            "model": "Email",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Contact`) did not go in"
+          },
+          {
+            "model": "Event",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "IdempotencyKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ThrottleClaim",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"api_requests\" DROP CONSTRAINT \"api_requests_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"campaigns_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"campaigns\" DROP CONSTRAINT \"campaigns_segmentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"contacts\" DROP CONSTRAINT \"contacts_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"domains\" DROP CONSTRAINT \"domains_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_campaignId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_templateId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_workflowExecutionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"emails\" DROP CONSTRAINT \"emails_workflowStepExecutionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_emailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"events\" DROP CONSTRAINT \"events_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"idempotency_keys\" DROP CONSTRAINT \"idempotency_keys_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"memberships_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"memberships\" DROP CONSTRAINT \"memberships_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"segment_memberships_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segment_memberships\" DROP CONSTRAINT \"segment_memberships_segmentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"segments\" DROP CONSTRAINT \"segments_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"templates\" DROP CONSTRAINT \"templates_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_projectId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"throttle_claims\" DROP CONSTRAINT \"throttle_claims_workflowId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_currentStepId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_executions\" DROP CONSTRAINT \"workflow_executions_workflowId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"workflow_step_executions_executionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_step_executions\" DROP CONSTRAINT \"workflow_step_executions_stepId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"workflow_steps_templateId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_steps\" DROP CONSTRAINT \"workflow_steps_workflowId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"workflow_transitions_fromStepId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflow_transitions\" DROP CONSTRAINT \"workflow_transitions_toStepId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"workflows\" DROP CONSTRAINT \"workflows_projectId_fkey\";\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"memberships\" ADD CONSTRAINT \"memberships_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"domains\" ADD CONSTRAINT \"domains_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"contacts\" ADD CONSTRAINT \"contacts_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"templates\" ADD CONSTRAINT \"templates_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segments\" ADD CONSTRAINT \"segments_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"segment_memberships\" ADD CONSTRAINT \"segment_memberships_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"segments\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"campaigns\" ADD CONSTRAINT \"campaigns_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflows\" ADD CONSTRAINT \"workflows_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_steps\" ADD CONSTRAINT \"workflow_steps_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_fromStepId_fkey\" FOREIGN KEY (\"fromStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_transitions\" ADD CONSTRAINT \"workflow_transitions_toStepId_fkey\" FOREIGN KEY (\"toStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_executions\" ADD CONSTRAINT \"workflow_executions_currentStepId_fkey\" FOREIGN KEY (\"currentStepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_executionId_fkey\" FOREIGN KEY (\"executionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"workflow_step_executions\" ADD CONSTRAINT \"workflow_step_executions_stepId_fkey\" FOREIGN KEY (\"stepId\") REFERENCES \"workflow_steps\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_templateId_fkey\" FOREIGN KEY (\"templateId\") REFERENCES \"templates\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_campaignId_fkey\" FOREIGN KEY (\"campaignId\") REFERENCES \"campaigns\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowExecutionId_fkey\" FOREIGN KEY (\"workflowExecutionId\") REFERENCES \"workflow_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_workflowStepExecutionId_fkey\" FOREIGN KEY (\"workflowStepExecutionId\") REFERENCES \"workflow_step_executions\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"emails\" ADD CONSTRAINT \"emails_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"events\" ADD CONSTRAINT \"events_emailId_fkey\" FOREIGN KEY (\"emailId\") REFERENCES \"emails\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"idempotency_keys\" ADD CONSTRAINT \"idempotency_keys_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"contacts\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"throttle_claims\" ADD CONSTRAINT \"throttle_claims_workflowId_fkey\" FOREIGN KEY (\"workflowId\") REFERENCES \"workflows\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"api_requests\" ADD CONSTRAINT \"api_requests_projectId_fkey\" FOREIGN KEY (\"projectId\") REFERENCES \"projects\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 64,
+            "total": 64
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

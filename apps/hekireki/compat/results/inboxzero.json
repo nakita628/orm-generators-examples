@@ -1,0 +1,2778 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 106,
+          "total": 106
+        },
+        "read": {
+          "ok": 106,
+          "total": 106
+        },
+        "update": {
+          "ok": 99,
+          "total": 99
+        },
+        "relations": {
+          "ok": 278,
+          "total": 278
+        },
+        "delete": {
+          "ok": 106,
+          "total": 106
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 106,
+          "total": 106
+        },
+        "read": {
+          "ok": 105,
+          "total": 106
+        },
+        "update": {
+          "ok": 99,
+          "total": 99
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 106,
+          "total": 106
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 0,
+          "total": 106
+        },
+        "read": {
+          "ok": 0,
+          "total": 0
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 0,
+          "total": 0
+        }
+      },
+      "findings": 106,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 0,
+          "total": 106
+        },
+        "read": {
+          "ok": 0,
+          "total": 0
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 0,
+          "total": 0
+        }
+      },
+      "findings": 106,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 20,
+          "total": 106
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 19,
+          "total": 19
+        },
+        "relations": {
+          "ok": 14,
+          "total": 14
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 86,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 0,
+          "total": 106
+        },
+        "read": {
+          "ok": 0,
+          "total": 0
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 0,
+          "total": 0
+        }
+      },
+      "findings": 106,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 106,
+          "total": 106
+        },
+        "read": {
+          "ok": 106,
+          "total": 106
+        },
+        "update": {
+          "ok": 99,
+          "total": 99
+        },
+        "relations": {
+          "ok": 278,
+          "total": 278
+        },
+        "delete": {
+          "ok": 106,
+          "total": 106
+        }
+      },
+      "findings": 0,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 106,
+          "total": 106
+        },
+        "read": {
+          "ok": 106,
+          "total": 106
+        },
+        "update": {
+          "ok": 99,
+          "total": 99
+        },
+        "relations": {
+          "ok": 278,
+          "total": 278
+        },
+        "delete": {
+          "ok": 106,
+          "total": 106
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 106,
+          "total": 106
+        },
+        "insert": {
+          "ok": 106,
+          "total": 106
+        },
+        "read": {
+          "ok": 106,
+          "total": 106
+        },
+        "update": {
+          "ok": 99,
+          "total": 99
+        },
+        "relations": {
+          "ok": 267,
+          "total": 275
+        },
+        "delete": {
+          "ok": 106,
+          "total": 106
+        }
+      },
+      "findings": 8,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 106,
+            "total": 106
+          },
+          "read": {
+            "ok": 106,
+            "total": 106
+          },
+          "update": {
+            "ok": 99,
+            "total": 99
+          },
+          "relations": {
+            "ok": 278,
+            "total": 278
+          },
+          "delete": {
+            "ok": 106,
+            "total": 106
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"ContactResearch_latest_idx\";\n\n-- DropIndex\nDROP INDEX \"EmailAccount_watchEmailsSubscriptionHistory_idx\";\n\n-- DropIndex\nDROP INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\";\n\n-- DropIndex\nDROP INDEX \"ExecutedAction_sentMessageIds_idx\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_campaignId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_loopId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"ThreadTracker_followUpDraft_cleanup_idx\";\n\n-- CreateIndex\nCREATE INDEX \"ContactResearch_latest_idx\" ON \"ContactResearch\"(\"email\", \"researchStartedAt\" DESC, \"createdAt\" DESC, \"id\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"EmailAccount_watchEmailsSubscriptionHistory_idx\" ON \"EmailAccount\" USING GIN (\"watchEmailsSubscriptionHistory\" jsonb_path_ops);\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_sentMessageIds_idx\" ON \"ExecutedAction\" USING GIN (\"sentMessageIds\");\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\" ON \"ExecutedAction\"(\"draftStatus\", \"createdAt\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_executedRuleId_draft_idx\" ON \"ExecutedAction\"(\"executedRuleId\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_loopId_unversioned_key\" ON \"LoopsEmailSource\"(\"loopId\") WHERE (\"emailMessageId\" IS NULL AND \"loopId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_campaignId_unversioned_key\" ON \"LoopsEmailSource\"(\"campaignId\") WHERE (\"emailMessageId\" IS NULL AND \"campaignId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ThreadTracker_followUpDraft_cleanup_idx\" ON \"ThreadTracker\"(\"emailAccountId\", \"followUpDraftCreatedAt\") WHERE (\"followUpDraftContent\" IS NOT NULL);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 106,
+            "total": 106
+          },
+          "read": {
+            "ok": 105,
+            "total": 106
+          },
+          "update": {
+            "ok": 99,
+            "total": 99
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 106,
+            "total": 106
+          }
+        },
+        "findings": [
+          {
+            "model": "ApiKey",
+            "check": "read",
+            "text": "`scopes` is typed `Generated<ApiKeyScope[]>` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 0,
+            "total": 106
+          },
+          "read": {
+            "ok": 0,
+            "total": 0
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 0,
+            "total": 0
+          }
+        },
+        "findings": [
+          {
+            "model": "Premium",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Premium\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.725, 2026-11-21 15:23:05.725, {v1}, 2024-01-02 03:04:05.002, 3, 4, 5, 6, 7, 8, v9, v10, v11, v12, v13, v14, v15, v16, v17, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.02, 2024-01-02 03:04:05.021, v22, 2024-01-02 03:04:05.023, 2024-01-02 03:04:05.024, 2024-01-02 03:04:05.025, 2024-01-02 03:04:05.026, v27, v28, v29, 2024-01-02 03:04:05.03, 31, f, v32, v33, v34, v35, v36, v37, v38, 2024-01-02 03:04:05.039, 2024-01-02 03:04:05.04, 2024-01-02 03:0"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.728, 2026-11-21 15:23:05.728, v51, v52, f, v53, 2024-01-02 03:04:05.054, AI_ASSISTANT, {\"n\": 56, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.057, {\"n\": 58, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 59, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.06, {}, {v61}, v62, v63, 64, v65, v66, f, 0, f, 0, v67, v68, v69, t, v71, v72, null, null, f)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Organization\" violates not-null constraint\nDETAIL:  Failing row contains (null, v84, v85, v86, {\"n\": 87, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:23:05.731, 2026-11-21 15:23:05.731)."
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailAccount",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MailSplit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MailSplitFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MailSplit`) did not go in"
+          },
+          {
+            "model": "OrganizationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "OrganizationRuleAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganizationRule`) did not go in"
+          },
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ConversationParticipant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationComment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ConversationParticipant`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Verification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"verification\" violates not-null constraint\nDETAIL:  Failing row contains (null, v156, v157, 2024-01-02 03:04:05.158, 2026-11-21 15:23:05.748, 2026-11-21 15:23:05.748)."
+          },
+          {
+            "model": "SsoProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ssoProvider\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, v159, v160, v161, null, v162, null, v163)."
+          },
+          {
+            "model": "Digest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Group",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Rule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "ColdEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DigestItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Digest`) did not go in"
+          },
+          {
+            "model": "Schedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "PendingPremiumGrant",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PendingPremiumGrant\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.761, 2026-11-21 15:23:05.761, v235, BASIC_MONTHLY, 1, 237)."
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"VerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.762, 2026-11-21 15:23:05.762, v238, v239, 2024-01-02 03:04:05.24)."
+          },
+          {
+            "model": "Label",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Action",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "RuleHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "ScheduledAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "SnoozedThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ScheduledEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSendOperation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "SentMessageOpen",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "GroupItem",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"GroupItem\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.774, 2026-11-21 15:23:05.774, null, FROM, v318, f, v319, v320, v321, AI)."
+          },
+          {
+            "model": "ClassificationFeedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Newsletter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ResponseTime",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ThreadTracker",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CleanupJob`) did not go in"
+          },
+          {
+            "model": "Chat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BulkInboxActionJob`) did not go in"
+          },
+          {
+            "model": "Knowledge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Snippet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ReplyMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DraftSendLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedAction`) did not go in"
+          },
+          {
+            "model": "ReplyMemorySource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ReplyMemory`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Payment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Payment\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.412, 2024-01-02 03:04:05.413, null, LEMON_SQUEEZY, v414, v415, v416, 417, v418, v419, 420, t, f, 2024-01-02 03:04:05.422, 423, v424, 2024-01-02 03:04:05.425)."
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatCompaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatActionTotal",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CalendarConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Calendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CalendarConnection`) did not go in"
+          },
+          {
+            "model": "AvailabilitySchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BookingLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "AvailabilityWindow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BookingLink`) did not go in"
+          },
+          {
+            "model": "MeetingBriefing",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ContactResearch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ContactResearch\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.809, v471, 2024-01-02 03:04:05.472, t, v474, v475, {\"n\": 476, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {})."
+          },
+          {
+            "model": "MeetingRecording",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Meeting",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingRoute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJobRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AutomationJob`) did not go in"
+          },
+          {
+            "model": "DriveConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "FilingFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "DocumentFiling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "AttachmentSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "AttachmentDocument",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttachmentSource`) did not go in"
+          },
+          {
+            "model": "Referral",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "McpIntegration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"McpIntegration\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.824, 2026-11-21 15:23:05.824, v553, v554, v555, v556, v557, v558, v559, v560, OAUTH, null)."
+          },
+          {
+            "model": "McpConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpIntegration`) did not go in"
+          },
+          {
+            "model": "McpTool",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpConnection`) did not go in"
+          },
+          {
+            "model": "MobilePushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MobilePushDelivery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MobilePushToken`) did not go in"
+          },
+          {
+            "model": "OauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, v574, v575, v576, f, t, t, v579, {v580}, {}, null, 2024-01-02 03:04:05.581, 2024-01-02 03:04:05.582, v583, v584, v585, {v586}, v587, v588, v589, v590, v591, {v592}, {v593}, v594, t, v596, v597, v598, v599, {v600}, {v601}, t, f, v603, {\"n\": 604, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "OauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "Jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Jwks\" violates not-null constraint\nDETAIL:  Failing row contains (null, v635, v636, 2024-01-02 03:04:05.637, 2024-01-02 03:04:05.638, v639, v640)."
+          },
+          {
+            "model": "OauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthResource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v641, v642, 643, 644, v645, v646, {v647}, {\"n\": 648, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, f, f, 2024-01-02 03:04:05.649, 2024-01-02 03:04:05.65, 1, {\"n\": 651, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "OauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthClientAssertion\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.654)."
+          },
+          {
+            "model": "ScimManagedConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimManagedConnection\" violates not-null constraint\nDETAIL:  Failing row contains (null, v655, v656, v657, v658, 659, 2024-01-02 03:04:05.66, v661, 2024-01-02 03:04:05.662, v663, 2024-01-02 03:04:05.664, v665)."
+          },
+          {
+            "model": "ScimManagedCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimManagedConnectionEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimConnectionBinding",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimConnectionBinding\" violates not-null constraint\nDETAIL:  Failing row contains (null, v685, v686, v687, 2024-01-02 03:04:05.688, 2024-01-02 03:04:05.689, active, v690, 0, 0, 0, 2024-01-02 03:04:05.691, v692, 2024-01-02 03:04:05.693)."
+          },
+          {
+            "model": "ScimIdentityTombstone",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimSubject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimProjectionGrant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimUser`) did not go in"
+          },
+          {
+            "model": "ScimGroup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimGroup\" violates not-null constraint\nDETAIL:  Failing row contains (null, v733, v734, 0, v735, v736, v737, v738, v739, 2024-01-02 03:04:05.74, 2024-01-02 03:04:05.741)."
+          },
+          {
+            "model": "ScimGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimGroup`) did not go in"
+          },
+          {
+            "model": "ScimIdentityLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LoopsEmailSource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"LoopsEmailSource\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:05.851, 2026-11-21 15:23:05.851, v747, v748, v749, v750, v751, v752, 2024-01-02 03:04:05.753)."
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"ContactResearch_latest_idx\";\n\n-- DropIndex\nDROP INDEX \"EmailAccount_watchEmailsSubscriptionHistory_idx\";\n\n-- DropIndex\nDROP INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\";\n\n-- DropIndex\nDROP INDEX \"ExecutedAction_sentMessageIds_idx\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_campaignId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_loopId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"ThreadTracker_followUpDraft_cleanup_idx\";\n\n-- CreateIndex\nCREATE INDEX \"ContactResearch_latest_idx\" ON \"ContactResearch\"(\"email\", \"researchStartedAt\" DESC, \"createdAt\" DESC, \"id\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"EmailAccount_watchEmailsSubscriptionHistory_idx\" ON \"EmailAccount\" USING GIN (\"watchEmailsSubscriptionHistory\" jsonb_path_ops);\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_sentMessageIds_idx\" ON \"ExecutedAction\" USING GIN (\"sentMessageIds\");\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\" ON \"ExecutedAction\"(\"draftStatus\", \"createdAt\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_executedRuleId_draft_idx\" ON \"ExecutedAction\"(\"executedRuleId\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_loopId_unversioned_key\" ON \"LoopsEmailSource\"(\"loopId\") WHERE (\"emailMessageId\" IS NULL AND \"loopId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_campaignId_unversioned_key\" ON \"LoopsEmailSource\"(\"campaignId\") WHERE (\"emailMessageId\" IS NULL AND \"campaignId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ThreadTracker_followUpDraft_cleanup_idx\" ON \"ThreadTracker\"(\"emailAccountId\", \"followUpDraftCreatedAt\") WHERE (\"followUpDraftContent\" IS NOT NULL);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 0,
+            "total": 106
+          },
+          "read": {
+            "ok": 0,
+            "total": 0
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 0,
+            "total": 0
+          }
+        },
+        "findings": [
+          {
+            "model": "Premium",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Premium\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.671, 2026-11-21 15:23:08.694, {v1}, 2024-01-02 03:04:05.002, 3, 4, 5, 6, 7, 8, v9, v10, v11, v12, v13, v14, v15, v16, v17, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.02, 2024-01-02 03:04:05.021, v22, 2024-01-02 03:04:05.023, 2024-01-02 03:04:05.024, 2024-01-02 03:04:05.025, 2024-01-02 03:04:05.026, v27, v28, v29, 2024-01-02 03:04:05.03, 31, f, v32, v33, v34, v35, v36, v37, v38, 2024-01-02 03:04:05.039, 2024-01-02 03:04:05.04, 2024-01-02 03:0"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.695, 2026-11-21 15:23:08.695, v51, v52, f, v53, 2024-01-02 03:04:05.054, AI_ASSISTANT, {\"n\": 56, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.057, {\"n\": 58, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 59, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2024-01-02 03:04:05.06, {}, {v61}, v62, v63, 64, v65, v66, f, 0, f, 0, v67, v68, v69, t, v71, v72, null, null, f)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Organization\" violates not-null constraint\nDETAIL:  Failing row contains (null, v84, v85, v86, {\"n\": 87, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 2026-11-21 15:23:08.696, 2026-11-21 15:23:08.696)."
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailAccount",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MailSplit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MailSplitFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MailSplit`) did not go in"
+          },
+          {
+            "model": "OrganizationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "OrganizationRuleAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganizationRule`) did not go in"
+          },
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ConversationParticipant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationComment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ConversationParticipant`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Verification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"verification\" violates not-null constraint\nDETAIL:  Failing row contains (null, v156, v157, 2024-01-02 03:04:05.158, 2026-11-21 15:23:08.701, 2026-11-21 15:23:08.701)."
+          },
+          {
+            "model": "SsoProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ssoProvider\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, v159, v160, v161, null, v162, null, v163)."
+          },
+          {
+            "model": "Digest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Group",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Rule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "ColdEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DigestItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Digest`) did not go in"
+          },
+          {
+            "model": "Schedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "PendingPremiumGrant",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PendingPremiumGrant\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.705, 2026-11-21 15:23:08.705, v235, BASIC_MONTHLY, 1, 237)."
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"VerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.705, 2026-11-21 15:23:08.705, v238, v239, 2024-01-02 03:04:05.24)."
+          },
+          {
+            "model": "Label",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Action",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "RuleHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "ScheduledAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "SnoozedThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ScheduledEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSendOperation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "SentMessageOpen",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "GroupItem",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"GroupItem\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.708, 2026-11-21 15:23:08.708, null, FROM, v318, f, v319, v320, v321, AI)."
+          },
+          {
+            "model": "ClassificationFeedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Newsletter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ResponseTime",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ThreadTracker",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CleanupJob`) did not go in"
+          },
+          {
+            "model": "Chat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BulkInboxActionJob`) did not go in"
+          },
+          {
+            "model": "Knowledge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Snippet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ReplyMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DraftSendLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedAction`) did not go in"
+          },
+          {
+            "model": "ReplyMemorySource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ReplyMemory`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Payment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Payment\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.412, 2024-01-02 03:04:05.413, null, LEMON_SQUEEZY, v414, v415, v416, 417, v418, v419, 420, t, f, 2024-01-02 03:04:05.422, 423, v424, 2024-01-02 03:04:05.425)."
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatCompaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatActionTotal",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CalendarConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Calendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CalendarConnection`) did not go in"
+          },
+          {
+            "model": "AvailabilitySchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BookingLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "AvailabilityWindow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BookingLink`) did not go in"
+          },
+          {
+            "model": "MeetingBriefing",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ContactResearch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ContactResearch\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.718, v471, 2024-01-02 03:04:05.472, t, v474, v475, {\"n\": 476, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {})."
+          },
+          {
+            "model": "MeetingRecording",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Meeting",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingRoute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJobRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AutomationJob`) did not go in"
+          },
+          {
+            "model": "DriveConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "FilingFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "DocumentFiling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "AttachmentSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "AttachmentDocument",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttachmentSource`) did not go in"
+          },
+          {
+            "model": "Referral",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "McpIntegration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"McpIntegration\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.722, 2026-11-21 15:23:08.723, v553, v554, v555, v556, v557, v558, v559, v560, OAUTH, null)."
+          },
+          {
+            "model": "McpConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpIntegration`) did not go in"
+          },
+          {
+            "model": "McpTool",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpConnection`) did not go in"
+          },
+          {
+            "model": "MobilePushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MobilePushDelivery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MobilePushToken`) did not go in"
+          },
+          {
+            "model": "OauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, v574, v575, v576, f, t, t, v579, {v580}, {}, null, 2024-01-02 03:04:05.581, 2024-01-02 03:04:05.582, v583, v584, v585, {v586}, v587, v588, v589, v590, v591, {v592}, {v593}, v594, t, v596, v597, v598, v599, {v600}, {v601}, t, f, v603, {\"n\": 604, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "OauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "Jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Jwks\" violates not-null constraint\nDETAIL:  Failing row contains (null, v635, v636, 2024-01-02 03:04:05.637, 2024-01-02 03:04:05.638, v639, v640)."
+          },
+          {
+            "model": "OauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthResource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v641, v642, 643, 644, v645, v646, {v647}, {\"n\": 648, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, f, f, 2024-01-02 03:04:05.649, 2024-01-02 03:04:05.65, 1, {\"n\": 651, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "OauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"OauthClientAssertion\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.654)."
+          },
+          {
+            "model": "ScimManagedConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimManagedConnection\" violates not-null constraint\nDETAIL:  Failing row contains (null, v655, v656, v657, v658, 659, 2024-01-02 03:04:05.66, v661, 2024-01-02 03:04:05.662, v663, 2024-01-02 03:04:05.664, v665)."
+          },
+          {
+            "model": "ScimManagedCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimManagedConnectionEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimConnectionBinding",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimConnectionBinding\" violates not-null constraint\nDETAIL:  Failing row contains (null, v685, v686, v687, 2024-01-02 03:04:05.688, 2024-01-02 03:04:05.689, active, v690, 0, 0, 0, 2024-01-02 03:04:05.691, v692, 2024-01-02 03:04:05.693)."
+          },
+          {
+            "model": "ScimIdentityTombstone",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimSubject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimProjectionGrant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimUser`) did not go in"
+          },
+          {
+            "model": "ScimGroup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"scimGroup\" violates not-null constraint\nDETAIL:  Failing row contains (null, v733, v734, 0, v735, v736, v737, v738, v739, 2024-01-02 03:04:05.74, 2024-01-02 03:04:05.741)."
+          },
+          {
+            "model": "ScimGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimGroup`) did not go in"
+          },
+          {
+            "model": "ScimIdentityLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LoopsEmailSource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"LoopsEmailSource\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:23:08.73, 2026-11-21 15:23:08.73, v747, v748, v749, v750, v751, v752, 2024-01-02 03:04:05.753)."
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.DuplicateTable: relation \"Schedule_emailAccountId_key\" already exists\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^^^^^^^^^^^\n  File \"/workspaces"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 20,
+            "total": 106
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 19,
+            "total": 19
+          },
+          "relations": {
+            "ok": 14,
+            "total": 14
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "Premium",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v1\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailAccount",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MailSplit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MailSplitFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MailSplit`) did not go in"
+          },
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Member`) did not go in"
+          },
+          {
+            "model": "ConversationParticipant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationComment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ConversationParticipant`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Digest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Group",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Rule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "ColdEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DigestItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Digest`) did not go in"
+          },
+          {
+            "model": "Schedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Label",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Action",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "RuleHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "ScheduledAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "SnoozedThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ScheduledEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSendOperation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "SentMessageOpen",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ClassificationFeedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Newsletter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ResponseTime",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ThreadTracker",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CleanupJob`) did not go in"
+          },
+          {
+            "model": "Chat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BulkInboxActionJob`) did not go in"
+          },
+          {
+            "model": "Knowledge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Snippet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ReplyMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DraftSendLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedAction`) did not go in"
+          },
+          {
+            "model": "ReplyMemorySource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ReplyMemory`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatCompaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatActionTotal",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CalendarConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Calendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CalendarConnection`) did not go in"
+          },
+          {
+            "model": "AvailabilitySchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BookingLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "AvailabilityWindow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BookingLink`) did not go in"
+          },
+          {
+            "model": "MeetingBriefing",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ContactResearch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "MeetingRecording",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Meeting",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingRoute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJobRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AutomationJob`) did not go in"
+          },
+          {
+            "model": "DriveConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "FilingFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "DocumentFiling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "AttachmentSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "AttachmentDocument",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttachmentSource`) did not go in"
+          },
+          {
+            "model": "Referral",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MobilePushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MobilePushDelivery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MobilePushToken`) did not go in"
+          },
+          {
+            "model": "OauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v580\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "OauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v647\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "OauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "ScimIdentityTombstone",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimSubject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimProjectionGrant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimUser`) did not go in"
+          },
+          {
+            "model": "ScimGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimUser`) did not go in"
+          },
+          {
+            "model": "ScimIdentityLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"OauthClient\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "error: could not compile `compat` (bin \"compat\"); 107 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target",
+      "ddl": {
+        "error": "error: could not compile `compat` (bin \"compat\"); 107 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 0,
+            "total": 106
+          },
+          "read": {
+            "ok": 0,
+            "total": 0
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 0,
+            "total": 0
+          }
+        },
+        "findings": [
+          {
+            "model": "Premium",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Premium\\\" violates not-null constraint\\n\\n    table: Premium\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.78, 2026-11-21 15:24:47.78, {v1}, 2024-01-02 03:04:05.002, 3, 4, 5, 6, 7, 8, v9, v10, v11, v12, v13, v14, v15, v16, v17, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.02, 2024-01-02 03:04:05.021, v22, 2024-01-02 03:04:05.023, 2024-01-02 03:04:05.024, 2024-01-02 03:04:05.025, 2024-01-02 03:04:05.026, v27, v28, v29, 2024-01-02 03:04:05.03, 31, f, v32, v33, v34, v35, v36, v37, v38, 2024-01-02 0"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"User\\\" violates not-null constraint\\n\\n    table: User\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.793, 2026-11-21 15:24:47.793, v51, v52, f, v53, 2024-01-02 03:04:05.054, AI_ASSISTANT, {\\\"n\\\": 56, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2024-01-02 03:04:05.057, {\\\"n\\\": 58, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 59, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2024-01-02 03:04:05.06, {}, {v61}, v62, v63, 64, v65, v66, f, 0, f, 0, v67, v68, v69, t, "
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Organization\\\" violates not-null constraint\\n\\n    table: Organization\\n    column: id\\n\\nFailing row contains (null, v84, v85, v86, {\\\"n\\\": 87, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 2026-11-21 15:24:47.796, 2026-11-21 15:24:47.796).\""
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailAccount",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MailSplit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MailSplitFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MailSplit`) did not go in"
+          },
+          {
+            "model": "OrganizationRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "OrganizationRuleAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganizationRule`) did not go in"
+          },
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ConversationParticipant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationComment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ConversationParticipant`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Verification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"verification\\\" violates not-null constraint\\n\\n    table: verification\\n    column: id\\n\\nFailing row contains (null, v156, v157, 2024-01-02 03:04:05.158, 2026-11-21 15:24:47.802, 2026-11-21 15:24:47.802).\""
+          },
+          {
+            "model": "SsoProvider",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ssoProvider\\\" violates not-null constraint\\n\\n    table: ssoProvider\\n    column: id\\n\\nFailing row contains (null, null, v159, v160, v161, null, v162, null, v163).\""
+          },
+          {
+            "model": "Digest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Group",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Rule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ExecutedAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "ColdEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DigestItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Digest`) did not go in"
+          },
+          {
+            "model": "Schedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "PendingPremiumGrant",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"PendingPremiumGrant\\\" violates not-null constraint\\n\\n    table: PendingPremiumGrant\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.806, 2026-11-21 15:24:47.806, v235, BASIC_MONTHLY, 1, 237).\""
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"VerificationToken\\\" violates not-null constraint\\n\\n    table: VerificationToken\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.807, 2026-11-21 15:24:47.807, v238, v239, 2024-01-02 03:04:05.24).\""
+          },
+          {
+            "model": "Label",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Action",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "RuleHistory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "ScheduledAction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedRule`) did not go in"
+          },
+          {
+            "model": "SnoozedThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ScheduledEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSendOperation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "SentMessageOpen",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "GroupItem",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"GroupItem\\\" violates not-null constraint\\n\\n    table: GroupItem\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.811, 2026-11-21 15:24:47.811, null, FROM, v318, f, v319, v320, v321, AI).\""
+          },
+          {
+            "model": "ClassificationFeedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Newsletter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ResponseTime",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ThreadTracker",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CleanupThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CleanupJob`) did not go in"
+          },
+          {
+            "model": "Chat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BulkInboxActionThread",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BulkInboxActionJob`) did not go in"
+          },
+          {
+            "model": "Knowledge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Snippet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "EmailSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ReplyMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "DraftSendLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExecutedAction`) did not go in"
+          },
+          {
+            "model": "ReplyMemorySource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ReplyMemory`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EmailToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Payment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Payment\\\" violates not-null constraint\\n\\n    table: Payment\\n    column: id\\n\\nFailing row contains (null, 2024-01-02 03:04:05.412, 2024-01-02 03:04:05.413, null, LEMON_SQUEEZY, v414, v415, v416, 417, v418, v419, 420, t, f, 2024-01-02 03:04:05.422, 423, v424, 2024-01-02 03:04:05.425).\""
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatCompaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatActionTotal",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "ChatMemory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "CalendarConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Calendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CalendarConnection`) did not go in"
+          },
+          {
+            "model": "AvailabilitySchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "BookingLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "AvailabilityWindow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AvailabilitySchedule`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BookingLink`) did not go in"
+          },
+          {
+            "model": "MeetingBriefing",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "ContactResearch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ContactResearch\\\" violates not-null constraint\\n\\n    table: ContactResearch\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.821, v471, 2024-01-02 03:04:05.472, t, v474, v475, {\\\"n\\\": 476, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {}).\""
+          },
+          {
+            "model": "MeetingRecording",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "Meeting",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "MessagingRoute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MessagingChannel`) did not go in"
+          },
+          {
+            "model": "AutomationJobRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AutomationJob`) did not go in"
+          },
+          {
+            "model": "DriveConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmailAccount`) did not go in"
+          },
+          {
+            "model": "FilingFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "DocumentFiling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DriveConnection`) did not go in"
+          },
+          {
+            "model": "AttachmentSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Rule`) did not go in"
+          },
+          {
+            "model": "AttachmentDocument",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttachmentSource`) did not go in"
+          },
+          {
+            "model": "Referral",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "McpIntegration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"McpIntegration\\\" violates not-null constraint\\n\\n    table: McpIntegration\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.826, 2026-11-21 15:24:47.826, v553, v554, v555, v556, v557, v558, v559, v560, OAUTH, null).\""
+          },
+          {
+            "model": "McpConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpIntegration`) did not go in"
+          },
+          {
+            "model": "McpTool",
+            "check": "insert",
+            "text": "not inserted: the parent row (`McpConnection`) did not go in"
+          },
+          {
+            "model": "MobilePushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "MobilePushDelivery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`MobilePushToken`) did not go in"
+          },
+          {
+            "model": "OauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"OauthClient\\\" violates not-null constraint\\n\\n    table: OauthClient\\n    column: id\\n\\nFailing row contains (null, v574, v575, v576, f, t, t, v579, {v580}, {}, null, 2024-01-02 03:04:05.581, 2024-01-02 03:04:05.582, v583, v584, v585, {v586}, v587, v588, v589, v590, v591, {v592}, {v593}, v594, t, v596, v597, v598, v599, {v600}, {v601}, t, f, v603, {\\\"n\\\": 604, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "OauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "Jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Jwks\\\" violates not-null constraint\\n\\n    table: Jwks\\n    column: id\\n\\nFailing row contains (null, v635, v636, 2024-01-02 03:04:05.637, 2024-01-02 03:04:05.638, v639, v640).\""
+          },
+          {
+            "model": "OauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"OauthResource\\\" violates not-null constraint\\n\\n    table: OauthResource\\n    column: id\\n\\nFailing row contains (null, v641, v642, 643, 644, v645, v646, {v647}, {\\\"n\\\": 648, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, f, f, 2024-01-02 03:04:05.649, 2024-01-02 03:04:05.65, 1, {\\\"n\\\": 651, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "OauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OauthClient`) did not go in"
+          },
+          {
+            "model": "OauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"OauthClientAssertion\\\" violates not-null constraint\\n\\n    table: OauthClientAssertion\\n    column: id\\n\\nFailing row contains (null, 2024-01-02 03:04:05.654).\""
+          },
+          {
+            "model": "ScimManagedConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"scimManagedConnection\\\" violates not-null constraint\\n\\n    table: scimManagedConnection\\n    column: id\\n\\nFailing row contains (null, v655, v656, v657, v658, 659, 2024-01-02 03:04:05.66, v661, 2024-01-02 03:04:05.662, v663, 2024-01-02 03:04:05.664, v665).\""
+          },
+          {
+            "model": "ScimManagedCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimManagedConnectionEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimManagedConnection`) did not go in"
+          },
+          {
+            "model": "ScimConnectionBinding",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"scimConnectionBinding\\\" violates not-null constraint\\n\\n    table: scimConnectionBinding\\n    column: id\\n\\nFailing row contains (null, v685, v686, v687, 2024-01-02 03:04:05.688, 2024-01-02 03:04:05.689, active, v690, 0, 0, 0, 2024-01-02 03:04:05.691, v692, 2024-01-02 03:04:05.693).\""
+          },
+          {
+            "model": "ScimIdentityTombstone",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimSubject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimProjectionGrant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimUser`) did not go in"
+          },
+          {
+            "model": "ScimGroup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"scimGroup\\\" violates not-null constraint\\n\\n    table: scimGroup\\n    column: id\\n\\nFailing row contains (null, v733, v734, 0, v735, v736, v737, v738, v739, 2024-01-02 03:04:05.74, 2024-01-02 03:04:05.741).\""
+          },
+          {
+            "model": "ScimGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScimGroup`) did not go in"
+          },
+          {
+            "model": "ScimIdentityLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LoopsEmailSource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"LoopsEmailSource\\\" violates not-null constraint\\n\\n    table: LoopsEmailSource\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:24:47.833, 2026-11-21 15:24:47.833, v747, v748, v749, v750, v751, v752, 2024-01-02 03:04:05.753).\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 106,
+            "total": 106
+          },
+          "read": {
+            "ok": 106,
+            "total": 106
+          },
+          "update": {
+            "ok": 99,
+            "total": 99
+          },
+          "relations": {
+            "ok": 278,
+            "total": 278
+          },
+          "delete": {
+            "ok": 106,
+            "total": 106
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "notGenerated": true
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 106,
+            "total": 106
+          },
+          "read": {
+            "ok": 106,
+            "total": 106
+          },
+          "update": {
+            "ok": 99,
+            "total": 99
+          },
+          "relations": {
+            "ok": 278,
+            "total": 278
+          },
+          "delete": {
+            "ok": 106,
+            "total": 106
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Action\" DROP CONSTRAINT \"Action_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Action\" DROP CONSTRAINT \"Action_messagingChannelId_messagingChannelEmailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Action\" DROP CONSTRAINT \"Action_ruleId_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentDocument\" DROP CONSTRAINT \"AttachmentDocument_attachmentSourceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentSource\" DROP CONSTRAINT \"AttachmentSource_driveConnectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentSource\" DROP CONSTRAINT \"AttachmentSource_ruleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AutomationJob\" DROP CONSTRAINT \"AutomationJob_messagingChannelId_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AutomationJobRun\" DROP CONSTRAINT \"AutomationJobRun_automationJobId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AvailabilitySchedule\" DROP CONSTRAINT \"AvailabilitySchedule_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AvailabilityWindow\" DROP CONSTRAINT \"AvailabilityWindow_availabilityScheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_bookingLinkId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingLink\" DROP CONSTRAINT \"BookingLink_availabilityScheduleId_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingLink\" DROP CONSTRAINT \"BookingLink_destinationCalendarId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingLink\" DROP CONSTRAINT \"BookingLink_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BulkInboxActionJob\" DROP CONSTRAINT \"BulkInboxActionJob_chatId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BulkInboxActionJob\" DROP CONSTRAINT \"BulkInboxActionJob_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BulkInboxActionThread\" DROP CONSTRAINT \"BulkInboxActionThread_jobId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Calendar\" DROP CONSTRAINT \"Calendar_connectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalendarConnection\" DROP CONSTRAINT \"CalendarConnection_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Category\" DROP CONSTRAINT \"Category_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Chat\" DROP CONSTRAINT \"Chat_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ChatActionTotal\" DROP CONSTRAINT \"ChatActionTotal_chatId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ChatCompaction\" DROP CONSTRAINT \"ChatCompaction_chatId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ChatMemory\" DROP CONSTRAINT \"ChatMemory_chatId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ChatMemory\" DROP CONSTRAINT \"ChatMemory_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ChatMessage\" DROP CONSTRAINT \"ChatMessage_chatId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ClassificationFeedback\" DROP CONSTRAINT \"ClassificationFeedback_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ClassificationFeedback\" DROP CONSTRAINT \"ClassificationFeedback_ruleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CleanupJob\" DROP CONSTRAINT \"CleanupJob_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CleanupThread\" DROP CONSTRAINT \"CleanupThread_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CleanupThread\" DROP CONSTRAINT \"CleanupThread_jobId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ColdEmail\" DROP CONSTRAINT \"ColdEmail_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Conversation\" DROP CONSTRAINT \"Conversation_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Conversation\" DROP CONSTRAINT \"Conversation_publisherId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationActivity\" DROP CONSTRAINT \"ConversationActivity_commentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationActivity\" DROP CONSTRAINT \"ConversationActivity_participantId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationComment\" DROP CONSTRAINT \"ConversationComment_authorMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationComment\" DROP CONSTRAINT \"ConversationComment_conversationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationParticipant\" DROP CONSTRAINT \"ConversationParticipant_conversationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConversationParticipant\" DROP CONSTRAINT \"ConversationParticipant_memberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Digest\" DROP CONSTRAINT \"Digest_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DigestItem\" DROP CONSTRAINT \"DigestItem_actionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DigestItem\" DROP CONSTRAINT \"DigestItem_coldEmailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DigestItem\" DROP CONSTRAINT \"DigestItem_digestId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DocumentFiling\" DROP CONSTRAINT \"DocumentFiling_driveConnectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DocumentFiling\" DROP CONSTRAINT \"DocumentFiling_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DraftSendLog\" DROP CONSTRAINT \"DraftSendLog_executedActionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DriveConnection\" DROP CONSTRAINT \"DriveConnection_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailAccount\" DROP CONSTRAINT \"EmailAccount_accountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailAccount\" DROP CONSTRAINT \"EmailAccount_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailMessage\" DROP CONSTRAINT \"EmailMessage_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailSendOperation\" DROP CONSTRAINT \"EmailSendOperation_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailSignature\" DROP CONSTRAINT \"EmailSignature_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailToken\" DROP CONSTRAINT \"EmailToken_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ExecutedAction\" DROP CONSTRAINT \"ExecutedAction_executedRuleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ExecutedAction\" DROP CONSTRAINT \"ExecutedAction_messagingChannelId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ExecutedRule\" DROP CONSTRAINT \"ExecutedRule_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ExecutedRule\" DROP CONSTRAINT \"ExecutedRule_ruleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FilingFolder\" DROP CONSTRAINT \"FilingFolder_driveConnectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FilingFolder\" DROP CONSTRAINT \"FilingFolder_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Group\" DROP CONSTRAINT \"Group_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"GroupItem\" DROP CONSTRAINT \"GroupItem_groupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Knowledge\" DROP CONSTRAINT \"Knowledge_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Label\" DROP CONSTRAINT \"Label_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MailSplit\" DROP CONSTRAINT \"MailSplit_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MailSplitFilter\" DROP CONSTRAINT \"MailSplitFilter_mailSplitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"McpConnection\" DROP CONSTRAINT \"McpConnection_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"McpConnection\" DROP CONSTRAINT \"McpConnection_integrationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"McpIntegration\" DROP CONSTRAINT \"McpIntegration_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"McpTool\" DROP CONSTRAINT \"McpTool_connectionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Meeting\" DROP CONSTRAINT \"Meeting_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Meeting\" DROP CONSTRAINT \"Meeting_recordingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MeetingBriefing\" DROP CONSTRAINT \"MeetingBriefing_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MeetingRecording\" DROP CONSTRAINT \"MeetingRecording_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Member\" DROP CONSTRAINT \"Member_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Member\" DROP CONSTRAINT \"Member_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MessagingChannel\" DROP CONSTRAINT \"MessagingChannel_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MessagingRoute\" DROP CONSTRAINT \"MessagingRoute_messagingChannelId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MobilePushDelivery\" DROP CONSTRAINT \"MobilePushDelivery_mobilePushTokenId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MobilePushToken\" DROP CONSTRAINT \"MobilePushToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Newsletter\" DROP CONSTRAINT \"Newsletter_categoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Newsletter\" DROP CONSTRAINT \"Newsletter_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthAccessToken\" DROP CONSTRAINT \"OauthAccessToken_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthAccessToken\" DROP CONSTRAINT \"OauthAccessToken_refreshId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthAccessToken\" DROP CONSTRAINT \"OauthAccessToken_sessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthAccessToken\" DROP CONSTRAINT \"OauthAccessToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthClient\" DROP CONSTRAINT \"OauthClient_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthClientResource\" DROP CONSTRAINT \"OauthClientResource_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthClientResource\" DROP CONSTRAINT \"OauthClientResource_resourceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthConsent\" DROP CONSTRAINT \"OauthConsent_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthConsent\" DROP CONSTRAINT \"OauthConsent_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthRefreshToken\" DROP CONSTRAINT \"OauthRefreshToken_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthRefreshToken\" DROP CONSTRAINT \"OauthRefreshToken_sessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OauthRefreshToken\" DROP CONSTRAINT \"OauthRefreshToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationRule\" DROP CONSTRAINT \"OrganizationRule_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationRuleAction\" DROP CONSTRAINT \"OrganizationRuleAction_organizationRuleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Payment\" DROP CONSTRAINT \"Payment_premiumId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Referral\" DROP CONSTRAINT \"Referral_referredUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Referral\" DROP CONSTRAINT \"Referral_referrerUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ReplyMemory\" DROP CONSTRAINT \"ReplyMemory_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ReplyMemorySource\" DROP CONSTRAINT \"ReplyMemorySource_draftSendLogId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ReplyMemorySource\" DROP CONSTRAINT \"ReplyMemorySource_replyMemoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ResponseTime\" DROP CONSTRAINT \"ResponseTime_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Rule\" DROP CONSTRAINT \"Rule_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Rule\" DROP CONSTRAINT \"Rule_groupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Rule\" DROP CONSTRAINT \"Rule_organizationRuleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RuleHistory\" DROP CONSTRAINT \"RuleHistory_ruleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Schedule\" DROP CONSTRAINT \"Schedule_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScheduledAction\" DROP CONSTRAINT \"ScheduledAction_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScheduledAction\" DROP CONSTRAINT \"ScheduledAction_executedActionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScheduledAction\" DROP CONSTRAINT \"ScheduledAction_executedRuleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScheduledEmail\" DROP CONSTRAINT \"ScheduledEmail_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScimIdentityLink\" DROP CONSTRAINT \"ScimIdentityLink_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SentMessageOpen\" DROP CONSTRAINT \"SentMessageOpen_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_activeOrganizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Snippet\" DROP CONSTRAINT \"Snippet_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SnoozedThread\" DROP CONSTRAINT \"SnoozedThread_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ThreadTracker\" DROP CONSTRAINT \"ThreadTracker_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_premiumAdminId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_premiumId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_CategoryToRule\" DROP CONSTRAINT \"_CategoryToRule_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_CategoryToRule\" DROP CONSTRAINT \"_CategoryToRule_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"invitation\" DROP CONSTRAINT \"invitation_inviterId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"invitation\" DROP CONSTRAINT \"invitation_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimGroupMember\" DROP CONSTRAINT \"scimGroupMember_groupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimGroupMember\" DROP CONSTRAINT \"scimGroupMember_scimUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimIdentityTombstone\" DROP CONSTRAINT \"scimIdentityTombstone_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimManagedConnectionEvent\" DROP CONSTRAINT \"scimManagedConnectionEvent_connectionRecordId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimManagedCredential\" DROP CONSTRAINT \"scimManagedCredential_connectionRecordId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimProjectionGrant\" DROP CONSTRAINT \"scimProjectionGrant_scimUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimProjectionGrant\" DROP CONSTRAINT \"scimProjectionGrant_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimSubject\" DROP CONSTRAINT \"scimSubject_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"scimUser\" DROP CONSTRAINT \"scimUser_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ssoProvider\" DROP CONSTRAINT \"ssoProvider_emailAccountId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ssoProvider\" DROP CONSTRAINT \"ssoProvider_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ssoProvider\" DROP CONSTRAINT \"ssoProvider_userId_fkey\";\n\n-- DropIndex\nDROP INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_campaignId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"LoopsEmailSource_loopId_unversioned_key\";\n\n-- DropIndex\nDROP INDEX \"ThreadTracker_followUpDraft_cleanup_idx\";\n\n-- AlterTable\nALTER TABLE \"Action\" ALTER COLUMN \"ruleId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"AutomationJob\" ALTER COLUMN \"messagingChannelId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"BookingLink\" ALTER COLUMN \"availabilityScheduleId\" SET NOT NULL;\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_draftStatus_createdAt_draft_idx\" ON \"ExecutedAction\"(\"draftStatus\", \"createdAt\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ExecutedAction_executedRuleId_draft_idx\" ON \"ExecutedAction\"(\"executedRuleId\") WHERE (\"draftId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_loopId_unversioned_key\" ON \"LoopsEmailSource\"(\"loopId\") WHERE (\"emailMessageId\" IS NULL AND \"loopId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"LoopsEmailSource_campaignId_unversioned_key\" ON \"LoopsEmailSource\"(\"campaignId\") WHERE (\"emailMessageId\" IS NULL AND \"campaignId\" IS NOT NULL);\n\n-- CreateIndex\nCREATE INDEX \"ThreadTracker_followUpDraft_cleanup_idx\" ON \"ThreadTracker\"(\"emailAccountId\", \"followUpDraftCreatedAt\") WHERE (\"followUpDraftContent\" IS NOT NULL);\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_activeOrganizationId_fkey\" FOREIGN KEY (\"activeOrganizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_premiumId_fkey\" FOREIGN KEY (\"premiumId\") REFERENCES \"Premium\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_premiumAdminId_fkey\" FOREIGN KEY (\"premiumAdminId\") REFERENCES \"Premium\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailAccount\" ADD CONSTRAINT \"EmailAccount_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailAccount\" ADD CONSTRAINT \"EmailAccount_accountId_fkey\" FOREIGN KEY (\"accountId\") REFERENCES \"Account\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MailSplit\" ADD CONSTRAINT \"MailSplit_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MailSplitFilter\" ADD CONSTRAINT \"MailSplitFilter_mailSplitId_fkey\" FOREIGN KEY (\"mailSplitId\") REFERENCES \"MailSplit\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationRule\" ADD CONSTRAINT \"OrganizationRule_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationRuleAction\" ADD CONSTRAINT \"OrganizationRuleAction_organizationRuleId_fkey\" FOREIGN KEY (\"organizationRuleId\") REFERENCES \"OrganizationRule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Member\" ADD CONSTRAINT \"Member_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Member\" ADD CONSTRAINT \"Member_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Conversation\" ADD CONSTRAINT \"Conversation_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Conversation\" ADD CONSTRAINT \"Conversation_publisherId_fkey\" FOREIGN KEY (\"publisherId\") REFERENCES \"Member\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationParticipant\" ADD CONSTRAINT \"ConversationParticipant_conversationId_fkey\" FOREIGN KEY (\"conversationId\") REFERENCES \"Conversation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationParticipant\" ADD CONSTRAINT \"ConversationParticipant_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"Member\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationComment\" ADD CONSTRAINT \"ConversationComment_conversationId_fkey\" FOREIGN KEY (\"conversationId\") REFERENCES \"Conversation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationComment\" ADD CONSTRAINT \"ConversationComment_authorMemberId_fkey\" FOREIGN KEY (\"authorMemberId\") REFERENCES \"Member\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationActivity\" ADD CONSTRAINT \"ConversationActivity_participantId_fkey\" FOREIGN KEY (\"participantId\") REFERENCES \"ConversationParticipant\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConversationActivity\" ADD CONSTRAINT \"ConversationActivity_commentId_fkey\" FOREIGN KEY (\"commentId\") REFERENCES \"ConversationComment\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invitation\" ADD CONSTRAINT \"invitation_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"invitation\" ADD CONSTRAINT \"invitation_inviterId_fkey\" FOREIGN KEY (\"inviterId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ssoProvider\" ADD CONSTRAINT \"ssoProvider_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ssoProvider\" ADD CONSTRAINT \"ssoProvider_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ssoProvider\" ADD CONSTRAINT \"ssoProvider_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Digest\" ADD CONSTRAINT \"Digest_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DigestItem\" ADD CONSTRAINT \"DigestItem_digestId_fkey\" FOREIGN KEY (\"digestId\") REFERENCES \"Digest\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DigestItem\" ADD CONSTRAINT \"DigestItem_actionId_fkey\" FOREIGN KEY (\"actionId\") REFERENCES \"ExecutedAction\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DigestItem\" ADD CONSTRAINT \"DigestItem_coldEmailId_fkey\" FOREIGN KEY (\"coldEmailId\") REFERENCES \"ColdEmail\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Schedule\" ADD CONSTRAINT \"Schedule_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Label\" ADD CONSTRAINT \"Label_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Rule\" ADD CONSTRAINT \"Rule_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Rule\" ADD CONSTRAINT \"Rule_organizationRuleId_fkey\" FOREIGN KEY (\"organizationRuleId\") REFERENCES \"OrganizationRule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Rule\" ADD CONSTRAINT \"Rule_groupId_fkey\" FOREIGN KEY (\"groupId\") REFERENCES \"Group\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Action\" ADD CONSTRAINT \"Action_ruleId_emailAccountId_fkey\" FOREIGN KEY (\"ruleId\", \"emailAccountId\") REFERENCES \"Rule\"(\"id\", \"emailAccountId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Action\" ADD CONSTRAINT \"Action_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Action\" ADD CONSTRAINT \"Action_messagingChannelId_messagingChannelEmailAccountId_fkey\" FOREIGN KEY (\"messagingChannelId\", \"messagingChannelEmailAccountId\") REFERENCES \"MessagingChannel\"(\"id\", \"emailAccountId\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RuleHistory\" ADD CONSTRAINT \"RuleHistory_ruleId_fkey\" FOREIGN KEY (\"ruleId\") REFERENCES \"Rule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ExecutedRule\" ADD CONSTRAINT \"ExecutedRule_ruleId_fkey\" FOREIGN KEY (\"ruleId\") REFERENCES \"Rule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ExecutedRule\" ADD CONSTRAINT \"ExecutedRule_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ExecutedAction\" ADD CONSTRAINT \"ExecutedAction_executedRuleId_fkey\" FOREIGN KEY (\"executedRuleId\") REFERENCES \"ExecutedRule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ExecutedAction\" ADD CONSTRAINT \"ExecutedAction_messagingChannelId_fkey\" FOREIGN KEY (\"messagingChannelId\") REFERENCES \"MessagingChannel\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScheduledAction\" ADD CONSTRAINT \"ScheduledAction_executedRuleId_fkey\" FOREIGN KEY (\"executedRuleId\") REFERENCES \"ExecutedRule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScheduledAction\" ADD CONSTRAINT \"ScheduledAction_executedActionId_fkey\" FOREIGN KEY (\"executedActionId\") REFERENCES \"ExecutedAction\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScheduledAction\" ADD CONSTRAINT \"ScheduledAction_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SnoozedThread\" ADD CONSTRAINT \"SnoozedThread_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScheduledEmail\" ADD CONSTRAINT \"ScheduledEmail_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailSendOperation\" ADD CONSTRAINT \"EmailSendOperation_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SentMessageOpen\" ADD CONSTRAINT \"SentMessageOpen_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Group\" ADD CONSTRAINT \"Group_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"GroupItem\" ADD CONSTRAINT \"GroupItem_groupId_fkey\" FOREIGN KEY (\"groupId\") REFERENCES \"Group\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ClassificationFeedback\" ADD CONSTRAINT \"ClassificationFeedback_ruleId_fkey\" FOREIGN KEY (\"ruleId\") REFERENCES \"Rule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ClassificationFeedback\" ADD CONSTRAINT \"ClassificationFeedback_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Category\" ADD CONSTRAINT \"Category_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Newsletter\" ADD CONSTRAINT \"Newsletter_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Newsletter\" ADD CONSTRAINT \"Newsletter_categoryId_fkey\" FOREIGN KEY (\"categoryId\") REFERENCES \"Category\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ColdEmail\" ADD CONSTRAINT \"ColdEmail_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailMessage\" ADD CONSTRAINT \"EmailMessage_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ResponseTime\" ADD CONSTRAINT \"ResponseTime_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ThreadTracker\" ADD CONSTRAINT \"ThreadTracker_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CleanupJob\" ADD CONSTRAINT \"CleanupJob_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CleanupThread\" ADD CONSTRAINT \"CleanupThread_jobId_fkey\" FOREIGN KEY (\"jobId\") REFERENCES \"CleanupJob\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CleanupThread\" ADD CONSTRAINT \"CleanupThread_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BulkInboxActionJob\" ADD CONSTRAINT \"BulkInboxActionJob_chatId_fkey\" FOREIGN KEY (\"chatId\") REFERENCES \"Chat\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BulkInboxActionJob\" ADD CONSTRAINT \"BulkInboxActionJob_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BulkInboxActionThread\" ADD CONSTRAINT \"BulkInboxActionThread_jobId_fkey\" FOREIGN KEY (\"jobId\") REFERENCES \"BulkInboxActionJob\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Knowledge\" ADD CONSTRAINT \"Knowledge_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Snippet\" ADD CONSTRAINT \"Snippet_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailSignature\" ADD CONSTRAINT \"EmailSignature_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ReplyMemory\" ADD CONSTRAINT \"ReplyMemory_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ReplyMemorySource\" ADD CONSTRAINT \"ReplyMemorySource_replyMemoryId_fkey\" FOREIGN KEY (\"replyMemoryId\") REFERENCES \"ReplyMemory\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ReplyMemorySource\" ADD CONSTRAINT \"ReplyMemorySource_draftSendLogId_fkey\" FOREIGN KEY (\"draftSendLogId\") REFERENCES \"DraftSendLog\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailToken\" ADD CONSTRAINT \"EmailToken_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Payment\" ADD CONSTRAINT \"Payment_premiumId_fkey\" FOREIGN KEY (\"premiumId\") REFERENCES \"Premium\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DraftSendLog\" ADD CONSTRAINT \"DraftSendLog_executedActionId_fkey\" FOREIGN KEY (\"executedActionId\") REFERENCES \"ExecutedAction\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Chat\" ADD CONSTRAINT \"Chat_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ChatMessage\" ADD CONSTRAINT \"ChatMessage_chatId_fkey\" FOREIGN KEY (\"chatId\") REFERENCES \"Chat\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ChatCompaction\" ADD CONSTRAINT \"ChatCompaction_chatId_fkey\" FOREIGN KEY (\"chatId\") REFERENCES \"Chat\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ChatActionTotal\" ADD CONSTRAINT \"ChatActionTotal_chatId_fkey\" FOREIGN KEY (\"chatId\") REFERENCES \"Chat\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ChatMemory\" ADD CONSTRAINT \"ChatMemory_chatId_fkey\" FOREIGN KEY (\"chatId\") REFERENCES \"Chat\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ChatMemory\" ADD CONSTRAINT \"ChatMemory_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalendarConnection\" ADD CONSTRAINT \"CalendarConnection_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Calendar\" ADD CONSTRAINT \"Calendar_connectionId_fkey\" FOREIGN KEY (\"connectionId\") REFERENCES \"CalendarConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingLink\" ADD CONSTRAINT \"BookingLink_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingLink\" ADD CONSTRAINT \"BookingLink_destinationCalendarId_fkey\" FOREIGN KEY (\"destinationCalendarId\") REFERENCES \"Calendar\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingLink\" ADD CONSTRAINT \"BookingLink_availabilityScheduleId_emailAccountId_fkey\" FOREIGN KEY (\"availabilityScheduleId\", \"emailAccountId\") REFERENCES \"AvailabilitySchedule\"(\"id\", \"emailAccountId\") ON DELETE NO ACTION ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AvailabilitySchedule\" ADD CONSTRAINT \"AvailabilitySchedule_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AvailabilityWindow\" ADD CONSTRAINT \"AvailabilityWindow_availabilityScheduleId_fkey\" FOREIGN KEY (\"availabilityScheduleId\") REFERENCES \"AvailabilitySchedule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_bookingLinkId_fkey\" FOREIGN KEY (\"bookingLinkId\") REFERENCES \"BookingLink\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MeetingBriefing\" ADD CONSTRAINT \"MeetingBriefing_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MeetingRecording\" ADD CONSTRAINT \"MeetingRecording_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Meeting\" ADD CONSTRAINT \"Meeting_recordingId_fkey\" FOREIGN KEY (\"recordingId\") REFERENCES \"MeetingRecording\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Meeting\" ADD CONSTRAINT \"Meeting_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MessagingChannel\" ADD CONSTRAINT \"MessagingChannel_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MessagingRoute\" ADD CONSTRAINT \"MessagingRoute_messagingChannelId_fkey\" FOREIGN KEY (\"messagingChannelId\") REFERENCES \"MessagingChannel\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AutomationJob\" ADD CONSTRAINT \"AutomationJob_messagingChannelId_emailAccountId_fkey\" FOREIGN KEY (\"messagingChannelId\", \"emailAccountId\") REFERENCES \"MessagingChannel\"(\"id\", \"emailAccountId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AutomationJobRun\" ADD CONSTRAINT \"AutomationJobRun_automationJobId_fkey\" FOREIGN KEY (\"automationJobId\") REFERENCES \"AutomationJob\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DriveConnection\" ADD CONSTRAINT \"DriveConnection_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FilingFolder\" ADD CONSTRAINT \"FilingFolder_driveConnectionId_fkey\" FOREIGN KEY (\"driveConnectionId\") REFERENCES \"DriveConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FilingFolder\" ADD CONSTRAINT \"FilingFolder_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DocumentFiling\" ADD CONSTRAINT \"DocumentFiling_driveConnectionId_fkey\" FOREIGN KEY (\"driveConnectionId\") REFERENCES \"DriveConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DocumentFiling\" ADD CONSTRAINT \"DocumentFiling_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentSource\" ADD CONSTRAINT \"AttachmentSource_ruleId_fkey\" FOREIGN KEY (\"ruleId\") REFERENCES \"Rule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentSource\" ADD CONSTRAINT \"AttachmentSource_driveConnectionId_fkey\" FOREIGN KEY (\"driveConnectionId\") REFERENCES \"DriveConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentDocument\" ADD CONSTRAINT \"AttachmentDocument_attachmentSourceId_fkey\" FOREIGN KEY (\"attachmentSourceId\") REFERENCES \"AttachmentSource\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Referral\" ADD CONSTRAINT \"Referral_referrerUserId_fkey\" FOREIGN KEY (\"referrerUserId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Referral\" ADD CONSTRAINT \"Referral_referredUserId_fkey\" FOREIGN KEY (\"referredUserId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"McpIntegration\" ADD CONSTRAINT \"McpIntegration_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"McpConnection\" ADD CONSTRAINT \"McpConnection_integrationId_fkey\" FOREIGN KEY (\"integrationId\") REFERENCES \"McpIntegration\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"McpConnection\" ADD CONSTRAINT \"McpConnection_emailAccountId_fkey\" FOREIGN KEY (\"emailAccountId\") REFERENCES \"EmailAccount\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"McpTool\" ADD CONSTRAINT \"McpTool_connectionId_fkey\" FOREIGN KEY (\"connectionId\") REFERENCES \"McpConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MobilePushToken\" ADD CONSTRAINT \"MobilePushToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MobilePushDelivery\" ADD CONSTRAINT \"MobilePushDelivery_mobilePushTokenId_fkey\" FOREIGN KEY (\"mobilePushTokenId\") REFERENCES \"MobilePushToken\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthClient\" ADD CONSTRAINT \"OauthClient_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthRefreshToken\" ADD CONSTRAINT \"OauthRefreshToken_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"OauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthRefreshToken\" ADD CONSTRAINT \"OauthRefreshToken_sessionId_fkey\" FOREIGN KEY (\"sessionId\") REFERENCES \"Session\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthRefreshToken\" ADD CONSTRAINT \"OauthRefreshToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthAccessToken\" ADD CONSTRAINT \"OauthAccessToken_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"OauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthAccessToken\" ADD CONSTRAINT \"OauthAccessToken_sessionId_fkey\" FOREIGN KEY (\"sessionId\") REFERENCES \"Session\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthAccessToken\" ADD CONSTRAINT \"OauthAccessToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthAccessToken\" ADD CONSTRAINT \"OauthAccessToken_refreshId_fkey\" FOREIGN KEY (\"refreshId\") REFERENCES \"OauthRefreshToken\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthConsent\" ADD CONSTRAINT \"OauthConsent_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"OauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthConsent\" ADD CONSTRAINT \"OauthConsent_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthClientResource\" ADD CONSTRAINT \"OauthClientResource_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"OauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OauthClientResource\" ADD CONSTRAINT \"OauthClientResource_resourceId_fkey\" FOREIGN KEY (\"resourceId\") REFERENCES \"OauthResource\"(\"identifier\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimManagedCredential\" ADD CONSTRAINT \"scimManagedCredential_connectionRecordId_fkey\" FOREIGN KEY (\"connectionRecordId\") REFERENCES \"scimManagedConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimManagedConnectionEvent\" ADD CONSTRAINT \"scimManagedConnectionEvent_connectionRecordId_fkey\" FOREIGN KEY (\"connectionRecordId\") REFERENCES \"scimManagedConnection\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimIdentityTombstone\" ADD CONSTRAINT \"scimIdentityTombstone_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimSubject\" ADD CONSTRAINT \"scimSubject_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimUser\" ADD CONSTRAINT \"scimUser_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimProjectionGrant\" ADD CONSTRAINT \"scimProjectionGrant_scimUserId_fkey\" FOREIGN KEY (\"scimUserId\") REFERENCES \"scimUser\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimProjectionGrant\" ADD CONSTRAINT \"scimProjectionGrant_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimGroupMember\" ADD CONSTRAINT \"scimGroupMember_groupId_fkey\" FOREIGN KEY (\"groupId\") REFERENCES \"scimGroup\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"scimGroupMember\" ADD CONSTRAINT \"scimGroupMember_scimUserId_fkey\" FOREIGN KEY (\"scimUserId\") REFERENCES \"scimUser\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScimIdentityLink\" ADD CONSTRAINT \"ScimIdentityLink_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_CategoryToRule\" ADD CONSTRAINT \"_CategoryToRule_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Category\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_CategoryToRule\" ADD CONSTRAINT \"_CategoryToRule_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"Rule\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 106,
+            "total": 106
+          },
+          "insert": {
+            "ok": 106,
+            "total": 106
+          },
+          "read": {
+            "ok": 106,
+            "total": 106
+          },
+          "update": {
+            "ok": 99,
+            "total": 99
+          },
+          "relations": {
+            "ok": 267,
+            "total": 275
+          },
+          "delete": {
+            "ok": 106,
+            "total": 106
+          }
+        },
+        "findings": [
+          {
+            "model": "Rule",
+            "check": "relations",
+            "text": "no relation for `actions` (toMany)"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "relations",
+            "text": "no relation for `automationJobs` (toMany)"
+          },
+          {
+            "model": "MessagingChannel",
+            "check": "relations",
+            "text": "no relation for `actions` (toMany)"
+          },
+          {
+            "model": "Action",
+            "check": "relations",
+            "text": "no relation for `rule` (toOne)"
+          },
+          {
+            "model": "Action",
+            "check": "relations",
+            "text": "no relation for `messagingChannel` (toOne)"
+          },
+          {
+            "model": "AvailabilitySchedule",
+            "check": "relations",
+            "text": "no relation for `bookingLinks` (toMany)"
+          },
+          {
+            "model": "BookingLink",
+            "check": "relations",
+            "text": "no relation for `availabilitySchedule` (toOne)"
+          },
+          {
+            "model": "AutomationJob",
+            "check": "relations",
+            "text": "no relation for `messagingChannel` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- RenameIndex\nALTER INDEX \"classificationfeedback_emailaccountid_sender_ruleid_message_key\" RENAME TO \"ClassificationFeedback_emailAccountId_sender_ruleId_message_key\";\n\n-- RenameIndex\nALTER INDEX \"conversationcomment_conversationid_authormemberid_clientmut_key\" RENAME TO \"ConversationComment_conversationId_authorMemberId_clientMut_key\";\n\n-- RenameIndex\nALTER INDEX \"conversationparticipant_conversationid_memberid_generation_key\" RENAME TO \"ConversationParticipant_conversationId_memberId_generation_key\";\n\n-- RenameIndex\nALTER INDEX \"draftsendlog_replymemoryprocessedat_replymemoryattemptcount_idx\" RENAME TO \"DraftSendLog_replyMemoryProcessedAt_replyMemoryAttemptCount_idx\";\n\n-- RenameIndex\nALTER INDEX \"replymemory_emailaccountid_kind_scopetype_scopevalue_conten_key\" RENAME TO \"ReplyMemory_emailAccountId_kind_scopeType_scopeValue_conten_key\";\n\n-- RenameIndex\nALTER INDEX \"replymemorysource_replymemoryid_learnedwritingstyleanalyzed_idx\" RENAME TO \"ReplyMemorySource_replyMemoryId_learnedWritingStyleAnalyzed_idx\";\n\n-- RenameIndex\nALTER INDEX \"threadtracker_emailaccountid_type_resolved_followupapplieda_idx\" RENAME TO \"ThreadTracker_emailAccountId_type_resolved_followUpAppliedA_idx\";"
+      }
+    }
+  ]
+}

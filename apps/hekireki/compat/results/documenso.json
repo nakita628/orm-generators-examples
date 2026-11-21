@@ -1,0 +1,1942 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 53,
+          "total": 53
+        },
+        "read": {
+          "ok": 53,
+          "total": 53
+        },
+        "update": {
+          "ok": 44,
+          "total": 44
+        },
+        "relations": {
+          "ok": 124,
+          "total": 124
+        },
+        "delete": {
+          "ok": 53,
+          "total": 53
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 53,
+          "total": 53
+        },
+        "read": {
+          "ok": 50,
+          "total": 53
+        },
+        "update": {
+          "ok": 44,
+          "total": 44
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 53,
+          "total": 53
+        }
+      },
+      "findings": 6,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 26,
+          "total": 53
+        },
+        "read": {
+          "ok": 26,
+          "total": 26
+        },
+        "update": {
+          "ok": 19,
+          "total": 19
+        },
+        "relations": {
+          "ok": 50,
+          "total": 50
+        },
+        "delete": {
+          "ok": 26,
+          "total": 26
+        }
+      },
+      "findings": 29,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 10,
+          "total": 53
+        },
+        "read": {
+          "ok": 10,
+          "total": 10
+        },
+        "update": {
+          "ok": 7,
+          "total": 7
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 10,
+          "total": 10
+        }
+      },
+      "findings": 45,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 17,
+          "total": 53
+        },
+        "read": {
+          "ok": 17,
+          "total": 17
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 5,
+          "total": 6
+        },
+        "delete": {
+          "ok": 17,
+          "total": 17
+        }
+      },
+      "findings": 39,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 26,
+          "total": 53
+        },
+        "read": {
+          "ok": 26,
+          "total": 26
+        },
+        "update": {
+          "ok": 19,
+          "total": 19
+        },
+        "relations": {
+          "ok": 50,
+          "total": 50
+        },
+        "delete": {
+          "ok": 26,
+          "total": 26
+        }
+      },
+      "findings": 29,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 26,
+          "total": 53
+        },
+        "read": {
+          "ok": 26,
+          "total": 26
+        },
+        "update": {
+          "ok": 17,
+          "total": 19
+        },
+        "relations": {
+          "ok": 50,
+          "total": 50
+        },
+        "delete": {
+          "ok": 24,
+          "total": 26
+        }
+      },
+      "findings": 33,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 52,
+          "total": 53
+        },
+        "read": {
+          "ok": 52,
+          "total": 52
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 122,
+          "total": 122
+        },
+        "delete": {
+          "ok": 52,
+          "total": 52
+        }
+      },
+      "findings": 3,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 26,
+          "total": 53
+        },
+        "read": {
+          "ok": 26,
+          "total": 26
+        },
+        "update": {
+          "ok": 19,
+          "total": 19
+        },
+        "relations": {
+          "ok": 50,
+          "total": 50
+        },
+        "delete": {
+          "ok": 26,
+          "total": 26
+        }
+      },
+      "findings": 29,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 52,
+          "total": 53
+        },
+        "read": {
+          "ok": 51,
+          "total": 52
+        },
+        "update": {
+          "ok": 42,
+          "total": 42
+        },
+        "relations": {
+          "ok": 114,
+          "total": 114
+        },
+        "delete": {
+          "ok": 51,
+          "total": 51
+        }
+      },
+      "findings": 4,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 53,
+          "total": 53
+        },
+        "read": {
+          "ok": 53,
+          "total": 53
+        },
+        "update": {
+          "ok": 44,
+          "total": 44
+        },
+        "relations": {
+          "ok": 124,
+          "total": 124
+        },
+        "delete": {
+          "ok": 53,
+          "total": 53
+        }
+      },
+      "findings": 2,
+      "ddl": "same"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 53,
+            "total": 53
+          },
+          "read": {
+            "ok": 53,
+            "total": 53
+          },
+          "update": {
+            "ok": 44,
+            "total": 44
+          },
+          "relations": {
+            "ok": 124,
+            "total": 124
+          },
+          "delete": {
+            "ok": 53,
+            "total": 53
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"Recipient_name_trgm_idx\";\n\n-- CreateIndex\nCREATE INDEX \"Recipient_email_trgm_idx\" ON \"Recipient\" USING GIN (\"email\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Recipient_name_trgm_idx\" ON \"Recipient\" USING GIN (\"name\" gin_trgm_ops);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 53,
+            "total": 53
+          },
+          "read": {
+            "ok": 50,
+            "total": 53
+          },
+          "update": {
+            "ok": 44,
+            "total": 44
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 53,
+            "total": 53
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "read",
+            "text": "`roles` is typed `Generated<Role[]>` but came back as string"
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Passkey",
+            "check": "read",
+            "text": "`counter` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`eventTriggers` (WebhookTriggerEvents[]) came back as \"{DOCUMENT_CREATED}\", not a list"
+          },
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`eventTriggers` is typed `WebhookTriggerEvents[]` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 26,
+            "total": 53
+          },
+          "read": {
+            "ok": 26,
+            "total": 26
+          },
+          "update": {
+            "ok": 19,
+            "total": 19
+          },
+          "relations": {
+            "ok": 50,
+            "total": 50
+          },
+          "delete": {
+            "ok": 26,
+            "total": 26
+          }
+        },
+        "findings": [
+          {
+            "model": "AvatarImage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AvatarImage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1)."
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"TeamProfile\" violates not-null constraint\nDETAIL:  Failing row contains (null, f, 1, v80)."
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Passkey\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v86, 2026-11-21 14:57:11.164, 2026-11-21 14:57:11.164, 2024-01-02 03:04:05.087, \\x62797465732d3838, \\x62797465732d3839, 9007199254740090, v91, t, {v93})."
+          },
+          {
+            "model": "AnonymousVerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AnonymousVerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v94, 2024-01-02 03:04:05.095, 2026-11-21 14:57:11.165)."
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"secondaryId\" of relation \"VerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (1, null, v96, v97, f, 2024-01-02 03:04:05.098, 2026-11-21 14:57:11.167, {\"n\": 99, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 1)."
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Webhook\" violates not-null constraint\nDETAIL:  Failing row contains (null, v100, {DOCUMENT_CREATED}, v102, t, 2026-11-21 14:57:11.169, 2026-11-21 14:57:11.169, 1, 1)."
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "SubscriptionClaim",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SubscriptionClaim\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 14:57:11.186, 2026-11-21 14:57:11.186, v118, f, 119, 120, 121, 122, 123, 124, {\"n\": 125, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 126, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 127, {\"n\": 128, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 131, v10)."
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 14:57:11.193, 1, v134, v135, v136, v137, v138, 139, 140, 141, v142, v143, v144, v145, v146)."
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Session\" violates not-null constraint\nDETAIL:  Failing row contains (null, v147, 1, v148, v149, 2024-01-02 03:04:05.15, 2026-11-21 14:57:11.195, 2026-11-21 14:57:11.195, f)."
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Folder\" violates not-null constraint\nDETAIL:  Failing row contains (null, v155, 1, 1, f, null, 2026-11-21 14:57:11.203, 2026-11-21 14:57:11.203, EVERYONE, DOCUMENT)."
+          },
+          {
+            "model": "DocumentMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentMeta\" violates not-null constraint\nDETAIL:  Failing row contains (null, v157, v158, Etc/UTC, yyyy-MM-dd hh:mm a, v159, PARALLEL, f, t, t, t, en, EMAIL, {\"n\": 160, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v161, v162, {\"n\": 163, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 164, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentMeta`) did not go in"
+          },
+          {
+            "model": "DocumentData",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentData\" violates not-null constraint\nDETAIL:  Failing row contains (null, S3_PATH, v180, v181)."
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentData`) did not go in"
+          },
+          {
+            "model": "DocumentAuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentAuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, 2026-11-21 14:57:11.211, v185, {\"n\": 186, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v187, v188, 189, v190, v191)."
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "BackgroundJob",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"BackgroundJob\" violates not-null constraint\nDETAIL:  Failing row contains (null, PENDING, {\"n\": 261, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 0, 3, v262, v263, v264, 2026-11-21 14:57:11.266, 2026-11-21 14:57:11.266, 2024-01-02 03:04:05.265, 2024-01-02 03:04:05.266)."
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundJob`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"Recipient_name_trgm_idx\";\n\n-- CreateIndex\nCREATE INDEX \"Recipient_email_trgm_idx\" ON \"Recipient\" USING GIN (\"email\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Recipient_name_trgm_idx\" ON \"Recipient\" USING GIN (\"name\" gin_trgm_ops);"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 10,
+            "total": 53
+          },
+          "read": {
+            "ok": 10,
+            "total": 10
+          },
+          "update": {
+            "ok": 7,
+            "total": 7
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 10,
+            "total": 10
+          }
+        },
+        "findings": [
+          {
+            "model": "AvatarImage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AvatarImage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1)."
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: column \"roles\" is of type \"Role\"[] but expression is of type text[]\nLINE 1: ...mestamp, '2026-11-21 14:57:15.396134'::timestamp, '{USER}'::...\n                                                             ^\nHINT:  You will need to rewrite or cast the expression."
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Organisation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "UserSecurityAuditLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AnonymousVerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"AnonymousVerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v94, 2024-01-02 03:04:05.095, 2026-11-21 14:57:15.418)."
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "SubscriptionClaim",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SubscriptionClaim\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 14:57:15.42, 2026-11-21 14:57:15.42, v118, f, 119, 120, 121, 122, 123, 124, {\"n\": 125, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 126, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 127, {\"n\": 128, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 131, v10)."
+          },
+          {
+            "model": "OrganisationMonthlyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DocumentMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentMeta\" violates not-null constraint\nDETAIL:  Failing row contains (null, v157, v158, Etc/UTC, yyyy-MM-dd hh:mm a, v159, PARALLEL, f, t, t, t, en, EMAIL, {\"n\": 160, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v161, v162, {\"n\": 163, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 164, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DocumentData",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentData\" violates not-null constraint\nDETAIL:  Failing row contains (null, S3_PATH, v180, v181)."
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentData`) did not go in"
+          },
+          {
+            "model": "DocumentAuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DocumentAuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, 2026-11-21 14:57:15.426, v185, {\"n\": 186, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v187, v188, 189, v190, v191)."
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "OrganisationMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OrganisationMemberInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "OrganisationGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "OrganisationGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganisationGroup`) did not go in"
+          },
+          {
+            "model": "TeamGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganisationGroup`) did not go in"
+          },
+          {
+            "model": "TeamEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamEmailVerification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "BackgroundJob",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"BackgroundJob\" violates not-null constraint\nDETAIL:  Failing row contains (null, PENDING, {\"n\": 261, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 0, 3, v262, v263, v264, 2026-11-21 14:57:15.435, 2026-11-21 14:57:15.435, 2024-01-02 03:04:05.265, 2024-01-02 03:04:05.266)."
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundJob`) did not go in"
+          },
+          {
+            "model": "EmbedSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.DuplicateTable: relation \"EnvelopeItem_documentDataId_key\" already exists\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^^^^^^^^^^^\n  File \"/worksp"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 17,
+            "total": 53
+          },
+          "read": {
+            "ok": 17,
+            "total": 17
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 5,
+            "total": 6
+          },
+          "delete": {
+            "ok": 17,
+            "total": 17
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationAuthenticationPortal",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Organisation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "UserSecurityAuditLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "OrganisationMonthlyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "OrganisationMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OrganisationMemberInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "OrganisationGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "OrganisationGroupMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganisationGroup`) did not go in"
+          },
+          {
+            "model": "TeamGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganisationGroup`) did not go in"
+          },
+          {
+            "model": "TeamEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TeamEmailVerification",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EmbedSignature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organisation`) did not go in"
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "relations",
+            "text": "relation `backgroundJob` loaded nothing, though the related row is there"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"OrganisationEmail\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 26,
+            "total": 53
+          },
+          "read": {
+            "ok": 26,
+            "total": 26
+          },
+          "update": {
+            "ok": 19,
+            "total": 19
+          },
+          "relations": {
+            "ok": 50,
+            "total": 50
+          },
+          "delete": {
+            "ok": 26,
+            "total": 26
+          }
+        },
+        "findings": [
+          {
+            "model": "AvatarImage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"AvatarImage\" violates not-null constraint"
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"TeamProfile\" violates not-null constraint"
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Passkey\" violates not-null constraint"
+          },
+          {
+            "model": "AnonymousVerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"AnonymousVerificationToken\" violates not-null constraint"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"secondaryId\" of relation \"VerificationToken\" violates not-null constraint"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Webhook\" violates not-null constraint"
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "SubscriptionClaim",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"SubscriptionClaim\" violates not-null constraint"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Account\" violates not-null constraint"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Session\" violates not-null constraint"
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Folder\" violates not-null constraint"
+          },
+          {
+            "model": "DocumentMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"DocumentMeta\" violates not-null constraint"
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentMeta`) did not go in"
+          },
+          {
+            "model": "DocumentData",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"DocumentData\" violates not-null constraint"
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentData`) did not go in"
+          },
+          {
+            "model": "DocumentAuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"DocumentAuditLog\" violates not-null constraint"
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "BackgroundJob",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"BackgroundJob\" violates not-null constraint"
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundJob`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"User\": Execution Error: error returned from database: type \"role[]\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 26,
+            "total": 53
+          },
+          "read": {
+            "ok": 26,
+            "total": 26
+          },
+          "update": {
+            "ok": 17,
+            "total": 19
+          },
+          "relations": {
+            "ok": 50,
+            "total": 50
+          },
+          "delete": {
+            "ok": 24,
+            "total": 26
+          }
+        },
+        "findings": [
+          {
+            "model": "AvatarImage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"AvatarImage\\\" violates not-null constraint\\n\\n    table: AvatarImage\\n    column: id\\n\\nFailing row contains (null, v1).\""
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"TeamProfile\\\" violates not-null constraint\\n\\n    table: TeamProfile\\n    column: id\\n\\nFailing row contains (null, f, 1, v80).\""
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Passkey\\\" violates not-null constraint\\n\\n    table: Passkey\\n    column: id\\n\\nFailing row contains (null, 1, v86, 2026-11-21 14:57:23.92, 2026-11-21 14:57:23.92, 2024-01-02 03:04:05.087, \\\\x62797465732d3838, \\\\x62797465732d3839, 9007199254740090, v91, t, {v93}).\""
+          },
+          {
+            "model": "AnonymousVerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"AnonymousVerificationToken\\\" violates not-null constraint\\n\\n    table: AnonymousVerificationToken\\n    column: id\\n\\nFailing row contains (null, v94, 2024-01-02 03:04:05.095, 2026-11-21 14:57:23.921).\""
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"secondaryId\\\" of relation \\\"VerificationToken\\\" violates not-null constraint\\n\\n    table: VerificationToken\\n    column: secondaryId\\n\\nFailing row contains (1, null, v96, v97, f, 2024-01-02 03:04:05.098, 2026-11-21 14:57:23.921, {\\\"n\\\": 99, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 1).\""
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Webhook\\\" violates not-null constraint\\n\\n    table: Webhook\\n    column: id\\n\\nFailing row contains (null, v100, {DOCUMENT_CREATED}, v102, t, 2026-11-21 14:57:23.921, 2026-11-21 14:57:23.921, 1, 1).\""
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "SubscriptionClaim",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"SubscriptionClaim\\\" violates not-null constraint\\n\\n    table: SubscriptionClaim\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 14:57:23.925, 2026-11-21 14:57:23.925, v118, f, 119, 120, 121, 122, 123, 124, {\\\"n\\\": 125, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 126, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 127, {\\\"n\\\": 128, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 129, {\\\"n\\\": 130, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 131, v10).\""
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Account\\\" violates not-null constraint\\n\\n    table: Account\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 14:57:23.926, 1, v134, v135, v136, v137, v138, 139, 140, 141, v142, v143, v144, v145, v146).\""
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Session\\\" violates not-null constraint\\n\\n    table: Session\\n    column: id\\n\\nFailing row contains (null, v147, 1, v148, v149, 2024-01-02 03:04:05.15, 2026-11-21 14:57:23.926, 2026-11-21 14:57:23.926, f).\""
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Folder\\\" violates not-null constraint\\n\\n    table: Folder\\n    column: id\\n\\nFailing row contains (null, v155, 1, 1, f, null, 2026-11-21 14:57:23.929, 2026-11-21 14:57:23.929, EVERYONE, DOCUMENT).\""
+          },
+          {
+            "model": "DocumentMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"DocumentMeta\\\" violates not-null constraint\\n\\n    table: DocumentMeta\\n    column: id\\n\\nFailing row contains (null, v157, v158, Etc/UTC, yyyy-MM-dd hh:mm a, v159, PARALLEL, f, t, t, t, en, EMAIL, {\\\"n\\\": 160, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v161, v162, {\\\"n\\\": 163, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, {\\\"n\\\": 164, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentMeta`) did not go in"
+          },
+          {
+            "model": "DocumentData",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"DocumentData\\\" violates not-null constraint\\n\\n    table: DocumentData\\n    column: id\\n\\nFailing row contains (null, S3_PATH, v180, v181).\""
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentData`) did not go in"
+          },
+          {
+            "model": "DocumentAuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"DocumentAuditLog\\\" violates not-null constraint\\n\\n    table: DocumentAuditLog\\n    column: id\\n\\nFailing row contains (null, null, 2026-11-21 14:57:23.93, v185, {\\\"n\\\": 186, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v187, v188, 189, v190, v191).\""
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "TeamEmail",
+            "check": "update",
+            "text": "update of `name` failed",
+            "detail": "schema `Documenso.TeamEmail` has no primary key"
+          },
+          {
+            "model": "TeamEmail",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Documenso.TeamEmail` has no primary key"
+          },
+          {
+            "model": "TeamEmailVerification",
+            "check": "update",
+            "text": "update of `name` failed",
+            "detail": "schema `Documenso.TeamEmailVerification` has no primary key"
+          },
+          {
+            "model": "TeamEmailVerification",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Documenso.TeamEmailVerification` has no primary key"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "BackgroundJob",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"BackgroundJob\\\" violates not-null constraint\\n\\n    table: BackgroundJob\\n    column: id\\n\\nFailing row contains (null, PENDING, {\\\"n\\\": 261, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, 0, 3, v262, v263, v264, 2026-11-21 14:57:23.944, 2026-11-21 14:57:23.944, 2024-01-02 03:04:05.265, 2024-01-02 03:04:05.266).\""
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundJob`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 52,
+            "total": 53
+          },
+          "read": {
+            "ok": 52,
+            "total": 52
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 122,
+            "total": 122
+          },
+          "delete": {
+            "ok": 52,
+            "total": 52
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::InvalidDatetimeFormat: ERROR:  invalid input syntax for type timestamp: \"140\"\nCONTEXT:  unnamed portal parameter $2 = '...'\n"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 26,
+            "total": 53
+          },
+          "read": {
+            "ok": 26,
+            "total": 26
+          },
+          "update": {
+            "ok": 19,
+            "total": 19
+          },
+          "relations": {
+            "ok": 50,
+            "total": 50
+          },
+          "delete": {
+            "ok": 26,
+            "total": 26
+          }
+        },
+        "findings": [
+          {
+            "model": "AvatarImage",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"AvatarImage\" violates not-null constraint\nDETAIL:  Failing row contains (null, v1). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"AvatarImage\" (\"bytes\") values (v1))"
+          },
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "TeamProfile",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"TeamProfile\" violates not-null constraint\nDETAIL:  Failing row contains (null, f, 1, v80). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"TeamProfile\" (\"enabled\", \"teamId\", \"bio\") values (0, 1, v80))"
+          },
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $9 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"Passkey\" (\"userId\", \"name\", \"lastUsedAt\", \"credentialId\", \"credentialPublicKey\", \"counter\", \"credentialDeviceType\", \"credentialBackedUp\", \"transports\", \"updatedAt\", \"createdAt\") values (1, v86, 2024-01-02 03:04:05.087+00:00, Resource id #247, Resource id"
+          },
+          {
+            "model": "AnonymousVerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"AnonymousVerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (null, v94, 2024-01-02 03:04:05.095, 2026-11-21 15:16:13.933). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"AnonymousVerificationToken\" (\"token\", \"expiresAt\", \"createdAt\") values (v94, 2024-01-02 03:04:05.095+00:00, 2026-11-21 15:16:13.933+00:00))"
+          },
+          {
+            "model": "VerificationToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"secondaryId\" of relation \"VerificationToken\" violates not-null constraint\nDETAIL:  Failing row contains (1, null, v96, v97, f, 2024-01-02 03:04:05.098, 2026-11-21 15:16:13.934, {\"n\": 99, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 1). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"VerificationToken\" (\"completed\", \"identifier\", \"token\", \"expires\", \"metadata\", \"userId\", \"createdAt\") values (0, v96, v97, 2024-01-02 03:04:05.098+00:0"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $3 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"Webhook\" (\"enabled\", \"webhookUrl\", \"eventTriggers\", \"secret\", \"userId\", \"teamId\", \"updatedAt\", \"createdAt\") values (1, v100, Array, v102, 1, 1, 2026-11-21 15:16:13.934+00:00, 2026-11-21 15:16:13.934+00:00))"
+          },
+          {
+            "model": "WebhookCall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Webhook`) did not go in"
+          },
+          {
+            "model": "SubscriptionClaim",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"SubscriptionClaim\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:16:13.937, 2026-11-21 15:16:13.937, v118, f, 119, 120, 121, 122, 123, 124, {\"n\": 125, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 126, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 127, {\"n\": 128, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 129, {\"n\": 130, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 131, v10). (Connection: default, Host: hekireki-compat-pg, Port: 5432,"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:16:13.938, 1, v134, v135, v136, v137, v138, 139, 140, 141, v142, v143, v144, v145, v146). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"Account\" (\"userId\", \"type\", \"provider\", \"providerAccountId\", \"refresh_token\", \"access_token\", \"expires_at\", \"created_at\", \"ext_expires_in\", \"token_type\", \"scope\", \"id_token\", \"session_state\","
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Session\" violates not-null constraint\nDETAIL:  Failing row contains (null, v147, 1, v148, v149, 2024-01-02 03:04:05.15, 2026-11-21 15:16:13.939, 2026-11-21 15:16:13.939, f). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"Session\" (\"isEmbed\", \"sessionToken\", \"userId\", \"ipAddress\", \"userAgent\", \"expiresAt\", \"updatedAt\", \"createdAt\") values (0, v147, 1, v148, v149, 2024-01-02 03:04:05.150+00:00, 2026-11-21 15:16:13.9"
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Folder\" violates not-null constraint\nDETAIL:  Failing row contains (null, v155, 1, 1, f, null, 2026-11-21 15:16:13.94, 2026-11-21 15:16:13.94, EVERYONE, DOCUMENT). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"Folder\" (\"pinned\", \"visibility\", \"name\", \"userId\", \"teamId\", \"parentId\", \"type\", \"updatedAt\", \"createdAt\") values (0, EVERYONE, v155, 1, 1, ?, DOCUMENT, 2026-11-21 15:16:13.940+00:00, 2026-11-21 15:16:13.94"
+          },
+          {
+            "model": "DocumentMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"DocumentMeta\" violates not-null constraint\nDETAIL:  Failing row contains (null, v157, v158, Etc/UTC, yyyy-MM-dd hh:mm a, v159, PARALLEL, f, t, t, t, en, EMAIL, {\"n\": 160, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v161, v162, {\"n\": 163, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, {\"n\": 164, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"DocumentMeta\" (\"timezone\", \"d"
+          },
+          {
+            "model": "Envelope",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentMeta`) did not go in"
+          },
+          {
+            "model": "DocumentData",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"DocumentData\" violates not-null constraint\nDETAIL:  Failing row contains (null, S3_PATH, v180, v181). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"DocumentData\" (\"type\", \"data\", \"initialData\") values (S3_PATH, v180, v181))"
+          },
+          {
+            "model": "EnvelopeItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentData`) did not go in"
+          },
+          {
+            "model": "DocumentAuditLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"DocumentAuditLog\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, 2026-11-21 15:16:13.942, v185, {\"n\": 186, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v187, v188, 189, v190, v191). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"DocumentAuditLog\" (\"envelopeId\", \"type\", \"data\", \"name\", \"email\", \"userId\", \"userAgent\", \"ipAddress\", \"createdAt\") values (?, v185, {\"n\":186,\"tags\":[\"a\",\"b\"],\"nest"
+          },
+          {
+            "model": "EnvelopeAttachment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Recipient",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "EnvelopeContent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscCredential",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "CscSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Recipient`) did not go in"
+          },
+          {
+            "model": "DocumentShareLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "TemplateDirectLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Envelope`) did not go in"
+          },
+          {
+            "model": "BackgroundJob",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"BackgroundJob\" violates not-null constraint\nDETAIL:  Failing row contains (null, PENDING, {\"n\": 261, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, 0, 3, v262, v263, v264, 2026-11-21 15:16:13.952, 2026-11-21 15:16:13.952, 2024-01-02 03:04:05.265, 2024-01-02 03:04:05.266). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: documenso_eloquent, SQL: insert into \"BackgroundJob\" (\"status\", \"retried\", \"maxRetries\", \"payload\", \"jobId\", \"name\", \"version\", \"complete"
+          },
+          {
+            "model": "BackgroundJobTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundJob`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 52,
+            "total": 53
+          },
+          "read": {
+            "ok": 51,
+            "total": 52
+          },
+          "update": {
+            "ok": 42,
+            "total": 42
+          },
+          "relations": {
+            "ok": 114,
+            "total": 114
+          },
+          "delete": {
+            "ok": 51,
+            "total": 51
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Field",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "Numeric value does not fit in a System.Decimal"
+          },
+          {
+            "model": "Signature",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Field`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiToken\" DROP CONSTRAINT \"ApiToken_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiToken\" DROP CONSTRAINT \"ApiToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BackgroundJobTask\" DROP CONSTRAINT \"BackgroundJobTask_jobId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CscCredential\" DROP CONSTRAINT \"CscCredential_recipientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CscSession\" DROP CONSTRAINT \"CscSession_recipientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DocumentAuditLog\" DROP CONSTRAINT \"DocumentAuditLog_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DocumentShareLink\" DROP CONSTRAINT \"DocumentShareLink_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmailDomain\" DROP CONSTRAINT \"EmailDomain_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmbedSignature\" DROP CONSTRAINT \"EmbedSignature_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Envelope\" DROP CONSTRAINT \"Envelope_documentMetaId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Envelope\" DROP CONSTRAINT \"Envelope_folderId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Envelope\" DROP CONSTRAINT \"Envelope_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Envelope\" DROP CONSTRAINT \"Envelope_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeAttachment\" DROP CONSTRAINT \"EnvelopeAttachment_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeContent\" DROP CONSTRAINT \"EnvelopeContent_dataContentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeContent\" DROP CONSTRAINT \"EnvelopeContent_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeContent\" DROP CONSTRAINT \"EnvelopeContent_envelopeItemId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeItem\" DROP CONSTRAINT \"EnvelopeItem_documentDataId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EnvelopeItem\" DROP CONSTRAINT \"EnvelopeItem_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Field\" DROP CONSTRAINT \"Field_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Field\" DROP CONSTRAINT \"Field_envelopeItemId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Field\" DROP CONSTRAINT \"Field_recipientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Folder\" DROP CONSTRAINT \"Folder_parentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Folder\" DROP CONSTRAINT \"Folder_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Folder\" DROP CONSTRAINT \"Folder_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organisation\" DROP CONSTRAINT \"Organisation_avatarImageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organisation\" DROP CONSTRAINT \"Organisation_organisationAuthenticationPortalId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organisation\" DROP CONSTRAINT \"Organisation_organisationClaimId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organisation\" DROP CONSTRAINT \"Organisation_organisationGlobalSettingsId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organisation\" DROP CONSTRAINT \"Organisation_ownerUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationClaim\" DROP CONSTRAINT \"OrganisationClaim_emailTransportId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationEmail\" DROP CONSTRAINT \"OrganisationEmail_emailDomainId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationEmail\" DROP CONSTRAINT \"OrganisationEmail_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationGlobalSettings\" DROP CONSTRAINT \"OrganisationGlobalSettings_emailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationGroup\" DROP CONSTRAINT \"OrganisationGroup_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationGroupMember\" DROP CONSTRAINT \"OrganisationGroupMember_groupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationGroupMember\" DROP CONSTRAINT \"OrganisationGroupMember_organisationMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationMember\" DROP CONSTRAINT \"OrganisationMember_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationMember\" DROP CONSTRAINT \"OrganisationMember_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationMemberInvite\" DROP CONSTRAINT \"OrganisationMemberInvite_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganisationMonthlyStat\" DROP CONSTRAINT \"OrganisationMonthlyStat_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Passkey\" DROP CONSTRAINT \"Passkey_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PasswordResetToken\" DROP CONSTRAINT \"PasswordResetToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Recipient\" DROP CONSTRAINT \"Recipient_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Signature\" DROP CONSTRAINT \"Signature_fieldId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Signature\" DROP CONSTRAINT \"Signature_recipientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SiteSettings\" DROP CONSTRAINT \"SiteSettings_lastModifiedByUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Subscription\" DROP CONSTRAINT \"Subscription_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SubscriptionClaim\" DROP CONSTRAINT \"SubscriptionClaim_emailTransportId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_avatarImageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_organisationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_teamGlobalSettingsId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamEmail\" DROP CONSTRAINT \"TeamEmail_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamEmailVerification\" DROP CONSTRAINT \"TeamEmailVerification_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamGlobalSettings\" DROP CONSTRAINT \"TeamGlobalSettings_emailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamGroup\" DROP CONSTRAINT \"TeamGroup_organisationGroupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamGroup\" DROP CONSTRAINT \"TeamGroup_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamProfile\" DROP CONSTRAINT \"TeamProfile_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TemplateDirectLink\" DROP CONSTRAINT \"TemplateDirectLink_envelopeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_avatarImageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserSecurityAuditLog\" DROP CONSTRAINT \"UserSecurityAuditLog_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WebhookCall\" DROP CONSTRAINT \"WebhookCall_webhookId_fkey\";\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_avatarImageId_fkey\" FOREIGN KEY (\"avatarImageId\") REFERENCES \"AvatarImage\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamProfile\" ADD CONSTRAINT \"TeamProfile_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserSecurityAuditLog\" ADD CONSTRAINT \"UserSecurityAuditLog_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PasswordResetToken\" ADD CONSTRAINT \"PasswordResetToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Passkey\" ADD CONSTRAINT \"Passkey_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WebhookCall\" ADD CONSTRAINT \"WebhookCall_webhookId_fkey\" FOREIGN KEY (\"webhookId\") REFERENCES \"Webhook\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiToken\" ADD CONSTRAINT \"ApiToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiToken\" ADD CONSTRAINT \"ApiToken_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Subscription\" ADD CONSTRAINT \"Subscription_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SubscriptionClaim\" ADD CONSTRAINT \"SubscriptionClaim_emailTransportId_fkey\" FOREIGN KEY (\"emailTransportId\") REFERENCES \"EmailTransport\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationClaim\" ADD CONSTRAINT \"OrganisationClaim_emailTransportId_fkey\" FOREIGN KEY (\"emailTransportId\") REFERENCES \"EmailTransport\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationMonthlyStat\" ADD CONSTRAINT \"OrganisationMonthlyStat_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Folder\" ADD CONSTRAINT \"Folder_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Folder\" ADD CONSTRAINT \"Folder_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Folder\" ADD CONSTRAINT \"Folder_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"Folder\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Envelope\" ADD CONSTRAINT \"Envelope_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Envelope\" ADD CONSTRAINT \"Envelope_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Envelope\" ADD CONSTRAINT \"Envelope_folderId_fkey\" FOREIGN KEY (\"folderId\") REFERENCES \"Folder\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Envelope\" ADD CONSTRAINT \"Envelope_documentMetaId_fkey\" FOREIGN KEY (\"documentMetaId\") REFERENCES \"DocumentMeta\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeItem\" ADD CONSTRAINT \"EnvelopeItem_documentDataId_fkey\" FOREIGN KEY (\"documentDataId\") REFERENCES \"DocumentData\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeItem\" ADD CONSTRAINT \"EnvelopeItem_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DocumentAuditLog\" ADD CONSTRAINT \"DocumentAuditLog_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeAttachment\" ADD CONSTRAINT \"EnvelopeAttachment_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Recipient\" ADD CONSTRAINT \"Recipient_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Field\" ADD CONSTRAINT \"Field_envelopeItemId_fkey\" FOREIGN KEY (\"envelopeItemId\") REFERENCES \"EnvelopeItem\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Field\" ADD CONSTRAINT \"Field_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Field\" ADD CONSTRAINT \"Field_recipientId_fkey\" FOREIGN KEY (\"recipientId\") REFERENCES \"Recipient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeContent\" ADD CONSTRAINT \"EnvelopeContent_envelopeItemId_fkey\" FOREIGN KEY (\"envelopeItemId\") REFERENCES \"EnvelopeItem\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeContent\" ADD CONSTRAINT \"EnvelopeContent_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EnvelopeContent\" ADD CONSTRAINT \"EnvelopeContent_dataContentId_fkey\" FOREIGN KEY (\"dataContentId\") REFERENCES \"DataContent\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Signature\" ADD CONSTRAINT \"Signature_recipientId_fkey\" FOREIGN KEY (\"recipientId\") REFERENCES \"Recipient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Signature\" ADD CONSTRAINT \"Signature_fieldId_fkey\" FOREIGN KEY (\"fieldId\") REFERENCES \"Field\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CscCredential\" ADD CONSTRAINT \"CscCredential_recipientId_fkey\" FOREIGN KEY (\"recipientId\") REFERENCES \"Recipient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CscSession\" ADD CONSTRAINT \"CscSession_recipientId_fkey\" FOREIGN KEY (\"recipientId\") REFERENCES \"Recipient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DocumentShareLink\" ADD CONSTRAINT \"DocumentShareLink_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organisation\" ADD CONSTRAINT \"Organisation_organisationClaimId_fkey\" FOREIGN KEY (\"organisationClaimId\") REFERENCES \"OrganisationClaim\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organisation\" ADD CONSTRAINT \"Organisation_avatarImageId_fkey\" FOREIGN KEY (\"avatarImageId\") REFERENCES \"AvatarImage\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organisation\" ADD CONSTRAINT \"Organisation_ownerUserId_fkey\" FOREIGN KEY (\"ownerUserId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organisation\" ADD CONSTRAINT \"Organisation_organisationGlobalSettingsId_fkey\" FOREIGN KEY (\"organisationGlobalSettingsId\") REFERENCES \"OrganisationGlobalSettings\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organisation\" ADD CONSTRAINT \"Organisation_organisationAuthenticationPortalId_fkey\" FOREIGN KEY (\"organisationAuthenticationPortalId\") REFERENCES \"OrganisationAuthenticationPortal\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationMember\" ADD CONSTRAINT \"OrganisationMember_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationMember\" ADD CONSTRAINT \"OrganisationMember_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationMemberInvite\" ADD CONSTRAINT \"OrganisationMemberInvite_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationGroup\" ADD CONSTRAINT \"OrganisationGroup_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationGroupMember\" ADD CONSTRAINT \"OrganisationGroupMember_groupId_fkey\" FOREIGN KEY (\"groupId\") REFERENCES \"OrganisationGroup\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationGroupMember\" ADD CONSTRAINT \"OrganisationGroupMember_organisationMemberId_fkey\" FOREIGN KEY (\"organisationMemberId\") REFERENCES \"OrganisationMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamGroup\" ADD CONSTRAINT \"TeamGroup_organisationGroupId_fkey\" FOREIGN KEY (\"organisationGroupId\") REFERENCES \"OrganisationGroup\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamGroup\" ADD CONSTRAINT \"TeamGroup_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationGlobalSettings\" ADD CONSTRAINT \"OrganisationGlobalSettings_emailId_fkey\" FOREIGN KEY (\"emailId\") REFERENCES \"OrganisationEmail\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamGlobalSettings\" ADD CONSTRAINT \"TeamGlobalSettings_emailId_fkey\" FOREIGN KEY (\"emailId\") REFERENCES \"OrganisationEmail\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_avatarImageId_fkey\" FOREIGN KEY (\"avatarImageId\") REFERENCES \"AvatarImage\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_teamGlobalSettingsId_fkey\" FOREIGN KEY (\"teamGlobalSettingsId\") REFERENCES \"TeamGlobalSettings\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamEmail\" ADD CONSTRAINT \"TeamEmail_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamEmailVerification\" ADD CONSTRAINT \"TeamEmailVerification_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TemplateDirectLink\" ADD CONSTRAINT \"TemplateDirectLink_envelopeId_fkey\" FOREIGN KEY (\"envelopeId\") REFERENCES \"Envelope\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SiteSettings\" ADD CONSTRAINT \"SiteSettings_lastModifiedByUserId_fkey\" FOREIGN KEY (\"lastModifiedByUserId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BackgroundJobTask\" ADD CONSTRAINT \"BackgroundJobTask_jobId_fkey\" FOREIGN KEY (\"jobId\") REFERENCES \"BackgroundJob\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmailDomain\" ADD CONSTRAINT \"EmailDomain_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationEmail\" ADD CONSTRAINT \"OrganisationEmail_emailDomainId_fkey\" FOREIGN KEY (\"emailDomainId\") REFERENCES \"EmailDomain\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganisationEmail\" ADD CONSTRAINT \"OrganisationEmail_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmbedSignature\" ADD CONSTRAINT \"EmbedSignature_organisationId_fkey\" FOREIGN KEY (\"organisationId\") REFERENCES \"Organisation\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 53,
+            "total": 53
+          },
+          "read": {
+            "ok": 53,
+            "total": 53
+          },
+          "update": {
+            "ok": 44,
+            "total": 44
+          },
+          "relations": {
+            "ok": 124,
+            "total": 124
+          },
+          "delete": {
+            "ok": 53,
+            "total": 53
+          }
+        },
+        "findings": [
+          {
+            "model": "EmailDomain",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "OrganisationEmail",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": ""
+      }
+    }
+  ]
+}

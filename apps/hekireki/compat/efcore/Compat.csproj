@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Runs the compat plan through the entities and DbContext hekireki-efcore wrote (copied to
+    Models/ at run time). One provider per build, as in checks/efcore/Check.csproj (whose versions
+    these are): HekirekiProvider picks it.
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <NoWarn>$(NoWarn);CS8618;CS8600;CS8602;CS8603;CS8604;CS1998;NU1608;NU1902;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(HekirekiProvider)' == 'postgresql'">
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(HekirekiProvider)' == 'mysql'">
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0" />
+    <PackageReference Include="MySqlConnector" Version="2.6.2" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(HekirekiProvider)' == 'sqlite'">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.14" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Ulid" Version="1.4.1" />
+    <PackageReference Include="cuid.net" Version="7.1.0" />
+  </ItemGroup>
+  <PropertyGroup>
+    <DefineConstants Condition="'$(HekirekiProvider)' == 'postgresql'">$(DefineConstants);PG</DefineConstants>
+    <DefineConstants Condition="'$(HekirekiProvider)' == 'mysql'">$(DefineConstants);MY</DefineConstants>
+    <DefineConstants Condition="'$(HekirekiProvider)' == 'sqlite'">$(DefineConstants);LITE</DefineConstants>
+  </PropertyGroup>
+
+</Project>

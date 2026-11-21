@@ -1,0 +1,2146 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 76,
+          "total": 76
+        },
+        "read": {
+          "ok": 76,
+          "total": 76
+        },
+        "update": {
+          "ok": 53,
+          "total": 53
+        },
+        "relations": {
+          "ok": 232,
+          "total": 232
+        },
+        "delete": {
+          "ok": 76,
+          "total": 76
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 76,
+          "total": 76
+        },
+        "read": {
+          "ok": 72,
+          "total": 76
+        },
+        "update": {
+          "ok": 53,
+          "total": 53
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 76,
+          "total": 76
+        }
+      },
+      "findings": 5,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 6,
+          "total": 76
+        },
+        "read": {
+          "ok": 6,
+          "total": 6
+        },
+        "update": {
+          "ok": 5,
+          "total": 5
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 6,
+          "total": 6
+        }
+      },
+      "findings": 70,
+      "ddl": "error"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 6,
+          "total": 76
+        },
+        "read": {
+          "ok": 6,
+          "total": 6
+        },
+        "update": {
+          "ok": 5,
+          "total": 5
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 6,
+          "total": 6
+        }
+      },
+      "findings": 70,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 46,
+          "total": 76
+        },
+        "read": {
+          "ok": 46,
+          "total": 46
+        },
+        "update": {
+          "ok": 33,
+          "total": 33
+        },
+        "relations": {
+          "ok": 112,
+          "total": 112
+        },
+        "delete": {
+          "ok": 46,
+          "total": 46
+        }
+      },
+      "findings": 30,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 3,
+          "total": 76
+        },
+        "read": {
+          "ok": 3,
+          "total": 3
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 3,
+          "total": 3
+        }
+      },
+      "findings": 73,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 76,
+          "total": 76
+        },
+        "read": {
+          "ok": 76,
+          "total": 76
+        },
+        "update": {
+          "ok": 53,
+          "total": 53
+        },
+        "relations": {
+          "ok": 230,
+          "total": 232
+        },
+        "delete": {
+          "ok": 75,
+          "total": 76
+        }
+      },
+      "findings": 3,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 58,
+          "total": 76
+        },
+        "read": {
+          "ok": 57,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 148,
+          "total": 148
+        },
+        "delete": {
+          "ok": 57,
+          "total": 57
+        }
+      },
+      "findings": 19,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 76,
+          "total": 76
+        },
+        "insert": {
+          "ok": 75,
+          "total": 76
+        },
+        "read": {
+          "ok": 75,
+          "total": 75
+        },
+        "update": {
+          "ok": 53,
+          "total": 53
+        },
+        "relations": {
+          "ok": 192,
+          "total": 212
+        },
+        "delete": {
+          "ok": 75,
+          "total": 75
+        }
+      },
+      "findings": 21,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 76,
+            "total": 76
+          },
+          "read": {
+            "ok": 76,
+            "total": 76
+          },
+          "update": {
+            "ok": 53,
+            "total": 53
+          },
+          "relations": {
+            "ok": 232,
+            "total": 232
+          },
+          "delete": {
+            "ok": 76,
+            "total": 76
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- CreateExtension\nCREATE EXTENSION IF NOT EXISTS \"vector\";\n\n-- AlterTable\nALTER TABLE \"Survey\" ADD COLUMN     \"legacyEmbeddedDataBackup\" JSONB;\n\n-- AlterTable\nALTER TABLE \"User\" ADD COLUMN     \"email_verified_at\" TIMESTAMP(3);\n\n-- RenameForeignKey\nALTER TABLE \"FeedbackSourceFieldMapping\" RENAME CONSTRAINT \"FeedbackSourceFieldMapping_feedback_source_id_workspaceId_fkey\" TO \"FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey\";\n\n-- RenameForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" RENAME CONSTRAINT \"FeedbackSourceFormbricksMapping_feedback_source_id_workspa_fkey\" TO \"FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk\";"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 76,
+            "total": 76
+          },
+          "read": {
+            "ok": 72,
+            "total": 76
+          },
+          "update": {
+            "ok": 53,
+            "total": 53
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 76,
+            "total": 76
+          }
+        },
+        "findings": [
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`triggers` (PipelineTriggers[]) came back as \"{responseCreated}\", not a list"
+          },
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`triggers` is typed `PipelineTriggers[]` but came back as string"
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "read",
+            "text": "`totalBytes` is typed `bigint | null` but came back as string"
+          },
+          {
+            "model": "OnlineUpgradeState",
+            "check": "read",
+            "text": "`surveyCount` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "RetentionPolicy",
+            "check": "read",
+            "text": "`conditions` is typed `Generated<RetentionSurveyCondition[]>` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 6,
+            "total": 76
+          },
+          "read": {
+            "ok": 6,
+            "total": 6
+          },
+          "update": {
+            "ok": 5,
+            "total": 5
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 6,
+            "total": 6
+          }
+        },
+        "findings": [
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Organization\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:53.151, 2026-11-21 15:18:53.151, v1, {}, f, v2)."
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:53.156, 2026-11-21 15:18:53.156, v11, v12, f, null, v13, f, v14, v15, email, v16, v17, {}, en-US, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.019, 2024-01-02 03:04:05.02, bootstrapAdmin)."
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Survey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Creative",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeDailyPageStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "ActionClass",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "Language",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttributeKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Contact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttribute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "Display",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Response",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "TagsOnResponses",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyAttributeFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "SurveyQuota",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "ResponseQuotaLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyFollowUp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DataMigration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DataMigration\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:53.193, 2024-01-02 03:04:05.134, v135, pending)."
+          },
+          {
+            "model": "OrganizationBilling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Membership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKeyWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactor",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"jwks\" violates not-null constraint\nDETAIL:  Failing row contains (null, v175, v176, 2024-01-02 03:04:05.177, 2024-01-02 03:04:05.178, v179, v180)."
+          },
+          {
+            "model": "oauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, v181, v182, f, t, t, v185, {}, null, 2024-01-02 03:04:05.186, 2024-01-02 03:04:05.187, v188, v189, v190, {}, v191, v192, v193, v194, v195, {v196}, {}, v197, {}, {}, t, v199, t, v201, {\"n\": 202, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v203, {}, v204, t, v206, v207, v208, f)."
+          },
+          {
+            "model": "oauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthResource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v233, v234, 235, 236, v237, v238, {}, {\"n\": 239, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, f, f, 2024-01-02 03:04:05.24, 2024-01-02 03:04:05.241, 1, {\"n\": 242, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "oauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthClientAssertion\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.245)."
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "SurveyLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "EmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmbeddedData`) did not go in"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "WorkspaceTeam",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Chart",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DashboardWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "DeletionCleanup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DeletionCleanup\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:53.225, 2026-11-21 15:18:53.225, hubSurvey, v262, v263, v264, {}, {}, {}, 0, 2026-11-21 15:18:53.225, v265)."
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectoryWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectory`) did not go in"
+          },
+          {
+            "model": "FeedbackSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectoryWorkspace`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFieldMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "RetentionPolicy",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionExemption",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRunItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RetentionRun`) did not go in"
+          },
+          {
+            "model": "RetentionNotice",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionSurveyRestore",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Workflow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkflowVersion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRunLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowRun`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1969, in _exec_single_context\n    self.dialect.do_execute(\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 952, in do_execute\n    cursor.execute(statement, parameters)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.InvalidTextRepresentation: invalid input syntax for type json\nLINE 9:  styling JSONB DEFAULT '{\"allowStyleOverwrite\"NULL}' NOT NUL...\n                               ^\nDETAIL:  Token \"NULL\" is invalid.\nCONTEXT:  JSON data, line 1: {\"allowStyleOverwrite\"NULL...\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 242, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 41, in main\n    base.metadata.create_all(engine)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py\", line 5930, in create_all\n    bind._run_ddl_visitor(\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 3270, in _run_ddl_visitor\n    conn._run_ddl_visitor(visitorcallable, element, **kwargs)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 2469, in _run_ddl_visitor\n    ).traverse_single(element)\n      ^^^^^^^^^^^^^^^^^^^^^^^^"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 6,
+            "total": 76
+          },
+          "read": {
+            "ok": 6,
+            "total": 6
+          },
+          "update": {
+            "ok": 5,
+            "total": 5
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 6,
+            "total": 6
+          }
+        },
+        "findings": [
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Organization\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:55.112, 2026-11-21 15:18:55.134, v1, {}, f, v2)."
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:55.135, 2026-11-21 15:18:55.135, v11, v12, f, null, v13, f, v14, v15, email, v16, v17, {}, en-US, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.019, 2024-01-02 03:04:05.02, bootstrapAdmin)."
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Survey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Creative",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeDailyPageStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "ActionClass",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "Language",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttributeKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Contact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttribute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "Display",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Response",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "TagsOnResponses",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyAttributeFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "SurveyQuota",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "ResponseQuotaLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyFollowUp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DataMigration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DataMigration\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:55.152, 2024-01-02 03:04:05.134, v135, pending)."
+          },
+          {
+            "model": "OrganizationBilling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Membership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKeyWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactor",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"jwks\" violates not-null constraint\nDETAIL:  Failing row contains (null, v175, v176, 2024-01-02 03:04:05.177, 2024-01-02 03:04:05.178, v179, v180)."
+          },
+          {
+            "model": "oauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthClient\" violates not-null constraint\nDETAIL:  Failing row contains (null, v181, v182, f, t, t, v185, {}, null, 2024-01-02 03:04:05.186, 2024-01-02 03:04:05.187, v188, v189, v190, {}, v191, v192, v193, v194, v195, {v196}, {}, v197, {}, {}, t, v199, t, v201, {\"n\": 202, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v203, {}, v204, t, v206, v207, v208, f)."
+          },
+          {
+            "model": "oauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthResource\" violates not-null constraint\nDETAIL:  Failing row contains (null, v233, v234, 235, 236, v237, v238, {}, {\"n\": 239, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, f, f, 2024-01-02 03:04:05.24, 2024-01-02 03:04:05.241, 1, {\"n\": 242, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}})."
+          },
+          {
+            "model": "oauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"oauthClientAssertion\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2024-01-02 03:04:05.245)."
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "SurveyLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "EmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmbeddedData`) did not go in"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "WorkspaceTeam",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Chart",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DashboardWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "DeletionCleanup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"DeletionCleanup\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:18:55.161, 2026-11-21 15:18:55.162, hubSurvey, v262, v263, v264, {}, {}, {}, 0, 2026-11-21 15:18:55.161, v265)."
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectoryWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectory`) did not go in"
+          },
+          {
+            "model": "FeedbackSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectoryWorkspace`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFieldMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "RetentionPolicy",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionExemption",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRunItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RetentionRun`) did not go in"
+          },
+          {
+            "model": "RetentionNotice",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionSurveyRestore",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Workflow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkflowVersion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRunLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowRun`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.DuplicateTable: relation \"TwoFactor_userId_key\" already exists\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 46,
+            "total": 76
+          },
+          "read": {
+            "ok": 46,
+            "total": 46
+          },
+          "update": {
+            "ok": 33,
+            "total": 33
+          },
+          "relations": {
+            "ok": 112,
+            "total": 112
+          },
+          "delete": {
+            "ok": 46,
+            "total": 46
+          }
+        },
+        "findings": [
+          {
+            "model": "Survey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Creative",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeDailyPageStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"responseCreated\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Display",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Response",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "TagsOnResponses",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyAttributeFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyQuota",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "ResponseQuotaLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyFollowUp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "oauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "oauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "oauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "SurveyLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "DeletionCleanup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "OnlineUpgradeState",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "RetentionPolicy",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "RetentionSurveyRestore",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"oauthClient\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "error: could not compile `compat` (bin \"compat\"); 80 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target/",
+      "ddl": {
+        "error": "error: could not compile `compat` (bin \"compat\"); 80 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target/"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 3,
+            "total": 76
+          },
+          "read": {
+            "ok": 3,
+            "total": 3
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 3,
+            "total": 3
+          }
+        },
+        "findings": [
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Organization\\\" violates not-null constraint\\n\\n    table: Organization\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:19:25.117, 2026-11-21 15:19:25.117, v1, {}, f, v2).\""
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"User\\\" violates not-null constraint\\n\\n    table: User\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:19:25.136, 2026-11-21 15:19:25.136, v11, v12, f, null, v13, f, v14, v15, email, v16, v17, {}, en-US, 2024-01-02 03:04:05.018, t, 2024-01-02 03:04:05.019, 2024-01-02 03:04:05.02, bootstrapAdmin).\""
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Survey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Creative",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeDailyPageStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "ActionClass",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "Language",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CreativeLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "OutboundEmailAudit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xb7\""
+          },
+          {
+            "model": "OutboundEmailAuditErasureIntent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xe4 0x6b 0xb2\""
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttributeKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Contact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ContactAttribute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "Display",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Response",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "TagsOnResponses",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyAttributeFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ContactAttributeKey`) did not go in"
+          },
+          {
+            "model": "SurveyQuota",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "ResponseQuotaLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyFollowUp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DataMigration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"DataMigration\\\" violates not-null constraint\\n\\n    table: DataMigration\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:19:25.147, 2024-01-02 03:04:05.134, v135, pending).\""
+          },
+          {
+            "model": "OrganizationBilling",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Membership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKeyWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactor",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "jwks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"jwks\\\" violates not-null constraint\\n\\n    table: jwks\\n    column: id\\n\\nFailing row contains (null, v175, v176, 2024-01-02 03:04:05.177, 2024-01-02 03:04:05.178, v179, v180).\""
+          },
+          {
+            "model": "oauthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"oauthClient\\\" violates not-null constraint\\n\\n    table: oauthClient\\n    column: id\\n\\nFailing row contains (null, v181, v182, f, t, t, v185, {}, null, 2024-01-02 03:04:05.186, 2024-01-02 03:04:05.187, v188, v189, v190, {}, v191, v192, v193, v194, v195, {v196}, {}, v197, {}, {}, t, v199, t, v201, {\\\"n\\\": 202, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, v203, {}, v204, t, v206, v207, v208, f).\""
+          },
+          {
+            "model": "oauthRefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthConsent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"oauthResource\\\" violates not-null constraint\\n\\n    table: oauthResource\\n    column: id\\n\\nFailing row contains (null, v233, v234, 235, 236, v237, v238, {}, {\\\"n\\\": 239, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}, f, f, 2024-01-02 03:04:05.24, 2024-01-02 03:04:05.241, 1, {\\\"n\\\": 242, \\\"tags\\\": [\\\"a\\\", \\\"b\\\"], \\\"nested\\\": {\\\"ok\\\": true}}).\""
+          },
+          {
+            "model": "oauthClientResource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauthClient`) did not go in"
+          },
+          {
+            "model": "oauthClientAssertion",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"oauthClientAssertion\\\" violates not-null constraint\\n\\n    table: oauthClientAssertion\\n    column: id\\n\\nFailing row contains (null, 2024-01-02 03:04:05.245).\""
+          },
+          {
+            "model": "PasswordResetToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "SurveyLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Language`) did not go in"
+          },
+          {
+            "model": "EmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EmbeddedData`) did not go in"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "WorkspaceTeam",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectory",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Chart",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "DashboardWidget",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dashboard`) did not go in"
+          },
+          {
+            "model": "DeletionCleanup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"DeletionCleanup\\\" violates not-null constraint\\n\\n    table: DeletionCleanup\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 15:19:25.167, 2026-11-21 15:19:25.167, hubSurvey, v262, v263, v264, {}, {}, {}, 0, 2026-11-21 15:19:25.167, v265).\""
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "FeedbackDirectoryWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectory`) did not go in"
+          },
+          {
+            "model": "FeedbackSource",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackDirectoryWorkspace`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFieldMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`FeedbackSource`) did not go in"
+          },
+          {
+            "model": "AuthzedProjectionOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xf2 0xc6 0x47 0xc4\""
+          },
+          {
+            "model": "RetentionPolicy",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionExemption",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionRunItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RetentionRun`) did not go in"
+          },
+          {
+            "model": "RetentionNotice",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RetentionSurveyRestore",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Workflow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "WorkflowVersion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowRunLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowRun`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 76,
+            "total": 76
+          },
+          "read": {
+            "ok": 76,
+            "total": 76
+          },
+          "update": {
+            "ok": 53,
+            "total": 53
+          },
+          "relations": {
+            "ok": 230,
+            "total": 232
+          },
+          "delete": {
+            "ok": 75,
+            "total": 76
+          }
+        },
+        "findings": [
+          {
+            "model": "VerificationToken",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...ROM \"VerificationToken\" WHERE \"VerificationToken\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "ContactAttributeKey",
+            "check": "relations",
+            "text": "no relation for `attributes` (toMany)"
+          },
+          {
+            "model": "Contact",
+            "check": "relations",
+            "text": "no relation for `attributes` (toMany)"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "notGenerated": true
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 58,
+            "total": 76
+          },
+          "read": {
+            "ok": 57,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 148,
+            "total": 148
+          },
+          "delete": {
+            "ok": 57,
+            "total": 57
+          }
+        },
+        "findings": [
+          {
+            "model": "Survey",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "Numeric value does not fit in a System.Decimal"
+          },
+          {
+            "model": "Creative",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeDailyPageStat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "CreativeLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Creative`) did not go in"
+          },
+          {
+            "model": "Display",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "Response",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "TagsOnResponses",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyTrigger",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyAttributeFilter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyQuota",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "ResponseQuotaLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Response`) did not go in"
+          },
+          {
+            "model": "SurveyFollowUp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyLanguage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          },
+          {
+            "model": "RetentionSurveyRestore",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Survey`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateExtension\nCREATE EXTENSION IF NOT EXISTS \"vector\";\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ActionClass\" DROP CONSTRAINT \"ActionClass_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKeyWorkspace\" DROP CONSTRAINT \"ApiKeyWorkspace_apiKeyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKeyWorkspace\" DROP CONSTRAINT \"ApiKeyWorkspace_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentExport\" DROP CONSTRAINT \"AttachmentExport_requestedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentExport\" DROP CONSTRAINT \"AttachmentExport_surveyId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttachmentExport\" DROP CONSTRAINT \"AttachmentExport_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Chart\" DROP CONSTRAINT \"Chart_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Chart\" DROP CONSTRAINT \"Chart_feedbackDirectoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Chart\" DROP CONSTRAINT \"Chart_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Contact\" DROP CONSTRAINT \"Contact_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ContactAttribute\" DROP CONSTRAINT \"ContactAttribute_attributeKeyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ContactAttribute\" DROP CONSTRAINT \"ContactAttribute_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ContactAttributeKey\" DROP CONSTRAINT \"ContactAttributeKey_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Creative\" DROP CONSTRAINT \"Creative_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Creative\" DROP CONSTRAINT \"Creative_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeDailyPageStat\" DROP CONSTRAINT \"CreativeDailyPageStat_creativeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeDailyStat\" DROP CONSTRAINT \"CreativeDailyStat_creativeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeLanguage\" DROP CONSTRAINT \"CreativeLanguage_creativeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeLanguage\" DROP CONSTRAINT \"CreativeLanguage_languageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeTrigger\" DROP CONSTRAINT \"CreativeTrigger_actionClassId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreativeTrigger\" DROP CONSTRAINT \"CreativeTrigger_creativeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Dashboard\" DROP CONSTRAINT \"Dashboard_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Dashboard\" DROP CONSTRAINT \"Dashboard_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardWidget\" DROP CONSTRAINT \"DashboardWidget_chartId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DashboardWidget\" DROP CONSTRAINT \"DashboardWidget_dashboardId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Display\" DROP CONSTRAINT \"Display_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Display\" DROP CONSTRAINT \"Display_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmbeddedData\" DROP CONSTRAINT \"EmbeddedData_surveyId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EmbeddedData\" DROP CONSTRAINT \"EmbeddedData_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackDirectory\" DROP CONSTRAINT \"FeedbackDirectory_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackDirectoryWorkspace\" DROP CONSTRAINT \"FeedbackDirectoryWorkspace_feedbackDirectoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackDirectoryWorkspace\" DROP CONSTRAINT \"FeedbackDirectoryWorkspace_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSource\" DROP CONSTRAINT \"FeedbackSource_created_by_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSource\" DROP CONSTRAINT \"FeedbackSource_feedbackDirectoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSource\" DROP CONSTRAINT \"FeedbackSource_feedbackDirectoryId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSource\" DROP CONSTRAINT \"FeedbackSource_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSourceFieldMapping\" DROP CONSTRAINT \"FeedbackSourceFieldMapping_feedback_source_id_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" DROP CONSTRAINT \"FeedbackSourceFormbricksMapping_feedback_source_id_workspa_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" DROP CONSTRAINT \"FeedbackSourceFormbricksMapping_surveyId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Integration\" DROP CONSTRAINT \"Integration_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_acceptorId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_creatorId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Language\" DROP CONSTRAINT \"Language_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Membership\" DROP CONSTRAINT \"Membership_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Membership\" DROP CONSTRAINT \"Membership_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationBilling\" DROP CONSTRAINT \"OrganizationBilling_organization_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PasswordResetToken\" DROP CONSTRAINT \"PasswordResetToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Response\" DROP CONSTRAINT \"Response_contactId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Response\" DROP CONSTRAINT \"Response_displayId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Response\" DROP CONSTRAINT \"Response_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ResponseQuotaLink\" DROP CONSTRAINT \"ResponseQuotaLink_quotaId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ResponseQuotaLink\" DROP CONSTRAINT \"ResponseQuotaLink_responseId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionExemption\" DROP CONSTRAINT \"RetentionExemption_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionExemption\" DROP CONSTRAINT \"RetentionExemption_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionExemption\" DROP CONSTRAINT \"RetentionExemption_revokedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionExemption\" DROP CONSTRAINT \"RetentionExemption_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionNotice\" DROP CONSTRAINT \"RetentionNotice_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionNotice\" DROP CONSTRAINT \"RetentionNotice_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionNotice\" DROP CONSTRAINT \"RetentionNotice_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionPolicy\" DROP CONSTRAINT \"RetentionPolicy_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionPolicy\" DROP CONSTRAINT \"RetentionPolicy_updatedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionRun\" DROP CONSTRAINT \"RetentionRun_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionRunItem\" DROP CONSTRAINT \"RetentionRunItem_runId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RetentionSurveyRestore\" DROP CONSTRAINT \"RetentionSurveyRestore_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Segment\" DROP CONSTRAINT \"Segment_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Survey\" DROP CONSTRAINT \"Survey_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Survey\" DROP CONSTRAINT \"Survey_ownerId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Survey\" DROP CONSTRAINT \"Survey_segmentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Survey\" DROP CONSTRAINT \"Survey_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyAttributeFilter\" DROP CONSTRAINT \"SurveyAttributeFilter_attributeKeyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyAttributeFilter\" DROP CONSTRAINT \"SurveyAttributeFilter_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyEmbeddedData\" DROP CONSTRAINT \"SurveyEmbeddedData_embeddedDataId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyEmbeddedData\" DROP CONSTRAINT \"SurveyEmbeddedData_surveyId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyFollowUp\" DROP CONSTRAINT \"SurveyFollowUp_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyLanguage\" DROP CONSTRAINT \"SurveyLanguage_languageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyLanguage\" DROP CONSTRAINT \"SurveyLanguage_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyQuota\" DROP CONSTRAINT \"SurveyQuota_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyTrigger\" DROP CONSTRAINT \"SurveyTrigger_actionClassId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SurveyTrigger\" DROP CONSTRAINT \"SurveyTrigger_surveyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tag\" DROP CONSTRAINT \"Tag_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TagsOnResponses\" DROP CONSTRAINT \"TagsOnResponses_responseId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TagsOnResponses\" DROP CONSTRAINT \"TagsOnResponses_tagId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamUser\" DROP CONSTRAINT \"TeamUser_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamUser\" DROP CONSTRAINT \"TeamUser_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TwoFactor\" DROP CONSTRAINT \"TwoFactor_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Workflow\" DROP CONSTRAINT \"Workflow_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Workflow\" DROP CONSTRAINT \"Workflow_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowRun\" DROP CONSTRAINT \"WorkflowRun_responseId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowRun\" DROP CONSTRAINT \"WorkflowRun_workflowId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowRun\" DROP CONSTRAINT \"WorkflowRun_workflowVersionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowRun\" DROP CONSTRAINT \"WorkflowRun_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowRunLog\" DROP CONSTRAINT \"WorkflowRunLog_runId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowVersion\" DROP CONSTRAINT \"WorkflowVersion_publishedBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkflowVersion\" DROP CONSTRAINT \"WorkflowVersion_workflowId_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Workspace\" DROP CONSTRAINT \"Workspace_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceTeam\" DROP CONSTRAINT \"WorkspaceTeam_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkspaceTeam\" DROP CONSTRAINT \"WorkspaceTeam_workspaceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthAccessToken\" DROP CONSTRAINT \"oauthAccessToken_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthAccessToken\" DROP CONSTRAINT \"oauthAccessToken_refreshId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthAccessToken\" DROP CONSTRAINT \"oauthAccessToken_sessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthAccessToken\" DROP CONSTRAINT \"oauthAccessToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthClient\" DROP CONSTRAINT \"oauthClient_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthClientResource\" DROP CONSTRAINT \"oauthClientResource_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthClientResource\" DROP CONSTRAINT \"oauthClientResource_resourceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthConsent\" DROP CONSTRAINT \"oauthConsent_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthConsent\" DROP CONSTRAINT \"oauthConsent_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthRefreshToken\" DROP CONSTRAINT \"oauthRefreshToken_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthRefreshToken\" DROP CONSTRAINT \"oauthRefreshToken_sessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"oauthRefreshToken\" DROP CONSTRAINT \"oauthRefreshToken_userId_fkey\";\n\n-- AlterTable\nALTER TABLE \"AttachmentExport\" ALTER COLUMN \"surveyId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"FeedbackSourceFieldMapping\" ALTER COLUMN \"feedback_source_id\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"FeedbackSourceFormbricksMapping\" ALTER COLUMN \"feedback_source_id\" SET NOT NULL,\nALTER COLUMN \"surveyId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"Survey\" ADD COLUMN     \"legacyEmbeddedDataBackup\" JSONB;\n\n-- AlterTable\nALTER TABLE \"SurveyEmbeddedData\" ALTER COLUMN \"surveyId\" SET NOT NULL,\nALTER COLUMN \"embeddedDataId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"User\" ADD COLUMN     \"email_verified_at\" TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_identifier_token_key\";\n\n-- AlterTable\nALTER TABLE \"WorkflowRun\" ALTER COLUMN \"workflowId\" SET NOT NULL;\n\n-- AlterTable\nALTER TABLE \"WorkflowVersion\" ALTER COLUMN \"workflowId\" SET NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"VerificationToken_identifier_token_key\" ON \"VerificationToken\"(\"identifier\", \"token\");\n\n-- AddForeignKey\nALTER TABLE \"Creative\" ADD CONSTRAINT \"Creative_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Creative\" ADD CONSTRAINT \"Creative_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeDailyStat\" ADD CONSTRAINT \"CreativeDailyStat_creativeId_fkey\" FOREIGN KEY (\"creativeId\") REFERENCES \"Creative\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeDailyPageStat\" ADD CONSTRAINT \"CreativeDailyPageStat_creativeId_fkey\" FOREIGN KEY (\"creativeId\") REFERENCES \"Creative\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeTrigger\" ADD CONSTRAINT \"CreativeTrigger_creativeId_fkey\" FOREIGN KEY (\"creativeId\") REFERENCES \"Creative\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeTrigger\" ADD CONSTRAINT \"CreativeTrigger_actionClassId_fkey\" FOREIGN KEY (\"actionClassId\") REFERENCES \"ActionClass\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeLanguage\" ADD CONSTRAINT \"CreativeLanguage_languageId_fkey\" FOREIGN KEY (\"languageId\") REFERENCES \"Language\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreativeLanguage\" ADD CONSTRAINT \"CreativeLanguage_creativeId_fkey\" FOREIGN KEY (\"creativeId\") REFERENCES \"Creative\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactAttribute\" ADD CONSTRAINT \"ContactAttribute_attributeKeyId_fkey\" FOREIGN KEY (\"attributeKeyId\") REFERENCES \"ContactAttributeKey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactAttribute\" ADD CONSTRAINT \"ContactAttribute_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"Contact\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ContactAttributeKey\" ADD CONSTRAINT \"ContactAttributeKey_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Contact\" ADD CONSTRAINT \"Contact_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Response\" ADD CONSTRAINT \"Response_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Response\" ADD CONSTRAINT \"Response_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"Contact\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Response\" ADD CONSTRAINT \"Response_displayId_fkey\" FOREIGN KEY (\"displayId\") REFERENCES \"Display\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tag\" ADD CONSTRAINT \"Tag_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TagsOnResponses\" ADD CONSTRAINT \"TagsOnResponses_responseId_fkey\" FOREIGN KEY (\"responseId\") REFERENCES \"Response\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TagsOnResponses\" ADD CONSTRAINT \"TagsOnResponses_tagId_fkey\" FOREIGN KEY (\"tagId\") REFERENCES \"Tag\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Display\" ADD CONSTRAINT \"Display_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Display\" ADD CONSTRAINT \"Display_contactId_fkey\" FOREIGN KEY (\"contactId\") REFERENCES \"Contact\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyTrigger\" ADD CONSTRAINT \"SurveyTrigger_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyTrigger\" ADD CONSTRAINT \"SurveyTrigger_actionClassId_fkey\" FOREIGN KEY (\"actionClassId\") REFERENCES \"ActionClass\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyAttributeFilter\" ADD CONSTRAINT \"SurveyAttributeFilter_attributeKeyId_fkey\" FOREIGN KEY (\"attributeKeyId\") REFERENCES \"ContactAttributeKey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyAttributeFilter\" ADD CONSTRAINT \"SurveyAttributeFilter_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Survey\" ADD CONSTRAINT \"Survey_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Survey\" ADD CONSTRAINT \"Survey_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Survey\" ADD CONSTRAINT \"Survey_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Survey\" ADD CONSTRAINT \"Survey_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"Segment\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyQuota\" ADD CONSTRAINT \"SurveyQuota_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ResponseQuotaLink\" ADD CONSTRAINT \"ResponseQuotaLink_responseId_fkey\" FOREIGN KEY (\"responseId\") REFERENCES \"Response\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ResponseQuotaLink\" ADD CONSTRAINT \"ResponseQuotaLink_quotaId_fkey\" FOREIGN KEY (\"quotaId\") REFERENCES \"SurveyQuota\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyFollowUp\" ADD CONSTRAINT \"SurveyFollowUp_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ActionClass\" ADD CONSTRAINT \"ActionClass_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Integration\" ADD CONSTRAINT \"Integration_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Workspace\" ADD CONSTRAINT \"Workspace_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationBilling\" ADD CONSTRAINT \"OrganizationBilling_organization_id_fkey\" FOREIGN KEY (\"organization_id\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Membership\" ADD CONSTRAINT \"Membership_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Membership\" ADD CONSTRAINT \"Membership_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_creatorId_fkey\" FOREIGN KEY (\"creatorId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_acceptorId_fkey\" FOREIGN KEY (\"acceptorId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKeyWorkspace\" ADD CONSTRAINT \"ApiKeyWorkspace_apiKeyId_fkey\" FOREIGN KEY (\"apiKeyId\") REFERENCES \"ApiKey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKeyWorkspace\" ADD CONSTRAINT \"ApiKeyWorkspace_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TwoFactor\" ADD CONSTRAINT \"TwoFactor_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthClient\" ADD CONSTRAINT \"oauthClient_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthAccessToken\" ADD CONSTRAINT \"oauthAccessToken_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"oauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthAccessToken\" ADD CONSTRAINT \"oauthAccessToken_sessionId_fkey\" FOREIGN KEY (\"sessionId\") REFERENCES \"Session\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthAccessToken\" ADD CONSTRAINT \"oauthAccessToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthAccessToken\" ADD CONSTRAINT \"oauthAccessToken_refreshId_fkey\" FOREIGN KEY (\"refreshId\") REFERENCES \"oauthRefreshToken\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthRefreshToken\" ADD CONSTRAINT \"oauthRefreshToken_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"oauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthRefreshToken\" ADD CONSTRAINT \"oauthRefreshToken_sessionId_fkey\" FOREIGN KEY (\"sessionId\") REFERENCES \"Session\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthRefreshToken\" ADD CONSTRAINT \"oauthRefreshToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthConsent\" ADD CONSTRAINT \"oauthConsent_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"oauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthConsent\" ADD CONSTRAINT \"oauthConsent_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthClientResource\" ADD CONSTRAINT \"oauthClientResource_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"oauthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"oauthClientResource\" ADD CONSTRAINT \"oauthClientResource_resourceId_fkey\" FOREIGN KEY (\"resourceId\") REFERENCES \"oauthResource\"(\"identifier\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PasswordResetToken\" ADD CONSTRAINT \"PasswordResetToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Segment\" ADD CONSTRAINT \"Segment_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Language\" ADD CONSTRAINT \"Language_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyLanguage\" ADD CONSTRAINT \"SurveyLanguage_languageId_fkey\" FOREIGN KEY (\"languageId\") REFERENCES \"Language\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyLanguage\" ADD CONSTRAINT \"SurveyLanguage_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmbeddedData\" ADD CONSTRAINT \"EmbeddedData_surveyId_workspaceId_fkey\" FOREIGN KEY (\"surveyId\", \"workspaceId\") REFERENCES \"Survey\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EmbeddedData\" ADD CONSTRAINT \"EmbeddedData_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyEmbeddedData\" ADD CONSTRAINT \"SurveyEmbeddedData_surveyId_workspaceId_fkey\" FOREIGN KEY (\"surveyId\", \"workspaceId\") REFERENCES \"Survey\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SurveyEmbeddedData\" ADD CONSTRAINT \"SurveyEmbeddedData_embeddedDataId_workspaceId_fkey\" FOREIGN KEY (\"embeddedDataId\", \"workspaceId\") REFERENCES \"EmbeddedData\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamUser\" ADD CONSTRAINT \"TeamUser_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamUser\" ADD CONSTRAINT \"TeamUser_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceTeam\" ADD CONSTRAINT \"WorkspaceTeam_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkspaceTeam\" ADD CONSTRAINT \"WorkspaceTeam_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Chart\" ADD CONSTRAINT \"Chart_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Chart\" ADD CONSTRAINT \"Chart_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Chart\" ADD CONSTRAINT \"Chart_feedbackDirectoryId_fkey\" FOREIGN KEY (\"feedbackDirectoryId\") REFERENCES \"FeedbackDirectory\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Dashboard\" ADD CONSTRAINT \"Dashboard_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Dashboard\" ADD CONSTRAINT \"Dashboard_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardWidget\" ADD CONSTRAINT \"DashboardWidget_dashboardId_fkey\" FOREIGN KEY (\"dashboardId\") REFERENCES \"Dashboard\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DashboardWidget\" ADD CONSTRAINT \"DashboardWidget_chartId_fkey\" FOREIGN KEY (\"chartId\") REFERENCES \"Chart\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentExport\" ADD CONSTRAINT \"AttachmentExport_surveyId_workspaceId_fkey\" FOREIGN KEY (\"surveyId\", \"workspaceId\") REFERENCES \"Survey\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentExport\" ADD CONSTRAINT \"AttachmentExport_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttachmentExport\" ADD CONSTRAINT \"AttachmentExport_requestedById_fkey\" FOREIGN KEY (\"requestedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSource\" ADD CONSTRAINT \"FeedbackSource_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSource\" ADD CONSTRAINT \"FeedbackSource_feedbackDirectoryId_fkey\" FOREIGN KEY (\"feedbackDirectoryId\") REFERENCES \"FeedbackDirectory\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSource\" ADD CONSTRAINT \"FeedbackSource_created_by_fkey\" FOREIGN KEY (\"created_by\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSource\" ADD CONSTRAINT \"FeedbackSource_feedbackDirectoryId_workspaceId_fkey\" FOREIGN KEY (\"feedbackDirectoryId\", \"workspaceId\") REFERENCES \"FeedbackDirectoryWorkspace\"(\"feedbackDirectoryId\", \"workspaceId\") ON DELETE NO ACTION ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" ADD CONSTRAINT \"FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk\" FOREIGN KEY (\"feedback_source_id\", \"workspaceId\") REFERENCES \"FeedbackSource\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" ADD CONSTRAINT \"FeedbackSourceFormbricksMapping_surveyId_workspaceId_fkey\" FOREIGN KEY (\"surveyId\", \"workspaceId\") REFERENCES \"Survey\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackSourceFieldMapping\" ADD CONSTRAINT \"FeedbackSourceFieldMapping_feedbackSourceId_workspaceId_fkey\" FOREIGN KEY (\"feedback_source_id\", \"workspaceId\") REFERENCES \"FeedbackSource\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackDirectory\" ADD CONSTRAINT \"FeedbackDirectory_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackDirectoryWorkspace\" ADD CONSTRAINT \"FeedbackDirectoryWorkspace_feedbackDirectoryId_fkey\" FOREIGN KEY (\"feedbackDirectoryId\") REFERENCES \"FeedbackDirectory\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FeedbackDirectoryWorkspace\" ADD CONSTRAINT \"FeedbackDirectoryWorkspace_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionPolicy\" ADD CONSTRAINT \"RetentionPolicy_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionPolicy\" ADD CONSTRAINT \"RetentionPolicy_updatedById_fkey\" FOREIGN KEY (\"updatedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionExemption\" ADD CONSTRAINT \"RetentionExemption_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionExemption\" ADD CONSTRAINT \"RetentionExemption_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionExemption\" ADD CONSTRAINT \"RetentionExemption_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionExemption\" ADD CONSTRAINT \"RetentionExemption_revokedById_fkey\" FOREIGN KEY (\"revokedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionRun\" ADD CONSTRAINT \"RetentionRun_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionRunItem\" ADD CONSTRAINT \"RetentionRunItem_runId_fkey\" FOREIGN KEY (\"runId\") REFERENCES \"RetentionRun\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionNotice\" ADD CONSTRAINT \"RetentionNotice_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionNotice\" ADD CONSTRAINT \"RetentionNotice_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionNotice\" ADD CONSTRAINT \"RetentionNotice_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RetentionSurveyRestore\" ADD CONSTRAINT \"RetentionSurveyRestore_surveyId_fkey\" FOREIGN KEY (\"surveyId\") REFERENCES \"Survey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Workflow\" ADD CONSTRAINT \"Workflow_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Workflow\" ADD CONSTRAINT \"Workflow_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowVersion\" ADD CONSTRAINT \"WorkflowVersion_workflowId_workspaceId_fkey\" FOREIGN KEY (\"workflowId\", \"workspaceId\") REFERENCES \"Workflow\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowVersion\" ADD CONSTRAINT \"WorkflowVersion_publishedBy_fkey\" FOREIGN KEY (\"publishedBy\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowRun\" ADD CONSTRAINT \"WorkflowRun_workflowId_workspaceId_fkey\" FOREIGN KEY (\"workflowId\", \"workspaceId\") REFERENCES \"Workflow\"(\"id\", \"workspaceId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowRun\" ADD CONSTRAINT \"WorkflowRun_workspaceId_fkey\" FOREIGN KEY (\"workspaceId\") REFERENCES \"Workspace\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowRun\" ADD CONSTRAINT \"WorkflowRun_workflowVersionId_fkey\" FOREIGN KEY (\"workflowVersionId\") REFERENCES \"WorkflowVersion\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowRun\" ADD CONSTRAINT \"WorkflowRun_responseId_fkey\" FOREIGN KEY (\"responseId\") REFERENCES \"Response\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkflowRunLog\" ADD CONSTRAINT \"WorkflowRunLog_runId_fkey\" FOREIGN KEY (\"runId\") REFERENCES \"WorkflowRun\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 76,
+            "total": 76
+          },
+          "insert": {
+            "ok": 75,
+            "total": 76
+          },
+          "read": {
+            "ok": 75,
+            "total": 75
+          },
+          "update": {
+            "ok": 53,
+            "total": 53
+          },
+          "relations": {
+            "ok": 192,
+            "total": 212
+          },
+          "delete": {
+            "ok": 75,
+            "total": 75
+          }
+        },
+        "findings": [
+          {
+            "model": "CreativeDailyStat",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: column \"deviceType\" is of type \"CreativeDeviceType\" but expression is of type character varying\n  Hint: You will need to rewrite or cast the expression.\n  Position: 86"
+          },
+          {
+            "model": "Survey",
+            "check": "relations",
+            "text": "no relation for `embeddedData` (toMany)"
+          },
+          {
+            "model": "Survey",
+            "check": "relations",
+            "text": "no relation for `embeddedDataLinks` (toMany)"
+          },
+          {
+            "model": "Survey",
+            "check": "relations",
+            "text": "no relation for `feedbackSourceMappings` (toMany)"
+          },
+          {
+            "model": "Survey",
+            "check": "relations",
+            "text": "no relation for `creatives` (toMany)"
+          },
+          {
+            "model": "Survey",
+            "check": "relations",
+            "text": "no relation for `attachmentExports` (toMany)"
+          },
+          {
+            "model": "Creative",
+            "check": "relations",
+            "text": "no relation for `survey` (toOne)"
+          },
+          {
+            "model": "EmbeddedData",
+            "check": "relations",
+            "text": "no relation for `survey` (toOne)"
+          },
+          {
+            "model": "EmbeddedData",
+            "check": "relations",
+            "text": "no relation for `surveyLinks` (toMany)"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "relations",
+            "text": "no relation for `survey` (toOne)"
+          },
+          {
+            "model": "SurveyEmbeddedData",
+            "check": "relations",
+            "text": "no relation for `embeddedData` (toOne)"
+          },
+          {
+            "model": "AttachmentExport",
+            "check": "relations",
+            "text": "no relation for `survey` (toOne)"
+          },
+          {
+            "model": "FeedbackSource",
+            "check": "relations",
+            "text": "no relation for `formbricksMappings` (toMany)"
+          },
+          {
+            "model": "FeedbackSource",
+            "check": "relations",
+            "text": "no relation for `fieldMappings` (toMany)"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "relations",
+            "text": "no relation for `feedbackSource` (toOne)"
+          },
+          {
+            "model": "FeedbackSourceFormbricksMapping",
+            "check": "relations",
+            "text": "no relation for `survey` (toOne)"
+          },
+          {
+            "model": "FeedbackSourceFieldMapping",
+            "check": "relations",
+            "text": "no relation for `feedbackSource` (toOne)"
+          },
+          {
+            "model": "Workflow",
+            "check": "relations",
+            "text": "no relation for `versions` (toMany)"
+          },
+          {
+            "model": "Workflow",
+            "check": "relations",
+            "text": "no relation for `runs` (toMany)"
+          },
+          {
+            "model": "WorkflowVersion",
+            "check": "relations",
+            "text": "no relation for `workflow` (toOne)"
+          },
+          {
+            "model": "WorkflowRun",
+            "check": "relations",
+            "text": "no relation for `workflow` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- CreateExtension\nCREATE EXTENSION IF NOT EXISTS \"vector\";\n\n-- AlterTable\nALTER TABLE \"Survey\" ADD COLUMN     \"legacyEmbeddedDataBackup\" JSONB;\n\n-- AlterTable\nALTER TABLE \"User\" ADD COLUMN     \"email_verified_at\" TIMESTAMP(3);\n\n-- RenameForeignKey\nALTER TABLE \"FeedbackSourceFormbricksMapping\" RENAME CONSTRAINT \"feedbacksourceformbricksmapping_feedbacksourceid_workspaceid_fk\" TO \"FeedbackSourceFormbricksMapping_feedbackSourceId_workspaceId_fk\";\n\n-- RenameIndex\nALTER INDEX \"feedbacksourcefieldmapping_workspaceid_feedbacksourceid_sourcef\" RENAME TO \"FeedbackSourceFieldMapping_workspaceId_feedbackSourceId_sourceF\";\n\n-- RenameIndex\nALTER INDEX \"feedbacksourceformbricksmapping_workspaceid_feedbacksourceid_su\" RENAME TO \"FeedbackSourceFormbricksMapping_workspaceId_feedbackSourceId_su\";"
+      }
+    }
+  ]
+}

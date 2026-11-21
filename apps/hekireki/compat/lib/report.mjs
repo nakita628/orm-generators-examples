@@ -20,6 +20,10 @@ export function renderSchema(name, plan, results) {
     `| --- | ${CHECKS.map(() => '--:').join(' | ')} | --- |`,
   ]
   for (const r of results) {
+    if (r.notGenerated) {
+      lines.push(`| ${r.orm} | not generated: hekireki leaves it out of this schema |${CHECKS.slice(1).map(() => '').join(' |')} |`)
+      continue
+    }
     if (r.fatal) {
       lines.push(`| ${r.orm} | ${CHECKS.map(() => '—').join(' | ')} | — |`)
       continue
@@ -27,7 +31,7 @@ export function renderSchema(name, plan, results) {
     const cells = CHECKS.map(([c]) => cell(r.crud.counts[c]))
     lines.push(`| ${r.orm} | ${cells.join(' | ')} | ${ddlCell(r.ddl)} |`)
   }
-  for (const r of results) {
+  for (const r of results.filter((x) => !x.notGenerated)) {
     lines.push('', `## ${r.orm}`, '')
     if (r.fatal) {
       lines.push('The harness did not run:', '', '```text', r.fatal, '```')
@@ -41,7 +45,8 @@ export function renderSchema(name, plan, results) {
       }
     }
     lines.push('')
-    if (r.ddl?.error) lines.push('**Tables:** the ORM could not create them:', '', '```text', r.ddl.error, '```')
+    if (r.ddl?.na) lines.push(`**Tables:** ${r.ddl.na}`)
+    else if (r.ddl?.error) lines.push('**Tables:** the ORM could not create them:', '', '```text', r.ddl.error, '```')
     else if (r.ddl?.diff === '') lines.push('**Tables:** the ORM creates exactly the tables Prisma does (`prisma migrate diff` is empty).')
     else if (r.ddl)
       lines.push(
@@ -73,11 +78,12 @@ export function renderIndex(all) {
     const cells = orms.map((orm) => {
       const o = s.orms.find((x) => x.orm === orm)
       if (!o) return ''
+      if (o.notGenerated) return 'not generated'
       if (o.fatal) return '❌ did not run'
       const total = Object.values(o.checks).reduce((n, c) => n + c.total, 0)
       const ok = Object.values(o.checks).reduce((n, c) => n + c.ok, 0)
       const mark = ok === total ? '✅' : '⚠️'
-      const ddl = { same: 'tables ✅', differs: 'tables ≠', error: 'tables ❌' }[o.ddl] ?? ''
+      const ddl = { same: 'tables ✅', differs: 'tables ≠', error: 'tables ❌', na: 'no tables' }[o.ddl] ?? ''
       return `${mark} ${ok}/${total} · ${ddl}`
     })
     lines.push(`| [${s.name}](${s.name}.md) | ${cells.join(' | ')} |`)
@@ -91,7 +97,7 @@ function cell({ ok, total }) {
 }
 
 function ddlCell(ddl) {
-  if (!ddl) return '—'
+  if (!ddl || ddl.na) return '—'
   if (ddl.error) return '❌ not created'
   if (ddl.diff === '') return '✅ same'
   return `≠ ${summarizeDiff(ddl.diff)}`

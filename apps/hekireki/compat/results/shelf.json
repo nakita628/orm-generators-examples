@@ -1,0 +1,2054 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 66,
+          "total": 66
+        },
+        "read": {
+          "ok": 66,
+          "total": 66
+        },
+        "update": {
+          "ok": 49,
+          "total": 49
+        },
+        "relations": {
+          "ok": 288,
+          "total": 288
+        },
+        "delete": {
+          "ok": 66,
+          "total": 66
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 66,
+          "total": 66
+        },
+        "read": {
+          "ok": 62,
+          "total": 66
+        },
+        "update": {
+          "ok": 49,
+          "total": 49
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 66,
+          "total": 66
+        }
+      },
+      "findings": 7,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 2,
+          "total": 66
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 64,
+      "ddl": "error"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 2,
+          "total": 66
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 64,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 57,
+          "total": 66
+        },
+        "read": {
+          "ok": 57,
+          "total": 57
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 250,
+          "total": 250
+        },
+        "delete": {
+          "ok": 57,
+          "total": 57
+        }
+      },
+      "findings": 9,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 2,
+          "total": 66
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 0,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 2
+        },
+        "delete": {
+          "ok": 0,
+          "total": 2
+        }
+      },
+      "findings": 69,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 66,
+          "total": 66
+        },
+        "read": {
+          "ok": 66,
+          "total": 66
+        },
+        "update": {
+          "ok": 49,
+          "total": 49
+        },
+        "relations": {
+          "ok": 287,
+          "total": 288
+        },
+        "delete": {
+          "ok": 66,
+          "total": 66
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 66,
+          "total": 66
+        },
+        "read": {
+          "ok": 66,
+          "total": 66
+        },
+        "update": {
+          "ok": 49,
+          "total": 49
+        },
+        "relations": {
+          "ok": 288,
+          "total": 288
+        },
+        "delete": {
+          "ok": 66,
+          "total": 66
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 7,
+          "total": 66
+        },
+        "read": {
+          "ok": 7,
+          "total": 7
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 7,
+          "total": 7
+        }
+      },
+      "findings": 59,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 66,
+            "total": 66
+          },
+          "read": {
+            "ok": 66,
+            "total": 66
+          },
+          "update": {
+            "ok": 49,
+            "total": 49
+          },
+          "relations": {
+            "ok": 288,
+            "total": 288
+          },
+          "delete": {
+            "ok": 66,
+            "total": 66
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"Asset_organizationId_createdAt_id_idx\";\n\n-- DropIndex\nDROP INDEX \"Asset_title_description_idx\";\n\n-- DropIndex\nDROP INDEX \"AssetModel_name_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"AssetReminder_name_message_idx\";\n\n-- DropIndex\nDROP INDEX \"Barcode_value_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Category_name_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Location_address_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Location_description_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Location_name_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Qr_id_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"Tag_name_trgm_idx\";\n\n-- DropIndex\nDROP INDEX \"TeamMember_name_idx\";\n\n-- CreateIndex\nCREATE INDEX \"Asset_title_description_idx\" ON \"Asset\" USING GIN (\"title\" gin_trgm_ops, \"description\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Asset_sequentialId_trgm_idx\" ON \"Asset\" USING GIN (\"sequentialId\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Asset_organizationId_createdAt_id_idx\" ON \"Asset\"(\"organizationId\", \"createdAt\" DESC, \"id\");\n\n-- CreateIndex\nCREATE INDEX \"AssetModel_name_trgm_idx\" ON \"AssetModel\" USING GIN (\"name\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"AssetReminder_name_message_idx\" ON \"AssetReminder\" USING GIN (\"name\" gin_trgm_ops, \"message\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Barcode_value_trgm_idx\" ON \"Barcode\" USING GIN (\"value\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Category_name_trgm_idx\" ON \"Category\" USING GIN (\"name\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Location_name_trgm_idx\" ON \"Location\" USING GIN (\"name\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Location_description_trgm_idx\" ON \"Location\" USING GIN (\"description\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Location_address_trgm_idx\" ON \"Location\" USING GIN (\"address\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Qr_id_trgm_idx\" ON \"Qr\" USING GIN (\"id\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"Tag_name_trgm_idx\" ON \"Tag\" USING GIN (\"name\" gin_trgm_ops);\n\n-- CreateIndex\nCREATE INDEX \"TeamMember_name_idx\" ON \"TeamMember\" USING GIN (\"name\" gin_trgm_ops);"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 66,
+            "total": 66
+          },
+          "read": {
+            "ok": 62,
+            "total": 66
+          },
+          "update": {
+            "ok": 49,
+            "total": 49
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 66,
+            "total": 66
+          }
+        },
+        "findings": [
+          {
+            "model": "Tag",
+            "check": "read",
+            "text": "`useFor` is typed `Generated<TagUseFor[]>` but came back as string"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "read",
+            "text": "`roles` (OrganizationRoles[]) came back as \"{ADMIN}\", not a list"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "read",
+            "text": "`roles` is typed `OrganizationRoles[]` but came back as string"
+          },
+          {
+            "model": "Invite",
+            "check": "read",
+            "text": "`roles` (OrganizationRoles[]) came back as \"{ADMIN}\", not a list"
+          },
+          {
+            "model": "Invite",
+            "check": "read",
+            "text": "`roles` is typed `OrganizationRoles[]` but came back as string"
+          },
+          {
+            "model": "Update",
+            "check": "read",
+            "text": "`targetRoles` (OrganizationRoles[]) came back as \"{ADMIN}\", not a list"
+          },
+          {
+            "model": "Update",
+            "check": "read",
+            "text": "`targetRoles` is typed `OrganizationRoles[]` but came back as string"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 2,
+            "total": 66
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, v4, null, v5, v6, v7, v8, f, f, v9, f, f, f, f, f, null, 2026-11-21 15:48:26.838, 2026-11-21 15:48:26.838, 2024-01-02 03:04:05.01, 2024-01-02 03:04:05.011, DD_MM_YYYY, H12, MONDAY, v15, free, v16)."
+          },
+          {
+            "model": "SsoDetails",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SsoDetails\" violates not-null constraint\nDETAIL:  Failing row contains (null, v17, v18, v19, v20, v21, t, 2026-11-21 15:48:26.839, 2026-11-21 15:48:26.839)."
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Image",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserContact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserBusinessIntel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetModel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Location",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Kit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Barcode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Asset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetFilterPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetIndexSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PdfTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingModelRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Note",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "LocationNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Location`) did not go in"
+          },
+          {
+            "model": "PrintBatch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PrintBatch\" violates not-null constraint\nDETAIL:  Failing row contains (null, v102, f, 2026-11-21 15:48:26.863, 2026-11-21 15:48:26.863)."
+          },
+          {
+            "model": "Qr",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Qr\" violates not-null constraint\nDETAIL:  Failing row contains (null, 0, L, null, null, null, null, null, 2026-11-21 15:48:26.864, 2026-11-21 15:48:26.864)."
+          },
+          {
+            "model": "ReportFound",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ReportFound\" violates not-null constraint\nDETAIL:  Failing row contains (null, v103, v104, 2026-11-21 15:48:26.865, 2026-11-21 15:48:26.865, null, null)."
+          },
+          {
+            "model": "Scan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Role\" violates not-null constraint\nDETAIL:  Failing row contains (null, USER, 2026-11-21 15:48:26.867, 2026-11-21 15:48:26.867)."
+          },
+          {
+            "model": "KitCustody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "Custody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserScimExternalId",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CustomTierLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"CustomTierLimit\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, t, t, t, t, t, t, t, 1000, 1, f, 2026-11-21 15:48:26.873, 2026-11-21 15:48:26.873)."
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetModelCustomFieldDefault",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AssetModel`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Announcement",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Announcement\" violates not-null constraint\nDETAIL:  Failing row contains (null, v130, v131, v132, v133, f, 2026-11-21 15:48:26.878, 2026-11-21 15:48:26.878)."
+          },
+          {
+            "model": "ConsumptionLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "MobileAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetKit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetReminder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHours",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHoursOverride",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkingHours`) did not go in"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "TeamMemberNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "AssetImport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkPreview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AuditAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditScan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "RoleChangeLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ActivityEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1969, in _exec_single_context\n    self.dialect.do_execute(\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 952, in do_execute\n    cursor.execute(statement, parameters)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.InvalidTextRepresentation: invalid input syntax for type json\nLINE 5:  \"weeklySchedule\" JSONB DEFAULT '{\"0\":{\"isOpen\"NULL},\"1\":{\"i...\n                                        ^\nDETAIL:  Token \"NULL\" is invalid.\nCONTEXT:  JSON data, line 1: {\"0\":{\"isOpen\"NULL...\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 242, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 41, in main\n    base.metadata.create_all(engine)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py\", line 5930, in create_all\n    bind._run_ddl_visitor(\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 3270, in _run_ddl_visitor\n    conn._run_ddl_visitor(visitorcallable, element, **kwargs)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 2469, in _run_ddl_visitor\n    ).traverse_single(element)\n      ^^^^^^^^^^^^^^^^^^^^^^^"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 2,
+            "total": 66
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"User\" violates not-null constraint\nDETAIL:  Failing row contains (null, v4, , v5, v6, v7, v8, f, f, v9, f, f, f, f, f, null, 2026-11-21 15:48:28.687, 2026-11-21 15:48:28.687, 2024-01-02 03:04:05.01, 2024-01-02 03:04:05.011, DD_MM_YYYY, H12, MONDAY, v15, free, v16)."
+          },
+          {
+            "model": "SsoDetails",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"SsoDetails\" violates not-null constraint\nDETAIL:  Failing row contains (null, v17, v18, v19, v20, v21, t, 2026-11-21 15:48:28.688, 2026-11-21 15:48:28.688)."
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Image",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserContact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserBusinessIntel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetModel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Location",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Kit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Barcode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Asset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetFilterPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetIndexSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PdfTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingModelRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Note",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "LocationNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Location`) did not go in"
+          },
+          {
+            "model": "PrintBatch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"PrintBatch\" violates not-null constraint\nDETAIL:  Failing row contains (null, v102, f, 2026-11-21 15:48:28.697, 2026-11-21 15:48:28.697)."
+          },
+          {
+            "model": "Qr",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Qr\" violates not-null constraint\nDETAIL:  Failing row contains (null, 0, L, null, null, null, null, null, 2026-11-21 15:48:28.697, 2026-11-21 15:48:28.697)."
+          },
+          {
+            "model": "ReportFound",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ReportFound\" violates not-null constraint\nDETAIL:  Failing row contains (null, v103, v104, 2026-11-21 15:48:28.697, 2026-11-21 15:48:28.697, null, null)."
+          },
+          {
+            "model": "Scan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Role\" violates not-null constraint\nDETAIL:  Failing row contains (null, USER, 2026-11-21 15:48:28.698, 2026-11-21 15:48:28.698)."
+          },
+          {
+            "model": "KitCustody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "Custody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserScimExternalId",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CustomTierLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"CustomTierLimit\" violates not-null constraint\nDETAIL:  Failing row contains (null, null, t, t, t, t, t, t, t, 1000, 1, f, 2026-11-21 15:48:28.7, 2026-11-21 15:48:28.7)."
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetModelCustomFieldDefault",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AssetModel`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Announcement",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Announcement\" violates not-null constraint\nDETAIL:  Failing row contains (null, v130, v131, v132, v133, f, 2026-11-21 15:48:28.702, 2026-11-21 15:48:28.702)."
+          },
+          {
+            "model": "ConsumptionLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "MobileAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetKit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetReminder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHours",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHoursOverride",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkingHours`) did not go in"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "TeamMemberNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "AssetImport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkPreview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AuditAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditScan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "RoleChangeLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ActivityEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.UndefinedObject: data type text has no default operator class for access method \"gin\"\nHINT:  You must specify an operator class for the index or define a default operator class for the data type.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\","
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 57,
+            "total": 66
+          },
+          "read": {
+            "ok": 57,
+            "total": 57
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 250,
+            "total": 250
+          },
+          "delete": {
+            "ok": 57,
+            "total": 57
+          }
+        },
+        "findings": [
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"ADMIN\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v120\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CustomField`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"ADMIN\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v148\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v150\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"ADMIN\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Update`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"User\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/shelf; fi; exec /cache/bin/shelf crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "ddl": {
+        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/shelf; fi; exec /cache/bin/shelf ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 2,
+            "total": 66
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 0,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 2
+          },
+          "delete": {
+            "ok": 0,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "TierLimit",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Shelf.TierLimit` has no primary key"
+          },
+          {
+            "model": "Tier",
+            "check": "update",
+            "text": "update of `name` failed",
+            "detail": "schema `Shelf.Tier` has no primary key"
+          },
+          {
+            "model": "Tier",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Shelf.Tier` has no primary key"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"User\\\" violates not-null constraint\\n\\n    table: User\\n    column: id\\n\\nFailing row contains (null, v4, null, v5, v6, v7, v8, f, f, v9, f, f, f, f, f, null, 2026-11-21 15:48:41.76, 2026-11-21 15:48:41.76, 2024-01-02 03:04:05.01, 2024-01-02 03:04:05.011, DD_MM_YYYY, H12, MONDAY, v15, free, v16).\""
+          },
+          {
+            "model": "SsoDetails",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"SsoDetails\\\" violates not-null constraint\\n\\n    table: SsoDetails\\n    column: id\\n\\nFailing row contains (null, v17, v18, v19, v20, v21, t, 2026-11-21 15:48:41.764, 2026-11-21 15:48:41.764).\""
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Image",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserContact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserBusinessIntel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetModel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Location",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Kit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Barcode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Asset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetFilterPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetIndexSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PdfTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingModelRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Note",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "LocationNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Location`) did not go in"
+          },
+          {
+            "model": "PrintBatch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"PrintBatch\\\" violates not-null constraint\\n\\n    table: PrintBatch\\n    column: id\\n\\nFailing row contains (null, v102, f, 2026-11-21 15:48:41.772, 2026-11-21 15:48:41.772).\""
+          },
+          {
+            "model": "Qr",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Qr\\\" violates not-null constraint\\n\\n    table: Qr\\n    column: id\\n\\nFailing row contains (null, 0, L, null, null, null, null, null, 2026-11-21 15:48:41.773, 2026-11-21 15:48:41.773).\""
+          },
+          {
+            "model": "ReportFound",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ReportFound\\\" violates not-null constraint\\n\\n    table: ReportFound\\n    column: id\\n\\nFailing row contains (null, v103, v104, 2026-11-21 15:48:41.773, 2026-11-21 15:48:41.773, null, null).\""
+          },
+          {
+            "model": "Scan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Role\\\" violates not-null constraint\\n\\n    table: Role\\n    column: id\\n\\nFailing row contains (null, USER, 2026-11-21 15:48:41.773, 2026-11-21 15:48:41.773).\""
+          },
+          {
+            "model": "KitCustody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "Custody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserScimExternalId",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CustomTierLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"CustomTierLimit\\\" violates not-null constraint\\n\\n    table: CustomTierLimit\\n    column: id\\n\\nFailing row contains (null, null, t, t, t, t, t, t, t, 1000, 1, f, 2026-11-21 15:48:41.774, 2026-11-21 15:48:41.774).\""
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetModelCustomFieldDefault",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AssetModel`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Announcement",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Announcement\\\" violates not-null constraint\\n\\n    table: Announcement\\n    column: id\\n\\nFailing row contains (null, v130, v131, v132, v133, f, 2026-11-21 15:48:41.775, 2026-11-21 15:48:41.775).\""
+          },
+          {
+            "model": "ConsumptionLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "MobileAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetKit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetReminder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHours",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHoursOverride",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkingHours`) did not go in"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "TeamMemberNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "AssetImport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkPreview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AuditAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditScan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "RoleChangeLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ActivityEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TierLimit",
+            "check": "relations",
+            "text": "relation `tier` failed to load",
+            "detail": "deps/ecto/lib/ecto/association.ex:870: value `:free` in `where` cannot be cast to type :string in query:\n\nfrom t0 in Shelf.Tier,\n  where: t0.tier_limit_id == ^:free,\n  select: {t0.tier_limit_id, t0}\n"
+          },
+          {
+            "model": "Tier",
+            "check": "relations",
+            "text": "relation `tierLimit` loaded nothing, though the related row is there"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 66,
+            "total": 66
+          },
+          "read": {
+            "ok": 66,
+            "total": 66
+          },
+          "update": {
+            "ok": 49,
+            "total": 49
+          },
+          "relations": {
+            "ok": 287,
+            "total": 288
+          },
+          "delete": {
+            "ok": 66,
+            "total": 66
+          }
+        },
+        "findings": [
+          {
+            "model": "UserUpdateRead",
+            "check": "relations",
+            "text": "no relation for `update` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "notGenerated": true
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 66,
+            "total": 66
+          },
+          "read": {
+            "ok": 66,
+            "total": 66
+          },
+          "update": {
+            "ok": 49,
+            "total": 49
+          },
+          "relations": {
+            "ok": 288,
+            "total": 288
+          },
+          "delete": {
+            "ok": 66,
+            "total": 66
+          }
+        },
+        "findings": []
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"ActivityEvent\" DROP CONSTRAINT \"ActivityEvent_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Asset\" DROP CONSTRAINT \"Asset_assetModelId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Asset\" DROP CONSTRAINT \"Asset_categoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Asset\" DROP CONSTRAINT \"Asset_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Asset\" DROP CONSTRAINT \"Asset_preferredBarcodeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Asset\" DROP CONSTRAINT \"Asset_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetCustomFieldValue\" DROP CONSTRAINT \"AssetCustomFieldValue_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetCustomFieldValue\" DROP CONSTRAINT \"AssetCustomFieldValue_customFieldId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetFilterPreset\" DROP CONSTRAINT \"AssetFilterPreset_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetFilterPreset\" DROP CONSTRAINT \"AssetFilterPreset_ownerId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetImport\" DROP CONSTRAINT \"AssetImport_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetImport\" DROP CONSTRAINT \"AssetImport_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetIndexSettings\" DROP CONSTRAINT \"AssetIndexSettings_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetIndexSettings\" DROP CONSTRAINT \"AssetIndexSettings_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetKit\" DROP CONSTRAINT \"AssetKit_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetKit\" DROP CONSTRAINT \"AssetKit_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetKit\" DROP CONSTRAINT \"AssetKit_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetLocation\" DROP CONSTRAINT \"AssetLocation_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetLocation\" DROP CONSTRAINT \"AssetLocation_assetKitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetLocation\" DROP CONSTRAINT \"AssetLocation_locationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetLocation\" DROP CONSTRAINT \"AssetLocation_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetModel\" DROP CONSTRAINT \"AssetModel_defaultCategoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetModel\" DROP CONSTRAINT \"AssetModel_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetModel\" DROP CONSTRAINT \"AssetModel_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetModelCustomFieldDefault\" DROP CONSTRAINT \"AssetModelCustomFieldDefault_assetModelId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetReminder\" DROP CONSTRAINT \"AssetReminder_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetReminder\" DROP CONSTRAINT \"AssetReminder_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssetReminder\" DROP CONSTRAINT \"AssetReminder_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditAsset\" DROP CONSTRAINT \"AuditAsset_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditAsset\" DROP CONSTRAINT \"AuditAsset_auditSessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditAsset\" DROP CONSTRAINT \"AuditAsset_scannedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditAssignment\" DROP CONSTRAINT \"AuditAssignment_auditSessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditAssignment\" DROP CONSTRAINT \"AuditAssignment_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditImage\" DROP CONSTRAINT \"AuditImage_auditAssetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditImage\" DROP CONSTRAINT \"AuditImage_auditSessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditImage\" DROP CONSTRAINT \"AuditImage_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditImage\" DROP CONSTRAINT \"AuditImage_uploadedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditNote\" DROP CONSTRAINT \"AuditNote_auditAssetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditNote\" DROP CONSTRAINT \"AuditNote_auditSessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditNote\" DROP CONSTRAINT \"AuditNote_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditScan\" DROP CONSTRAINT \"AuditScan_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditScan\" DROP CONSTRAINT \"AuditScan_auditAssetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditScan\" DROP CONSTRAINT \"AuditScan_auditSessionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditScan\" DROP CONSTRAINT \"AuditScan_scannedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditSession\" DROP CONSTRAINT \"AuditSession_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AuditSession\" DROP CONSTRAINT \"AuditSession_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Barcode\" DROP CONSTRAINT \"Barcode_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Barcode\" DROP CONSTRAINT \"Barcode_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Barcode\" DROP CONSTRAINT \"Barcode_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_creatorId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_custodianTeamMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_custodianUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingAsset\" DROP CONSTRAINT \"BookingAsset_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingAsset\" DROP CONSTRAINT \"BookingAsset_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingModelRequest\" DROP CONSTRAINT \"BookingModelRequest_assetModelId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingModelRequest\" DROP CONSTRAINT \"BookingModelRequest_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingNote\" DROP CONSTRAINT \"BookingNote_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingNote\" DROP CONSTRAINT \"BookingNote_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingSettings\" DROP CONSTRAINT \"BookingSettings_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Category\" DROP CONSTRAINT \"Category_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Category\" DROP CONSTRAINT \"Category_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConsumptionLog\" DROP CONSTRAINT \"ConsumptionLog_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConsumptionLog\" DROP CONSTRAINT \"ConsumptionLog_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConsumptionLog\" DROP CONSTRAINT \"ConsumptionLog_custodianId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConsumptionLog\" DROP CONSTRAINT \"ConsumptionLog_locationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ConsumptionLog\" DROP CONSTRAINT \"ConsumptionLog_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Custody\" DROP CONSTRAINT \"Custody_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Custody\" DROP CONSTRAINT \"Custody_kitCustodyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Custody\" DROP CONSTRAINT \"Custody_locationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Custody\" DROP CONSTRAINT \"Custody_teamMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CustomField\" DROP CONSTRAINT \"CustomField_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CustomField\" DROP CONSTRAINT \"CustomField_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CustomTierLimit\" DROP CONSTRAINT \"CustomTierLimit_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Image\" DROP CONSTRAINT \"Image_ownerOrgId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Image\" DROP CONSTRAINT \"Image_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_inviteeUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_inviterId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Invite\" DROP CONSTRAINT \"Invite_teamMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Kit\" DROP CONSTRAINT \"Kit_categoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Kit\" DROP CONSTRAINT \"Kit_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Kit\" DROP CONSTRAINT \"Kit_locationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Kit\" DROP CONSTRAINT \"Kit_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"KitCustody\" DROP CONSTRAINT \"KitCustody_custodianId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"KitCustody\" DROP CONSTRAINT \"KitCustody_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"LinkPreview\" DROP CONSTRAINT \"LinkPreview_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Location\" DROP CONSTRAINT \"Location_imageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Location\" DROP CONSTRAINT \"Location_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Location\" DROP CONSTRAINT \"Location_parentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Location\" DROP CONSTRAINT \"Location_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"LocationNote\" DROP CONSTRAINT \"LocationNote_locationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"LocationNote\" DROP CONSTRAINT \"LocationNote_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MobileAuthCode\" DROP CONSTRAINT \"MobileAuthCode_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Note\" DROP CONSTRAINT \"Note_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Note\" DROP CONSTRAINT \"Note_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"NotificationPreference\" DROP CONSTRAINT \"NotificationPreference_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organization\" DROP CONSTRAINT \"Organization_imageId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organization\" DROP CONSTRAINT \"Organization_ssoDetailsId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Organization\" DROP CONSTRAINT \"Organization_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PartialBookingCheckin\" DROP CONSTRAINT \"PartialBookingCheckin_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PartialBookingCheckin\" DROP CONSTRAINT \"PartialBookingCheckin_checkedInById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PartialBookingCheckout\" DROP CONSTRAINT \"PartialBookingCheckout_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PartialBookingCheckout\" DROP CONSTRAINT \"PartialBookingCheckout_checkedOutById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PdfTemplate\" DROP CONSTRAINT \"PdfTemplate_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PushToken\" DROP CONSTRAINT \"PushToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Qr\" DROP CONSTRAINT \"Qr_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Qr\" DROP CONSTRAINT \"Qr_batchId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Qr\" DROP CONSTRAINT \"Qr_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Qr\" DROP CONSTRAINT \"Qr_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Qr\" DROP CONSTRAINT \"Qr_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ReportFound\" DROP CONSTRAINT \"ReportFound_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ReportFound\" DROP CONSTRAINT \"ReportFound_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RoleChangeLog\" DROP CONSTRAINT \"RoleChangeLog_changedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RoleChangeLog\" DROP CONSTRAINT \"RoleChangeLog_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RoleChangeLog\" DROP CONSTRAINT \"RoleChangeLog_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_assetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_barcodeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_kitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_qrId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Scan\" DROP CONSTRAINT \"Scan_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ScimToken\" DROP CONSTRAINT \"ScimToken_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tag\" DROP CONSTRAINT \"Tag_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tag\" DROP CONSTRAINT \"Tag_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"TeamMember_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMember\" DROP CONSTRAINT \"TeamMember_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMemberNote\" DROP CONSTRAINT \"TeamMemberNote_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMemberNote\" DROP CONSTRAINT \"TeamMemberNote_teamMemberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamMemberNote\" DROP CONSTRAINT \"TeamMemberNote_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tier\" DROP CONSTRAINT \"Tier_tierLimitId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Update\" DROP CONSTRAINT \"Update_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_lastSelectedOrganizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"User\" DROP CONSTRAINT \"User_tierId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserBusinessIntel\" DROP CONSTRAINT \"UserBusinessIntel_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserContact\" DROP CONSTRAINT \"UserContact_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserOrganization\" DROP CONSTRAINT \"UserOrganization_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserOrganization\" DROP CONSTRAINT \"UserOrganization_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserScimExternalId\" DROP CONSTRAINT \"UserScimExternalId_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserScimExternalId\" DROP CONSTRAINT \"UserScimExternalId_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserUpdateRead\" DROP CONSTRAINT \"UserUpdateRead_updateId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserUpdateRead\" DROP CONSTRAINT \"UserUpdateRead_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkingHours\" DROP CONSTRAINT \"WorkingHours_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WorkingHoursOverride\" DROP CONSTRAINT \"WorkingHoursOverride_workingHoursId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_AssetReminderToTeamMember\" DROP CONSTRAINT \"_AssetReminderToTeamMember_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_AssetReminderToTeamMember\" DROP CONSTRAINT \"_AssetReminderToTeamMember_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_AssetToTag\" DROP CONSTRAINT \"_AssetToTag_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_AssetToTag\" DROP CONSTRAINT \"_AssetToTag_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingNotificationRecipients\" DROP CONSTRAINT \"_BookingNotificationRecipients_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingNotificationRecipients\" DROP CONSTRAINT \"_BookingNotificationRecipients_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingSettingsAlwaysNotify\" DROP CONSTRAINT \"_BookingSettingsAlwaysNotify_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingSettingsAlwaysNotify\" DROP CONSTRAINT \"_BookingSettingsAlwaysNotify_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingToTag\" DROP CONSTRAINT \"_BookingToTag_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_BookingToTag\" DROP CONSTRAINT \"_BookingToTag_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_CategoryToCustomField\" DROP CONSTRAINT \"_CategoryToCustomField_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_CategoryToCustomField\" DROP CONSTRAINT \"_CategoryToCustomField_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_RoleToUser\" DROP CONSTRAINT \"_RoleToUser_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_RoleToUser\" DROP CONSTRAINT \"_RoleToUser_B_fkey\";\n\n-- AddForeignKey\nALTER TABLE \"Image\" ADD CONSTRAINT \"Image_ownerOrgId_fkey\" FOREIGN KEY (\"ownerOrgId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Image\" ADD CONSTRAINT \"Image_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_lastSelectedOrganizationId_fkey\" FOREIGN KEY (\"lastSelectedOrganizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"User\" ADD CONSTRAINT \"User_tierId_fkey\" FOREIGN KEY (\"tierId\") REFERENCES \"Tier\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserContact\" ADD CONSTRAINT \"UserContact_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserBusinessIntel\" ADD CONSTRAINT \"UserBusinessIntel_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Asset\" ADD CONSTRAINT \"Asset_assetModelId_fkey\" FOREIGN KEY (\"assetModelId\") REFERENCES \"AssetModel\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Asset\" ADD CONSTRAINT \"Asset_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Asset\" ADD CONSTRAINT \"Asset_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Asset\" ADD CONSTRAINT \"Asset_categoryId_fkey\" FOREIGN KEY (\"categoryId\") REFERENCES \"Category\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Asset\" ADD CONSTRAINT \"Asset_preferredBarcodeId_fkey\" FOREIGN KEY (\"preferredBarcodeId\") REFERENCES \"Barcode\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetFilterPreset\" ADD CONSTRAINT \"AssetFilterPreset_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetFilterPreset\" ADD CONSTRAINT \"AssetFilterPreset_ownerId_fkey\" FOREIGN KEY (\"ownerId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetIndexSettings\" ADD CONSTRAINT \"AssetIndexSettings_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetIndexSettings\" ADD CONSTRAINT \"AssetIndexSettings_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PdfTemplate\" ADD CONSTRAINT \"PdfTemplate_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Category\" ADD CONSTRAINT \"Category_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Category\" ADD CONSTRAINT \"Category_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetModel\" ADD CONSTRAINT \"AssetModel_defaultCategoryId_fkey\" FOREIGN KEY (\"defaultCategoryId\") REFERENCES \"Category\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetModel\" ADD CONSTRAINT \"AssetModel_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetModel\" ADD CONSTRAINT \"AssetModel_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingModelRequest\" ADD CONSTRAINT \"BookingModelRequest_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingModelRequest\" ADD CONSTRAINT \"BookingModelRequest_assetModelId_fkey\" FOREIGN KEY (\"assetModelId\") REFERENCES \"AssetModel\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tag\" ADD CONSTRAINT \"Tag_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tag\" ADD CONSTRAINT \"Tag_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Note\" ADD CONSTRAINT \"Note_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Note\" ADD CONSTRAINT \"Note_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingNote\" ADD CONSTRAINT \"BookingNote_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingNote\" ADD CONSTRAINT \"BookingNote_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"LocationNote\" ADD CONSTRAINT \"LocationNote_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"LocationNote\" ADD CONSTRAINT \"LocationNote_locationId_fkey\" FOREIGN KEY (\"locationId\") REFERENCES \"Location\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Qr\" ADD CONSTRAINT \"Qr_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Qr\" ADD CONSTRAINT \"Qr_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Qr\" ADD CONSTRAINT \"Qr_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Qr\" ADD CONSTRAINT \"Qr_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Qr\" ADD CONSTRAINT \"Qr_batchId_fkey\" FOREIGN KEY (\"batchId\") REFERENCES \"PrintBatch\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Barcode\" ADD CONSTRAINT \"Barcode_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Barcode\" ADD CONSTRAINT \"Barcode_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Barcode\" ADD CONSTRAINT \"Barcode_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ReportFound\" ADD CONSTRAINT \"ReportFound_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ReportFound\" ADD CONSTRAINT \"ReportFound_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_qrId_fkey\" FOREIGN KEY (\"qrId\") REFERENCES \"Qr\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_barcodeId_fkey\" FOREIGN KEY (\"barcodeId\") REFERENCES \"Barcode\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Scan\" ADD CONSTRAINT \"Scan_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Location\" ADD CONSTRAINT \"Location_imageId_fkey\" FOREIGN KEY (\"imageId\") REFERENCES \"Image\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Location\" ADD CONSTRAINT \"Location_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Location\" ADD CONSTRAINT \"Location_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Location\" ADD CONSTRAINT \"Location_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"Location\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamMember\" ADD CONSTRAINT \"TeamMember_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamMember\" ADD CONSTRAINT \"TeamMember_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Custody\" ADD CONSTRAINT \"Custody_teamMemberId_fkey\" FOREIGN KEY (\"teamMemberId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Custody\" ADD CONSTRAINT \"Custody_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Custody\" ADD CONSTRAINT \"Custody_kitCustodyId_fkey\" FOREIGN KEY (\"kitCustodyId\") REFERENCES \"KitCustody\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Custody\" ADD CONSTRAINT \"Custody_locationId_fkey\" FOREIGN KEY (\"locationId\") REFERENCES \"Location\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organization\" ADD CONSTRAINT \"Organization_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organization\" ADD CONSTRAINT \"Organization_imageId_fkey\" FOREIGN KEY (\"imageId\") REFERENCES \"Image\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Organization\" ADD CONSTRAINT \"Organization_ssoDetailsId_fkey\" FOREIGN KEY (\"ssoDetailsId\") REFERENCES \"SsoDetails\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserOrganization\" ADD CONSTRAINT \"UserOrganization_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserOrganization\" ADD CONSTRAINT \"UserOrganization_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ScimToken\" ADD CONSTRAINT \"ScimToken_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserScimExternalId\" ADD CONSTRAINT \"UserScimExternalId_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserScimExternalId\" ADD CONSTRAINT \"UserScimExternalId_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tier\" ADD CONSTRAINT \"Tier_tierLimitId_fkey\" FOREIGN KEY (\"tierLimitId\") REFERENCES \"TierLimit\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomTierLimit\" ADD CONSTRAINT \"CustomTierLimit_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomField\" ADD CONSTRAINT \"CustomField_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CustomField\" ADD CONSTRAINT \"CustomField_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetCustomFieldValue\" ADD CONSTRAINT \"AssetCustomFieldValue_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetCustomFieldValue\" ADD CONSTRAINT \"AssetCustomFieldValue_customFieldId_fkey\" FOREIGN KEY (\"customFieldId\") REFERENCES \"CustomField\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetModelCustomFieldDefault\" ADD CONSTRAINT \"AssetModelCustomFieldDefault_assetModelId_fkey\" FOREIGN KEY (\"assetModelId\") REFERENCES \"AssetModel\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_inviterId_fkey\" FOREIGN KEY (\"inviterId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_inviteeUserId_fkey\" FOREIGN KEY (\"inviteeUserId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Invite\" ADD CONSTRAINT \"Invite_teamMemberId_fkey\" FOREIGN KEY (\"teamMemberId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConsumptionLog\" ADD CONSTRAINT \"ConsumptionLog_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConsumptionLog\" ADD CONSTRAINT \"ConsumptionLog_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConsumptionLog\" ADD CONSTRAINT \"ConsumptionLog_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConsumptionLog\" ADD CONSTRAINT \"ConsumptionLog_custodianId_fkey\" FOREIGN KEY (\"custodianId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ConsumptionLog\" ADD CONSTRAINT \"ConsumptionLog_locationId_fkey\" FOREIGN KEY (\"locationId\") REFERENCES \"Location\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingAsset\" ADD CONSTRAINT \"BookingAsset_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingAsset\" ADD CONSTRAINT \"BookingAsset_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_creatorId_fkey\" FOREIGN KEY (\"creatorId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_custodianUserId_fkey\" FOREIGN KEY (\"custodianUserId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_custodianTeamMemberId_fkey\" FOREIGN KEY (\"custodianTeamMemberId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingSettings\" ADD CONSTRAINT \"BookingSettings_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PartialBookingCheckin\" ADD CONSTRAINT \"PartialBookingCheckin_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PartialBookingCheckin\" ADD CONSTRAINT \"PartialBookingCheckin_checkedInById_fkey\" FOREIGN KEY (\"checkedInById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PartialBookingCheckout\" ADD CONSTRAINT \"PartialBookingCheckout_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PartialBookingCheckout\" ADD CONSTRAINT \"PartialBookingCheckout_checkedOutById_fkey\" FOREIGN KEY (\"checkedOutById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MobileAuthCode\" ADD CONSTRAINT \"MobileAuthCode_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PushToken\" ADD CONSTRAINT \"PushToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"NotificationPreference\" ADD CONSTRAINT \"NotificationPreference_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Kit\" ADD CONSTRAINT \"Kit_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Kit\" ADD CONSTRAINT \"Kit_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Kit\" ADD CONSTRAINT \"Kit_categoryId_fkey\" FOREIGN KEY (\"categoryId\") REFERENCES \"Category\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Kit\" ADD CONSTRAINT \"Kit_locationId_fkey\" FOREIGN KEY (\"locationId\") REFERENCES \"Location\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"KitCustody\" ADD CONSTRAINT \"KitCustody_custodianId_fkey\" FOREIGN KEY (\"custodianId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"KitCustody\" ADD CONSTRAINT \"KitCustody_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetKit\" ADD CONSTRAINT \"AssetKit_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetKit\" ADD CONSTRAINT \"AssetKit_kitId_fkey\" FOREIGN KEY (\"kitId\") REFERENCES \"Kit\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetKit\" ADD CONSTRAINT \"AssetKit_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetLocation\" ADD CONSTRAINT \"AssetLocation_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetLocation\" ADD CONSTRAINT \"AssetLocation_locationId_fkey\" FOREIGN KEY (\"locationId\") REFERENCES \"Location\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetLocation\" ADD CONSTRAINT \"AssetLocation_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetLocation\" ADD CONSTRAINT \"AssetLocation_assetKitId_fkey\" FOREIGN KEY (\"assetKitId\") REFERENCES \"AssetKit\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetReminder\" ADD CONSTRAINT \"AssetReminder_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetReminder\" ADD CONSTRAINT \"AssetReminder_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetReminder\" ADD CONSTRAINT \"AssetReminder_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkingHours\" ADD CONSTRAINT \"WorkingHours_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WorkingHoursOverride\" ADD CONSTRAINT \"WorkingHoursOverride_workingHoursId_fkey\" FOREIGN KEY (\"workingHoursId\") REFERENCES \"WorkingHours\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Update\" ADD CONSTRAINT \"Update_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserUpdateRead\" ADD CONSTRAINT \"UserUpdateRead_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserUpdateRead\" ADD CONSTRAINT \"UserUpdateRead_updateId_fkey\" FOREIGN KEY (\"updateId\") REFERENCES \"Update\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditNote\" ADD CONSTRAINT \"AuditNote_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditNote\" ADD CONSTRAINT \"AuditNote_auditSessionId_fkey\" FOREIGN KEY (\"auditSessionId\") REFERENCES \"AuditSession\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditNote\" ADD CONSTRAINT \"AuditNote_auditAssetId_fkey\" FOREIGN KEY (\"auditAssetId\") REFERENCES \"AuditAsset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamMemberNote\" ADD CONSTRAINT \"TeamMemberNote_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamMemberNote\" ADD CONSTRAINT \"TeamMemberNote_teamMemberId_fkey\" FOREIGN KEY (\"teamMemberId\") REFERENCES \"TeamMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamMemberNote\" ADD CONSTRAINT \"TeamMemberNote_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditSession\" ADD CONSTRAINT \"AuditSession_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditSession\" ADD CONSTRAINT \"AuditSession_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetImport\" ADD CONSTRAINT \"AssetImport_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssetImport\" ADD CONSTRAINT \"AssetImport_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"LinkPreview\" ADD CONSTRAINT \"LinkPreview_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditAssignment\" ADD CONSTRAINT \"AuditAssignment_auditSessionId_fkey\" FOREIGN KEY (\"auditSessionId\") REFERENCES \"AuditSession\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditAssignment\" ADD CONSTRAINT \"AuditAssignment_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditAsset\" ADD CONSTRAINT \"AuditAsset_auditSessionId_fkey\" FOREIGN KEY (\"auditSessionId\") REFERENCES \"AuditSession\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditAsset\" ADD CONSTRAINT \"AuditAsset_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditAsset\" ADD CONSTRAINT \"AuditAsset_scannedById_fkey\" FOREIGN KEY (\"scannedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditScan\" ADD CONSTRAINT \"AuditScan_auditSessionId_fkey\" FOREIGN KEY (\"auditSessionId\") REFERENCES \"AuditSession\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditScan\" ADD CONSTRAINT \"AuditScan_auditAssetId_fkey\" FOREIGN KEY (\"auditAssetId\") REFERENCES \"AuditAsset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditScan\" ADD CONSTRAINT \"AuditScan_assetId_fkey\" FOREIGN KEY (\"assetId\") REFERENCES \"Asset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditScan\" ADD CONSTRAINT \"AuditScan_scannedById_fkey\" FOREIGN KEY (\"scannedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditImage\" ADD CONSTRAINT \"AuditImage_auditSessionId_fkey\" FOREIGN KEY (\"auditSessionId\") REFERENCES \"AuditSession\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditImage\" ADD CONSTRAINT \"AuditImage_auditAssetId_fkey\" FOREIGN KEY (\"auditAssetId\") REFERENCES \"AuditAsset\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditImage\" ADD CONSTRAINT \"AuditImage_uploadedById_fkey\" FOREIGN KEY (\"uploadedById\") REFERENCES \"User\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AuditImage\" ADD CONSTRAINT \"AuditImage_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RoleChangeLog\" ADD CONSTRAINT \"RoleChangeLog_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RoleChangeLog\" ADD CONSTRAINT \"RoleChangeLog_changedById_fkey\" FOREIGN KEY (\"changedById\") REFERENCES \"User\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RoleChangeLog\" ADD CONSTRAINT \"RoleChangeLog_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ActivityEvent\" ADD CONSTRAINT \"ActivityEvent_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_AssetToTag\" ADD CONSTRAINT \"_AssetToTag_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Asset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_AssetToTag\" ADD CONSTRAINT \"_AssetToTag_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"Tag\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_CategoryToCustomField\" ADD CONSTRAINT \"_CategoryToCustomField_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Category\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_CategoryToCustomField\" ADD CONSTRAINT \"_CategoryToCustomField_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"CustomField\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_RoleToUser\" ADD CONSTRAINT \"_RoleToUser_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Role\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_RoleToUser\" ADD CONSTRAINT \"_RoleToUser_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"User\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingToTag\" ADD CONSTRAINT \"_BookingToTag_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingToTag\" ADD CONSTRAINT \"_BookingToTag_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"Tag\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingNotificationRecipients\" ADD CONSTRAINT \"_BookingNotificationRecipients_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingNotificationRecipients\" ADD CONSTRAINT \"_BookingNotificationRecipients_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"TeamMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingSettingsAlwaysNotify\" ADD CONSTRAINT \"_BookingSettingsAlwaysNotify_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"BookingSettings\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_BookingSettingsAlwaysNotify\" ADD CONSTRAINT \"_BookingSettingsAlwaysNotify_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"TeamMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_AssetReminderToTeamMember\" ADD CONSTRAINT \"_AssetReminderToTeamMember_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"AssetReminder\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_AssetReminderToTeamMember\" ADD CONSTRAINT \"_AssetReminderToTeamMember_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"TeamMember\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 7,
+            "total": 66
+          },
+          "read": {
+            "ok": 7,
+            "total": 7
+          },
+          "update": {
+            "ok": 3,
+            "total": 3
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 7,
+            "total": 7
+          }
+        },
+        "findings": [
+          {
+            "model": "TierLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: column \"id\" is of type \"TierId\" but expression is of type character varying\n  Hint: You will need to rewrite or cast the expression.\n  Position: 72"
+          },
+          {
+            "model": "Tier",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "PSQLException: ERROR: column \"id\" is of type \"TierId\" but expression is of type character varying\n  Hint: You will need to rewrite or cast the expression.\n  Position: 90"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Tier`) did not go in"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Image",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserContact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserBusinessIntel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetModel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Location",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Kit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Barcode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Asset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetFilterPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetIndexSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PdfTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingModelRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Note",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "LocationNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Location`) did not go in"
+          },
+          {
+            "model": "Scan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "KitCustody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "Custody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserScimExternalId",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetModelCustomFieldDefault",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AssetModel`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ConsumptionLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "MobileAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetKit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetReminder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHours",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHoursOverride",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkingHours`) did not go in"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "TeamMemberNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "AssetImport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkPreview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AuditAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditScan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "RoleChangeLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ActivityEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- RenameIndex\nALTER INDEX \"activityevent_organizationid_entitytype_entityid_occurredat_idx\" RENAME TO \"ActivityEvent_organizationId_entityType_entityId_occurredAt_idx\";"
+      }
+    }
+  ]
+}

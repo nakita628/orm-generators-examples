@@ -1,0 +1,1763 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 95,
+          "total": 98
+        },
+        "read": {
+          "ok": 95,
+          "total": 95
+        },
+        "update": {
+          "ok": 84,
+          "total": 84
+        },
+        "relations": {
+          "ok": 324,
+          "total": 324
+        },
+        "delete": {
+          "ok": 95,
+          "total": 95
+        }
+      },
+      "findings": 5,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 95,
+          "total": 98
+        },
+        "read": {
+          "ok": 92,
+          "total": 95
+        },
+        "update": {
+          "ok": 84,
+          "total": 84
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 95,
+          "total": 95
+        }
+      },
+      "findings": 11,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 86,
+          "total": 98
+        },
+        "read": {
+          "ok": 86,
+          "total": 86
+        },
+        "update": {
+          "ok": 76,
+          "total": 76
+        },
+        "relations": {
+          "ok": 300,
+          "total": 300
+        },
+        "delete": {
+          "ok": 86,
+          "total": 86
+        }
+      },
+      "findings": 14,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 83,
+          "total": 98
+        },
+        "read": {
+          "ok": 83,
+          "total": 83
+        },
+        "update": {
+          "ok": 74,
+          "total": 74
+        },
+        "relations": {
+          "ok": 278,
+          "total": 280
+        },
+        "delete": {
+          "ok": 83,
+          "total": 83
+        }
+      },
+      "findings": 19,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 73,
+          "total": 98
+        },
+        "read": {
+          "ok": 73,
+          "total": 73
+        },
+        "update": {
+          "ok": 66,
+          "total": 66
+        },
+        "relations": {
+          "ok": 182,
+          "total": 182
+        },
+        "delete": {
+          "ok": 73,
+          "total": 73
+        }
+      },
+      "findings": 27,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": true,
+      "notGenerated": false,
+      "checks": null,
+      "findings": null,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 46,
+          "total": 98
+        },
+        "read": {
+          "ok": 46,
+          "total": 46
+        },
+        "update": {
+          "ok": 38,
+          "total": 40
+        },
+        "relations": {
+          "ok": 108,
+          "total": 108
+        },
+        "delete": {
+          "ok": 44,
+          "total": 46
+        }
+      },
+      "findings": 58,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 92,
+          "total": 98
+        },
+        "read": {
+          "ok": 92,
+          "total": 92
+        },
+        "update": {
+          "ok": 80,
+          "total": 81
+        },
+        "relations": {
+          "ok": 299,
+          "total": 302
+        },
+        "delete": {
+          "ok": 89,
+          "total": 92
+        }
+      },
+      "findings": 15,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 66,
+          "total": 98
+        },
+        "read": {
+          "ok": 65,
+          "total": 66
+        },
+        "update": {
+          "ok": 59,
+          "total": 59
+        },
+        "relations": {
+          "ok": 166,
+          "total": 166
+        },
+        "delete": {
+          "ok": 65,
+          "total": 65
+        }
+      },
+      "findings": 35,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 95,
+          "total": 98
+        },
+        "read": {
+          "ok": 95,
+          "total": 95
+        },
+        "update": {
+          "ok": 84,
+          "total": 84
+        },
+        "relations": {
+          "ok": 323,
+          "total": 324
+        },
+        "delete": {
+          "ok": 95,
+          "total": 95
+        }
+      },
+      "findings": 6,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 100,
+          "total": 100
+        },
+        "insert": {
+          "ok": 95,
+          "total": 98
+        },
+        "read": {
+          "ok": 95,
+          "total": 95
+        },
+        "update": {
+          "ok": 84,
+          "total": 84
+        },
+        "relations": {
+          "ok": 309,
+          "total": 311
+        },
+        "delete": {
+          "ok": 95,
+          "total": 95
+        }
+      },
+      "findings": 7,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 95,
+            "total": 98
+          },
+          "read": {
+            "ok": 95,
+            "total": 95
+          },
+          "update": {
+            "ok": 84,
+            "total": 84
+          },
+          "relations": {
+            "ok": 324,
+            "total": 324
+          },
+          "delete": {
+            "ok": 95,
+            "total": 95
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"ApiKey\" RENAME CONSTRAINT \"ApiKey_id_key\" TO \"ApiKey_pkey\";\n\n-- AlterTable\nALTER TABLE \"App\" RENAME CONSTRAINT \"App_slug_key\" TO \"App_pkey\";\n\n-- AlterTable\nALTER TABLE \"Feature\" RENAME CONSTRAINT \"Feature_slug_key\" TO \"Feature_pkey\";\n\n-- AlterTable\nALTER TABLE \"OAuthClient\" RENAME CONSTRAINT \"OAuthClient_clientId_key\" TO \"OAuthClient_pkey\";\n\n-- AlterTable\nALTER TABLE \"PlatformBilling\" RENAME CONSTRAINT \"PlatformBilling_id_key\" TO \"PlatformBilling_pkey\";\n\n-- AlterTable\nALTER TABLE \"Webhook\" RENAME CONSTRAINT \"Webhook_id_key\" TO \"Webhook_pkey\";\n\n-- DropTable\nDROP TABLE \"BookingTimeStatus\";\n\n-- DropTable\nDROP TABLE \"BookingTimeStatusDenormalized\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"ApiKey_id_key\" ON \"ApiKey\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"App_slug_key\" ON \"App\"(\"slug\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Feature_slug_key\" ON \"Feature\"(\"slug\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"OAuthClient_clientId_key\" ON \"OAuthClient\"(\"clientId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"PlatformBilling_id_key\" ON \"PlatformBilling\"(\"id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"Webhook_id_key\" ON \"Webhook\"(\"id\");"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 95,
+            "total": 98
+          },
+          "read": {
+            "ok": 92,
+            "total": 95
+          },
+          "update": {
+            "ok": 84,
+            "total": 84
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 95,
+            "total": 95
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "App",
+            "check": "read",
+            "text": "`categories` (AppCategories[]) came back as \"{calendar}\", not a list"
+          },
+          {
+            "model": "App",
+            "check": "read",
+            "text": "`categories` is typed `AppCategories[]` but came back as string"
+          },
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`eventTriggers` (WebhookTriggerEvents[]) came back as \"{BOOKING_CREATED}\", not a list"
+          },
+          {
+            "model": "Webhook",
+            "check": "read",
+            "text": "`eventTriggers` is typed `WebhookTriggerEvents[]` but came back as string"
+          },
+          {
+            "model": "AccessCode",
+            "check": "read",
+            "text": "`scopes` (AccessScope[]) came back as \"{READ_BOOKING}\", not a list"
+          },
+          {
+            "model": "AccessCode",
+            "check": "read",
+            "text": "`scopes` is typed `AccessScope[]` but came back as string"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 86,
+            "total": 98
+          },
+          "read": {
+            "ok": 86,
+            "total": 86
+          },
+          "update": {
+            "ok": 76,
+            "total": 76
+          },
+          "relations": {
+            "ok": 300,
+            "total": 300
+          },
+          "delete": {
+            "ok": 86,
+            "total": 86
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Role\" violates not-null constraint\nDETAIL:  Failing row contains (null, v80, v81, v82, 1, 2026-11-21 14:53:31.572, 2026-11-21 14:53:31.572, CUSTOM)."
+          },
+          {
+            "model": "ResetPasswordRequest",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ResetPasswordRequest\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 14:53:31.681, 2026-11-21 14:53:31.681, v214, 2024-01-02 03:04:05.215)."
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ApiKey\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, 1, v234, 2026-11-21 14:53:31.694, 2024-01-02 03:04:05.235, 2024-01-02 03:04:05.236, v237, v87)."
+          },
+          {
+            "model": "RateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v244, v245, v246, v247, v248, v249, 250, v251, v252, v253, v254)."
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Session\" violates not-null constraint\nDETAIL:  Failing row contains (null, v255, 1, 2024-01-02 03:04:05.256)."
+          },
+          {
+            "model": "Deployment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "FlushError: Instance <Deployment at 0xffffa55ea2a0> has a NULL identity key.  If this is an auto-generated value, check that the database table allows generation of new primary key values, and that the mapped Column object is configured to expect these generated values.  Ensure also that this flush() is not occurring at an inappropriate time, such as within a load() event."
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "EventTypeTranslation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"uid\" of relation \"EventTypeTranslation\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, DESCRIPTION, v377, v378, v379, 2026-11-21 14:53:31.87, 1, 2026-11-21 14:53:31.87, 1)."
+          },
+          {
+            "model": "RolePermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Role`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"CalendarCache\" DROP CONSTRAINT \"CalendarCache_pkey\",\nADD CONSTRAINT \"CalendarCache_pkey\" PRIMARY KEY (\"credentialId\", \"key\");\n\n-- AlterTable\nALTER TABLE \"Deployment\" ALTER COLUMN \"id\" SET DEFAULT 1;\n\n-- DropTable\nDROP TABLE \"BookingTimeStatus\";\n\n-- DropTable\nDROP TABLE \"BookingTimeStatusDenormalized\";"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 83,
+            "total": 98
+          },
+          "read": {
+            "ok": 83,
+            "total": 83
+          },
+          "update": {
+            "ok": 74,
+            "total": 74
+          },
+          "relations": {
+            "ok": 278,
+            "total": 280
+          },
+          "delete": {
+            "ok": 83,
+            "total": 83
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Role\" violates not-null constraint\nDETAIL:  Failing row contains (null, v80, v81, v82, 1, 2026-11-21 14:53:36.618, 2026-11-21 14:53:36.618, CUSTOM)."
+          },
+          {
+            "model": "App",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: column \"categories\" is of type \"AppCategories\"[] but expression is of type text[]\nLINE 1: ...gs\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}'::jsonb, '{calendar...\n                                                             ^\nHINT:  You will need to rewrite or cast the expression."
+          },
+          {
+            "model": "ResetPasswordRequest",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ResetPasswordRequest\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 14:53:36.661, 2026-11-21 14:53:36.661, v214, 2024-01-02 03:04:05.215)."
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: column \"eventTriggers\" is of type \"WebhookTriggerEvents\"[] but expression is of type text[]\nLINE 1: ...', '2026-11-21 14:53:36.664637'::timestamp, true, '{BOOKING_...\n                                                             ^\nHINT:  You will need to rewrite or cast the expression."
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"ApiKey\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, 1, v234, 2026-11-21 14:53:36.665, 2024-01-02 03:04:05.235, 2024-01-02 03:04:05.236, v237, null)."
+          },
+          {
+            "model": "RateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v244, v245, v246, v247, v248, v249, 250, v251, v252, v253, v254)."
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Session\" violates not-null constraint\nDETAIL:  Failing row contains (null, v255, 1, 2024-01-02 03:04:05.256)."
+          },
+          {
+            "model": "Deployment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"id\" of relation \"Deployment\" violates not-null constraint\nDETAIL:  Failing row contains (null, v259, {\"n\": 260, \"tags\": [\"a\", \"b\"], \"nested\": {\"ok\": true}}, v261, v262, 2024-01-02 03:04:05.263)."
+          },
+          {
+            "model": "AccessCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ProgrammingError: column \"scopes\" is of type \"AccessScope\"[] but expression is of type text[]\nLINE 1: ... 'v288', '2024-01-02 03:04:05.297000'::timestamp, '{READ_BOO...\n                                                             ^\nHINT:  You will need to rewrite or cast the expression."
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "EventTypeTranslation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "IntegrityError: null value in column \"uid\" of relation \"EventTypeTranslation\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, DESCRIPTION, v377, v378, v379, 2026-11-21 14:53:36.738, 1, 2026-11-21 14:53:36.738, 1)."
+          },
+          {
+            "model": "RolePermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Role`) did not go in"
+          },
+          {
+            "model": "Host",
+            "check": "relations",
+            "text": "no relation for `location` (toOneBack)"
+          },
+          {
+            "model": "HostLocation",
+            "check": "relations",
+            "text": "no relation for `host` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.DuplicateTable: relation \"Tracking_bookingId_key\" already exists\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/workspaces/takibi/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^^^^^^^^^^^\n  File \"/workspaces/taki"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 73,
+            "total": 98
+          },
+          "read": {
+            "ok": 73,
+            "total": 73
+          },
+          "update": {
+            "ok": 66,
+            "total": 66
+          },
+          "relations": {
+            "ok": 182,
+            "total": 182
+          },
+          "delete": {
+            "ok": 73,
+            "total": 73
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "EventType",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v73\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Host",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "App",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"calendar\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "HostLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Host`) did not go in"
+          },
+          {
+            "model": "CalVideoSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v146\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "Tracking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Availability",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[187]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "EventTypeCustomInput",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "Payment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"BOOKING_CREATED\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "HashedLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "BookingSeat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "AccessCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"READ_BOOKING\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "UserHolidaySettings",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v341\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AttributeOption",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"[\"v372\"]\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "AttributeToUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttributeOption`) did not go in"
+          },
+          {
+            "model": "AssignmentReason",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "EventTypeTranslation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "BookingReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "WrongAssignmentReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingInternalNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"Team\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": "error: could not compile `compat` (bin \"compat\"); 103 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target",
+      "ddl": {
+        "error": "error: could not compile `compat` (bin \"compat\"); 103 warnings emitted\n\nCaused by:\n  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=0ca4c0a8fe3f7987 --out-dir /cache/target/debug/build/compat/25c6ded4b18c5424/out -C incremental=/cache/target/debug/incremental -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/35fcc844fd3d340a/out -L dependency=/cache/target/debug/build/aliasable/7a7f718413c4d859/out -L dependency=/cache/target/debug/build/allocator-api2/9bb0307a8788530d/out -L dependency=/cache/target/debug/build/arrayvec/90bc24c9ddc084a5/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/24857e608e6e34af/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/c77356ebe91fa645/out -L dependency=/cache/target/debug/build/base64/eeb734cd76a28f27/out -L dependency=/cache/target/debug/build/base64ct/0e9d003e48ea1c42/out -L dependency=/cache/target/debug/build/bigdecimal/38f376fe7a2e7c70/out -L dependency=/cache/target/debug/build/bitflags/941aee1029c9f2ec/out -L dependency=/cache/target/debug/build/block-buffer/55e6c6edb303b9f0/out -L dependency=/cache/target/debug/build/block-buffer/dc447928997b664a/out -L dependency=/cache/target/debug/build/byteorder/a9c37b23cb6cb369/out -L dependency=/cache/target/debug/build/bytes/9bd0cabc84550973/out -L dependency=/cache/target/debug/build/cfg-if/26a2bd1b90a8fca6/out -L dependency=/cache/target/debug/build/chacha20/fbb518c73d27abbd/out -L dependency=/cache/target/debug/build/chrono/5644ee3cee560091/out -L dependency=/cache/target"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 46,
+            "total": 98
+          },
+          "read": {
+            "ok": 46,
+            "total": 46
+          },
+          "update": {
+            "ok": 38,
+            "total": 40
+          },
+          "relations": {
+            "ok": 108,
+            "total": 108
+          },
+          "delete": {
+            "ok": 44,
+            "total": 46
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"26f98e9e-134d-4c2a-8ad3-0e29af18eb8b\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "Schedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "SecondaryEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "HostGroup",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xe4 0x03 0xaf\""
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"Role\\\" violates not-null constraint\\n\\n    table: Role\\n    column: id\\n\\nFailing row contains (null, v80, v81, v82, 1, 2026-11-21 14:53:49.962, 2026-11-21 14:53:49.962, CUSTOM).\""
+          },
+          {
+            "model": "Membership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Host",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DelegationCredential",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xee 0x22 0xcf\""
+          },
+          {
+            "model": "HostLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Host`) did not go in"
+          },
+          {
+            "model": "CalVideoSettings",
+            "check": "update",
+            "text": "update of `redirectUrlOnExit` failed",
+            "detail": "schema `Calcom.CalVideoSettings` has no primary key"
+          },
+          {
+            "model": "CalVideoSettings",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Calcom.CalVideoSettings` has no primary key"
+          },
+          {
+            "model": "VideoCallGuest",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xfa\""
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TravelSchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationsSubscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CreditBalance",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xde 0xe4\""
+          },
+          {
+            "model": "CreditPurchaseLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CreditBalance`) did not go in"
+          },
+          {
+            "model": "CreditExpenseLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CreditBalance`) did not go in"
+          },
+          {
+            "model": "SelectedCalendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ResetPasswordRequest",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 23502 (not_null_violation) null value in column \\\"id\\\" of relation \\\"ResetPasswordRequest\\\" violates not-null constraint\\n\\n    table: ResetPasswordRequest\\n    column: id\\n\\nFailing row contains (null, 2026-11-21 14:53:49.988, 2026-11-21 14:53:49.988, v214, 2024-01-02 03:04:05.215).\""
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Feedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserFeatures",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OutOfOfficeEntry",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserHolidaySettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "HolidayCache",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xdb 0x43\""
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xef 0x10 0x1c\""
+          },
+          {
+            "model": "PlatformBilling",
+            "check": "update",
+            "text": "update of `customerId` failed",
+            "detail": "schema `Calcom.PlatformBilling` has no primary key"
+          },
+          {
+            "model": "PlatformBilling",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Calcom.PlatformBilling` has no primary key"
+          },
+          {
+            "model": "Attribute",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0x85\""
+          },
+          {
+            "model": "AttributeOption",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Attribute`) did not go in"
+          },
+          {
+            "model": "AttributeToUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Membership`) did not go in"
+          },
+          {
+            "model": "EventTypeTranslation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WatchlistEventAudit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000388\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "OrganizationOnboarding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "FilterSegment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserFilterSegmentPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingInternalNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RolePermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Role`) did not go in"
+          },
+          {
+            "model": "AuditActor",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000428\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "BookingAudit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditActor`) did not go in"
+          },
+          {
+            "model": "Agent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xef 0xb1 0x65\""
+          },
+          {
+            "model": "TeamBilling",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0x87\""
+          },
+          {
+            "model": "OrganizationBilling",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xae\""
+          },
+          {
+            "model": "MonthlyProration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xa6\""
+          },
+          {
+            "model": "SeatChangeLog",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0xd8 0xc4\""
+          },
+          {
+            "model": "CalendarCacheEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`SelectedCalendar`) did not go in"
+          },
+          {
+            "model": "IntegrationAttributeSync",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"ERROR 22021 (character_not_in_repertoire) invalid byte sequence for encoding \\\"UTF8\\\": 0x9e\""
+          },
+          {
+            "model": "AttributeSyncRule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`IntegrationAttributeSync`) did not go in"
+          },
+          {
+            "model": "AttributeSyncFieldMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Attribute`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 92,
+            "total": 98
+          },
+          "read": {
+            "ok": 92,
+            "total": 92
+          },
+          "update": {
+            "ok": 80,
+            "total": 81
+          },
+          "relations": {
+            "ok": 299,
+            "total": 302
+          },
+          "delete": {
+            "ok": 89,
+            "total": 92
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Team",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\"ManagedOrganization\" WHERE \"ManagedOrganization\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Credential",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: invalid? is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "UserPassword",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "CalendarCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Credential`) did not go in"
+          },
+          {
+            "model": "Avatar",
+            "check": "update",
+            "text": "update of `data` failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: UPDATE \"avatars\" SET \"data\" = $1 WHERE \"avatars\".\"\" IS NULL\n                                                         ^\n"
+          },
+          {
+            "model": "Avatar",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: DELETE FROM \"avatars\" WHERE \"avatars\".\"\" IS NULL\n                                              ^\n"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "ManagedOrganization",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "ActiveRecord::StatementInvalid: PG::SyntaxError: ERROR:  zero-length delimited identifier at or near \"\"\"\"\nLINE 1: ...\"ManagedOrganization\" WHERE \"ManagedOrganization\".\"\" IS NULL\n                                                             ^\n"
+          },
+          {
+            "model": "Team",
+            "check": "relations",
+            "text": "no relation for `attributes` (toMany)"
+          },
+          {
+            "model": "AttributeOption",
+            "check": "relations",
+            "text": "no relation for `attribute` (toOne)"
+          },
+          {
+            "model": "AttributeSyncFieldMapping",
+            "check": "relations",
+            "text": "no relation for `attribute` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 66,
+            "total": 98
+          },
+          "read": {
+            "ok": 65,
+            "total": 66
+          },
+          "update": {
+            "ok": 59,
+            "total": 59
+          },
+          "relations": {
+            "ok": 166,
+            "total": 166
+          },
+          "delete": {
+            "ok": 65,
+            "total": 65
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "EventType",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $75 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"EventType\" (\"position\", \"offsetStart\", \"hidden\", \"useEventLevelSelectedCalendars\", \"periodType\", \"lockTimeZoneToggleOnBookingPage\", \"requiresConfirmation\", \"requiresConfirmationWillBlockSlot\", \"requiresConfirmationForFreeEmail\", \"requiresBookerEmailVerific"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Role\" violates not-null constraint\nDETAIL:  Failing row contains (null, v80, v81, v82, 1, 2026-11-21 15:10:38.257, 2026-11-21 15:10:38.257, CUSTOM). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Role\" (\"type\", \"name\", \"color\", \"description\", \"teamId\", \"updatedAt\", \"createdAt\") values (CUSTOM, v80, v81, v82, 1, 2026-11-21 15:10:38.257+00:00, 2026-11-21 15:10:38.257+00:00))"
+          },
+          {
+            "model": "Host",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "App",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $5 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"App\" (\"enabled\", \"slug\", \"dirName\", \"keys\", \"categories\", \"updatedAt\", \"createdAt\") values (0, v87, v88, {\"n\":89,\"tags\":[\"a\",\"b\"],\"nested\":{\"ok\":true}}, Array, 2026-11-21 15:10:38.258+00:00, 2026-11-21 15:10:38.258+00:00))"
+          },
+          {
+            "model": "HostLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Host`) did not go in"
+          },
+          {
+            "model": "CalVideoSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $30 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Booking\" (\"status\", \"paid\", \"isRecorded\", \"iCalUID\", \"iCalSequence\", \"noShowHost\", \"uid\", \"idempotencyKey\", \"userId\", \"userPrimaryEmail\", \"eventTypeId\", \"title\", \"description\", \"customInputs\", \"responses\", \"startTime\", \"endTime\", \"location\", \"destinationCa"
+          },
+          {
+            "model": "Tracking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Availability",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $3 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Availability\" (\"userId\", \"eventTypeId\", \"days\", \"startTime\", \"endTime\", \"date\", \"scheduleId\") values (1, ?, Array, 12:34:56.000+00:00, 12:34:56.000+00:00, 2024-01-02, 1) returning \"id\")"
+          },
+          {
+            "model": "EventTypeCustomInput",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "ResetPasswordRequest",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"ResetPasswordRequest\" violates not-null constraint\nDETAIL:  Failing row contains (null, 2026-11-21 15:10:38.281, 2026-11-21 15:10:38.281, v214, 2024-01-02 03:04:05.215). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"ResetPasswordRequest\" (\"email\", \"expires\", \"updatedAt\", \"createdAt\") values (v214, 2024-01-02 03:04:05.215+00:00, 2026-11-21 15:10:38.281+00:00, 2026-11-21 15:10:38.281+00:00))"
+          },
+          {
+            "model": "Payment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $11 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Webhook\" (\"active\", \"platform\", \"version\", \"id\", \"userId\", \"teamId\", \"eventTypeId\", \"platformOAuthClientId\", \"subscriberUrl\", \"payloadTemplate\", \"eventTriggers\", \"appId\", \"secret\", \"time\", \"timeUnit\", \"createdAt\") values (1, 0, 2021-10-20, v227, 1, 1, ?, ?"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"ApiKey\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, 1, v234, 2026-11-21 15:10:38.283, 2024-01-02 03:04:05.235, 2024-01-02 03:04:05.236, v237, null). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"ApiKey\" (\"userId\", \"teamId\", \"note\", \"expiresAt\", \"lastUsedAt\", \"hashedKey\", \"appId\", \"createdAt\") values (1, 1, v234, 2024-01-02 03:04:05.235+00:00, 2024-01-02 03:04:05.236+00:00, v237, ?, 2026-11-2"
+          },
+          {
+            "model": "RateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ApiKey`) did not go in"
+          },
+          {
+            "model": "HashedLink",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Account\" violates not-null constraint\nDETAIL:  Failing row contains (null, 1, v244, v245, v246, v247, v248, v249, 250, v251, v252, v253, v254). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Account\" (\"userId\", \"type\", \"provider\", \"providerAccountId\", \"providerEmail\", \"refresh_token\", \"access_token\", \"expires_at\", \"token_type\", \"scope\", \"id_token\", \"session_state\") values (1, v244, v245, v246, v247, v248, v249, 250, "
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[23502]: Not null violation: 7 ERROR:  null value in column \"id\" of relation \"Session\" violates not-null constraint\nDETAIL:  Failing row contains (null, v255, 1, 2024-01-02 03:04:05.256). (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"Session\" (\"sessionToken\", \"userId\", \"expires\") values (v255, 1, 2024-01-02 03:04:05.256+00:00))"
+          },
+          {
+            "model": "Deployment",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "BookingSeat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "AccessCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $5 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"AccessCode\" (\"codeChallengeMethod\", \"code\", \"clientId\", \"expiresAt\", \"scopes\", \"userId\", \"teamId\", \"codeChallenge\") values (S256, v296, v288, 2024-01-02 03:04:05.297+00:00, Array, 1, 1, v299) returning \"id\")"
+          },
+          {
+            "model": "UserHolidaySettings",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $3 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"UserHolidaySettings\" (\"userId\", \"countryCode\", \"disabledIds\", \"updatedAt\", \"createdAt\") values (1, v340, Array, 2026-11-21 15:10:38.303+00:00, 2026-11-21 15:10:38.303+00:00) returning \"id\")"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AttributeOption",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Illuminate\\Database\\QueryException: SQLSTATE[22P02]: Invalid text representation: 7 ERROR:  malformed array literal: \"Array\"\nDETAIL:  Array value must start with \"{\" or dimension information.\nCONTEXT:  unnamed portal parameter $5 = '...' (Connection: default, Host: hekireki-compat-pg, Port: 5432, Database: calcom_eloquent, SQL: insert into \"AttributeOption\" (\"isGroup\", \"attributeId\", \"value\", \"slug\", \"contains\", \"id\") values (0, a34779f0-d237-4c88-b00d-e018e0b76b09, v370, v371, Array, a34779f0-d2ae-4ff4-be04-e53dbdb3839b))"
+          },
+          {
+            "model": "AttributeToUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AttributeOption`) did not go in"
+          },
+          {
+            "model": "AssignmentReason",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "EventTypeTranslation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EventType`) did not go in"
+          },
+          {
+            "model": "BookingReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "WrongAssignmentReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingInternalNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "RolePermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Role`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 95,
+            "total": 98
+          },
+          "read": {
+            "ok": 95,
+            "total": 95
+          },
+          "update": {
+            "ok": 84,
+            "total": 84
+          },
+          "relations": {
+            "ok": 323,
+            "total": 324
+          },
+          "delete": {
+            "ok": 95,
+            "total": 95
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "ManagedOrganization",
+            "check": "relations",
+            "text": "no relation for `managedOrganization` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropForeignKey\nALTER TABLE \"AccessCode\" DROP CONSTRAINT \"AccessCode_clientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AccessCode\" DROP CONSTRAINT \"AccessCode_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AccessCode\" DROP CONSTRAINT \"AccessCode_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AccessToken\" DROP CONSTRAINT \"AccessToken_platformOAuthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AccessToken\" DROP CONSTRAINT \"AccessToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Account\" DROP CONSTRAINT \"Account_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Agent\" DROP CONSTRAINT \"Agent_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Agent\" DROP CONSTRAINT \"Agent_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_appId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ApiKey\" DROP CONSTRAINT \"ApiKey_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AssignmentReason\" DROP CONSTRAINT \"AssignmentReason_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Attendee\" DROP CONSTRAINT \"Attendee_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Attribute\" DROP CONSTRAINT \"Attribute_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeOption\" DROP CONSTRAINT \"AttributeOption_attributeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeSyncFieldMapping\" DROP CONSTRAINT \"AttributeSyncFieldMapping_attributeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeSyncFieldMapping\" DROP CONSTRAINT \"AttributeSyncFieldMapping_integrationAttributeSyncId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeSyncRule\" DROP CONSTRAINT \"AttributeSyncRule_integrationAttributeSyncId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_attributeOptionId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_createdByDSyncId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_memberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_updatedByDSyncId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"AttributeToUser\" DROP CONSTRAINT \"AttributeToUser_updatedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Availability\" DROP CONSTRAINT \"Availability_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Availability\" DROP CONSTRAINT \"Availability_scheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Availability\" DROP CONSTRAINT \"Availability_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_destinationCalendarId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_reassignById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Booking\" DROP CONSTRAINT \"Booking_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingAudit\" DROP CONSTRAINT \"BookingAudit_actorId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingInternalNote\" DROP CONSTRAINT \"BookingInternalNote_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingInternalNote\" DROP CONSTRAINT \"BookingInternalNote_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingInternalNote\" DROP CONSTRAINT \"BookingInternalNote_notePresetId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReference\" DROP CONSTRAINT \"BookingReference_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReference\" DROP CONSTRAINT \"BookingReference_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReference\" DROP CONSTRAINT \"BookingReference_delegationCredentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReport\" DROP CONSTRAINT \"BookingReport_bookingUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReport\" DROP CONSTRAINT \"BookingReport_globalWatchlistId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReport\" DROP CONSTRAINT \"BookingReport_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReport\" DROP CONSTRAINT \"BookingReport_reportedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingReport\" DROP CONSTRAINT \"BookingReport_watchlistId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingSeat\" DROP CONSTRAINT \"BookingSeat_attendeeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"BookingSeat\" DROP CONSTRAINT \"BookingSeat_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalAiPhoneNumber\" DROP CONSTRAINT \"CalAiPhoneNumber_inboundAgentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalAiPhoneNumber\" DROP CONSTRAINT \"CalAiPhoneNumber_outboundAgentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalAiPhoneNumber\" DROP CONSTRAINT \"CalAiPhoneNumber_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalAiPhoneNumber\" DROP CONSTRAINT \"CalAiPhoneNumber_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalVideoSettings\" DROP CONSTRAINT \"CalVideoSettings_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalendarCache\" DROP CONSTRAINT \"CalendarCache_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CalendarCacheEvent\" DROP CONSTRAINT \"CalendarCacheEvent_selectedCalendarId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Credential\" DROP CONSTRAINT \"Credential_appId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Credential\" DROP CONSTRAINT \"Credential_delegationCredentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Credential\" DROP CONSTRAINT \"Credential_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Credential\" DROP CONSTRAINT \"Credential_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreditBalance\" DROP CONSTRAINT \"CreditBalance_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreditBalance\" DROP CONSTRAINT \"CreditBalance_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreditExpenseLog\" DROP CONSTRAINT \"CreditExpenseLog_bookingUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreditExpenseLog\" DROP CONSTRAINT \"CreditExpenseLog_creditBalanceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"CreditPurchaseLog\" DROP CONSTRAINT \"CreditPurchaseLog_creditBalanceId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DSyncData\" DROP CONSTRAINT \"DSyncData_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DSyncTeamGroupMapping\" DROP CONSTRAINT \"DSyncTeamGroupMapping_directoryId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DSyncTeamGroupMapping\" DROP CONSTRAINT \"DSyncTeamGroupMapping_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DelegationCredential\" DROP CONSTRAINT \"DelegationCredential_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DelegationCredential\" DROP CONSTRAINT \"DelegationCredential_workspacePlatformId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DestinationCalendar\" DROP CONSTRAINT \"DestinationCalendar_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DestinationCalendar\" DROP CONSTRAINT \"DestinationCalendar_delegationCredentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DestinationCalendar\" DROP CONSTRAINT \"DestinationCalendar_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"DestinationCalendar\" DROP CONSTRAINT \"DestinationCalendar_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_instantMeetingScheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_parentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_profileId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_restrictionScheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_scheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_secondaryEmailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventType\" DROP CONSTRAINT \"EventType_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventTypeCustomInput\" DROP CONSTRAINT \"EventTypeCustomInput_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventTypeTranslation\" DROP CONSTRAINT \"EventTypeTranslation_createdBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventTypeTranslation\" DROP CONSTRAINT \"EventTypeTranslation_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"EventTypeTranslation\" DROP CONSTRAINT \"EventTypeTranslation_updatedBy_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Feedback\" DROP CONSTRAINT \"Feedback_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FilterSegment\" DROP CONSTRAINT \"FilterSegment_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"FilterSegment\" DROP CONSTRAINT \"FilterSegment_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"HashedLink\" DROP CONSTRAINT \"HashedLink_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Host\" DROP CONSTRAINT \"Host_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Host\" DROP CONSTRAINT \"Host_groupId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Host\" DROP CONSTRAINT \"Host_memberId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Host\" DROP CONSTRAINT \"Host_scheduleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Host\" DROP CONSTRAINT \"Host_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"HostGroup\" DROP CONSTRAINT \"HostGroup_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"HostLocation\" DROP CONSTRAINT \"HostLocation_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"HostLocation\" DROP CONSTRAINT \"HostLocation_userId_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"InstantMeetingToken\" DROP CONSTRAINT \"InstantMeetingToken_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"InstantMeetingToken\" DROP CONSTRAINT \"InstantMeetingToken_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"IntegrationAttributeSync\" DROP CONSTRAINT \"IntegrationAttributeSync_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"IntegrationAttributeSync\" DROP CONSTRAINT \"IntegrationAttributeSync_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"InternalNotePreset\" DROP CONSTRAINT \"InternalNotePreset_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ManagedOrganization\" DROP CONSTRAINT \"ManagedOrganization_managedOrganizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"ManagedOrganization\" DROP CONSTRAINT \"ManagedOrganization_managerOrganizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Membership\" DROP CONSTRAINT \"Membership_customRoleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Membership\" DROP CONSTRAINT \"Membership_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Membership\" DROP CONSTRAINT \"Membership_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MonthlyProration\" DROP CONSTRAINT \"MonthlyProration_organizationBillingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MonthlyProration\" DROP CONSTRAINT \"MonthlyProration_teamBillingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"MonthlyProration\" DROP CONSTRAINT \"MonthlyProration_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"NotificationsSubscriptions\" DROP CONSTRAINT \"NotificationsSubscriptions_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OAuthClient\" DROP CONSTRAINT \"OAuthClient_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationBilling\" DROP CONSTRAINT \"OrganizationBilling_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationOnboarding\" DROP CONSTRAINT \"OrganizationOnboarding_createdById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationOnboarding\" DROP CONSTRAINT \"OrganizationOnboarding_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OrganizationSettings\" DROP CONSTRAINT \"OrganizationSettings_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OutOfOfficeEntry\" DROP CONSTRAINT \"OutOfOfficeEntry_reasonId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OutOfOfficeEntry\" DROP CONSTRAINT \"OutOfOfficeEntry_toUserId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OutOfOfficeEntry\" DROP CONSTRAINT \"OutOfOfficeEntry_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"OutOfOfficeReason\" DROP CONSTRAINT \"OutOfOfficeReason_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Payment\" DROP CONSTRAINT \"Payment_appId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Payment\" DROP CONSTRAINT \"Payment_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PlatformAuthorizationToken\" DROP CONSTRAINT \"PlatformAuthorizationToken_platformOAuthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PlatformAuthorizationToken\" DROP CONSTRAINT \"PlatformAuthorizationToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PlatformBilling\" DROP CONSTRAINT \"PlatformBilling_id_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PlatformBilling\" DROP CONSTRAINT \"PlatformBilling_managerBillingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"PlatformOAuthClient\" DROP CONSTRAINT \"PlatformOAuthClient_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Profile\" DROP CONSTRAINT \"Profile_organizationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Profile\" DROP CONSTRAINT \"Profile_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RateLimit\" DROP CONSTRAINT \"RateLimit_apiKeyId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RefreshToken\" DROP CONSTRAINT \"RefreshToken_platformOAuthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RefreshToken\" DROP CONSTRAINT \"RefreshToken_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Role\" DROP CONSTRAINT \"Role_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"RolePermission\" DROP CONSTRAINT \"RolePermission_roleId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Schedule\" DROP CONSTRAINT \"Schedule_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SeatChangeLog\" DROP CONSTRAINT \"SeatChangeLog_organizationBillingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SeatChangeLog\" DROP CONSTRAINT \"SeatChangeLog_processedInProrationId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SeatChangeLog\" DROP CONSTRAINT \"SeatChangeLog_teamBillingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SeatChangeLog\" DROP CONSTRAINT \"SeatChangeLog_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SecondaryEmail\" DROP CONSTRAINT \"SecondaryEmail_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SelectedCalendar\" DROP CONSTRAINT \"SelectedCalendar_credentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SelectedCalendar\" DROP CONSTRAINT \"SelectedCalendar_delegationCredentialId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SelectedCalendar\" DROP CONSTRAINT \"SelectedCalendar_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"SelectedCalendar\" DROP CONSTRAINT \"SelectedCalendar_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Session\" DROP CONSTRAINT \"Session_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_createdByOAuthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Team\" DROP CONSTRAINT \"Team_parentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamBilling\" DROP CONSTRAINT \"TeamBilling_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamFeatures\" DROP CONSTRAINT \"TeamFeatures_featureId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TeamFeatures\" DROP CONSTRAINT \"TeamFeatures_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Tracking\" DROP CONSTRAINT \"Tracking_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"TravelSchedule\" DROP CONSTRAINT \"TravelSchedule_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserFeatures\" DROP CONSTRAINT \"UserFeatures_featureId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserFeatures\" DROP CONSTRAINT \"UserFeatures_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserFilterSegmentPreference\" DROP CONSTRAINT \"UserFilterSegmentPreference_segmentId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserFilterSegmentPreference\" DROP CONSTRAINT \"UserFilterSegmentPreference_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserHolidaySettings\" DROP CONSTRAINT \"UserHolidaySettings_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"UserPassword\" DROP CONSTRAINT \"UserPassword_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_secondaryEmailId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerificationToken\" DROP CONSTRAINT \"VerificationToken_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerifiedEmail\" DROP CONSTRAINT \"VerifiedEmail_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerifiedEmail\" DROP CONSTRAINT \"VerifiedEmail_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerifiedNumber\" DROP CONSTRAINT \"VerifiedNumber_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"VerifiedNumber\" DROP CONSTRAINT \"VerifiedNumber_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WatchlistAudit\" DROP CONSTRAINT \"WatchlistAudit_watchlistId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_appId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_eventTypeId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_platformOAuthClientId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"Webhook\" DROP CONSTRAINT \"Webhook_userId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WebhookScheduledTriggers\" DROP CONSTRAINT \"WebhookScheduledTriggers_bookingId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WebhookScheduledTriggers\" DROP CONSTRAINT \"WebhookScheduledTriggers_webhookId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WrongAssignmentReport\" DROP CONSTRAINT \"WrongAssignmentReport_bookingUid_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WrongAssignmentReport\" DROP CONSTRAINT \"WrongAssignmentReport_reportedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WrongAssignmentReport\" DROP CONSTRAINT \"WrongAssignmentReport_reviewedById_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"WrongAssignmentReport\" DROP CONSTRAINT \"WrongAssignmentReport_teamId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_PlatformOAuthClientToUser\" DROP CONSTRAINT \"_PlatformOAuthClientToUser_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_PlatformOAuthClientToUser\" DROP CONSTRAINT \"_PlatformOAuthClientToUser_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_user_eventtype\" DROP CONSTRAINT \"_user_eventtype_A_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"_user_eventtype\" DROP CONSTRAINT \"_user_eventtype_B_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_movedToProfileId_fkey\";\n\n-- DropForeignKey\nALTER TABLE \"users\" DROP CONSTRAINT \"users_organizationId_fkey\";\n\n-- AlterTable\nALTER TABLE \"ManagedOrganization\" DROP CONSTRAINT \"ManagedOrganization_managedOrganizationId_key\";\n\n-- AlterTable\nALTER TABLE \"UserPassword\" DROP CONSTRAINT \"UserPassword_userId_key\";\n\n-- AlterTable\nALTER TABLE \"avatars\" DROP CONSTRAINT \"avatars_objectKey_key\";\n\n-- DropTable\nDROP TABLE \"BookingTimeStatus\";\n\n-- DropTable\nDROP TABLE \"BookingTimeStatusDenormalized\";\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"ManagedOrganization_managedOrganizationId_key\" ON \"ManagedOrganization\"(\"managedOrganizationId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"UserPassword_userId_key\" ON \"UserPassword\"(\"userId\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"avatars_objectKey_key\" ON \"avatars\"(\"objectKey\");\n\n-- AddForeignKey\nALTER TABLE \"Host\" ADD CONSTRAINT \"Host_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Host\" ADD CONSTRAINT \"Host_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Host\" ADD CONSTRAINT \"Host_scheduleId_fkey\" FOREIGN KEY (\"scheduleId\") REFERENCES \"Schedule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Host\" ADD CONSTRAINT \"Host_groupId_fkey\" FOREIGN KEY (\"groupId\") REFERENCES \"HostGroup\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Host\" ADD CONSTRAINT \"Host_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"Membership\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"HostGroup\" ADD CONSTRAINT \"HostGroup_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"HostLocation\" ADD CONSTRAINT \"HostLocation_userId_eventTypeId_fkey\" FOREIGN KEY (\"userId\", \"eventTypeId\") REFERENCES \"Host\"(\"userId\", \"eventTypeId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"HostLocation\" ADD CONSTRAINT \"HostLocation_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalVideoSettings\" ADD CONSTRAINT \"CalVideoSettings_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_profileId_fkey\" FOREIGN KEY (\"profileId\") REFERENCES \"Profile\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_scheduleId_fkey\" FOREIGN KEY (\"scheduleId\") REFERENCES \"Schedule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_instantMeetingScheduleId_fkey\" FOREIGN KEY (\"instantMeetingScheduleId\") REFERENCES \"Schedule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_secondaryEmailId_fkey\" FOREIGN KEY (\"secondaryEmailId\") REFERENCES \"SecondaryEmail\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventType\" ADD CONSTRAINT \"EventType_restrictionScheduleId_fkey\" FOREIGN KEY (\"restrictionScheduleId\") REFERENCES \"Schedule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credential\" ADD CONSTRAINT \"Credential_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credential\" ADD CONSTRAINT \"Credential_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credential\" ADD CONSTRAINT \"Credential_appId_fkey\" FOREIGN KEY (\"appId\") REFERENCES \"App\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Credential\" ADD CONSTRAINT \"Credential_delegationCredentialId_fkey\" FOREIGN KEY (\"delegationCredentialId\") REFERENCES \"DelegationCredential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DestinationCalendar\" ADD CONSTRAINT \"DestinationCalendar_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DestinationCalendar\" ADD CONSTRAINT \"DestinationCalendar_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DestinationCalendar\" ADD CONSTRAINT \"DestinationCalendar_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DestinationCalendar\" ADD CONSTRAINT \"DestinationCalendar_delegationCredentialId_fkey\" FOREIGN KEY (\"delegationCredentialId\") REFERENCES \"DelegationCredential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserPassword\" ADD CONSTRAINT \"UserPassword_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TravelSchedule\" ADD CONSTRAINT \"TravelSchedule_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"users_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"users\" ADD CONSTRAINT \"users_movedToProfileId_fkey\" FOREIGN KEY (\"movedToProfileId\") REFERENCES \"Profile\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"NotificationsSubscriptions\" ADD CONSTRAINT \"NotificationsSubscriptions_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Profile\" ADD CONSTRAINT \"Profile_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Profile\" ADD CONSTRAINT \"Profile_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_parentId_fkey\" FOREIGN KEY (\"parentId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Team\" ADD CONSTRAINT \"Team_createdByOAuthClientId_fkey\" FOREIGN KEY (\"createdByOAuthClientId\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreditBalance\" ADD CONSTRAINT \"CreditBalance_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreditBalance\" ADD CONSTRAINT \"CreditBalance_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreditPurchaseLog\" ADD CONSTRAINT \"CreditPurchaseLog_creditBalanceId_fkey\" FOREIGN KEY (\"creditBalanceId\") REFERENCES \"CreditBalance\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreditExpenseLog\" ADD CONSTRAINT \"CreditExpenseLog_creditBalanceId_fkey\" FOREIGN KEY (\"creditBalanceId\") REFERENCES \"CreditBalance\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CreditExpenseLog\" ADD CONSTRAINT \"CreditExpenseLog_bookingUid_fkey\" FOREIGN KEY (\"bookingUid\") REFERENCES \"Booking\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationSettings\" ADD CONSTRAINT \"OrganizationSettings_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Membership\" ADD CONSTRAINT \"Membership_customRoleId_fkey\" FOREIGN KEY (\"customRoleId\") REFERENCES \"Role\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Membership\" ADD CONSTRAINT \"Membership_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Membership\" ADD CONSTRAINT \"Membership_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerificationToken\" ADD CONSTRAINT \"VerificationToken_secondaryEmailId_fkey\" FOREIGN KEY (\"secondaryEmailId\") REFERENCES \"SecondaryEmail\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InstantMeetingToken\" ADD CONSTRAINT \"InstantMeetingToken_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InstantMeetingToken\" ADD CONSTRAINT \"InstantMeetingToken_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReference\" ADD CONSTRAINT \"BookingReference_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReference\" ADD CONSTRAINT \"BookingReference_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReference\" ADD CONSTRAINT \"BookingReference_delegationCredentialId_fkey\" FOREIGN KEY (\"delegationCredentialId\") REFERENCES \"DelegationCredential\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Attendee\" ADD CONSTRAINT \"Attendee_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_destinationCalendarId_fkey\" FOREIGN KEY (\"destinationCalendarId\") REFERENCES \"DestinationCalendar\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Booking\" ADD CONSTRAINT \"Booking_reassignById_fkey\" FOREIGN KEY (\"reassignById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Tracking\" ADD CONSTRAINT \"Tracking_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Schedule\" ADD CONSTRAINT \"Schedule_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Availability\" ADD CONSTRAINT \"Availability_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Availability\" ADD CONSTRAINT \"Availability_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Availability\" ADD CONSTRAINT \"Availability_scheduleId_fkey\" FOREIGN KEY (\"scheduleId\") REFERENCES \"Schedule\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SelectedCalendar\" ADD CONSTRAINT \"SelectedCalendar_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SelectedCalendar\" ADD CONSTRAINT \"SelectedCalendar_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SelectedCalendar\" ADD CONSTRAINT \"SelectedCalendar_delegationCredentialId_fkey\" FOREIGN KEY (\"delegationCredentialId\") REFERENCES \"DelegationCredential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SelectedCalendar\" ADD CONSTRAINT \"SelectedCalendar_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventTypeCustomInput\" ADD CONSTRAINT \"EventTypeCustomInput_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Payment\" ADD CONSTRAINT \"Payment_appId_fkey\" FOREIGN KEY (\"appId\") REFERENCES \"App\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Payment\" ADD CONSTRAINT \"Payment_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_platformOAuthClientId_fkey\" FOREIGN KEY (\"platformOAuthClientId\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Webhook\" ADD CONSTRAINT \"Webhook_appId_fkey\" FOREIGN KEY (\"appId\") REFERENCES \"App\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ApiKey\" ADD CONSTRAINT \"ApiKey_appId_fkey\" FOREIGN KEY (\"appId\") REFERENCES \"App\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RateLimit\" ADD CONSTRAINT \"RateLimit_apiKeyId_fkey\" FOREIGN KEY (\"apiKeyId\") REFERENCES \"ApiKey\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"HashedLink\" ADD CONSTRAINT \"HashedLink_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Account\" ADD CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Session\" ADD CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Feedback\" ADD CONSTRAINT \"Feedback_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WebhookScheduledTriggers\" ADD CONSTRAINT \"WebhookScheduledTriggers_webhookId_fkey\" FOREIGN KEY (\"webhookId\") REFERENCES \"Webhook\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WebhookScheduledTriggers\" ADD CONSTRAINT \"WebhookScheduledTriggers_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingSeat\" ADD CONSTRAINT \"BookingSeat_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingSeat\" ADD CONSTRAINT \"BookingSeat_attendeeId_fkey\" FOREIGN KEY (\"attendeeId\") REFERENCES \"Attendee\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerifiedNumber\" ADD CONSTRAINT \"VerifiedNumber_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerifiedNumber\" ADD CONSTRAINT \"VerifiedNumber_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerifiedEmail\" ADD CONSTRAINT \"VerifiedEmail_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"VerifiedEmail\" ADD CONSTRAINT \"VerifiedEmail_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserFeatures\" ADD CONSTRAINT \"UserFeatures_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserFeatures\" ADD CONSTRAINT \"UserFeatures_featureId_fkey\" FOREIGN KEY (\"featureId\") REFERENCES \"Feature\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamFeatures\" ADD CONSTRAINT \"TeamFeatures_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamFeatures\" ADD CONSTRAINT \"TeamFeatures_featureId_fkey\" FOREIGN KEY (\"featureId\") REFERENCES \"Feature\"(\"slug\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OAuthClient\" ADD CONSTRAINT \"OAuthClient_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessCode\" ADD CONSTRAINT \"AccessCode_clientId_fkey\" FOREIGN KEY (\"clientId\") REFERENCES \"OAuthClient\"(\"clientId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessCode\" ADD CONSTRAINT \"AccessCode_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessCode\" ADD CONSTRAINT \"AccessCode_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalendarCache\" ADD CONSTRAINT \"CalendarCache_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OutOfOfficeEntry\" ADD CONSTRAINT \"OutOfOfficeEntry_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OutOfOfficeEntry\" ADD CONSTRAINT \"OutOfOfficeEntry_toUserId_fkey\" FOREIGN KEY (\"toUserId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OutOfOfficeEntry\" ADD CONSTRAINT \"OutOfOfficeEntry_reasonId_fkey\" FOREIGN KEY (\"reasonId\") REFERENCES \"OutOfOfficeReason\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OutOfOfficeReason\" ADD CONSTRAINT \"OutOfOfficeReason_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserHolidaySettings\" ADD CONSTRAINT \"UserHolidaySettings_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PlatformOAuthClient\" ADD CONSTRAINT \"PlatformOAuthClient_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PlatformAuthorizationToken\" ADD CONSTRAINT \"PlatformAuthorizationToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PlatformAuthorizationToken\" ADD CONSTRAINT \"PlatformAuthorizationToken_platformOAuthClientId_fkey\" FOREIGN KEY (\"platformOAuthClientId\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessToken\" ADD CONSTRAINT \"AccessToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AccessToken\" ADD CONSTRAINT \"AccessToken_platformOAuthClientId_fkey\" FOREIGN KEY (\"platformOAuthClientId\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RefreshToken\" ADD CONSTRAINT \"RefreshToken_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RefreshToken\" ADD CONSTRAINT \"RefreshToken_platformOAuthClientId_fkey\" FOREIGN KEY (\"platformOAuthClientId\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DSyncData\" ADD CONSTRAINT \"DSyncData_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"OrganizationSettings\"(\"organizationId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DSyncTeamGroupMapping\" ADD CONSTRAINT \"DSyncTeamGroupMapping_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DSyncTeamGroupMapping\" ADD CONSTRAINT \"DSyncTeamGroupMapping_directoryId_fkey\" FOREIGN KEY (\"directoryId\") REFERENCES \"DSyncData\"(\"directoryId\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SecondaryEmail\" ADD CONSTRAINT \"SecondaryEmail_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ManagedOrganization\" ADD CONSTRAINT \"ManagedOrganization_managedOrganizationId_fkey\" FOREIGN KEY (\"managedOrganizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"ManagedOrganization\" ADD CONSTRAINT \"ManagedOrganization_managerOrganizationId_fkey\" FOREIGN KEY (\"managerOrganizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PlatformBilling\" ADD CONSTRAINT \"PlatformBilling_managerBillingId_fkey\" FOREIGN KEY (\"managerBillingId\") REFERENCES \"PlatformBilling\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"PlatformBilling\" ADD CONSTRAINT \"PlatformBilling_id_fkey\" FOREIGN KEY (\"id\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeOption\" ADD CONSTRAINT \"AttributeOption_attributeId_fkey\" FOREIGN KEY (\"attributeId\") REFERENCES \"Attribute\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Attribute\" ADD CONSTRAINT \"Attribute_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_memberId_fkey\" FOREIGN KEY (\"memberId\") REFERENCES \"Membership\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_attributeOptionId_fkey\" FOREIGN KEY (\"attributeOptionId\") REFERENCES \"AttributeOption\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_createdByDSyncId_fkey\" FOREIGN KEY (\"createdByDSyncId\") REFERENCES \"DSyncData\"(\"directoryId\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_updatedById_fkey\" FOREIGN KEY (\"updatedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeToUser\" ADD CONSTRAINT \"AttributeToUser_updatedByDSyncId_fkey\" FOREIGN KEY (\"updatedByDSyncId\") REFERENCES \"DSyncData\"(\"directoryId\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AssignmentReason\" ADD CONSTRAINT \"AssignmentReason_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DelegationCredential\" ADD CONSTRAINT \"DelegationCredential_workspacePlatformId_fkey\" FOREIGN KEY (\"workspacePlatformId\") REFERENCES \"WorkspacePlatform\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"DelegationCredential\" ADD CONSTRAINT \"DelegationCredential_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventTypeTranslation\" ADD CONSTRAINT \"EventTypeTranslation_eventTypeId_fkey\" FOREIGN KEY (\"eventTypeId\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventTypeTranslation\" ADD CONSTRAINT \"EventTypeTranslation_createdBy_fkey\" FOREIGN KEY (\"createdBy\") REFERENCES \"users\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"EventTypeTranslation\" ADD CONSTRAINT \"EventTypeTranslation_updatedBy_fkey\" FOREIGN KEY (\"updatedBy\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WatchlistAudit\" ADD CONSTRAINT \"WatchlistAudit_watchlistId_fkey\" FOREIGN KEY (\"watchlistId\") REFERENCES \"Watchlist\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReport\" ADD CONSTRAINT \"BookingReport_bookingUid_fkey\" FOREIGN KEY (\"bookingUid\") REFERENCES \"Booking\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReport\" ADD CONSTRAINT \"BookingReport_reportedById_fkey\" FOREIGN KEY (\"reportedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReport\" ADD CONSTRAINT \"BookingReport_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReport\" ADD CONSTRAINT \"BookingReport_watchlistId_fkey\" FOREIGN KEY (\"watchlistId\") REFERENCES \"Watchlist\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingReport\" ADD CONSTRAINT \"BookingReport_globalWatchlistId_fkey\" FOREIGN KEY (\"globalWatchlistId\") REFERENCES \"Watchlist\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WrongAssignmentReport\" ADD CONSTRAINT \"WrongAssignmentReport_bookingUid_fkey\" FOREIGN KEY (\"bookingUid\") REFERENCES \"Booking\"(\"uid\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WrongAssignmentReport\" ADD CONSTRAINT \"WrongAssignmentReport_reportedById_fkey\" FOREIGN KEY (\"reportedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WrongAssignmentReport\" ADD CONSTRAINT \"WrongAssignmentReport_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"WrongAssignmentReport\" ADD CONSTRAINT \"WrongAssignmentReport_reviewedById_fkey\" FOREIGN KEY (\"reviewedById\") REFERENCES \"users\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationOnboarding\" ADD CONSTRAINT \"OrganizationOnboarding_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationOnboarding\" ADD CONSTRAINT \"OrganizationOnboarding_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"InternalNotePreset\" ADD CONSTRAINT \"InternalNotePreset_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FilterSegment\" ADD CONSTRAINT \"FilterSegment_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"FilterSegment\" ADD CONSTRAINT \"FilterSegment_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserFilterSegmentPreference\" ADD CONSTRAINT \"UserFilterSegmentPreference_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"UserFilterSegmentPreference\" ADD CONSTRAINT \"UserFilterSegmentPreference_segmentId_fkey\" FOREIGN KEY (\"segmentId\") REFERENCES \"FilterSegment\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingInternalNote\" ADD CONSTRAINT \"BookingInternalNote_notePresetId_fkey\" FOREIGN KEY (\"notePresetId\") REFERENCES \"InternalNotePreset\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingInternalNote\" ADD CONSTRAINT \"BookingInternalNote_bookingId_fkey\" FOREIGN KEY (\"bookingId\") REFERENCES \"Booking\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingInternalNote\" ADD CONSTRAINT \"BookingInternalNote_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"users\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Role\" ADD CONSTRAINT \"Role_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"RolePermission\" ADD CONSTRAINT \"RolePermission_roleId_fkey\" FOREIGN KEY (\"roleId\") REFERENCES \"Role\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"BookingAudit\" ADD CONSTRAINT \"BookingAudit_actorId_fkey\" FOREIGN KEY (\"actorId\") REFERENCES \"AuditActor\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Agent\" ADD CONSTRAINT \"Agent_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"Agent\" ADD CONSTRAINT \"Agent_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalAiPhoneNumber\" ADD CONSTRAINT \"CalAiPhoneNumber_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalAiPhoneNumber\" ADD CONSTRAINT \"CalAiPhoneNumber_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalAiPhoneNumber\" ADD CONSTRAINT \"CalAiPhoneNumber_inboundAgentId_fkey\" FOREIGN KEY (\"inboundAgentId\") REFERENCES \"Agent\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalAiPhoneNumber\" ADD CONSTRAINT \"CalAiPhoneNumber_outboundAgentId_fkey\" FOREIGN KEY (\"outboundAgentId\") REFERENCES \"Agent\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"TeamBilling\" ADD CONSTRAINT \"TeamBilling_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"OrganizationBilling\" ADD CONSTRAINT \"OrganizationBilling_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SeatChangeLog\" ADD CONSTRAINT \"SeatChangeLog_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SeatChangeLog\" ADD CONSTRAINT \"SeatChangeLog_processedInProrationId_fkey\" FOREIGN KEY (\"processedInProrationId\") REFERENCES \"MonthlyProration\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SeatChangeLog\" ADD CONSTRAINT \"SeatChangeLog_teamBillingId_fkey\" FOREIGN KEY (\"teamBillingId\") REFERENCES \"TeamBilling\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"SeatChangeLog\" ADD CONSTRAINT \"SeatChangeLog_organizationBillingId_fkey\" FOREIGN KEY (\"organizationBillingId\") REFERENCES \"OrganizationBilling\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MonthlyProration\" ADD CONSTRAINT \"MonthlyProration_teamId_fkey\" FOREIGN KEY (\"teamId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MonthlyProration\" ADD CONSTRAINT \"MonthlyProration_teamBillingId_fkey\" FOREIGN KEY (\"teamBillingId\") REFERENCES \"TeamBilling\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"MonthlyProration\" ADD CONSTRAINT \"MonthlyProration_organizationBillingId_fkey\" FOREIGN KEY (\"organizationBillingId\") REFERENCES \"OrganizationBilling\"(\"id\") ON DELETE SET NULL ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"CalendarCacheEvent\" ADD CONSTRAINT \"CalendarCacheEvent_selectedCalendarId_fkey\" FOREIGN KEY (\"selectedCalendarId\") REFERENCES \"SelectedCalendar\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"IntegrationAttributeSync\" ADD CONSTRAINT \"IntegrationAttributeSync_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Team\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"IntegrationAttributeSync\" ADD CONSTRAINT \"IntegrationAttributeSync_credentialId_fkey\" FOREIGN KEY (\"credentialId\") REFERENCES \"Credential\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeSyncRule\" ADD CONSTRAINT \"AttributeSyncRule_integrationAttributeSyncId_fkey\" FOREIGN KEY (\"integrationAttributeSyncId\") REFERENCES \"IntegrationAttributeSync\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeSyncFieldMapping\" ADD CONSTRAINT \"AttributeSyncFieldMapping_attributeId_fkey\" FOREIGN KEY (\"attributeId\") REFERENCES \"Attribute\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"AttributeSyncFieldMapping\" ADD CONSTRAINT \"AttributeSyncFieldMapping_integrationAttributeSyncId_fkey\" FOREIGN KEY (\"integrationAttributeSyncId\") REFERENCES \"IntegrationAttributeSync\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_user_eventtype\" ADD CONSTRAINT \"_user_eventtype_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"EventType\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_user_eventtype\" ADD CONSTRAINT \"_user_eventtype_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PlatformOAuthClientToUser\" ADD CONSTRAINT \"_PlatformOAuthClientToUser_A_fkey\" FOREIGN KEY (\"A\") REFERENCES \"PlatformOAuthClient\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"_PlatformOAuthClientToUser\" ADD CONSTRAINT \"_PlatformOAuthClientToUser_B_fkey\" FOREIGN KEY (\"B\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 100,
+            "total": 100
+          },
+          "insert": {
+            "ok": 95,
+            "total": 98
+          },
+          "read": {
+            "ok": 95,
+            "total": 95
+          },
+          "update": {
+            "ok": 84,
+            "total": 84
+          },
+          "relations": {
+            "ok": 309,
+            "total": 311
+          },
+          "delete": {
+            "ok": 95,
+            "total": 95
+          }
+        },
+        "findings": [
+          {
+            "model": "PlatformOAuthClient",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Profile",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "PlatformAuthorizationToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "RefreshToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformOAuthClient`) did not go in"
+          },
+          {
+            "model": "OrganizationSettings",
+            "check": "relations",
+            "text": "no relation for `dSyncData` (toOneBack)"
+          },
+          {
+            "model": "DSyncData",
+            "check": "relations",
+            "text": "no relation for `org` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- RenameIndex\nALTER INDEX \"attributesyncfieldmapping_integrationattributesyncid_attrib_key\" RENAME TO \"AttributeSyncFieldMapping_integrationAttributeSyncId_attrib_key\";\n\n-- RenameIndex\nALTER INDEX \"managedorganization_managerorganizationid_managedorganizati_key\" RENAME TO \"ManagedOrganization_managerOrganizationId_managedOrganizati_key\";\n\n-- RenameIndex\nALTER INDEX \"selectedcalendar_userid_integration_externalid_eventtypeid_key\" RENAME TO \"SelectedCalendar_userId_integration_externalId_eventTypeId_key\";"
+      }
+    }
+  ]
+}
