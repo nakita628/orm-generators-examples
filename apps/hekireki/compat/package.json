@@ -1,0 +1,19 @@
+{
+  "name": "@orm-generators-examples/hekireki-compat",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@paralleldrive/cuid2": "3.3.0",
+    "@prisma/get-dmmf": "8.1.0-dev.9",
+    "@types/node": "24.10.1",
+    "cuid": "3.0.0",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "mysql2": "3.24.4",
+    "nanoid": "6.0.2",
+    "postgres": "3.4.7",
+    "prisma": "8.1.0-dev.9",
+    "ulidx": "2.4.1",
+    "uuid": "14.0.3"
+  }
+}

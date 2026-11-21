@@ -1,6 +1,7 @@
 # One pnpm workspace, one pnpm-lock.yaml, read by rules_js (MODULE.bazel).
 packages:
   - apps/hekireki
+  - apps/hekireki/compat
   - apps/drizzler
   - apps/drizzler/examples/*
   - apps/drizzler/packages/*

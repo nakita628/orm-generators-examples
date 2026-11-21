@@ -1,5 +1,8 @@
 node_modules
 apps/hekireki/node_modules
+# hekireki's compat runs outside Bazel (Docker, uv, Go): see apps/hekireki/compat/README.md
+apps/hekireki/compat
+apps/hekireki/compat/node_modules
 apps/drizzler/node_modules
 apps/drizzler/packages/tsconfig/node_modules
 apps/drizzler/examples/ai-fullstack-saas/node_modules

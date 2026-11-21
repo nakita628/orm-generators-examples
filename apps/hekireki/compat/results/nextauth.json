@@ -1,0 +1,100 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "checks": {
+        "model": {
+          "ok": 5,
+          "total": 5
+        },
+        "insert": {
+          "ok": 5,
+          "total": 5
+        },
+        "read": {
+          "ok": 5,
+          "total": 5
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 5,
+          "total": 5
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "checks": {
+        "model": {
+          "ok": 5,
+          "total": 5
+        },
+        "insert": {
+          "ok": 1,
+          "total": 5
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 4,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "checks": {
+        "model": {
+          "ok": 5,
+          "total": 5
+        },
+        "insert": {
+          "ok": 5,
+          "total": 5
+        },
+        "read": {
+          "ok": 5,
+          "total": 5
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 6,
+          "total": 6
+        },
+        "delete": {
+          "ok": 5,
+          "total": 5
+        }
+      },
+      "findings": 0,
+      "ddl": "differs"
+    }
+  ]
+}

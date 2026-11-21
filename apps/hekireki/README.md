@@ -65,6 +65,8 @@ node apps/hekireki/tools/import/import-schema.mjs --all
 
 The generated code is compiled by each ORM's own toolchain (`bazel test --test_tag_filters=lang-gorm //apps/hekireki/checks/...` with the toolchain on PATH): tsc for drizzle and kysely, go vet for GORM, cargo check for SeaORM, mypy --strict for SQLAlchemy and Django, mix compile for Ecto, Active Record and Eloquent loading every model, dotnet build for EF Core, and Gradle for Exposed.
 
+Whether the generated code works against the database Prisma creates from the same schema (insert, read back, update, relations and delete through each ORM, and whether the tables the ORM creates match Prisma's) is checked by [compat/](./compat) with Docker. See its [results](./compat/results/README.md).
+
 To add a schema, add it to [sources.json](./schemas/sources.json) and [schemas.bzl](./schemas/schemas.bzl), run the import script with its name, copy a `BUILD.bazel` from another schema, and run its `generate.write` target. The import script adds every generator, including `hekireki-docs` with `output = "generated/docs"`, so a new schema gets the docs with the rest. `//apps/hekireki/schemas/<name>:generate.test` holds that directory to the committed copy the same way it holds the other generators.
 
 ## License

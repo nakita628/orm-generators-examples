@@ -34,3 +34,6 @@ apps/hekireki/checks/*/.gradle/
 .idea/
 .vscode/
 *.swp
+
+# hekireki's compat runs (apps/hekireki/compat): plans, databases and copies of the generated code
+apps/hekireki/compat/.work/

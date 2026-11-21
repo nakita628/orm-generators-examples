@@ -24,7 +24,7 @@ pnpm-workspace.yaml    its packages, the drizzler catalog, allowBuilds
 pnpm-lock.yaml         every npm package of every app, read by rules_js
 tools/golden/          `golden()`: the `.write` / `.test` pair every example's output goes through
 tools/uv/              the uv binary of MODULE.bazel for the host platform
-apps/hekireki/         schemas/<name>/ (schema.prisma, generated/), checks/<lang>/, tools/
+apps/hekireki/         schemas/<name>/ (schema.prisma, generated/), checks/<lang>/, compat/, tools/
 apps/drizzler/         examples/<name>/ (src/, drizzle.config.ts, docs/), packages/tsconfig, tools/
 apps/djangoer/         examples/<name>/ (pyproject.toml, uv.lock, settings.py, outputs), scripts/, tools/
 ```
