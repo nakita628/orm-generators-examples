@@ -1,0 +1,89 @@
+Table User {
+  createdAt timestamp [not null]
+  email varchar [not null]
+  emailVerified boolean [not null]
+  id uuid [pk, not null]
+  image text
+  isAnonymous boolean [not null]
+  name text
+  password varchar
+  updatedAt timestamp [not null]
+}
+
+Table Chat {
+  createdAt timestamp [not null]
+  id uuid [pk, not null]
+  title text [not null]
+  userId uuid [not null]
+  visibility varchar [not null]
+}
+
+Table Message_v2 {
+  attachments json [not null]
+  chatId uuid [not null]
+  createdAt timestamp [not null]
+  id uuid [pk, not null]
+  parts json [not null]
+  role varchar [not null]
+}
+
+Table Vote_v2 {
+  chatId uuid [not null]
+  isUpvoted boolean [not null]
+  messageId uuid [not null]
+  indexes {
+    (chatId, messageId) [pk]
+  }
+}
+
+Table Document {
+  content text
+  createdAt timestamp [not null]
+  id uuid [not null]
+  text varchar [not null]
+  title text [not null]
+  userId uuid [not null]
+  indexes {
+    (id, createdAt) [pk]
+  }
+}
+
+Table Suggestion {
+  createdAt timestamp [not null]
+  description text
+  documentCreatedAt timestamp [not null]
+  documentId uuid [not null]
+  id uuid [not null]
+  isResolved boolean [not null]
+  originalText text [not null]
+  suggestedText text [not null]
+  userId uuid [not null]
+  indexes {
+    (id) [pk]
+  }
+}
+
+Table Stream {
+  chatId uuid [not null]
+  createdAt timestamp [not null]
+  id uuid [not null]
+  indexes {
+    (id) [pk]
+  }
+}
+
+Ref Chat_userId_User_id_fk: Chat.userId > User.id
+
+Ref Message_v2_chatId_Chat_id_fk: Message_v2.chatId > Chat.id
+
+Ref Vote_v2_chatId_Chat_id_fk: Vote_v2.chatId > Chat.id
+
+Ref Vote_v2_messageId_Message_v2_id_fk: Vote_v2.messageId > Message_v2.id
+
+Ref Document_userId_User_id_fk: Document.userId > User.id
+
+Ref Suggestion_userId_User_id_fk: Suggestion.userId > User.id
+
+Ref Suggestion_documentId_documentCreatedAt_Document_id_createdAt_fk: Suggestion.(documentId, documentCreatedAt) > Document.(id, createdAt)
+
+Ref Stream_chatId_Chat_id_fk: Stream.chatId > Chat.id

@@ -1,0 +1,332 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum CountryContinent {
+  "OC"
+  "EU"
+  "AF"
+  "NA"
+  "AN"
+  "SA"
+  "AS"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table cities_light_country {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  name_ascii varchar(200) [not null]
+  slug varchar(50) [not null]
+  geoname_id integer [unique]
+  alternate_names text [default: '']
+  translations text [not null, note: 'default in Python: dict()']
+  code2 varchar(2) [unique]
+  code3 varchar(3) [unique]
+  continent CountryContinent [not null]
+  tld varchar(5) [not null]
+  phone varchar(20)
+
+  indexes {
+    (name) [name: 'cities_light_country_name_1d61d0d2']
+    (name_ascii) [name: 'cities_light_country_name_ascii_648cc5e3']
+    (slug) [name: 'cities_light_country_slug_3707a22c']
+    (continent) [name: 'cities_light_country_continent_e2c412a4']
+    (tld) [name: 'cities_light_country_tld_1fb2faaa']
+  }
+
+  Note: '''Columns from AbstractCountry (abstract): code2, code3, continent, tld, phone.
+
+Columns from Base (abstract): name, name_ascii, slug, geoname_id, alternate_names, translations.'''
+}
+
+Table cities_light_region {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  name_ascii varchar(200) [not null]
+  slug varchar(50) [not null]
+  geoname_id integer [unique]
+  alternate_names text [default: '']
+  translations text [not null, note: 'default in Python: dict()']
+  display_name varchar(200) [not null]
+  geoname_code varchar(50)
+  country_id integer [not null]
+
+  indexes {
+    (name) [name: 'cities_light_region_name_775f9496']
+    (name_ascii) [name: 'cities_light_region_name_ascii_f085cb82']
+    (slug) [name: 'cities_light_region_slug_1653969f']
+    (geoname_code) [name: 'cities_light_region_geoname_code_1b0d4e58']
+    (country_id) [name: 'cities_light_region_country_id_b2782d49']
+    (country_id, name) [unique, name: 'cities_light_region_country_id_name_6e5b3799_uniq']
+    (country_id, slug) [unique, name: 'cities_light_region_country_id_slug_3dd02103_uniq']
+  }
+
+  Note: '''Columns from AbstractRegion (abstract): display_name, geoname_code, country_id.
+
+Columns from Base (abstract): name, name_ascii, slug, geoname_id, alternate_names, translations.'''
+}
+
+Table cities_light_subregion {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  name_ascii varchar(200) [not null]
+  slug varchar(50) [not null]
+  geoname_id integer [unique]
+  alternate_names text [default: '']
+  translations text [not null, note: 'default in Python: dict()']
+  display_name varchar(200) [not null]
+  geoname_code varchar(50)
+  country_id integer [not null]
+  region_id integer
+
+  indexes {
+    (name) [name: 'cities_light_subregion_name_2882337e']
+    (name_ascii) [name: 'cities_light_subregion_name_ascii_ecf9a336']
+    (slug) [name: 'cities_light_subregion_slug_43494546']
+    (geoname_code) [name: 'cities_light_subregion_geoname_code_843acdc3']
+    (country_id) [name: 'cities_light_subregion_country_id_9b32b484']
+    (region_id) [name: 'cities_light_subregion_region_id_c6e0b71f']
+  }
+
+  Note: '''Columns from AbstractSubRegion (abstract): display_name, geoname_code, country_id, region_id.
+
+Columns from Base (abstract): name, name_ascii, slug, geoname_id, alternate_names, translations.'''
+}
+
+Table cities_light_city {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  name_ascii varchar(200) [not null]
+  slug varchar(50) [not null]
+  geoname_id integer [unique]
+  alternate_names text [default: '']
+  translations text [not null, note: 'default in Python: dict()']
+  display_name varchar(200) [not null]
+  search_names text [default: '', not null]
+  latitude decimal [note: 'declared max_digits=8, decimal_places=5, which the database does not enforce']
+  longitude decimal [note: 'declared max_digits=8, decimal_places=5, which the database does not enforce']
+  subregion_id integer
+  region_id integer
+  country_id integer [not null]
+  population bigint
+  feature_code varchar(10)
+  timezone varchar(40)
+
+  indexes {
+    (name) [name: 'cities_light_city_name_4859e2a5']
+    (name_ascii) [name: 'cities_light_city_name_ascii_1e56323b']
+    (slug) [name: 'cities_light_city_slug_cb2251f8']
+    (search_names) [name: 'cities_light_city_search_names_fb77fed2']
+    (subregion_id) [name: 'cities_light_city_subregion_id_0926d2ad']
+    (region_id) [name: 'cities_light_city_region_id_f7ab977b']
+    (country_id) [name: 'cities_light_city_country_id_cf310fd2']
+    (population) [name: 'cities_light_city_population_d597eeb6']
+    (feature_code) [name: 'cities_light_city_feature_code_d43c9217']
+    (timezone) [name: 'cities_light_city_timezone_0fb51b1e']
+    (region_id, subregion_id, name) [unique, name: 'cities_light_city_region_id_subregion_id_name_cdfc77ea_uniq']
+    (region_id, subregion_id, slug) [unique, name: 'cities_light_city_region_id_subregion_id_slug_efb2e768_uniq']
+  }
+
+  Note: '''Columns from AbstractCity (abstract): display_name, search_names, latitude, longitude, subregion_id, region_id, country_id, population, feature_code, timezone.
+
+Columns from Base (abstract): name, name_ascii, slug, geoname_id, alternate_names, translations.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref cities_light_region_country_id_fk: cities_light_region.country_id > cities_light_country.id [delete: cascade]
+
+Ref cities_light_subregion_country_id_fk: cities_light_subregion.country_id > cities_light_country.id [delete: cascade]
+
+Ref cities_light_subregion_region_id_fk: cities_light_subregion.region_id > cities_light_region.id [delete: cascade]
+
+Ref cities_light_city_subregion_id_fk: cities_light_city.subregion_id > cities_light_subregion.id [delete: cascade]
+
+Ref cities_light_city_region_id_fk: cities_light_city.region_id > cities_light_region.id [delete: cascade]
+
+Ref cities_light_city_country_id_fk: cities_light_city.country_id > cities_light_country.id [delete: cascade]

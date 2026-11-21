@@ -1,0 +1,148 @@
+Table lipi_workspaces {
+  id uuid [pk, not null]
+  title text [not null]
+  icon_id text [not null]
+  data text
+  logo text
+  banner_url text
+  workspace_owner_id uuid [not null]
+  in_trash boolean [not null]
+  created_at timestamptz [not null]
+}
+
+Table lipi_folders {
+  id uuid [pk, not null]
+  title text [not null]
+  icon_id text [not null]
+  data text
+  banner_url text
+  workspace_id uuid
+  in_trash boolean [not null]
+  created_at timestamptz [not null]
+}
+
+Table lipi_files {
+  id uuid [pk, not null]
+  title text [not null]
+  icon_id text [not null]
+  data text
+  banner_url text
+  workspace_id uuid
+  folder_id uuid
+  in_trash boolean [not null]
+  created_at timestamptz [not null]
+}
+
+Table lipi_accounts {
+  user_id uuid [not null]
+  billing_address jsonb
+  updated_at timestamptz
+  payment_method jsonb
+}
+
+Table lipi_customers {
+  id uuid [pk, not null]
+  stripe_customer_id text
+}
+
+Table lipi_prices {
+  id text [pk, not null]
+  product_id text
+  active boolean
+  description text
+  unit_amount bigint [note: 'You can use { mode: "bigint" } if numbers are exceeding js number limitations']
+  currency text
+  type pricing_type
+  interval pricing_plan_interval
+  interval_count integer
+  trial_period_days integer
+  metadata jsonb
+}
+
+Table lipi_products {
+  id text [pk, not null]
+  active boolean
+  name text
+  description text
+  image text
+  metadata jsonb
+}
+
+Table lipi_subscriptions {
+  id text [pk, not null]
+  user_id uuid [not null]
+  status subscription_status
+  metadata jsonb
+  price_id text
+  quantity integer
+  cancel_at_period_end boolean
+  created timestamptz [not null]
+  current_period_start timestamptz [not null]
+  current_period_end timestamptz [not null]
+  ended_at timestamptz
+  cancel_at timestamptz
+  canceled_at timestamptz
+  trial_start timestamptz
+  trial_end timestamptz
+}
+
+Table lipi_collaborators {
+  id uuid [pk, not null]
+  workspace_id uuid [not null]
+  created_at timestamptz [not null]
+  user_id uuid [not null]
+}
+
+Table user {
+  id uuid [pk, not null]
+  name text
+  email text [not null, unique]
+  username text [unique]
+  password text
+  emailVerified timestamp
+  image text
+}
+
+Table account {
+  userId uuid [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, providerAccountId) [pk]
+  }
+}
+
+Table verificationToken {
+  identifier text [not null]
+  token text [not null]
+  expires timestamp [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Ref lipi_folders_workspace_id_lipi_workspaces_id_fk: lipi_folders.workspace_id > lipi_workspaces.id [delete: cascade]
+
+Ref lipi_files_workspace_id_lipi_workspaces_id_fk: lipi_files.workspace_id > lipi_workspaces.id [delete: cascade]
+
+Ref lipi_files_folder_id_lipi_folders_id_fk: lipi_files.folder_id > lipi_folders.id [delete: cascade]
+
+Ref lipi_accounts_user_id_user_id_fk: lipi_accounts.user_id > user.id
+
+Ref lipi_prices_product_id_lipi_products_id_fk: lipi_prices.product_id > lipi_products.id
+
+Ref lipi_subscriptions_price_id_lipi_prices_id_fk: lipi_subscriptions.price_id > lipi_prices.id
+
+Ref lipi_collaborators_workspace_id_lipi_workspaces_id_fk: lipi_collaborators.workspace_id > lipi_workspaces.id [delete: cascade]
+
+Ref lipi_collaborators_user_id_user_id_fk: lipi_collaborators.user_id > user.id [delete: cascade]
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]

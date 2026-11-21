@@ -1,0 +1,18 @@
+Table User {
+  id text [pk, not null]
+  email text [not null]
+  Note: 'User'
+}
+
+Table Car {
+  id text [pk, not null]
+  make text [not null]
+  model text [not null]
+  year integer [not null]
+  color text [not null]
+  price real [not null]
+  mileage integer [not null]
+  fuelType text [not null]
+  transmission text [not null]
+  Note: 'Car'
+}

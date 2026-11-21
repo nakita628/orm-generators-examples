@@ -1,0 +1,625 @@
+Table session {
+  id bigserial [pk, increment, not null]
+  expiresAt timestamp [not null]
+  token text [not null, unique]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  ipAddress text
+  userAgent text
+  userId uuid [not null]
+}
+
+Table account {
+  id bigserial [pk, increment, not null]
+  accountId text [not null]
+  providerId text [not null]
+  userId uuid [not null]
+  accessToken text
+  refreshToken text
+  idToken text
+  accessTokenExpiresAt timestamp
+  refreshTokenExpiresAt timestamp
+  scope text
+  password text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table verification {
+  id bigserial [pk, increment, not null]
+  identifier text [not null]
+  value text [not null]
+  expiresAt timestamp [not null]
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table apiKey {
+  id bigserial [pk, increment, not null]
+  configId text [not null]
+  name text
+  start text
+  prefix text
+  key text [not null]
+  userId uuid [not null]
+  refillInterval integer
+  refillAmount integer
+  lastRefillAt timestamp
+  enabled boolean
+  rateLimitEnabled boolean
+  rateLimitTimeWindow integer
+  rateLimitMax integer
+  requestCount integer
+  remaining integer
+  lastRequest timestamp
+  expiresAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  permissions text
+  metadata text
+}
+
+Table board {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  name varchar [not null]
+  description text
+  slug varchar [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  importId bigint
+  workspaceId bigint [not null]
+  visibility board_visibility [not null]
+  type board_type [not null]
+  isArchived boolean [not null]
+  sourceBoardId bigint
+  indexes {
+    (isArchived) [name: 'board_is_archived_idx']
+    (visibility) [name: 'board_visibility_idx']
+    (type) [name: 'board_type_idx']
+    (sourceBoardId) [name: 'board_source_idx']
+    (workspaceId, slug) [unique, name: 'unique_slug_per_workspace']
+  }
+}
+
+Table user_board_favorites {
+  userId uuid [not null]
+  boardId bigint [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (userId, boardId) [pk]
+    (userId) [name: 'user_board_favorite_user_idx']
+    (boardId) [name: 'user_board_favorite_board_idx']
+  }
+}
+
+Table board_members {
+  boardId bigint [not null]
+  workspaceMemberId bigint [not null]
+  role board_member_role [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  indexes {
+    (boardId, workspaceMemberId) [pk]
+    (workspaceMemberId) [name: 'board_members_workspace_member_idx']
+  }
+}
+
+Table card {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  title text [not null]
+  description text
+  index integer [not null]
+  cardNumber integer
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  listId bigint [not null]
+  importId bigint
+  dueDate timestamp
+  indexes {
+    (listId, cardNumber) [name: 'card_list_number_idx']
+  }
+}
+
+Table card_activity {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  type card_activity_type [not null]
+  cardId bigint [not null]
+  fromIndex integer
+  toIndex integer
+  fromListId bigint
+  toListId bigint
+  labelId bigint
+  workspaceMemberId bigint
+  fromTitle text
+  toTitle text
+  fromDescription text
+  toDescription text
+  createdBy uuid
+  createdAt timestamp [not null]
+  commentId bigint
+  fromComment text
+  toComment text
+  fromDueDate timestamp
+  toDueDate timestamp
+  sourceBoardId bigint
+  attachmentId bigint
+  indexes {
+    (cardId, createdAt) [name: 'card_activity_card_created_at_idx']
+  }
+}
+
+Table _card_labels {
+  cardId bigint [not null]
+  labelId bigint [not null]
+  indexes {
+    (cardId, labelId) [pk]
+  }
+}
+
+Table _card_workspace_members {
+  cardId bigint [not null]
+  workspaceMemberId bigint [not null]
+  indexes {
+    (cardId, workspaceMemberId) [pk]
+  }
+}
+
+Table card_comments {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  comment text [not null]
+  cardId bigint [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  indexes {
+    (cardId) [name: 'card_comments_card_id_idx']
+  }
+}
+
+Table card_attachment {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  cardId bigint [not null]
+  filename varchar [not null]
+  originalFilename varchar [not null]
+  contentType varchar [not null]
+  size bigint [not null]
+  s3Key varchar [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  deletedAt timestamp
+  indexes {
+    (cardId, createdAt) [name: 'card_attachment_card_created_at_idx']
+  }
+}
+
+Table card_checklist {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  name varchar [not null]
+  index integer [not null]
+  cardId bigint [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  indexes {
+    (cardId, index) [name: 'card_checklist_card_index_idx']
+  }
+}
+
+Table card_checklist_item {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  title varchar [not null]
+  completed boolean [not null]
+  index integer [not null]
+  checklistId bigint [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  indexes {
+    (checklistId, index) [name: 'card_checklist_item_checklist_index_idx']
+  }
+}
+
+Table feedback {
+  id bigserial [pk, increment, not null]
+  feedback text [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  url text [not null]
+  reviewed boolean [not null]
+}
+
+Table import {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  source source [not null]
+  status status [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+}
+
+Table integration {
+  provider varchar [not null]
+  userId uuid [not null]
+  accessToken text [not null]
+  refreshToken varchar
+  expiresAt timestamp [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  indexes {
+    (userId, provider) [pk]
+  }
+}
+
+Table label {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  name varchar [not null]
+  colourCode varchar
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  boardId bigint [not null]
+  importId bigint
+  deletedAt timestamp
+  deletedBy uuid
+}
+
+Table list {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  name varchar [not null]
+  index integer [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  boardId bigint [not null]
+  importId bigint
+}
+
+Table notification {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  type notification_type [not null]
+  userId uuid [not null]
+  cardId bigint
+  commentId bigint
+  workspaceId bigint
+  metadata text
+  readAt timestamp
+  createdAt timestamp [not null]
+  deletedAt timestamp
+  indexes {
+    (userId, deletedAt) [name: 'notification_user_deleted_idx']
+    (userId, readAt, deletedAt) [name: 'notification_user_read_deleted_idx']
+    (userId, type, cardId) [name: 'notification_user_type_card_idx']
+    (userId, type, workspaceId) [name: 'notification_user_type_workspace_idx']
+    (userId, createdAt) [name: 'notification_user_created_idx']
+  }
+}
+
+Table workspace_roles {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  workspaceId bigint [not null]
+  name varchar [not null]
+  description varchar
+  hierarchyLevel integer [not null]
+  isSystem boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  indexes {
+    (workspaceId, name) [unique, name: 'unique_role_per_workspace']
+    (workspaceId) [name: 'workspace_roles_workspace_idx']
+  }
+}
+
+Table workspace_role_permissions {
+  id bigserial [pk, increment, not null]
+  workspaceRoleId bigint [not null]
+  permission varchar [not null]
+  granted boolean [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (workspaceRoleId, permission) [unique, name: 'unique_role_permission']
+    (workspaceRoleId) [name: 'role_permissions_role_idx']
+  }
+}
+
+Table workspace_member_permissions {
+  id bigserial [pk, increment, not null]
+  workspaceMemberId bigint [not null]
+  permission varchar [not null]
+  granted boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  indexes {
+    (workspaceMemberId, permission) [unique, name: 'unique_member_permission']
+    (workspaceMemberId) [name: 'permission_member_idx']
+  }
+}
+
+Table subscription {
+  id bigserial [pk, increment, not null]
+  plan varchar [not null]
+  referenceId varchar
+  stripeCustomerId varchar
+  stripeSubscriptionId varchar
+  status varchar [not null]
+  periodStart timestamp
+  periodEnd timestamp
+  cancelAtPeriodEnd boolean
+  cancelAt timestamp
+  canceledAt timestamp
+  endedAt timestamp
+  billingInterval varchar
+  stripeScheduleId varchar
+  seats integer
+  unlimitedSeats boolean [not null]
+  trialStart timestamp
+  trialEnd timestamp
+  partnerLicenseKey varchar
+  partnerTier integer
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table user {
+  id uuid [pk, not null]
+  name varchar
+  email varchar [not null, unique]
+  emailVerified boolean [not null]
+  image varchar
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  stripeCustomerId varchar
+}
+
+Table workspace_webhooks {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  workspaceId bigint [not null]
+  name varchar [not null]
+  url varchar [not null]
+  secret text
+  events text [not null]
+  active boolean [not null]
+  createdBy uuid [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  indexes {
+    (workspaceId) [name: 'workspace_webhooks_workspace_idx']
+  }
+}
+
+Table workspace_invite_links {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  workspaceId bigint [not null]
+  code varchar [not null, unique]
+  status invite_link_status [not null]
+  expiresAt timestamp
+  createdAt timestamp [not null]
+  createdBy uuid
+  updatedAt timestamp
+  updatedBy uuid
+}
+
+Table workspace {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  name varchar [not null]
+  description text
+  slug varchar [not null, unique]
+  plan workspace_plan [not null]
+  showEmailsToMembers boolean [not null]
+  weekStartDay integer [not null]
+  cardPrefix varchar [not null]
+  cardCounter integer [not null]
+  createdBy uuid
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  indexes {
+    (cardPrefix) [name: 'workspace_card_prefix_idx']
+  }
+}
+
+Table workspace_members {
+  id bigserial [pk, increment, not null]
+  publicId varchar [not null, unique]
+  email varchar [not null]
+  userId uuid
+  workspaceId bigint [not null]
+  createdBy uuid [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp
+  deletedAt timestamp
+  deletedBy uuid
+  role role [not null, note: 'Legacy role enum']
+  roleId bigint
+  status member_status [not null]
+}
+
+Table workspace_slugs {
+  slug varchar [not null, unique]
+  type slug_type [not null]
+}
+
+Table workspace_slug_checks {
+  id bigserial [pk, increment, not null]
+  slug varchar [not null]
+  available boolean [not null]
+  reserved boolean [not null]
+  workspaceId bigint
+  createdBy uuid
+  createdAt timestamp [not null]
+}
+
+Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]
+
+Ref apiKey_userId_user_id_fk: apiKey.userId > user.id [delete: cascade]
+
+Ref board_createdBy_user_id_fk: board.createdBy > user.id [delete: set null]
+
+Ref board_deletedBy_user_id_fk: board.deletedBy > user.id [delete: set null]
+
+Ref board_importId_import_id_fk: board.importId > import.id
+
+Ref board_workspaceId_workspace_id_fk: board.workspaceId > workspace.id [delete: cascade]
+
+Ref user_board_favorites_userId_user_id_fk: user_board_favorites.userId > user.id [delete: cascade]
+
+Ref user_board_favorites_boardId_board_id_fk: user_board_favorites.boardId > board.id [delete: cascade]
+
+Ref board_members_boardId_board_id_fk: board_members.boardId > board.id [delete: cascade]
+
+Ref board_members_workspaceMemberId_workspace_members_id_fk: board_members.workspaceMemberId > workspace_members.id [delete: cascade]
+
+Ref board_members_createdBy_user_id_fk: board_members.createdBy > user.id [delete: set null]
+
+Ref card_createdBy_user_id_fk: card.createdBy > user.id [delete: set null]
+
+Ref card_deletedBy_user_id_fk: card.deletedBy > user.id [delete: set null]
+
+Ref card_listId_list_id_fk: card.listId > list.id [delete: cascade]
+
+Ref card_importId_import_id_fk: card.importId > import.id
+
+Ref card_activity_cardId_card_id_fk: card_activity.cardId > card.id [delete: cascade]
+
+Ref card_activity_fromListId_list_id_fk: card_activity.fromListId > list.id [delete: cascade]
+
+Ref card_activity_toListId_list_id_fk: card_activity.toListId > list.id [delete: cascade]
+
+Ref card_activity_labelId_label_id_fk: card_activity.labelId > label.id [delete: cascade]
+
+Ref card_activity_workspaceMemberId_workspace_members_id_fk: card_activity.workspaceMemberId > workspace_members.id [delete: set null]
+
+Ref card_activity_createdBy_user_id_fk: card_activity.createdBy > user.id [delete: set null]
+
+Ref card_activity_commentId_card_comments_id_fk: card_activity.commentId > card_comments.id [delete: cascade]
+
+Ref card_activity_sourceBoardId_board_id_fk: card_activity.sourceBoardId > board.id [delete: set null]
+
+Ref card_activity_attachmentId_card_attachment_id_fk: card_activity.attachmentId > card_attachment.id [delete: cascade]
+
+Ref _card_labels_cardId_card_id_fk: _card_labels.cardId > card.id [delete: cascade]
+
+Ref _card_labels_labelId_label_id_fk: _card_labels.labelId > label.id [delete: cascade]
+
+Ref _card_workspace_members_cardId_card_id_fk: _card_workspace_members.cardId > card.id [delete: cascade]
+
+Ref _card_workspace_members_workspaceMemberId_workspace_members_id_fk: _card_workspace_members.workspaceMemberId > workspace_members.id [delete: cascade]
+
+Ref card_comments_cardId_card_id_fk: card_comments.cardId > card.id [delete: cascade]
+
+Ref card_comments_createdBy_user_id_fk: card_comments.createdBy > user.id [delete: set null]
+
+Ref card_comments_deletedBy_user_id_fk: card_comments.deletedBy > user.id [delete: set null]
+
+Ref card_attachment_cardId_card_id_fk: card_attachment.cardId > card.id [delete: cascade]
+
+Ref card_attachment_createdBy_user_id_fk: card_attachment.createdBy > user.id [delete: set null]
+
+Ref card_checklist_cardId_card_id_fk: card_checklist.cardId > card.id [delete: cascade]
+
+Ref card_checklist_createdBy_user_id_fk: card_checklist.createdBy > user.id [delete: set null]
+
+Ref card_checklist_deletedBy_user_id_fk: card_checklist.deletedBy > user.id [delete: set null]
+
+Ref card_checklist_item_checklistId_card_checklist_id_fk: card_checklist_item.checklistId > card_checklist.id [delete: cascade]
+
+Ref card_checklist_item_createdBy_user_id_fk: card_checklist_item.createdBy > user.id [delete: set null]
+
+Ref card_checklist_item_deletedBy_user_id_fk: card_checklist_item.deletedBy > user.id [delete: set null]
+
+Ref feedback_createdBy_user_id_fk: feedback.createdBy > user.id [delete: set null]
+
+Ref import_createdBy_user_id_fk: import.createdBy > user.id [delete: set null]
+
+Ref integration_userId_user_id_fk: integration.userId > user.id [delete: cascade]
+
+Ref label_createdBy_user_id_fk: label.createdBy > user.id [delete: set null]
+
+Ref label_boardId_board_id_fk: label.boardId > board.id [delete: cascade]
+
+Ref label_importId_import_id_fk: label.importId > import.id
+
+Ref label_deletedBy_user_id_fk: label.deletedBy > user.id [delete: set null]
+
+Ref list_createdBy_user_id_fk: list.createdBy > user.id [delete: set null]
+
+Ref list_deletedBy_user_id_fk: list.deletedBy > user.id [delete: set null]
+
+Ref list_boardId_board_id_fk: list.boardId > board.id [delete: cascade]
+
+Ref list_importId_import_id_fk: list.importId > import.id
+
+Ref notification_userId_user_id_fk: notification.userId > user.id [delete: cascade]
+
+Ref notification_cardId_card_id_fk: notification.cardId > card.id [delete: cascade]
+
+Ref notification_commentId_card_comments_id_fk: notification.commentId > card_comments.id [delete: cascade]
+
+Ref notification_workspaceId_workspace_id_fk: notification.workspaceId > workspace.id [delete: cascade]
+
+Ref workspace_roles_workspaceId_workspace_id_fk: workspace_roles.workspaceId > workspace.id [delete: cascade]
+
+Ref workspace_role_permissions_workspaceRoleId_workspace_roles_id_fk: workspace_role_permissions.workspaceRoleId > workspace_roles.id [delete: cascade]
+
+Ref subscription_referenceId_workspace_publicId_fk: subscription.referenceId > workspace.publicId [delete: set null]
+
+Ref workspace_webhooks_workspaceId_workspace_id_fk: workspace_webhooks.workspaceId > workspace.id [delete: cascade]
+
+Ref workspace_webhooks_createdBy_user_id_fk: workspace_webhooks.createdBy > user.id [delete: cascade]
+
+Ref workspace_invite_links_workspaceId_workspace_id_fk: workspace_invite_links.workspaceId > workspace.id [delete: cascade]
+
+Ref workspace_invite_links_createdBy_user_id_fk: workspace_invite_links.createdBy > user.id [delete: set null]
+
+Ref workspace_invite_links_updatedBy_user_id_fk: workspace_invite_links.updatedBy > user.id [delete: set null]
+
+Ref workspace_createdBy_user_id_fk: workspace.createdBy > user.id [delete: set null]
+
+Ref workspace_deletedBy_user_id_fk: workspace.deletedBy > user.id [delete: set null]
+
+Ref workspace_members_userId_user_id_fk: workspace_members.userId > user.id [delete: set null]
+
+Ref workspace_members_workspaceId_workspace_id_fk: workspace_members.workspaceId > workspace.id [delete: cascade]
+
+Ref workspace_members_deletedBy_user_id_fk: workspace_members.deletedBy > user.id [delete: set null]
+
+Ref workspace_members_roleId_workspace_roles_id_fk: workspace_members.roleId > workspace_roles.id [delete: restrict]
+
+Ref workspace_slug_checks_workspaceId_workspace_id_fk: workspace_slug_checks.workspaceId > workspace.id
+
+Ref workspace_slug_checks_createdBy_user_id_fk: workspace_slug_checks.createdBy > user.id [delete: set null]
+
+Ref workspace_members_createdBy_user_id: workspace_members.createdBy > user.id
+
+Ref workspace_member_permissions_workspaceMemberId_workspace_members_id: workspace_member_permissions.workspaceMemberId > workspace_members.id

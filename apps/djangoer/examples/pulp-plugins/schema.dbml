@@ -1,0 +1,3506 @@
+Enum AppStatusAppType {
+  "api"
+  "content"
+  "worker"
+}
+
+Enum TaskState {
+  "waiting"
+  "skipped"
+  "running"
+  "completed"
+  "failed"
+  "canceled"
+  "canceling"
+}
+
+Enum RemotePolicy {
+  "immediate"
+  "on_demand"
+  "streamed"
+}
+
+Enum RepositoryVersionContentDetailsCountType {
+  "A"
+  "P"
+  "R"
+}
+
+Enum FilesystemExporterMethod {
+  "write"
+  "hardlink"
+  "symlink"
+}
+
+Enum ProgressReportState {
+  "waiting"
+  "skipped"
+  "running"
+  "completed"
+  "failed"
+  "canceled"
+  "canceling"
+}
+
+Enum UpstreamPulpRemotePolicy {
+  "immediate"
+  "on_demand"
+  "streamed"
+}
+
+Enum UpstreamPulpPolicy {
+  "all"
+  "labeled"
+  "nodelete"
+}
+
+Enum ManifestMediaType {
+  "application/vnd.docker.distribution.manifest.v1+json"
+  "application/vnd.docker.distribution.manifest.v2+json"
+  "application/vnd.docker.distribution.manifest.list.v2+json"
+  "application/vnd.oci.image.manifest.v1+json"
+  "application/vnd.oci.image.index.v1+json"
+}
+
+Enum ManifestSignatureType {
+  "atomic"
+}
+
+Enum PythonPackageContentPackagetype {
+  "bdist_dmg"
+  "bdist_dumb"
+  "bdist_egg"
+  "bdist_msi"
+  "bdist_rpm"
+  "bdist_wheel"
+  "bdist_wininst"
+  "sdist"
+}
+
+Enum PythonRemotePackageTypes {
+  "bdist_dmg"
+  "bdist_dumb"
+  "bdist_egg"
+  "bdist_msi"
+  "bdist_rpm"
+  "bdist_wheel"
+  "bdist_wininst"
+  "sdist"
+}
+
+Enum PythonRemoteExcludePlatforms {
+  "windows"
+  "macos"
+  "freebsd"
+  "linux"
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  indexes {
+    (name) [name: 'auth_group_name_a6ea08ec_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.
+
+Proxy models: Group.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login "timestamp with time zone"
+  is_superuser boolean [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff boolean [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active boolean [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (username) [name: 'auth_user_username_6821ab7c_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date "timestamp with time zone" [not null]
+
+  indexes {
+    (session_key) [name: 'django_session_session_key_c0390e0f_like', note: 'varchar_pattern_ops']
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table core_accesspolicy {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  creation_hooks jsonb
+  statements jsonb [not null]
+  viewset_name text [unique, not null]
+  customized boolean [default: false, not null]
+  queryset_scoping jsonb
+
+  indexes {
+    (viewset_name) [name: 'core_accesspolicy_viewset_name_30d4303a_like', note: 'text_pattern_ops']
+  }
+
+  Note: '''A model storing a viewset authorization policy and permission assignment of new objects created.
+
+Fields:
+
+    creation_hooks (models.JSONField): A list of dictionaries identifying callables on the
+        `pulpcore.plugin.access_policy.AccessPolicyFromDB` which can add user or group roles
+        for newly created objects. This is a nullable field due to not all endpoints creating
+        objects.
+    statements (models.JSONField): A list of `drf-access-policy` statements.
+    viewset_name (models.TextField): The name of the viewset this instance controls
+        authorization for.
+    customized (BooleanField): False if the AccessPolicy has been user-modified. True otherwise.
+        Defaults to False.
+    queryset_scoping (models.JSONField): A dictionary identifying a callable to perform the
+        queryset scoping. This field can be null if the user doesn\'t want to perform scoping.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_domain {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name varchar(50) [unique, not null]
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+  description text
+  storage_class text [not null]
+  storage_settings jsonb [not null, note: 'default in Python: dict()']
+  redirect_to_object_storage boolean [default: true, not null]
+  hide_guarded_distributions boolean [default: false, not null]
+  default_content_guard_id uuid
+
+  indexes {
+    (name) [name: 'core_domain_name_9c44b9f9_like', note: 'varchar_pattern_ops']
+    (default_content_guard_id) [name: 'core_domain_default_content_guard_id_7d14cf9d']
+  }
+
+  Note: '''A namespace-like object applied to most Pulp models to allow for multi-tenancy.
+
+Pulp models have a domain as a part of their uniqueness-constraint to provide isolation from
+other domains. Domains each have their own storage backend for storing and deduplicating
+Artifacts. Roles on a domain apply to all the objects in that domain.
+
+Domains are an opt-in feature so Pulp models need to have their domain relation set the default
+to the "default" Domain when not enabled. Also, plugins must add domain foreign-keys to their
+models to be compatible with domains.
+
+Fields:
+    name (models.SlugField): Unique name of domain
+    pulp_labels (HStoreField): Dictionary of string values
+    description (models.TextField): Optional description of domain
+    storage_class (models.TextField): Required storage class for backend
+    storage_settings (EncryptedJSONField): Settings needed to configure storage backend
+    redirect_to_object_storage (models.BooleanField): Redirect to object storage in content app
+    hide_guarded_distributions (models.BooleanField): Hide guarded distributions in content app
+
+Relations:
+    default_content_guard (models.ForeignKey): An optional content-guard automatically
+        assigned to new distributions created within this domain.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_alternatecontentsource {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  last_refreshed "timestamp with time zone"
+  remote_id uuid
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_alternatecontentsource_pulp_type_b0c4d25b']
+    (pulp_type) [name: 'core_alternatecontentsource_pulp_type_b0c4d25b_like', note: 'text_pattern_ops']
+    (name) [name: 'core_alternatecontentsource_name_27800686']
+    (name) [name: 'core_alternatecontentsource_name_27800686_like', note: 'text_pattern_ops']
+    (remote_id) [name: 'core_alternatecontentsource_remote_id_b5aed482']
+    (pulp_domain_id) [name: 'core_alternatecontentsource_pulp_domain_id_93a30857']
+    (name, pulp_domain_id) [unique, name: 'core_alternatecontentsource_name_pulp_domain_id_bd06e74c_uniq']
+  }
+
+  Note: '''Alternate sources of content.
+
+Fields:
+
+    name (models.TextField): The alternate content source name.
+    last_refreshed (models.DateTimeField): Last refreshed date.
+    url (models.TextField): URL of Alternate Content Source.
+    pulp_domain (models.ForeignKeyField): The domain the ACS is a part of.
+
+Relations:
+
+    remote (models.ForeignKeyField): Associated remote
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_alternatecontentsourcepath {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  alternate_content_source_id uuid
+  path text [default: null, not null]
+  repository_id uuid
+
+  indexes {
+    (alternate_content_source_id) [name: 'core_alternatecontentsourc_alternate_content_source_i_c3f7a60c']
+    (repository_id) [name: 'core_alternatecontentsourcepath_repository_id_22e62ad9']
+    (alternate_content_source_id, path) [unique, name: 'core_alternatecontentsou_alternate_content_source_056800df_uniq']
+  }
+
+  Note: '''Alternate sources of content.
+
+Fields:
+
+    path (models.TextField): The alternate content source name.
+
+Relations:
+
+    alternate_content_source (models.ForeignKeyField): Associated AlternateContentSource
+    repository (models.ForeignKeyField): Associated repository
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_artifact {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  file varchar(255) [not null]
+  size bigint [not null]
+  md5 varchar(32)
+  sha1 varchar(40)
+  sha224 varchar(56)
+  sha256 varchar(64) [not null]
+  sha384 varchar(96)
+  sha512 varchar(128)
+  timestamp_of_interest "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (md5) [name: 'core_artifact_md5_8de3b667']
+    (md5) [name: 'core_artifact_md5_8de3b667_like', note: 'varchar_pattern_ops']
+    (sha1) [name: 'core_artifact_sha1_65ed6874']
+    (sha1) [name: 'core_artifact_sha1_65ed6874_like', note: 'varchar_pattern_ops']
+    (sha224) [name: 'core_artifact_sha224_f1a1edf3']
+    (sha224) [name: 'core_artifact_sha224_f1a1edf3_like', note: 'varchar_pattern_ops']
+    (sha256) [name: 'core_artifact_sha256_ee7b97eb']
+    (sha256) [name: 'core_artifact_sha256_ee7b97eb_like', note: 'varchar_pattern_ops']
+    (sha384) [name: 'core_artifact_sha384_f484b46a']
+    (sha384) [name: 'core_artifact_sha384_f484b46a_like', note: 'varchar_pattern_ops']
+    (sha512) [name: 'core_artifact_sha512_39254488']
+    (sha512) [name: 'core_artifact_sha512_39254488_like', note: 'varchar_pattern_ops']
+    (pulp_domain_id) [name: 'core_artifact_pulp_domain_id_ff16c936']
+    (sha256, pulp_domain_id) [unique, name: 'core_artifact_sha256_pulp_domain_id_8efff3e8_uniq']
+    (sha384, pulp_domain_id) [unique, name: 'core_artifact_sha384_pulp_domain_id_46f3e0f5_uniq']
+    (sha512, pulp_domain_id) [unique, name: 'core_artifact_sha512_pulp_domain_id_5e5f2eb0_uniq']
+    (pulp_domain_id, size) [name: 'artifact_domain_size_index']
+  }
+
+  Note: '''A file associated with a piece of content.
+
+When calling `save()` on an Artifact, if the file is not stored in Django\'s storage backend, it
+is moved into place then.
+
+Artifact is compatible with Django\'s `bulk_create()` method.
+
+Fields:
+
+    file (pulpcore.app.models.fields.ArtifactFileField): The stored file. This field should
+        be set using an absolute path to a temporary file.
+        It also accepts `class:django.core.files.File`.
+    size (models.BigIntegerField): The size of the file in bytes.
+    md5 (models.CharField): The MD5 checksum of the file.
+    sha1 (models.CharField): The SHA-1 checksum of the file.
+    sha224 (models.CharField): The SHA-224 checksum of the file.
+    sha256 (models.CharField): The SHA-256 checksum of the file (REQUIRED).
+    sha384 (models.CharField): The SHA-384 checksum of the file.
+    sha512 (models.CharField): The SHA-512 checksum of the file.
+    timestamp_of_interest (models.DateTimeField): timestamp that prevents orphan cleanup.
+    pulp_domain (models.ForeignKey): The domain the artifact is a part of.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_pulptemporaryfile {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  file varchar(255) [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'core_pulptemporaryfile_pulp_domain_id_3f0ad70e']
+  }
+
+  Note: '''A temporary file saved to the storage backend.
+
+Commonly used to pass data to one or more tasks.
+
+Fields:
+
+    file (pulpcore.app.models.fields.ArtifactFileField): The stored file. This field should
+        be set using an absolute path to a temporary file.
+        It also accepts `class:django.core.files.File`.
+
+Relations:
+    pulp_domain (pulpcore.app.models.Domain): The domain this temp file is a part of.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_content {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  upstream_id uuid
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+  timestamp_of_interest "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_content_pulp_type_ceada3d6']
+    (pulp_type) [name: 'core_content_pulp_type_ceada3d6_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_content_pulp_domain_id_1e092d27']
+    (pulp_labels) [name: 'pulp_labels_gin_index', note: 'using gin']
+  }
+
+  Note: '''A piece of managed content.
+
+Fields:
+    upstream_id (models.UUIDField) : identifier of content imported from an \'upstream\' Pulp
+    timestamp_of_interest (models.DateTimeField): timestamp that prevents orphan cleanup
+    pulp_labels (HStoreField): Dictionary of string values.
+
+Relations:
+
+    _artifacts (models.ManyToManyField): Artifacts related to Content through ContentArtifact
+    pulp_domain (models.ForeignKey): Pulp Domain this content lives in
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_contentartifact {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  artifact_id uuid
+  content_id uuid [not null]
+  relative_path text [not null]
+
+  indexes {
+    (artifact_id) [name: 'core_contentartifact_artifact_id_f5d9a66b']
+    (content_id) [name: 'core_contentartifact_content_id_04d8a3d5']
+    (content_id, relative_path) [unique, name: 'core_contentartifact_content_id_relative_path_d2ef8231_uniq']
+    (relative_path) [name: 'core_conten_relativ_ca1ae5_idx']
+  }
+
+  Note: '''A relationship between a Content and an Artifact.
+
+Serves as a through model for the \'_artifacts\' ManyToManyField in Content.
+Artifact is protected from deletion if it\'s present in a ContentArtifact relationship.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_remoteartifact {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  url text [not null]
+  size bigint
+  md5 varchar(32)
+  sha1 varchar(40)
+  sha224 varchar(56)
+  sha256 varchar(64)
+  sha384 varchar(96)
+  sha512 varchar(128)
+  failed_at "timestamp with time zone"
+  content_artifact_id uuid [not null]
+  remote_id uuid [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (md5) [name: 'core_remoteartifact_md5_57731448']
+    (md5) [name: 'core_remoteartifact_md5_57731448_like', note: 'varchar_pattern_ops']
+    (sha1) [name: 'core_remoteartifact_sha1_851e329a']
+    (sha1) [name: 'core_remoteartifact_sha1_851e329a_like', note: 'varchar_pattern_ops']
+    (sha224) [name: 'core_remoteartifact_sha224_57d86c5d']
+    (sha224) [name: 'core_remoteartifact_sha224_57d86c5d_like', note: 'varchar_pattern_ops']
+    (sha256) [name: 'core_remoteartifact_sha256_dd4b07a2']
+    (sha256) [name: 'core_remoteartifact_sha256_dd4b07a2_like', note: 'varchar_pattern_ops']
+    (sha384) [name: 'core_remoteartifact_sha384_fd48993e']
+    (sha384) [name: 'core_remoteartifact_sha384_fd48993e_like', note: 'varchar_pattern_ops']
+    (sha512) [name: 'core_remoteartifact_sha512_de82fc24']
+    (sha512) [name: 'core_remoteartifact_sha512_de82fc24_like', note: 'varchar_pattern_ops']
+    (content_artifact_id) [name: 'core_remoteartifact_content_artifact_id_54377af5']
+    (remote_id) [name: 'core_remoteartifact_remote_id_af9354ce']
+    (pulp_domain_id) [name: 'core_remoteartifact_pulp_domain_id_507b2f03']
+    (content_artifact_id, remote_id, pulp_domain_id) [unique, name: 'core_remoteartifact_content_artifact_id_remo_f11e4ef2_uniq']
+  }
+
+  Note: '''Represents a content artifact that is provided by a remote (external) repository.
+
+Remotes that want to support deferred download policies should use this model to store
+information required for downloading an Artifact at some point in the future. At a minimum this
+includes the URL, the ContentArtifact, and the Remote that created it. It can also store
+expected size and any expected checksums.
+
+Fields:
+
+    url (models.TextField): The URL where the artifact can be retrieved.
+    size (models.BigIntegerField): The expected size of the file in bytes.
+    md5 (models.CharField): The expected MD5 checksum of the file.
+    sha1 (models.CharField): The expected SHA-1 checksum of the file.
+    sha224 (models.CharField): The expected SHA-224 checksum of the file.
+    sha256 (models.CharField): The expected SHA-256 checksum of the file.
+    sha384 (models.CharField): The expected SHA-384 checksum of the file.
+    sha512 (models.CharField): The expected SHA-512 checksum of the file.
+    failed_at (models.DateTimeField): The datetime of last download attempt failure.
+
+Relations:
+
+    content_artifact (pulpcore.app.models.ForeignKey)
+        ContentArtifact associated with this RemoteArtifact.
+    remote (django.db.models.ForeignKey) Remote that created the
+        RemoteArtifact.
+    pulp_domain (django.db.models.ForeignKey) Domain the RemoteArtifact is a part of.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_signingservice {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [unique, not null]
+  public_key text [not null]
+  pubkey_fingerprint text [not null]
+  script text [not null]
+
+  indexes {
+    (name) [name: 'core_signingservice_name_8c4cfb12_like', note: 'text_pattern_ops']
+  }
+
+  Note: '''A model used for producing signatures.
+
+Fields:
+    name (models.TextField):
+        A unique name describing a script (or executable) used for signing.
+    public_key (models.TextField):
+        The value of the public key.
+    script (models.TextField):
+        An absolute path to an external signing script (or executable).
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_asciiarmoreddetachedsigningservice {
+  signingservice_ptr_id uuid [pk, note: 'parent link: a AsciiArmoredDetachedSigningService is a SigningService (multi-table inheritance)']
+
+  Note: '''A model used for creating detached ASCII armored signatures.'''
+}
+
+Table core_appstatus {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  app_type AppStatusAppType [not null]
+  name text [not null]
+  versions hstore [not null, note: 'default in Python: dict()']
+  ttl interval [not null]
+  last_heartbeat "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  Note: '''Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_role {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [unique, not null]
+  description text
+  locked boolean [default: false, not null]
+
+  indexes {
+    (name) [name: 'core_role_name_ca4cd9c7_like', note: 'text_pattern_ops']
+  }
+
+  Note: '''A model for the "role" part in RBAC.
+
+Fields:
+
+    name (models.TextField): Unique name of the role.
+    locked (models.BooleanField): Indicator for plugin managed role.
+
+Relations:
+
+    permissions (models.ManyToManyField): Permissions to be granted via this role.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_userrole {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  user_id integer [not null]
+  role_id uuid [not null]
+  content_type_id integer
+  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.user_roles, Domain.user_roles, AlternateContentSource.user_roles, AlternateContentSourcePath.user_roles, Artifact.user_roles, PulpTemporaryFile.user_roles, Content.user_roles, ContentArtifact.user_roles, RemoteArtifact.user_roles, SigningService.user_roles, AsciiArmoredDetachedSigningService.user_roles, AppStatus.user_roles, core.Role.user_roles, UserRole.user_roles, GroupRole.user_roles, ProfileArtifact.user_roles, Task.user_roles, TaskGroup.user_roles, CreatedResource.user_roles, TaskSchedule.user_roles, Repository.user_roles, Remote.user_roles, RepositoryContent.user_roles, RepositoryVersion.user_roles, Export.user_roles, ExportedResource.user_roles, Exporter.user_roles, FilesystemExport.user_roles, FilesystemExporter.user_roles, PulpExport.user_roles, PulpExporter.user_roles, Import.user_roles, Importer.user_roles, PulpImporter.user_roles, PulpImporterRepository.user_roles, PulpImport.user_roles, Publication.user_roles, PublishedArtifact.user_roles, PublishedMetadata.user_roles, ContentGuard.user_roles, RBACContentGuard.user_roles, ContentRedirectContentGuard.user_roles, HeaderContentGuard.user_roles, EnvVarHeaderContentGuard.user_roles, CompositeContentGuard.user_roles, Distribution.user_roles, ArtifactDistribution.user_roles, DistributedPublication.user_roles, core.Upload.user_roles, UploadChunk.user_roles, VulnerabilityReport.user_roles, ProgressReport.user_roles, GroupProgressReport.user_roles, UpstreamPulp.user_roles, OpenPGPPublicKey.user_roles, OpenPGPPublicSubkey.user_roles, OpenPGPUserID.user_roles, OpenPGPUserAttribute.user_roles, OpenPGPSignature.user_roles, OpenPGPKeyring.user_roles, OpenPGPDistribution.user_roles, Blob.user_roles, Manifest.user_roles, Tag.user_roles, ManifestSignature.user_roles, ContainerNamespace.user_roles, ContainerRemote.user_roles, ContainerPullThroughRemote.user_roles, ManifestSigningService.user_roles, ContainerRepository.user_roles, ContainerPushRepository.user_roles, ContainerPullThroughDistribution.user_roles, ContainerDistribution.user_roles, container.Upload.user_roles, RHSMCertGuard.user_roles, X509CertGuard.user_roles, FileContent.user_roles, FileRemote.user_roles, FileGitRemote.user_roles, FileRepository.user_roles, FilePublication.user_roles, FileDistribution.user_roles, FileAlternateContentSource.user_roles, ansible.Role.user_roles, Collection.user_roles, AnsibleNamespace.user_roles, CollectionVersion.user_roles, CollectionVersionMark.user_roles, CollectionVersionSignature.user_roles, AnsibleNamespaceMetadata.user_roles, DownloadLog.user_roles, CollectionDownloadCount.user_roles, RoleRemote.user_roles, CollectionRemote.user_roles, GitRemote.user_roles, AnsibleCollectionDeprecated.user_roles, AnsibleRepository.user_roles, AnsibleDistribution.user_roles, PythonDistribution.user_roles, PythonPackageContent.user_roles, PackageProvenance.user_roles, PackageYank.user_roles, PythonPublication.user_roles, PythonRemote.user_roles, PythonRepository.user_roles, PythonBlocklistEntry.user_roles)']
+  domain_id uuid
+
+  indexes {
+    (user_id) [name: 'core_userrole_user_id_aca63c51']
+    (role_id) [name: 'core_userrole_role_id_8272b20d']
+    (content_type_id) [name: 'core_userrole_content_type_id_a2ff8402']
+    (domain_id) [name: 'core_userrole_domain_id_f78b1c11']
+    (user_id, role_id, content_type_id, object_id, domain_id) [unique, name: 'core_userrole_user_id_role_id_content__cbfdaacc_uniq']
+    (object_id) [name: 'core_userro_object__adb04a_idx']
+    (content_type_id, object_id) [name: 'core_userro_content_5c0477_idx']
+  }
+
+  Note: '''Join table for user to role associations with optional content object.
+
+Relations:
+
+    user (models.ForeignKey): User to grant permissions to.
+    role (models.ForeignKey): Role to select granted permissions from.
+    content_object (GenericForeignKey): Optional object to assert permissions on.
+    domain (models.ForeignKey): Domain these permissions apply on, mutually exclusive with
+        content_object
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_grouprole {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  group_id integer [not null]
+  role_id uuid [not null]
+  content_type_id integer
+  object_id text [note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from AccessPolicy.group_roles, Domain.group_roles, AlternateContentSource.group_roles, AlternateContentSourcePath.group_roles, Artifact.group_roles, PulpTemporaryFile.group_roles, Content.group_roles, ContentArtifact.group_roles, RemoteArtifact.group_roles, SigningService.group_roles, AsciiArmoredDetachedSigningService.group_roles, AppStatus.group_roles, core.Role.group_roles, UserRole.group_roles, GroupRole.group_roles, ProfileArtifact.group_roles, Task.group_roles, TaskGroup.group_roles, CreatedResource.group_roles, TaskSchedule.group_roles, Repository.group_roles, Remote.group_roles, RepositoryContent.group_roles, RepositoryVersion.group_roles, Export.group_roles, ExportedResource.group_roles, Exporter.group_roles, FilesystemExport.group_roles, FilesystemExporter.group_roles, PulpExport.group_roles, PulpExporter.group_roles, Import.group_roles, Importer.group_roles, PulpImporter.group_roles, PulpImporterRepository.group_roles, PulpImport.group_roles, Publication.group_roles, PublishedArtifact.group_roles, PublishedMetadata.group_roles, ContentGuard.group_roles, RBACContentGuard.group_roles, ContentRedirectContentGuard.group_roles, HeaderContentGuard.group_roles, EnvVarHeaderContentGuard.group_roles, CompositeContentGuard.group_roles, Distribution.group_roles, ArtifactDistribution.group_roles, DistributedPublication.group_roles, core.Upload.group_roles, UploadChunk.group_roles, VulnerabilityReport.group_roles, ProgressReport.group_roles, GroupProgressReport.group_roles, UpstreamPulp.group_roles, OpenPGPPublicKey.group_roles, OpenPGPPublicSubkey.group_roles, OpenPGPUserID.group_roles, OpenPGPUserAttribute.group_roles, OpenPGPSignature.group_roles, OpenPGPKeyring.group_roles, OpenPGPDistribution.group_roles, Blob.group_roles, Manifest.group_roles, Tag.group_roles, ManifestSignature.group_roles, ContainerNamespace.group_roles, ContainerRemote.group_roles, ContainerPullThroughRemote.group_roles, ManifestSigningService.group_roles, ContainerRepository.group_roles, ContainerPushRepository.group_roles, ContainerPullThroughDistribution.group_roles, ContainerDistribution.group_roles, container.Upload.group_roles, RHSMCertGuard.group_roles, X509CertGuard.group_roles, FileContent.group_roles, FileRemote.group_roles, FileGitRemote.group_roles, FileRepository.group_roles, FilePublication.group_roles, FileDistribution.group_roles, FileAlternateContentSource.group_roles, ansible.Role.group_roles, Collection.group_roles, AnsibleNamespace.group_roles, CollectionVersion.group_roles, CollectionVersionMark.group_roles, CollectionVersionSignature.group_roles, AnsibleNamespaceMetadata.group_roles, DownloadLog.group_roles, CollectionDownloadCount.group_roles, RoleRemote.group_roles, CollectionRemote.group_roles, GitRemote.group_roles, AnsibleCollectionDeprecated.group_roles, AnsibleRepository.group_roles, AnsibleDistribution.group_roles, PythonDistribution.group_roles, PythonPackageContent.group_roles, PackageProvenance.group_roles, PackageYank.group_roles, PythonPublication.group_roles, PythonRemote.group_roles, PythonRepository.group_roles, PythonBlocklistEntry.group_roles)']
+  domain_id uuid
+
+  indexes {
+    (group_id) [name: 'core_grouprole_group_id_09264d71']
+    (role_id) [name: 'core_grouprole_role_id_3c2c3564']
+    (content_type_id) [name: 'core_grouprole_content_type_id_a80c1cfc']
+    (domain_id) [name: 'core_grouprole_domain_id_9644db4b']
+    (group_id, role_id, content_type_id, object_id, domain_id) [unique, name: 'core_grouprole_group_id_role_id_content_ee085d6b_uniq']
+    (object_id) [name: 'core_groupr_object__250e22_idx']
+    (content_type_id, object_id) [name: 'core_groupr_content_ea7d37_idx']
+  }
+
+  Note: '''Join table for group to role associations with optional content object.
+
+Relations:
+
+    group (models.ForeignKey): Group to grant permissions to.
+    role (models.ForeignKey): Role to select granted permissions from.
+    content_object (GenericForeignKey): Optional object to assert permissions on.
+    domain (models.ForeignKey): Domain these permissions apply on, mutually exclusive with
+        content_object
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_profileartifact {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  artifact_id uuid [not null]
+  task_id uuid [not null]
+  name text [not null]
+
+  indexes {
+    (artifact_id) [name: 'core_profileartifact_artifact_id_4a83ce37']
+    (task_id) [name: 'core_profileartifact_task_id_30e8dee4']
+    (task_id, name) [unique, name: 'core_profileartifact_task_id_name_8c6984da_uniq']
+  }
+
+  Note: '''A model encapsulating profiled artifact data
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_task {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  state TaskState [not null]
+  name text [not null]
+  logging_cid text [not null]
+  unblocked_at "timestamp with time zone"
+  started_at "timestamp with time zone"
+  finished_at "timestamp with time zone"
+  error jsonb
+  enc_args jsonb
+  enc_kwargs jsonb
+  app_lock_id uuid
+  parent_task_id uuid
+  task_group_id uuid
+  reserved_resources_record text[]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+  versions hstore [not null, note: 'default in Python: dict()']
+  profile_options text[]
+  immediate boolean [default: false]
+  deferred boolean [default: true]
+  result jsonb [default: null]
+  pulp_api_version text [default: 'v3', not null]
+
+  indexes {
+    (logging_cid) [name: 'core_task_logging_cid_0bc78a42']
+    (logging_cid) [name: 'core_task_logging_cid_0bc78a42_like', note: 'text_pattern_ops']
+    (app_lock_id) [name: 'core_task_app_lock_id_9710ceee']
+    (parent_task_id) [name: 'core_task_parent_task_id_07cf4230']
+    (task_group_id) [name: 'core_task_task_group_id_a45c142c']
+    (pulp_domain_id) [name: 'core_task_pulp_domain_id_ad2d9a92']
+    (pulp_created) [name: 'core_task_pulp_cr_10223f_idx']
+    (unblocked_at) [name: 'core_task_unblock_2276a4_idx']
+    (state) [name: 'core_task_state_61f0ca_idx']
+    (state, pulp_created) [name: 'core_task_state_3742f2_idx']
+    (reserved_resources_record) [name: 'pulp_task_resources_index', note: 'using gin; array_ops; where NOT ("state" IN (\'completed\', \'failed\', \'canceled\', \'skipped\'))']
+  }
+
+  Note: '''Represents a task
+
+The Tasks state machine works like a finite automaton without loops:
+The initial state is WAITING.
+Final states are COMPLETED, FAILED and CANCELED.
+The possible transitions are:
+    WAITING -> RUNNING
+    WAITING ->* CANCELING
+    RUNNING -> COMPLETED
+    RUNNING -> FAILED
+    RUNNING ->* CANCELING
+    CANCELING -> CANCELED
+
+The transitions to CANCELING (marked with *) are the only ones allowed to happen without
+holding the tasks advisory lock. Canceling is meant to be initiated asyncronously by a sparate
+process before signalling the worker via Postgres LISTEN.
+
+Fields:
+
+    state (models.TextField): The state of the task
+    name (models.TextField): The name of the task
+    logging_cid (models.TextField): The logging CID associated with the task
+    unblocked_at (models.DateTimeField): The time the task was marked as unblocked.
+        This is supervised/updated by all awake workers and is part of the definition
+        of a ready-to-be-taken task.
+    started_at (models.DateTimeField): The time the task started executing
+    finished_at (models.DateTimeField): The time the task finished executing
+    error (models.JSONField): Fatal errors generated by the task
+    args (models.JSONField): The JSON serialized arguments for the task
+    kwargs (models.JSONField): The JSON serialized keyword arguments for
+        the task
+    reserved_resources_record (django.contrib.postgres.fields.ArrayField): The reserved
+        resources required for the task.
+    immediate (models.BooleanField): Whether this is guaranteed to execute fast
+        without blocking. Defaults to `False`.
+    deferred (models.BooleanField): Whether to allow defer running the task to a
+        pulpcore_worker. Both `immediate` and `deferred` cannot both be `False`.
+        Defaults to `True`.
+    result (models.JSONField): The result of the task
+
+Relations:
+    app_lock (AppStatus): The app holding the lock on this task.
+        Warning: This is not yet implemented/enforced.
+    parent (models.ForeignKey): Task that spawned this task (if any)
+    worker (models.ForeignKey): The worker that this task is in
+    pulp_domain (models.ForeignKey): The domain the Task is a part of
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_taskgroup {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  description text [not null]
+  all_tasks_dispatched boolean [default: false, not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'core_taskgroup_pulp_domain_id_192a4c75']
+  }
+
+  Note: '''Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_createdresource {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  content_type_id integer [not null]
+  object_id uuid [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  task_id uuid [not null, note: 'default in Python: Task.current()']
+
+  indexes {
+    (content_type_id) [name: 'core_createdresource_content_type_id_2327bc2e']
+    (task_id) [name: 'core_createdresource_task_id_acf70fb7']
+  }
+
+  Note: '''Resources created by the task.
+
+Relations:
+    task (models.ForeignKey): The task that created the resource.
+
+Columns from GenericRelationModel (abstract): content_type_id, object_id.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_taskschedule {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [not null]
+  next_dispatch "timestamp with time zone" [note: 'default in Python: now()']
+  dispatch_interval interval
+  task_name text [not null]
+  task_args jsonb [not null, note: 'default in Python: list()']
+  task_kwargs jsonb [not null, note: 'default in Python: dict()']
+  last_task_id uuid
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (last_task_id) [name: 'core_taskschedule_last_task_id_5c1ee058']
+    (pulp_domain_id) [name: 'core_taskschedule_pulp_domain_id_ecf2e6ac']
+    (name, pulp_domain_id) [unique, name: 'core_taskschedule_name_pulp_domain_id_c7e72d87_uniq']
+  }
+
+  Note: '''Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_repository {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+  description text
+  next_version integer [default: 0, not null]
+  retain_repo_versions integer [default: null]
+  retain_checkpoints integer [default: null]
+  user_hidden boolean [default: false, not null]
+  remote_id uuid
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_repository_pulp_type_9a295072']
+    (pulp_type) [name: 'core_repository_pulp_type_9a295072_like', note: 'text_pattern_ops']
+    (name) [name: 'core_repository_name_d6094875']
+    (name) [name: 'core_repository_name_d6094875_like', note: 'text_pattern_ops']
+    (remote_id) [name: 'core_repository_remote_id_25c54490']
+    (pulp_domain_id) [name: 'core_repository_pulp_domain_id_bba0afab']
+    (name, pulp_domain_id) [unique, name: 'core_repository_name_pulp_domain_id_fc7b9811_uniq']
+  }
+
+  Note: '''Collection of content.
+
+Fields:
+
+    name (models.TextField): The repository name.
+    pulp_labels (HStoreField): Dictionary of string values.
+    description (models.TextField): An optional description.
+    next_version (models.PositiveIntegerField): A record of the next version number to be
+        created.
+    retain_repo_versions (models.PositiveIntegerField): Number of repo versions to keep
+    retain_checkpoints (models.PositiveIntegerField): Number of checkpoint publications to
+        keep as checkpoints.
+    user_hidden (models.BooleanField): Whether to expose this repo to users via the API
+
+Relations:
+
+    content (models.ManyToManyField): Associated content.
+    remote (models.ForeignKeyField): Associated remote
+    pulp_domain (models.ForeignKeyField): The domain the Repository is a part of.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_remote {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+  url text [not null]
+  ca_cert text
+  client_cert text
+  client_key text
+  tls_validation boolean [default: true, not null]
+  username text
+  password text
+  proxy_url text
+  proxy_username text
+  proxy_password text
+  download_concurrency integer
+  max_retries integer
+  policy RemotePolicy [default: 'immediate', not null]
+  total_timeout "double precision"
+  connect_timeout "double precision"
+  sock_connect_timeout "double precision"
+  sock_read_timeout "double precision"
+  headers jsonb
+  rate_limit integer
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_remote_pulp_type_ac66aef6']
+    (pulp_type) [name: 'core_remote_pulp_type_ac66aef6_like', note: 'text_pattern_ops']
+    (name) [name: 'core_remote_name_9fec21a5']
+    (name) [name: 'core_remote_name_9fec21a5_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_remote_pulp_domain_id_f8d7f815']
+    (name, pulp_domain_id) [unique, name: 'core_remote_name_pulp_domain_id_310f6912_uniq']
+  }
+
+  Note: '''A remote source for content.
+
+This is meant to be subclassed by plugin authors as an opportunity to provide plugin-specific
+persistent data attributes for a plugin remote subclass.
+
+This object is a Django model that inherits from [pulpcore.app.models.Remote][] which
+provides the platform persistent attributes for a remote object. Plugin authors can add
+additional persistent remote data by subclassing this object and adding Django fields. We
+defer to the Django docs on extending this model definition with additional fields.
+
+Validation of the remote is done at the API level by a plugin defined subclass of
+[pulpcore.plugin.serializers.repository.RemoteSerializer][].
+
+Fields:
+
+    name (models.TextField): The remote name.
+    pulp_labels (HStoreField): Dictionary of string values.
+    url (models.TextField): The URL of an external content source.
+    ca_cert (models.TextField): A PEM encoded CA certificate used to validate the
+        server certificate presented by the external source.
+    client_cert (models.TextField): A PEM encoded client certificate used
+        for authentication.
+    client_key (models.TextField): A PEM encoded private key used for authentication.
+    tls_validation (models.BooleanField): If True, TLS peer validation must be performed.
+    proxy_url (models.TextField): The optional proxy URL.
+        Format: scheme://host:port
+    proxy_username (models.TextField): The optional username to authenticate with the proxy.
+    proxy_password (models.TextField): The optional password to authenticate with the proxy.
+    username (models.TextField): The username to be used for authentication when syncing.
+    password (models.TextField): The password to be used for authentication when syncing.
+    download_concurrency (models.PositiveIntegerField): Total number of
+        simultaneous connections allowed to any remote during a sync.
+    policy (models.TextField): The policy to use when downloading content.
+    total_timeout (models.FloatField): Value for aiohttp.ClientTimeout.total on connections
+    connect_timeout (models.FloatField): Value for aiohttp.ClientTimeout.connect
+    sock_connect_timeout (models.FloatField): Value for aiohttp.ClientTimeout.sock_connect
+    sock_read_timeout (models.FloatField): Value for aiohttp.ClientTimeout.sock_read
+    headers (models.JSONField): Headers set on the aiohttp.ClientSession
+    rate_limit (models.IntegerField): Limits requests per second for each concurrent downloader
+
+Relations:
+
+    pulp_domain (models.ForeignKey): The domain the Remote is a part of.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_repositorycontent {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  content_id uuid [not null]
+  repository_id uuid [not null]
+  version_added_id uuid [not null]
+  version_removed_id uuid
+
+  indexes {
+    (content_id) [name: 'core_repositorycontent_content_id_4e1dc819']
+    (repository_id) [name: 'core_repositorycontent_repository_id_1946e61b']
+    (version_added_id) [name: 'core_repositorycontent_version_added_id_d5113f18']
+    (version_removed_id) [name: 'core_repositorycontent_version_removed_id_4d75bc32']
+    (repository_id, content_id, version_added_id) [unique, name: 'core_repositorycontent_repository_id_content_id_fb06c181_uniq']
+    (repository_id, content_id, version_removed_id) [unique, name: 'core_repositorycontent_repository_id_content_id_df902e11_uniq']
+  }
+
+  Note: '''Association between a repository and its contained content.
+
+Fields:
+
+    created (models.DatetimeField): When the association was created.
+
+Relations:
+
+    content (models.ForeignKey): The associated content.
+    repository (models.ForeignKey): The associated repository.
+    version_added (models.ForeignKey): The RepositoryVersion which added the referenced
+        Content.
+    version_removed (models.ForeignKey): The RepositoryVersion which removed the referenced
+        Content.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_repositoryversion {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  repository_id uuid [not null]
+  number integer [not null]
+  complete boolean [default: false, not null]
+  base_version_id uuid
+  info jsonb [not null, note: 'default in Python: dict()']
+  content_ids uuid[] [not null, note: 'default in Python: list()']
+
+  indexes {
+    (repository_id) [name: 'core_repositoryversion_repository_id_3d4d8cee']
+    (number) [name: 'core_repositoryversion_number_aad205c5']
+    (complete) [name: 'core_repositoryversion_complete_bafcfca7']
+    (base_version_id) [name: 'core_repositoryversion_base_version_id_5230045f']
+    (repository_id, number) [unique, name: 'core_repositoryversion_repository_id_number_3c54ce50_uniq']
+  }
+
+  Note: '''A version of a repository\'s content set.
+
+Plugin Writers are strongly encouraged to use RepositoryVersion as a context manager to provide
+transactional safety, working directory set up, plugin finalization, and cleaning up the
+database on failures.
+
+Examples::
+
+    with repository.new_version(repository) as new_version:
+        new_version.add_content(content_q)
+        new_version.remove_content(content_q)
+
+Fields:
+
+    number (models.PositiveIntegerField): A positive integer that uniquely identifies a version
+        of a specific repository. Each new version for a repo should have this field set to
+        1 + the most recent version.
+    complete (models.BooleanField): If true, the RepositoryVersion is visible. This field is set
+        to true when the task that creates the RepositoryVersion is complete.
+
+Relations:
+
+    repository (models.ForeignKey): The associated repository.
+    base_version (models.ForeignKey): The repository version this was created from.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_repositoryversioncontentdetails {
+  id integer [pk, increment]
+  count_type RepositoryVersionContentDetailsCountType [not null]
+  content_type text [not null]
+  repository_version_id uuid [not null]
+  count integer [not null]
+
+  indexes {
+    (repository_version_id) [name: 'core_repositoryversioncont_repository_version_id_b3b79754']
+  }
+}
+
+Table core_export {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  params jsonb
+  task_id uuid
+  exporter_id uuid [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (task_id) [name: 'core_export_task_id_4947760b']
+    (exporter_id) [name: 'core_export_exporter_id_c43ae46f']
+    (pulp_domain_id) [name: 'core_export_pulp_domain_id_08f17d24']
+  }
+
+  Note: '''A model that represents an Export.
+
+Fields:
+
+    params (models.JSONField): A set of parameters used to create the export
+
+Relations:
+
+    task (models.ForeignKey): The Task that created the export
+    exporter (models.ForeignKey): The Exporter that exported the resource.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_exportedresource {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  content_type_id integer [not null]
+  object_id uuid [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  export_id uuid [not null]
+
+  indexes {
+    (content_type_id) [name: 'core_exportedresource_content_type_id_71550d5f']
+    (export_id) [name: 'core_exportedresource_export_id_e9cea9c9']
+  }
+
+  Note: '''A model to represent anything that was exported in an Export.
+
+Resource can be a repo version, publication, etc.
+
+Relations:
+
+    export (models.ForeignKey): The Export that exported the resource.
+
+Columns from GenericRelationModel (abstract): content_type_id, object_id.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_exporter {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_exporter_pulp_type_e454fb4c']
+    (pulp_type) [name: 'core_exporter_pulp_type_e454fb4c_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_exporter_pulp_domain_id_61ebf073']
+    (name, pulp_domain_id) [unique, name: 'core_exporter_name_pulp_domain_id_620ba661_uniq']
+  }
+
+  Note: '''A base model that provides logic to export a set of content and keep track of Exports.
+
+Fields:
+
+    name (models.TextField): The exporter unique name.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_filesystemexport {
+  export_ptr_id uuid [pk, note: 'parent link: a FilesystemExport is a Export (multi-table inheritance)']
+
+  Note: '''A model that represents an export to the filesystem.'''
+}
+
+Table core_filesystemexporter {
+  exporter_ptr_id uuid [pk, note: 'parent link: a FilesystemExporter is a Exporter (multi-table inheritance)']
+  path text [not null]
+  method FilesystemExporterMethod [default: 'write', not null]
+
+  Note: '''A base model that provides logic to export a set of content to the filesystem.
+
+Fields:
+
+    path (models.TextField): a full path where the export will go.'''
+}
+
+Table core_pulpexport {
+  export_ptr_id uuid [pk, note: 'parent link: a PulpExport is a Export (multi-table inheritance)']
+  output_file_info jsonb
+  toc_info jsonb
+
+  Note: '''A model that provides export-files that can be imported into other Pulp instances.
+
+Fields:
+
+    tarfile (tarfile.Tarfile): a tarfile for this export to write into.
+    validated_versions ([pulpcore.app.models.RepositoryVersion]): explicitly-specified versions
+        to be exported (if any).
+    validated_start_versions ([pulpcore.app.models.RepositoryVersion]): explicitly-specified
+        starting-versions for doing an incremental export.
+    validated_chunk_size (str) : requested chunk-size of the export file.
+    output_file_info (models.JSONField) : JSON containing the full-path filenames and
+        SHA256-checksums of all output-files generated by this export.
+    toc_info (models.JSONField) : JSON containing the full-path filename and SHA256-checksum
+        of the table-of-contents for this export.'''
+}
+
+Table core_pulpexporter {
+  exporter_ptr_id uuid [pk, note: 'parent link: a PulpExporter is a Exporter (multi-table inheritance)']
+  path text [not null]
+  last_export_id uuid
+
+  indexes {
+    (last_export_id) [name: 'core_pulpexporter_last_export_id_395a1e1a']
+  }
+
+  Note: '''A model that controls creating exports that can be imported into other Pulp instances.
+
+Fields:
+
+    path (models.TextField): a full path where the export will go.
+
+Relations:
+
+    repositories (models.ManyToManyField): Repos to be exported.
+    last_export (models.ForeignKey): The last Export from the Exporter.'''
+}
+
+Table core_import {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  params jsonb
+  task_id uuid [not null]
+  importer_id uuid [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (task_id) [name: 'core_import_task_id_b927da56']
+    (importer_id) [name: 'core_import_importer_id_c2470373']
+    (pulp_domain_id) [name: 'core_import_pulp_domain_id_0257e64e']
+  }
+
+  Note: '''A model that represents imports into Pulp.
+
+Fields:
+    params (models.JSONField): A set of parameters used to run the import
+
+Relations:
+    task (models.ForeignKey): The Task that ran the import
+    importer (models.ForeignKey): The Importer that imported the export
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_importer {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_importer_pulp_type_2f7d803f']
+    (pulp_type) [name: 'core_importer_pulp_type_2f7d803f_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_importer_pulp_domain_id_1c3076f8']
+    (name, pulp_domain_id) [unique, name: 'core_importer_name_pulp_domain_id_2993c3a3_uniq']
+  }
+
+  Note: '''A base model that provides logic to import data into Pulp.
+
+Can be extended by plugins to provide import functionality.
+
+Fields:
+    name (models.TextField): The importer unique name.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_pulpimporter {
+  importer_ptr_id uuid [pk, note: 'parent link: a PulpImporter is a Importer (multi-table inheritance)']
+
+  Note: '''A model that can be used to import exports from other Pulp instances.'''
+}
+
+Table core_pulpimporterrepository {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  source_repo text [not null]
+  pulp_importer_id uuid [not null]
+  repository_id uuid [not null]
+
+  indexes {
+    (pulp_importer_id) [name: 'core_pulpimporterrepository_pulp_importer_id_6974288a']
+    (repository_id) [name: 'core_pulpimporterrepository_repository_id_ce65c430']
+  }
+
+  Note: '''A model that maps repo names in an export to repos in Pulp.
+
+Fields:
+    source_repo (models.TextField): The name of the repo in the export
+
+Relations:
+    pulp_importer (models.ForeignKey): The associated Pulp importer
+    repository (models.ForeignKey): The repository in Pulp
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_pulpimport {
+  import_ptr_id uuid [pk, note: 'parent link: a PulpImport is a Import (multi-table inheritance)']
+
+  Note: '''A model that represents imports into Pulp from another Pulp instance.'''
+}
+
+Table core_publication {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  complete boolean [default: false, not null]
+  pass_through boolean [default: false, not null]
+  checkpoint boolean [default: false, not null]
+  repository_version_id uuid [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_publication_pulp_type_098fd8bd']
+    (pulp_type) [name: 'core_publication_pulp_type_098fd8bd_like', note: 'text_pattern_ops']
+    (complete) [name: 'core_publication_complete_1fa15ed4']
+    (repository_version_id) [name: 'core_publication_repository_version_id_95a4f711']
+    (pulp_domain_id) [name: 'core_publication_pulp_domain_id_9a23c66e']
+  }
+
+  Note: '''A publication contains metadata and artifacts associated with content
+contained within a RepositoryVersion.
+
+Using as a context manager is highly encouraged.  On context exit, the complete attribute
+is set True provided that an exception has not been raised.  In the event and exception
+has been raised, the publication is deleted.
+
+Fields:
+    complete (models.BooleanField): State tracking; for internal use. Indexed.
+    pass_through (models.BooleanField): Indicates that the publication is a pass-through
+        to the repository version. Enabling pass-through has the same effect as creating
+        a PublishedArtifact for all of the content (artifacts) in the repository.
+    checkpoint (models.BooleanField): Indicates a checkpoint publication.
+
+Relations:
+    repository_version (models.ForeignKey): The RepositoryVersion used to
+        create this Publication.
+    pulp_domain (models.ForeignKey): The domain the Publication is a part of.
+
+Examples:
+    >>> repository_version = ...
+    >>>
+    >>> with Publication.create(repository_version) as publication:
+    >>>     for content in repository_version.content():
+    >>>         for content_artifact in content.contentartifact_set.all():
+    >>>             artifact = PublishedArtifact(...)
+    >>>             artifact.save()
+    >>>             metadata = PublishedMetadata.create_from_file(...)
+    >>>             ...
+    >>>
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_publishedartifact {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  relative_path text [not null]
+  content_artifact_id uuid [not null]
+  publication_id uuid [not null]
+
+  indexes {
+    (content_artifact_id) [name: 'core_publishedartifact_content_artifact_id_081334a1']
+    (publication_id) [name: 'core_publishedartifact_publication_id_adaa1ae3']
+    (publication_id, relative_path) [unique, name: 'core_publishedartifact_publication_id_relative__97f785f4_uniq']
+  }
+
+  Note: '''An artifact that is part of a publication.
+
+Fields:
+    relative_path (models.TextField): The (relative) path component of the published url.
+
+Relations:
+    content_artifact (models.ForeignKey): The referenced content artifact.
+    publication (models.ForeignKey): The publication in which the artifact is included.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_publishedmetadata {
+  content_ptr_id uuid [pk, note: 'parent link: a PublishedMetadata is a Content (multi-table inheritance)']
+  relative_path text [not null]
+  publication_id uuid [not null]
+
+  indexes {
+    (publication_id) [name: 'core_publishedmetadata_publication_id_771811c1']
+    (publication_id, relative_path) [unique, name: 'core_publishedmetadata_publication_id_relative__60dd832b_uniq']
+  }
+
+  Note: '''Metadata file that is part of a publication.
+
+Fields:
+    relative_path (models.TextField): The (relative) path component of the published url.
+
+Relations:
+    publication (models.ForeignKey): The publication in which the artifact is included.'''
+}
+
+Table core_contentguard {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  description text
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_type) [name: 'core_contentguard_pulp_type_c18cf95d']
+    (pulp_type) [name: 'core_contentguard_pulp_type_c18cf95d_like', note: 'text_pattern_ops']
+    (name) [name: 'core_contentguard_name_c867a28e']
+    (name) [name: 'core_contentguard_name_c867a28e_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_contentguard_pulp_domain_id_4c843f48']
+    (name, pulp_domain_id) [unique, name: 'core_contentguard_name_pulp_domain_id_75665ff0_uniq']
+  }
+
+  Note: '''Defines a named content guard.
+
+This is meant to be subclassed by plugin authors as an opportunity to provide
+plugin-specific persistent attributes and additional validation for those attributes.
+The permit() method must be overridden to provide the web request authorization logic.
+
+This object is a Django model that inherits from [pulpcore.app.models.ContentGuard][]
+which provides the platform persistent attributes for a content-guard. Plugin authors can
+add additional persistent attributes by subclassing this class and adding Django fields.
+We defer to the Django docs on extending this model definition with additional fields.
+
+Fields:
+    name (models.TextField): Unique guard name per domain.
+    description (models.TextField): An optional description.
+    pulp_domain (models.ForeignKey): The domain the ContentGuard is a part of.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_rbaccontentguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a RBACContentGuard is a ContentGuard (multi-table inheritance)']
+
+  Note: '''A content guard that protects content based on RBAC permissions.'''
+}
+
+Table core_contentredirectcontentguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a ContentRedirectContentGuard is a ContentGuard (multi-table inheritance)']
+  shared_secret bytea [not null, note: 'default in Python: _gen_secret()']
+
+  Note: '''Content guard to allow preauthenticated redirects to the content app.'''
+}
+
+Table core_headercontentguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a HeaderContentGuard is a ContentGuard (multi-table inheritance)']
+  header_name text [not null]
+  header_value text [not null]
+  jq_filter text
+
+  Note: '''Content guard to protect content based on a header value.'''
+}
+
+Table core_envvarheadercontentguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a EnvVarHeaderContentGuard is a ContentGuard (multi-table inheritance)']
+  header_name text [not null]
+  env_var text [not null]
+
+  Note: '''Content guard that validates a Base64-encoded header against a server-side environment variable.
+
+Clients and proxies must send the expected secret as a Base64-encoded UTF-8 string in
+``header_name``. Pulp decodes the header, then compares the result to the value of
+``os.environ[env_var]`` using a timing-safe comparison.
+
+``env_var`` must be listed in ``settings.ENVVAR_HEADER_CONTENT_GUARD_ALLOWED_VARS``.
+The expected secret is read from the content-app process environment at request time
+so rotation only requires updating the environment and redeploying.'''
+}
+
+Table core_compositecontentguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a CompositeContentGuard is a ContentGuard (multi-table inheritance)']
+
+  Note: '''Content guard to allow a list of contentguards to be evaluated on access.
+
+Content-guards in the `guards` list have their permit() calls issued in order. At the
+first "pass" result, access is permitted. Only if ALL guards in the list forbid access,
+is access forbidden.
+
+guards (django.db.models.ManyToManyField): ContentGuards to invoke.'''
+}
+
+Table core_distribution {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_type text [default: null, not null]
+  name text [not null]
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+  base_path relative_path [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+  hidden boolean [default: false]
+  checkpoint boolean [default: false, not null]
+  content_guard_id uuid
+  publication_id uuid
+  remote_id uuid
+  repository_id uuid
+  repository_version_id uuid
+
+  indexes {
+    (pulp_type) [name: 'core_distribution_pulp_type_5de1abde']
+    (pulp_type) [name: 'core_distribution_pulp_type_5de1abde_like', note: 'text_pattern_ops']
+    (name) [name: 'core_distribution_name_c10ccb23']
+    (name) [name: 'core_distribution_name_c10ccb23_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_distribution_pulp_domain_id_096b6a5b']
+    (content_guard_id) [name: 'core_distribution_content_guard_id_64c5c91a']
+    (publication_id) [name: 'core_distribution_publication_id_fb4e0f9c']
+    (remote_id) [name: 'core_distribution_remote_id_fff5b712']
+    (repository_id) [name: 'core_distribution_repository_id_27bc2475']
+    (repository_version_id) [name: 'core_distribution_repository_version_id_6ac2a9bf']
+    (name, pulp_domain_id) [unique, name: 'core_distribution_name_pulp_domain_id_cc58b558_uniq']
+    (base_path, pulp_domain_id) [unique, name: 'core_distribution_base_path_pulp_domain_id_c05ad346_uniq']
+    (base_path) [name: 'core_distribution_base_path_text', note: 'using spgist; text_ops; include (pulp_domain_id)']
+  }
+
+  Note: '''A Distribution defines how the Content App distributes a publication or repository_version.
+
+This master model can be used by plugin writers to create detail Distribution objects.
+
+The `name` must be unique.
+
+The `base_path` must have no overlapping components. So if a Distribution with `base_path`
+of `a/path/foo` existed, you could not make a second Distribution with a `base_path` of
+`a/path` or `a` because both are subpaths of `a/path/foo`.
+
+Subclasses are expected to use either the `publication` or `repository_version` field, but
+not both. The content app that serves content is not prepared to serve content both ways at the
+same time.
+
+Fields:
+    name (models.TextField): The name of the distribution. Examples: "rawhide" and "stable".
+    pulp_labels (HStoreField): Dictionary of string values.
+    base_path (models.TextField): The base (relative) path component of the published url.
+    hidden (models.BooleanField): Whether this distribution should be hidden in the content app.
+    checkpoint (models.BooleanField): Whether this distribution serves checkpoint publications.
+
+Relations:
+    content_guard (models.ForeignKey): An optional content-guard.
+    publication (models.ForeignKey): Publication to be served.
+    remote (models.ForeignKey): A remote that the content app can use to find content not
+        yet stored in Pulp.
+    repository (models.ForeignKey): The latest RepositoryVersion for this Repository will be
+        served.
+    repository_version (models.ForeignKey): RepositoryVersion to be served.
+    pulp_domain (models.ForeignKey): The domain the Distribution is a part of.
+
+Columns from MasterModel (abstract): pulp_type.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_artifactdistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a ArtifactDistribution is a Distribution (multi-table inheritance)']
+
+  Note: '''Serve artifacts by their uuid.'''
+}
+
+Table core_distributedpublication {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  distribution_id uuid [not null]
+  publication_id uuid [not null]
+  expires_at "timestamp with time zone"
+
+  indexes {
+    (distribution_id) [name: 'core_distributedpublication_distribution_id_0a812bf4']
+    (publication_id) [name: 'core_distributedpublication_publication_id_81a157e7']
+  }
+
+  Note: '''Records the history of publications served by each Distribution.
+
+Keeps superseded publications alive and serveable for a configurable grace period.
+Null `expired_at` means the publication was not superseded yet.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_systemid {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+}
+
+Table core_upload {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  size bigint [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'core_upload_pulp_domain_id_e9e64852']
+  }
+
+  Note: '''A chunked upload. Stores chunks until used to create an artifact, etc.
+
+Fields:
+
+    size (models.BigIntegerField): The size of the file in bytes.
+
+Relations:
+
+    pulp_domain (models.ForeignKey): The domain the Upload is a part of.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_uploadchunk {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  file varchar(255) [not null]
+  upload_id uuid [not null]
+  offset bigint [not null]
+  size bigint [not null]
+
+  indexes {
+    (upload_id) [name: 'core_uploadchunk_upload_id_200d71c7']
+  }
+
+  Note: '''A chunk for an uploaded file.
+
+Fields:
+
+    file (fields.FileField): A file where the uploaded chunk is stored.
+    upload (models.ForeignKey): Upload this chunk belongs to.
+    offset (models.BigIntegerField): Start of the chunk in bytes.
+    size (models.BigIntegerField): Size of the chunk in bytes.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_vulnerabilityreport {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  content_id uuid [unique, not null]
+  vulns jsonb [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'core_vulnerabilityreport_pulp_domain_id_91b1e387']
+  }
+
+  Note: '''A model for storing vulnerability reports for Content/RepositoryVersion.
+
+Fields:
+    vulns (models.JSONField): A JSON field containing the list of vulnerabilities found
+        in osv.dev.
+
+Relations:
+    content (models.OneToOneField): The Content object that was scanned for vulnerabilities.
+    pulp_domain (models.ForeignKey): The Domain this vulnerability report belongs to,
+        providing multi-tenancy isolation.
+    repo_versions (models.ManyToManyField): The RepositoryVersion(s) where the scanned
+        Content appears. This allows tracking which repository versions contain
+        vulnerable content.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_progressreport {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  message text [not null]
+  code text [not null]
+  state ProgressReportState [default: 'waiting', not null]
+  total integer
+  done integer [default: 0, not null]
+  task_id uuid [not null]
+  suffix text
+
+  indexes {
+    (task_id) [name: 'core_progressreport_task_id_0c3fbc3b']
+  }
+
+  Note: '''A model for all progress reporting.
+
+All progress reports have a message, state, and are related to a Task.
+
+Plugin writers should create these objects to show progress reporting of a single step or
+aspect of work which has a name and state. For example:
+
+    >>> ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=23
+    >>> )  # default: state=\'waiting\' and done=0
+
+    >>> ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=23, state=\'running\'
+    >>> )  # specify the state
+    >>> ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=23, done=16
+    >>> )  # already completed 16
+
+Update the state to COMPLETED and save it:
+
+    >>> progress_bar = ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=23, state=\'running\'
+    >>> )
+    >>> progress_bar.state = \'completed\'
+    >>> progress_bar.save()
+
+The ProgressReport() is a context manager that provides automatic state transitions and saving
+for the RUNNING CANCELED COMPLETED and FAILED states. The increment() method can be called in
+the loop as work is completed. When ProgressReport() is used as a context manager progress
+reporting is rate limited to every 500 milliseconds.
+Use it as follows:
+
+    >>> progress_bar = ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=len(files_iterator)
+    >>> )
+    >>> progress_bar.save()
+    >>> with progress_bar:
+    >>>     # progress_bar saved as \'running\'
+    >>>     for file in files_iterator:
+    >>>         handle(file)
+    >>>         progress_bar.increment()  # increments and saves
+    >>> # progress_bar is saved as \'completed\' if no exception or \'failed\' otherwise
+
+A convenience method called iter() allows you to avoid calling increment() directly:
+
+    >>> progress_bar = ProgressReport(
+    >>>     message=\'Publishing files\', code=\'publish\', total=len(files_iterator)
+    >>> )
+    >>> progress_bar.save()
+    >>> with progress_bar:
+    >>>     for file in progress_bar.iter(files_iterator):
+    >>>         handle(file)
+
+You can also use this short form which handles all necessary save() calls:
+
+    >>> data = dict(message=\'Publishing files\', code=\'publish\', total=len(files_iterator))
+    >>> with ProgressReport(**data) as pb:
+    >>>     for file in pb.iter(files_iterator):
+    >>>         handle(file)
+
+ProgressReport objects are associated with a Task and auto-discover and populate the task id
+when saved.
+
+When using threads to update a ProgressReport in parallel, it is recommended that all threads
+share the same in-memory instance. Django does not synchronize in-memory model instances, so
+multiple instances of a specific ProgressReport will diverge as they are written to from
+separate threads.
+
+Fields:
+
+    message (models.TextField): short message for the progress update, typically
+        shown to the user. (required)
+    code (models.TextField): identifies the type of progress report
+    state (models.TextField): The state of the progress update. Defaults to `WAITING`. This
+        field uses a limited set of choices of field states. See `STATES` for possible states.
+    total: (models.IntegerField) The total count of items to be handled
+    done (models.IntegerField): The count of items already processed. Defaults to 0.
+    suffix (models.TextField): Customizable suffix rendered with the progress report
+        See `the docs <https://github.com/verigak/progress>`_. for more info.
+
+Relations:
+
+    task: The task associated with this progress report. If left unset when save() is called
+        it will be set to the current task_id.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_groupprogressreport {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  message text [not null]
+  code text [not null]
+  total integer [default: 0, not null]
+  done integer [default: 0, not null]
+  task_group_id uuid [not null]
+  suffix text
+
+  indexes {
+    (task_group_id) [name: 'core_groupprogressreport_task_group_id_f952b991']
+    (code, task_group_id) [unique, name: 'core_groupprogressreport_code_task_group_id_9ed759b0_uniq']
+  }
+
+  Note: '''A model for all progress reporting in a Task Group.
+
+All progress reports have a message, code and are related to a Task Group.
+
+Once a Task Group is created, plugin writers should create these objects ahead.
+For example:
+
+    >>> task_group = TaskGroup(description="Migration Sub-tasks")
+    >>> task_group.save()
+    >>> group_pr = GroupProgressReport(
+    >>>     message="Repo migration",
+    >>>     code="create.repo_version",
+    >>>     task_group=task_group).save()
+
+Taks that will be executing certain work, and is part of a TaskGroup, will look for
+the Task group it belongs to and find appropriate progress report by its code and will
+update it accordingly.
+
+For example:
+
+    >>> task_group = TaskGroup.current()
+    >>> progress_repo = task_group.group_progress_reports.filter(code=\'create.repo_version\')
+    >>> progress_repo.update(done=F(\'done\') + 1)
+
+To avoid race conditions/cache invalidation issues, this pattern needs to be used so that
+operations are performed directly inside the database:
+
+.update(done=F(\'done\') + 1)
+
+See: https://docs.djangoproject.com/en/3.2/ref/models/expressions/#f-expressions
+Important: F() objects assigned to model fields persist after saving the model instance and
+will be applied on each save(). Do not use save() and use update() instead, otherwise
+refresh_from_db() should be called after each save()
+
+Fields:
+
+    message (models.TextField): short message for the progress update, typically
+        shown to the user. (required)
+    code (models.TextField): identifies the type of progress report
+    total: (models.IntegerField) The total count of items to be handled
+    done (models.IntegerField): The count of items already processed. Defaults to 0.
+    suffix (models.TextField): Customizable suffix rendered with the progress report
+        See `the docs <https://github.com/verigak/progress>`_. for more info.
+
+Relations:
+
+    task_group: The task group associated with this group progress report.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_upstreampulp {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+  base_url text [not null]
+  api_root text [default: 'pulp', not null]
+  domain text
+  ca_cert text
+  client_cert text
+  client_key text
+  tls_validation boolean [default: true, not null]
+  username text
+  password text
+  download_concurrency integer
+  max_retries integer
+  total_timeout "double precision"
+  connect_timeout "double precision"
+  sock_connect_timeout "double precision"
+  sock_read_timeout "double precision"
+  remote_policy UpstreamPulpRemotePolicy
+  q_select text
+  policy UpstreamPulpPolicy [default: 'all', not null]
+  last_replication "timestamp with time zone"
+
+  indexes {
+    (name) [name: 'core_upstreampulp_name_7ae8e56d']
+    (name) [name: 'core_upstreampulp_name_7ae8e56d_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'core_upstreampulp_pulp_domain_id_3c118ec4']
+    (name, pulp_domain_id) [unique, name: 'core_upstreampulp_name_pulp_domain_id_9682c4c2_uniq']
+  }
+
+  Note: '''Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table core_openpgppublickey {
+  content_ptr_id uuid [pk, note: 'parent link: a OpenPGPPublicKey is a Content (multi-table inheritance)']
+  raw_data bytea [not null]
+  fingerprint varchar(64) [not null]
+  created "timestamp with time zone" [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'core_openpgppublickey__pulp_domain_id_a6e150e5']
+    (_pulp_domain_id, fingerprint) [unique, name: 'core_openpgppublickey__pulp_domain_id_fingerprint_832cb62b_uniq']
+  }
+
+  Note: '''Columns from _OpenPGPContent (abstract): content_ptr_id, raw_data.'''
+}
+
+Table core_openpgppublicsubkey {
+  content_ptr_id uuid [pk, note: 'parent link: a OpenPGPPublicSubkey is a Content (multi-table inheritance)']
+  raw_data bytea [not null]
+  public_key_id uuid [not null]
+  fingerprint varchar(64) [not null]
+  created "timestamp with time zone" [not null]
+
+  indexes {
+    (public_key_id) [name: 'core_openpgppublicsubkey_public_key_id_f502671b']
+    (public_key_id, fingerprint) [unique, name: 'core_openpgppublicsubkey_public_key_id_fingerprin_eb53996b_uniq']
+  }
+
+  Note: '''Columns from _OpenPGPContent (abstract): content_ptr_id, raw_data.'''
+}
+
+Table core_openpgpuserid {
+  content_ptr_id uuid [pk, note: 'parent link: a OpenPGPUserID is a Content (multi-table inheritance)']
+  raw_data bytea [not null]
+  public_key_id uuid [not null]
+  user_id varchar [not null]
+
+  indexes {
+    (public_key_id) [name: 'core_openpgpuserid_public_key_id_fda4eea7']
+    (public_key_id, user_id) [unique, name: 'core_openpgpuserid_public_key_id_user_id_f9d9c4a9_uniq']
+  }
+
+  Note: '''Columns from _OpenPGPContent (abstract): content_ptr_id, raw_data.'''
+}
+
+Table core_openpgpuserattribute {
+  content_ptr_id uuid [pk, note: 'parent link: a OpenPGPUserAttribute is a Content (multi-table inheritance)']
+  raw_data bytea [not null]
+  sha256 varchar(128) [not null]
+  public_key_id uuid [not null]
+
+  indexes {
+    (public_key_id) [name: 'core_openpgpuserattribute_public_key_id_5ac35c1f']
+    (public_key_id, sha256) [unique, name: 'core_openpgpuserattribute_public_key_id_sha256_1694e6dd_uniq']
+  }
+
+  Note: '''Columns from _OpenPGPContent (abstract): content_ptr_id, raw_data.'''
+}
+
+Table core_openpgpsignature {
+  content_ptr_id uuid [pk, note: 'parent link: a OpenPGPSignature is a Content (multi-table inheritance)']
+  raw_data bytea [not null]
+  sha256 varchar(128) [not null]
+  signature_type smallint [not null]
+  created "timestamp with time zone" [not null]
+  expiration_time interval
+  key_expiration_time interval
+  issuer varchar(16)
+  signers_user_id varchar
+  signed_content_id uuid [not null]
+
+  indexes {
+    (signed_content_id) [name: 'core_openpgpsignature_signed_content_id_9f7ec2ce']
+    (signed_content_id, sha256) [unique, name: 'core_openpgpsignature_signed_content_id_sha256_3c9adf6a_uniq']
+  }
+
+  Note: '''Columns from _OpenPGPContent (abstract): content_ptr_id, raw_data.'''
+}
+
+Table core_openpgpkeyring {
+  repository_ptr_id uuid [pk, note: 'parent link: a OpenPGPKeyring is a Repository (multi-table inheritance)']
+
+  Note: '''A Repository to hold OpenPGP (rfc4880bis) public key material.'''
+}
+
+Table core_openpgpdistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a OpenPGPDistribution is a Distribution (multi-table inheritance)']
+
+  Note: '''A Distribution to allow downloading OpenPGP keys.'''
+}
+
+Table container_blob {
+  content_ptr_id uuid [pk, note: 'parent link: a Blob is a Content (multi-table inheritance)']
+  digest text [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (digest) [name: 'container_blob_digest_c5346679']
+    (digest) [name: 'container_blob_digest_c5346679_like', note: 'text_pattern_ops']
+    (_pulp_domain_id) [name: 'container_blob__pulp_domain_id_2b86fe9d']
+    (digest, _pulp_domain_id) [unique, name: 'container_blob_digest__pulp_domain_id_b6e4dc87_uniq']
+  }
+
+  Note: '''A blob defined within a manifest.
+
+The actual blob file is stored as an artifact.
+
+Fields:
+    digest (models.TextField): The blob digest.
+
+Relations:
+    manifest (models.ForeignKey): Many-to-one relationship with Manifest.'''
+}
+
+Table container_manifest {
+  content_ptr_id uuid [pk, note: 'parent link: a Manifest is a Content (multi-table inheritance)']
+  digest text [not null]
+  schema_version integer [not null]
+  media_type ManifestMediaType [not null]
+  type varchar
+  data text
+  annotations jsonb [not null, note: 'default in Python: dict()']
+  labels jsonb [not null, note: 'default in Python: dict()']
+  architecture text
+  os text
+  compressed_image_size bigint
+  is_bootable boolean [default: false, not null]
+  is_flatpak boolean [default: false, not null]
+  config_blob_id uuid
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (digest) [name: 'container_manifest_digest_d362b1f0']
+    (digest) [name: 'container_manifest_digest_d362b1f0_like', note: 'text_pattern_ops']
+    (config_blob_id) [name: 'container_manifest_config_blob_id_cdbfab2b']
+    (_pulp_domain_id) [name: 'container_manifest__pulp_domain_id_e4b06bf3']
+    (digest, _pulp_domain_id) [unique, name: 'container_manifest_digest__pulp_domain_id_f58b0590_uniq']
+  }
+
+  Note: '''A container manifest.
+
+This content has one artifact.
+
+Fields:
+    digest (models.TextField): The manifest digest.
+    schema_version (models.IntegerField): The manifest schema version.
+    media_type (models.TextField): The manifest media type.
+    type (models.TextField): The manifest\'s type (flatpak, bootable, signature, etc.).
+    data (models.TextField): The manifest\'s data in text format.
+    annotations (models.JSONField): Metadata stored inside the image manifest.
+    labels (models.JSONField): Metadata stored inside the image configuration.
+    is_bootable (models.BooleanField): Indicates whether the image is bootable or not.
+    is_flatpak (models.BooleanField): Indicates whether the image is a flatpak package or not.
+    architecture (models.TextField): CPU architecture for which the binaries in the image are
+        designed to run.
+    os (models.TextField): Operating System which the image is built to run on.
+    compressed_image_size (models.IntegerField): Sum of the sizes, in bytes, of all compressed
+        layers.
+
+Relations:
+    blobs (models.ManyToManyField): Many-to-many relationship with Blob.
+    config_blob (models.ForeignKey): Blob that contains configuration for this Manifest.
+    listed_manifests (models.ManyToManyField): Many-to-many relationship with Manifest. This
+        field is used only for a manifest-list type Manifests.'''
+}
+
+Table container_blobmanifest {
+  id integer [pk, increment]
+  manifest_id uuid [not null]
+  manifest_blob_id uuid [not null]
+
+  indexes {
+    (manifest_id) [name: 'container_blobmanifest_manifest_id_a9f8feee']
+    (manifest_blob_id) [name: 'container_blobmanifest_manifest_blob_id_8382ada3']
+    (manifest_id, manifest_blob_id) [unique, name: 'container_blobmanifest_manifest_id_manifest_blo_05da3e8d_uniq']
+  }
+
+  Note: '''Many-to-many relationship between Blobs and Manifests.'''
+}
+
+Table container_manifestlistmanifest {
+  id integer [pk, increment]
+  architecture text [default: '', not null]
+  os text [default: '', not null]
+  os_version text [default: '', not null]
+  os_features text [default: '', not null]
+  features text [default: '', not null]
+  variant text [default: '', not null]
+  image_manifest_id uuid [not null]
+  manifest_list_id uuid [not null]
+
+  indexes {
+    (image_manifest_id) [name: 'container_manifestlistmanifest_image_manifest_id_dfef7fa1']
+    (manifest_list_id) [name: 'container_manifestlistmanifest_manifest_list_id_56c413df']
+    (image_manifest_id, manifest_list_id) [unique, name: 'container_manifestlistma_image_manifest_id_manife_d1193c3b_uniq']
+  }
+
+  Note: '''The manifest referenced by a manifest list.
+
+Fields:
+    architecture (models.TextField): The platform architecture.
+    variant (models.TextField): The platform variant.
+    features (models.TextField): The platform features.
+    os (models.TextField): The platform OS name.
+    os_version (models.TextField): The platform OS version.
+    os_features (models.TextField): The platform OS features.
+
+Relations:
+    image_manifest (models.ForeignKey): Many-to-one relationship with Manifest.
+    manifest_list (models.ForeignKey): Many-to-one relationship with ManifestList.'''
+}
+
+Table container_tag {
+  content_ptr_id uuid [pk, note: 'parent link: a Tag is a Content (multi-table inheritance)']
+  name text [not null]
+  tagged_manifest_id uuid [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (name) [name: 'container_tag_name_415c334a']
+    (name) [name: 'container_tag_name_415c334a_like', note: 'text_pattern_ops']
+    (tagged_manifest_id) [name: 'container_tag_tagged_manifest_id_e9ace947']
+    (_pulp_domain_id) [name: 'container_tag__pulp_domain_id_14b34e92']
+    (name, tagged_manifest_id, _pulp_domain_id) [unique, name: 'container_tag_name_tagged_manifest_id__5006d312_uniq']
+  }
+
+  Note: '''A tagged Manifest.
+
+Fields:
+    name (models.TextField): The tag name.
+
+Relations:
+    tagged_manifest (models.ForeignKey): A referenced Manifest.'''
+}
+
+Table container_manifestsignature {
+  content_ptr_id uuid [pk, note: 'parent link: a ManifestSignature is a Content (multi-table inheritance)']
+  name text [not null]
+  digest text [not null]
+  type ManifestSignatureType [not null]
+  key_id text [not null]
+  fingerprint text
+  timestamp integer [not null]
+  creator text [not null]
+  data text [not null]
+  signed_manifest_id uuid [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (name) [name: 'container_manifestsignature_name_ab51eb5d']
+    (name) [name: 'container_manifestsignature_name_ab51eb5d_like', note: 'text_pattern_ops']
+    (key_id) [name: 'container_manifestsignature_key_id_94a89359']
+    (key_id) [name: 'container_manifestsignature_key_id_94a89359_like', note: 'text_pattern_ops']
+    (fingerprint) [name: 'container_manifestsignature_fingerprint_85591d0a']
+    (fingerprint) [name: 'container_manifestsignature_fingerprint_85591d0a_like', note: 'text_pattern_ops']
+    (signed_manifest_id) [name: 'container_manifestsignature_signed_manifest_id_2b052f16']
+    (_pulp_domain_id) [name: 'container_manifestsignature__pulp_domain_id_9312ca41']
+    (digest, _pulp_domain_id) [unique, name: 'container_manifestsignat_digest__pulp_domain_id_3b91b79a_uniq']
+  }
+
+  Note: '''A signature for a manifest.
+
+Fields:
+    name (models.TextField): A signature name in the \'manifest_digest@random_name\' format.
+    digest (models.TextField): A signature sha256 digest prepended with its algorithm `sha256:`.
+    type (models.TextField): A signature type as specified in signature metadata. Currently
+                             it\'s only "atomic container signature".
+    key_id (models.TextField): A PGP key id (last 8 bytes of the fingerprint).
+    fingerprint (models.TextField): A PGP key fingerprint
+    timestamp (models.PositiveIntegerField): A signature timestamp identified by gpg.
+    creator (models.TextField): A signature creator.
+    data (models.TextField): A signature, base64 encoded.
+
+Relations:
+    signed_manifest (models.ForeignKey): A manifest this signature is relevant to.'''
+}
+
+Table container_containernamespace {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+  pulp_labels hstore [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (name) [name: 'container_containernamespace_name_d554fc3d']
+    (name) [name: 'container_containernamespace_name_d554fc3d_like', note: 'text_pattern_ops']
+    (pulp_domain_id) [name: 'container_containernamespace_pulp_domain_id_da32318a']
+    (name, pulp_domain_id) [unique, name: 'container_containernamespace_name_pulp_domain_id_b6b076cf_uniq']
+  }
+
+  Note: '''Namespace for the container registry.
+
+Fields:
+    name (models.TextField): The name of the namespace.
+    pulp_labels (HStoreField): Key-value pairs for labeling and organizing namespaces.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table container_containerremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a ContainerRemote is a Remote (multi-table inheritance)']
+  upstream_name text [not null]
+  include_foreign_layers boolean [default: false, not null]
+  includes text[]
+  excludes text[]
+  sigstore text
+  include_tags text[]
+  exclude_tags text[]
+
+  indexes {
+    (upstream_name) [name: 'container_containerremote_upstream_name_7fbaf0d4']
+    (upstream_name) [name: 'container_containerremote_upstream_name_7fbaf0d4_like', note: 'text_pattern_ops']
+  }
+
+  Note: '''A Remote for ContainerContent.
+
+Fields:
+    upstream_name (models.TextField): The name of the image at the remote.
+    include_foreign_layers (models.BooleanField): Foreign layers in the remote
+        are included. They are not included by default.
+    includes (fields.ArrayField): List of tags (with optional wildcards) and/or
+        digests (sha256:<hex>) to sync.
+    excludes (fields.ArrayField): List of tag patterns to exclude from sync.
+    sigstore (models.TextField): The URL to a sigstore where signatures of container images
+        should be synced from.'''
+}
+
+Table container_containerpullthroughremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a ContainerPullThroughRemote is a Remote (multi-table inheritance)']
+  includes text[]
+  excludes text[]
+
+  Note: '''A remote for pull-through caching, omitting the requirement for the upstream name.
+
+This remote is used for instantiating new regular container remotes with the upstream name.
+Configuring credentials and everything related to container workflows can be therefore done
+from within a single instance of this remote.'''
+}
+
+Table container_manifestsigningservice {
+  signingservice_ptr_id uuid [pk, note: 'parent link: a ManifestSigningService is a SigningService (multi-table inheritance)']
+
+  Note: '''Signing service used for creating container signatures.'''
+}
+
+Table container_containerrepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a ContainerRepository is a Repository (multi-table inheritance)']
+  manifest_signing_service_id uuid
+
+  indexes {
+    (manifest_signing_service_id) [name: 'container_containerreposit_manifest_signing_service_i_1de73dc2']
+  }
+
+  Note: '''Repository for "container" content.
+
+This Repository type is designed for standard pulp operations, and can be distributed as a
+read only registry.
+
+Relations:
+    manifest_signing_service (models.ForeignKey): ManifestSigningService this repository will
+                                                  use for signing content.'''
+}
+
+Table container_containerpushrepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a ContainerPushRepository is a Repository (multi-table inheritance)']
+  manifest_signing_service_id uuid
+
+  indexes {
+    (manifest_signing_service_id) [name: 'container_containerpushrep_manifest_signing_service_i_1641bcab']
+  }
+
+  Note: '''Repository for "container" content.
+
+This repository type is designed for the read and write registry usecase. It will be
+automatically instantiated on authorised push to nonexisting repositories.
+With this repository type, all but the latest repository_version are solely of historical
+interest.
+
+Relations:
+    manifest_signing_service (models.ForeignKey): ManifestSigningService this repository will
+                                                  use for signing content.'''
+}
+
+Table container_containerpullthroughdistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a ContainerPullThroughDistribution is a Distribution (multi-table inheritance)']
+  namespace_id uuid
+  private boolean [default: false, not null, note: 'Restrict pull access to explicitly authorized users. Related distributions inherit this value. Defaults to unrestricted pull access.']
+  description text
+
+  indexes {
+    (namespace_id) [name: 'container_containerpullthr_namespace_id_4e8843c7']
+  }
+
+  Note: '''A distribution for pull-through caching, referencing normal distributions.'''
+}
+
+Table container_containerdistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a ContainerDistribution is a Distribution (multi-table inheritance)']
+  namespace_id uuid
+  private boolean [default: false, not null, note: 'Restrict pull access to explicitly authorized users. Defaults to unrestricted pull access.']
+  description text
+  pull_through_distribution_id uuid
+
+  indexes {
+    (namespace_id) [name: 'container_containerdistribution_namespace_id_dad12f4c']
+    (pull_through_distribution_id) [name: 'container_containerdistrib_pull_through_distribution__41e3cefa']
+  }
+
+  Note: '''A container distribution defines how a repository version is distributed by Pulp\'s webserver.
+
+Fields:
+    private (models.BooleanField): Whether the distribution is private or public.
+                                   Public by default.
+    descripion (models.TextField): Description of the distribution.
+
+Relations:
+    namespace (models.ForeignKey): Namespace the distribution belonds to.'''
+}
+
+Table container_upload {
+  upload_ptr_id uuid [pk, note: 'parent link: a container.Upload is a core.Upload (multi-table inheritance)']
+  repository_id uuid [not null]
+  artifact_id uuid
+
+  indexes {
+    (repository_id) [name: 'container_upload_repository_id_df854aa2']
+    (artifact_id) [name: 'container_upload_artifact_id_d1e92ba6']
+  }
+
+  Note: '''Model for tracking Blob uploads.'''
+}
+
+Table certguard_rhsmcertguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a RHSMCertGuard is a ContentGuard (multi-table inheritance)']
+  ca_certificate text [not null]
+
+  Note: '''A content-guard validating on a RHSM Certificate validated by `python-rhsm`.
+
+A Certificate Authority certificate to trust is required with each RHSMCertGuard created. With
+each request, the client certificate is first checked if it is signed by this CA cert. If not,
+it\'s untrusted and denied regardless of its paths.
+
+After determining the client certificate is trusted, the requested path is checked against the
+named paths in the certificate. A request is permitted if the current request path is a prefix
+of a path declared in the trusted RHSM Client Certificate.
+
+Fields:
+    rhsm_certificate (models.TextField): The RHSM Certificate used to validate the client
+        certificate at request time.
+
+Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
+}
+
+Table certguard_x509certguard {
+  contentguard_ptr_id uuid [pk, note: 'parent link: a X509CertGuard is a ContentGuard (multi-table inheritance)']
+  ca_certificate text [not null]
+
+  Note: '''A content-guard that authenticates the request based on a client provided X.509 Certificate.
+
+Fields:
+    ca_certificate (models.FileField): The CA certificate used to
+        validate the client certificate.
+
+Columns from BaseCertGuard (abstract): contentguard_ptr_id, ca_certificate.'''
+}
+
+Table file_filecontent {
+  content_ptr_id uuid [pk, note: 'parent link: a FileContent is a Content (multi-table inheritance)']
+  relative_path text [not null]
+  digest varchar(64) [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'file_filecontent__pulp_domain_id_1714b2e9']
+    (relative_path, digest, _pulp_domain_id) [unique, name: 'file_filecontent_relative_path_digest__pu_b4bae2c2_uniq']
+  }
+
+  Note: '''The "file" content type.
+
+Content of this type represents a single file uniquely
+identified by path and SHA256 digest.
+
+Fields:
+    relative_path (str): The file relative path.
+    digest (str): The SHA256 HEX digest.'''
+}
+
+Table file_fileremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a FileRemote is a Remote (multi-table inheritance)']
+
+  Note: '''Remote for "file" content.'''
+}
+
+Table file_filegitremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a FileGitRemote is a Remote (multi-table inheritance)']
+  git_ref text [default: 'HEAD', not null]
+
+  Note: '''Remote for syncing files from a Git repository (without PULP_MANIFEST).
+
+The URL should point to a Git repository. The `git_ref` field can be used to specify a
+branch, tag, or commit to sync from (defaults to `HEAD`).'''
+}
+
+Table file_filerepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a FileRepository is a Repository (multi-table inheritance)']
+  manifest text [default: 'PULP_MANIFEST']
+  autopublish boolean [default: false, not null]
+  last_sync_details jsonb [not null, note: 'default in Python: dict()']
+
+  Note: '''The "file" repository type.'''
+}
+
+Table file_filepublication {
+  publication_ptr_id uuid [pk, note: 'parent link: a FilePublication is a Publication (multi-table inheritance)']
+  manifest text
+
+  Note: '''Publication for \'file\' content.'''
+}
+
+Table file_filedistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a FileDistribution is a Distribution (multi-table inheritance)']
+
+  Note: '''Distribution for \'file\' content.'''
+}
+
+Table file_filealternatecontentsource {
+  alternatecontentsource_ptr_id uuid [pk, note: 'parent link: a FileAlternateContentSource is a AlternateContentSource (multi-table inheritance)']
+
+  Note: '''Alternate Content Source for \'file" content.'''
+}
+
+Table ansible_role {
+  content_ptr_id uuid [pk, note: 'parent link: a ansible.Role is a Content (multi-table inheritance)']
+  namespace varchar(64) [not null]
+  name varchar(64) [not null]
+  version varchar(128) [not null, note: 'collation pulp_ansible_semver']
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'ansible_role__pulp_domain_id_fb64f6df']
+    (version, name, namespace, _pulp_domain_id) [unique, name: 'ansible_role_version_name_namespace___8aeabb32_uniq']
+  }
+
+  Note: '''A content type representing a Role.'''
+}
+
+Table ansible_collection {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  namespace varchar(64) [not null]
+  name varchar(64) [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'ansible_collection_pulp_domain_id_128852a1']
+    (pulp_domain_id, namespace, name) [unique, name: 'ansible_collection_pulp_domain_id_namespace_name_50c96831_uniq']
+  }
+
+  Note: '''A model representing a Collection.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table ansible_collectionimport {
+  task_id uuid [pk]
+  messages jsonb [not null, note: 'default in Python: list()']
+
+  Note: '''A model representing a collection import task details.'''
+}
+
+Table ansible_ansiblenamespace {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name varchar(64) [not null]
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (pulp_domain_id) [name: 'ansible_ansiblenamespace_pulp_domain_id_8fba8d0e']
+    (pulp_domain_id, name) [unique, name: 'ansible_ansiblenamespace_pulp_domain_id_name_752ab148_uniq']
+  }
+
+  Note: '''A model representing a Namespace. This should be used for permissions.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table ansible_collectionversion {
+  content_ptr_id uuid [pk, note: 'parent link: a CollectionVersion is a Content (multi-table inheritance)']
+  authors "varchar(64)[]" [not null, note: 'default in Python: list()']
+  contents jsonb [not null, note: 'default in Python: list()']
+  dependencies jsonb [not null, note: 'default in Python: dict()']
+  description text [default: '', not null]
+  docs_blob jsonb [not null, note: 'default in Python: dict()']
+  manifest jsonb [not null, note: 'default in Python: dict()']
+  files jsonb [not null, note: 'default in Python: dict()']
+  documentation varchar(2000) [default: '', not null]
+  homepage varchar(2000) [default: '', not null]
+  issues varchar(2000) [default: '', not null]
+  license "varchar(32)[]" [not null, note: 'default in Python: list()']
+  name varchar(64) [not null]
+  namespace varchar(64) [not null]
+  repository varchar(2000) [default: '', not null]
+  requires_ansible varchar(255)
+  sha256 varchar(64) [not null]
+  version varchar(128) [not null, note: 'collation pulp_ansible_semver']
+  version_major integer [not null]
+  version_minor integer [not null]
+  version_patch integer [not null]
+  version_prerelease varchar(128) [not null]
+  tags "varchar(64)[]" [not null, note: 'default in Python: list()']
+  collection_id uuid [not null]
+  search_vector tsvector [default: '', not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (sha256) [name: 'ansible_collectionversion_sha256_a4d120ab']
+    (sha256) [name: 'ansible_collectionversion_sha256_a4d120ab_like', note: 'varchar_pattern_ops']
+    (collection_id) [name: 'ansible_collectionversion_collection_id_84033915']
+    (_pulp_domain_id) [name: 'ansible_collectionversion__pulp_domain_id_f8891b75']
+    (sha256, _pulp_domain_id) [unique, name: 'ansible_collectionversion_sha256__pulp_domain_id_2f4144eb_uniq']
+    (namespace, name, version) [name: 'ansible_col_namespa_ea6f75_idx']
+  }
+
+  Note: '''A content type representing a CollectionVersion.
+
+This model is primarily designed to adhere to the data format for Collection content. That spec
+is here: https://docs.ansible.com/ansible/devel/dev_guide/collections_galaxy_meta.html
+
+Fields:
+
+    authors (psql_fields.ArrayField): A list of the CollectionVersion content\'s authors.
+    contents (models.JSONField): A JSON field with data about the contents.
+    dependencies (models.JSONField): A dict declaring Collections that this collection
+        requires to be installed for it to be usable.
+    description (models.TextField): A short summary description of the collection.
+    docs_blob (models.JSONField): A JSON field holding the various documentation blobs in
+        the collection.
+    manifest (models.JSONField): A JSON field holding MANIFEST.json data.
+    files (models.JSONField): A JSON field holding FILES.json data.
+    documentation (models.CharField): The URL to any online docs.
+    homepage (models.CharField): The URL to the homepage of the collection/project.
+    issues (models.CharField): The URL to the collection issue tracker.
+    license (psql_fields.ArrayField): A list of licenses for content inside of a collection.
+    name (models.CharField): The name of the collection.
+    namespace (models.CharField): The namespace of the collection.
+    repository (models.CharField): The URL of the originating SCM repository.
+    version (models.CharField): The version of the collection.
+    requires_ansible (models.CharField): The version of Ansible required to use the collection.
+    tag (ArrayField): Taglist.
+
+Relations:
+
+    collection (models.ForeignKey): Reference to a collection model.'''
+}
+
+Table ansible_collectionversionmark {
+  content_ptr_id uuid [pk, note: 'parent link: a CollectionVersionMark is a Content (multi-table inheritance)']
+  value varchar(50) [not null]
+  marked_collection_id uuid [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (value) [name: 'ansible_collectionversionmark_value_42628a78']
+    (value) [name: 'ansible_collectionversionmark_value_42628a78_like', note: 'varchar_pattern_ops']
+    (marked_collection_id) [name: 'ansible_collectionversionmark_marked_collection_id_275ac36b']
+    (_pulp_domain_id) [name: 'ansible_collectionversionmark__pulp_domain_id_d2944f38']
+    (value, marked_collection_id, _pulp_domain_id) [unique, name: 'ansible_collectionversio_value_marked_collection__4e23db57_uniq']
+  }
+
+  Note: '''A content type representing a mark that is attached to a content unit.
+
+Fields:
+    value (models.CharField): The value of the mark.
+    marked_collection (models.ForeignKey): Reference to a CollectionVersion.'''
+}
+
+Table ansible_collectionversionsignature {
+  content_ptr_id uuid [pk, note: 'parent link: a CollectionVersionSignature is a Content (multi-table inheritance)']
+  signed_collection_id uuid [not null]
+  data text [not null]
+  digest varchar(64) [not null]
+  pubkey_fingerprint varchar(64) [not null]
+  signing_service_id uuid
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (signed_collection_id) [name: 'ansible_collectionversions_signed_collection_id_8106edad']
+    (signing_service_id) [name: 'ansible_collectionversionsignature_signing_service_id_d3c677b7']
+    (_pulp_domain_id) [name: 'ansible_collectionversionsignature__pulp_domain_id_af0b94b1']
+    (pubkey_fingerprint, signed_collection_id, _pulp_domain_id) [unique, name: 'ansible_collectionversio_pubkey_fingerprint_signe_884ebe8e_uniq']
+  }
+
+  Note: '''A content type representing a signature that is attached to a content unit.
+
+Fields:
+    data (models.BinaryField): A signature, base64 encoded. # Not sure if it is base64 encoded
+    digest (models.CharField): A signature sha256 digest.
+    pubkey_fingerprint (models.CharField): A fingerprint of the public key used.
+
+Relations:
+    signed_collection (models.ForeignKey): A collection version this signature is relevant to.
+    signing_service (models.ForeignKey): An optional signing service used for creation.'''
+}
+
+Table ansible_ansiblenamespacemetadata {
+  content_ptr_id uuid [pk, note: 'parent link: a AnsibleNamespaceMetadata is a Content (multi-table inheritance)']
+  name varchar(64) [not null]
+  company varchar(64) [default: '', not null]
+  email varchar(256) [default: '', not null]
+  description varchar(256) [default: '', not null]
+  resources text [default: '', not null]
+  links hstore [not null, note: 'default in Python: dict()']
+  avatar_sha256 varchar(64)
+  metadata_sha256 varchar(64) [not null]
+  namespace_id uuid [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (metadata_sha256) [name: 'ansible_ansiblenamespacemetadata_metadata_sha256_1831230b']
+    (metadata_sha256) [name: 'ansible_ansiblenamespacemetadata_metadata_sha256_1831230b_like', note: 'varchar_pattern_ops']
+    (namespace_id) [name: 'ansible_ansiblenamespacemetadata_namespace_id_3f67366a']
+    (_pulp_domain_id) [name: 'ansible_ansiblenamespacemetadata__pulp_domain_id_7218a611']
+    (metadata_sha256, _pulp_domain_id) [unique, name: 'ansible_ansiblenamespace_metadata_sha256__pulp_do_46acb4db_uniq']
+  }
+
+  Note: '''A content type representing the Namespace metadata of a Collection.
+
+Namespace metadata can have an avatar which is stored as an associated artifact upon upload.
+
+Fields:
+    name (models.CharField): The required name of the Namespace
+    company (models.CharField): Optional namespace owner company name.
+    email (models.CharField): Optional namespace contact email.
+    description (models.CharField): Namespace brief description.
+    resources (models.TextField): Namespace resources page in markdown format.
+    links (psql_fields.HStore): Labeled related links.
+    avatar_sha256 (models.CharField): SHA256 digest of avatar image.
+    metadata_sha256(models.CharField): SHA256 digest of all other metadata fields.
+
+Relations:
+    namespace (AnsibleNamespace): A link to the Namespace model used for permissions.'''
+}
+
+Table ansible_downloadlog {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  content_unit_id uuid [not null]
+  user_id integer
+  ip inet [not null]
+  extra_data jsonb
+  user_agent text [not null]
+  repository_id uuid [not null]
+  repository_version_id uuid
+
+  indexes {
+    (content_unit_id) [name: 'ansible_downloadlog_content_unit_id_2ea80d65']
+    (user_id) [name: 'ansible_downloadlog_user_id_ce94320c']
+    (repository_id) [name: 'ansible_downloadlog_repository_id_83ffdbe7']
+    (repository_version_id) [name: 'ansible_downloadlog_repository_version_id_7aaa821e']
+  }
+
+  Note: '''A download log for content units by user, IP and org_id.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table ansible_collectiondownloadcount {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+  namespace varchar(64) [not null]
+  name varchar(64) [not null]
+  download_count bigint [default: 0, not null]
+
+  indexes {
+    (pulp_domain_id) [name: 'ansible_collectiondownloadcount_pulp_domain_id_2df3b64e']
+    (namespace) [name: 'ansible_collectiondownloadcount_namespace_3d744125']
+    (namespace) [name: 'ansible_collectiondownloadcount_namespace_3d744125_like', note: 'varchar_pattern_ops']
+    (name) [name: 'ansible_collectiondownloadcount_name_e5962e48']
+    (name) [name: 'ansible_collectiondownloadcount_name_e5962e48_like', note: 'varchar_pattern_ops']
+    (pulp_domain_id, namespace, name) [unique, name: 'ansible_collectiondownlo_pulp_domain_id_namespace_45ea633b_uniq']
+  }
+
+  Note: '''Aggregate count of downloads per collection
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Table ansible_roleremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a RoleRemote is a Remote (multi-table inheritance)']
+
+  Note: '''A Remote for Ansible content.'''
+}
+
+Table ansible_collectionremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a CollectionRemote is a Remote (multi-table inheritance)']
+  requirements_file text
+  auth_url varchar(255)
+  token text
+  sync_dependencies boolean [default: true, not null]
+  signed_only boolean [default: false, not null]
+  sync_highest_versions integer
+
+  Note: '''A Remote for Collection content.'''
+}
+
+Table ansible_gitremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a GitRemote is a Remote (multi-table inheritance)']
+  metadata_only boolean [default: false, not null]
+  git_ref text [not null]
+
+  Note: '''A Remote for Collection content hosted in Git repositories.'''
+}
+
+Table ansible_ansiblecollectiondeprecated {
+  content_ptr_id uuid [pk, note: 'parent link: a AnsibleCollectionDeprecated is a Content (multi-table inheritance)']
+  namespace varchar(64) [not null]
+  name varchar(64) [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'ansible_ansiblecollectiondeprecated__pulp_domain_id_fa4ca5ca']
+    (namespace, name, _pulp_domain_id) [unique, name: 'ansible_ansiblecollectio_namespace_name__pulp_dom_b90ea152_uniq']
+  }
+
+  Note: '''A model that represents if a Collection is `deprecated` for a given RepositoryVersion.'''
+}
+
+Table ansible_ansiblerepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a AnsibleRepository is a Repository (multi-table inheritance)']
+  last_synced_metadata_time "timestamp with time zone"
+  gpgkey text
+  private boolean [default: false, not null]
+
+  Note: '''Repository for "ansible" content.
+
+Fields:
+
+    last_synced_metadata_time (models.DateTimeField): Last synced metadata time.
+    private (models.BooleanField): Indicator if this repository is private'''
+}
+
+Table ansible_ansibledistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a AnsibleDistribution is a Distribution (multi-table inheritance)']
+
+  Note: '''A Distribution for Ansible content.'''
+}
+
+Table ansible_crossrepositorycollectionversionindex {
+  id integer [pk, increment]
+  repository_id uuid [not null]
+  repository_version_id uuid
+  collection_version_id uuid [not null]
+  namespace_metadata_id uuid
+  is_deprecated boolean [not null]
+  is_signed boolean [not null]
+  is_highest boolean [not null]
+
+  indexes {
+    (repository_id) [name: 'ansible_crossrepositorycol_repository_id_eeab68ea']
+    (repository_version_id) [name: 'ansible_crossrepositorycol_repository_version_id_5fd258cf']
+    (collection_version_id) [name: 'ansible_crossrepositorycol_collection_version_id_8c2d8b14']
+    (namespace_metadata_id) [name: 'ansible_crossrepositorycol_namespace_metadata_id_acec4834']
+    (repository_id, repository_version_id, collection_version_id) [unique, name: 'ansible_crossrepositoryc_repository_id_repository_a41a424c_uniq']
+  }
+
+  Note: '''A model that indexes all CV content across all repositories.'''
+}
+
+Table python_pythondistribution {
+  distribution_ptr_id uuid [pk, note: 'parent link: a PythonDistribution is a Distribution (multi-table inheritance)']
+  allow_uploads boolean [default: true, not null]
+
+  Note: '''Distribution for \'Python\' Content.'''
+}
+
+Table python_pythonpackagecontent {
+  content_ptr_id uuid [pk, note: 'parent link: a PythonPackageContent is a Content (multi-table inheritance)']
+  author text [not null]
+  author_email text [not null]
+  description text [not null]
+  home_page text [not null]
+  keywords text [not null]
+  license text [not null]
+  metadata_version text [not null]
+  name text [not null]
+  platform text [not null]
+  summary text [not null]
+  version text [not null]
+  classifiers jsonb [not null, note: 'default in Python: list()']
+  download_url text [not null]
+  supported_platform text [not null]
+  maintainer text [not null]
+  maintainer_email text [not null]
+  obsoletes_dist jsonb [not null, note: 'default in Python: list()']
+  project_url text [not null]
+  project_urls jsonb [not null, note: 'default in Python: dict()']
+  provides_dist jsonb [not null, note: 'default in Python: list()']
+  requires_external jsonb [not null, note: 'default in Python: list()']
+  requires_dist jsonb [not null, note: 'default in Python: list()']
+  requires_python text [not null]
+  description_content_type text [not null]
+  provides_extras jsonb [not null, note: 'default in Python: list()']
+  dynamic jsonb [not null, note: 'default in Python: list()']
+  license_expression text [not null]
+  license_file jsonb [not null, note: 'default in Python: list()']
+  name_normalized text [default: '', not null]
+  filename text [not null]
+  packagetype PythonPackageContentPackagetype [not null]
+  python_version text [not null]
+  sha256 varchar(64) [not null]
+  metadata_sha256 varchar(64)
+  size bigint [default: 0, not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (name_normalized) [name: 'python_pythonpackagecontent_name_normalized_5336b45f']
+    (name_normalized) [name: 'python_pythonpackagecontent_name_normalized_5336b45f_like', note: 'text_pattern_ops']
+    (filename) [name: 'python_pythonpackagecontent_filename_017951e5']
+    (filename) [name: 'python_pythonpackagecontent_filename_017951e5_like', note: 'text_pattern_ops']
+    (sha256) [name: 'python_pythonpackagecontent_sha256_8ad23813']
+    (sha256) [name: 'python_pythonpackagecontent_sha256_8ad23813_like', note: 'varchar_pattern_ops']
+    (_pulp_domain_id) [name: 'python_pythonpackagecontent__pulp_domain_id_dfd6c709']
+    (sha256, _pulp_domain_id) [unique, name: 'python_pythonpackagecont_sha256__pulp_domain_id_8cfea919_uniq']
+  }
+
+  Note: '''A Content Type representing Python\'s Distribution Package.
+
+Core Metadata:
+    https://packaging.python.org/en/latest/specifications/core-metadata/
+
+Release metadata (JSON API):
+    https://docs.pypi.org/api/json/
+
+File Formats:
+    https://packaging.python.org/en/latest/specifications/source-distribution-format/
+    https://packaging.python.org/en/latest/specifications/binary-distribution-format/'''
+}
+
+Table python_packageprovenance {
+  content_ptr_id uuid [pk, note: 'parent link: a PackageProvenance is a Content (multi-table inheritance)']
+  package_id uuid [not null]
+  provenance jsonb [not null]
+  sha256 varchar(64) [not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (package_id) [name: 'python_packageprovenance_package_id_bf4916cf']
+    (_pulp_domain_id) [name: 'python_packageprovenance__pulp_domain_id_bc019693']
+    (sha256, _pulp_domain_id) [unique, name: 'python_packageprovenance_sha256__pulp_domain_id_e12e4c73_uniq']
+  }
+
+  Note: '''PEP 740 provenance objects.'''
+}
+
+Table python_packageyank {
+  content_ptr_id uuid [pk, note: 'parent link: a PackageYank is a Content (multi-table inheritance)']
+  name_normalized text [not null]
+  version text [not null]
+  yanked_reason text [default: '', not null]
+  _pulp_domain_id uuid [not null, note: 'default in Python: get_domain_pk()']
+
+  indexes {
+    (_pulp_domain_id) [name: 'python_packageyank__pulp_domain_id_0acb011b']
+    (name_normalized, version, yanked_reason, _pulp_domain_id) [unique, name: 'python_packageyank_name_normalized_version__96a211ce_uniq']
+  }
+
+  Note: '''A marker content type indicating a package version is yanked in a repository (PEP 592).
+
+Its presence in a repository version means all files for the matching
+(name_normalized, version) pair are yanked. Yank/unyank operations
+add/remove this marker, creating new repository versions.'''
+}
+
+Table python_pythonpublication {
+  publication_ptr_id uuid [pk, note: 'parent link: a PythonPublication is a Publication (multi-table inheritance)']
+
+  Note: '''A Publication for PythonContent.'''
+}
+
+Table python_pythonremote {
+  remote_ptr_id uuid [pk, note: 'parent link: a PythonRemote is a Remote (multi-table inheritance)']
+  prereleases boolean [default: false, not null]
+  includes jsonb [not null, note: 'default in Python: list()']
+  excludes jsonb [not null, note: 'default in Python: list()']
+  package_types PythonRemotePackageTypes [not null, note: 'default in Python: list()']
+  keep_latest_packages integer [default: 0, not null]
+  exclude_platforms PythonRemoteExcludePlatforms [not null, note: 'default in Python: list()']
+  provenance boolean [default: false, not null]
+  vulnerabilities boolean [default: false, not null]
+
+  Note: '''A Remote for Python Content.
+
+Fields:
+
+    prereleases (models.BooleanField): Whether to sync pre-release versions of packages.'''
+}
+
+Table python_pythonrepository {
+  repository_ptr_id uuid [pk, note: 'parent link: a PythonRepository is a Repository (multi-table inheritance)']
+  autopublish boolean [default: false, not null]
+  allow_package_substitution boolean [default: true, not null]
+  error_on_reject boolean [default: true, not null]
+
+  Note: '''Repository for "python" content.'''
+}
+
+Table python_pythonblocklistentry {
+  pulp_id uuid [pk, note: 'default in Python: pulp_uuid()']
+  pulp_created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  pulp_last_updated "timestamp with time zone" [note: 'default in Python: now()']
+  name text [default: null]
+  version text [default: null]
+  filename text [default: null]
+  added_by text [default: '', not null]
+  repository_id uuid [not null]
+
+  indexes {
+    (repository_id) [name: 'python_pythonblocklistentry_repository_id_e10c20b5']
+  }
+
+  Note: '''An entry in a PythonRepository\'s package blocklist.
+
+Blocklist entries prevent packages from being added to the repository.
+Entries can match by package `name` (all versions), package `name` + `version`,
+or exact `filename`. Exactly one of `name` or `filename` must be provided.
+
+Columns from BaseModel (abstract): pulp_id, pulp_created, pulp_last_updated.'''
+}
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref core_domain_default_content_guard_id_fk: core_domain.default_content_guard_id > core_contentguard.pulp_id [delete: set null]
+
+Ref core_alternatecontentsource_remote_id_fk: core_alternatecontentsource.remote_id > core_remote.pulp_id [delete: restrict]
+
+Ref core_alternatecontentsource_pulp_domain_id_fk: core_alternatecontentsource.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_alternatecontentsourcepath_alternate_content_source_id_fk: core_alternatecontentsourcepath.alternate_content_source_id > core_alternatecontentsource.pulp_id [delete: cascade]
+
+Ref core_alternatecontentsourcepath_repository_id_fk: core_alternatecontentsourcepath.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref core_artifact_pulp_domain_id_fk: core_artifact.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_pulptemporaryfile_pulp_domain_id_fk: core_pulptemporaryfile.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_content_pulp_domain_id_fk: core_content.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_contentartifact_artifact_id_fk: core_contentartifact.artifact_id > core_artifact.pulp_id [delete: restrict]
+
+Ref core_contentartifact_content_id_fk: core_contentartifact.content_id > core_content.pulp_id [delete: cascade]
+
+Ref core_remoteartifact_content_artifact_id_fk: core_remoteartifact.content_artifact_id > core_contentartifact.pulp_id [delete: cascade]
+
+Ref core_remoteartifact_remote_id_fk: core_remoteartifact.remote_id > core_remote.pulp_id [delete: cascade]
+
+Ref core_remoteartifact_pulp_domain_id_fk: core_remoteartifact.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_asciiarmoreddetachedsigningservice_signingservice_ptr_id_fk: core_asciiarmoreddetachedsigningservice.signingservice_ptr_id - core_signingservice.pulp_id [delete: cascade]
+
+Table core_role_permissions {
+  id integer [pk, increment]
+  role_id uuid [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (role_id) [name: 'core_role_permissions_role_id_cf9329dc']
+    (permission_id) [name: 'core_role_permissions_permission_id_9e3ab8cb']
+    (role_id, permission_id) [unique, name: 'core_role_permissions_role_id_permission_id_2896efdb_uniq']
+  }
+}
+
+Ref core_role_permissions_role_id_fk: core_role_permissions.role_id > core_role.pulp_id [delete: cascade]
+
+Ref core_role_permissions_permission_id_fk: core_role_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref core_userrole_user_id_fk: core_userrole.user_id > auth_user.id [delete: cascade]
+
+Ref core_userrole_role_id_fk: core_userrole.role_id > core_role.pulp_id [delete: cascade]
+
+Ref core_userrole_content_type_id_fk: core_userrole.content_type_id > django_content_type.id [delete: cascade]
+
+Ref core_userrole_domain_id_fk: core_userrole.domain_id > core_domain.pulp_id [delete: cascade]
+
+Ref core_grouprole_role_id_fk: core_grouprole.role_id > core_role.pulp_id [delete: cascade]
+
+Ref core_grouprole_content_type_id_fk: core_grouprole.content_type_id > django_content_type.id [delete: cascade]
+
+Ref core_grouprole_domain_id_fk: core_grouprole.domain_id > core_domain.pulp_id [delete: cascade]
+
+Ref core_profileartifact_artifact_id_fk: core_profileartifact.artifact_id > core_artifact.pulp_id [delete: cascade]
+
+Ref core_profileartifact_task_id_fk: core_profileartifact.task_id > core_task.pulp_id [delete: cascade]
+
+Ref core_task_app_lock_id_fk: core_task.app_lock_id > core_appstatus.pulp_id [delete: set null]
+
+Ref core_task_parent_task_id_fk: core_task.parent_task_id > core_task.pulp_id [delete: set null]
+
+Ref core_task_task_group_id_fk: core_task.task_group_id > core_taskgroup.pulp_id [delete: set null]
+
+Ref core_task_pulp_domain_id_fk: core_task.pulp_domain_id > core_domain.pulp_id [delete: cascade]
+
+Ref core_taskgroup_pulp_domain_id_fk: core_taskgroup.pulp_domain_id > core_domain.pulp_id [delete: cascade]
+
+Ref core_createdresource_content_type_id_fk: core_createdresource.content_type_id > django_content_type.id [delete: cascade]
+
+Ref core_createdresource_task_id_fk: core_createdresource.task_id > core_task.pulp_id [delete: cascade]
+
+Ref core_taskschedule_last_task_id_fk: core_taskschedule.last_task_id > core_task.pulp_id [delete: set null]
+
+Ref core_taskschedule_pulp_domain_id_fk: core_taskschedule.pulp_domain_id > core_domain.pulp_id [delete: cascade]
+
+Ref core_repository_remote_id_fk: core_repository.remote_id > core_remote.pulp_id [delete: set null]
+
+Ref core_repository_pulp_domain_id_fk: core_repository.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_remote_pulp_domain_id_fk: core_remote.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_repositorycontent_content_id_fk: core_repositorycontent.content_id > core_content.pulp_id [delete: restrict]
+
+Ref core_repositorycontent_repository_id_fk: core_repositorycontent.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref core_repositorycontent_version_added_id_fk: core_repositorycontent.version_added_id > core_repositoryversion.pulp_id [delete: restrict]
+
+Ref core_repositorycontent_version_removed_id_fk: core_repositorycontent.version_removed_id > core_repositoryversion.pulp_id [delete: restrict]
+
+Ref core_repositoryversion_repository_id_fk: core_repositoryversion.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref core_repositoryversion_base_version_id_fk: core_repositoryversion.base_version_id > core_repositoryversion.pulp_id [delete: set null]
+
+Ref core_repositoryversioncontentdetails_repository_version_id_fk: core_repositoryversioncontentdetails.repository_version_id > core_repositoryversion.pulp_id [delete: cascade]
+
+Ref core_export_task_id_fk: core_export.task_id > core_task.pulp_id [delete: set null]
+
+Ref core_export_exporter_id_fk: core_export.exporter_id > core_exporter.pulp_id [delete: cascade]
+
+Ref core_export_pulp_domain_id_fk: core_export.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_exportedresource_content_type_id_fk: core_exportedresource.content_type_id > django_content_type.id [delete: cascade]
+
+Ref core_exportedresource_export_id_fk: core_exportedresource.export_id > core_export.pulp_id [delete: cascade]
+
+Ref core_exporter_pulp_domain_id_fk: core_exporter.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_filesystemexport_export_ptr_id_fk: core_filesystemexport.export_ptr_id - core_export.pulp_id [delete: cascade]
+
+Ref core_filesystemexporter_exporter_ptr_id_fk: core_filesystemexporter.exporter_ptr_id - core_exporter.pulp_id [delete: cascade]
+
+Ref core_pulpexport_export_ptr_id_fk: core_pulpexport.export_ptr_id - core_export.pulp_id [delete: cascade]
+
+Ref core_pulpexporter_exporter_ptr_id_fk: core_pulpexporter.exporter_ptr_id - core_exporter.pulp_id [delete: cascade]
+
+Ref core_pulpexporter_last_export_id_fk: core_pulpexporter.last_export_id > core_pulpexport.export_ptr_id [delete: set null]
+
+Table core_pulpexporter_repositories {
+  id integer [pk, increment]
+  pulpexporter_id uuid [not null]
+  repository_id uuid [not null]
+
+  indexes {
+    (pulpexporter_id) [name: 'core_pulpexporter_repositories_pulpexporter_id_ade1586d']
+    (repository_id) [name: 'core_pulpexporter_repositories_repository_id_57f41b66']
+    (pulpexporter_id, repository_id) [unique, name: 'core_pulpexporter_reposi_pulpexporter_id_reposito_10370b0c_uniq']
+  }
+}
+
+Ref core_pulpexporter_repositories_pulpexporter_id_fk: core_pulpexporter_repositories.pulpexporter_id > core_pulpexporter.exporter_ptr_id [delete: cascade]
+
+Ref core_pulpexporter_repositories_repository_id_fk: core_pulpexporter_repositories.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref core_import_task_id_fk: core_import.task_id > core_task.pulp_id [delete: restrict]
+
+Ref core_import_importer_id_fk: core_import.importer_id > core_importer.pulp_id [delete: cascade]
+
+Ref core_import_pulp_domain_id_fk: core_import.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_importer_pulp_domain_id_fk: core_importer.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_pulpimporter_importer_ptr_id_fk: core_pulpimporter.importer_ptr_id - core_importer.pulp_id [delete: cascade]
+
+Ref core_pulpimporterrepository_pulp_importer_id_fk: core_pulpimporterrepository.pulp_importer_id > core_pulpimporter.importer_ptr_id [delete: cascade]
+
+Ref core_pulpimporterrepository_repository_id_fk: core_pulpimporterrepository.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref core_pulpimport_import_ptr_id_fk: core_pulpimport.import_ptr_id - core_import.pulp_id [delete: cascade]
+
+Ref core_publication_repository_version_id_fk: core_publication.repository_version_id > core_repositoryversion.pulp_id [delete: cascade]
+
+Ref core_publication_pulp_domain_id_fk: core_publication.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_publishedartifact_content_artifact_id_fk: core_publishedartifact.content_artifact_id > core_contentartifact.pulp_id [delete: cascade]
+
+Ref core_publishedartifact_publication_id_fk: core_publishedartifact.publication_id > core_publication.pulp_id [delete: cascade]
+
+Ref core_publishedmetadata_content_ptr_id_fk: core_publishedmetadata.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_publishedmetadata_publication_id_fk: core_publishedmetadata.publication_id > core_publication.pulp_id [delete: cascade]
+
+Ref core_contentguard_pulp_domain_id_fk: core_contentguard.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_rbaccontentguard_contentguard_ptr_id_fk: core_rbaccontentguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref core_contentredirectcontentguard_contentguard_ptr_id_fk: core_contentredirectcontentguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref core_headercontentguard_contentguard_ptr_id_fk: core_headercontentguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref core_envvarheadercontentguard_contentguard_ptr_id_fk: core_envvarheadercontentguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref core_compositecontentguard_contentguard_ptr_id_fk: core_compositecontentguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Table core_compositecontentguard_guards {
+  id integer [pk, increment]
+  compositecontentguard_id uuid [not null]
+  contentguard_id uuid [not null]
+
+  indexes {
+    (compositecontentguard_id) [name: 'core_compositecontentguard_compositecontentguard_id_e6858e2b']
+    (contentguard_id) [name: 'core_compositecontentguard_guards_contentguard_id_02714ea9']
+    (compositecontentguard_id, contentguard_id) [unique, name: 'core_compositecontentgua_compositecontentguard_id_0cb988c2_uniq']
+  }
+}
+
+Ref core_compositecontentguard_guards_compositecontentguard_id_fk: core_compositecontentguard_guards.compositecontentguard_id > core_compositecontentguard.contentguard_ptr_id [delete: cascade]
+
+Ref core_compositecontentguard_guards_contentguard_id_fk: core_compositecontentguard_guards.contentguard_id > core_contentguard.pulp_id [delete: cascade]
+
+Ref core_distribution_pulp_domain_id_fk: core_distribution.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_distribution_content_guard_id_fk: core_distribution.content_guard_id > core_contentguard.pulp_id [delete: set null]
+
+Ref core_distribution_publication_id_fk: core_distribution.publication_id > core_publication.pulp_id [delete: set null]
+
+Ref core_distribution_remote_id_fk: core_distribution.remote_id > core_remote.pulp_id [delete: set null]
+
+Ref core_distribution_repository_id_fk: core_distribution.repository_id > core_repository.pulp_id [delete: set null]
+
+Ref core_distribution_repository_version_id_fk: core_distribution.repository_version_id > core_repositoryversion.pulp_id [delete: set null]
+
+Ref core_artifactdistribution_distribution_ptr_id_fk: core_artifactdistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref core_distributedpublication_distribution_id_fk: core_distributedpublication.distribution_id > core_distribution.pulp_id [delete: cascade]
+
+Ref core_distributedpublication_publication_id_fk: core_distributedpublication.publication_id > core_publication.pulp_id [delete: cascade]
+
+Ref core_upload_pulp_domain_id_fk: core_upload.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_uploadchunk_upload_id_fk: core_uploadchunk.upload_id > core_upload.pulp_id [delete: cascade]
+
+Ref core_vulnerabilityreport_content_id_fk: core_vulnerabilityreport.content_id - core_content.pulp_id [delete: cascade]
+
+Ref core_vulnerabilityreport_pulp_domain_id_fk: core_vulnerabilityreport.pulp_domain_id > core_domain.pulp_id [delete: cascade]
+
+Table core_vulnerabilityreport_repo_versions {
+  id integer [pk, increment]
+  vulnerabilityreport_id uuid [not null]
+  repositoryversion_id uuid [not null]
+
+  indexes {
+    (vulnerabilityreport_id) [name: 'core_vulnerabilityreport_r_vulnerabilityreport_id_49786e70']
+    (repositoryversion_id) [name: 'core_vulnerabilityreport_r_repositoryversion_id_938d38a1']
+    (vulnerabilityreport_id, repositoryversion_id) [unique, name: 'core_vulnerabilityreport_vulnerabilityreport_id_r_4e68d972_uniq']
+  }
+}
+
+Ref core_vulnerabilityreport_repo_versions_vulnerabilityreport_id_fk: core_vulnerabilityreport_repo_versions.vulnerabilityreport_id > core_vulnerabilityreport.pulp_id [delete: cascade]
+
+Ref core_vulnerabilityreport_repo_versions_repositoryversion_id_fk: core_vulnerabilityreport_repo_versions.repositoryversion_id > core_repositoryversion.pulp_id [delete: cascade]
+
+Ref core_progressreport_task_id_fk: core_progressreport.task_id > core_task.pulp_id [delete: cascade]
+
+Ref core_groupprogressreport_task_group_id_fk: core_groupprogressreport.task_group_id > core_taskgroup.pulp_id [delete: cascade]
+
+Ref core_upstreampulp_pulp_domain_id_fk: core_upstreampulp.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_openpgppublickey_content_ptr_id_fk: core_openpgppublickey.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_openpgppublickey__pulp_domain_id_fk: core_openpgppublickey._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref core_openpgppublicsubkey_content_ptr_id_fk: core_openpgppublicsubkey.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_openpgppublicsubkey_public_key_id_fk: core_openpgppublicsubkey.public_key_id > core_openpgppublickey.content_ptr_id [delete: restrict]
+
+Ref core_openpgpuserid_content_ptr_id_fk: core_openpgpuserid.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_openpgpuserid_public_key_id_fk: core_openpgpuserid.public_key_id > core_openpgppublickey.content_ptr_id [delete: restrict]
+
+Ref core_openpgpuserattribute_content_ptr_id_fk: core_openpgpuserattribute.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_openpgpuserattribute_public_key_id_fk: core_openpgpuserattribute.public_key_id > core_openpgppublickey.content_ptr_id [delete: restrict]
+
+Ref core_openpgpsignature_content_ptr_id_fk: core_openpgpsignature.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref core_openpgpsignature_signed_content_id_fk: core_openpgpsignature.signed_content_id > core_content.pulp_id [delete: restrict]
+
+Ref core_openpgpkeyring_repository_ptr_id_fk: core_openpgpkeyring.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref core_openpgpdistribution_distribution_ptr_id_fk: core_openpgpdistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref container_blob_content_ptr_id_fk: container_blob.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref container_blob__pulp_domain_id_fk: container_blob._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref container_manifest_content_ptr_id_fk: container_manifest.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref container_manifest_config_blob_id_fk: container_manifest.config_blob_id > container_blob.content_ptr_id [delete: cascade]
+
+Ref container_manifest__pulp_domain_id_fk: container_manifest._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref container_blobmanifest_manifest_id_fk: container_blobmanifest.manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_blobmanifest_manifest_blob_id_fk: container_blobmanifest.manifest_blob_id > container_blob.content_ptr_id [delete: cascade]
+
+Ref container_manifestlistmanifest_image_manifest_id_fk: container_manifestlistmanifest.image_manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_manifestlistmanifest_manifest_list_id_fk: container_manifestlistmanifest.manifest_list_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_tag_content_ptr_id_fk: container_tag.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref container_tag_tagged_manifest_id_fk: container_tag.tagged_manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_tag__pulp_domain_id_fk: container_tag._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref container_manifestsignature_content_ptr_id_fk: container_manifestsignature.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref container_manifestsignature_signed_manifest_id_fk: container_manifestsignature.signed_manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_manifestsignature__pulp_domain_id_fk: container_manifestsignature._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref container_containernamespace_pulp_domain_id_fk: container_containernamespace.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref container_containerremote_remote_ptr_id_fk: container_containerremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref container_containerpullthroughremote_remote_ptr_id_fk: container_containerpullthroughremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref container_manifestsigningservice_signingservice_ptr_id_fk: container_manifestsigningservice.signingservice_ptr_id - core_signingservice.pulp_id [delete: cascade]
+
+Ref container_containerrepository_repository_ptr_id_fk: container_containerrepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref container_containerrepository_manifest_signing_service_id_fk: container_containerrepository.manifest_signing_service_id > container_manifestsigningservice.signingservice_ptr_id [delete: set null]
+
+Table container_containerrepository_pending_blobs {
+  id integer [pk, increment]
+  containerrepository_id uuid [not null]
+  blob_id uuid [not null]
+
+  indexes {
+    (containerrepository_id) [name: 'container_containerreposit_containerrepository_id_f9b44e69']
+    (blob_id) [name: 'container_containerrepository_pending_blobs_blob_id_2979cd2b']
+    (containerrepository_id, blob_id) [unique, name: 'container_containerrepos_containerrepository_id_b_cac0b513_uniq']
+  }
+}
+
+Ref container_containerrepository_pending_blobs_containerrepository_id_fk: container_containerrepository_pending_blobs.containerrepository_id > container_containerrepository.repository_ptr_id [delete: cascade]
+
+Ref container_containerrepository_pending_blobs_blob_id_fk: container_containerrepository_pending_blobs.blob_id > container_blob.content_ptr_id [delete: cascade]
+
+Table container_containerrepository_pending_manifests {
+  id integer [pk, increment]
+  containerrepository_id uuid [not null]
+  manifest_id uuid [not null]
+
+  indexes {
+    (containerrepository_id) [name: 'container_containerreposit_containerrepository_id_0224719f']
+    (manifest_id) [name: 'container_containerreposit_manifest_id_b5626680']
+    (containerrepository_id, manifest_id) [unique, name: 'container_containerrepos_containerrepository_id_m_f399754c_uniq']
+  }
+}
+
+Ref container_containerrepository_pending_manifests_containerrepository_id_fk: container_containerrepository_pending_manifests.containerrepository_id > container_containerrepository.repository_ptr_id [delete: cascade]
+
+Ref container_containerrepository_pending_manifests_manifest_id_fk: container_containerrepository_pending_manifests.manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_containerpushrepository_repository_ptr_id_fk: container_containerpushrepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref container_containerpushrepository_manifest_signing_service_id_fk: container_containerpushrepository.manifest_signing_service_id > container_manifestsigningservice.signingservice_ptr_id [delete: set null]
+
+Table container_containerpushrepository_pending_blobs {
+  id integer [pk, increment]
+  containerpushrepository_id uuid [not null]
+  blob_id uuid [not null]
+
+  indexes {
+    (containerpushrepository_id) [name: 'container_containerpushrep_containerpushrepository_id_2e63e280']
+    (blob_id) [name: 'container_containerpushrep_blob_id_cdd1dbb4']
+    (containerpushrepository_id, blob_id) [unique, name: 'container_containerpushr_containerpushrepository__cd0de64a_uniq']
+  }
+}
+
+Ref container_containerpushrepository_pending_blobs_containerpushrepository_id_fk: container_containerpushrepository_pending_blobs.containerpushrepository_id > container_containerpushrepository.repository_ptr_id [delete: cascade]
+
+Ref container_containerpushrepository_pending_blobs_blob_id_fk: container_containerpushrepository_pending_blobs.blob_id > container_blob.content_ptr_id [delete: cascade]
+
+Table container_containerpushrepository_pending_manifests {
+  id integer [pk, increment]
+  containerpushrepository_id uuid [not null]
+  manifest_id uuid [not null]
+
+  indexes {
+    (containerpushrepository_id) [name: 'container_containerpushrep_containerpushrepository_id_f2e9f631']
+    (manifest_id) [name: 'container_containerpushrep_manifest_id_12869efa']
+    (containerpushrepository_id, manifest_id) [unique, name: 'container_containerpushr_containerpushrepository__a54e375a_uniq']
+  }
+}
+
+Ref container_containerpushrepository_pending_manifests_containerpushrepository_id_fk: container_containerpushrepository_pending_manifests.containerpushrepository_id > container_containerpushrepository.repository_ptr_id [delete: cascade]
+
+Ref container_containerpushrepository_pending_manifests_manifest_id_fk: container_containerpushrepository_pending_manifests.manifest_id > container_manifest.content_ptr_id [delete: cascade]
+
+Ref container_containerpullthroughdistribution_distribution_ptr_id_fk: container_containerpullthroughdistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref container_containerpullthroughdistribution_namespace_id_fk: container_containerpullthroughdistribution.namespace_id > container_containernamespace.pulp_id [delete: cascade]
+
+Ref container_containerdistribution_distribution_ptr_id_fk: container_containerdistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref container_containerdistribution_namespace_id_fk: container_containerdistribution.namespace_id > container_containernamespace.pulp_id [delete: cascade]
+
+Ref container_containerdistribution_pull_through_distribution_id_fk: container_containerdistribution.pull_through_distribution_id > container_containerpullthroughdistribution.distribution_ptr_id [delete: cascade]
+
+Ref container_upload_upload_ptr_id_fk: container_upload.upload_ptr_id - core_upload.pulp_id [delete: cascade]
+
+Ref container_upload_repository_id_fk: container_upload.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref container_upload_artifact_id_fk: container_upload.artifact_id > core_artifact.pulp_id [delete: set null]
+
+Ref certguard_rhsmcertguard_contentguard_ptr_id_fk: certguard_rhsmcertguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref certguard_x509certguard_contentguard_ptr_id_fk: certguard_x509certguard.contentguard_ptr_id - core_contentguard.pulp_id [delete: cascade]
+
+Ref file_filecontent_content_ptr_id_fk: file_filecontent.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref file_filecontent__pulp_domain_id_fk: file_filecontent._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref file_fileremote_remote_ptr_id_fk: file_fileremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref file_filegitremote_remote_ptr_id_fk: file_filegitremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref file_filerepository_repository_ptr_id_fk: file_filerepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref file_filepublication_publication_ptr_id_fk: file_filepublication.publication_ptr_id - core_publication.pulp_id [delete: cascade]
+
+Ref file_filedistribution_distribution_ptr_id_fk: file_filedistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref file_filealternatecontentsource_alternatecontentsource_ptr_id_fk: file_filealternatecontentsource.alternatecontentsource_ptr_id - core_alternatecontentsource.pulp_id [delete: cascade]
+
+Ref ansible_role_content_ptr_id_fk: ansible_role.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_role__pulp_domain_id_fk: ansible_role._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_collection_pulp_domain_id_fk: ansible_collection.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_collectionimport_task_id_fk: ansible_collectionimport.task_id - core_task.pulp_id [delete: cascade]
+
+Ref ansible_ansiblenamespace_pulp_domain_id_fk: ansible_ansiblenamespace.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_collectionversion_content_ptr_id_fk: ansible_collectionversion.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_collectionversion_collection_id_fk: ansible_collectionversion.collection_id > ansible_collection.pulp_id [delete: restrict]
+
+Ref ansible_collectionversion__pulp_domain_id_fk: ansible_collectionversion._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_collectionversionmark_content_ptr_id_fk: ansible_collectionversionmark.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_collectionversionmark_marked_collection_id_fk: ansible_collectionversionmark.marked_collection_id > ansible_collectionversion.content_ptr_id [delete: cascade]
+
+Ref ansible_collectionversionmark__pulp_domain_id_fk: ansible_collectionversionmark._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_collectionversionsignature_content_ptr_id_fk: ansible_collectionversionsignature.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_collectionversionsignature_signed_collection_id_fk: ansible_collectionversionsignature.signed_collection_id > ansible_collectionversion.content_ptr_id [delete: cascade]
+
+Ref ansible_collectionversionsignature_signing_service_id_fk: ansible_collectionversionsignature.signing_service_id > core_signingservice.pulp_id [delete: set null]
+
+Ref ansible_collectionversionsignature__pulp_domain_id_fk: ansible_collectionversionsignature._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_ansiblenamespacemetadata_content_ptr_id_fk: ansible_ansiblenamespacemetadata.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_ansiblenamespacemetadata_namespace_id_fk: ansible_ansiblenamespacemetadata.namespace_id > ansible_ansiblenamespace.pulp_id [delete: restrict]
+
+Ref ansible_ansiblenamespacemetadata__pulp_domain_id_fk: ansible_ansiblenamespacemetadata._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_downloadlog_content_unit_id_fk: ansible_downloadlog.content_unit_id > core_content.pulp_id [delete: cascade]
+
+Ref ansible_downloadlog_user_id_fk: ansible_downloadlog.user_id > auth_user.id [delete: cascade]
+
+Ref ansible_downloadlog_repository_id_fk: ansible_downloadlog.repository_id > core_repository.pulp_id [delete: cascade]
+
+Ref ansible_downloadlog_repository_version_id_fk: ansible_downloadlog.repository_version_id > core_repositoryversion.pulp_id [delete: set null]
+
+Ref ansible_collectiondownloadcount_pulp_domain_id_fk: ansible_collectiondownloadcount.pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_roleremote_remote_ptr_id_fk: ansible_roleremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref ansible_collectionremote_remote_ptr_id_fk: ansible_collectionremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref ansible_gitremote_remote_ptr_id_fk: ansible_gitremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref ansible_ansiblecollectiondeprecated_content_ptr_id_fk: ansible_ansiblecollectiondeprecated.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref ansible_ansiblecollectiondeprecated__pulp_domain_id_fk: ansible_ansiblecollectiondeprecated._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref ansible_ansiblerepository_repository_ptr_id_fk: ansible_ansiblerepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref ansible_ansibledistribution_distribution_ptr_id_fk: ansible_ansibledistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref ansible_crossrepositorycollectionversionindex_repository_id_fk: ansible_crossrepositorycollectionversionindex.repository_id > ansible_ansiblerepository.repository_ptr_id [delete: cascade]
+
+Ref ansible_crossrepositorycollectionversionindex_repository_version_id_fk: ansible_crossrepositorycollectionversionindex.repository_version_id > core_repositoryversion.pulp_id [delete: cascade]
+
+Ref ansible_crossrepositorycollectionversionindex_collection_version_id_fk: ansible_crossrepositorycollectionversionindex.collection_version_id > ansible_collectionversion.content_ptr_id [delete: cascade]
+
+Ref ansible_crossrepositorycollectionversionindex_namespace_metadata_id_fk: ansible_crossrepositorycollectionversionindex.namespace_metadata_id > ansible_ansiblenamespacemetadata.content_ptr_id [delete: set null]
+
+Ref python_pythondistribution_distribution_ptr_id_fk: python_pythondistribution.distribution_ptr_id - core_distribution.pulp_id [delete: cascade]
+
+Ref python_pythonpackagecontent_content_ptr_id_fk: python_pythonpackagecontent.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref python_pythonpackagecontent__pulp_domain_id_fk: python_pythonpackagecontent._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref python_packageprovenance_content_ptr_id_fk: python_packageprovenance.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref python_packageprovenance_package_id_fk: python_packageprovenance.package_id > python_pythonpackagecontent.content_ptr_id [delete: cascade]
+
+Ref python_packageprovenance__pulp_domain_id_fk: python_packageprovenance._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref python_packageyank_content_ptr_id_fk: python_packageyank.content_ptr_id - core_content.pulp_id [delete: cascade]
+
+Ref python_packageyank__pulp_domain_id_fk: python_packageyank._pulp_domain_id > core_domain.pulp_id [delete: restrict]
+
+Ref python_pythonpublication_publication_ptr_id_fk: python_pythonpublication.publication_ptr_id - core_publication.pulp_id [delete: cascade]
+
+Ref python_pythonremote_remote_ptr_id_fk: python_pythonremote.remote_ptr_id - core_remote.pulp_id [delete: cascade]
+
+Ref python_pythonrepository_repository_ptr_id_fk: python_pythonrepository.repository_ptr_id - core_repository.pulp_id [delete: cascade]
+
+Ref python_pythonblocklistentry_repository_id_fk: python_pythonblocklistentry.repository_id > python_pythonrepository.repository_ptr_id [delete: cascade]

@@ -1,0 +1,176 @@
+Table invitation {
+  id text [pk, not null]
+  email text [not null]
+  inviter_id text [not null]
+  organization_id text [not null]
+  role text [not null]
+  status text [not null]
+  expires_at timestamptz [not null]
+  accepted_at timestamptz
+  rejected_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (organization_id, email) [unique, name: 'invitation_org_email_unique']
+    (email) [name: 'invitation_email_idx']
+    (inviter_id) [name: 'invitation_inviter_id_idx']
+    (organization_id) [name: 'invitation_organization_id_idx']
+  }
+  Note: 'Invitations table for Better Auth organization plugin. Manages pending invites to organizations. `acceptedAt` and `rejectedAt` are available for application hooks. Better Auth updates `status` but does not populate these extra fields.'
+}
+
+Table organization {
+  id text [pk, not null]
+  name text [not null]
+  slug text [not null, unique]
+  logo text
+  metadata text
+  stripe_customer_id text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  Note: 'Organizations table for Better Auth organization plugin. Each organization represents a separate tenant with isolated data.'
+}
+
+Table member {
+  id text [pk, not null]
+  user_id text [not null]
+  organization_id text [not null]
+  role text [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id, organization_id) [unique, name: 'member_user_org_unique']
+    (user_id) [name: 'member_user_id_idx']
+    (organization_id) [name: 'member_organization_id_idx']
+  }
+  Note: 'Organization membership table for Better Auth organization plugin. Links users to organizations with specific roles. Role values (Better Auth defaults): - "owner": Full control, can delete organization - "admin": Can manage members and settings - "member": Standard access'
+}
+
+Table passkey {
+  id text [pk, not null]
+  name text
+  public_key text [not null]
+  user_id text [not null]
+  credential_id text [not null, unique]
+  counter integer [not null]
+  device_type text [not null]
+  backed_up boolean [not null]
+  transports text
+  aaguid text
+  last_used_at timestamptz [note: 'Extended operational fields']
+  device_name text
+  platform text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id) [name: 'passkey_user_id_idx']
+  }
+  Note: 'Passkey credential store. Extended fields beyond Better Auth defaults: - lastUsedAt: Tracks last authentication for security audits - deviceName: User-friendly name (e.g., "MacBook Pro", "iPhone 15") - platform: Authenticator platform ("platform" | "cross-platform")'
+}
+
+Table subscription {
+  id text [pk, not null]
+  plan text [not null]
+  reference_id text [not null]
+  stripe_customer_id text
+  stripe_subscription_id text [unique]
+  status text [not null]
+  period_start timestamptz
+  period_end timestamptz
+  trial_start timestamptz
+  trial_end timestamptz
+  cancel_at_period_end boolean
+  cancel_at timestamptz
+  canceled_at timestamptz
+  ended_at timestamptz
+  seats integer
+  billing_interval text
+  stripe_schedule_id text [note: 'Stripe schedule ID for a plan change deferred to period end; cleared when the change is applied or canceled.']
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (reference_id) [name: 'subscription_reference_id_idx']
+    (stripe_customer_id) [name: 'subscription_stripe_customer_id_idx']
+  }
+}
+
+Table user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  is_anonymous boolean [not null]
+  stripe_customer_id text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  Note: 'User accounts table. Matches to the `user` table in Better Auth.'
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamptz [not null]
+  token text [not null, unique]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  active_organization_id text
+  indexes {
+    (user_id) [name: 'session_user_id_idx']
+    (active_organization_id) [name: 'session_active_org_id_idx']
+  }
+  Note: 'Stores user session data for authentication. Matches to the `session` table in Better Auth.'
+}
+
+Table identity {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamptz
+  refresh_token_expires_at timestamptz
+  scope text
+  password text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (provider_id, account_id) [unique, name: 'identity_provider_account_unique']
+    (user_id) [name: 'identity_user_id_idx']
+  }
+  Note: 'Authentication identities: OAuth provider accounts and password credentials. Matches to the `account` table in Better Auth. Better Auth keys an identity on `(providerId, accountId)` and throws when a lookup matches two rows, so the pair is unique here. Never add an `issuer` column: 1.7.0 through 1.7.2 required one, 1.7.3 stopped writing it, and `NOT NULL` there rejects every sign-up.'
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (identifier, value) [unique, name: 'verification_identifier_value_unique']
+    (identifier) [name: 'verification_identifier_idx']
+    (value) [name: 'verification_value_idx']
+    (expires_at) [name: 'verification_expires_at_idx']
+  }
+  Note: 'Stores verification tokens (email verification, password reset, etc.) Matches to the `verification` table in Better Auth.'
+}
+
+Ref invitation_inviter_id_user_id_fk: invitation.inviter_id > user.id [delete: cascade]
+
+Ref invitation_organization_id_organization_id_fk: invitation.organization_id > organization.id [delete: cascade]
+
+Ref member_user_id_user_id_fk: member.user_id > user.id [delete: cascade]
+
+Ref member_organization_id_organization_id_fk: member.organization_id > organization.id [delete: cascade]
+
+Ref passkey_user_id_user_id_fk: passkey.user_id > user.id [delete: cascade]
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref identity_user_id_user_id_fk: identity.user_id > user.id [delete: cascade]

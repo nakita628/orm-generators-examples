@@ -1,0 +1,51 @@
+#nullable enable
+
+namespace Documenso.Models;
+
+/// <summary>
+/// @zod.import(["import { ZFieldMetaNotOptionalSchema } from '@documenso/lib/types/field-meta';"])
+/// </summary>
+public partial class Field
+{
+    public int Id { get; set; }
+
+    public string SecondaryId { get; set; } = null!;
+
+    public string EnvelopeId { get; set; } = null!;
+
+    public string EnvelopeItemId { get; set; } = null!;
+
+    public int RecipientId { get; set; }
+
+    public FieldType Type { get; set; }
+
+    /// <summary>
+    /// @zod.number.describe("The page number of the field on the document. Starts from 1.")
+    /// </summary>
+    public int Page { get; set; }
+
+    public decimal PositionX { get; set; } = 0m;
+
+    public decimal PositionY { get; set; } = 0m;
+
+    public decimal Width { get; set; } = -1m;
+
+    public decimal Height { get; set; } = -1m;
+
+    public string CustomText { get; set; } = null!;
+
+    public bool Inserted { get; set; }
+
+    public virtual EnvelopeItem EnvelopeItem { get; set; } = null!;
+
+    public virtual Envelope Envelope { get; set; } = null!;
+
+    public virtual Recipient Recipient { get; set; } = null!;
+
+    public virtual Signature? Signature { get; set; }
+
+    /// <summary>
+    /// [FieldMeta] @zod.custom.use(ZFieldMetaNotOptionalSchema)
+    /// </summary>
+    public string? FieldMeta { get; set; }
+}

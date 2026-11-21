@@ -1,0 +1,371 @@
+Table canvas {
+  id uuid [pk, not null]
+  project_id uuid [not null]
+}
+
+Table frames {
+  id uuid [pk, not null]
+  canvas_id uuid [not null]
+  branch_id uuid
+  url varchar [not null]
+  x numeric [not null, note: 'display data']
+  y numeric [not null]
+  width numeric [not null]
+  height numeric [not null]
+  type text [note: 'deprecated']
+}
+
+Table conversations {
+  id uuid [pk, not null]
+  agent_type agent_type
+  project_id uuid [not null]
+  display_name varchar
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  suggestions jsonb
+}
+
+Table messages {
+  id uuid [pk, not null]
+  conversation_id uuid [not null]
+  content text [not null]
+  created_at timestamptz [not null]
+  role message_role [not null]
+  context jsonb [not null]
+  parts jsonb [not null]
+  checkpoints jsonb [not null]
+  usage jsonb
+  applied boolean [note: 'deprecated']
+  commit_oid text
+  snapshots jsonb
+}
+
+Table custom_domains {
+  id uuid [pk, not null]
+  apex_domain text [not null, unique]
+  verified boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table project_custom_domains {
+  full_domain text [not null]
+  custom_domain_id uuid [not null]
+  project_id uuid [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  status project_custom_domain_status [not null]
+  indexes {
+    (custom_domain_id, project_id) [pk]
+  }
+}
+
+Table custom_domain_verification {
+  id uuid [pk, not null]
+  custom_domain_id uuid [not null]
+  project_id uuid [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  full_domain text [not null]
+  freestyle_verification_id text [not null]
+  txt_record jsonb [not null]
+  a_records jsonb [not null]
+  status verification_request_status [not null]
+}
+
+Table deployments {
+  id uuid [pk, not null]
+  requested_by uuid [not null]
+  project_id uuid [not null]
+  sandbox_id text
+  urls text
+  type deployment_type [not null]
+  status deployment_status [not null]
+  message text [note: 'Deployment progress']
+  build_log text
+  error text
+  progress integer
+  build_script text [note: 'Custom deployment settings']
+  build_flags text
+  env_vars jsonb
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table preview_domains {
+  id uuid [pk, not null]
+  full_domain text [not null, unique]
+  project_id uuid
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table feedbacks {
+  id uuid [pk, not null]
+  user_id uuid
+  email text
+  message text [not null]
+  page_url text
+  user_agent text
+  attachments jsonb [not null]
+  metadata jsonb [not null]
+  created_at timestamptz [not null]
+  Note: 'deprecated'
+}
+
+Table branches {
+  id uuid [pk, not null]
+  project_id uuid [not null]
+  name varchar [not null, note: 'branch metadata']
+  description text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  is_default boolean [not null]
+  git_branch varchar [note: 'git']
+  git_commit_sha varchar
+  git_repo_url varchar
+  sandbox_id varchar [not null, note: 'sandbox']
+  indexes {
+    (project_id) [name: 'branches_project_id_idx']
+    (project_id, name) [unique, name: 'branches_name_per_project_ux']
+    (project_id) [unique, name: 'branches_default_per_project_ux']
+  }
+}
+
+Table project_create_requests {
+  id uuid [pk, not null]
+  project_id uuid [not null, unique]
+  context jsonb [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  status project_create_status [not null]
+}
+
+Table project_invitations {
+  id uuid [pk, not null]
+  project_id uuid [not null]
+  inviter_id uuid [not null]
+  invitee_email varchar [not null]
+  token varchar [not null, unique]
+  role project_role [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (invitee_email, project_id) [name: 'project_invitations_invitee_email_project_id_idx']
+  }
+}
+
+Table projects {
+  id uuid [pk, not null]
+  name varchar [not null, note: 'metadata']
+  description text
+  tags varchar
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  preview_img_url varchar [note: 'preview image']
+  preview_img_path varchar
+  preview_img_bucket varchar
+  updated_preview_img_at timestamptz
+  sandbox_id varchar [note: 'deprecated']
+  sandbox_url varchar
+}
+
+Table project_settings {
+  project_id uuid [not null, unique]
+  run_command text [not null]
+  build_command text [not null]
+  install_command text [not null]
+}
+
+Table legacy_subscriptions {
+  email text [pk, not null]
+  stripe_coupon_id text [not null]
+  stripe_promotion_code_id text [not null]
+  stripe_promotion_code text [not null]
+  redeem_at timestamptz
+  redeem_by timestamptz
+}
+
+Table prices {
+  id uuid [pk, not null]
+  product_id uuid [not null, note: 'Relationships']
+  price_key price_keys [not null, note: 'Metadata']
+  monthly_message_limit integer [not null]
+  stripe_price_id text [not null, unique, note: 'Stripe']
+}
+
+Table products {
+  id uuid [pk, not null]
+  name text [not null]
+  type product_type [not null]
+  stripe_product_id text [not null, unique, note: 'Stripe']
+}
+
+Table rate_limits {
+  id uuid [pk, not null]
+  user_id uuid [not null, note: 'Relationships']
+  subscription_id uuid [not null]
+  updated_at timestamptz [not null, note: 'Metadata']
+  started_at timestamptz [not null, note: 'The start and end of the rate limit defines the time period for which the rate limit is applied There can be multiple rate limits per subscription and the range doesn\'t have to match the subscription\'s start and end dates.']
+  ended_at timestamptz [not null]
+  max integer [not null, note: 'The number of requests that can be made within the time period. For carry-over limits, this reflects the total number of requests that were carried over.']
+  left integer [not null, note: 'The number of requests left to make within the time period.']
+  carry_over_key uuid [not null, note: 'This key identifies the rate limit that is carried over. Useful for analytics and debugging and possibly displaying to the user.']
+  carry_over_total integer [not null, note: 'Track the number of times this rate limit has been carried over.']
+  stripe_subscription_item_id text [not null, note: 'When upgrading a subscription, the subscription item ID is updated. Due to slight limitations of the Stripe API, we need to track the subscription item ID.']
+  indexes {
+    (user_id, started_at, ended_at) [name: 'rate_limits_user_time_idx']
+  }
+}
+
+Table subscriptions {
+  id uuid [pk, not null]
+  user_id uuid [not null, note: 'Relationships']
+  product_id uuid [not null]
+  price_id uuid [not null]
+  started_at timestamptz [not null, note: 'Metadata']
+  updated_at timestamptz [not null]
+  ended_at timestamptz
+  status subscription_status [not null]
+  stripe_customer_id text [not null, note: 'Stripe']
+  stripe_subscription_id text [not null, unique]
+  stripe_subscription_item_id text [not null, unique]
+  stripe_subscription_schedule_id text
+  stripe_current_period_start timestamptz [not null, note: 'The current period start and end is used to determine if the subscription has renewed.']
+  stripe_current_period_end timestamptz [not null]
+  scheduled_action scheduled_subscription_action [note: 'Scheduled price change']
+  scheduled_price_id uuid
+  scheduled_change_at timestamptz
+}
+
+Table usage_records {
+  id uuid [pk, not null]
+  user_id uuid [not null, note: 'Relationships']
+  type usage_types [not null, note: 'Metadata']
+  timestamp timestamptz [not null]
+  trace_id varchar
+  indexes {
+    (user_id, timestamp) [name: 'usage_records_user_time_idx']
+    (user_id, trace_id) [unique, name: 'usage_records_user_trace_idx']
+  }
+}
+
+Table auth.users {
+  id uuid [pk, not null]
+  email text [not null]
+  email_confirmed_at timestamp
+  raw_user_meta_data jsonb
+}
+
+Table user_settings {
+  id uuid [pk, not null]
+  user_id uuid [not null, unique]
+  auto_apply_code boolean [not null]
+  expand_code_blocks boolean [not null]
+  show_suggestions boolean [not null]
+  show_mini_chat boolean [not null]
+  should_warn_delete boolean [not null]
+}
+
+Table user_canvases {
+  user_id uuid [not null]
+  canvas_id uuid [not null]
+  scale numeric [not null]
+  x numeric [not null]
+  y numeric [not null]
+  indexes {
+    (user_id, canvas_id) [pk]
+  }
+}
+
+Table user_projects {
+  user_id uuid [not null]
+  project_id uuid [not null]
+  created_at timestamptz
+  role project_role [not null]
+  indexes {
+    (user_id, project_id) [pk]
+  }
+}
+
+Table users {
+  id uuid [pk, not null]
+  first_name text
+  last_name text
+  display_name text
+  avatar_url text
+  email text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  stripe_customer_id text
+  github_installation_id text
+}
+
+Ref canvas_project_id_projects_id_fk: canvas.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref frames_canvas_id_canvas_id_fk: frames.canvas_id > canvas.id [delete: cascade, update: cascade]
+
+Ref frames_branch_id_branches_id_fk: frames.branch_id > branches.id [delete: cascade, update: cascade]
+
+Ref conversations_project_id_projects_id_fk: conversations.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref messages_conversation_id_conversations_id_fk: messages.conversation_id > conversations.id [delete: cascade, update: cascade]
+
+Ref project_custom_domains_custom_domain_id_custom_domains_id_fk: project_custom_domains.custom_domain_id > custom_domains.id [delete: cascade, update: cascade]
+
+Ref project_custom_domains_project_id_projects_id_fk: project_custom_domains.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref custom_domain_verification_custom_domain_id_custom_domains_id_fk: custom_domain_verification.custom_domain_id > custom_domains.id
+
+Ref custom_domain_verification_project_id_projects_id_fk: custom_domain_verification.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref deployments_requested_by_users_id_fk: deployments.requested_by > users.id [delete: cascade, update: cascade]
+
+Ref deployments_project_id_projects_id_fk: deployments.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref preview_domains_project_id_projects_id_fk: preview_domains.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref feedbacks_user_id_users_id_fk: feedbacks.user_id > users.id [delete: set null, update: cascade]
+
+Ref branches_project_id_projects_id_fk: branches.project_id - projects.id [delete: cascade, update: cascade]
+
+Ref project_create_requests_project_id_projects_id_fk: project_create_requests.project_id - projects.id [delete: cascade, update: cascade]
+
+Ref project_invitations_project_id_projects_id_fk: project_invitations.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref project_invitations_inviter_id_users_id_fk: project_invitations.inviter_id > users.id [delete: cascade, update: cascade]
+
+Ref project_settings_project_id_projects_id_fk: project_settings.project_id - projects.id [delete: cascade, update: cascade]
+
+Ref prices_product_id_products_id_fk: prices.product_id > products.id [delete: cascade, update: cascade]
+
+Ref rate_limits_user_id_users_id_fk: rate_limits.user_id > users.id [delete: cascade, update: cascade]
+
+Ref rate_limits_subscription_id_subscriptions_id_fk: rate_limits.subscription_id > subscriptions.id [delete: cascade, update: cascade]
+
+Ref subscriptions_user_id_users_id_fk: subscriptions.user_id > users.id [delete: cascade, update: cascade]
+
+Ref subscriptions_product_id_products_id_fk: subscriptions.product_id > products.id [delete: cascade, update: cascade]
+
+Ref subscriptions_price_id_prices_id_fk: subscriptions.price_id > prices.id [delete: cascade, update: cascade]
+
+Ref subscriptions_scheduled_price_id_prices_id_fk: subscriptions.scheduled_price_id > prices.id
+
+Ref usage_records_user_id_users_id_fk: usage_records.user_id > users.id [delete: cascade, update: cascade]
+
+Ref user_settings_user_id_users_id_fk: user_settings.user_id - users.id [delete: cascade, update: cascade]
+
+Ref user_canvases_user_id_users_id_fk: user_canvases.user_id > users.id [delete: cascade, update: cascade]
+
+Ref user_canvases_canvas_id_canvas_id_fk: user_canvases.canvas_id > canvas.id [delete: cascade, update: cascade]
+
+Ref user_projects_user_id_users_id_fk: user_projects.user_id > users.id [delete: cascade, update: cascade]
+
+Ref user_projects_project_id_projects_id_fk: user_projects.project_id > projects.id [delete: cascade, update: cascade]
+
+Ref users_id_users_id_fk: users.id - auth.users.id [delete: cascade, update: cascade]
+
+Ref projects_id_canvas_project_id: projects.id - canvas.project_id
+
+Ref projects_id_project_settings_project_id: projects.id - project_settings.project_id

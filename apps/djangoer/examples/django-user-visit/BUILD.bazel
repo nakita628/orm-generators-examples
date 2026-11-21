@@ -1,0 +1,5 @@
+load("//apps/djangoer/tools:defs.bzl", "djangoer_example")
+
+# `bazel test --config=djangoer :generate.test` holds er.md, schema.dbml, er.svg and docs/ to a
+# fresh Djangoer run; `bazel run :generate.write` writes them.
+djangoer_example()

@@ -1,0 +1,30 @@
+# One pnpm workspace, one pnpm-lock.yaml, read by rules_js (MODULE.bazel).
+packages:
+  - apps/hekireki
+  - apps/drizzler
+  - apps/drizzler/examples/*
+  - apps/drizzler/packages/*
+
+# Versions shared by every drizzler example; bump them here to re-check drizzler against a new
+# release. hekireki pins its own in apps/hekireki/package.json.
+catalog:
+  "@types/node": ^24.10.0
+  drizzle-kit: 1.0.0-rc.5
+  drizzle-orm: 1.0.0-rc.5
+  drizzler: 0.4.5
+  next-auth: 5.0.0-beta.25
+  typescript: ^6.0.3
+
+# rules_js reads allowBuilds to know which packages get a lifecycle action.
+# - prisma's postinstall only downloads a query-engine binary the hekireki generators do not run.
+# - @prisma/engines' postinstall downloads the native schema engine: hekireki-docs writes MySQL's
+#   CREATE TABLE with it (PostgreSQL and SQLite use the wasm engine).
+# - esbuild: drizzler loads drizzle.config.ts and the schema through it.
+allowBuilds:
+  prisma: false
+  '@prisma/engines': true
+  esbuild: true
+
+minimumReleaseAgeExclude:
+  - hekireki@0.51.0
+  - "drizzler@0.2.0 || 0.2.1 || 0.3.0 || 0.3.1 || 0.3.2 || 0.4.0 || 0.4.1 || 0.4.2 || 0.4.3 || 0.4.4 || 0.4.5"

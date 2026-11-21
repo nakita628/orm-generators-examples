@@ -1,0 +1,10 @@
+{
+  "name": "orm-generators-examples",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@11.25.0",
+  "scripts": {
+    "drizzler:generate": "pnpm -r --filter './apps/drizzler/examples/*' generate",
+    "drizzler:typecheck": "pnpm -r --filter './apps/drizzler/examples/*' typecheck"
+  }
+}

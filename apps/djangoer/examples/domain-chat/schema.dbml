@@ -1,0 +1,151 @@
+Enum ConversationKind {
+  "channel"
+  "private"
+  "direct"
+}
+
+Table chat_workspace {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  name varchar(80) [not null]
+  domain varchar(50) [unique, not null]
+
+  Note: '''Columns from UUIDModel (abstract): id, created_at.'''
+}
+
+Table chat_workspacemember {
+  id integer [pk, increment]
+  workspace_id char(32) [not null]
+  user_id integer [not null]
+  display_name varchar(80) [not null]
+  is_admin bool [default: false, not null]
+  status_text varchar(100) [not null]
+  status_emoji varchar(32) [not null]
+
+  indexes {
+    (workspace_id) [name: 'chat_workspacemember_workspace_id_343139f3']
+    (user_id) [name: 'chat_workspacemember_user_id_8e9dd831']
+    (workspace_id, user_id) [unique, name: 'chat_workspacemember_workspace_id_user_id_1a8ace47_uniq']
+  }
+}
+
+Table chat_conversation {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  workspace_id char(32) [not null]
+  kind ConversationKind [not null]
+  name varchar(80) [not null, note: 'Empty for direct messages']
+  topic varchar(250) [not null]
+  created_by_id integer
+  archived_at datetime
+
+  indexes {
+    (workspace_id) [name: 'chat_conversation_workspace_id_0f901399']
+    (created_by_id) [name: 'chat_conversation_created_by_id_615454ae']
+    (workspace_id, name) [unique, name: 'channel_name_unique', note: 'where NOT ("kind" = \'direct\')']
+  }
+
+  checks {
+    `("kind" = 'direct' OR NOT ("name" = ''))` [name: 'channel_has_name']
+  }
+
+  Note: '''Columns from UUIDModel (abstract): id, created_at.'''
+}
+
+Table chat_participant {
+  id integer [pk, increment]
+  conversation_id char(32) [not null]
+  user_id integer [not null]
+  joined_at datetime [not null, note: 'default in Python: now()']
+  last_read_id char(32)
+  muted bool [default: false, not null]
+
+  indexes {
+    (conversation_id) [name: 'chat_participant_conversation_id_568ba5d5']
+    (user_id) [name: 'chat_participant_user_id_3f5ce7b2']
+    (last_read_id) [name: 'chat_participant_last_read_id_3764b76e']
+    (conversation_id, user_id) [unique, name: 'chat_participant_conversation_id_user_id_986d2ae0_uniq']
+  }
+}
+
+Table chat_message {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  conversation_id char(32) [not null]
+  author_id integer
+  thread_root_id char(32)
+  text text [not null]
+  edited_at datetime
+  deleted_at datetime
+  pinned bool [default: false, not null]
+
+  indexes {
+    (conversation_id) [name: 'chat_message_conversation_id_a1207bf4']
+    (author_id) [name: 'chat_message_author_id_923569d5']
+    (thread_root_id) [name: 'chat_message_thread_root_id_7088e73c']
+    (conversation_id, created_at) [name: 'message_history']
+  }
+
+  Note: '''Columns from UUIDModel (abstract): id, created_at.'''
+}
+
+Table chat_reaction {
+  id integer [pk, increment]
+  message_id char(32) [not null]
+  user_id integer [not null]
+  emoji varchar(32) [not null]
+
+  indexes {
+    (message_id) [name: 'chat_reaction_message_id_e8fe8671']
+    (user_id) [name: 'chat_reaction_user_id_72fc92d0']
+    (message_id, user_id, emoji) [unique, name: 'react_once']
+  }
+}
+
+Table chat_file {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  message_id char(32) [not null]
+  name varchar(255) [not null]
+  content_type varchar(100) [not null]
+  size "bigint unsigned" [not null]
+  storage_key varchar(300) [unique, not null]
+
+  indexes {
+    (message_id) [name: 'chat_file_message_id_ad5b53de']
+  }
+
+  Note: '''Columns from UUIDModel (abstract): id, created_at.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref chat_workspacemember_workspace_id_fk: chat_workspacemember.workspace_id > chat_workspace.id [delete: cascade]
+
+Ref chat_workspacemember_user_id_fk: chat_workspacemember.user_id > auth_user.id [delete: cascade]
+
+Ref chat_conversation_workspace_id_fk: chat_conversation.workspace_id > chat_workspace.id [delete: cascade]
+
+Ref chat_conversation_created_by_id_fk: chat_conversation.created_by_id > auth_user.id [delete: set null]
+
+Ref chat_participant_conversation_id_fk: chat_participant.conversation_id > chat_conversation.id [delete: cascade]
+
+Ref chat_participant_user_id_fk: chat_participant.user_id > auth_user.id [delete: cascade]
+
+Ref chat_participant_last_read_id_fk: chat_participant.last_read_id > chat_message.id [delete: set null]
+
+Ref chat_message_conversation_id_fk: chat_message.conversation_id > chat_conversation.id [delete: cascade]
+
+Ref chat_message_author_id_fk: chat_message.author_id > auth_user.id [delete: set null]
+
+Ref chat_message_thread_root_id_fk: chat_message.thread_root_id > chat_message.id [delete: cascade]
+
+Ref chat_reaction_message_id_fk: chat_reaction.message_id > chat_message.id [delete: cascade]
+
+Ref chat_reaction_user_id_fk: chat_reaction.user_id > auth_user.id [delete: cascade]
+
+Ref chat_file_message_id_fk: chat_file.message_id > chat_message.id [delete: cascade]

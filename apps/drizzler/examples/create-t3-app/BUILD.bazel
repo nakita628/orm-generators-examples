@@ -1,0 +1,5 @@
+load("//apps/drizzler/tools:defs.bzl", "drizzler_example")
+
+# `bazel build :docs` runs drizzler; `bazel run :docs.write` writes docs/; `bazel test :all`
+# holds docs/ to a fresh generation, type-checks the schema and parses the DBML.
+drizzler_example()

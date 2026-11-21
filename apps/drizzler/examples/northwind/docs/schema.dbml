@@ -1,0 +1,92 @@
+Table customers {
+  id varchar [pk, not null]
+  company_name varchar [not null]
+  contact_name varchar [not null]
+  contact_title varchar [not null]
+  address varchar [not null]
+  city varchar [not null]
+  postal_code varchar
+  region varchar
+  country varchar [not null]
+  phone varchar [not null]
+  fax varchar
+}
+
+Table employees {
+  id varchar [pk, not null]
+  last_name varchar [not null]
+  first_name varchar
+  title varchar [not null]
+  title_of_courtesy varchar [not null]
+  birth_date date [not null]
+  hire_date date [not null]
+  address varchar [not null]
+  city varchar [not null]
+  postal_code varchar [not null]
+  country varchar [not null]
+  home_phone varchar [not null]
+  extension integer [not null]
+  notes text [not null]
+  recipient_id varchar
+}
+
+Table orders {
+  id varchar [pk, not null]
+  order_date date [not null]
+  required_date date [not null]
+  shipped_date date
+  ship_via integer [not null]
+  freight "double precision" [not null]
+  ship_name varchar [not null]
+  ship_city varchar [not null]
+  ship_region varchar
+  ship_postal_code varchar
+  ship_country varchar [not null]
+  customer_id varchar [not null]
+  employee_id varchar [not null]
+}
+
+Table suppliers {
+  id varchar [pk, not null]
+  company_name varchar [not null]
+  contact_name varchar [not null]
+  contact_title varchar [not null]
+  address varchar [not null]
+  city varchar [not null]
+  region varchar
+  postal_code varchar [not null]
+  country varchar [not null]
+  phone varchar [not null]
+}
+
+Table products {
+  id varchar [pk, not null]
+  name varchar [not null]
+  qt_per_unit varchar [not null]
+  unit_price "double precision" [not null]
+  units_in_stock integer [not null]
+  units_on_order integer [not null]
+  reorder_level integer [not null]
+  discontinued integer [not null]
+  supplier_id varchar [not null]
+}
+
+Table order_details {
+  unit_price "double precision" [not null]
+  quantity integer [not null]
+  discount "double precision" [not null]
+  order_id varchar [not null]
+  product_id varchar [not null]
+}
+
+Ref employees_recipient_id_employees_id_fk: employees.recipient_id > employees.id
+
+Ref orders_customer_id_customers_id_fk: orders.customer_id > customers.id [delete: cascade]
+
+Ref orders_employee_id_employees_id_fk: orders.employee_id > employees.id [delete: cascade]
+
+Ref products_supplier_id_suppliers_id_fk: products.supplier_id > suppliers.id [delete: cascade]
+
+Ref order_details_order_id_orders_id_fk: order_details.order_id > orders.id [delete: cascade]
+
+Ref order_details_product_id_products_id_fk: order_details.product_id > products.id [delete: cascade]

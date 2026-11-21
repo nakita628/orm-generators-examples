@@ -1,0 +1,11 @@
+[project]
+name = "example-django-filer"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "django-filer"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true

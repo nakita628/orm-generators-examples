@@ -1,0 +1,38 @@
+Table sys_user {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean
+  image text
+  role varchar
+  banned boolean
+  ban_reason text
+  ban_expire_at timestamptz
+  phone text
+  whatsapp varchar
+  position varchar
+  is_active boolean
+  is_super_admin boolean
+}
+
+Table sys_role {
+  id uuid [pk, not null]
+  name text [not null]
+  description text
+  type varchar [not null]
+  priority integer [not null]
+}
+
+Table sys_user_role {
+  user_id uuid [not null, unique]
+  role_id uuid [not null]
+  indexes {
+    (user_id, role_id) [pk]
+  }
+}
+
+Ref sys_user_role_user_id_sys_user_id_fk: sys_user_role.user_id - sys_user.id [delete: cascade]
+
+Ref sys_user_role_role_id_sys_role_id_fk: sys_user_role.role_id > sys_role.id [delete: restrict]

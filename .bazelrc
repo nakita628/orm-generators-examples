@@ -1,0 +1,24 @@
+# Bazel settings shared by every developer.
+common --enable_bzlmod
+common --lockfile_mode=update
+
+build --show_result=0
+
+# A hekireki generation runs a dozen node processes at once (one per generator); the actions
+# declare `resources:memory` so that only as many schemas generate at a time as the memory takes.
+build --local_resources=memory=HOST_RAM*.6
+
+test --test_output=errors
+
+# Two kinds of test need a toolchain outside Bazel and the network, and are left out of
+# `bazel test //...`:
+# - `lang`: hekireki's language checks (go, cargo, mix, ...) read the toolchain from the PATH of
+#   the invoking shell. Run one with `bazel test --test_tag_filters=lang-gorm //apps/hekireki/...`.
+# - `djangoer`: each Django example installs its locked environment with uv (pinned in
+#   MODULE.bazel) from PyPI. Run them with `bazel test --config=djangoer //apps/djangoer/...`.
+test --test_env=HOME --test_env=PATH
+test --test_tag_filters=-lang,-djangoer
+test:djangoer --test_tag_filters=djangoer
+
+# Machine-specific settings (a disk cache, --jobs, ...) go in user.bazelrc, which git ignores.
+try-import %workspace%/user.bazelrc

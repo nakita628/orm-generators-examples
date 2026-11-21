@@ -1,0 +1,21 @@
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_library")
+
+package(default_visibility = ["//visibility:public"])
+
+# drizzler's five outputs for one example; see generate.mjs.
+js_binary(
+    name = "generate",
+    data = ["deterministic.mjs"],
+    entry_point = "generate.mjs",
+)
+
+# The entry points of each example's `:typecheck` and `:dbml` tests.
+js_library(
+    name = "tsc",
+    srcs = ["tsc.mjs"],
+)
+
+js_library(
+    name = "check_dbml",
+    srcs = ["check-dbml.mjs"],
+)

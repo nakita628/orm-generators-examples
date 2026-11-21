@@ -1,0 +1,13 @@
+[project]
+name = "example-review-board"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "ReviewBoard"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true
+# Review Board reads the site's own settings from settings_local.py beside it.
+settings = "reviewboard.settings"

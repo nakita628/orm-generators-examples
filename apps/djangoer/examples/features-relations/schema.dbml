@@ -1,0 +1,160 @@
+Table relations_country {
+  id integer [pk, increment]
+  code varchar(2) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table relations_city {
+  id integer [pk, increment]
+  country_id varchar(2) [not null, note: 'default in Python: default_country()']
+  name varchar(50) [not null]
+
+  indexes {
+    (country_id) [name: 'relations_city_country_id_8ddd2190']
+  }
+}
+
+Table relations_person {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+  user_id integer [unique]
+  city_id bigint
+  born_in_id bigint
+  works_in_id bigint [default: null]
+  lives_near_id bigint [note: 'refers to relations_city.id, with no foreign key in the database']
+  mentor_id bigint
+  staff_only_id integer
+
+  indexes {
+    (city_id) [name: 'relations_person_city_id_ee75dfc6']
+    (born_in_id) [name: 'relations_person_born_in_id_132384a6']
+    (works_in_id) [name: 'relations_person_works_in_id_118348c8']
+    (lives_near_id) [name: 'relations_person_lives_near_id_32bd1884']
+    (mentor_id) [name: 'relations_person_mentor_id_3cdf0f15']
+    (staff_only_id) [name: 'relations_person_staff_only_id_6714b20c']
+  }
+}
+
+Table relations_group {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+}
+
+Table relations_membership {
+  id integer [pk, increment]
+  person_id bigint [not null]
+  group_id bigint [not null]
+  inviter_id bigint
+  joined date [not null]
+  role varchar(20) [default: 'member', not null]
+
+  indexes {
+    (person_id) [name: 'relations_membership_person_id_38c139ee']
+    (group_id) [name: 'relations_membership_group_id_a37f4726']
+    (inviter_id) [name: 'relations_membership_inviter_id_2b488868']
+    (person_id, group_id) [unique, name: 'relations_membership_person_id_group_id_55c9856a_uniq']
+  }
+}
+
+Table relations_taggeditem {
+  id integer [pk, increment]
+  tag varchar(50) [not null]
+  content_type_id integer [not null]
+  object_id "bigint unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Person.tags, relations.Group.tags)']
+
+  indexes {
+    (tag) [name: 'relations_taggeditem_tag_82d5858b']
+    (content_type_id) [name: 'relations_taggeditem_content_type_id_49230ed1']
+    (content_type_id, object_id) [name: 'relations_t_content_18b1dd_idx']
+  }
+}
+
+Table relations_order {
+  store_id bigint [not null]
+  number "integer unsigned" [not null]
+
+  indexes {
+    (store_id, number) [pk]
+    (store_id) [name: 'relations_order_store_id_105b2ab9']
+  }
+}
+
+Table relations_shipment {
+  id integer [pk, increment]
+  store_id bigint [not null, note: 'order: refers to relations_order.(store_id, number), with no foreign key in the database']
+  number "integer unsigned" [not null, note: 'order: refers to relations_order.(store_id, number), with no foreign key in the database']
+
+  indexes {
+    (store_id) [name: 'relations_shipment_store_id_342c1f34']
+  }
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the contenttypes app, shown as far as it is referred to.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref relations_city_country_id_fk: relations_city.country_id > relations_country.code [delete: restrict]
+
+Ref relations_person_user_id_fk: relations_person.user_id - auth_user.id [delete: cascade]
+
+Ref relations_person_city_id_fk: relations_person.city_id > relations_city.id [delete: set null]
+
+Ref relations_person_born_in_id_fk: relations_person.born_in_id > relations_city.id [delete: restrict]
+
+Ref relations_person_works_in_id_fk: relations_person.works_in_id > relations_city.id [delete: set default]
+
+Ref relations_person_mentor_id_fk: relations_person.mentor_id > relations_person.id [delete: set null]
+
+Ref relations_person_staff_only_id_fk: relations_person.staff_only_id > auth_user.id [delete: cascade]
+
+Table relations_person_friends {
+  id integer [pk, increment]
+  from_person_id bigint [not null]
+  to_person_id bigint [not null]
+
+  indexes {
+    (from_person_id) [name: 'relations_person_friends_from_person_id_55ed1ec3']
+    (to_person_id) [name: 'relations_person_friends_to_person_id_5d7035c5']
+    (from_person_id, to_person_id) [unique, name: 'relations_person_friends_from_person_id_to_person_id_407bce23_uniq']
+  }
+}
+
+Ref relations_person_friends_from_person_id_fk: relations_person_friends.from_person_id > relations_person.id [delete: cascade]
+
+Ref relations_person_friends_to_person_id_fk: relations_person_friends.to_person_id > relations_person.id [delete: cascade]
+
+Table relations_person_follows {
+  id integer [pk, increment]
+  from_person_id bigint [not null]
+  to_person_id bigint [not null]
+
+  indexes {
+    (from_person_id) [name: 'relations_person_follows_from_person_id_6198c03e']
+    (to_person_id) [name: 'relations_person_follows_to_person_id_bbf80c07']
+    (from_person_id, to_person_id) [unique, name: 'relations_person_follows_from_person_id_to_person_id_cf6cbfd2_uniq']
+  }
+}
+
+Ref relations_person_follows_from_person_id_fk: relations_person_follows.from_person_id > relations_person.id [delete: cascade]
+
+Ref relations_person_follows_to_person_id_fk: relations_person_follows.to_person_id > relations_person.id [delete: cascade]
+
+Ref relations_membership_person_id_fk: relations_membership.person_id > relations_person.id [delete: cascade]
+
+Ref relations_membership_group_id_fk: relations_membership.group_id > relations_group.id [delete: cascade]
+
+Ref relations_membership_inviter_id_fk: relations_membership.inviter_id > relations_person.id [delete: set null]
+
+Ref relations_taggeditem_content_type_id_fk: relations_taggeditem.content_type_id > django_content_type.id [delete: cascade]
+
+Ref relations_order_store_id_fk: relations_order.store_id > relations_city.id [delete: cascade]
+
+Ref relations_shipment_store_id_fk: relations_shipment.store_id > relations_city.id [delete: cascade]

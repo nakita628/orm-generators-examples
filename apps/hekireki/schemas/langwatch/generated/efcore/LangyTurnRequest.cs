@@ -1,0 +1,35 @@
+#nullable enable
+
+using System;
+
+namespace LangWatch.Models;
+
+/// <summary>
+/// Durable idempotency receipt for one logical Langy send. A transport retry
+/// reuses the same requestId and receives the original conversation/turn ids
+/// instead of minting a second message or turn.
+/// </summary>
+public partial class LangyTurnRequest
+{
+    public string Id { get; set; } = null!;
+
+    public string ProjectId { get; set; } = null!;
+
+    public string UserId { get; set; } = null!;
+
+    public string RequestId { get; set; } = null!;
+
+    public string ConversationId { get; set; } = null!;
+
+    public string TurnId { get; set; } = null!;
+
+    public string Status { get; set; } = null!;
+
+    public string LeaseOwner { get; set; } = null!;
+
+    public DateTime LeaseExpiresAt { get; set; }
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+}

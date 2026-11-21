@@ -1,0 +1,258 @@
+Table addresses {
+  id varchar [pk, not null]
+  line1 text
+  line2 text
+  city text
+  state text
+  postal_code text
+  country text
+  created_at timestamp [not null]
+  updated_at timestamp
+}
+
+Table carts {
+  id varchar [pk, not null]
+  payment_intent_id varchar
+  client_secret text
+  items json
+  closed boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+}
+
+Table categories {
+  id varchar [pk, not null]
+  name text [not null, unique]
+  slug text [not null, unique]
+  image text
+  description text
+  created_at timestamp [not null]
+  updated_at timestamp
+}
+
+Table customers {
+  id varchar [pk, not null]
+  name text
+  email text
+  store_connect_id varchar [unique]
+  stripe_customer_id varchar [not null, unique]
+  store_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (store_id) [name: 'customers_store_id_idx']
+    (stripe_customer_id) [name: 'customers_stripe_customer_id_idx']
+  }
+}
+
+Table notifications {
+  id varchar [pk, not null]
+  user_id varchar
+  email text [not null, unique]
+  token text [not null, unique]
+  referred_by text
+  communication boolean [not null]
+  newsletter boolean [not null]
+  marketing boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+}
+
+Table orders {
+  id varchar [pk, not null]
+  store_id varchar [not null]
+  items json
+  quantity integer
+  amount decimal [not null]
+  stripe_payment_intent_id text [not null]
+  stripe_payment_intent_status text [not null]
+  name text [not null]
+  email text [not null]
+  address_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (store_id) [name: 'orders_store_id_idx']
+    (address_id) [name: 'orders_address_id_idx']
+  }
+}
+
+Table payments {
+  id varchar [pk, not null]
+  store_id varchar [not null]
+  stripe_account_id varchar [not null]
+  stripe_account_created_at timestamp
+  stripe_account_expires_at timestamp
+  details_submitted boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (store_id) [name: 'payments_store_id_idx']
+  }
+}
+
+Table products {
+  id varchar [pk, not null]
+  name text [not null]
+  description text
+  images json
+  category_id varchar [not null]
+  subcategory_id varchar
+  price decimal [not null, note: 'postgresql docs suggest using numeric for money numeric and decimal are the same in postgresql']
+  original_price decimal
+  inventory integer [not null]
+  rating integer [not null]
+  status product_status [not null]
+  store_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (store_id) [name: 'products_store_id_idx']
+    (category_id) [name: 'products_category_id_idx']
+    (subcategory_id) [name: 'products_subcategory_id_idx']
+  }
+}
+
+Table stocks {
+  id varchar [pk, not null]
+  product_variant_id varchar [not null]
+  quantity integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (product_variant_id) [name: 'stocks_product_variant_id_idx']
+  }
+}
+
+Table stores {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  slug text [not null, unique]
+  name text [not null]
+  description text
+  plan store_plan [not null]
+  ends_at timestamp
+  cancel_plan_at_end boolean
+  stripe_account_id varchar [unique]
+  stripe_customer_id varchar [unique]
+  product_limit integer [not null]
+  tag_limit integer [not null]
+  variant_limit integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+}
+
+Table subcategories {
+  id varchar [pk, not null]
+  name text [not null, unique]
+  slug text [not null, unique]
+  description text
+  category_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (category_id) [name: 'subcategories_category_id_idx']
+  }
+}
+
+Table tags {
+  id varchar [pk, not null]
+  name text [not null]
+  color text [not null]
+  store_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (name, store_id) [unique, name: 'tags_name_store_id_unique']
+    (store_id) [name: 'tags_store_id_idx']
+  }
+  Note: 'store tags'
+}
+
+Table product_tags {
+  product_id varchar [not null]
+  tag_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (product_id, tag_id) [pk]
+    (product_id, tag_id) [name: 'product_tags_product_id_tag_id_idx']
+  }
+}
+
+Table variants {
+  id varchar [pk, not null]
+  store_id varchar [not null]
+  name text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (name, store_id) [unique, name: 'variants_name_store_id_unique']
+    (store_id) [name: 'variants_store_id_idx']
+  }
+  Note: 'store variants'
+}
+
+Table product_variants {
+  id varchar [pk, not null]
+  product_id varchar [not null]
+  variant_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (product_id) [name: 'product_variants_product_id_idx']
+    (variant_id) [name: 'product_variants_variant_id_idx']
+  }
+}
+
+Table product_variant_values {
+  product_variant_id varchar [not null]
+  value text [not null]
+  price decimal [not null]
+  stock_id varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (product_variant_id, value) [pk]
+    (product_variant_id) [name: 'variant_values_product_variant_id_idx']
+    (stock_id) [name: 'variant_values_stock_id_idx']
+  }
+}
+
+Ref customers_store_id_stores_id_fk: customers.store_id > stores.id [delete: cascade]
+
+Ref orders_store_id_stores_id_fk: orders.store_id > stores.id [delete: cascade]
+
+Ref orders_address_id_addresses_id_fk: orders.address_id > addresses.id [delete: cascade]
+
+Ref payments_store_id_stores_id_fk: payments.store_id > stores.id [delete: cascade]
+
+Ref products_category_id_categories_id_fk: products.category_id > categories.id [delete: cascade]
+
+Ref products_subcategory_id_subcategories_id_fk: products.subcategory_id > subcategories.id [delete: cascade]
+
+Ref products_store_id_stores_id_fk: products.store_id > stores.id [delete: cascade]
+
+Ref stocks_product_variant_id_product_variants_id_fk: stocks.product_variant_id > product_variants.id [delete: cascade]
+
+Ref subcategories_category_id_categories_id_fk: subcategories.category_id > categories.id [delete: cascade]
+
+Ref tags_store_id_stores_id_fk: tags.store_id > stores.id [delete: cascade]
+
+Ref product_tags_product_id_products_id_fk: product_tags.product_id > products.id [delete: cascade]
+
+Ref product_tags_tag_id_tags_id_fk: product_tags.tag_id > tags.id [delete: cascade]
+
+Ref variants_store_id_stores_id_fk: variants.store_id > stores.id [delete: cascade]
+
+Ref product_variants_product_id_products_id_fk: product_variants.product_id > products.id [delete: cascade]
+
+Ref product_variants_variant_id_variants_id_fk: product_variants.variant_id > variants.id [delete: cascade]
+
+Ref product_variant_values_product_variant_id_product_variants_id_fk: product_variant_values.product_variant_id > product_variants.id [delete: cascade]
+
+Ref product_variant_values_stock_id_stocks_id_fk: product_variant_values.stock_id > stocks.id [delete: cascade]
+
+Ref stocks_product_variant_id_product_variant_values_product_variant_id: stocks.product_variant_id > product_variant_values.product_variant_id [delete: cascade]
+
+Ref product_variant_values_product_variant_id_product_variants_product_id: product_variant_values.product_variant_id > product_variants.product_id [delete: cascade]

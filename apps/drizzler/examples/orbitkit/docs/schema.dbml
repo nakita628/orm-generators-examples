@@ -1,0 +1,25 @@
+Table user {
+  id text [pk, not null]
+  name text
+  email text [not null]
+  avatar_url text
+}
+
+Table session {
+  id text [pk, not null]
+  user_id text [not null]
+  expires_at timestamptz [not null]
+}
+
+Table oauth_account {
+  provider_id text [not null]
+  provider_user_id text [not null]
+  user_id text [not null]
+  indexes {
+    (provider_id, provider_user_id) [pk]
+  }
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id
+
+Ref oauth_account_user_id_user_id_fk: oauth_account.user_id > user.id

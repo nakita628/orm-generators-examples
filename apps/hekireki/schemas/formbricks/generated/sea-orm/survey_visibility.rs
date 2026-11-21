@@ -1,0 +1,13 @@
+use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
+
+/// Who may read a survey. `workspace` is everyone with workspace access (the behaviour before ENG-3282);
+/// `restricted` is the owner and the organization's owners and managers only.
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "SurveyVisibility")]
+pub enum SurveyVisibility {
+    #[sea_orm(string_value = "restricted")]
+    Restricted,
+    #[sea_orm(string_value = "workspace")]
+    Workspace,
+}

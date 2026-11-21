@@ -1,0 +1,11 @@
+[project]
+name = "example-puput"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "puput", "django-social-share", "django-colorful", "wagtail-markdown"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true

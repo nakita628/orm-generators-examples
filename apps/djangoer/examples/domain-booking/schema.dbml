@@ -1,0 +1,134 @@
+Enum ReservationStatus {
+  "held"
+  "confirmed"
+  "checked_in"
+  "checked_out"
+  "cancelled"
+}
+
+Table hotels_hotel {
+  id bigint [pk, increment]
+  name varchar(100) [not null]
+  city varchar(100) [not null]
+  stars smallint
+  amenities "varchar(30)[]" [not null, note: 'default in Python: list()']
+  timezone varchar(50) [default: 'UTC', not null]
+}
+
+Table hotels_roomtype {
+  id bigint [pk, increment]
+  hotel_id bigint [not null]
+  name varchar(50) [not null]
+  capacity smallint [not null]
+  beds jsonb [not null, note: 'e.g. {"double": 1, "single": 1}. default in Python: dict()']
+
+  indexes {
+    (hotel_id) [name: 'hotels_roomtype_hotel_id_04482498']
+    (hotel_id, name) [unique, name: 'hotels_roomtype_hotel_id_name_8ff2ec3a_uniq']
+  }
+}
+
+Table hotels_room {
+  id bigint [pk, increment]
+  room_type_id bigint [not null]
+  number varchar(10) [not null]
+  floor smallint [not null]
+  out_of_service boolean [default: false, not null]
+
+  indexes {
+    (room_type_id) [name: 'hotels_room_room_type_id_6b3ec3b5']
+  }
+}
+
+Table hotels_season {
+  id bigint [pk, increment]
+  hotel_id bigint [not null]
+  name varchar(50) [not null]
+  dates daterange [not null]
+
+  indexes {
+    (hotel_id) [name: 'hotels_season_hotel_id_e85fb9be']
+    (`dates WITH &&`, `hotel_id WITH =`) [name: 'season_no_overlap', note: 'exclusion constraint; using gist']
+  }
+}
+
+Table hotels_rate {
+  id bigint [pk, increment]
+  room_type_id bigint [not null]
+  season_id bigint [not null]
+  nightly_price "numeric(8, 2)" [not null]
+
+  indexes {
+    (room_type_id) [name: 'hotels_rate_room_type_id_ae0d3d2f']
+    (season_id) [name: 'hotels_rate_season_id_50e7cbf4']
+    (room_type_id, season_id) [unique, name: 'hotels_rate_room_type_id_season_id_40431d5d_uniq']
+  }
+}
+
+Table hotels_guest {
+  id bigint [pk, increment]
+  user_id integer [unique]
+  full_name varchar(150) [not null]
+  email varchar(254) [not null]
+  phone varchar(30) [not null]
+  preferences jsonb [not null, note: 'default in Python: dict()']
+}
+
+Table hotels_reservation {
+  id bigint [pk, increment]
+  room_id bigint [not null]
+  guest_id bigint [not null]
+  stay daterange [not null]
+  adults smallint [default: 1, not null]
+  children smallint [default: 0, not null]
+  status ReservationStatus [default: 'held', not null]
+  total_price "numeric(10, 2)" [not null]
+  created_at "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (room_id) [name: 'hotels_reservation_room_id_4a540fa3']
+    (guest_id) [name: 'hotels_reservation_guest_id_01924683']
+    (`stay WITH &&`, `room_id WITH =`) [name: 'reservation_no_double_booking', note: 'exclusion constraint; using gist; where NOT ("status" = \'cancelled\')']
+    (stay) [name: 'reservation_stay_gist', note: 'using gist']
+  }
+
+  checks {
+    `"adults" >= 1` [name: 'reservation_at_least_one_adult']
+  }
+}
+
+Table hotels_payment {
+  id bigint [pk, increment]
+  reservation_id bigint [not null]
+  amount "numeric(10, 2)" [not null]
+  is_deposit boolean [default: false, not null]
+  paid_at "timestamp with time zone" [not null]
+
+  indexes {
+    (reservation_id) [name: 'hotels_payment_reservation_id_ad52d66d']
+  }
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref hotels_roomtype_hotel_id_fk: hotels_roomtype.hotel_id > hotels_hotel.id [delete: cascade]
+
+Ref hotels_room_room_type_id_fk: hotels_room.room_type_id > hotels_roomtype.id [delete: restrict]
+
+Ref hotels_season_hotel_id_fk: hotels_season.hotel_id > hotels_hotel.id [delete: cascade]
+
+Ref hotels_rate_room_type_id_fk: hotels_rate.room_type_id > hotels_roomtype.id [delete: cascade]
+
+Ref hotels_rate_season_id_fk: hotels_rate.season_id > hotels_season.id [delete: cascade]
+
+Ref hotels_guest_user_id_fk: hotels_guest.user_id - auth_user.id [delete: set null]
+
+Ref hotels_reservation_room_id_fk: hotels_reservation.room_id > hotels_room.id [delete: restrict]
+
+Ref hotels_reservation_guest_id_fk: hotels_reservation.guest_id > hotels_guest.id [delete: restrict]
+
+Ref hotels_payment_reservation_id_fk: hotels_payment.reservation_id > hotels_reservation.id [delete: cascade]

@@ -1,0 +1,27 @@
+#nullable enable
+
+using System.Collections.Generic;
+
+namespace Trigger.Models;
+
+/// <summary>
+/// A pricing tier for a model (supports volume-based or conditional pricing)
+/// </summary>
+public partial class LlmPricingTier
+{
+    public string Id { get; set; } = null!;
+
+    public string ModelId { get; set; } = null!;
+
+    public virtual LlmModel Model { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
+
+    public bool IsDefault { get; set; } = true;
+
+    public int Priority { get; set; } = 0;
+
+    public string Conditions { get; set; } = "[]";
+
+    public virtual ICollection<LlmPrice> Prices { get; set; } = new List<LlmPrice>();
+}

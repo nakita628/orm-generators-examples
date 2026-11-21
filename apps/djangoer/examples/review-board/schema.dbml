@@ -1,0 +1,2481 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum Oauth2ProviderApplicationClientType {
+  "confidential"
+  "public"
+}
+
+Enum Oauth2ProviderApplicationAuthorizationGrantType {
+  "authorization-code"
+  "implicit"
+  "password"
+  "client-credentials"
+  "openid-hybrid"
+}
+
+Enum Oauth2ProviderApplicationAlgorithm {
+  // "" (No OIDC support): the empty string, which DBML cannot name
+  "RS256"
+  "HS256"
+}
+
+Enum GrantCodeChallengeMethod {
+  "plain"
+  "S256"
+}
+
+Enum ReviewRequestVisitVisibility {
+  "V"
+  "A"
+  "M"
+}
+
+Enum ProfileTimezone {
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Asmara"
+  "Africa/Bamako"
+  "Africa/Bangui"
+  "Africa/Banjul"
+  "Africa/Bissau"
+  "Africa/Blantyre"
+  "Africa/Brazzaville"
+  "Africa/Bujumbura"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Ceuta"
+  "Africa/Conakry"
+  "Africa/Dakar"
+  "Africa/Dar_es_Salaam"
+  "Africa/Djibouti"
+  "Africa/Douala"
+  "Africa/El_Aaiun"
+  "Africa/Freetown"
+  "Africa/Gaborone"
+  "Africa/Harare"
+  "Africa/Johannesburg"
+  "Africa/Juba"
+  "Africa/Kampala"
+  "Africa/Khartoum"
+  "Africa/Kigali"
+  "Africa/Kinshasa"
+  "Africa/Lagos"
+  "Africa/Libreville"
+  "Africa/Lome"
+  "Africa/Luanda"
+  "Africa/Lubumbashi"
+  "Africa/Lusaka"
+  "Africa/Malabo"
+  "Africa/Maputo"
+  "Africa/Maseru"
+  "Africa/Mbabane"
+  "Africa/Mogadishu"
+  "Africa/Monrovia"
+  "Africa/Nairobi"
+  "Africa/Ndjamena"
+  "Africa/Niamey"
+  "Africa/Nouakchott"
+  "Africa/Ouagadougou"
+  "Africa/Porto-Novo"
+  "Africa/Sao_Tome"
+  "Africa/Tripoli"
+  "Africa/Tunis"
+  "Africa/Windhoek"
+  "America/Adak"
+  "America/Anchorage"
+  "America/Anguilla"
+  "America/Antigua"
+  "America/Araguaina"
+  "America/Argentina/Buenos_Aires"
+  "America/Argentina/Catamarca"
+  "America/Argentina/Cordoba"
+  "America/Argentina/Jujuy"
+  "America/Argentina/La_Rioja"
+  "America/Argentina/Mendoza"
+  "America/Argentina/Rio_Gallegos"
+  "America/Argentina/Salta"
+  "America/Argentina/San_Juan"
+  "America/Argentina/San_Luis"
+  "America/Argentina/Tucuman"
+  "America/Argentina/Ushuaia"
+  "America/Aruba"
+  "America/Asuncion"
+  "America/Atikokan"
+  "America/Bahia"
+  "America/Bahia_Banderas"
+  "America/Barbados"
+  "America/Belem"
+  "America/Belize"
+  "America/Blanc-Sablon"
+  "America/Boa_Vista"
+  "America/Bogota"
+  "America/Boise"
+  "America/Cambridge_Bay"
+  "America/Campo_Grande"
+  "America/Cancun"
+  "America/Caracas"
+  "America/Cayenne"
+  "America/Cayman"
+  "America/Chicago"
+  "America/Chihuahua"
+  "America/Ciudad_Juarez"
+  "America/Costa_Rica"
+  "America/Coyhaique"
+  "America/Creston"
+  "America/Cuiaba"
+  "America/Curacao"
+  "America/Danmarkshavn"
+  "America/Dawson"
+  "America/Dawson_Creek"
+  "America/Denver"
+  "America/Detroit"
+  "America/Dominica"
+  "America/Edmonton"
+  "America/Eirunepe"
+  "America/El_Salvador"
+  "America/Fort_Nelson"
+  "America/Fortaleza"
+  "America/Glace_Bay"
+  "America/Goose_Bay"
+  "America/Grand_Turk"
+  "America/Grenada"
+  "America/Guadeloupe"
+  "America/Guatemala"
+  "America/Guayaquil"
+  "America/Guyana"
+  "America/Halifax"
+  "America/Havana"
+  "America/Hermosillo"
+  "America/Indiana/Indianapolis"
+  "America/Indiana/Knox"
+  "America/Indiana/Marengo"
+  "America/Indiana/Petersburg"
+  "America/Indiana/Tell_City"
+  "America/Indiana/Vevay"
+  "America/Indiana/Vincennes"
+  "America/Indiana/Winamac"
+  "America/Inuvik"
+  "America/Iqaluit"
+  "America/Jamaica"
+  "America/Juneau"
+  "America/Kentucky/Louisville"
+  "America/Kentucky/Monticello"
+  "America/Kralendijk"
+  "America/La_Paz"
+  "America/Lima"
+  "America/Los_Angeles"
+  "America/Lower_Princes"
+  "America/Maceio"
+  "America/Managua"
+  "America/Manaus"
+  "America/Marigot"
+  "America/Martinique"
+  "America/Matamoros"
+  "America/Mazatlan"
+  "America/Menominee"
+  "America/Merida"
+  "America/Metlakatla"
+  "America/Mexico_City"
+  "America/Miquelon"
+  "America/Moncton"
+  "America/Monterrey"
+  "America/Montevideo"
+  "America/Montserrat"
+  "America/Nassau"
+  "America/New_York"
+  "America/Nome"
+  "America/Noronha"
+  "America/North_Dakota/Beulah"
+  "America/North_Dakota/Center"
+  "America/North_Dakota/New_Salem"
+  "America/Nuuk"
+  "America/Ojinaga"
+  "America/Panama"
+  "America/Paramaribo"
+  "America/Phoenix"
+  "America/Port-au-Prince"
+  "America/Port_of_Spain"
+  "America/Porto_Velho"
+  "America/Puerto_Rico"
+  "America/Punta_Arenas"
+  "America/Rankin_Inlet"
+  "America/Recife"
+  "America/Regina"
+  "America/Resolute"
+  "America/Rio_Branco"
+  "America/Santarem"
+  "America/Santiago"
+  "America/Santo_Domingo"
+  "America/Sao_Paulo"
+  "America/Scoresbysund"
+  "America/Sitka"
+  "America/St_Barthelemy"
+  "America/St_Johns"
+  "America/St_Kitts"
+  "America/St_Lucia"
+  "America/St_Thomas"
+  "America/St_Vincent"
+  "America/Swift_Current"
+  "America/Tegucigalpa"
+  "America/Thule"
+  "America/Tijuana"
+  "America/Toronto"
+  "America/Tortola"
+  "America/Vancouver"
+  "America/Whitehorse"
+  "America/Winnipeg"
+  "America/Yakutat"
+  "Antarctica/Casey"
+  "Antarctica/Davis"
+  "Antarctica/DumontDUrville"
+  "Antarctica/Macquarie"
+  "Antarctica/Mawson"
+  "Antarctica/McMurdo"
+  "Antarctica/Palmer"
+  "Antarctica/Rothera"
+  "Antarctica/Syowa"
+  "Antarctica/Troll"
+  "Antarctica/Vostok"
+  "Arctic/Longyearbyen"
+  "Asia/Aden"
+  "Asia/Almaty"
+  "Asia/Amman"
+  "Asia/Anadyr"
+  "Asia/Aqtau"
+  "Asia/Aqtobe"
+  "Asia/Ashgabat"
+  "Asia/Atyrau"
+  "Asia/Baghdad"
+  "Asia/Bahrain"
+  "Asia/Baku"
+  "Asia/Bangkok"
+  "Asia/Barnaul"
+  "Asia/Beirut"
+  "Asia/Bishkek"
+  "Asia/Brunei"
+  "Asia/Chita"
+  "Asia/Colombo"
+  "Asia/Damascus"
+  "Asia/Dhaka"
+  "Asia/Dili"
+  "Asia/Dubai"
+  "Asia/Dushanbe"
+  "Asia/Famagusta"
+  "Asia/Gaza"
+  "Asia/Hebron"
+  "Asia/Ho_Chi_Minh"
+  "Asia/Hong_Kong"
+  "Asia/Hovd"
+  "Asia/Irkutsk"
+  "Asia/Jakarta"
+  "Asia/Jayapura"
+  "Asia/Jerusalem"
+  "Asia/Kabul"
+  "Asia/Kamchatka"
+  "Asia/Karachi"
+  "Asia/Kathmandu"
+  "Asia/Khandyga"
+  "Asia/Kolkata"
+  "Asia/Krasnoyarsk"
+  "Asia/Kuala_Lumpur"
+  "Asia/Kuching"
+  "Asia/Kuwait"
+  "Asia/Macau"
+  "Asia/Magadan"
+  "Asia/Makassar"
+  "Asia/Manila"
+  "Asia/Muscat"
+  "Asia/Nicosia"
+  "Asia/Novokuznetsk"
+  "Asia/Novosibirsk"
+  "Asia/Omsk"
+  "Asia/Oral"
+  "Asia/Phnom_Penh"
+  "Asia/Pontianak"
+  "Asia/Pyongyang"
+  "Asia/Qatar"
+  "Asia/Qostanay"
+  "Asia/Qyzylorda"
+  "Asia/Riyadh"
+  "Asia/Sakhalin"
+  "Asia/Samarkand"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Srednekolymsk"
+  "Asia/Taipei"
+  "Asia/Tashkent"
+  "Asia/Tbilisi"
+  "Asia/Tehran"
+  "Asia/Thimphu"
+  "Asia/Tokyo"
+  "Asia/Tomsk"
+  "Asia/Ulaanbaatar"
+  "Asia/Urumqi"
+  "Asia/Ust-Nera"
+  "Asia/Vientiane"
+  "Asia/Vladivostok"
+  "Asia/Yakutsk"
+  "Asia/Yangon"
+  "Asia/Yekaterinburg"
+  "Asia/Yerevan"
+  "Atlantic/Azores"
+  "Atlantic/Bermuda"
+  "Atlantic/Canary"
+  "Atlantic/Cape_Verde"
+  "Atlantic/Faroe"
+  "Atlantic/Madeira"
+  "Atlantic/Reykjavik"
+  "Atlantic/South_Georgia"
+  "Atlantic/St_Helena"
+  "Atlantic/Stanley"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Broken_Hill"
+  "Australia/Darwin"
+  "Australia/Eucla"
+  "Australia/Hobart"
+  "Australia/Lindeman"
+  "Australia/Lord_Howe"
+  "Australia/Melbourne"
+  "Australia/Perth"
+  "Australia/Sydney"
+  "Canada/Atlantic"
+  "Canada/Central"
+  "Canada/Eastern"
+  "Canada/Mountain"
+  "Canada/Newfoundland"
+  "Canada/Pacific"
+  "Europe/Amsterdam"
+  "Europe/Andorra"
+  "Europe/Astrakhan"
+  "Europe/Athens"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Bratislava"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Busingen"
+  "Europe/Chisinau"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Gibraltar"
+  "Europe/Guernsey"
+  "Europe/Helsinki"
+  "Europe/Isle_of_Man"
+  "Europe/Istanbul"
+  "Europe/Jersey"
+  "Europe/Kaliningrad"
+  "Europe/Kirov"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Malta"
+  "Europe/Mariehamn"
+  "Europe/Minsk"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Podgorica"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Samara"
+  "Europe/San_Marino"
+  "Europe/Sarajevo"
+  "Europe/Saratov"
+  "Europe/Simferopol"
+  "Europe/Skopje"
+  "Europe/Sofia"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Tirane"
+  "Europe/Ulyanovsk"
+  "Europe/Vaduz"
+  "Europe/Vatican"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Volgograd"
+  "Europe/Warsaw"
+  "Europe/Zagreb"
+  "Europe/Zurich"
+  "GMT"
+  "Indian/Antananarivo"
+  "Indian/Chagos"
+  "Indian/Christmas"
+  "Indian/Cocos"
+  "Indian/Comoro"
+  "Indian/Kerguelen"
+  "Indian/Mahe"
+  "Indian/Maldives"
+  "Indian/Mauritius"
+  "Indian/Mayotte"
+  "Indian/Reunion"
+  "Pacific/Apia"
+  "Pacific/Auckland"
+  "Pacific/Bougainville"
+  "Pacific/Chatham"
+  "Pacific/Chuuk"
+  "Pacific/Easter"
+  "Pacific/Efate"
+  "Pacific/Fakaofo"
+  "Pacific/Fiji"
+  "Pacific/Funafuti"
+  "Pacific/Galapagos"
+  "Pacific/Gambier"
+  "Pacific/Guadalcanal"
+  "Pacific/Guam"
+  "Pacific/Honolulu"
+  "Pacific/Kanton"
+  "Pacific/Kiritimati"
+  "Pacific/Kosrae"
+  "Pacific/Kwajalein"
+  "Pacific/Majuro"
+  "Pacific/Marquesas"
+  "Pacific/Midway"
+  "Pacific/Nauru"
+  "Pacific/Niue"
+  "Pacific/Norfolk"
+  "Pacific/Noumea"
+  "Pacific/Pago_Pago"
+  "Pacific/Palau"
+  "Pacific/Pitcairn"
+  "Pacific/Pohnpei"
+  "Pacific/Port_Moresby"
+  "Pacific/Rarotonga"
+  "Pacific/Saipan"
+  "Pacific/Tahiti"
+  "Pacific/Tarawa"
+  "Pacific/Tongatapu"
+  "Pacific/Wake"
+  "Pacific/Wallis"
+  "US/Alaska"
+  "US/Arizona"
+  "US/Central"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Mountain"
+  "US/Pacific"
+  "UTC"
+}
+
+Enum RawFileDiffDataCompression {
+  "B"
+}
+
+Enum FileDiffStatus {
+  "C"
+  "D"
+  "M"
+  "V"
+}
+
+Enum WebHookTargetEncoding {
+  "application/json"
+  "application/xml"
+  "application/x-www-form-urlencoded"
+}
+
+Enum WebHookTargetApplyTo {
+  "A"
+  "S"
+  "N"
+}
+
+Enum OauthApplicationClientType {
+  "confidential"
+  "public"
+}
+
+Enum OauthApplicationAuthorizationGrantType {
+  "authorization-code"
+  "implicit"
+  "password"
+  "client-credentials"
+  "openid-hybrid"
+}
+
+Enum OauthApplicationAlgorithm {
+  // "" (No OIDC support): the empty string, which DBML cannot name
+  "RS256"
+  "HS256"
+}
+
+Enum CommentIssueStatus {
+  "O"
+  "R"
+  "D"
+  "A"
+  "B"
+}
+
+Enum FileAttachmentCommentIssueStatus {
+  "O"
+  "R"
+  "D"
+  "A"
+  "B"
+}
+
+Enum GeneralCommentIssueStatus {
+  "O"
+  "R"
+  "D"
+  "A"
+  "B"
+}
+
+Enum ReviewRequestStatus {
+  "P"
+  "S"
+  "D"
+}
+
+Enum ScreenshotCommentIssueStatus {
+  "O"
+  "R"
+  "D"
+  "A"
+  "B"
+}
+
+Enum StatusUpdateState {
+  "P"
+  "S"
+  "F"
+  "E"
+  "T"
+  "R"
+  "C"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table extensions_registeredextension {
+  id integer [pk, increment]
+  class_name varchar(128) [unique, not null]
+  name varchar(32) [not null]
+  enabled bool [default: false, not null]
+  installed bool [default: false, not null]
+  settings text [not null]
+
+  Note: '''Extension registration info.
+
+An extension that was both installed and enabled at least once. This
+may contain settings for the extension.
+
+This does not contain full information for the extension, such as the
+author or description. That is provided by the Extension object itself.'''
+}
+
+Table djblets_privacy_storedconsentdata {
+  id integer [pk, increment]
+  user_id integer [unique, note: 'The user whose consent decisions are being stored.']
+  audit_identifier varchar(255) [note: 'An identifier for locating the audit record as needed. The value must be able to be compared against information from the original user, but may be erased or encrypted at any point.']
+  time_added datetime [not null, note: 'The date and time when the stored consent data was first added to the database.. default in Python: now()']
+  last_updated datetime [not null, note: 'The date and time when the stored consent data was last updated.. default in Python: now()']
+  consent_grants text [not null, note: 'The consents granted or denied by the user.. default in Python: dict()']
+  audit_trail text [not null, note: 'A record of all consent changes made by the user.. default in Python: dict()']
+
+  indexes {
+    (audit_identifier) [name: 'djblets_privacy_storedconsentdata_audit_identifier_eeb12ed0']
+  }
+
+  Note: '''Stored information about a user\'s current and past consent decisions.
+
+This tracks what parts of a product a user has consented to, and how those
+decisions have changed in the past. The model is not meant to be queried
+directly by applications, but rather used behind the scenes by
+:py:class:`~djblets.privacy.consent.tracker.DatabaseConsentTracker`.
+
+Entries are associated with a user in the database (when available), but
+are also associated with a piece of identifying data for the purposes of
+privacy auditing. The identifying data (stored in
+:py:attr:`audit_identifier`) can be erased at any point without impacting
+the model, and can also store encrypted values if needed by the
+application.'''
+}
+
+Table siteconfig_siteconfiguration {
+  id integer [pk, increment]
+  site_id integer [not null]
+  version varchar(20) [not null]
+  settings text [not null]
+
+  indexes {
+    (site_id) [name: 'siteconfig_siteconfiguration_site_id_a352de24']
+  }
+
+  Note: '''Stored version and settings data for a Django site.
+
+This stores dynamic settings for a site, along with version information,
+allowing the application to alter and apply/synchronize settings across
+threads, processes, and servers without restarting the server.
+
+Consumers should not create or fetch their own instance of this class
+through standard Django query functions. Instead, they should use
+:py:meth:`SiteConfiguration.objects.get_current()
+<djblets.siteconfig.managers.SiteConfigurationManager.get_current>`
+instead. See the documentation for that method for details on how to safely
+look up and use site configuration.'''
+}
+
+Table oauth2_provider_application {
+  id integer [pk, increment]
+  client_id varchar(100) [unique, not null, note: 'default in Python: generate_client_id()']
+  user_id integer
+  redirect_uris text [not null, note: 'Allowed URIs list, space separated']
+  client_type Oauth2ProviderApplicationClientType [not null]
+  authorization_grant_type Oauth2ProviderApplicationAuthorizationGrantType [not null]
+  client_secret varchar(255) [not null, note: 'default in Python: generate_client_secret()']
+  name varchar(255) [not null]
+  skip_authorization bool [default: false, not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  algorithm Oauth2ProviderApplicationAlgorithm [default: '', not null]
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_application_user_id_79829054']
+    (client_secret) [name: 'oauth2_provider_application_client_secret_53133678']
+  }
+
+  Note: '''Columns from AbstractApplication (abstract): id, client_id, user_id, redirect_uris, client_type, authorization_grant_type, client_secret, name, skip_authorization, created, updated, algorithm.'''
+}
+
+Table oauth2_provider_grant {
+  id integer [pk, increment]
+  user_id integer [not null]
+  code varchar(255) [unique, not null]
+  application_id bigint [not null]
+  expires datetime [not null]
+  redirect_uri text [not null]
+  scope text [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  code_challenge varchar(128) [default: '', not null]
+  code_challenge_method GrantCodeChallengeMethod [default: '', not null]
+  nonce varchar(255) [default: '', not null]
+  claims text [not null]
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_grant_user_id_e8f62af8']
+    (application_id) [name: 'oauth2_provider_grant_application_id_81923564']
+  }
+
+  Note: '''Columns from AbstractGrant (abstract): id, user_id, code, application_id, expires, redirect_uri, scope, created, updated, code_challenge, code_challenge_method, nonce, claims.'''
+}
+
+Table oauth2_provider_accesstoken {
+  id integer [pk, increment]
+  user_id integer
+  source_refresh_token_id bigint [unique]
+  token varchar(255) [unique, not null]
+  id_token_id bigint [unique]
+  application_id bigint
+  expires datetime [not null]
+  scope text [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_accesstoken_user_id_6e4c9a65']
+    (application_id) [name: 'oauth2_provider_accesstoken_application_id_b22886e1']
+  }
+
+  Note: '''Columns from AbstractAccessToken (abstract): id, user_id, source_refresh_token_id, token, id_token_id, application_id, expires, scope, created, updated.'''
+}
+
+Table oauth2_provider_refreshtoken {
+  id integer [pk, increment]
+  user_id integer [not null]
+  token varchar(255) [not null]
+  application_id bigint [not null]
+  access_token_id bigint [unique]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  revoked datetime
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_refreshtoken_user_id_da837fce']
+    (application_id) [name: 'oauth2_provider_refreshtoken_application_id_2d1c311b']
+    (token, revoked) [unique, name: 'oauth2_provider_refreshtoken_token_revoked_af8a5134_uniq']
+  }
+
+  Note: '''Columns from AbstractRefreshToken (abstract): id, user_id, token, application_id, access_token_id, created, updated, revoked.'''
+}
+
+Table oauth2_provider_idtoken {
+  id integer [pk, increment]
+  user_id integer
+  jti char(32) [unique, not null, note: 'default in Python: uuid4()']
+  application_id bigint
+  expires datetime [not null]
+  scope text [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_idtoken_user_id_dd512b59']
+    (application_id) [name: 'oauth2_provider_idtoken_application_id_08c5ff4f']
+  }
+
+  Note: '''Columns from AbstractIDToken (abstract): id, user_id, jti, application_id, expires, scope, created, updated.'''
+}
+
+Table accounts_reviewrequestvisit {
+  id integer [pk, increment]
+  user_id integer [not null]
+  review_request_id integer [not null]
+  timestamp datetime [not null, note: 'default in Python: now()']
+  visibility ReviewRequestVisitVisibility [default: 'V', not null]
+
+  indexes {
+    (user_id) [name: 'accounts_reviewrequestvisit_user_id_8ed30d49']
+    (review_request_id) [name: 'accounts_reviewrequestvisit_review_request_id_3bd58111']
+    (user_id, review_request_id) [unique, name: 'accounts_reviewrequestvisit_user_id_review_request_id_5b8724f0_uniq']
+    (user_id, visibility) [name: 'accounts_re_user_id_be4d4f_idx']
+  }
+
+  Note: '''A recording of the last time a review request was visited by a user.
+
+Users have one ReviewRequestVisit entry in the database per review
+request they\'ve visited. This is used to keep track of any updates
+to review requests they\'ve already seen, so that we can intelligently
+inform them that new discussions have taken place.'''
+}
+
+Table accounts_linkedaccount {
+  id integer [pk, increment]
+  user_id integer [not null]
+  service_id varchar(64) [not null]
+  service_user_id varchar(254) [not null]
+  service_data text [not null, note: 'Used to store private data such as session keys.']
+  extra_data text [not null]
+
+  indexes {
+    (user_id) [name: 'accounts_linkedaccount_user_id_b27ea2c3']
+    (service_user_id, service_id) [unique, name: 'accounts_linkedaccount_service_user_id_service_id_537d3d2e_uniq']
+  }
+
+  Note: '''A linked account on an external service.
+
+This can be used to associate user accounts on Review Board with accounts
+on external services. These services might be third parties that Review
+Board interacts with (such as hosting services), or alternative methods of
+authentication like OpenID or SAML.
+
+Version Added:
+    5.0'''
+}
+
+Table accounts_profile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  first_time_setup_done bool [default: false, not null, note: 'Indicates whether the user has already gone through the first time setup process by saving their user preferences.']
+  should_send_email bool [default: true, not null, note: 'Indicates whether the user wishes to receive emails.']
+  should_send_own_updates bool [default: true, not null, note: 'Indicates whether the user wishes to receive emails about their own activity.']
+  collapsed_diffs bool [default: true, not null, note: 'Indicates whether diffs should be shown in their collapsed state by default.']
+  wordwrapped_diffs bool [default: true, not null, note: 'This field is unused and will be removed in a future version.']
+  syntax_highlighting bool [default: true, not null, note: 'Indicates whether the user wishes to see syntax highlighting in the diffs.']
+  is_private bool [default: false, not null, note: 'Indicates whether the user wishes to keep his/her profile private.']
+  open_an_issue bool [default: true, not null, note: 'Indicates whether the user wishes to default to opening an issue or not.']
+  default_use_rich_text bool [default: null, note: 'Indicates whether new posts or comments should default to being in Markdown format.']
+  show_closed bool [default: true, not null]
+  sort_review_request_columns varchar(256) [not null]
+  sort_dashboard_columns varchar(256) [not null]
+  sort_submitter_columns varchar(256) [not null]
+  sort_group_columns varchar(256) [not null]
+  review_request_columns varchar(256) [not null]
+  dashboard_columns varchar(256) [not null]
+  submitter_columns varchar(256) [not null]
+  group_columns varchar(256) [not null]
+  timezone ProfileTimezone [default: 'UTC', not null]
+  settings text [note: 'default in Python: dict()']
+  extra_data text [note: 'default in Python: dict()']
+
+  Note: '''User profile which contains some basic configurable settings.'''
+}
+
+Table accounts_localsiteprofile {
+  id integer [pk, increment]
+  user_id integer [not null]
+  profile_id integer [not null]
+  local_site_id integer
+  permissions text
+  direct_incoming_request_count integer [default: null]
+  total_incoming_request_count integer [default: null]
+  pending_outgoing_request_count integer [default: null]
+  total_outgoing_request_count integer [default: null]
+  starred_public_request_count integer [default: null]
+
+  indexes {
+    (user_id) [name: 'accounts_localsiteprofile_user_id_4faa8400']
+    (profile_id) [name: 'accounts_localsiteprofile_profile_id_6838b6f5']
+    (local_site_id) [name: 'accounts_localsiteprofile_local_site_id_e8e611d3']
+    (user_id, local_site_id) [unique, name: 'accounts_localsiteprofile_user_id_local_site_id_c71acfac_uniq']
+    (profile_id, local_site_id) [unique, name: 'accounts_localsiteprofile_profile_id_local_site_id_c35a7283_uniq']
+  }
+
+  Note: '''User profile information specific to a LocalSite.'''
+}
+
+Table accounts_trophy {
+  id integer [pk, increment]
+  category varchar(100) [not null]
+  received_date datetime [not null, note: 'default in Python: now()']
+  review_request_id integer [not null]
+  local_site_id integer
+  user_id integer [not null]
+
+  indexes {
+    (review_request_id) [name: 'accounts_trophy_review_request_id_8d01e0f8']
+    (local_site_id) [name: 'accounts_trophy_local_site_id_b29042f4']
+    (user_id) [name: 'accounts_trophy_user_id_ef0f407a']
+  }
+
+  Note: '''A trophy represents an achievement given to the user.
+
+It is associated with a ReviewRequest and a User and can be associated
+with a LocalSite.'''
+}
+
+Table attachments_fileattachmenthistory {
+  id integer [pk, increment]
+  display_position integer [not null]
+  latest_revision integer [default: null]
+
+  Note: '''Revision history for a single file attachment.
+
+This tracks multiple revisions of the same file attachment (for instance,
+when someone replaces a screenshot with an updated version).'''
+}
+
+Table attachments_fileattachment {
+  id integer [pk, increment]
+  caption varchar(256) [not null]
+  draft_caption varchar(256) [not null]
+  orig_filename varchar(256)
+  user_id integer
+  local_site_id integer
+  uuid varchar(255) [not null]
+  file varchar(512)
+  mimetype varchar(256) [not null]
+  extra_data text
+  repo_path varchar(1024)
+  repo_revision varchar(64)
+  repository_id integer
+  added_in_filediff_id integer
+  attachment_history_id integer
+  attachment_revision integer [default: 0, not null]
+
+  indexes {
+    (user_id) [name: 'attachments_fileattachment_user_id_dbe26565']
+    (local_site_id) [name: 'attachments_fileattachment_local_site_id_be669fcf']
+    (repo_revision) [name: 'attachments_fileattachment_repo_revision_0b865a62']
+    (repository_id) [name: 'attachments_fileattachment_repository_id_a23f76db']
+    (added_in_filediff_id) [name: 'attachments_fileattachment_added_in_filediff_id_5bbf0a9b']
+    (attachment_history_id) [name: 'attachments_fileattachment_attachment_history_id_79d851af']
+  }
+
+  Note: '''A file associated with a review request.
+
+Like diffs, a file can have comments associated with it.
+These comments are of type
+:py:class:`reviewboard.reviews.models.FileAttachmentComment`.'''
+}
+
+Table changedescs_changedescription {
+  id integer [pk, increment]
+  user_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  public bool [default: false, not null]
+  text text [not null]
+  rich_text bool [default: false, not null]
+  fields_changed text [not null]
+
+  indexes {
+    (user_id) [name: 'changedescs_changedescription_user_id_2341d9f9']
+  }
+
+  Note: '''The recorded set of changes, with a description and the changed fields.
+
+This is a general model that can be used in applications for recording
+changes how they see fit. A helper function, \'record_field_changed\',
+can be used to record information in a standard way for most value types,
+but the \'fields_changed\' dictionary can be manipulated however the caller
+chooses.
+
+A ChangeDescription is not bound to a particular model. It is up to models
+to establish relationships with a ChangeDescription.
+
+Each field in \'fields_changed\' represents a changed field.
+
+For string fields, the following fields will be available:
+
+   * \'old\': The old value of the field
+   * \'new\': The new value of the field
+
+For list and set fields, the following fields will be available:
+
+   * \'removed\': The fields that were removed, if any.
+   * \'added\': The fields that were added, if any.'''
+}
+
+Table diffviewer_diffset {
+  id integer [pk, increment]
+  name varchar(256) [not null]
+  revision integer [not null]
+  timestamp datetime [not null, note: 'default in Python: now()']
+  basedir varchar(256) [default: '', not null]
+  history_id integer
+  repository_id integer [not null]
+  diffcompat integer [default: 0, not null, note: 'The diff generator compatibility version to use. This can and should be ignored.']
+  base_commit_id varchar(64) [note: 'The ID/revision this change is built upon.']
+  commit_count integer [default: null]
+  extra_data text
+
+  indexes {
+    (history_id) [name: 'diffviewer_diffset_history_id_539bce58']
+    (repository_id) [name: 'diffviewer_diffset_repository_id_bdf3a395']
+    (base_commit_id) [name: 'diffviewer_diffset_base_commit_id_037195a9']
+  }
+
+  Note: '''A revisioned collection of FileDiffs.'''
+}
+
+Table diffviewer_diffcommit {
+  id integer [pk, increment]
+  filename varchar(256) [not null, note: 'The original file name of the diff.']
+  diffset_id integer [not null]
+  author_name varchar(256) [not null, note: 'The name of the commit author.']
+  author_email varchar(256) [not null, note: 'The e-mail address of the commit author.']
+  author_date_utc datetime [not null, note: 'The date the commit was authored in UTC.']
+  author_date_offset integer [not null, note: 'The author\'s UTC offset.']
+  committer_name varchar(256) [note: 'The name of the committer (if applicable).']
+  committer_email varchar(256) [note: 'The e-mail address of the committer (if applicable).']
+  committer_date_utc datetime [note: 'The date the commit was committed in UTC (if applicable).']
+  committer_date_offset integer [note: 'The committer\'s UTC offset (if applicable).']
+  commit_message text [not null, note: 'The commit message.']
+  commit_id varchar(64) [not null, note: 'The unique identifier of the commit.']
+  parent_id varchar(64) [not null, note: 'The unique identifier of the parent commit.']
+  last_modified datetime [not null, note: 'default in Python: now()']
+  extra_data text
+
+  indexes {
+    (diffset_id) [name: 'diffviewer_diffcommit_diffset_id_8c3c2dbb']
+    (diffset_id, commit_id) [unique, name: 'diffviewer_diffcommit_diffset_id_commit_id_61b21cc8_uniq']
+  }
+
+  Note: '''A representation of a commit from a version control system.
+
+A DiffSet on a Review Request that represents a commit history will have
+one or more DiffCommits. Each DiffCommit will have one or more associated
+FileDiffs (which also belong to the parent DiffSet).
+
+The information stored herein is intended to fully represent the state of
+a single commit in that history. The series of DiffCommits can be used to
+re-create the original series of commits posted for review.'''
+}
+
+Table diffviewer_diffsethistory {
+  id integer [pk, increment]
+  name varchar(256) [not null]
+  timestamp datetime [not null, note: 'default in Python: now()']
+  last_diff_updated datetime [default: null]
+  extra_data text
+
+  Note: '''A collection of diffsets.
+
+This gives us a way to store and keep track of multiple revisions of
+diffsets belonging to an object.'''
+}
+
+Table diffviewer_filediffdata {
+  binary_hash varchar(40) [pk]
+  binary text [not null]
+  extra_data text
+
+  Note: '''Deprecated, legacy class for base64-encoded diff data.
+
+This is no longer populated, and exists solely to store legacy data
+that has not been migrated to :py:class:`RawFileDiffData`.'''
+}
+
+Table diffviewer_rawfilediffdata {
+  id integer [pk, increment]
+  binary_hash varchar(40) [unique, not null]
+  binary BLOB [not null]
+  compression RawFileDiffDataCompression
+  extra_data text
+
+  Note: '''Stores raw diff data as binary content in the database.
+
+This is the class used in Review Board 2.5+ to store diff content.
+Unlike in previous versions, the content is not base64-encoded. Instead,
+it is stored either as bzip2-compressed data (if the resulting
+compressed data is smaller than the raw data), or as the raw data itself.'''
+}
+
+Table diffviewer_filediff {
+  id integer [pk, increment]
+  diffset_id integer [not null]
+  commit_id integer
+  source_file varchar(1024) [not null]
+  dest_file varchar(1024) [not null]
+  source_revision varchar(512) [not null]
+  dest_detail varchar(512) [not null]
+  binary bool [default: false, not null]
+  status FileDiffStatus [not null]
+  diff_base64 text [not null]
+  diff_hash_id varchar(40)
+  raw_diff_hash_id integer
+  parent_diff_base64 text [not null]
+  parent_diff_hash_id varchar(40)
+  raw_parent_diff_hash_id integer
+  extra_data text
+
+  indexes {
+    (diffset_id) [name: 'diffviewer_filediff_diffset_id_f5b24a5d']
+    (commit_id) [name: 'diffviewer_filediff_commit_id_8ba58a4a']
+    (diff_hash_id) [name: 'diffviewer_filediff_diff_hash_id_d6cd0509']
+    (raw_diff_hash_id) [name: 'diffviewer_filediff_raw_diff_hash_id_ce904491']
+    (parent_diff_hash_id) [name: 'diffviewer_filediff_parent_diff_hash_id_73defa3d']
+    (raw_parent_diff_hash_id) [name: 'diffviewer_filediff_raw_parent_diff_hash_id_8bead4b4']
+  }
+
+  Note: '''A diff of a single file.
+
+This contains the patch and information needed to produce original and
+patched versions of a single file in a repository.'''
+}
+
+Table hostingsvcs_hostingserviceaccount {
+  id integer [pk, increment]
+  service_name varchar(128) [not null, note: 'The ID of the hosting service that is associated with this account.']
+  hosting_url varchar(255) [note: 'The hosting URL.']
+  username varchar(128) [not null, note: 'The username of the account on the hosting service.']
+  data text [not null, note: 'Account data specific to the hosting service. This should generally not be changed.']
+  visible bool [default: true, not null, note: 'Whether this account shows up as an option when configuring a repository.']
+  local_site_id integer [note: 'The LocalSite to associate with this account.']
+
+  indexes {
+    (local_site_id) [name: 'hostingsvcs_hostingserviceaccount_local_site_id_6688df40']
+  }
+
+  Note: '''An account for a hosting service.'''
+}
+
+Table integrations_integrationconfig {
+  id integer [pk, increment]
+  integration_id varchar(255) [not null]
+  time_added datetime [not null, note: 'default in Python: now()']
+  last_updated datetime [not null, note: 'default in Python: now()']
+  name varchar(255)
+  enabled bool [default: false, not null]
+  settings text [not null, note: 'default in Python: {}']
+  extra_data text [not null, note: 'default in Python: {}']
+  local_site_id integer
+
+  indexes {
+    (integration_id) [name: 'integrations_integrationconfig_integration_id_c90e0bae']
+    (enabled) [name: 'integrations_integrationconfig_enabled_b7f7e2fc']
+    (local_site_id) [name: 'integrations_integrationconfig_local_site_id_d6913121']
+  }
+
+  Note: '''Stored configuration for a particular integration.
+
+This contains configuration settings for a given instance of an
+integration, along with state indicating if that integration is to be
+enabled and user-specified identifying information.
+
+Columns from BaseIntegrationConfig (abstract): integration_id, time_added, last_updated, name, enabled, settings, extra_data.'''
+}
+
+Table notifications_webhooktarget {
+  id integer [pk, increment]
+  enabled bool [default: true, not null]
+  events varchar(512) [not null, note: 'Select any or all events that should trigger this Webhook.']
+  url varchar(512) [not null, note: 'When the event is triggered, HTTP requests will be made against this URL.']
+  encoding WebHookTargetEncoding [default: 'application/json', not null, note: 'Payload contents will be encoded in this format.']
+  use_custom_content bool [default: false, not null]
+  custom_content text [note: 'You can override what is sent to the URL above. If left blank, the default payload will be sent.']
+  secret varchar(128) [not null, note: 'If specified, the HMAC digest for the Webhook payload will be signed with the given secret.']
+  apply_to WebHookTargetApplyTo [default: 'A', not null]
+  local_site_id integer [note: 'If set, this Webhook will be limited to this site.']
+  extra_data text [note: 'Extra JSON data that can be tied to this Webhook registration. It will not be sent with the Webhook request.']
+
+  indexes {
+    (local_site_id) [name: 'notifications_webhooktarget_local_site_id_1ec00cea']
+  }
+
+  Note: '''A target for a webhook.
+
+A webhook target is a URL which will receive a POST request when the
+corresponding event occurs.'''
+}
+
+Table reviewboard_oauth_application {
+  id integer [pk, increment]
+  client_id varchar(100) [unique, not null, note: 'default in Python: generate_client_id()']
+  user_id integer
+  redirect_uris text [not null, note: 'Allowed URIs list, space separated']
+  client_type OauthApplicationClientType [not null]
+  authorization_grant_type OauthApplicationAuthorizationGrantType [not null]
+  client_secret varchar(255) [not null, note: 'default in Python: generate_client_secret()']
+  name varchar(255) [not null]
+  skip_authorization bool [default: false, not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  algorithm OauthApplicationAlgorithm [default: '', not null]
+  enabled bool [default: true, not null, note: 'Whether or not this application can be used to authenticate with Review Board.']
+  original_user_id integer [note: 'The original owner of this application.']
+  local_site_id integer [note: 'An optional Local Site to limit this application to.<br>If specified, only users with access to the Local Site will be able to use the application.']
+  extra_data text [note: 'default in Python: dict()']
+
+  indexes {
+    (user_id) [name: 'reviewboard_oauth_application_user_id_5306421b']
+    (client_secret) [name: 'reviewboard_oauth_application_client_secret_4de4461a']
+    (original_user_id) [name: 'reviewboard_oauth_application_original_user_id_7df83187']
+    (local_site_id) [name: 'reviewboard_oauth_application_local_site_id_412bed6e']
+  }
+
+  Note: '''An OAuth2 application.
+
+This model is specialized so that it can be limited to a
+:py:class:`~reviewboard.site.models.LocalSite`.
+
+Columns from AbstractApplication (abstract): id, client_id, user_id, redirect_uris, client_type, authorization_grant_type, client_secret, name, skip_authorization, created, updated, algorithm.'''
+}
+
+Table reviews_group {
+  id integer [pk, increment]
+  name varchar(64) [not null]
+  display_name varchar(64) [not null]
+  mailing_list varchar(254) [not null, note: 'The mailing list review requests and discussions are sent to.']
+  email_list_only bool [default: true, not null, note: 'If a mailing list is specified and this option is checked, group members will not be individually included on e-mails, and only the mailing list will be used. This is highly recommended for large groups.']
+  local_site_id integer
+  is_default_group bool [default: false, not null, note: 'If a local site is set, this will automatically add users to this group when those users are added to the local site. If there is no local site, users will be automatically added to this group when they are registered.']
+  incoming_request_count integer [default: null]
+  invite_only bool [default: false, not null, note: 'If checked, only the users listed below will be able to view review requests sent to this group.']
+  visible bool [default: true, not null]
+  extra_data text
+
+  indexes {
+    (name) [name: 'reviews_group_name_c92d67b9']
+    (local_site_id) [name: 'reviews_group_local_site_id_b7e35237']
+    (name, local_site_id) [unique, name: 'reviews_group_name_local_site_id_cd520124_uniq']
+  }
+
+  Note: '''A group of people who can be targeted for review.
+
+This is usually used to separate teams at a company or components of a
+project.
+
+Each group can have an e-mail address associated with it, sending
+all review requests and replies to that address. If that e-mail address is
+blank, e-mails are sent individually to each member of that group.'''
+}
+
+Table reviews_defaultreviewer {
+  id integer [pk, increment]
+  name varchar(64) [not null]
+  file_regex varchar(256) [not null, note: 'File paths are matched against this regular expression to determine if these reviewers should be added.']
+  local_site_id integer
+
+  indexes {
+    (local_site_id) [name: 'reviews_defaultreviewer_local_site_id_bcfc837d']
+  }
+
+  Note: '''Represents reviewers automatically added to review requests.
+
+A default reviewer entry automatically adds default reviewers to a
+review request when the diff modifies a file matching the ``file_regex``
+pattern specified.
+
+This is useful when different groups own different parts of a codebase.
+Adding DefaultReviewer entries ensures that the right people will always
+see the review request and discussions.
+
+A ``file_regex`` of ``".*"`` will add the specified reviewers by
+default for every review request.
+
+Note that this is keyed off the same LocalSite as its "repository" member.'''
+}
+
+Table reviews_comment {
+  id integer [pk, increment]
+  issue_opened bool [default: false, not null]
+  issue_status CommentIssueStatus
+  reply_to_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  text text [not null]
+  rich_text bool [default: false, not null]
+  extra_data text
+  filediff_id integer [not null]
+  interfilediff_id integer
+  first_line "integer unsigned"
+  num_lines "integer unsigned"
+
+  indexes {
+    (issue_status) [name: 'reviews_comment_issue_status_af21c71b']
+    (reply_to_id) [name: 'reviews_comment_reply_to_id_a7b3749b']
+    (filediff_id) [name: 'reviews_comment_filediff_id_95cdd174']
+    (interfilediff_id) [name: 'reviews_comment_interfilediff_id_fb77b53c']
+  }
+
+  Note: '''A comment made on a diff.
+
+A comment can belong to a single filediff or to an interdiff between
+two filediffs. It can also have multiple replies.
+
+Columns from BaseComment (abstract): issue_opened, issue_status, reply_to_id, timestamp, text, rich_text, extra_data.'''
+}
+
+Table reviews_fileattachmentcomment {
+  id integer [pk, increment]
+  issue_opened bool [default: false, not null]
+  issue_status FileAttachmentCommentIssueStatus
+  reply_to_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  text text [not null]
+  rich_text bool [default: false, not null]
+  extra_data text
+  file_attachment_id integer [not null]
+  diff_against_file_attachment_id integer
+
+  indexes {
+    (issue_status) [name: 'reviews_fileattachmentcomment_issue_status_775b5a50']
+    (reply_to_id) [name: 'reviews_fileattachmentcomment_reply_to_id_17c9efca']
+    (file_attachment_id) [name: 'reviews_fileattachmentcomment_file_attachment_id_8db79ee7']
+    (diff_against_file_attachment_id) [name: 'reviews_fileattachmentcomment_diff_against_file_attachment_id_8a13f559']
+  }
+
+  Note: '''A comment on a file attachment.
+
+Columns from BaseComment (abstract): issue_opened, issue_status, reply_to_id, timestamp, text, rich_text, extra_data.'''
+}
+
+Table reviews_generalcomment {
+  id integer [pk, increment]
+  issue_opened bool [default: false, not null]
+  issue_status GeneralCommentIssueStatus
+  reply_to_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  text text [not null]
+  rich_text bool [default: false, not null]
+  extra_data text
+
+  indexes {
+    (issue_status) [name: 'reviews_generalcomment_issue_status_4b49c612']
+    (reply_to_id) [name: 'reviews_generalcomment_reply_to_id_d0a69bbf']
+  }
+
+  Note: '''A comment on a review request that is not tied to any code or file.
+
+A general comment on a review request is used when a comment is not tied
+to specific lines of code or a special file attachment, and an issue is
+opened. Examples include suggestions for testing or pointing out errors
+in the change description.
+
+Columns from BaseComment (abstract): issue_opened, issue_status, reply_to_id, timestamp, text, rich_text, extra_data.'''
+}
+
+Table reviews_screenshot {
+  id integer [pk, increment]
+  caption varchar(256) [not null]
+  draft_caption varchar(256) [not null]
+  image varchar(100) [not null]
+
+  Note: '''A screenshot associated with a review request.
+
+Like diffs, a screenshot can have comments associated with it.
+These comments are of type
+:py:class:`reviewboard.reviews.models.ScreenshotComment`.'''
+}
+
+Table reviews_reviewrequest {
+  id integer [pk, increment]
+  description text [not null]
+  description_rich_text bool [default: false, not null]
+  testing_done text [not null]
+  testing_done_rich_text bool [default: false, not null]
+  bugs_closed varchar(300) [not null]
+  branch varchar(300) [not null]
+  commit_id varchar(64)
+  extra_data text
+  rich_text bool [default: false, not null]
+  summary varchar(300) [not null]
+  submitter_id integer [not null]
+  time_added datetime [not null, note: 'default in Python: now()']
+  last_updated datetime [not null]
+  status ReviewRequestStatus [not null]
+  public bool [default: false, not null]
+  changenum "integer unsigned"
+  repository_id integer
+  email_message_id varchar(255)
+  time_emailed datetime [default: null]
+  diffset_history_id integer
+  last_review_timestamp datetime [default: null]
+  shipit_count integer [default: 0]
+  issue_open_count integer [default: null]
+  issue_resolved_count integer [default: null]
+  issue_dropped_count integer [default: null]
+  issue_verifying_count integer [default: null]
+  screenshots_count integer [default: null]
+  inactive_screenshots_count integer [default: null]
+  file_attachments_count integer [default: null]
+  inactive_file_attachments_count integer [default: null]
+  local_site_id integer
+  local_id integer
+
+  indexes {
+    (commit_id) [name: 'reviews_reviewrequest_commit_id_e7104524']
+    (submitter_id) [name: 'reviews_reviewrequest_submitter_id_0a5fadde']
+    (status) [name: 'reviews_reviewrequest_status_63d3e3fd']
+    (changenum) [name: 'reviews_reviewrequest_changenum_a119b782']
+    (repository_id) [name: 'reviews_reviewrequest_repository_id_a411142d']
+    (diffset_history_id) [name: 'reviews_reviewrequest_diffset_history_id_803728bf']
+    (local_site_id) [name: 'reviews_reviewrequest_local_site_id_7eadf98c']
+    (commit_id, repository_id) [unique, name: 'reviews_reviewrequest_commit_id_repository_id_8d48574b_uniq']
+    (changenum, repository_id) [unique, name: 'reviews_reviewrequest_changenum_repository_id_4aa9bc58_uniq']
+    (local_site_id, local_id) [unique, name: 'reviews_reviewrequest_local_site_id_local_id_8ee6145b_uniq']
+  }
+
+  Note: '''A review request.
+
+This is one of the primary models in Review Board. Most everything
+is associated with a review request.
+
+The ReviewRequest model contains detailed information on a review
+request. Some fields are user-modifiable, while some are used for
+internal state.
+
+Columns from BaseReviewRequestDetails (abstract): description, description_rich_text, testing_done, testing_done_rich_text, bugs_closed, branch, commit_id, extra_data, rich_text.'''
+}
+
+Table reviews_screenshotcomment {
+  id integer [pk, increment]
+  issue_opened bool [default: false, not null]
+  issue_status ScreenshotCommentIssueStatus
+  reply_to_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  text text [not null]
+  rich_text bool [default: false, not null]
+  extra_data text
+  screenshot_id integer [not null]
+  x "smallint unsigned"
+  y "smallint unsigned" [not null]
+  w "smallint unsigned" [not null]
+  h "smallint unsigned" [not null]
+
+  indexes {
+    (issue_status) [name: 'reviews_screenshotcomment_issue_status_818e13d1']
+    (reply_to_id) [name: 'reviews_screenshotcomment_reply_to_id_20d83c7c']
+    (screenshot_id) [name: 'reviews_screenshotcomment_screenshot_id_0a8f6ad7']
+  }
+
+  Note: '''A comment on a screenshot.
+
+Columns from BaseComment (abstract): issue_opened, issue_status, reply_to_id, timestamp, text, rich_text, extra_data.'''
+}
+
+Table reviews_review {
+  id integer [pk, increment]
+  review_request_id integer [not null]
+  user_id integer [not null]
+  timestamp datetime [not null, note: 'default in Python: now()']
+  public bool [default: false, not null]
+  ship_it bool [default: false, not null, note: 'Indicates whether the reviewer thinks this code is ready to ship.']
+  base_reply_to_id integer [note: 'The top-most review in the discussion thread for this review reply.']
+  email_message_id varchar(255)
+  time_emailed datetime [default: null]
+  body_top text [not null, note: 'The review text shown above the diff and screenshot comments.']
+  body_top_rich_text bool [default: false, not null]
+  body_bottom text [not null, note: 'The review text shown below the diff and screenshot comments.']
+  body_bottom_rich_text bool [default: false, not null]
+  body_top_reply_to_id integer [note: 'The review that the body (top) field is in reply to.']
+  body_bottom_reply_to_id integer [note: 'The review that the body (bottom) field is in reply to.']
+  extra_data text
+  rich_text bool [default: false, not null]
+  reviewed_diffset_id integer [note: 'This field is unused and will be removed in a future version.']
+
+  indexes {
+    (review_request_id) [name: 'reviews_review_review_request_id_be762bb2']
+    (user_id) [name: 'reviews_review_user_id_875caff2']
+    (base_reply_to_id) [name: 'reviews_review_base_reply_to_id_a208ad8a']
+    (body_top_reply_to_id) [name: 'reviews_review_body_top_reply_to_id_4f3807c0']
+    (body_bottom_reply_to_id) [name: 'reviews_review_body_bottom_reply_to_id_a0c60294']
+    (reviewed_diffset_id) [name: 'reviews_review_reviewed_diffset_id_4b8bdf06']
+  }
+
+  Note: '''A review of a review request.'''
+}
+
+Table reviews_reviewrequestdraft {
+  id integer [pk, increment]
+  description text [not null]
+  description_rich_text bool [default: false, not null]
+  testing_done text [not null]
+  testing_done_rich_text bool [default: false, not null]
+  bugs_closed varchar(300) [not null]
+  branch varchar(300) [not null]
+  commit_id varchar(64)
+  extra_data text
+  rich_text bool [default: false, not null]
+  summary varchar(300) [not null]
+  owner_id integer
+  review_request_id integer [unique, not null]
+  last_updated datetime [not null]
+  diffset_id integer
+  changedesc_id integer
+  screenshots_count integer [default: null]
+  inactive_screenshots_count integer [default: null]
+  file_attachments_count integer [default: null]
+  inactive_file_attachments_count integer [default: null]
+
+  indexes {
+    (commit_id) [name: 'reviews_reviewrequestdraft_commit_id_a36610d9']
+    (owner_id) [name: 'reviews_reviewrequestdraft_owner_id_86066878']
+    (diffset_id) [name: 'reviews_reviewrequestdraft_diffset_id_ba3c2e37']
+    (changedesc_id) [name: 'reviews_reviewrequestdraft_changedesc_id_70a4d612']
+  }
+
+  Note: '''A draft of a review request.
+
+When a review request is being modified, a special draft copy of it is
+created containing all the details of the review request. This copy can
+be modified and eventually saved or discarded. When saved, the new
+details are copied back over to the originating ReviewRequest.
+
+Columns from BaseReviewRequestDetails (abstract): description, description_rich_text, testing_done, testing_done_rich_text, bugs_closed, branch, commit_id, extra_data, rich_text.'''
+}
+
+Table reviews_statusupdate {
+  id integer [pk, increment]
+  service_id varchar(255) [not null]
+  user_id integer
+  timestamp datetime [not null, note: 'default in Python: now()']
+  summary varchar(255) [not null]
+  description varchar(255) [not null]
+  url varchar(255) [not null]
+  url_text varchar(64) [not null]
+  state StatusUpdateState [not null]
+  review_request_id integer [not null]
+  change_description_id integer
+  review_id integer [unique]
+  extra_data text
+  timeout integer
+
+  indexes {
+    (user_id) [name: 'reviews_statusupdate_user_id_1f850855']
+    (review_request_id) [name: 'reviews_statusupdate_review_request_id_09b3d2bf']
+    (change_description_id) [name: 'reviews_statusupdate_change_description_id_260b3553']
+  }
+
+  Note: '''A status update from a third-party service or extension.
+
+This status model allows external services (such as continuous integration
+services, Review Bot, etc.) to provide an update on their status. An
+example of this would be a CI tool which does experimental builds of
+changes. While the build is running, that tool would set its status to
+pending, and when it was done, would set it to one of the done states,
+and potentially associate it with a review containing issues.'''
+}
+
+Table scmtools_tool {
+  id integer [pk, increment]
+  name varchar(32) [unique, not null]
+  class_name varchar(128) [unique, not null]
+
+  Note: '''A configured source code management tool.
+
+Each :py:class:`~reviewboard.scmtools.core.SCMTool` used by repositories
+must have a corresponding :py:class:`Tool` entry. These provide information
+on the capabilities of the tool, and accessors to construct a tool for
+a repository.
+
+Deprecated:
+    5.0:
+    This model is now obsolete. Any usage of this should be updated to use
+    equivalent methods on the Repository or SCMTool instead.'''
+}
+
+Table scmtools_repository {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  path varchar(255) [not null]
+  mirror_path varchar(255) [not null]
+  raw_file_url varchar(255) [not null]
+  username varchar(32) [not null]
+  password varchar(128) [not null]
+  extra_data text
+  tool_id integer [not null]
+  scmtool_id varchar(255)
+  hosting_account_id integer
+  bug_tracker varchar(256) [not null, note: 'This should be the full path to a bug in the bug tracker for this repository, using \'%s\' in place of the bug ID.']
+  encoding varchar(32) [not null, note: 'The encoding used for files in this repository. This is an advanced setting and should only be used if you\'re sure you need it.']
+  visible bool [default: true, not null, note: 'Use this to control whether or not a repository is shown when creating new review requests. Existing review requests are unaffected.']
+  archived bool [default: false, not null, note: 'Archived repositories do not show up in lists of repositories, and aren\'t open to new review requests.']
+  archived_timestamp datetime
+  local_site_id integer
+  public bool [default: true, not null, note: 'Review requests and files on public repositories are visible to anyone. Private repositories must explicitly list the users and groups that can access them.']
+  hooks_uuid varchar(32) [note: 'Unique identifier used for validating incoming webhooks.']
+
+  indexes {
+    (tool_id) [name: 'scmtools_repository_tool_id_d3b242d1']
+    (hosting_account_id) [name: 'scmtools_repository_hosting_account_id_fe34c221']
+    (local_site_id) [name: 'scmtools_repository_local_site_id_989f4f3a']
+    (name, local_site_id) [unique, name: 'scmtools_repository_name_local_site_id_17cf0ace_uniq']
+    (archived_timestamp, path, local_site_id) [unique, name: 'scmtools_repository_archived_timestamp_path_local_site_id_cac61803_uniq']
+    (hooks_uuid, local_site_id) [unique, name: 'scmtools_repository_hooks_uuid_local_site_id_05a64b12_uniq']
+  }
+
+  Note: '''A configured external source code repository.
+
+Each configured Repository entry represents a source code repository that
+Review Board can communicate with as part of the diff uploading and
+viewing process.
+
+Repositories are backed by a
+:py:class:`~reviewboard.scmtools.core.SCMTool`, which functions as a client
+for the type of repository and can fetch files, load lists of commits and
+branches, and more.
+
+Access control is managed by a combination of the :py:attr:`public`,
+:py:attr:`users`, and :py:attr:`groups` fields. :py:attr:`public` controls
+whether a repository is publicly-accessible by all users on the server.
+When ``False``, only users explicitly listed in :py:attr:`users` or users
+who are members of the groups listed in :py:attr:`groups` will be able
+to access the repository or view review requests posted against it.'''
+}
+
+Table site_localsite {
+  id integer [pk, increment]
+  name varchar(32) [unique, not null]
+  public bool [default: false, not null, note: 'Allow people outside the team to access and post review requests and reviews.']
+  extra_data text
+
+  indexes {
+    (public) [name: 'site_localsite_public_a3cbfbac']
+  }
+
+  Note: '''A division within a Review Board installation.
+
+This allows the creation of independent, isolated divisions within a given
+server. Users can be designated as members of a LocalSite, and optionally
+as admins (which allows them to manipulate the repositories, groups and
+users in the site).
+
+Pretty much every other model in this module can all be assigned to a
+single LocalSite, at which point only members will be able to see or
+manipulate these objects. Access control is performed at every level, and
+consistency is enforced through a liberal sprinkling of assertions and unit
+tests.'''
+}
+
+Table webapi_webapitoken {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'The user that owns the token.']
+  token varchar(255) [unique, not null, note: 'The access token.']
+  token_generator_id varchar(255) [not null, note: 'The token generator that generated the token.']
+  time_added datetime [not null, note: 'The date and time when the token was first added to the database.. default in Python: now()']
+  last_updated datetime [not null, note: 'The date and time when the token was last updated.. default in Python: now()']
+  last_used datetime [note: 'The date and time when the token was last used for authentication.']
+  expires datetime [note: 'An optional field for the date and time that the token will expire. The token will be invalid and unusable for authentication after this point.']
+  valid bool [default: true, not null, note: 'Whether the token is currently valid.']
+  invalid_date datetime [note: 'The date and time at which the token became invalid.']
+  invalid_reason text [not null, note: 'A message indicating why the token is no longer valid.']
+  note text [not null, note: 'A message describing the token.']
+  policy text [note: 'The policy document describing what this token can access in the API. If empty, this provides full access.']
+  extra_data text
+  local_site_id integer
+
+  indexes {
+    (user_id) [name: 'webapi_webapitoken_user_id_3651ab64']
+    (local_site_id) [name: 'webapi_webapitoken_local_site_id_72c83924']
+  }
+
+  Note: '''An access token used for authenticating with the API.
+
+Each token can be used to authenticate the token\'s owner with the API,
+without requiring a username or password to be provided. Tokens can
+be revoked, and new tokens added.
+
+Tokens can store policy information, which will later be used for
+restricting access to the API.
+
+Columns from BaseWebAPIToken (abstract): user_id, token, token_generator_id, time_added, last_updated, last_used, expires, valid, invalid_date, invalid_reason, note, policy, extra_data.'''
+}
+
+Table django_project_version {
+  id integer [pk, increment]
+  signature text [not null]
+  when datetime [not null, note: 'default in Python: now()']
+}
+
+Table django_evolution {
+  id integer [pk, increment]
+  version_id integer [not null]
+  app_label varchar(200) [not null]
+  label varchar(100) [not null]
+
+  indexes {
+    (version_id) [name: 'django_evolution_version_id_e55942c9']
+  }
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref djblets_privacy_storedconsentdata_user_id_fk: djblets_privacy_storedconsentdata.user_id - auth_user.id [delete: set null]
+
+Ref siteconfig_siteconfiguration_site_id_fk: siteconfig_siteconfiguration.site_id > django_site.id [delete: cascade]
+
+Ref oauth2_provider_application_user_id_fk: oauth2_provider_application.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_grant_user_id_fk: oauth2_provider_grant.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_grant_application_id_fk: oauth2_provider_grant.application_id > reviewboard_oauth_application.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_user_id_fk: oauth2_provider_accesstoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_source_refresh_token_id_fk: oauth2_provider_accesstoken.source_refresh_token_id - oauth2_provider_refreshtoken.id [delete: set null]
+
+Ref oauth2_provider_accesstoken_id_token_id_fk: oauth2_provider_accesstoken.id_token_id - oauth2_provider_idtoken.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_application_id_fk: oauth2_provider_accesstoken.application_id > reviewboard_oauth_application.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_user_id_fk: oauth2_provider_refreshtoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_application_id_fk: oauth2_provider_refreshtoken.application_id > reviewboard_oauth_application.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_access_token_id_fk: oauth2_provider_refreshtoken.access_token_id - oauth2_provider_accesstoken.id [delete: set null]
+
+Ref oauth2_provider_idtoken_user_id_fk: oauth2_provider_idtoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_idtoken_application_id_fk: oauth2_provider_idtoken.application_id > reviewboard_oauth_application.id [delete: cascade]
+
+Ref accounts_reviewrequestvisit_user_id_fk: accounts_reviewrequestvisit.user_id > auth_user.id [delete: cascade]
+
+Ref accounts_reviewrequestvisit_review_request_id_fk: accounts_reviewrequestvisit.review_request_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref accounts_linkedaccount_user_id_fk: accounts_linkedaccount.user_id > auth_user.id [delete: cascade]
+
+Ref accounts_profile_user_id_fk: accounts_profile.user_id > auth_user.id [delete: cascade]
+
+Table accounts_profile_starred_review_requests {
+  id integer [pk, increment]
+  profile_id integer [not null]
+  reviewrequest_id integer [not null]
+
+  indexes {
+    (profile_id) [name: 'accounts_profile_starred_review_requests_profile_id_cf4bb46e']
+    (reviewrequest_id) [name: 'accounts_profile_starred_review_requests_reviewrequest_id_be0af917']
+    (profile_id, reviewrequest_id) [unique, name: 'accounts_profile_starred_review_requests_profile_id_reviewrequest_id_9077f978_uniq']
+  }
+}
+
+Ref accounts_profile_starred_review_requests_profile_id_fk: accounts_profile_starred_review_requests.profile_id > accounts_profile.id [delete: cascade]
+
+Ref accounts_profile_starred_review_requests_reviewrequest_id_fk: accounts_profile_starred_review_requests.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Table accounts_profile_starred_groups {
+  id integer [pk, increment]
+  profile_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (profile_id) [name: 'accounts_profile_starred_groups_profile_id_f62f8a74']
+    (group_id) [name: 'accounts_profile_starred_groups_group_id_5cf2c564']
+    (profile_id, group_id) [unique, name: 'accounts_profile_starred_groups_profile_id_group_id_82d5c8c2_uniq']
+  }
+}
+
+Ref accounts_profile_starred_groups_profile_id_fk: accounts_profile_starred_groups.profile_id > accounts_profile.id [delete: cascade]
+
+Ref accounts_profile_starred_groups_group_id_fk: accounts_profile_starred_groups.group_id > reviews_group.id [delete: cascade]
+
+Ref accounts_localsiteprofile_user_id_fk: accounts_localsiteprofile.user_id > auth_user.id [delete: cascade]
+
+Ref accounts_localsiteprofile_profile_id_fk: accounts_localsiteprofile.profile_id > accounts_profile.id [delete: cascade]
+
+Ref accounts_localsiteprofile_local_site_id_fk: accounts_localsiteprofile.local_site_id > site_localsite.id [delete: cascade]
+
+Ref accounts_trophy_review_request_id_fk: accounts_trophy.review_request_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref accounts_trophy_local_site_id_fk: accounts_trophy.local_site_id > site_localsite.id [delete: cascade]
+
+Ref accounts_trophy_user_id_fk: accounts_trophy.user_id > auth_user.id [delete: cascade]
+
+Ref attachments_fileattachment_user_id_fk: attachments_fileattachment.user_id > auth_user.id [delete: cascade]
+
+Ref attachments_fileattachment_local_site_id_fk: attachments_fileattachment.local_site_id > site_localsite.id [delete: cascade]
+
+Ref attachments_fileattachment_repository_id_fk: attachments_fileattachment.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref attachments_fileattachment_added_in_filediff_id_fk: attachments_fileattachment.added_in_filediff_id > diffviewer_filediff.id [delete: cascade]
+
+Ref attachments_fileattachment_attachment_history_id_fk: attachments_fileattachment.attachment_history_id > attachments_fileattachmenthistory.id [delete: cascade]
+
+Ref changedescs_changedescription_user_id_fk: changedescs_changedescription.user_id > auth_user.id [delete: cascade]
+
+Ref diffviewer_diffset_history_id_fk: diffviewer_diffset.history_id > diffviewer_diffsethistory.id [delete: cascade]
+
+Ref diffviewer_diffset_repository_id_fk: diffviewer_diffset.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref diffviewer_diffcommit_diffset_id_fk: diffviewer_diffcommit.diffset_id > diffviewer_diffset.id [delete: cascade]
+
+Ref diffviewer_filediff_diffset_id_fk: diffviewer_filediff.diffset_id > diffviewer_diffset.id [delete: cascade]
+
+Ref diffviewer_filediff_commit_id_fk: diffviewer_filediff.commit_id > diffviewer_diffcommit.id [delete: cascade]
+
+Ref diffviewer_filediff_diff_hash_id_fk: diffviewer_filediff.diff_hash_id > diffviewer_filediffdata.binary_hash [delete: set null]
+
+Ref diffviewer_filediff_raw_diff_hash_id_fk: diffviewer_filediff.raw_diff_hash_id > diffviewer_rawfilediffdata.id [delete: set null]
+
+Ref diffviewer_filediff_parent_diff_hash_id_fk: diffviewer_filediff.parent_diff_hash_id > diffviewer_filediffdata.binary_hash [delete: set null]
+
+Ref diffviewer_filediff_raw_parent_diff_hash_id_fk: diffviewer_filediff.raw_parent_diff_hash_id > diffviewer_rawfilediffdata.id [delete: set null]
+
+Ref hostingsvcs_hostingserviceaccount_local_site_id_fk: hostingsvcs_hostingserviceaccount.local_site_id > site_localsite.id [delete: cascade]
+
+Ref integrations_integrationconfig_local_site_id_fk: integrations_integrationconfig.local_site_id > site_localsite.id [delete: cascade]
+
+Ref notifications_webhooktarget_local_site_id_fk: notifications_webhooktarget.local_site_id > site_localsite.id [delete: cascade]
+
+Table notifications_webhooktarget_repositories {
+  id integer [pk, increment]
+  webhooktarget_id integer [not null]
+  repository_id integer [not null]
+
+  indexes {
+    (webhooktarget_id) [name: 'notifications_webhooktarget_repositories_webhooktarget_id_1f60c953']
+    (repository_id) [name: 'notifications_webhooktarget_repositories_repository_id_703af70a']
+    (webhooktarget_id, repository_id) [unique, name: 'notifications_webhooktarget_repositories_webhooktarget_id_repository_id_e4f9af06_uniq']
+  }
+}
+
+Ref notifications_webhooktarget_repositories_webhooktarget_id_fk: notifications_webhooktarget_repositories.webhooktarget_id > notifications_webhooktarget.id [delete: cascade]
+
+Ref notifications_webhooktarget_repositories_repository_id_fk: notifications_webhooktarget_repositories.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref reviewboard_oauth_application_user_id_fk: reviewboard_oauth_application.user_id > auth_user.id [delete: cascade]
+
+Ref reviewboard_oauth_application_original_user_id_fk: reviewboard_oauth_application.original_user_id > auth_user.id [delete: cascade]
+
+Ref reviewboard_oauth_application_local_site_id_fk: reviewboard_oauth_application.local_site_id > site_localsite.id [delete: cascade]
+
+Ref reviews_group_local_site_id_fk: reviews_group.local_site_id > site_localsite.id [delete: cascade]
+
+Table reviews_group_users {
+  id integer [pk, increment]
+  group_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'reviews_group_users_group_id_3bb40386']
+    (user_id) [name: 'reviews_group_users_user_id_5403120e']
+    (group_id, user_id) [unique, name: 'reviews_group_users_group_id_user_id_1710047c_uniq']
+  }
+}
+
+Ref reviews_group_users_group_id_fk: reviews_group_users.group_id > reviews_group.id [delete: cascade]
+
+Ref reviews_group_users_user_id_fk: reviews_group_users.user_id > auth_user.id [delete: cascade]
+
+Ref reviews_defaultreviewer_local_site_id_fk: reviews_defaultreviewer.local_site_id > site_localsite.id [delete: cascade]
+
+Table reviews_defaultreviewer_repository {
+  id integer [pk, increment]
+  defaultreviewer_id integer [not null]
+  repository_id integer [not null]
+
+  indexes {
+    (defaultreviewer_id) [name: 'reviews_defaultreviewer_repository_defaultreviewer_id_6876ab14']
+    (repository_id) [name: 'reviews_defaultreviewer_repository_repository_id_7f3f56b6']
+    (defaultreviewer_id, repository_id) [unique, name: 'reviews_defaultreviewer_repository_defaultreviewer_id_repository_id_532b4c10_uniq']
+  }
+}
+
+Ref reviews_defaultreviewer_repository_defaultreviewer_id_fk: reviews_defaultreviewer_repository.defaultreviewer_id > reviews_defaultreviewer.id [delete: cascade]
+
+Ref reviews_defaultreviewer_repository_repository_id_fk: reviews_defaultreviewer_repository.repository_id > scmtools_repository.id [delete: cascade]
+
+Table reviews_defaultreviewer_groups {
+  id integer [pk, increment]
+  defaultreviewer_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (defaultreviewer_id) [name: 'reviews_defaultreviewer_groups_defaultreviewer_id_e89ca162']
+    (group_id) [name: 'reviews_defaultreviewer_groups_group_id_8f130dec']
+    (defaultreviewer_id, group_id) [unique, name: 'reviews_defaultreviewer_groups_defaultreviewer_id_group_id_f85e51ee_uniq']
+  }
+}
+
+Ref reviews_defaultreviewer_groups_defaultreviewer_id_fk: reviews_defaultreviewer_groups.defaultreviewer_id > reviews_defaultreviewer.id [delete: cascade]
+
+Ref reviews_defaultreviewer_groups_group_id_fk: reviews_defaultreviewer_groups.group_id > reviews_group.id [delete: cascade]
+
+Table reviews_defaultreviewer_people {
+  id integer [pk, increment]
+  defaultreviewer_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (defaultreviewer_id) [name: 'reviews_defaultreviewer_people_defaultreviewer_id_3b5a7031']
+    (user_id) [name: 'reviews_defaultreviewer_people_user_id_0871feb0']
+    (defaultreviewer_id, user_id) [unique, name: 'reviews_defaultreviewer_people_defaultreviewer_id_user_id_f22a3474_uniq']
+  }
+}
+
+Ref reviews_defaultreviewer_people_defaultreviewer_id_fk: reviews_defaultreviewer_people.defaultreviewer_id > reviews_defaultreviewer.id [delete: cascade]
+
+Ref reviews_defaultreviewer_people_user_id_fk: reviews_defaultreviewer_people.user_id > auth_user.id [delete: cascade]
+
+Ref reviews_comment_reply_to_id_fk: reviews_comment.reply_to_id > reviews_comment.id [delete: cascade]
+
+Ref reviews_comment_filediff_id_fk: reviews_comment.filediff_id > diffviewer_filediff.id [delete: cascade]
+
+Ref reviews_comment_interfilediff_id_fk: reviews_comment.interfilediff_id > diffviewer_filediff.id [delete: cascade]
+
+Ref reviews_fileattachmentcomment_reply_to_id_fk: reviews_fileattachmentcomment.reply_to_id > reviews_fileattachmentcomment.id [delete: cascade]
+
+Ref reviews_fileattachmentcomment_file_attachment_id_fk: reviews_fileattachmentcomment.file_attachment_id > attachments_fileattachment.id [delete: cascade]
+
+Ref reviews_fileattachmentcomment_diff_against_file_attachment_id_fk: reviews_fileattachmentcomment.diff_against_file_attachment_id > attachments_fileattachment.id [delete: cascade]
+
+Ref reviews_generalcomment_reply_to_id_fk: reviews_generalcomment.reply_to_id > reviews_generalcomment.id [delete: cascade]
+
+Ref reviews_reviewrequest_submitter_id_fk: reviews_reviewrequest.submitter_id > auth_user.id [delete: cascade]
+
+Ref reviews_reviewrequest_repository_id_fk: reviews_reviewrequest.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref reviews_reviewrequest_diffset_history_id_fk: reviews_reviewrequest.diffset_history_id > diffviewer_diffsethistory.id [delete: set null]
+
+Ref reviews_reviewrequest_local_site_id_fk: reviews_reviewrequest.local_site_id > site_localsite.id [delete: cascade]
+
+Table reviews_reviewrequest_target_groups {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_target_groups_reviewrequest_id_9f397bce']
+    (group_id) [name: 'reviews_reviewrequest_target_groups_group_id_c197c2b6']
+    (reviewrequest_id, group_id) [unique, name: 'reviews_reviewrequest_target_groups_reviewrequest_id_group_id_1a8ec82c_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_target_groups_reviewrequest_id_fk: reviews_reviewrequest_target_groups.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_target_groups_group_id_fk: reviews_reviewrequest_target_groups.group_id > reviews_group.id [delete: cascade]
+
+Table reviews_reviewrequest_target_people {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_target_people_reviewrequest_id_5b9a960c']
+    (user_id) [name: 'reviews_reviewrequest_target_people_user_id_1120a3d1']
+    (reviewrequest_id, user_id) [unique, name: 'reviews_reviewrequest_target_people_reviewrequest_id_user_id_d7cb96bf_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_target_people_reviewrequest_id_fk: reviews_reviewrequest_target_people.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_target_people_user_id_fk: reviews_reviewrequest_target_people.user_id > auth_user.id [delete: cascade]
+
+Table reviews_reviewrequest_screenshots {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  screenshot_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_screenshots_reviewrequest_id_67148a80']
+    (screenshot_id) [name: 'reviews_reviewrequest_screenshots_screenshot_id_a3499d76']
+    (reviewrequest_id, screenshot_id) [unique, name: 'reviews_reviewrequest_screenshots_reviewrequest_id_screenshot_id_07732dbc_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_screenshots_reviewrequest_id_fk: reviews_reviewrequest_screenshots.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_screenshots_screenshot_id_fk: reviews_reviewrequest_screenshots.screenshot_id > reviews_screenshot.id [delete: cascade]
+
+Table reviews_reviewrequest_inactive_screenshots {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  screenshot_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_inactive_screenshots_reviewrequest_id_192a5b09']
+    (screenshot_id) [name: 'reviews_reviewrequest_inactive_screenshots_screenshot_id_26fa56c2']
+    (reviewrequest_id, screenshot_id) [unique, name: 'reviews_reviewrequest_inactive_screenshots_reviewrequest_id_screenshot_id_8be75eda_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_inactive_screenshots_reviewrequest_id_fk: reviews_reviewrequest_inactive_screenshots.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_inactive_screenshots_screenshot_id_fk: reviews_reviewrequest_inactive_screenshots.screenshot_id > reviews_screenshot.id [delete: cascade]
+
+Table reviews_reviewrequest_file_attachments {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  fileattachment_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_file_attachments_reviewrequest_id_3bf5d0d8']
+    (fileattachment_id) [name: 'reviews_reviewrequest_file_attachments_fileattachment_id_e78e0b5e']
+    (reviewrequest_id, fileattachment_id) [unique, name: 'reviews_reviewrequest_file_attachments_reviewrequest_id_fileattachment_id_ccfa96ca_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_file_attachments_reviewrequest_id_fk: reviews_reviewrequest_file_attachments.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_file_attachments_fileattachment_id_fk: reviews_reviewrequest_file_attachments.fileattachment_id > attachments_fileattachment.id [delete: cascade]
+
+Table reviews_reviewrequest_inactive_file_attachments {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  fileattachment_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_inactive_file_attachments_reviewrequest_id_649d41ec']
+    (fileattachment_id) [name: 'reviews_reviewrequest_inactive_file_attachments_fileattachment_id_c63ab996']
+    (reviewrequest_id, fileattachment_id) [unique, name: 'reviews_reviewrequest_inactive_file_attachments_reviewrequest_id_fileattachment_id_02402ce1_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_inactive_file_attachments_reviewrequest_id_fk: reviews_reviewrequest_inactive_file_attachments.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_inactive_file_attachments_fileattachment_id_fk: reviews_reviewrequest_inactive_file_attachments.fileattachment_id > attachments_fileattachment.id [delete: cascade]
+
+Table reviews_reviewrequest_file_attachment_histories {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  fileattachmenthistory_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_file_attachment_histories_reviewrequest_id_84509ea0']
+    (fileattachmenthistory_id) [name: 'reviews_reviewrequest_file_attachment_histories_fileattachmenthistory_id_78c33186']
+    (reviewrequest_id, fileattachmenthistory_id) [unique, name: 'reviews_reviewrequest_file_attachment_histories_reviewrequest_id_fileattachmenthistory_id_bffdaf41_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_file_attachment_histories_reviewrequest_id_fk: reviews_reviewrequest_file_attachment_histories.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_file_attachment_histories_fileattachmenthistory_id_fk: reviews_reviewrequest_file_attachment_histories.fileattachmenthistory_id > attachments_fileattachmenthistory.id [delete: cascade]
+
+Table reviews_reviewrequest_changedescs {
+  id integer [pk, increment]
+  reviewrequest_id integer [not null]
+  changedescription_id integer [not null]
+
+  indexes {
+    (reviewrequest_id) [name: 'reviews_reviewrequest_changedescs_reviewrequest_id_65def65a']
+    (changedescription_id) [name: 'reviews_reviewrequest_changedescs_changedescription_id_c25c1fe7']
+    (reviewrequest_id, changedescription_id) [unique, name: 'reviews_reviewrequest_changedescs_reviewrequest_id_changedescription_id_a0489fdf_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_changedescs_reviewrequest_id_fk: reviews_reviewrequest_changedescs.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_changedescs_changedescription_id_fk: reviews_reviewrequest_changedescs.changedescription_id > changedescs_changedescription.id [delete: cascade]
+
+Table reviews_reviewrequest_depends_on {
+  id integer [pk, increment]
+  from_reviewrequest_id integer [not null]
+  to_reviewrequest_id integer [not null]
+
+  indexes {
+    (from_reviewrequest_id) [name: 'reviews_reviewrequest_depends_on_from_reviewrequest_id_2d1eab85']
+    (to_reviewrequest_id) [name: 'reviews_reviewrequest_depends_on_to_reviewrequest_id_ab47bf47']
+    (from_reviewrequest_id, to_reviewrequest_id) [unique, name: 'reviews_reviewrequest_depends_on_from_reviewrequest_id_to_reviewrequest_id_94e62655_uniq']
+  }
+}
+
+Ref reviews_reviewrequest_depends_on_from_reviewrequest_id_fk: reviews_reviewrequest_depends_on.from_reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequest_depends_on_to_reviewrequest_id_fk: reviews_reviewrequest_depends_on.to_reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_screenshotcomment_reply_to_id_fk: reviews_screenshotcomment.reply_to_id > reviews_screenshotcomment.id [delete: cascade]
+
+Ref reviews_screenshotcomment_screenshot_id_fk: reviews_screenshotcomment.screenshot_id > reviews_screenshot.id [delete: cascade]
+
+Ref reviews_review_review_request_id_fk: reviews_review.review_request_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_review_user_id_fk: reviews_review.user_id > auth_user.id [delete: cascade]
+
+Ref reviews_review_base_reply_to_id_fk: reviews_review.base_reply_to_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_body_top_reply_to_id_fk: reviews_review.body_top_reply_to_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_body_bottom_reply_to_id_fk: reviews_review.body_bottom_reply_to_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_reviewed_diffset_id_fk: reviews_review.reviewed_diffset_id > diffviewer_diffset.id [delete: cascade]
+
+Table reviews_review_comments {
+  id integer [pk, increment]
+  review_id integer [not null]
+  comment_id integer [not null]
+
+  indexes {
+    (review_id) [name: 'reviews_review_comments_review_id_0a600993']
+    (comment_id) [name: 'reviews_review_comments_comment_id_a1f2afdb']
+    (review_id, comment_id) [unique, name: 'reviews_review_comments_review_id_comment_id_2b6b67b0_uniq']
+  }
+}
+
+Ref reviews_review_comments_review_id_fk: reviews_review_comments.review_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_comments_comment_id_fk: reviews_review_comments.comment_id > reviews_comment.id [delete: cascade]
+
+Table reviews_review_screenshot_comments {
+  id integer [pk, increment]
+  review_id integer [not null]
+  screenshotcomment_id integer [not null]
+
+  indexes {
+    (review_id) [name: 'reviews_review_screenshot_comments_review_id_1210ef03']
+    (screenshotcomment_id) [name: 'reviews_review_screenshot_comments_screenshotcomment_id_c90580b3']
+    (review_id, screenshotcomment_id) [unique, name: 'reviews_review_screenshot_comments_review_id_screenshotcomment_id_d40817af_uniq']
+  }
+}
+
+Ref reviews_review_screenshot_comments_review_id_fk: reviews_review_screenshot_comments.review_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_screenshot_comments_screenshotcomment_id_fk: reviews_review_screenshot_comments.screenshotcomment_id > reviews_screenshotcomment.id [delete: cascade]
+
+Table reviews_review_file_attachment_comments {
+  id integer [pk, increment]
+  review_id integer [not null]
+  fileattachmentcomment_id integer [not null]
+
+  indexes {
+    (review_id) [name: 'reviews_review_file_attachment_comments_review_id_f33dcceb']
+    (fileattachmentcomment_id) [name: 'reviews_review_file_attachment_comments_fileattachmentcomment_id_1dae596b']
+    (review_id, fileattachmentcomment_id) [unique, name: 'reviews_review_file_attachment_comments_review_id_fileattachmentcomment_id_e50f6c80_uniq']
+  }
+}
+
+Ref reviews_review_file_attachment_comments_review_id_fk: reviews_review_file_attachment_comments.review_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_file_attachment_comments_fileattachmentcomment_id_fk: reviews_review_file_attachment_comments.fileattachmentcomment_id > reviews_fileattachmentcomment.id [delete: cascade]
+
+Table reviews_review_general_comments {
+  id integer [pk, increment]
+  review_id integer [not null]
+  generalcomment_id integer [not null]
+
+  indexes {
+    (review_id) [name: 'reviews_review_general_comments_review_id_b2db3c78']
+    (generalcomment_id) [name: 'reviews_review_general_comments_generalcomment_id_08380dc1']
+    (review_id, generalcomment_id) [unique, name: 'reviews_review_general_comments_review_id_generalcomment_id_92ad2601_uniq']
+  }
+}
+
+Ref reviews_review_general_comments_review_id_fk: reviews_review_general_comments.review_id > reviews_review.id [delete: cascade]
+
+Ref reviews_review_general_comments_generalcomment_id_fk: reviews_review_general_comments.generalcomment_id > reviews_generalcomment.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_owner_id_fk: reviews_reviewrequestdraft.owner_id > auth_user.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_review_request_id_fk: reviews_reviewrequestdraft.review_request_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_diffset_id_fk: reviews_reviewrequestdraft.diffset_id > diffviewer_diffset.id [delete: set null]
+
+Ref reviews_reviewrequestdraft_changedesc_id_fk: reviews_reviewrequestdraft.changedesc_id > changedescs_changedescription.id [delete: set null]
+
+Table reviews_reviewrequestdraft_target_groups {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_target_groups_reviewrequestdraft_id_efd7dd03']
+    (group_id) [name: 'reviews_reviewrequestdraft_target_groups_group_id_f394ff20']
+    (reviewrequestdraft_id, group_id) [unique, name: 'reviews_reviewrequestdraft_target_groups_reviewrequestdraft_id_group_id_780014ae_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_target_groups_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_target_groups.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_target_groups_group_id_fk: reviews_reviewrequestdraft_target_groups.group_id > reviews_group.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_target_people {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_target_people_reviewrequestdraft_id_cf9235c2']
+    (user_id) [name: 'reviews_reviewrequestdraft_target_people_user_id_83de070a']
+    (reviewrequestdraft_id, user_id) [unique, name: 'reviews_reviewrequestdraft_target_people_reviewrequestdraft_id_user_id_2d4e7918_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_target_people_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_target_people.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_target_people_user_id_fk: reviews_reviewrequestdraft_target_people.user_id > auth_user.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_screenshots {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  screenshot_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_screenshots_reviewrequestdraft_id_bd7c450d']
+    (screenshot_id) [name: 'reviews_reviewrequestdraft_screenshots_screenshot_id_68b0d9e3']
+    (reviewrequestdraft_id, screenshot_id) [unique, name: 'reviews_reviewrequestdraft_screenshots_reviewrequestdraft_id_screenshot_id_71233108_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_screenshots_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_screenshots.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_screenshots_screenshot_id_fk: reviews_reviewrequestdraft_screenshots.screenshot_id > reviews_screenshot.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_inactive_screenshots {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  screenshot_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_inactive_screenshots_reviewrequestdraft_id_a8339e18']
+    (screenshot_id) [name: 'reviews_reviewrequestdraft_inactive_screenshots_screenshot_id_ed06dfad']
+    (reviewrequestdraft_id, screenshot_id) [unique, name: 'reviews_reviewrequestdraft_inactive_screenshots_reviewrequestdraft_id_screenshot_id_322d1203_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_inactive_screenshots_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_inactive_screenshots.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_inactive_screenshots_screenshot_id_fk: reviews_reviewrequestdraft_inactive_screenshots.screenshot_id > reviews_screenshot.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_file_attachments {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  fileattachment_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_file_attachments_reviewrequestdraft_id_6ca73ce6']
+    (fileattachment_id) [name: 'reviews_reviewrequestdraft_file_attachments_fileattachment_id_70274302']
+    (reviewrequestdraft_id, fileattachment_id) [unique, name: 'reviews_reviewrequestdraft_file_attachments_reviewrequestdraft_id_fileattachment_id_d78bc93a_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_file_attachments_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_file_attachments.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_file_attachments_fileattachment_id_fk: reviews_reviewrequestdraft_file_attachments.fileattachment_id > attachments_fileattachment.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_inactive_file_attachments {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  fileattachment_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_inactive_file_attachments_reviewrequestdraft_id_29694abc']
+    (fileattachment_id) [name: 'reviews_reviewrequestdraft_inactive_file_attachments_fileattachment_id_fa327aa0']
+    (reviewrequestdraft_id, fileattachment_id) [unique, name: 'reviews_reviewrequestdraft_inactive_file_attachments_reviewrequestdraft_id_fileattachment_id_0392ef46_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_inactive_file_attachments_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_inactive_file_attachments.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_inactive_file_attachments_fileattachment_id_fk: reviews_reviewrequestdraft_inactive_file_attachments.fileattachment_id > attachments_fileattachment.id [delete: cascade]
+
+Table reviews_reviewrequestdraft_depends_on {
+  id integer [pk, increment]
+  reviewrequestdraft_id integer [not null]
+  reviewrequest_id integer [not null]
+
+  indexes {
+    (reviewrequestdraft_id) [name: 'reviews_reviewrequestdraft_depends_on_reviewrequestdraft_id_550d105a']
+    (reviewrequest_id) [name: 'reviews_reviewrequestdraft_depends_on_reviewrequest_id_834a2c3f']
+    (reviewrequestdraft_id, reviewrequest_id) [unique, name: 'reviews_reviewrequestdraft_depends_on_reviewrequestdraft_id_reviewrequest_id_8fc5961d_uniq']
+  }
+}
+
+Ref reviews_reviewrequestdraft_depends_on_reviewrequestdraft_id_fk: reviews_reviewrequestdraft_depends_on.reviewrequestdraft_id > reviews_reviewrequestdraft.id [delete: cascade]
+
+Ref reviews_reviewrequestdraft_depends_on_reviewrequest_id_fk: reviews_reviewrequestdraft_depends_on.reviewrequest_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_statusupdate_user_id_fk: reviews_statusupdate.user_id > auth_user.id [delete: cascade]
+
+Ref reviews_statusupdate_review_request_id_fk: reviews_statusupdate.review_request_id > reviews_reviewrequest.id [delete: cascade]
+
+Ref reviews_statusupdate_change_description_id_fk: reviews_statusupdate.change_description_id > changedescs_changedescription.id [delete: cascade]
+
+Ref reviews_statusupdate_review_id_fk: reviews_statusupdate.review_id - reviews_review.id [delete: cascade]
+
+Ref scmtools_repository_tool_id_fk: scmtools_repository.tool_id > scmtools_tool.id [delete: cascade]
+
+Ref scmtools_repository_hosting_account_id_fk: scmtools_repository.hosting_account_id > hostingsvcs_hostingserviceaccount.id [delete: cascade]
+
+Ref scmtools_repository_local_site_id_fk: scmtools_repository.local_site_id > site_localsite.id [delete: cascade]
+
+Table scmtools_repository_users {
+  id integer [pk, increment]
+  repository_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (repository_id) [name: 'scmtools_repository_users_repository_id_d8c11b09']
+    (user_id) [name: 'scmtools_repository_users_user_id_fd0f89b9']
+    (repository_id, user_id) [unique, name: 'scmtools_repository_users_repository_id_user_id_c239bac4_uniq']
+  }
+}
+
+Ref scmtools_repository_users_repository_id_fk: scmtools_repository_users.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref scmtools_repository_users_user_id_fk: scmtools_repository_users.user_id > auth_user.id [delete: cascade]
+
+Table scmtools_repository_review_groups {
+  id integer [pk, increment]
+  repository_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (repository_id) [name: 'scmtools_repository_review_groups_repository_id_23a2ea36']
+    (group_id) [name: 'scmtools_repository_review_groups_group_id_23e39d23']
+    (repository_id, group_id) [unique, name: 'scmtools_repository_review_groups_repository_id_group_id_1e0382de_uniq']
+  }
+}
+
+Ref scmtools_repository_review_groups_repository_id_fk: scmtools_repository_review_groups.repository_id > scmtools_repository.id [delete: cascade]
+
+Ref scmtools_repository_review_groups_group_id_fk: scmtools_repository_review_groups.group_id > reviews_group.id [delete: cascade]
+
+Table site_localsite_users {
+  id integer [pk, increment]
+  localsite_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (localsite_id) [name: 'site_localsite_users_localsite_id_9f338deb']
+    (user_id) [name: 'site_localsite_users_user_id_d0c1231a']
+    (localsite_id, user_id) [unique, name: 'site_localsite_users_localsite_id_user_id_2b5aa5f9_uniq']
+  }
+}
+
+Ref site_localsite_users_localsite_id_fk: site_localsite_users.localsite_id > site_localsite.id [delete: cascade]
+
+Ref site_localsite_users_user_id_fk: site_localsite_users.user_id > auth_user.id [delete: cascade]
+
+Table site_localsite_admins {
+  id integer [pk, increment]
+  localsite_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (localsite_id) [name: 'site_localsite_admins_localsite_id_f1ecf08a']
+    (user_id) [name: 'site_localsite_admins_user_id_a78f941a']
+    (localsite_id, user_id) [unique, name: 'site_localsite_admins_localsite_id_user_id_4644c48c_uniq']
+  }
+}
+
+Ref site_localsite_admins_localsite_id_fk: site_localsite_admins.localsite_id > site_localsite.id [delete: cascade]
+
+Ref site_localsite_admins_user_id_fk: site_localsite_admins.user_id > auth_user.id [delete: cascade]
+
+Ref webapi_webapitoken_user_id_fk: webapi_webapitoken.user_id > auth_user.id [delete: cascade]
+
+Ref webapi_webapitoken_local_site_id_fk: webapi_webapitoken.local_site_id > site_localsite.id [delete: cascade]
+
+Ref django_evolution_version_id_fk: django_evolution.version_id > django_project_version.id [delete: cascade]

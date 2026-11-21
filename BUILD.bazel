@@ -1,0 +1,11 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# The root package of the pnpm workspace; each workspace package (apps/hekireki, apps/drizzler,
+# apps/drizzler/examples/*, ...) links its own node_modules in its BUILD.bazel.
+npm_link_all_packages(name = "node_modules")
+
+exports_files([
+    ".npmrc",
+    "package.json",
+    "pnpm-lock.yaml",
+])

@@ -1,0 +1,60 @@
+"""orm-generators-examples: one Bazel monorepo for the generation examples of three ORM tools.
+
+- apps/hekireki: Prisma schemas of well-known projects, run through hekireki into every ORM.
+- apps/drizzler: Drizzle schemas of well-known projects, run through drizzler into ER diagrams,
+  table docs and DBML.
+- apps/djangoer: Django models of well-known projects, run through Djangoer into ER diagrams and
+  docs.
+
+Every example commits what its generator wrote, and a `*.test` target holds that copy to a fresh
+generation. The npm packages come from the one pnpm-lock.yaml at the root through rules_js; uv,
+which runs the Django examples, is pinned below.
+"""
+
+module(name = "orm_generators_examples", version = "0.0.0")
+
+bazel_dep(name = "aspect_rules_js", version = "3.5.2")
+bazel_dep(name = "aspect_bazel_lib", version = "2.22.5")
+bazel_dep(name = "rules_nodejs", version = "6.7.7")
+bazel_dep(name = "bazel_skylib", version = "1.9.2")
+bazel_dep(name = "rules_shell", version = "0.8.0")
+bazel_dep(name = "platforms", version = "1.1.0")
+
+node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node")
+node.toolchain(node_version = "24.16.0")
+
+pnpm = use_extension("@aspect_rules_js//npm:extensions.bzl", "pnpm")
+use_repo(pnpm, "pnpm")
+
+npm = use_extension("@aspect_rules_js//npm:extensions.bzl", "npm")
+npm.npm_translate_lock(
+    name = "npm",
+    npmrc = "//:.npmrc",
+    pnpm_lock = "//:pnpm-lock.yaml",
+    verify_node_modules_ignored = "//:.bazelignore",
+)
+use_repo(npm, "npm")
+
+# uv, which installs each Django example's locked environment and runs Djangoer in it
+# (//apps/djangoer). Bump the version and the four checksums together.
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+UV_VERSION = "0.13.8"
+
+UV_PLATFORMS = {
+    "aarch64-unknown-linux-gnu": "74f2f5c6024d397481db228db8fc25eed420db192243f88438c118e7e013e585",
+    "x86_64-unknown-linux-gnu": "5acfd9177cfecf0bf87578f059728215ccc884388988f55f7a65041b57387d91",
+    "aarch64-apple-darwin": "6b71028a6b904f2ae3340ef52e595512de807d06c0a20eaef2f692581b246558",
+    "x86_64-apple-darwin": "a04c2ffeac28b2003a2c13caf538ab425fcd7def3e4a41571f4a8fb370a66af3",
+}
+
+[
+    http_archive(
+        name = "uv_" + platform.replace("-", "_"),
+        build_file_content = 'exports_files(["uv"])',
+        sha256 = sha256,
+        strip_prefix = "uv-" + platform,
+        url = "https://github.com/astral-sh/uv/releases/download/%s/uv-%s.tar.gz" % (UV_VERSION, platform),
+    )
+    for platform, sha256 in UV_PLATFORMS.items()
+]

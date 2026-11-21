@@ -1,0 +1,220 @@
+Enum CourseLevel {
+  "1"
+  "2"
+  "3"
+}
+
+Enum LessonKind {
+  "video"
+  "text"
+  "quiz"
+}
+
+Table courses_instructor {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  bio text [not null]
+  website varchar(200) [not null]
+}
+
+Table courses_course {
+  id integer [pk, increment]
+  title varchar(200) [not null]
+  slug varchar(50) [unique, not null]
+  summary text [not null]
+  level CourseLevel [default: 1, not null]
+  price decimal [default: 0, not null, note: 'declared max_digits=8, decimal_places=2, which the database does not enforce']
+  published_at datetime
+}
+
+Table courses_module {
+  id integer [pk, increment]
+  course_id bigint [not null]
+  title varchar(200) [not null]
+  _order integer [not null]
+
+  indexes {
+    (course_id) [name: 'courses_module_course_id_7d4820de']
+  }
+}
+
+Table courses_lesson {
+  id integer [pk, increment]
+  module_id bigint [not null]
+  title varchar(200) [not null]
+  kind LessonKind [not null]
+  body text [not null]
+  video_url varchar(200) [not null]
+  duration bigint
+  is_preview bool [default: false, not null, note: 'Open to visitors who have not enrolled']
+  _order integer [not null]
+
+  indexes {
+    (module_id) [name: 'courses_lesson_module_id_41252914']
+  }
+}
+
+Table courses_enrollment {
+  id integer [pk, increment]
+  student_id integer [not null]
+  course_id bigint [not null]
+  enrolled_at datetime [not null, note: 'default in Python: now()']
+  completed_at datetime
+
+  indexes {
+    (student_id) [name: 'courses_enrollment_student_id_aebf8536']
+    (course_id) [name: 'courses_enrollment_course_id_2631503e']
+    (student_id, course_id) [unique, name: 'enroll_once']
+  }
+}
+
+Table courses_lessonprogress {
+  id integer [pk, increment]
+  enrollment_id bigint [not null]
+  lesson_id bigint [not null]
+  completed_at datetime [not null, note: 'default in Python: now()']
+  seconds_watched "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (enrollment_id) [name: 'courses_lessonprogress_enrollment_id_dd947713']
+    (lesson_id) [name: 'courses_lessonprogress_lesson_id_b0b36960']
+  }
+}
+
+Table courses_question {
+  id integer [pk, increment]
+  lesson_id bigint [not null]
+  text text [not null]
+  allows_many bool [default: false, not null]
+  points "smallint unsigned" [default: 1, not null]
+
+  indexes {
+    (lesson_id) [name: 'courses_question_lesson_id_f91dc203']
+  }
+}
+
+Table courses_choice {
+  id integer [pk, increment]
+  question_id bigint [not null]
+  text varchar(300) [not null]
+  is_correct bool [default: false, not null]
+
+  indexes {
+    (question_id) [name: 'courses_choice_question_id_e3bc6751']
+  }
+}
+
+Table courses_attempt {
+  id integer [pk, increment]
+  enrollment_id bigint [not null]
+  lesson_id bigint [not null]
+  started_at datetime [not null, note: 'default in Python: now()']
+  submitted_at datetime
+  score decimal [note: 'declared max_digits=5, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (enrollment_id) [name: 'courses_attempt_enrollment_id_288fd6a6']
+    (lesson_id) [name: 'courses_attempt_lesson_id_8534b2c3']
+  }
+}
+
+Table courses_answer {
+  id integer [pk, increment]
+  attempt_id bigint [not null]
+  question_id bigint [not null]
+
+  indexes {
+    (attempt_id) [name: 'courses_answer_attempt_id_df8c02ec']
+    (question_id) [name: 'courses_answer_question_id_f7e35d1f']
+    (attempt_id, question_id) [unique, name: 'courses_answer_attempt_id_question_id_e2e8bdaf_uniq']
+  }
+}
+
+Table courses_certificate {
+  id integer [pk, increment]
+  enrollment_id bigint [unique, not null]
+  code varchar(20) [unique, not null]
+  issued_at datetime [not null, note: 'default in Python: now()']
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref courses_instructor_user_id_fk: courses_instructor.user_id - auth_user.id [delete: cascade]
+
+Table courses_course_instructors {
+  id integer [pk, increment]
+  course_id bigint [not null]
+  instructor_id bigint [not null]
+
+  indexes {
+    (course_id) [name: 'courses_course_instructors_course_id_f276839d']
+    (instructor_id) [name: 'courses_course_instructors_instructor_id_9812a859']
+    (course_id, instructor_id) [unique, name: 'courses_course_instructors_course_id_instructor_id_bb074e9c_uniq']
+  }
+}
+
+Ref courses_course_instructors_course_id_fk: courses_course_instructors.course_id > courses_course.id [delete: cascade]
+
+Ref courses_course_instructors_instructor_id_fk: courses_course_instructors.instructor_id > courses_instructor.id [delete: cascade]
+
+Table courses_course_prerequisites {
+  id integer [pk, increment]
+  from_course_id bigint [not null]
+  to_course_id bigint [not null]
+
+  indexes {
+    (from_course_id) [name: 'courses_course_prerequisites_from_course_id_9cda6dc7']
+    (to_course_id) [name: 'courses_course_prerequisites_to_course_id_d895f6b3']
+    (from_course_id, to_course_id) [unique, name: 'courses_course_prerequisites_from_course_id_to_course_id_91caca13_uniq']
+  }
+}
+
+Ref courses_course_prerequisites_from_course_id_fk: courses_course_prerequisites.from_course_id > courses_course.id [delete: cascade]
+
+Ref courses_course_prerequisites_to_course_id_fk: courses_course_prerequisites.to_course_id > courses_course.id [delete: cascade]
+
+Ref courses_module_course_id_fk: courses_module.course_id > courses_course.id [delete: cascade]
+
+Ref courses_lesson_module_id_fk: courses_lesson.module_id > courses_module.id [delete: cascade]
+
+Ref courses_enrollment_student_id_fk: courses_enrollment.student_id > auth_user.id [delete: cascade]
+
+Ref courses_enrollment_course_id_fk: courses_enrollment.course_id > courses_course.id [delete: cascade]
+
+Ref courses_lessonprogress_enrollment_id_fk: courses_lessonprogress.enrollment_id > courses_enrollment.id [delete: cascade]
+
+Ref courses_lessonprogress_lesson_id_fk: courses_lessonprogress.lesson_id > courses_lesson.id [delete: cascade]
+
+Ref courses_question_lesson_id_fk: courses_question.lesson_id > courses_lesson.id [delete: cascade]
+
+Ref courses_choice_question_id_fk: courses_choice.question_id > courses_question.id [delete: cascade]
+
+Ref courses_attempt_enrollment_id_fk: courses_attempt.enrollment_id > courses_enrollment.id [delete: cascade]
+
+Ref courses_attempt_lesson_id_fk: courses_attempt.lesson_id > courses_lesson.id [delete: cascade]
+
+Ref courses_answer_attempt_id_fk: courses_answer.attempt_id > courses_attempt.id [delete: cascade]
+
+Ref courses_answer_question_id_fk: courses_answer.question_id > courses_question.id [delete: cascade]
+
+Table courses_answer_choices {
+  id integer [pk, increment]
+  answer_id bigint [not null]
+  choice_id bigint [not null]
+
+  indexes {
+    (answer_id) [name: 'courses_answer_choices_answer_id_c404d8bd']
+    (choice_id) [name: 'courses_answer_choices_choice_id_09dc7f5a']
+    (answer_id, choice_id) [unique, name: 'courses_answer_choices_answer_id_choice_id_f7ec2f40_uniq']
+  }
+}
+
+Ref courses_answer_choices_answer_id_fk: courses_answer_choices.answer_id > courses_answer.id [delete: cascade]
+
+Ref courses_answer_choices_choice_id_fk: courses_answer_choices.choice_id > courses_choice.id [delete: cascade]
+
+Ref courses_certificate_enrollment_id_fk: courses_certificate.enrollment_id - courses_enrollment.id [delete: restrict]

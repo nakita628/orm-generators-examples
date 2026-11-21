@@ -1,0 +1,102 @@
+Table customers {
+  id integer [pk, increment, not null]
+  company_name text [not null]
+  contact_name text [not null]
+  contact_title text [not null]
+  address text [not null]
+  city text [not null]
+  postal_code text
+  region text
+  country text [not null]
+  phone text [not null]
+  fax text
+}
+
+Table employees {
+  id integer [pk, increment, not null]
+  last_name text [not null]
+  first_name text
+  title text [not null]
+  title_of_courtesy text [not null]
+  birth_date integer [not null]
+  hire_date integer [not null]
+  address text [not null]
+  city text [not null]
+  postal_code text [not null]
+  country text [not null]
+  home_phone text [not null]
+  extension integer [not null]
+  notes text [not null]
+  recipient_id integer
+  indexes {
+    (recipient_id) [name: 'recepient_idx']
+  }
+}
+
+Table orders {
+  id integer [pk, increment, not null]
+  order_date integer [not null]
+  required_date integer [not null]
+  shipped_date integer
+  ship_via integer [not null]
+  freight numeric [not null]
+  ship_name text [not null]
+  ship_city text [not null]
+  ship_region text
+  ship_postal_code text
+  ship_country text [not null]
+  customer_id integer [not null]
+  employee_id integer [not null]
+}
+
+Table suppliers {
+  id integer [pk, increment, not null]
+  company_name text [not null]
+  contact_name text [not null]
+  contact_title text [not null]
+  address text [not null]
+  city text [not null]
+  region text
+  postal_code text [not null]
+  country text [not null]
+  phone text [not null]
+}
+
+Table products {
+  id integer [pk, increment, not null]
+  name text [not null]
+  qt_per_unit text [not null]
+  unit_price numeric [not null]
+  units_in_stock integer [not null]
+  units_on_order integer [not null]
+  reorder_level integer [not null]
+  discontinued integer [not null]
+  supplier_id integer [not null]
+  indexes {
+    (supplier_id) [name: 'supplier_idx']
+  }
+}
+
+Table order_details {
+  unit_price numeric [not null]
+  quantity integer [not null]
+  discount numeric [not null]
+  order_id integer [not null]
+  product_id integer [not null]
+  indexes {
+    (order_id) [name: 'order_id_idx']
+    (product_id) [name: 'product_id_idx']
+  }
+}
+
+Ref employees_recipient_id_employees_id_fk: employees.recipient_id > employees.id
+
+Ref orders_customer_id_customers_id_fk: orders.customer_id > customers.id [delete: cascade]
+
+Ref orders_employee_id_employees_id_fk: orders.employee_id > employees.id [delete: cascade]
+
+Ref products_supplier_id_suppliers_id_fk: products.supplier_id > suppliers.id [delete: cascade]
+
+Ref order_details_order_id_orders_id_fk: order_details.order_id > orders.id [delete: cascade]
+
+Ref order_details_product_id_products_id_fk: order_details.product_id > products.id [delete: cascade]

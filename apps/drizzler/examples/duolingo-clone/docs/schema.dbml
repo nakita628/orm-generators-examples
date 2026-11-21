@@ -1,0 +1,77 @@
+Table courses {
+  id serial [pk, increment, not null]
+  title text [not null]
+  image_src text [not null]
+}
+
+Table units {
+  id serial [pk, increment, not null]
+  title text [not null]
+  description text [not null]
+  course_id integer [not null]
+  order integer [not null]
+}
+
+Table lessons {
+  id serial [pk, increment, not null]
+  title text [not null]
+  unit_id integer [not null]
+  order integer [not null]
+}
+
+Table challenges {
+  id serial [pk, increment, not null]
+  lesson_id integer [not null]
+  type type [not null]
+  question text [not null]
+  order integer [not null]
+}
+
+Table challenge_options {
+  id serial [pk, increment, not null]
+  challenge_id integer [not null]
+  text text [not null]
+  correct boolean [not null]
+  image_src text
+  audio_src text
+}
+
+Table challenge_progress {
+  id serial [pk, increment, not null]
+  user_id text [not null]
+  challenge_id integer [not null]
+  completed boolean [not null]
+  indexes {
+    (user_id, challenge_id) [unique]
+  }
+}
+
+Table user_progress {
+  user_id text [pk, not null]
+  user_name text [not null]
+  user_image_src text [not null]
+  active_course_id integer
+  hearts integer [not null]
+  points integer [not null]
+}
+
+Table user_subscription {
+  id serial [pk, increment, not null]
+  user_id text [not null, unique]
+  stripe_customer_id text [not null, unique]
+  stripe_subscription_id text [not null, unique]
+  stripe_price_id text [not null]
+  stripe_current_period_end timestamp [not null]
+}
+
+Ref units_course_id_courses_id_fk: units.course_id > courses.id [delete: cascade]
+
+Ref lessons_unit_id_units_id_fk: lessons.unit_id > units.id [delete: cascade]
+
+Ref challenges_lesson_id_lessons_id_fk: challenges.lesson_id > lessons.id [delete: cascade]
+
+Ref challenge_options_challenge_id_challenges_id_fk: challenge_options.challenge_id > challenges.id [delete: cascade]
+
+Ref challenge_progress_challenge_id_challenges_id_fk: challenge_progress.challenge_id > challenges.id [delete: cascade]
+
+Ref user_progress_active_course_id_courses_id_fk: user_progress.active_course_id > courses.id [delete: cascade]

@@ -1,0 +1,161 @@
+Table users {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  role role [not null, note: 'Extra columns']
+}
+
+Table accounts {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamptz
+  refresh_token_expires_at timestamptz
+  scope text
+  password text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id) [name: 'accounts_user_id_idx']
+  }
+}
+
+Table sessions {
+  id text [pk, not null]
+  expires_at timestamptz [not null]
+  token text [not null, unique]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'sessions_user_id_idx']
+  }
+}
+
+Table verifications {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table comments {
+  id text [pk, not null]
+  body text [not null]
+  user_id text [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  post_id text [not null]
+  parent_id text
+  is_deleted boolean [not null]
+  reply_count integer [not null]
+  like_count integer [not null]
+  dislike_count integer [not null]
+  indexes {
+    (post_id) [name: 'comments_post_id_idx']
+    (user_id) [name: 'comments_user_id_idx']
+    (post_id, created_at) [name: 'comments_post_id_created_at_desc_idx']
+    (parent_id, created_at) [name: 'comments_parent_id_created_at_desc_idx']
+    `to_tsvector('english', body)` [type: gin, name: 'comments_body_tsvector_idx']
+  }
+}
+
+Table votes {
+  user_id text [not null]
+  comment_id text [not null]
+  is_like boolean [not null]
+  indexes {
+    (user_id, comment_id) [pk]
+    (comment_id, is_like) [name: 'votes_comment_id_is_like_idx']
+  }
+}
+
+Table messages {
+  id text [pk, not null]
+  body text [not null]
+  user_id text [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (created_at) [name: 'messages_created_at_desc_idx']
+    (user_id) [name: 'messages_user_id_idx']
+  }
+}
+
+Table posts {
+  created_at timestamptz [not null]
+  slug text [pk, not null]
+  likes integer [not null]
+  views integer [not null]
+  indexes {
+    (created_at) [name: 'posts_created_at_desc_idx']
+  }
+}
+
+Table post_likes {
+  post_id text [not null]
+  anon_key text [not null]
+  like_count integer [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (post_id, anon_key) [pk]
+  }
+}
+
+Table settings {
+  user_id text [pk, not null]
+  reply_notifications_enabled boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table unsubscribes {
+  id text [pk, not null]
+  user_id text [not null]
+  type unsubscribe_type [not null]
+  comment_id text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id) [name: 'unsubscribes_user_id_idx']
+    (comment_id) [name: 'unsubscribes_comment_id_idx']
+    (user_id, type, comment_id) [unique, name: 'unsubscribes_user_id_type_comment_id_uq']
+  }
+}
+
+Ref accounts_user_id_users_id_fk: accounts.user_id > users.id [delete: cascade]
+
+Ref sessions_user_id_users_id_fk: sessions.user_id > users.id [delete: cascade]
+
+Ref comments_user_id_users_id_fk: comments.user_id > users.id [delete: set default]
+
+Ref comments_post_id_posts_slug_fk: comments.post_id > posts.slug [delete: cascade]
+
+Ref comments_parent_id_comments_id_fk: comments.parent_id > comments.id [delete: restrict]
+
+Ref votes_user_id_users_id_fk: votes.user_id > users.id [delete: cascade]
+
+Ref votes_comment_id_comments_id_fk: votes.comment_id > comments.id [delete: cascade]
+
+Ref messages_user_id_users_id_fk: messages.user_id > users.id [delete: cascade]
+
+Ref post_likes_post_id_posts_slug_fk: post_likes.post_id > posts.slug [delete: cascade]
+
+Ref settings_user_id_users_id_fk: settings.user_id - users.id [delete: cascade]
+
+Ref unsubscribes_user_id_users_id_fk: unsubscribes.user_id > users.id [delete: cascade]
+
+Ref unsubscribes_comment_id_comments_id_fk: unsubscribes.comment_id > comments.id [delete: cascade]

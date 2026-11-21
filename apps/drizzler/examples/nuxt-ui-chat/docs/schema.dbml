@@ -1,0 +1,52 @@
+Table users {
+  id text [pk, not null]
+  email text [not null]
+  name text [not null]
+  avatar text [not null]
+  username text [not null]
+  provider text [not null]
+  provider_id text [not null]
+  created_at integer [not null]
+  indexes {
+    (provider, provider_id) [unique, name: 'users_provider_id_idx']
+  }
+}
+
+Table chats {
+  id text [pk, not null]
+  title text
+  user_id text [not null]
+  visibility text [not null]
+  created_at integer [not null]
+  indexes {
+    (user_id) [name: 'chats_user_id_idx']
+  }
+}
+
+Table messages {
+  id text [pk, not null]
+  chat_id text [not null]
+  role text [not null]
+  parts text
+  created_at integer [not null]
+  indexes {
+    (chat_id) [name: 'messages_chat_id_idx']
+  }
+}
+
+Table votes {
+  chat_id text [not null]
+  message_id text [not null]
+  is_upvoted integer [not null]
+  indexes {
+    (chat_id, message_id) [pk]
+  }
+}
+
+Ref messages_chat_id_chats_id_fk: messages.chat_id > chats.id [delete: cascade]
+
+Ref votes_chat_id_chats_id_fk: votes.chat_id > chats.id [delete: cascade]
+
+Ref votes_message_id_messages_id_fk: votes.message_id > messages.id [delete: cascade]
+
+Ref chats_user_id_users_id: chats.user_id > users.id

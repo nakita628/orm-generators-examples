@@ -1,0 +1,7 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": { "@dokploy/server/*": ["./src/*"] }
+  },
+  "include": ["src", "drizzle.config.ts"]
+}

@@ -1,0 +1,509 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum UserLanguage {
+  "af"
+  "ar"
+  "ar-dz"
+  "ast"
+  "az"
+  "bg"
+  "be"
+  "bn"
+  "br"
+  "bs"
+  "ca"
+  "ckb"
+  "cs"
+  "cy"
+  "da"
+  "de"
+  "dsb"
+  "el"
+  "en"
+  "en-au"
+  "en-gb"
+  "eo"
+  "es"
+  "es-ar"
+  "es-co"
+  "es-mx"
+  "es-ni"
+  "es-ve"
+  "et"
+  "eu"
+  "fa"
+  "fi"
+  "fr"
+  "fy"
+  "ga"
+  "gd"
+  "gl"
+  "he"
+  "hi"
+  "hr"
+  "hsb"
+  "ht"
+  "hu"
+  "hy"
+  "ia"
+  "id"
+  "ig"
+  "io"
+  "is"
+  "it"
+  "ja"
+  "ka"
+  "kab"
+  "kk"
+  "km"
+  "kn"
+  "ko"
+  "ky"
+  "lb"
+  "lt"
+  "lv"
+  "mk"
+  "ml"
+  "mn"
+  "mr"
+  "ms"
+  "my"
+  "nb"
+  "ne"
+  "nl"
+  "nn"
+  "os"
+  "pa"
+  "pl"
+  "pt"
+  "pt-br"
+  "ro"
+  "ru"
+  "sk"
+  "sl"
+  "sq"
+  "sr"
+  "sr-latn"
+  "sv"
+  "sw"
+  "ta"
+  "te"
+  "tg"
+  "th"
+  "tk"
+  "tr"
+  "tt"
+  "udm"
+  "ug"
+  "uk"
+  "ur"
+  "uz"
+  "vi"
+  "zh-hans"
+  "zh-hant"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id char(32) [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.
+
+Proxy models: Group.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table account_emailaddress {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  email varchar(254) [not null]
+  verified bool [default: false, not null]
+  primary bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'account_emailaddress_user_id_2c513194']
+    (email) [name: 'account_emailaddress_email_03be32b2']
+    (user_id, email) [unique, name: 'account_emailaddress_user_id_email_987c8728_uniq']
+    (user_id, primary) [unique, name: 'unique_primary_email', note: 'where "primary" = 1']
+    (email) [unique, name: 'unique_verified_email', note: 'where "verified" = 1']
+  }
+}
+
+Table account_emailconfirmation {
+  id integer [pk, increment]
+  email_address_id integer [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  sent datetime
+  key varchar(64) [unique, not null]
+
+  indexes {
+    (email_address_id) [name: 'account_emailconfirmation_email_address_id_5b7f8c58']
+  }
+}
+
+Table socialaccount_socialapp {
+  id integer [pk, increment]
+  provider varchar(30) [not null]
+  provider_id varchar(200) [not null]
+  name varchar(40) [not null]
+  client_id varchar(191) [not null, note: 'App ID, or consumer key']
+  secret varchar(191) [not null, note: 'API secret, client secret, or consumer secret']
+  key varchar(191) [not null, note: 'Key']
+  settings text [not null, note: 'default in Python: dict()']
+}
+
+Table socialaccount_socialaccount {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  provider varchar(200) [not null]
+  uid varchar(191) [not null]
+  last_login datetime [not null, note: 'default in Python: now()']
+  date_joined datetime [not null, note: 'default in Python: now()']
+  extra_data text [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (user_id) [name: 'socialaccount_socialaccount_user_id_8146e70c']
+    (provider, uid) [unique, name: 'socialaccount_socialaccount_provider_uid_fc810c6e_uniq']
+  }
+}
+
+Table socialaccount_socialtoken {
+  id integer [pk, increment]
+  app_id integer
+  account_id integer [not null]
+  token text [not null, note: '"oauth_token" (OAuth1) or access token (OAuth2)']
+  token_secret text [not null, note: '"oauth_token_secret" (OAuth1) or refresh token (OAuth2)']
+  expires_at datetime
+
+  indexes {
+    (app_id) [name: 'socialaccount_socialtoken_app_id_636a42d7']
+    (account_id) [name: 'socialaccount_socialtoken_account_id_951f210e']
+    (app_id, account_id) [unique, name: 'socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq']
+  }
+}
+
+Table openwisp_users_user {
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  email varchar(254) [unique]
+  bio text [not null]
+  url varchar(200) [not null]
+  company varchar(30) [not null]
+  location varchar(256) [not null]
+  phone_number varchar(128) [unique]
+  birth_date date
+  notes text [not null, note: 'notes for internal usage']
+  language UserLanguage [default: 'en-us', not null]
+  password_updated date
+  password_based_token bool [default: null, note: 'Indicates whether the last authentication token was obtained using the local password. When false, the token came from an external method (eg: SSO, SAML) and password expiration is not enforced for it. None means no token has been issued for this user since this feature was introduced.']
+  expiration_date date [note: 'If set, the account will be deactivated after this date passes and the user will no longer be able to log in.']
+
+  indexes {
+    (id, email) [name: 'user_id_email_idx']
+    (is_active, expiration_date) [name: 'user_active_expiry_idx']
+  }
+
+  Note: '''Columns from AbstractUser (abstract): id, bio, url, company, location, phone_number, birth_date, notes, language, password_updated, password_based_token, expiration_date.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table openwisp_users_organization {
+  name varchar(200) [not null, note: 'The name of the organization']
+  is_active bool [default: true, not null]
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  slug varchar(200) [unique, not null, note: 'The name in all lowercase, suitable for URL identification']
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  description text [not null]
+  email varchar(254) [not null]
+  url varchar(200) [not null]
+
+  Note: '''Columns from BaseOrganization (abstract): id, description, email, url.
+
+Columns from AbstractOrganization (abstract): slug.
+
+Columns from SharedBaseModel (abstract): created, modified.
+
+Columns from AbstractBaseOrganization (abstract): name, is_active.'''
+}
+
+Table openwisp_users_organizationuser {
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  is_admin bool [default: false, not null]
+  user_id char(32) [not null]
+  organization_id char(32) [not null]
+
+  indexes {
+    (user_id) [name: 'openwisp_users_organizationuser_user_id_a5799aa4']
+    (organization_id) [name: 'openwisp_users_organizationuser_organization_id_a1c43bbd']
+    (user_id, organization_id) [unique, name: 'openwisp_users_organizationuser_user_id_organization_id_d40e96a2_uniq']
+  }
+
+  Note: '''Columns from BaseOrganizationUser (abstract): id.
+
+Columns from AbstractOrganizationUser (abstract): is_admin.
+
+Columns from SharedBaseModel (abstract): created, modified.'''
+}
+
+Table openwisp_users_organizationowner {
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  organization_user_id char(32) [unique, not null]
+  organization_id char(32) [unique, not null]
+
+  Note: '''Columns from BaseOrganizationOwner (abstract): id.
+
+Columns from SharedBaseModel (abstract): created, modified.'''
+}
+
+Table openwisp_users_organizationinvitation {
+  id integer [pk, increment]
+  guid char(32) [not null]
+  invitee_identifier varchar(1000) [not null, note: 'The contact identifier for the invitee, email, phone number, social media handle, etc.']
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  invited_by_id char(32) [not null]
+  invitee_id char(32)
+  organization_id char(32) [not null]
+
+  indexes {
+    (invited_by_id) [name: 'openwisp_users_organizationinvitation_invited_by_id_69a7098a']
+    (invitee_id) [name: 'openwisp_users_organizationinvitation_invitee_id_d3c1b419']
+    (organization_id) [name: 'openwisp_users_organizationinvitation_organization_id_17466f8f']
+  }
+
+  Note: '''Columns from SharedBaseModel (abstract): created, modified.
+
+Columns from AbstractBaseInvitation (abstract): guid, invitee_identifier.'''
+}
+
+Table authtoken_token {
+  key varchar(40) [pk]
+  user_id char(32) [unique, not null]
+  created datetime [not null, note: 'default in Python: now()']
+
+  Note: '''The default authorization token model.
+
+Proxy models: ApiKey, TokenProxy.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref account_emailaddress_user_id_fk: account_emailaddress.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref account_emailconfirmation_email_address_id_fk: account_emailconfirmation.email_address_id > account_emailaddress.id [delete: cascade]
+
+Table socialaccount_socialapp_sites {
+  id integer [pk, increment]
+  socialapp_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (socialapp_id) [name: 'socialaccount_socialapp_sites_socialapp_id_97fb6e7d']
+    (site_id) [name: 'socialaccount_socialapp_sites_site_id_2579dee5']
+    (socialapp_id, site_id) [unique, name: 'socialaccount_socialapp_sites_socialapp_id_site_id_71a9a768_uniq']
+  }
+}
+
+Ref socialaccount_socialapp_sites_socialapp_id_fk: socialaccount_socialapp_sites.socialapp_id > socialaccount_socialapp.id [delete: cascade]
+
+Ref socialaccount_socialapp_sites_site_id_fk: socialaccount_socialapp_sites.site_id > django_site.id [delete: cascade]
+
+Ref socialaccount_socialaccount_user_id_fk: socialaccount_socialaccount.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref socialaccount_socialtoken_app_id_fk: socialaccount_socialtoken.app_id > socialaccount_socialapp.id [delete: set null]
+
+Ref socialaccount_socialtoken_account_id_fk: socialaccount_socialtoken.account_id > socialaccount_socialaccount.id [delete: cascade]
+
+Table openwisp_users_user_groups {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'openwisp_users_user_groups_user_id_2371794b']
+    (group_id) [name: 'openwisp_users_user_groups_group_id_e9ab4901']
+    (user_id, group_id) [unique, name: 'openwisp_users_user_groups_user_id_group_id_7b92002e_uniq']
+  }
+}
+
+Ref openwisp_users_user_groups_user_id_fk: openwisp_users_user_groups.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref openwisp_users_user_groups_group_id_fk: openwisp_users_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table openwisp_users_user_user_permissions {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'openwisp_users_user_user_permissions_user_id_f3610345']
+    (permission_id) [name: 'openwisp_users_user_user_permissions_permission_id_f00dc354']
+    (user_id, permission_id) [unique, name: 'openwisp_users_user_user_permissions_user_id_permission_id_24ba4ccf_uniq']
+  }
+}
+
+Ref openwisp_users_user_user_permissions_user_id_fk: openwisp_users_user_user_permissions.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref openwisp_users_user_user_permissions_permission_id_fk: openwisp_users_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref openwisp_users_organizationuser_user_id_fk: openwisp_users_organizationuser.user_id > openwisp_users_user.id [delete: cascade]
+
+Ref openwisp_users_organizationuser_organization_id_fk: openwisp_users_organizationuser.organization_id > openwisp_users_organization.id [delete: cascade]
+
+Ref openwisp_users_organizationowner_organization_user_id_fk: openwisp_users_organizationowner.organization_user_id - openwisp_users_organizationuser.id [delete: cascade]
+
+Ref openwisp_users_organizationowner_organization_id_fk: openwisp_users_organizationowner.organization_id - openwisp_users_organization.id [delete: cascade]
+
+Ref openwisp_users_organizationinvitation_invited_by_id_fk: openwisp_users_organizationinvitation.invited_by_id > openwisp_users_user.id [delete: cascade]
+
+Ref openwisp_users_organizationinvitation_invitee_id_fk: openwisp_users_organizationinvitation.invitee_id > openwisp_users_user.id [delete: cascade]
+
+Ref openwisp_users_organizationinvitation_organization_id_fk: openwisp_users_organizationinvitation.organization_id > openwisp_users_organization.id [delete: cascade]
+
+Ref authtoken_token_user_id_fk: authtoken_token.user_id - openwisp_users_user.id [delete: cascade]

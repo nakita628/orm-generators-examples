@@ -1,0 +1,201 @@
+Enum ContractKind {
+  "permanent"
+  "fixed"
+  "contractor"
+  "intern"
+}
+
+Enum EmployeeSkillLevel {
+  "1"
+  "2"
+  "3"
+}
+
+Enum LeaveRequestStatus {
+  "pending"
+  "approved"
+  "rejected"
+  "cancelled"
+}
+
+Enum ReviewRating {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Table people_department {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null]
+  parent_id bigint
+  head_id bigint [unique]
+  cost_center varchar(20) [not null]
+
+  indexes {
+    (parent_id) [name: 'people_department_parent_id_34651194']
+  }
+}
+
+Table people_position {
+  id integer [pk, increment]
+  title varchar(100) [not null]
+  department_id bigint [not null]
+  grade "smallint unsigned" [not null]
+  is_manager bool [default: false, not null]
+
+  indexes {
+    (department_id) [name: 'people_position_department_id_774daf71']
+  }
+}
+
+Table people_employee {
+  id integer [pk, increment]
+  user_id integer [unique]
+  employee_number varchar(20) [unique, not null]
+  first_name varchar(50) [not null]
+  last_name varchar(50) [not null]
+  birth_date date
+  work_email varchar(254) [unique, not null]
+  manager_id bigint
+  position_id bigint [not null]
+  hired_on date [not null]
+  left_on date
+
+  indexes {
+    (manager_id) [name: 'people_employee_manager_id_d7ba862f']
+    (position_id) [name: 'people_employee_position_id_591e0e52']
+  }
+
+  checks {
+    `NOT ("manager_id" = ("id") AND "manager_id" IS NOT NULL)` [name: 'employee_not_own_manager']
+    `("left_on" IS NULL OR "left_on" >= ("hired_on"))` [name: 'employee_left_after_hire']
+  }
+}
+
+Table people_contract {
+  id integer [pk, increment]
+  employee_id bigint [not null]
+  kind ContractKind [not null]
+  starts_on date [not null]
+  ends_on date
+  hours_per_week decimal [default: 40, not null, note: 'declared max_digits=4, decimal_places=1, which the database does not enforce']
+  document varchar(100) [not null]
+
+  indexes {
+    (employee_id) [name: 'people_contract_employee_id_ba6eccb9']
+  }
+}
+
+Table people_salary {
+  id integer [pk, increment]
+  employee_id bigint [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [default: 'EUR', not null]
+  effective_from date [not null]
+  reason varchar(200) [not null]
+
+  indexes {
+    (employee_id) [name: 'people_salary_employee_id_c29f2776']
+    (employee_id, effective_from) [unique, name: 'people_salary_employee_id_effective_from_04f18609_uniq']
+  }
+}
+
+Table people_skill {
+  id integer [pk, increment]
+  name varchar(50) [unique, not null]
+}
+
+Table people_employeeskill {
+  id integer [pk, increment]
+  employee_id bigint [not null]
+  skill_id bigint [not null]
+  level EmployeeSkillLevel [not null]
+
+  indexes {
+    (employee_id) [name: 'people_employeeskill_employee_id_b64ea790']
+    (skill_id) [name: 'people_employeeskill_skill_id_6a4b5e8a']
+  }
+}
+
+Table people_leavetype {
+  id integer [pk, increment]
+  name varchar(50) [unique, not null]
+  days_per_year decimal [not null, note: 'declared max_digits=4, decimal_places=1, which the database does not enforce']
+  is_paid bool [default: true, not null]
+}
+
+Table people_leaverequest {
+  id integer [pk, increment]
+  employee_id bigint [not null]
+  leave_type_id bigint [not null]
+  starts_on date [not null]
+  ends_on date [not null]
+  half_day bool [default: false, not null]
+  status LeaveRequestStatus [default: 'pending', not null]
+  approver_id bigint
+  note text [not null]
+
+  indexes {
+    (employee_id) [name: 'people_leaverequest_employee_id_c860fa77']
+    (leave_type_id) [name: 'people_leaverequest_leave_type_id_eb33cce4']
+    (approver_id) [name: 'people_leaverequest_approver_id_12209e74']
+  }
+
+  checks {
+    `"ends_on" >= ("starts_on")` [name: 'leave_ends_after_start']
+  }
+}
+
+Table people_review {
+  id integer [pk, increment]
+  employee_id bigint [not null]
+  reviewer_id bigint
+  period varchar(7) [not null, note: 'e.g. 2026-H1']
+  rating ReviewRating [not null]
+  summary text [not null]
+  goals text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (employee_id) [name: 'people_review_employee_id_2e53470c']
+    (reviewer_id) [name: 'people_review_reviewer_id_dfc1b3a1']
+    (employee_id, period) [unique, name: 'people_review_employee_id_period_5db03834_uniq']
+  }
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref people_department_parent_id_fk: people_department.parent_id > people_department.id [delete: restrict]
+
+Ref people_department_head_id_fk: people_department.head_id - people_employee.id [delete: set null]
+
+Ref people_position_department_id_fk: people_position.department_id > people_department.id [delete: restrict]
+
+Ref people_employee_user_id_fk: people_employee.user_id - auth_user.id [delete: set null]
+
+Ref people_employee_manager_id_fk: people_employee.manager_id > people_employee.id [delete: set null]
+
+Ref people_employee_position_id_fk: people_employee.position_id > people_position.id [delete: restrict]
+
+Ref people_contract_employee_id_fk: people_contract.employee_id > people_employee.id [delete: cascade]
+
+Ref people_salary_employee_id_fk: people_salary.employee_id > people_employee.id [delete: cascade]
+
+Ref people_employeeskill_employee_id_fk: people_employeeskill.employee_id > people_employee.id [delete: cascade]
+
+Ref people_employeeskill_skill_id_fk: people_employeeskill.skill_id > people_skill.id [delete: cascade]
+
+Ref people_leaverequest_employee_id_fk: people_leaverequest.employee_id > people_employee.id [delete: cascade]
+
+Ref people_leaverequest_leave_type_id_fk: people_leaverequest.leave_type_id > people_leavetype.id [delete: restrict]
+
+Ref people_leaverequest_approver_id_fk: people_leaverequest.approver_id > people_employee.id [delete: set null]
+
+Ref people_review_employee_id_fk: people_review.employee_id > people_employee.id [delete: cascade]
+
+Ref people_review_reviewer_id_fk: people_review.reviewer_id > people_employee.id [delete: set null]

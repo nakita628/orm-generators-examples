@@ -1,0 +1,1493 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum SolarScheduleEvent {
+  "dawn_astronomical"
+  "dawn_civil"
+  "dawn_nautical"
+  "dusk_astronomical"
+  "dusk_civil"
+  "dusk_nautical"
+  "solar_noon"
+  "sunrise"
+  "sunset"
+}
+
+Enum IntervalSchedulePeriod {
+  "days"
+  "hours"
+  "minutes"
+  "seconds"
+  "microseconds"
+}
+
+Enum CrontabScheduleTimezone {
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Asmara"
+  "Africa/Asmera"
+  "Africa/Bamako"
+  "Africa/Bangui"
+  "Africa/Banjul"
+  "Africa/Bissau"
+  "Africa/Blantyre"
+  "Africa/Brazzaville"
+  "Africa/Bujumbura"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Ceuta"
+  "Africa/Conakry"
+  "Africa/Dakar"
+  "Africa/Dar_es_Salaam"
+  "Africa/Djibouti"
+  "Africa/Douala"
+  "Africa/El_Aaiun"
+  "Africa/Freetown"
+  "Africa/Gaborone"
+  "Africa/Harare"
+  "Africa/Johannesburg"
+  "Africa/Juba"
+  "Africa/Kampala"
+  "Africa/Khartoum"
+  "Africa/Kigali"
+  "Africa/Kinshasa"
+  "Africa/Lagos"
+  "Africa/Libreville"
+  "Africa/Lome"
+  "Africa/Luanda"
+  "Africa/Lubumbashi"
+  "Africa/Lusaka"
+  "Africa/Malabo"
+  "Africa/Maputo"
+  "Africa/Maseru"
+  "Africa/Mbabane"
+  "Africa/Mogadishu"
+  "Africa/Monrovia"
+  "Africa/Nairobi"
+  "Africa/Ndjamena"
+  "Africa/Niamey"
+  "Africa/Nouakchott"
+  "Africa/Ouagadougou"
+  "Africa/Porto-Novo"
+  "Africa/Sao_Tome"
+  "Africa/Timbuktu"
+  "Africa/Tripoli"
+  "Africa/Tunis"
+  "Africa/Windhoek"
+  "America/Adak"
+  "America/Anchorage"
+  "America/Anguilla"
+  "America/Antigua"
+  "America/Araguaina"
+  "America/Argentina/Buenos_Aires"
+  "America/Argentina/Catamarca"
+  "America/Argentina/ComodRivadavia"
+  "America/Argentina/Cordoba"
+  "America/Argentina/Jujuy"
+  "America/Argentina/La_Rioja"
+  "America/Argentina/Mendoza"
+  "America/Argentina/Rio_Gallegos"
+  "America/Argentina/Salta"
+  "America/Argentina/San_Juan"
+  "America/Argentina/San_Luis"
+  "America/Argentina/Tucuman"
+  "America/Argentina/Ushuaia"
+  "America/Aruba"
+  "America/Asuncion"
+  "America/Atikokan"
+  "America/Atka"
+  "America/Bahia"
+  "America/Bahia_Banderas"
+  "America/Barbados"
+  "America/Belem"
+  "America/Belize"
+  "America/Blanc-Sablon"
+  "America/Boa_Vista"
+  "America/Bogota"
+  "America/Boise"
+  "America/Buenos_Aires"
+  "America/Cambridge_Bay"
+  "America/Campo_Grande"
+  "America/Cancun"
+  "America/Caracas"
+  "America/Catamarca"
+  "America/Cayenne"
+  "America/Cayman"
+  "America/Chicago"
+  "America/Chihuahua"
+  "America/Ciudad_Juarez"
+  "America/Coral_Harbour"
+  "America/Cordoba"
+  "America/Costa_Rica"
+  "America/Coyhaique"
+  "America/Creston"
+  "America/Cuiaba"
+  "America/Curacao"
+  "America/Danmarkshavn"
+  "America/Dawson"
+  "America/Dawson_Creek"
+  "America/Denver"
+  "America/Detroit"
+  "America/Dominica"
+  "America/Edmonton"
+  "America/Eirunepe"
+  "America/El_Salvador"
+  "America/Ensenada"
+  "America/Fort_Nelson"
+  "America/Fort_Wayne"
+  "America/Fortaleza"
+  "America/Glace_Bay"
+  "America/Godthab"
+  "America/Goose_Bay"
+  "America/Grand_Turk"
+  "America/Grenada"
+  "America/Guadeloupe"
+  "America/Guatemala"
+  "America/Guayaquil"
+  "America/Guyana"
+  "America/Halifax"
+  "America/Havana"
+  "America/Hermosillo"
+  "America/Indiana/Indianapolis"
+  "America/Indiana/Knox"
+  "America/Indiana/Marengo"
+  "America/Indiana/Petersburg"
+  "America/Indiana/Tell_City"
+  "America/Indiana/Vevay"
+  "America/Indiana/Vincennes"
+  "America/Indiana/Winamac"
+  "America/Indianapolis"
+  "America/Inuvik"
+  "America/Iqaluit"
+  "America/Jamaica"
+  "America/Jujuy"
+  "America/Juneau"
+  "America/Kentucky/Louisville"
+  "America/Kentucky/Monticello"
+  "America/Knox_IN"
+  "America/Kralendijk"
+  "America/La_Paz"
+  "America/Lima"
+  "America/Los_Angeles"
+  "America/Louisville"
+  "America/Lower_Princes"
+  "America/Maceio"
+  "America/Managua"
+  "America/Manaus"
+  "America/Marigot"
+  "America/Martinique"
+  "America/Matamoros"
+  "America/Mazatlan"
+  "America/Mendoza"
+  "America/Menominee"
+  "America/Merida"
+  "America/Metlakatla"
+  "America/Mexico_City"
+  "America/Miquelon"
+  "America/Moncton"
+  "America/Monterrey"
+  "America/Montevideo"
+  "America/Montreal"
+  "America/Montserrat"
+  "America/Nassau"
+  "America/New_York"
+  "America/Nipigon"
+  "America/Nome"
+  "America/Noronha"
+  "America/North_Dakota/Beulah"
+  "America/North_Dakota/Center"
+  "America/North_Dakota/New_Salem"
+  "America/Nuuk"
+  "America/Ojinaga"
+  "America/Panama"
+  "America/Pangnirtung"
+  "America/Paramaribo"
+  "America/Phoenix"
+  "America/Port-au-Prince"
+  "America/Port_of_Spain"
+  "America/Porto_Acre"
+  "America/Porto_Velho"
+  "America/Puerto_Rico"
+  "America/Punta_Arenas"
+  "America/Rainy_River"
+  "America/Rankin_Inlet"
+  "America/Recife"
+  "America/Regina"
+  "America/Resolute"
+  "America/Rio_Branco"
+  "America/Rosario"
+  "America/Santa_Isabel"
+  "America/Santarem"
+  "America/Santiago"
+  "America/Santo_Domingo"
+  "America/Sao_Paulo"
+  "America/Scoresbysund"
+  "America/Shiprock"
+  "America/Sitka"
+  "America/St_Barthelemy"
+  "America/St_Johns"
+  "America/St_Kitts"
+  "America/St_Lucia"
+  "America/St_Thomas"
+  "America/St_Vincent"
+  "America/Swift_Current"
+  "America/Tegucigalpa"
+  "America/Thule"
+  "America/Thunder_Bay"
+  "America/Tijuana"
+  "America/Toronto"
+  "America/Tortola"
+  "America/Vancouver"
+  "America/Virgin"
+  "America/Whitehorse"
+  "America/Winnipeg"
+  "America/Yakutat"
+  "America/Yellowknife"
+  "Antarctica/Casey"
+  "Antarctica/Davis"
+  "Antarctica/DumontDUrville"
+  "Antarctica/Macquarie"
+  "Antarctica/Mawson"
+  "Antarctica/McMurdo"
+  "Antarctica/Palmer"
+  "Antarctica/Rothera"
+  "Antarctica/South_Pole"
+  "Antarctica/Syowa"
+  "Antarctica/Troll"
+  "Antarctica/Vostok"
+  "Arctic/Longyearbyen"
+  "Asia/Aden"
+  "Asia/Almaty"
+  "Asia/Amman"
+  "Asia/Anadyr"
+  "Asia/Aqtau"
+  "Asia/Aqtobe"
+  "Asia/Ashgabat"
+  "Asia/Ashkhabad"
+  "Asia/Atyrau"
+  "Asia/Baghdad"
+  "Asia/Bahrain"
+  "Asia/Baku"
+  "Asia/Bangkok"
+  "Asia/Barnaul"
+  "Asia/Beirut"
+  "Asia/Bishkek"
+  "Asia/Brunei"
+  "Asia/Calcutta"
+  "Asia/Chita"
+  "Asia/Choibalsan"
+  "Asia/Chongqing"
+  "Asia/Chungking"
+  "Asia/Colombo"
+  "Asia/Dacca"
+  "Asia/Damascus"
+  "Asia/Dhaka"
+  "Asia/Dili"
+  "Asia/Dubai"
+  "Asia/Dushanbe"
+  "Asia/Famagusta"
+  "Asia/Gaza"
+  "Asia/Harbin"
+  "Asia/Hebron"
+  "Asia/Ho_Chi_Minh"
+  "Asia/Hong_Kong"
+  "Asia/Hovd"
+  "Asia/Irkutsk"
+  "Asia/Istanbul"
+  "Asia/Jakarta"
+  "Asia/Jayapura"
+  "Asia/Jerusalem"
+  "Asia/Kabul"
+  "Asia/Kamchatka"
+  "Asia/Karachi"
+  "Asia/Kashgar"
+  "Asia/Kathmandu"
+  "Asia/Katmandu"
+  "Asia/Khandyga"
+  "Asia/Kolkata"
+  "Asia/Krasnoyarsk"
+  "Asia/Kuala_Lumpur"
+  "Asia/Kuching"
+  "Asia/Kuwait"
+  "Asia/Macao"
+  "Asia/Macau"
+  "Asia/Magadan"
+  "Asia/Makassar"
+  "Asia/Manila"
+  "Asia/Muscat"
+  "Asia/Nicosia"
+  "Asia/Novokuznetsk"
+  "Asia/Novosibirsk"
+  "Asia/Omsk"
+  "Asia/Oral"
+  "Asia/Phnom_Penh"
+  "Asia/Pontianak"
+  "Asia/Pyongyang"
+  "Asia/Qatar"
+  "Asia/Qostanay"
+  "Asia/Qyzylorda"
+  "Asia/Rangoon"
+  "Asia/Riyadh"
+  "Asia/Saigon"
+  "Asia/Sakhalin"
+  "Asia/Samarkand"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Srednekolymsk"
+  "Asia/Taipei"
+  "Asia/Tashkent"
+  "Asia/Tbilisi"
+  "Asia/Tehran"
+  "Asia/Tel_Aviv"
+  "Asia/Thimbu"
+  "Asia/Thimphu"
+  "Asia/Tokyo"
+  "Asia/Tomsk"
+  "Asia/Ujung_Pandang"
+  "Asia/Ulaanbaatar"
+  "Asia/Ulan_Bator"
+  "Asia/Urumqi"
+  "Asia/Ust-Nera"
+  "Asia/Vientiane"
+  "Asia/Vladivostok"
+  "Asia/Yakutsk"
+  "Asia/Yangon"
+  "Asia/Yekaterinburg"
+  "Asia/Yerevan"
+  "Atlantic/Azores"
+  "Atlantic/Bermuda"
+  "Atlantic/Canary"
+  "Atlantic/Cape_Verde"
+  "Atlantic/Faeroe"
+  "Atlantic/Faroe"
+  "Atlantic/Jan_Mayen"
+  "Atlantic/Madeira"
+  "Atlantic/Reykjavik"
+  "Atlantic/South_Georgia"
+  "Atlantic/St_Helena"
+  "Atlantic/Stanley"
+  "Australia/ACT"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Broken_Hill"
+  "Australia/Canberra"
+  "Australia/Currie"
+  "Australia/Darwin"
+  "Australia/Eucla"
+  "Australia/Hobart"
+  "Australia/LHI"
+  "Australia/Lindeman"
+  "Australia/Lord_Howe"
+  "Australia/Melbourne"
+  "Australia/NSW"
+  "Australia/North"
+  "Australia/Perth"
+  "Australia/Queensland"
+  "Australia/South"
+  "Australia/Sydney"
+  "Australia/Tasmania"
+  "Australia/Victoria"
+  "Australia/West"
+  "Australia/Yancowinna"
+  "Brazil/Acre"
+  "Brazil/DeNoronha"
+  "Brazil/East"
+  "Brazil/West"
+  "CET"
+  "CST6CDT"
+  "Canada/Atlantic"
+  "Canada/Central"
+  "Canada/Eastern"
+  "Canada/Mountain"
+  "Canada/Newfoundland"
+  "Canada/Pacific"
+  "Canada/Saskatchewan"
+  "Canada/Yukon"
+  "Chile/Continental"
+  "Chile/EasterIsland"
+  "Cuba"
+  "EET"
+  "EST"
+  "EST5EDT"
+  "Egypt"
+  "Eire"
+  "Etc/GMT"
+  "Etc/GMT-0"
+  "Etc/GMT-1"
+  "Etc/GMT-10"
+  "Etc/GMT-11"
+  "Etc/GMT-12"
+  "Etc/GMT-13"
+  "Etc/GMT-14"
+  "Etc/GMT-2"
+  "Etc/GMT-3"
+  "Etc/GMT-4"
+  "Etc/GMT-5"
+  "Etc/GMT-6"
+  "Etc/GMT-7"
+  "Etc/GMT-8"
+  "Etc/GMT-9"
+  "Etc/GMT+0"
+  "Etc/GMT+1"
+  "Etc/GMT+10"
+  "Etc/GMT+11"
+  "Etc/GMT+12"
+  "Etc/GMT+2"
+  "Etc/GMT+3"
+  "Etc/GMT+4"
+  "Etc/GMT+5"
+  "Etc/GMT+6"
+  "Etc/GMT+7"
+  "Etc/GMT+8"
+  "Etc/GMT+9"
+  "Etc/GMT0"
+  "Etc/Greenwich"
+  "Etc/UCT"
+  "Etc/UTC"
+  "Etc/Universal"
+  "Etc/Zulu"
+  "Europe/Amsterdam"
+  "Europe/Andorra"
+  "Europe/Astrakhan"
+  "Europe/Athens"
+  "Europe/Belfast"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Bratislava"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Busingen"
+  "Europe/Chisinau"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Gibraltar"
+  "Europe/Guernsey"
+  "Europe/Helsinki"
+  "Europe/Isle_of_Man"
+  "Europe/Istanbul"
+  "Europe/Jersey"
+  "Europe/Kaliningrad"
+  "Europe/Kiev"
+  "Europe/Kirov"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Malta"
+  "Europe/Mariehamn"
+  "Europe/Minsk"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Nicosia"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Podgorica"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Samara"
+  "Europe/San_Marino"
+  "Europe/Sarajevo"
+  "Europe/Saratov"
+  "Europe/Simferopol"
+  "Europe/Skopje"
+  "Europe/Sofia"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Tirane"
+  "Europe/Tiraspol"
+  "Europe/Ulyanovsk"
+  "Europe/Uzhgorod"
+  "Europe/Vaduz"
+  "Europe/Vatican"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Volgograd"
+  "Europe/Warsaw"
+  "Europe/Zagreb"
+  "Europe/Zaporozhye"
+  "Europe/Zurich"
+  "GB"
+  "GB-Eire"
+  "GMT"
+  "GMT-0"
+  "GMT+0"
+  "GMT0"
+  "Greenwich"
+  "HST"
+  "Hongkong"
+  "Iceland"
+  "Indian/Antananarivo"
+  "Indian/Chagos"
+  "Indian/Christmas"
+  "Indian/Cocos"
+  "Indian/Comoro"
+  "Indian/Kerguelen"
+  "Indian/Mahe"
+  "Indian/Maldives"
+  "Indian/Mauritius"
+  "Indian/Mayotte"
+  "Indian/Reunion"
+  "Iran"
+  "Israel"
+  "Jamaica"
+  "Japan"
+  "Kwajalein"
+  "Libya"
+  "MET"
+  "MST"
+  "MST7MDT"
+  "Mexico/BajaNorte"
+  "Mexico/BajaSur"
+  "Mexico/General"
+  "NZ"
+  "NZ-CHAT"
+  "Navajo"
+  "PRC"
+  "PST8PDT"
+  "Pacific/Apia"
+  "Pacific/Auckland"
+  "Pacific/Bougainville"
+  "Pacific/Chatham"
+  "Pacific/Chuuk"
+  "Pacific/Easter"
+  "Pacific/Efate"
+  "Pacific/Enderbury"
+  "Pacific/Fakaofo"
+  "Pacific/Fiji"
+  "Pacific/Funafuti"
+  "Pacific/Galapagos"
+  "Pacific/Gambier"
+  "Pacific/Guadalcanal"
+  "Pacific/Guam"
+  "Pacific/Honolulu"
+  "Pacific/Johnston"
+  "Pacific/Kanton"
+  "Pacific/Kiritimati"
+  "Pacific/Kosrae"
+  "Pacific/Kwajalein"
+  "Pacific/Majuro"
+  "Pacific/Marquesas"
+  "Pacific/Midway"
+  "Pacific/Nauru"
+  "Pacific/Niue"
+  "Pacific/Norfolk"
+  "Pacific/Noumea"
+  "Pacific/Pago_Pago"
+  "Pacific/Palau"
+  "Pacific/Pitcairn"
+  "Pacific/Pohnpei"
+  "Pacific/Ponape"
+  "Pacific/Port_Moresby"
+  "Pacific/Rarotonga"
+  "Pacific/Saipan"
+  "Pacific/Samoa"
+  "Pacific/Tahiti"
+  "Pacific/Tarawa"
+  "Pacific/Tongatapu"
+  "Pacific/Truk"
+  "Pacific/Wake"
+  "Pacific/Wallis"
+  "Pacific/Yap"
+  "Poland"
+  "Portugal"
+  "ROC"
+  "ROK"
+  "Singapore"
+  "Turkey"
+  "UCT"
+  "US/Alaska"
+  "US/Aleutian"
+  "US/Arizona"
+  "US/Central"
+  "US/East-Indiana"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Indiana-Starke"
+  "US/Michigan"
+  "US/Mountain"
+  "US/Pacific"
+  "US/Samoa"
+  "UTC"
+  "Universal"
+  "W-SU"
+  "WET"
+  "Zulu"
+  "localtime"
+}
+
+Enum TokenTokenType {
+  "character"
+  "corporation"
+}
+
+Enum UserProfileLanguage {
+  "en"
+  "cs-cz"
+  "de"
+  "es"
+  "it-it"
+  "ja"
+  "ko-kr"
+  "fr-fr"
+  "ru"
+  "nl-nl"
+  "pl-pl"
+  "uk"
+  "zh-hans"
+}
+
+Enum EveCharacterGender {
+  "Male"
+  "Female"
+}
+
+Enum RequestLogType {
+  "join"
+  "leave"
+  "remove"
+}
+
+Enum RequestLogAction {
+  "accept"
+  "reject"
+  "remove"
+}
+
+Enum NotificationLevel {
+  "danger"
+  "warning"
+  "info"
+  "success"
+}
+
+Enum AnalyticsTokensAnalyticsType {
+  "GA-U"
+  "GA-V4"
+}
+
+Enum MenuItemPermissionMode {
+  "any"
+  "all"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.
+
+Proxy models: Permission.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.
+
+Proxy models: Group.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Proxy models: User.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_celery_beat_solarschedule {
+  id integer [pk, increment]
+  event SolarScheduleEvent [not null, note: 'The type of solar event when the job should run']
+  latitude decimal [not null, note: 'Run the task when the event happens at this latitude. declared max_digits=9, decimal_places=6, which the database does not enforce']
+  longitude decimal [not null, note: 'Run the task when the event happens at this longitude. declared max_digits=9, decimal_places=6, which the database does not enforce']
+
+  indexes {
+    (event, latitude, longitude) [unique, name: 'django_celery_beat_solarschedule_event_latitude_longitude_ba64999a_uniq']
+  }
+
+  Note: '''Schedule following astronomical patterns.
+
+Example: to run every sunrise in New York City:
+
+>>> event=\'sunrise\', latitude=40.7128, longitude=74.0060'''
+}
+
+Table django_celery_beat_intervalschedule {
+  id integer [pk, increment]
+  every integer [not null, note: 'Number of interval periods to wait before running the task again']
+  period IntervalSchedulePeriod [not null, note: 'The type of period between task runs (Example: days)']
+
+  Note: '''Schedule executing on a regular interval.
+
+Example: execute every 2 days:
+
+>>> every=2, period=DAYS'''
+}
+
+Table django_celery_beat_clockedschedule {
+  id integer [pk, increment]
+  clocked_time datetime [not null, note: 'Run the task at clocked time']
+
+  Note: '''clocked schedule.'''
+}
+
+Table django_celery_beat_crontabschedule {
+  id integer [pk, increment]
+  minute varchar(240) [default: '*', not null, note: 'Cron Minutes to Run. Use "*" for "all". (Example: "0,30")']
+  hour varchar(96) [default: '*', not null, note: 'Cron Hours to Run. Use "*" for "all". (Example: "8,20")']
+  day_of_month varchar(124) [default: '*', not null, note: 'Cron Days Of The Month to Run. Use "*" for "all". (Example: "1,15")']
+  month_of_year varchar(64) [default: '*', not null, note: 'Cron Months (1-12) Of The Year to Run. Use "*" for "all". (Example: "1,12")']
+  day_of_week varchar(64) [default: '*', not null, note: 'Cron Days Of The Week to Run. Use "*" for "all", Sunday is 0 or 7, Monday is 1. (Example: "0,5")']
+  timezone CrontabScheduleTimezone [not null, note: 'Timezone to Run the Cron Schedule on. Default is UTC.. default in Python: crontab_schedule_celery_timezone()']
+
+  Note: '''Timezone Aware Crontab-like schedule.
+
+Example:  Run every hour at 0 minutes for days of month 10-15:
+
+>>> minute="0", hour="*", day_of_week="*",
+... day_of_month="10-15", month_of_year="*"'''
+}
+
+Table django_celery_beat_periodictasks {
+  ident smallint [pk, default: 1]
+  last_update datetime [not null]
+
+  Note: '''Helper table for tracking updates to periodic tasks.
+
+This stores a single row with ``ident=1``. ``last_update`` is updated via
+signals whenever anything changes in the :class:`~.PeriodicTask` model.
+Basically this acts like a DB data audit trigger.
+Doing this so we also track deletions, and not just insert/update.'''
+}
+
+Table django_celery_beat_periodictask {
+  id integer [pk, increment]
+  name varchar(200) [unique, not null, note: 'Short Description For This Task']
+  task varchar(200) [not null, note: 'The Name of the Celery Task that Should be Run.  (Example: "proj.tasks.import_contacts")']
+  interval_id integer [note: 'Interval Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  crontab_id integer [note: 'Crontab Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  solar_id integer [note: 'Solar Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  clocked_id integer [note: 'Clocked Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  args text [default: '[]', not null, note: 'JSON encoded positional arguments (Example: ["arg1", "arg2"])']
+  kwargs text [default: '{}', not null, note: 'JSON encoded keyword arguments (Example: {"argument": "value"})']
+  queue varchar(200) [default: null, note: 'Queue defined in CELERY_TASK_QUEUES. Leave None for default queuing.']
+  exchange varchar(200) [default: null, note: 'Override Exchange for low-level AMQP routing']
+  routing_key varchar(200) [default: null, note: 'Override Routing Key for low-level AMQP routing']
+  headers text [default: '{}', not null, note: 'JSON encoded message headers for the AMQP message.']
+  priority "integer unsigned" [default: null, note: 'Priority Number between 0 and 255. Supported by: RabbitMQ, Redis (priority reversed, 0 is highest).']
+  expires datetime [note: 'Datetime after which the schedule will no longer trigger the task to run']
+  expire_seconds "integer unsigned" [note: 'Timedelta with seconds which the schedule will no longer trigger the task to run']
+  one_off bool [default: false, not null, note: 'If True, the schedule will only run the task a single time']
+  start_time datetime [note: 'Datetime when the schedule should begin triggering the task to run']
+  enabled bool [default: true, not null, note: 'Set to False to disable the schedule']
+  last_run_at datetime [note: 'Datetime that the schedule last triggered the task to run. Reset to None if enabled is set to False.']
+  total_run_count "integer unsigned" [default: 0, not null, note: 'Running count of how many times the schedule has triggered the task']
+  date_changed datetime [not null, note: 'Datetime that this PeriodicTask was last modified. default in Python: now()']
+  description text [not null, note: 'Detailed description about the details of this Periodic Task']
+
+  indexes {
+    (interval_id) [name: 'django_celery_beat_periodictask_interval_id_a8ca27da']
+    (crontab_id) [name: 'django_celery_beat_periodictask_crontab_id_d3cba168']
+    (solar_id) [name: 'django_celery_beat_periodictask_solar_id_a87ce72c']
+    (clocked_id) [name: 'django_celery_beat_periodictask_clocked_id_47a69f82']
+  }
+
+  Note: '''Model representing a periodic task.'''
+}
+
+Table esi_scope {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null, note: 'The official EVE name for the scope.']
+  help_text text [not null, note: 'The official EVE description of the scope.']
+
+  Note: '''Represents an access scope granted by SSO.'''
+}
+
+Table esi_token {
+  id integer [pk, increment]
+  created datetime [not null, note: 'default in Python: now()']
+  access_token text [not null, note: 'The access token granted by SSO.']
+  refresh_token text [note: 'A re-usable token to generate new access tokens upon expiry.']
+  user_id integer [note: 'The user to whom this token belongs.']
+  character_id integer [not null, note: 'The ID of the EVE character who authenticated by SSO.']
+  character_name varchar(100) [not null, note: 'The name of the EVE character who authenticated by SSO.']
+  token_type TokenTokenType [default: 'character', not null, note: 'The applicable range of the token.']
+  character_owner_hash varchar(254) [not null, note: 'The unique string identifying this character and its owning EVE account. Changes if the owning account changes.']
+  sso_version integer [default: 2, not null, note: 'EVE SSO Version.']
+
+  indexes {
+    (user_id) [name: 'esi_token_user_id_d21fe2e5']
+    (character_id) [name: 'esi_token_character_id_9ab64ee5']
+    (character_name) [name: 'esi_token_character_name_0a583806']
+    (character_owner_hash) [name: 'esi_token_character_owner_hash_ad2c27b1']
+  }
+
+  Note: '''EVE Stable Interface Access Token
+
+Contains information about the authenticating character
+and scopes granted to this token.
+Contains the access token required for ESI authentication as well as refreshing.'''
+}
+
+Table esi_callbackredirect {
+  id integer [pk, increment]
+  session_key varchar(254) [unique, not null, note: 'Session key identifying the session this redirect was created for.']
+  url text [default: '/', not null, note: 'The internal URL to redirect this callback towards.']
+  state varchar(128) [not null, note: 'OAuth2 state string representing this session.']
+  created datetime [not null, note: 'default in Python: now()']
+  token_id integer [note: 'Token generated by a completed code exchange from callback processing.']
+
+  indexes {
+    (token_id) [name: 'esi_callbackredirect_token_id_f9bd7843']
+  }
+
+  Note: '''Records the intended destination for the SSO callback.
+Used to internally redirect SSO callbacks.'''
+}
+
+Table admin_status_applicationannouncement {
+  id integer [pk, increment]
+  application_name varchar(50) [not null, note: 'Name of the application that issued the announcement']
+  announcement_number integer [not null, note: 'Issue number on the notification source']
+  announcement_text text [not null, note: 'Issue title text displayed on the dashboard']
+  announcement_url text [not null]
+  announcement_hash varchar(64) [unique, default: null, not null, note: 'hash of an announcement.']
+  hide_announcement bool [default: false, not null, note: 'Set to true if the announcement should not be displayed on the dashboard']
+
+  indexes {
+    (application_name, announcement_number) [unique, name: 'functional_pk_applicationissuenumber']
+  }
+
+  Note: '''Announcement originating from an application'''
+}
+
+Table admin_status_softwareversion {
+  id integer [pk, increment]
+  latest_stable_version varchar(20) [not null, note: 'Latest stable version of Alliance Auth']
+  latest_development_version varchar(20) [not null, note: 'Latest development version of Alliance Auth']
+
+  Note: '''Model to store the current version of the software.'''
+}
+
+Table authentication_state {
+  id integer [pk, increment]
+  name varchar(32) [unique, not null]
+  priority integer [unique, not null, note: 'Users get assigned the state with the highest priority available to them.']
+  public bool [default: false, not null, note: 'Make this state available to any character.']
+}
+
+Table authentication_userprofile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  main_character_id integer [unique]
+  state_id integer [not null, note: 'default in Python: get_guest_state_pk()']
+  language UserProfileLanguage [default: '', not null]
+  night_mode bool
+  theme varchar(200) [note: 'Bootstrap 5 Themes from https://bootswatch.com/ or Community Apps']
+  minimize_sidebar bool [default: false, not null, note: 'Keep the sidebar menu minimized']
+
+  indexes {
+    (state_id) [name: 'authentication_userprofile_state_id_58242e4a']
+  }
+}
+
+Table authentication_characterownership {
+  id integer [pk, increment]
+  character_id integer [unique, not null]
+  owner_hash varchar(28) [unique, not null]
+  user_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'authentication_characterownership_user_id_8c48225e']
+  }
+}
+
+Table authentication_ownershiprecord {
+  id integer [pk, increment]
+  character_id integer [not null]
+  owner_hash varchar(28) [not null]
+  user_id integer [not null]
+  created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (character_id) [name: 'authentication_ownershiprecord_character_id_ebc8f5f4']
+    (owner_hash) [name: 'authentication_ownershiprecord_owner_hash_9db96660']
+    (user_id) [name: 'authentication_ownershiprecord_user_id_1f926981']
+  }
+}
+
+Table services_nameformatconfig {
+  id integer [pk, increment]
+  service_name varchar(100) [not null]
+  default_to_username bool [default: true, not null, note: 'If a user has no main_character, default to using their Auth username instead.']
+  format varchar(100) [not null, note: 'For information on constructing name formats please see the official documentation, topic "Services Name Formats".']
+}
+
+Table eveonline_evefactioninfo {
+  id integer [pk, increment]
+  faction_id "integer unsigned" [unique, not null]
+  corporation_id "integer unsigned" [unique]
+  description text [default: '', not null]
+  militia_corporation_id "integer unsigned" [unique]
+  faction_name varchar(254) [unique, not null]
+  size_factor "smallint unsigned" [default: null]
+  solar_system_id "integer unsigned" [default: null]
+  station_count "integer unsigned" [default: null]
+  station_system_count "integer unsigned" [default: null]
+  last_updated datetime [default: null, note: 'Last time the faction\'s details were updated, (GetUniverseFactions), 24 hr Cache']
+
+  indexes {
+    (corporation_id) [name: 'eveonline_e_corpora_213c26_idx']
+    (militia_corporation_id) [name: 'eveonline_e_militia_a5231e_idx']
+    (faction_name) [name: 'eveonline_e_faction_f02be0_idx']
+  }
+
+  Note: '''A faction in Eve Online.'''
+}
+
+Table eveonline_eveallianceinfo {
+  id integer [pk, increment]
+  alliance_id "integer unsigned" [unique, not null]
+  creator_corporation_id "integer unsigned" [default: null, note: 'Alliance\'s creator corporation ID']
+  creator_id "integer unsigned" [default: null, note: 'Alliance\'s creator ID']
+  date_founded date [default: null, note: 'Alliance\'s founding date']
+  executor_corp_id "integer unsigned" [default: null, note: 'Alliance\'s executor corporation ID']
+  faction_id integer [default: null, note: 'Alliance\'s faction ID']
+  alliance_name varchar(254) [not null, note: 'Alliance\'s name']
+  alliance_ticker varchar(254) [not null, note: 'Alliance\'s ticker']
+  last_updated datetime [default: null, note: 'Last time the alliance\'s details were updated, (GetAlliancesAllianceId), 1 hr Cache']
+
+  indexes {
+    (faction_id) [name: 'eveonline_eveallianceinfo_faction_id_f7b1fbad']
+    (creator_corporation_id) [name: 'eveonline_e_creator_323b45_idx']
+    (alliance_name) [name: 'eveonline_e_allianc_d2b09d_idx']
+    (executor_corp_id) [name: 'eveonline_e_executo_7f3280_idx']
+  }
+
+  Note: '''An alliance in Eve Online.'''
+}
+
+Table eveonline_evecorporationinfo {
+  id integer [pk, increment]
+  corporation_id "integer unsigned" [unique, not null]
+  alliance_id integer
+  ceo_id "integer unsigned" [default: null, note: 'Corporation\'s CEO ID']
+  creator_id "integer unsigned" [default: null, note: 'Corporation\'s creator ID']
+  date_founded date [default: null, note: 'Corporation\'s founding date']
+  description text [default: '', not null, note: 'Corporation\'s description']
+  faction_id integer
+  home_station_id "integer unsigned" [default: null, note: 'Corporation\'s home station ID']
+  member_count "integer unsigned" [default: null, note: 'Corporation\'s member count']
+  corporation_name varchar(254) [not null, note: 'Corporation\'s name']
+  shares "bigint unsigned" [default: null, note: 'Corporation\'s shares']
+  tax_rate real [default: null, note: 'Corporation\'s tax rate']
+  corporation_ticker varchar(254) [not null, note: 'Corporation\'s short name']
+  url varchar(2048) [default: '', not null, note: 'Corporation\'s URL']
+  war_eligible bool [default: null, note: 'Corporation\'s war eligibility']
+  last_updated datetime [default: null, note: 'Last time the corporation\'s details were updated, (GetCorporationsCorporationId), 1 hr Cache']
+
+  indexes {
+    (alliance_id) [name: 'eveonline_evecorporationinfo_alliance_id_9438172d']
+    (faction_id) [name: 'eveonline_evecorporationinfo_faction_id_c41ff1b6']
+    (ceo_id) [name: 'eveonline_e_ceo_id_eea7b8_idx']
+    (corporation_name) [name: 'eveonline_e_corpora_650e9a_idx']
+  }
+
+  Note: '''A corporation in Eve Online.'''
+}
+
+Table eveonline_evecharacter {
+  id integer [pk, increment]
+  character_id "integer unsigned" [unique, not null]
+  alliance_id "integer unsigned" [default: null, note: 'Character\'s alliance ID']
+  birthday date [default: null, note: 'Character\'s creation date']
+  bloodline_id "smallint unsigned" [default: null, note: 'Character\'s bloodline ID']
+  corporation_id "integer unsigned" [default: 1000001, not null, note: 'Character\'s corporation ID']
+  description text [default: '', not null, note: 'Character\'s description (biography)']
+  faction_id "integer unsigned" [default: null, note: 'Character\'s faction ID']
+  gender EveCharacterGender [default: '', not null, note: 'Character\'s gender']
+  character_name varchar(254) [not null, note: 'Character\'s name']
+  race_id "smallint unsigned" [default: null, note: 'Character\'s race ID']
+  security_status real [default: 0.0, note: 'Character\'s security status']
+  title varchar(254) [default: '', not null, note: 'Character\'s title']
+  corporation_name varchar(254) [default: '', not null]
+  corporation_ticker varchar(5) [default: '', not null]
+  alliance_name varchar(254) [default: '', not null]
+  alliance_ticker varchar(5) [default: '', not null]
+  faction_name varchar(254) [default: '', not null]
+  last_updated_affiliations datetime [default: null, note: 'Last time the character\'s affiliations were updated (PostCharactersAffiliation, 1 hr Cache)']
+  last_updated_other datetime [default: null, note: 'Last time the character\'s details were updated, (GetCharactersCharacterId), 24 hr Cache']
+
+  indexes {
+    (character_name) [name: 'eveonline_e_charact_d47325_idx']
+    (corporation_id) [name: 'eveonline_e_corpora_cb4cd9_idx']
+    (alliance_id) [name: 'eveonline_e_allianc_39ee2a_idx']
+    (corporation_name) [name: 'eveonline_e_corpora_893c60_idx']
+    (alliance_name) [name: 'eveonline_e_allianc_63fd98_idx']
+    (faction_id) [name: 'eveonline_e_faction_d5274e_idx']
+  }
+
+  Note: '''A character in Eve Online.'''
+}
+
+Table groupmanagement_grouprequest {
+  id integer [pk, increment]
+  leave_request bool [default: false, not null]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'groupmanagement_grouprequest_user_id_0984b897']
+    (group_id) [name: 'groupmanagement_grouprequest_group_id_8e36ff92']
+  }
+
+  Note: '''Request from a user for joining or leaving a group.'''
+}
+
+Table groupmanagement_requestlog {
+  id integer [pk, increment]
+  request_type RequestLogType [default: 'remove', not null]
+  group_id integer [not null]
+  action RequestLogAction [default: 'remove', not null]
+  request_actor_id integer [not null]
+  requestor_id integer
+  date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (group_id) [name: 'groupmanagement_requestlog_group_id_0be2a758']
+    (request_actor_id) [name: 'groupmanagement_requestlog_request_actor_id_98406921']
+    (requestor_id) [name: 'groupmanagement_requestlog_requestor_id_d2df2a76']
+  }
+
+  Note: '''Log entry about who joined and left a group and who approved it.'''
+}
+
+Table groupmanagement_authgroup {
+  group_id integer [pk]
+  internal bool [default: true, not null, note: 'Internal group, users cannot see, join or request to join this group.<br>Used for groups such as Members, Corp_*, Alliance_* etc.<br><b>Overrides Hidden and Open options when selected.</b>']
+  hidden bool [default: true, not null, note: 'Group is hidden from users but can still join with the correct link.']
+  open bool [default: false, not null, note: 'Group is open and users will be automatically added upon request.<br>If the group is not open users will need their request manually approved.']
+  public bool [default: false, not null, note: 'Group is public. Any registered user is able to join this group, with visibility based on the other options set for this group.<br>Auth will not remove users from this group automatically when they are no longer authenticated.']
+  restricted bool [default: false, not null, note: 'Group is restricted. This means that adding or removing users for this group requires a superuser admin.']
+  description text [not null, note: 'Short description <i>(max. 512 characters)</i> of the group shown to users.']
+
+  Note: '''Extends Django Group model with a one-to-one field
+Attributes are accessible via group as if they were in the model
+e.g. group.authgroup.internal
+
+Logic:
+Internal - not requestable by users, at all. Covers Corp_, Alliance_,
+Members etc groups. Groups are internal by default
+
+Public - Other options are respected, but any user will be able to become
+and remain a member, even if they have no API etc entered.
+Auth will not manage these groups automatically so user removal is up to
+group managers/leaders.
+
+Not Internal and:
+    Hidden - users cannot view, can request if they have the direct link.
+    Not Hidden - Users can view and request the group
+    Open - Users are automatically accepted into the group
+    Not Open - Users requests must be approved before they are added to the group'''
+}
+
+Table groupmanagement_reservedgroupname {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null, note: 'Name that can not be used for groups.']
+  reason text [not null, note: 'Reason why this name is reserved.']
+  created_by varchar(255) [not null, note: 'Name of the user who created this entry.']
+  created_at datetime [not null, note: 'Date when this entry was created. default in Python: now()']
+
+  Note: '''Name that can not be used for groups.
+
+This enables AA to ignore groups on other services (e.g. Discord) with that name.'''
+}
+
+Table notifications_notification {
+  id integer [pk, increment]
+  user_id integer [not null]
+  level NotificationLevel [default: 'info', not null]
+  title varchar(254) [not null]
+  message text [not null]
+  timestamp datetime [not null, note: 'default in Python: now()']
+  viewed bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'notifications_notification_user_id_b5e8c0ff']
+    (timestamp) [name: 'notifications_notification_timestamp_6a797bad']
+    (viewed) [name: 'notifications_notification_viewed_92b34c27']
+  }
+
+  Note: '''Notification to a user within Auth'''
+}
+
+Table analytics_analyticsidentifier {
+  id integer [pk, increment]
+  identifier char(32) [not null, note: 'default in Python: uuid4()']
+}
+
+Table analytics_analyticstokens {
+  id integer [pk, increment]
+  name varchar(254) [not null]
+  type AnalyticsTokensAnalyticsType [not null]
+  token varchar(254) [not null]
+  secret varchar(254) [not null]
+  send_stats bool [default: false, not null]
+}
+
+Table menu_menuitem {
+  id integer [pk, increment]
+  text varchar(150) [not null, note: 'Text to show on menu']
+  order integer [default: 9999, not null, note: 'Order of the menu. Lowest First']
+  parent_id integer [default: null, note: 'Folder this item is in (optional)']
+  is_hidden bool [default: false, not null, note: 'Hide this menu item.If this item is a folder all items under it will be hidden too']
+  hook_hash varchar(64) [unique, default: null, note: 'hash of a menu item hook. Must be nullable for unique comparison.']
+  classes varchar(150) [default: '', not null, note: 'Font Awesome classes to show as icon on menu, e.g. <code>fa-solid fa-house</code>']
+  url text [default: '', not null, note: 'External URL this menu items will link to']
+  permission_mode MenuItemPermissionMode [default: 'any', not null, note: 'Whether a user needs any or all of the assigned permissions to see this menu item.']
+
+  indexes {
+    (text) [name: 'menu_menuitem_text_64fb7ef2']
+    (order) [name: 'menu_menuitem_order_f75ef4f7']
+    (parent_id) [name: 'menu_menuitem_parent_id_439f55a5']
+  }
+
+  Note: '''An item in the sidebar menu.
+
+Some of these objects are generated from `MenuItemHook` objects.
+To avoid confusion we are using the same same field names.user defined'''
+}
+
+Table custom_css_customcss {
+  id integer [pk, increment]
+  css text [default: '', not null, note: 'This CSS will be added to the site after the default CSS.']
+  css_compressed text [note: 'This field is automatically generated and should not be edited.']
+  timestamp datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Model for storing custom CSS for the site'''
+}
+
+Table crontab_cronoffset {
+  id integer [pk, increment]
+  minute real [not null, note: 'default in Python: random_default()']
+  hour real [not null, note: 'default in Python: random_default()']
+  day_of_month real [not null, note: 'default in Python: random_default()']
+  month_of_year real [not null, note: 'default in Python: random_default()']
+  day_of_week real [not null, note: 'default in Python: random_default()']
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_interval_id_fk: django_celery_beat_periodictask.interval_id > django_celery_beat_intervalschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_crontab_id_fk: django_celery_beat_periodictask.crontab_id > django_celery_beat_crontabschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_solar_id_fk: django_celery_beat_periodictask.solar_id > django_celery_beat_solarschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_clocked_id_fk: django_celery_beat_periodictask.clocked_id > django_celery_beat_clockedschedule.id [delete: cascade]
+
+Ref esi_token_user_id_fk: esi_token.user_id > auth_user.id [delete: cascade]
+
+Table esi_token_scopes {
+  id integer [pk, increment]
+  token_id integer [not null]
+  scope_id integer [not null]
+
+  indexes {
+    (token_id) [name: 'esi_token_scopes_token_id_df3856c8']
+    (scope_id) [name: 'esi_token_scopes_scope_id_fafdd2da']
+    (token_id, scope_id) [unique, name: 'esi_token_scopes_token_id_scope_id_52105ac7_uniq']
+  }
+}
+
+Ref esi_token_scopes_token_id_fk: esi_token_scopes.token_id > esi_token.id [delete: cascade]
+
+Ref esi_token_scopes_scope_id_fk: esi_token_scopes.scope_id > esi_scope.id [delete: cascade]
+
+Ref esi_callbackredirect_token_id_fk: esi_callbackredirect.token_id > esi_token.id [delete: cascade]
+
+Table authentication_state_member_characters {
+  id integer [pk, increment]
+  state_id integer [not null]
+  evecharacter_id integer [not null]
+
+  indexes {
+    (state_id) [name: 'authentication_state_member_characters_state_id_0a747331']
+    (evecharacter_id) [name: 'authentication_state_member_characters_evecharacter_id_d26e7105']
+    (state_id, evecharacter_id) [unique, name: 'authentication_state_member_characters_state_id_evecharacter_id_cfcc92d6_uniq']
+  }
+}
+
+Ref authentication_state_member_characters_state_id_fk: authentication_state_member_characters.state_id > authentication_state.id [delete: cascade]
+
+Ref authentication_state_member_characters_evecharacter_id_fk: authentication_state_member_characters.evecharacter_id > eveonline_evecharacter.id [delete: cascade]
+
+Table authentication_state_member_corporations {
+  id integer [pk, increment]
+  state_id integer [not null]
+  evecorporationinfo_id integer [not null]
+
+  indexes {
+    (state_id) [name: 'authentication_state_member_corporations_state_id_349ba723']
+    (evecorporationinfo_id) [name: 'authentication_state_member_corporations_evecorporationinfo_id_cc714e19']
+    (state_id, evecorporationinfo_id) [unique, name: 'authentication_state_member_corporations_state_id_evecorporationinfo_id_d3d3d0be_uniq']
+  }
+}
+
+Ref authentication_state_member_corporations_state_id_fk: authentication_state_member_corporations.state_id > authentication_state.id [delete: cascade]
+
+Ref authentication_state_member_corporations_evecorporationinfo_id_fk: authentication_state_member_corporations.evecorporationinfo_id > eveonline_evecorporationinfo.id [delete: cascade]
+
+Table authentication_state_member_alliances {
+  id integer [pk, increment]
+  state_id integer [not null]
+  eveallianceinfo_id integer [not null]
+
+  indexes {
+    (state_id) [name: 'authentication_state_member_alliances_state_id_2223603e']
+    (eveallianceinfo_id) [name: 'authentication_state_member_alliances_eveallianceinfo_id_0fcaa47b']
+    (state_id, eveallianceinfo_id) [unique, name: 'authentication_state_member_alliances_state_id_eveallianceinfo_id_8842b1c0_uniq']
+  }
+}
+
+Ref authentication_state_member_alliances_state_id_fk: authentication_state_member_alliances.state_id > authentication_state.id [delete: cascade]
+
+Ref authentication_state_member_alliances_eveallianceinfo_id_fk: authentication_state_member_alliances.eveallianceinfo_id > eveonline_eveallianceinfo.id [delete: cascade]
+
+Table authentication_state_member_factions {
+  id integer [pk, increment]
+  state_id integer [not null]
+  evefactioninfo_id integer [not null]
+
+  indexes {
+    (state_id) [name: 'authentication_state_member_factions_state_id_c9576686']
+    (evefactioninfo_id) [name: 'authentication_state_member_factions_evefactioninfo_id_1bd1e317']
+    (state_id, evefactioninfo_id) [unique, name: 'authentication_state_member_factions_state_id_evefactioninfo_id_9872d3a6_uniq']
+  }
+}
+
+Ref authentication_state_member_factions_state_id_fk: authentication_state_member_factions.state_id > authentication_state.id [delete: cascade]
+
+Ref authentication_state_member_factions_evefactioninfo_id_fk: authentication_state_member_factions.evefactioninfo_id > eveonline_evefactioninfo.id [delete: cascade]
+
+Ref authentication_userprofile_main_character_id_fk: authentication_userprofile.main_character_id - eveonline_evecharacter.id [delete: set null]
+
+Ref authentication_userprofile_state_id_fk: authentication_userprofile.state_id > authentication_state.id [delete: set default]
+
+Ref authentication_characterownership_character_id_fk: authentication_characterownership.character_id - eveonline_evecharacter.id [delete: cascade]
+
+Ref authentication_ownershiprecord_character_id_fk: authentication_ownershiprecord.character_id > eveonline_evecharacter.id [delete: cascade]
+
+Table services_nameformatconfig_states {
+  id integer [pk, increment]
+  nameformatconfig_id integer [not null]
+  state_id integer [not null]
+
+  indexes {
+    (nameformatconfig_id) [name: 'services_nameformatconfig_states_nameformatconfig_id_5cf12aa3']
+    (state_id) [name: 'services_nameformatconfig_states_state_id_67c83699']
+    (nameformatconfig_id, state_id) [unique, name: 'services_nameformatconfig_states_nameformatconfig_id_state_id_1d9b9924_uniq']
+  }
+}
+
+Ref services_nameformatconfig_states_nameformatconfig_id_fk: services_nameformatconfig_states.nameformatconfig_id > services_nameformatconfig.id [delete: cascade]
+
+Ref services_nameformatconfig_states_state_id_fk: services_nameformatconfig_states.state_id > authentication_state.id [delete: cascade]
+
+Ref eveonline_eveallianceinfo_faction_id_fk: eveonline_eveallianceinfo.faction_id > eveonline_evefactioninfo.id [delete: set null]
+
+Ref eveonline_evecorporationinfo_alliance_id_fk: eveonline_evecorporationinfo.alliance_id > eveonline_eveallianceinfo.id [delete: set null]
+
+Ref eveonline_evecorporationinfo_faction_id_fk: eveonline_evecorporationinfo.faction_id > eveonline_evefactioninfo.id [delete: set null]
+
+Table groupmanagement_authgroup_states {
+  id integer [pk, increment]
+  authgroup_id integer [not null]
+  state_id integer [not null]
+
+  indexes {
+    (authgroup_id) [name: 'groupmanagement_authgroup_states_authgroup_id_7c8ca058']
+    (state_id) [name: 'groupmanagement_authgroup_states_state_id_7c5bab58']
+    (authgroup_id, state_id) [unique, name: 'groupmanagement_authgroup_states_authgroup_id_state_id_ea338653_uniq']
+  }
+}
+
+Ref groupmanagement_authgroup_states_authgroup_id_fk: groupmanagement_authgroup_states.authgroup_id > groupmanagement_authgroup.group_id [delete: cascade]
+
+Ref groupmanagement_authgroup_states_state_id_fk: groupmanagement_authgroup_states.state_id > authentication_state.id [delete: cascade]
+
+Ref menu_menuitem_parent_id_fk: menu_menuitem.parent_id > menu_menuitem.id [delete: set null]

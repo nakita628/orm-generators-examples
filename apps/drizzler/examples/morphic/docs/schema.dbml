@@ -1,0 +1,269 @@
+Table spaces {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  color varchar [not null]
+  name text [not null]
+  about text [not null]
+  style text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id, color) [unique, name: 'spaces_user_id_color_idx']
+  }
+  Note: 'Spaces table'
+}
+
+Table chats {
+  id varchar [pk, not null]
+  created_at timestamp [not null]
+  title text [not null]
+  user_id varchar [not null]
+  visibility varchar [not null]
+  space_id varchar
+  indexes {
+    (user_id) [name: 'chats_user_id_idx']
+    (space_id) [name: 'chats_space_id_idx']
+    (user_id, created_at) [name: 'chats_user_id_created_at_idx']
+    (created_at) [name: 'chats_created_at_idx']
+    (id, user_id) [name: 'chats_id_user_id_idx']
+  }
+  Note: 'Chats table'
+}
+
+Table messages {
+  id varchar [pk, not null]
+  chat_id varchar [not null]
+  role varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  metadata jsonb
+  indexes {
+    (chat_id) [name: 'messages_chat_id_idx']
+    (chat_id, created_at) [name: 'messages_chat_id_created_at_idx']
+  }
+  Note: 'Messages table (simplified)'
+}
+
+Table parts {
+  id varchar [pk, not null]
+  message_id varchar [not null]
+  order integer [not null]
+  type varchar [not null]
+  text_text text [note: 'Text parts']
+  reasoning_text text [note: 'Reasoning parts']
+  file_media_type varchar [note: 'File parts']
+  file_filename varchar
+  file_url text
+  file_key text
+  source_url_source_id varchar [note: 'Source URL parts']
+  source_url_url text
+  source_url_title text
+  source_document_source_id varchar [note: 'Source document parts']
+  source_document_media_type varchar
+  source_document_title text
+  source_document_filename varchar
+  source_document_url text
+  source_document_snippet text
+  tool_tool_call_id varchar [note: 'Tool parts (generic)']
+  tool_state varchar
+  tool_error_text text
+  tool_search_input json [note: 'Tool-specific columns (all Morphic tools)']
+  tool_search_output json
+  tool_fetch_input json
+  tool_fetch_output json
+  tool_question_input json
+  tool_question_output json
+  tool_todoWrite_input json [note: 'Todo tool columns']
+  tool_todoWrite_output json
+  tool_todoRead_input json
+  tool_todoRead_output json
+  tool_dynamic_input json [note: 'Dynamic tools (includes MCP and other runtime-defined tools)']
+  tool_dynamic_output json
+  tool_dynamic_name varchar
+  tool_dynamic_type varchar
+  data_prefix varchar [note: 'Data parts (generic support)']
+  data_content json
+  data_id varchar
+  provider_metadata json [note: 'Provider metadata']
+  search tsvector [note: 'Full-text search columns (maintained by Postgres, used by history search). Input is capped at 100k characters: Postgres errors on any tsvector over 1MB ("string is too long for tsvector"), which would otherwise abort migration 0020 on existing rows and fail inserts of oversized parts. Worst-case vector size at this cap is ~220KB.']
+  search_reasoning tsvector
+  created_at timestamp [not null]
+  indexes {
+    (message_id) [name: 'parts_message_id_idx']
+    (message_id, order) [name: 'parts_message_id_order_idx']
+    (search) [type: gin, name: 'parts_search_idx']
+    (search_reasoning) [type: gin, name: 'parts_search_reasoning_idx']
+  }
+  Note: 'Parts table'
+}
+
+Table notes {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  chat_id varchar
+  source_message_id varchar
+  title text [not null]
+  content text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'notes_user_id_idx']
+    (user_id, updated_at) [name: 'notes_user_id_updated_at_idx']
+    (chat_id) [name: 'notes_chat_id_idx']
+    (source_message_id) [name: 'notes_source_message_id_idx']
+  }
+  Note: 'Notes table'
+}
+
+Table files {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  chat_id varchar
+  filename text [not null]
+  object_key text [not null]
+  media_type varchar [not null]
+  size integer
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'files_user_id_idx']
+    (user_id, updated_at) [name: 'files_user_id_updated_at_idx']
+    (chat_id) [name: 'files_chat_id_idx']
+    (media_type) [name: 'files_media_type_idx']
+    (object_key) [name: 'files_object_key_idx']
+  }
+  Note: 'Library files table'
+}
+
+Table feedback {
+  id varchar [pk, not null]
+  user_id varchar
+  sentiment varchar [not null]
+  message text [not null]
+  page_url text [not null]
+  user_agent text
+  created_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'feedback_user_id_idx']
+    (created_at) [name: 'feedback_created_at_idx']
+  }
+  Note: 'Feedback table'
+}
+
+Table usage_grants {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  idempotency_key varchar [not null]
+  kind varchar [not null]
+  amount integer [not null]
+  granted_at timestamp [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  indexes {
+    (user_id, idempotency_key) [unique, name: 'usage_grants_user_idempotency_idx']
+    (user_id, expires_at) [name: 'usage_grants_user_expires_idx']
+  }
+  Note: 'Usage grants are the durable authority for allowances. Redis remains the runtime authority for spend and remaining usage.'
+}
+
+Table usage_events {
+  id varchar [pk, not null]
+  user_id varchar [not null]
+  event_type varchar [not null]
+  amount integer [not null]
+  mode varchar
+  attempt_id varchar [not null]
+  message_id varchar
+  remaining integer
+  created_at timestamp [not null]
+  indexes {
+    (user_id, event_type, attempt_id) [unique, name: 'usage_events_user_type_attempt_idx']
+    (user_id, created_at) [name: 'usage_events_user_created_idx']
+  }
+  Note: 'Usage events are best-effort analytics. They must never be used to rebuild balances or decide whether a request is allowed.'
+}
+
+Table additional_usage_interest {
+  user_id varchar [pk, not null]
+  count integer [not null]
+  first_clicked_at timestamp [not null]
+  last_clicked_at timestamp [not null]
+}
+
+Table user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  role text
+  banned boolean
+  ban_reason text
+  ban_expires timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  Note: 'Better Auth core tables (`user`, `session`, `account`, `verification`) stored in the application\'s own Postgres via Better Auth\'s Drizzle adapter. Column names follow Better Auth\'s canonical Postgres schema; the admin plugin adds `role`, `banned`, `banReason`, and `banExpires` to `user`.'
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  impersonated_by text
+  user_id text [not null]
+}
+
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table invitations {
+  id text [pk, not null]
+  email text
+  token text [not null, unique, note: 'SHA-256 hash of the invitation token; the plaintext only exists in the link returned to the admin at creation time.']
+  invited_by text [not null]
+  revoked_at timestamp
+  used_at timestamp
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  Note: 'Invitation tokens used when `AUTH_SIGNUP_MODE=invite`. An invitation is redeemable when it is neither revoked, expired, nor already used.'
+}
+
+Ref chats_space_id_spaces_id_fk: chats.space_id > spaces.id [delete: set null]
+
+Ref messages_chat_id_chats_id_fk: messages.chat_id > chats.id [delete: cascade]
+
+Ref parts_message_id_messages_id_fk: parts.message_id > messages.id [delete: cascade]
+
+Ref notes_chat_id_chats_id_fk: notes.chat_id > chats.id [delete: set null]
+
+Ref files_chat_id_chats_id_fk: files.chat_id > chats.id [delete: set null]
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]

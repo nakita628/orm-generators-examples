@@ -1,0 +1,59 @@
+Table user {
+  id varchar [pk, not null]
+  name varchar
+  email varchar [unique]
+  emailVerified timestamp
+  image varchar
+}
+
+Table account {
+  userId varchar [not null]
+  type varchar [not null]
+  provider varchar [not null]
+  providerAccountId varchar [not null]
+  refresh_token varchar
+  access_token varchar
+  expires_at integer
+  token_type varchar
+  scope varchar
+  id_token varchar
+  session_state varchar
+  indexes {
+    (provider, providerAccountId) [pk]
+  }
+}
+
+Table session {
+  sessionToken varchar [pk, not null]
+  userId varchar [not null]
+  expires timestamp [not null]
+}
+
+Table verificationToken {
+  identifier varchar [not null]
+  token varchar [not null]
+  expires timestamp [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Table authenticator {
+  credentialID varchar [not null, unique]
+  userId varchar [not null]
+  providerAccountId varchar [not null]
+  credentialPublicKey varchar [not null]
+  counter integer [not null]
+  credentialDeviceType varchar [not null]
+  credentialBackedUp boolean [not null]
+  transports varchar
+  indexes {
+    (userId, credentialID) [pk]
+  }
+}
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]
+
+Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
+
+Ref authenticator_userId_user_id_fk: authenticator.userId > user.id [delete: cascade]

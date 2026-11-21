@@ -1,0 +1,263 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table robots_url {
+  id integer [pk, increment]
+  pattern varchar(255) [not null, note: 'Case-sensitive. A missing trailing slash does also match to files which start with the name of the pattern, e.g., \'/admin\' matches /admin.html too. Some major search engines allow an asterisk (*) as a wildcard and a dollar sign ($) to match the end of the URL, e.g., \'/*.jpg$\'.']
+
+  Note: '''Defines a URL pattern for use with a robot exclusion rule. It\'s
+case-sensitive and exact, e.g., "/admin" and "/admin/" are different URLs.'''
+}
+
+Table robots_rule {
+  id integer [pk, increment]
+  robot varchar(255) [not null, note: 'This should be a user agent string like \'Googlebot\'. Enter an asterisk (*) for all user agents. For a full list look at the <a target=_blank href=\'http://www.robotstxt.org/db.html\'> database of Web Robots</a>.']
+  crawl_delay decimal [note: 'Between 0.1 and 99.0. This field is supported by some search engines and defines the delay between successive crawler accesses in seconds. If the crawler rate is a problem for your server, you can set the delay up to 5 or 10 or a comfortable value for your server, but it\'s suggested to start with small values (0.5-1), and increase as needed to an acceptable value for your server. Larger delay values add more delay between successive crawl accesses and decrease the maximum crawl rate to your web server.. declared max_digits=3, decimal_places=1, which the database does not enforce']
+
+  Note: '''Defines an abstract rule which is used to respond to crawling web robots,
+using the robot exclusion standard, a.k.a. robots.txt. It allows or
+disallows the robot identified by its user agent to access the given URLs.
+The Site contrib app is used to enable multiple robots.txt per instance.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table robots_rule_allowed {
+  id integer [pk, increment]
+  rule_id bigint [not null]
+  url_id bigint [not null]
+
+  indexes {
+    (rule_id) [name: 'robots_rule_allowed_rule_id_aa90358c']
+    (url_id) [name: 'robots_rule_allowed_url_id_6157f60a']
+    (rule_id, url_id) [unique, name: 'robots_rule_allowed_rule_id_url_id_83b262d4_uniq']
+  }
+}
+
+Ref robots_rule_allowed_rule_id_fk: robots_rule_allowed.rule_id > robots_rule.id [delete: cascade]
+
+Ref robots_rule_allowed_url_id_fk: robots_rule_allowed.url_id > robots_url.id [delete: cascade]
+
+Table robots_rule_disallowed {
+  id integer [pk, increment]
+  rule_id bigint [not null]
+  url_id bigint [not null]
+
+  indexes {
+    (rule_id) [name: 'robots_rule_disallowed_rule_id_fad7328c']
+    (url_id) [name: 'robots_rule_disallowed_url_id_8e02db92']
+    (rule_id, url_id) [unique, name: 'robots_rule_disallowed_rule_id_url_id_4d9b6222_uniq']
+  }
+}
+
+Ref robots_rule_disallowed_rule_id_fk: robots_rule_disallowed.rule_id > robots_rule.id [delete: cascade]
+
+Ref robots_rule_disallowed_url_id_fk: robots_rule_disallowed.url_id > robots_url.id [delete: cascade]
+
+Table robots_rule_sites {
+  id integer [pk, increment]
+  rule_id bigint [not null]
+  site_id integer [not null]
+
+  indexes {
+    (rule_id) [name: 'robots_rule_sites_rule_id_7921a799']
+    (site_id) [name: 'robots_rule_sites_site_id_efe5be97']
+    (rule_id, site_id) [unique, name: 'robots_rule_sites_rule_id_site_id_093f04ea_uniq']
+  }
+}
+
+Ref robots_rule_sites_rule_id_fk: robots_rule_sites.rule_id > robots_rule.id [delete: cascade]
+
+Ref robots_rule_sites_site_id_fk: robots_rule_sites.site_id > django_site.id [delete: cascade]

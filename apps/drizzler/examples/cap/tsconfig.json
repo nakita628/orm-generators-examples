@@ -1,0 +1,7 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": { "@cap/web-domain": ["./stubs/cap-web-domain/index.d.ts"] }
+  },
+  "include": ["src", "stubs", "drizzle.config.ts"]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "@drizzler-examples/dokploy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "drizzler -o docs && drizzler -o docs/er.png && drizzler -o docs/er-dark.png --theme dark && drizzler -o docs/schema.dbml && drizzler -o docs/er.md",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@drizzler-examples/tsconfig": "workspace:*",
+    "@faker-js/faker": "^10.5.0",
+    "@types/node": "catalog:",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzler": "catalog:",
+    "nanoid": "3.3.18",
+    "typescript": "catalog:",
+    "zod": "^4.6.6"
+  }
+}

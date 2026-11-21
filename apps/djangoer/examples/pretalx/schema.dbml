@@ -1,0 +1,2911 @@
+Enum EventTimezone {
+  "PRC"
+  "Australia/West"
+  "Antarctica/DumontDUrville"
+  "Canada/Mountain"
+  "America/Boa_Vista"
+  "America/Porto_Acre"
+  "America/Argentina/Catamarca"
+  "Asia/Magadan"
+  "America/Guayaquil"
+  "America/Los_Angeles"
+  "Antarctica/Mawson"
+  "Australia/North"
+  "Pacific/Marquesas"
+  "GB-Eire"
+  "Asia/Karachi"
+  "Asia/Aden"
+  "Poland"
+  "Asia/Sakhalin"
+  "America/Santiago"
+  "Asia/Manila"
+  "Atlantic/Bermuda"
+  "Portugal"
+  "America/Indiana/Vevay"
+  "Australia/LHI"
+  "America/Argentina/Jujuy"
+  "Asia/Tehran"
+  "Asia/Calcutta"
+  "Pacific/Pohnpei"
+  "Pacific/Noumea"
+  "America/Indiana/Knox"
+  "America/Thunder_Bay"
+  "Africa/Dakar"
+  "Antarctica/Casey"
+  "America/Argentina/ComodRivadavia"
+  "Indian/Mauritius"
+  "Europe/Kaliningrad"
+  "Pacific/Tarawa"
+  "Asia/Bishkek"
+  "Asia/Novokuznetsk"
+  "Africa/Maseru"
+  "Asia/Vladivostok"
+  "Asia/Barnaul"
+  "Asia/Seoul"
+  "GMT+0"
+  "Pacific/Kosrae"
+  "Asia/Almaty"
+  "Asia/Macau"
+  "Antarctica/Davis"
+  "Antarctica/Vostok"
+  "Australia/Tasmania"
+  "America/Coyhaique"
+  "Africa/Lusaka"
+  "Africa/Monrovia"
+  "America/Kentucky/Louisville"
+  "America/Menominee"
+  "Asia/Saigon"
+  "Africa/Timbuktu"
+  "Canada/Newfoundland"
+  "Europe/Vaduz"
+  "America/Ojinaga"
+  "America/Rankin_Inlet"
+  "America/Winnipeg"
+  "Asia/Kuala_Lumpur"
+  "America/Havana"
+  "America/Argentina/La_Rioja"
+  "Mexico/General"
+  "America/Scoresbysund"
+  "America/Chihuahua"
+  "Europe/Stockholm"
+  "US/Mountain"
+  "Australia/South"
+  "Asia/Yakutsk"
+  "UTC"
+  "America/Catamarca"
+  "America/St_Kitts"
+  "America/Anguilla"
+  "Asia/Phnom_Penh"
+  "US/Alaska"
+  "Australia/Broken_Hill"
+  "Europe/Tallinn"
+  "Africa/Dar_es_Salaam"
+  "US/Hawaii"
+  "America/Indiana/Indianapolis"
+  "America/Argentina/Tucuman"
+  "Pacific/Enderbury"
+  "Asia/Gaza"
+  "Europe/Busingen"
+  "Asia/Dili"
+  "Europe/Bratislava"
+  "Europe/Amsterdam"
+  "America/Asuncion"
+  "CST6CDT"
+  "Europe/Vatican"
+  "Brazil/East"
+  "Europe/Zaporozhye"
+  "America/St_Johns"
+  "Pacific/Bougainville"
+  "Pacific/Yap"
+  "Pacific/Galapagos"
+  "Asia/Thimbu"
+  "Antarctica/Palmer"
+  "Pacific/Samoa"
+  "America/Tegucigalpa"
+  "Asia/Shanghai"
+  "Asia/Jakarta"
+  "America/Montevideo"
+  "America/Shiprock"
+  "Pacific/Funafuti"
+  "Africa/Abidjan"
+  "US/Aleutian"
+  "Indian/Mahe"
+  "NZ-CHAT"
+  "America/Dawson"
+  "Antarctica/Troll"
+  "America/Dominica"
+  "Brazil/Acre"
+  "America/Knox_IN"
+  "America/Indiana/Marengo"
+  "America/Montreal"
+  "Asia/Brunei"
+  "Asia/Rangoon"
+  "Europe/Nicosia"
+  "Indian/Reunion"
+  "America/Guatemala"
+  "GMT0"
+  "Asia/Tbilisi"
+  "Pacific/Truk"
+  "Africa/Douala"
+  "Atlantic/Azores"
+  "Australia/ACT"
+  "America/Argentina/San_Luis"
+  "Africa/Gaborone"
+  "America/Guyana"
+  "Pacific/Chuuk"
+  "Eire"
+  "Africa/Tripoli"
+  "Europe/Monaco"
+  "America/Sitka"
+  "America/Pangnirtung"
+  "America/Moncton"
+  "America/Manaus"
+  "America/Rio_Branco"
+  "America/Creston"
+  "Africa/Cairo"
+  "America/Toronto"
+  "America/Atikokan"
+  "Asia/Colombo"
+  "Africa/Johannesburg"
+  "US/Pacific"
+  "Australia/Hobart"
+  "America/Cordoba"
+  "GMT-0"
+  "Europe/Chisinau"
+  "Africa/Kigali"
+  "Africa/Malabo"
+  "Pacific/Palau"
+  "Europe/Sarajevo"
+  "Pacific/Saipan"
+  "America/Fort_Nelson"
+  "America/Santarem"
+  "Atlantic/Stanley"
+  "Africa/Freetown"
+  "America/Virgin"
+  "Europe/Belgrade"
+  "Pacific/Ponape"
+  "Asia/Yerevan"
+  "Africa/Harare"
+  "Europe/Oslo"
+  "Pacific/Tongatapu"
+  "Atlantic/Faeroe"
+  "Asia/Damascus"
+  "America/Campo_Grande"
+  "America/Mexico_City"
+  "Pacific/Auckland"
+  "Europe/Bucharest"
+  "Africa/Tunis"
+  "Asia/Dhaka"
+  "America/Indiana/Winamac"
+  "Asia/Tashkent"
+  "Asia/Yangon"
+  "America/Juneau"
+  "Indian/Christmas"
+  "Asia/Chita"
+  "America/Regina"
+  "Asia/Urumqi"
+  "Asia/Baghdad"
+  "America/Santo_Domingo"
+  "GMT"
+  "Europe/Ulyanovsk"
+  "Europe/Tirane"
+  "Asia/Nicosia"
+  "Africa/Bangui"
+  "Asia/Makassar"
+  "America/Buenos_Aires"
+  "Europe/Athens"
+  "Pacific/Honolulu"
+  "Antarctica/Macquarie"
+  "Pacific/Wallis"
+  "America/Boise"
+  "Europe/Riga"
+  "Asia/Kuwait"
+  "Atlantic/Madeira"
+  "Australia/Sydney"
+  "UCT"
+  "America/Recife"
+  "Europe/Berlin"
+  "Europe/London"
+  "ROC"
+  "Asia/Kashgar"
+  "Asia/Srednekolymsk"
+  "Africa/Asmera"
+  "Pacific/Port_Moresby"
+  "Africa/Juba"
+  "America/Chicago"
+  "Pacific/Johnston"
+  "Europe/Podgorica"
+  "Asia/Ashgabat"
+  "Zulu"
+  "Asia/Kabul"
+  "America/Anchorage"
+  "Africa/Conakry"
+  "CET"
+  "Africa/Nairobi"
+  "US/Indiana-Starke"
+  "Europe/Lisbon"
+  "Canada/Yukon"
+  "America/Cuiaba"
+  "America/Nassau"
+  "Africa/Ndjamena"
+  "W-SU"
+  "MST"
+  "Europe/Tiraspol"
+  "Europe/Jersey"
+  "Atlantic/St_Helena"
+  "Africa/Brazzaville"
+  "Europe/Rome"
+  "Pacific/Pago_Pago"
+  "Australia/Lord_Howe"
+  "HST"
+  "Japan"
+  "Australia/Brisbane"
+  "America/Grenada"
+  "Australia/Yancowinna"
+  "America/Iqaluit"
+  "Asia/Dacca"
+  "Chile/EasterIsland"
+  "Israel"
+  "Africa/Nouakchott"
+  "Africa/Kinshasa"
+  "Asia/Krasnoyarsk"
+  "Pacific/Kanton"
+  "America/Fort_Wayne"
+  "Canada/Atlantic"
+  "Asia/Ujung_Pandang"
+  "America/Indiana/Petersburg"
+  "Indian/Cocos"
+  "Universal"
+  "US/Arizona"
+  "America/Guadeloupe"
+  "Europe/Uzhgorod"
+  "America/Tortola"
+  "Australia/Queensland"
+  "America/Cayenne"
+  "Europe/Moscow"
+  "America/Fortaleza"
+  "Asia/Dubai"
+  "Africa/Bissau"
+  "America/Cayman"
+  "Hongkong"
+  "Pacific/Guam"
+  "America/Monterrey"
+  "America/Godthab"
+  "Libya"
+  "Asia/Pyongyang"
+  "Brazil/DeNoronha"
+  "America/Atka"
+  "America/Bogota"
+  "Pacific/Rarotonga"
+  "Europe/Kirov"
+  "America/New_York"
+  "Africa/El_Aaiun"
+  "Europe/Prague"
+  "Atlantic/Faroe"
+  "America/Managua"
+  "America/Barbados"
+  "Asia/Ashkhabad"
+  "Asia/Qostanay"
+  "Asia/Dushanbe"
+  "Antarctica/South_Pole"
+  "Europe/Zurich"
+  "America/Metlakatla"
+  "America/Indiana/Vincennes"
+  "localtime"
+  "Atlantic/Reykjavik"
+  "Asia/Bahrain"
+  "America/Kentucky/Monticello"
+  "Africa/Bujumbura"
+  "Asia/Irkutsk"
+  "Europe/Skopje"
+  "America/Matamoros"
+  "Pacific/Kwajalein"
+  "Africa/Mogadishu"
+  "Asia/Atyrau"
+  "MET"
+  "Arctic/Longyearbyen"
+  "Europe/Vienna"
+  "Indian/Mayotte"
+  "America/Argentina/Buenos_Aires"
+  "Pacific/Fiji"
+  "Europe/Dublin"
+  "Pacific/Chatham"
+  "Africa/Maputo"
+  "America/Kralendijk"
+  "America/Glace_Bay"
+  "Pacific/Norfolk"
+  "Asia/Famagusta"
+  "Indian/Antananarivo"
+  "America/Santa_Isabel"
+  "America/Belize"
+  "Asia/Hong_Kong"
+  "Asia/Aqtau"
+  "America/Blanc-Sablon"
+  "America/Lower_Princes"
+  "Pacific/Apia"
+  "America/Eirunepe"
+  "America/Tijuana"
+  "America/Goose_Bay"
+  "America/Martinique"
+  "Asia/Chongqing"
+  "Europe/Samara"
+  "Asia/Oral"
+  "Asia/Istanbul"
+  "Asia/Jerusalem"
+  "EST"
+  "Europe/Warsaw"
+  "Australia/Victoria"
+  "Asia/Amman"
+  "US/Eastern"
+  "Asia/Baku"
+  "US/Michigan"
+  "Africa/Casablanca"
+  "Atlantic/Jan_Mayen"
+  "Asia/Hovd"
+  "Africa/Niamey"
+  "America/Belem"
+  "Asia/Novosibirsk"
+  "America/Paramaribo"
+  "America/Detroit"
+  "EET"
+  "America/Jamaica"
+  "Iceland"
+  "Mexico/BajaSur"
+  "Australia/Eucla"
+  "America/Swift_Current"
+  "Asia/Hebron"
+  "Asia/Khandyga"
+  "America/Cambridge_Bay"
+  "Pacific/Fakaofo"
+  "NZ"
+  "America/Indianapolis"
+  "America/Argentina/San_Juan"
+  "Europe/Budapest"
+  "America/Halifax"
+  "America/Argentina/Rio_Gallegos"
+  "America/Aruba"
+  "America/Curacao"
+  "Asia/Anadyr"
+  "Asia/Qyzylorda"
+  "Pacific/Easter"
+  "Pacific/Kiritimati"
+  "MST7MDT"
+  "Asia/Kolkata"
+  "Canada/Eastern"
+  "America/Caracas"
+  "Asia/Bangkok"
+  "Africa/Blantyre"
+  "America/Ensenada"
+  "Europe/Madrid"
+  "Europe/Gibraltar"
+  "Africa/Ceuta"
+  "America/Araguaina"
+  "Europe/Luxembourg"
+  "PST8PDT"
+  "Asia/Beirut"
+  "Canada/Pacific"
+  "Australia/Darwin"
+  "America/Phoenix"
+  "Asia/Ulaanbaatar"
+  "America/Bahia"
+  "Africa/Sao_Tome"
+  "Asia/Macao"
+  "US/East-Indiana"
+  "Europe/Copenhagen"
+  "America/Puerto_Rico"
+  "America/Argentina/Salta"
+  "Europe/Brussels"
+  "Asia/Taipei"
+  "Asia/Vientiane"
+  "Africa/Algiers"
+  "America/Nome"
+  "America/Port_of_Spain"
+  "Asia/Kuching"
+  "America/Port-au-Prince"
+  "Australia/Adelaide"
+  "America/Nuuk"
+  "America/Yellowknife"
+  "GB"
+  "Asia/Tel_Aviv"
+  "Europe/Minsk"
+  "America/Mazatlan"
+  "Kwajalein"
+  "Europe/Paris"
+  "America/Danmarkshavn"
+  "Indian/Comoro"
+  "Pacific/Majuro"
+  "Asia/Omsk"
+  "America/Mendoza"
+  "America/Punta_Arenas"
+  "America/Denver"
+  "America/Marigot"
+  "Australia/Canberra"
+  "Atlantic/South_Georgia"
+  "Atlantic/Canary"
+  "America/Argentina/Ushuaia"
+  "Asia/Yekaterinburg"
+  "Europe/Volgograd"
+  "Asia/Kamchatka"
+  "US/Samoa"
+  "Europe/Andorra"
+  "Asia/Muscat"
+  "America/North_Dakota/New_Salem"
+  "America/Cancun"
+  "Asia/Singapore"
+  "America/St_Thomas"
+  "Jamaica"
+  "Europe/Astrakhan"
+  "US/Central"
+  "America/Ciudad_Juarez"
+  "America/St_Vincent"
+  "America/El_Salvador"
+  "Asia/Jayapura"
+  "America/Bahia_Banderas"
+  "Singapore"
+  "Asia/Samarkand"
+  "Europe/Helsinki"
+  "America/Yakutat"
+  "Pacific/Midway"
+  "Asia/Riyadh"
+  "Africa/Asmara"
+  "America/Whitehorse"
+  "Europe/San_Marino"
+  "America/Edmonton"
+  "America/Argentina/Mendoza"
+  "America/Vancouver"
+  "Africa/Lome"
+  "America/Hermosillo"
+  "Asia/Pontianak"
+  "Pacific/Gambier"
+  "Europe/Guernsey"
+  "Indian/Maldives"
+  "America/Panama"
+  "Greenwich"
+  "Antarctica/Rothera"
+  "Pacific/Wake"
+  "Asia/Thimphu"
+  "Africa/Mbabane"
+  "Europe/Saratov"
+  "Asia/Tokyo"
+  "Africa/Banjul"
+  "Atlantic/Cape_Verde"
+  "Asia/Harbin"
+  "Pacific/Niue"
+  "Europe/Kyiv"
+  "America/Resolute"
+  "Pacific/Guadalcanal"
+  "Pacific/Nauru"
+  "Iran"
+  "Canada/Central"
+  "Europe/Mariehamn"
+  "Asia/Ho_Chi_Minh"
+  "Australia/Currie"
+  "Factory"
+  "America/Coral_Harbour"
+  "America/Porto_Velho"
+  "Africa/Djibouti"
+  "America/La_Paz"
+  "Africa/Lubumbashi"
+  "America/Rainy_River"
+  "America/Costa_Rica"
+  "Brazil/West"
+  "America/Grand_Turk"
+  "Mexico/BajaNorte"
+  "Africa/Addis_Ababa"
+  "America/St_Lucia"
+  "America/Inuvik"
+  "Asia/Qatar"
+  "Asia/Aqtobe"
+  "Asia/Ulan_Bator"
+  "America/Nipigon"
+  "America/Rosario"
+  "Africa/Khartoum"
+  "EST5EDT"
+  "Pacific/Pitcairn"
+  "America/Montserrat"
+  "Europe/Belfast"
+  "Antarctica/McMurdo"
+  "Europe/Zagreb"
+  "Europe/Kiev"
+  "America/Dawson_Creek"
+  "Pacific/Tahiti"
+  "Pacific/Efate"
+  "Africa/Windhoek"
+  "Canada/Saskatchewan"
+  "Europe/Vilnius"
+  "Egypt"
+  "America/St_Barthelemy"
+  "Indian/Chagos"
+  "Europe/Simferopol"
+  "Africa/Kampala"
+  "Asia/Ust-Nera"
+  "Australia/Perth"
+  "Turkey"
+  "Navajo"
+  "America/North_Dakota/Beulah"
+  "Africa/Bamako"
+  "Europe/Ljubljana"
+  "America/Lima"
+  "America/Adak"
+  "Asia/Kathmandu"
+  "Asia/Tomsk"
+  "America/Miquelon"
+  "Cuba"
+  "Asia/Chungking"
+  "America/Sao_Paulo"
+  "Asia/Choibalsan"
+  "Australia/NSW"
+  "Indian/Kerguelen"
+  "Europe/Malta"
+  "Africa/Ouagadougou"
+  "WET"
+  "Chile/Continental"
+  "Africa/Porto-Novo"
+  "America/Louisville"
+  "Africa/Libreville"
+  "Antarctica/Syowa"
+  "Asia/Katmandu"
+  "America/Thule"
+  "Africa/Accra"
+  "Africa/Lagos"
+  "America/Indiana/Tell_City"
+  "Europe/Isle_of_Man"
+  "Europe/Sofia"
+  "Australia/Melbourne"
+  "Africa/Luanda"
+  "America/North_Dakota/Center"
+  "America/Noronha"
+  "America/Maceio"
+  "America/Argentina/Cordoba"
+  "America/Antigua"
+  "America/Jujuy"
+  "Europe/Istanbul"
+  "ROK"
+  "Australia/Lindeman"
+  "America/Merida"
+}
+
+Enum EventLocale {
+  "en"
+  "de"
+  "de-formal"
+  "ar"
+  "bg"
+  "cs"
+  "el"
+  "es"
+  "fr"
+  "it"
+  "ja-jp"
+  "ko"
+  "nl"
+  "pl"
+  "pt-br"
+  "pt-pt"
+  "uk"
+  "vi"
+  "zh-hant"
+  "zh-hans"
+}
+
+Enum EventExtraLinkRole {
+  "footer"
+  "header"
+}
+
+Enum QueuedMailStates {
+  "draft"
+  "sending"
+  "sent"
+}
+
+Enum MailTemplateRoles {
+  "submission.new"
+  "submission.new.internal"
+  "submission.state.accepted"
+  "submission.state.rejected"
+  "speaker.invite"
+  "speaker.invite.existing"
+  "question.reminder"
+  "draft.reminder"
+  "schedule.new"
+}
+
+Enum SpeakerInformationTargetGroup {
+  "submitters"
+  "accepted"
+  "confirmed"
+}
+
+Enum UserLocale {
+  "en"
+  "de"
+  "de-formal"
+  "ar"
+  "bg"
+  "cs"
+  "el"
+  "es"
+  "fr"
+  "it"
+  "ja-jp"
+  "ko"
+  "nl"
+  "pl"
+  "pt-br"
+  "pt-pt"
+  "uk"
+  "vi"
+  "zh-hant"
+  "zh-hans"
+}
+
+Enum UserTimezone {
+  "PRC"
+  "Australia/West"
+  "Antarctica/DumontDUrville"
+  "Canada/Mountain"
+  "America/Boa_Vista"
+  "America/Porto_Acre"
+  "America/Argentina/Catamarca"
+  "Asia/Magadan"
+  "America/Guayaquil"
+  "America/Los_Angeles"
+  "Antarctica/Mawson"
+  "Australia/North"
+  "Pacific/Marquesas"
+  "GB-Eire"
+  "Asia/Karachi"
+  "Asia/Aden"
+  "Poland"
+  "Asia/Sakhalin"
+  "America/Santiago"
+  "Asia/Manila"
+  "Atlantic/Bermuda"
+  "Portugal"
+  "America/Indiana/Vevay"
+  "Australia/LHI"
+  "America/Argentina/Jujuy"
+  "Asia/Tehran"
+  "Asia/Calcutta"
+  "Pacific/Pohnpei"
+  "Pacific/Noumea"
+  "America/Indiana/Knox"
+  "America/Thunder_Bay"
+  "Africa/Dakar"
+  "Antarctica/Casey"
+  "America/Argentina/ComodRivadavia"
+  "Indian/Mauritius"
+  "Europe/Kaliningrad"
+  "Pacific/Tarawa"
+  "Asia/Bishkek"
+  "Asia/Novokuznetsk"
+  "Africa/Maseru"
+  "Asia/Vladivostok"
+  "Asia/Barnaul"
+  "Asia/Seoul"
+  "GMT+0"
+  "Pacific/Kosrae"
+  "Asia/Almaty"
+  "Asia/Macau"
+  "Antarctica/Davis"
+  "Antarctica/Vostok"
+  "Australia/Tasmania"
+  "America/Coyhaique"
+  "Africa/Lusaka"
+  "Africa/Monrovia"
+  "America/Kentucky/Louisville"
+  "America/Menominee"
+  "Asia/Saigon"
+  "Africa/Timbuktu"
+  "Canada/Newfoundland"
+  "Europe/Vaduz"
+  "America/Ojinaga"
+  "America/Rankin_Inlet"
+  "America/Winnipeg"
+  "Asia/Kuala_Lumpur"
+  "America/Havana"
+  "America/Argentina/La_Rioja"
+  "Mexico/General"
+  "America/Scoresbysund"
+  "America/Chihuahua"
+  "Europe/Stockholm"
+  "US/Mountain"
+  "Australia/South"
+  "Asia/Yakutsk"
+  "UTC"
+  "America/Catamarca"
+  "America/St_Kitts"
+  "America/Anguilla"
+  "Asia/Phnom_Penh"
+  "US/Alaska"
+  "Australia/Broken_Hill"
+  "Europe/Tallinn"
+  "Africa/Dar_es_Salaam"
+  "US/Hawaii"
+  "America/Indiana/Indianapolis"
+  "America/Argentina/Tucuman"
+  "Pacific/Enderbury"
+  "Asia/Gaza"
+  "Europe/Busingen"
+  "Asia/Dili"
+  "Europe/Bratislava"
+  "Europe/Amsterdam"
+  "America/Asuncion"
+  "CST6CDT"
+  "Europe/Vatican"
+  "Brazil/East"
+  "Europe/Zaporozhye"
+  "America/St_Johns"
+  "Pacific/Bougainville"
+  "Pacific/Yap"
+  "Pacific/Galapagos"
+  "Asia/Thimbu"
+  "Antarctica/Palmer"
+  "Pacific/Samoa"
+  "America/Tegucigalpa"
+  "Asia/Shanghai"
+  "Asia/Jakarta"
+  "America/Montevideo"
+  "America/Shiprock"
+  "Pacific/Funafuti"
+  "Africa/Abidjan"
+  "US/Aleutian"
+  "Indian/Mahe"
+  "NZ-CHAT"
+  "America/Dawson"
+  "Antarctica/Troll"
+  "America/Dominica"
+  "Brazil/Acre"
+  "America/Knox_IN"
+  "America/Indiana/Marengo"
+  "America/Montreal"
+  "Asia/Brunei"
+  "Asia/Rangoon"
+  "Europe/Nicosia"
+  "Indian/Reunion"
+  "America/Guatemala"
+  "GMT0"
+  "Asia/Tbilisi"
+  "Pacific/Truk"
+  "Africa/Douala"
+  "Atlantic/Azores"
+  "Australia/ACT"
+  "America/Argentina/San_Luis"
+  "Africa/Gaborone"
+  "America/Guyana"
+  "Pacific/Chuuk"
+  "Eire"
+  "Africa/Tripoli"
+  "Europe/Monaco"
+  "America/Sitka"
+  "America/Pangnirtung"
+  "America/Moncton"
+  "America/Manaus"
+  "America/Rio_Branco"
+  "America/Creston"
+  "Africa/Cairo"
+  "America/Toronto"
+  "America/Atikokan"
+  "Asia/Colombo"
+  "Africa/Johannesburg"
+  "US/Pacific"
+  "Australia/Hobart"
+  "America/Cordoba"
+  "GMT-0"
+  "Europe/Chisinau"
+  "Africa/Kigali"
+  "Africa/Malabo"
+  "Pacific/Palau"
+  "Europe/Sarajevo"
+  "Pacific/Saipan"
+  "America/Fort_Nelson"
+  "America/Santarem"
+  "Atlantic/Stanley"
+  "Africa/Freetown"
+  "America/Virgin"
+  "Europe/Belgrade"
+  "Pacific/Ponape"
+  "Asia/Yerevan"
+  "Africa/Harare"
+  "Europe/Oslo"
+  "Pacific/Tongatapu"
+  "Atlantic/Faeroe"
+  "Asia/Damascus"
+  "America/Campo_Grande"
+  "America/Mexico_City"
+  "Pacific/Auckland"
+  "Europe/Bucharest"
+  "Africa/Tunis"
+  "Asia/Dhaka"
+  "America/Indiana/Winamac"
+  "Asia/Tashkent"
+  "Asia/Yangon"
+  "America/Juneau"
+  "Indian/Christmas"
+  "Asia/Chita"
+  "America/Regina"
+  "Asia/Urumqi"
+  "Asia/Baghdad"
+  "America/Santo_Domingo"
+  "GMT"
+  "Europe/Ulyanovsk"
+  "Europe/Tirane"
+  "Asia/Nicosia"
+  "Africa/Bangui"
+  "Asia/Makassar"
+  "America/Buenos_Aires"
+  "Europe/Athens"
+  "Pacific/Honolulu"
+  "Antarctica/Macquarie"
+  "Pacific/Wallis"
+  "America/Boise"
+  "Europe/Riga"
+  "Asia/Kuwait"
+  "Atlantic/Madeira"
+  "Australia/Sydney"
+  "UCT"
+  "America/Recife"
+  "Europe/Berlin"
+  "Europe/London"
+  "ROC"
+  "Asia/Kashgar"
+  "Asia/Srednekolymsk"
+  "Africa/Asmera"
+  "Pacific/Port_Moresby"
+  "Africa/Juba"
+  "America/Chicago"
+  "Pacific/Johnston"
+  "Europe/Podgorica"
+  "Asia/Ashgabat"
+  "Zulu"
+  "Asia/Kabul"
+  "America/Anchorage"
+  "Africa/Conakry"
+  "CET"
+  "Africa/Nairobi"
+  "US/Indiana-Starke"
+  "Europe/Lisbon"
+  "Canada/Yukon"
+  "America/Cuiaba"
+  "America/Nassau"
+  "Africa/Ndjamena"
+  "W-SU"
+  "MST"
+  "Europe/Tiraspol"
+  "Europe/Jersey"
+  "Atlantic/St_Helena"
+  "Africa/Brazzaville"
+  "Europe/Rome"
+  "Pacific/Pago_Pago"
+  "Australia/Lord_Howe"
+  "HST"
+  "Japan"
+  "Australia/Brisbane"
+  "America/Grenada"
+  "Australia/Yancowinna"
+  "America/Iqaluit"
+  "Asia/Dacca"
+  "Chile/EasterIsland"
+  "Israel"
+  "Africa/Nouakchott"
+  "Africa/Kinshasa"
+  "Asia/Krasnoyarsk"
+  "Pacific/Kanton"
+  "America/Fort_Wayne"
+  "Canada/Atlantic"
+  "Asia/Ujung_Pandang"
+  "America/Indiana/Petersburg"
+  "Indian/Cocos"
+  "Universal"
+  "US/Arizona"
+  "America/Guadeloupe"
+  "Europe/Uzhgorod"
+  "America/Tortola"
+  "Australia/Queensland"
+  "America/Cayenne"
+  "Europe/Moscow"
+  "America/Fortaleza"
+  "Asia/Dubai"
+  "Africa/Bissau"
+  "America/Cayman"
+  "Hongkong"
+  "Pacific/Guam"
+  "America/Monterrey"
+  "America/Godthab"
+  "Libya"
+  "Asia/Pyongyang"
+  "Brazil/DeNoronha"
+  "America/Atka"
+  "America/Bogota"
+  "Pacific/Rarotonga"
+  "Europe/Kirov"
+  "America/New_York"
+  "Africa/El_Aaiun"
+  "Europe/Prague"
+  "Atlantic/Faroe"
+  "America/Managua"
+  "America/Barbados"
+  "Asia/Ashkhabad"
+  "Asia/Qostanay"
+  "Asia/Dushanbe"
+  "Antarctica/South_Pole"
+  "Europe/Zurich"
+  "America/Metlakatla"
+  "America/Indiana/Vincennes"
+  "localtime"
+  "Atlantic/Reykjavik"
+  "Asia/Bahrain"
+  "America/Kentucky/Monticello"
+  "Africa/Bujumbura"
+  "Asia/Irkutsk"
+  "Europe/Skopje"
+  "America/Matamoros"
+  "Pacific/Kwajalein"
+  "Africa/Mogadishu"
+  "Asia/Atyrau"
+  "MET"
+  "Arctic/Longyearbyen"
+  "Europe/Vienna"
+  "Indian/Mayotte"
+  "America/Argentina/Buenos_Aires"
+  "Pacific/Fiji"
+  "Europe/Dublin"
+  "Pacific/Chatham"
+  "Africa/Maputo"
+  "America/Kralendijk"
+  "America/Glace_Bay"
+  "Pacific/Norfolk"
+  "Asia/Famagusta"
+  "Indian/Antananarivo"
+  "America/Santa_Isabel"
+  "America/Belize"
+  "Asia/Hong_Kong"
+  "Asia/Aqtau"
+  "America/Blanc-Sablon"
+  "America/Lower_Princes"
+  "Pacific/Apia"
+  "America/Eirunepe"
+  "America/Tijuana"
+  "America/Goose_Bay"
+  "America/Martinique"
+  "Asia/Chongqing"
+  "Europe/Samara"
+  "Asia/Oral"
+  "Asia/Istanbul"
+  "Asia/Jerusalem"
+  "EST"
+  "Europe/Warsaw"
+  "Australia/Victoria"
+  "Asia/Amman"
+  "US/Eastern"
+  "Asia/Baku"
+  "US/Michigan"
+  "Africa/Casablanca"
+  "Atlantic/Jan_Mayen"
+  "Asia/Hovd"
+  "Africa/Niamey"
+  "America/Belem"
+  "Asia/Novosibirsk"
+  "America/Paramaribo"
+  "America/Detroit"
+  "EET"
+  "America/Jamaica"
+  "Iceland"
+  "Mexico/BajaSur"
+  "Australia/Eucla"
+  "America/Swift_Current"
+  "Asia/Hebron"
+  "Asia/Khandyga"
+  "America/Cambridge_Bay"
+  "Pacific/Fakaofo"
+  "NZ"
+  "America/Indianapolis"
+  "America/Argentina/San_Juan"
+  "Europe/Budapest"
+  "America/Halifax"
+  "America/Argentina/Rio_Gallegos"
+  "America/Aruba"
+  "America/Curacao"
+  "Asia/Anadyr"
+  "Asia/Qyzylorda"
+  "Pacific/Easter"
+  "Pacific/Kiritimati"
+  "MST7MDT"
+  "Asia/Kolkata"
+  "Canada/Eastern"
+  "America/Caracas"
+  "Asia/Bangkok"
+  "Africa/Blantyre"
+  "America/Ensenada"
+  "Europe/Madrid"
+  "Europe/Gibraltar"
+  "Africa/Ceuta"
+  "America/Araguaina"
+  "Europe/Luxembourg"
+  "PST8PDT"
+  "Asia/Beirut"
+  "Canada/Pacific"
+  "Australia/Darwin"
+  "America/Phoenix"
+  "Asia/Ulaanbaatar"
+  "America/Bahia"
+  "Africa/Sao_Tome"
+  "Asia/Macao"
+  "US/East-Indiana"
+  "Europe/Copenhagen"
+  "America/Puerto_Rico"
+  "America/Argentina/Salta"
+  "Europe/Brussels"
+  "Asia/Taipei"
+  "Asia/Vientiane"
+  "Africa/Algiers"
+  "America/Nome"
+  "America/Port_of_Spain"
+  "Asia/Kuching"
+  "America/Port-au-Prince"
+  "Australia/Adelaide"
+  "America/Nuuk"
+  "America/Yellowknife"
+  "GB"
+  "Asia/Tel_Aviv"
+  "Europe/Minsk"
+  "America/Mazatlan"
+  "Kwajalein"
+  "Europe/Paris"
+  "America/Danmarkshavn"
+  "Indian/Comoro"
+  "Pacific/Majuro"
+  "Asia/Omsk"
+  "America/Mendoza"
+  "America/Punta_Arenas"
+  "America/Denver"
+  "America/Marigot"
+  "Australia/Canberra"
+  "Atlantic/South_Georgia"
+  "Atlantic/Canary"
+  "America/Argentina/Ushuaia"
+  "Asia/Yekaterinburg"
+  "Europe/Volgograd"
+  "Asia/Kamchatka"
+  "US/Samoa"
+  "Europe/Andorra"
+  "Asia/Muscat"
+  "America/North_Dakota/New_Salem"
+  "America/Cancun"
+  "Asia/Singapore"
+  "America/St_Thomas"
+  "Jamaica"
+  "Europe/Astrakhan"
+  "US/Central"
+  "America/Ciudad_Juarez"
+  "America/St_Vincent"
+  "America/El_Salvador"
+  "Asia/Jayapura"
+  "America/Bahia_Banderas"
+  "Singapore"
+  "Asia/Samarkand"
+  "Europe/Helsinki"
+  "America/Yakutat"
+  "Pacific/Midway"
+  "Asia/Riyadh"
+  "Africa/Asmara"
+  "America/Whitehorse"
+  "Europe/San_Marino"
+  "America/Edmonton"
+  "America/Argentina/Mendoza"
+  "America/Vancouver"
+  "Africa/Lome"
+  "America/Hermosillo"
+  "Asia/Pontianak"
+  "Pacific/Gambier"
+  "Europe/Guernsey"
+  "Indian/Maldives"
+  "America/Panama"
+  "Greenwich"
+  "Antarctica/Rothera"
+  "Pacific/Wake"
+  "Asia/Thimphu"
+  "Africa/Mbabane"
+  "Europe/Saratov"
+  "Asia/Tokyo"
+  "Africa/Banjul"
+  "Atlantic/Cape_Verde"
+  "Asia/Harbin"
+  "Pacific/Niue"
+  "Europe/Kyiv"
+  "America/Resolute"
+  "Pacific/Guadalcanal"
+  "Pacific/Nauru"
+  "Iran"
+  "Canada/Central"
+  "Europe/Mariehamn"
+  "Asia/Ho_Chi_Minh"
+  "Australia/Currie"
+  "Factory"
+  "America/Coral_Harbour"
+  "America/Porto_Velho"
+  "Africa/Djibouti"
+  "America/La_Paz"
+  "Africa/Lubumbashi"
+  "America/Rainy_River"
+  "America/Costa_Rica"
+  "Brazil/West"
+  "America/Grand_Turk"
+  "Mexico/BajaNorte"
+  "Africa/Addis_Ababa"
+  "America/St_Lucia"
+  "America/Inuvik"
+  "Asia/Qatar"
+  "Asia/Aqtobe"
+  "Asia/Ulan_Bator"
+  "America/Nipigon"
+  "America/Rosario"
+  "Africa/Khartoum"
+  "EST5EDT"
+  "Pacific/Pitcairn"
+  "America/Montserrat"
+  "Europe/Belfast"
+  "Antarctica/McMurdo"
+  "Europe/Zagreb"
+  "Europe/Kiev"
+  "America/Dawson_Creek"
+  "Pacific/Tahiti"
+  "Pacific/Efate"
+  "Africa/Windhoek"
+  "Canada/Saskatchewan"
+  "Europe/Vilnius"
+  "Egypt"
+  "America/St_Barthelemy"
+  "Indian/Chagos"
+  "Europe/Simferopol"
+  "Africa/Kampala"
+  "Asia/Ust-Nera"
+  "Australia/Perth"
+  "Turkey"
+  "Navajo"
+  "America/North_Dakota/Beulah"
+  "Africa/Bamako"
+  "Europe/Ljubljana"
+  "America/Lima"
+  "America/Adak"
+  "Asia/Kathmandu"
+  "Asia/Tomsk"
+  "America/Miquelon"
+  "Cuba"
+  "Asia/Chungking"
+  "America/Sao_Paulo"
+  "Asia/Choibalsan"
+  "Australia/NSW"
+  "Indian/Kerguelen"
+  "Europe/Malta"
+  "Africa/Ouagadougou"
+  "WET"
+  "Chile/Continental"
+  "Africa/Porto-Novo"
+  "America/Louisville"
+  "Africa/Libreville"
+  "Antarctica/Syowa"
+  "Asia/Katmandu"
+  "America/Thule"
+  "Africa/Accra"
+  "Africa/Lagos"
+  "America/Indiana/Tell_City"
+  "Europe/Isle_of_Man"
+  "Europe/Sofia"
+  "Australia/Melbourne"
+  "Africa/Luanda"
+  "America/North_Dakota/Center"
+  "America/Noronha"
+  "America/Maceio"
+  "America/Argentina/Cordoba"
+  "America/Antigua"
+  "America/Jujuy"
+  "Europe/Istanbul"
+  "ROK"
+  "Australia/Lindeman"
+  "America/Merida"
+}
+
+Enum SlotType {
+  "break"
+  "blocker"
+}
+
+Enum QuestionVariant {
+  "number"
+  "string"
+  "text"
+  "url"
+  "date"
+  "datetime"
+  "boolean"
+  "file"
+  "choices"
+  "multiple_choice"
+}
+
+Enum QuestionTarget {
+  "submission"
+  "speaker"
+  "reviewer"
+}
+
+Enum QuestionRequired {
+  "optional"
+  "required"
+  "after_deadline"
+}
+
+Enum QuestionIcon {
+  "-"
+  "bsky"
+  "discord"
+  "github"
+  "instagram"
+  "linkedin"
+  "mastodon"
+  "twitter"
+  "web"
+  "youtube"
+}
+
+Enum ReviewPhaseProposalVisibility {
+  "all"
+  "assigned"
+}
+
+Enum ReviewPhaseCanSeeOtherReviews {
+  "always"
+  "never"
+  "after_review"
+}
+
+Enum ReviewPhaseCanTagSubmissions {
+  "never"
+  "use_tags"
+  "create_tags"
+}
+
+Enum AttendeeSignupStates {
+  "confirmed"
+  "canceled"
+}
+
+Enum SubmissionStates {
+  "submitted"
+  "accepted"
+  "confirmed"
+  "rejected"
+  "canceled"
+  "withdrawn"
+  "draft"
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table authtoken_token {
+  key varchar(40) [pk]
+  user_id integer [unique, not null]
+  created datetime [not null, note: 'default in Python: now()']
+
+  Note: '''The default authorization token model.
+
+Proxy models: TokenProxy.'''
+}
+
+Table common_activitylog {
+  id integer [pk, increment]
+  event_id integer
+  person_id integer
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  timestamp datetime [not null, note: 'default in Python: now()']
+  action_type varchar(200) [not null]
+  data text [note: 'default in Python: dict()']
+  is_orga_action bool [default: false, not null]
+
+  indexes {
+    (event_id) [name: 'common_activitylog_event_id_5e6aed3b']
+    (person_id) [name: 'common_activitylog_person_id_a022fe39']
+    (content_type_id) [name: 'common_activitylog_content_type_id_76ada9b1']
+    (object_id) [name: 'common_activitylog_object_id_56e237b3']
+    (timestamp) [name: 'common_activitylog_timestamp_5328df2f']
+  }
+
+  Note: '''This model logs actions within an event.
+
+It is **not** designed to provide a complete or reliable audit
+trail.
+
+:param is_orga_action: True, if the logged action was performed by a privileged user.'''
+}
+
+Table common_cachedfile {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  expires datetime [not null]
+  timestamp datetime
+  filename varchar(255) [not null]
+  content_type varchar(255) [not null]
+  session_key text
+  file varchar(255)
+
+  indexes {
+    (expires) [name: 'common_cach_expires_d8715c_idx']
+  }
+
+  Note: '''An uploaded file, primarily used for API uploads. Deleted after expiry.'''
+}
+
+Table common_globalsettings_settingsstore {
+  id integer [pk, increment]
+  key varchar(255) [not null]
+  value text [not null]
+
+  indexes {
+    (key) [unique, name: 'common_globalsettings_settingsstore_key_7e817c31_uniq']
+  }
+
+  Note: '''Columns from BaseHierarkeyStoreModel (abstract): key, value.'''
+}
+
+Table event_event {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  name text [not null]
+  slug varchar(50) [unique, not null, note: 'The slug may only contain letters, numbers, dots and dashes.']
+  organiser_id integer
+  is_public bool [default: false, not null]
+  date_from date [not null]
+  date_to date [not null]
+  timezone EventTimezone [default: 'UTC', not null, note: 'All event dates will be localised and interpreted to be in this timezone.']
+  email varchar(254) [not null, note: 'Will be used as Reply-To in emails.']
+  custom_domain varchar(200) [note: 'Enter a custom domain, such as https://my.event.example.org']
+  feature_flags text [not null, note: 'default in Python: default_feature_flags()']
+  display_settings text [not null, note: 'default in Python: default_display_settings()']
+  review_settings text [not null, note: 'default in Python: default_review_settings()']
+  mail_settings text [not null, note: 'default in Python: default_mail_settings()']
+  attendee_signup_settings text [not null, note: 'default in Python: default_attendee_signup_settings()']
+  primary_color varchar(7) [note: 'Provide a hex value like #00ff00 if you want to style pretalx in your event’s colour scheme.']
+  custom_css varchar(100) [note: 'Upload a custom CSS file if changing the primary colour is not sufficient for you.']
+  logo varchar(100) [note: 'If you provide a logo image, your event’s name will not be shown in the event header. The logo will be scaled down to a height of 140px.']
+  header_image varchar(100) [note: 'If you provide a header image, it will be displayed instead of your event’s color and/or header pattern at the top of all event pages. It will be center-aligned, so when the window shrinks, the center parts will continue to be displayed, and not stretched.']
+  og_image varchar(100) [note: 'This image will be shown as a preview when links to your event are shared on social media or messaging apps. For best results, use an image at least 1200x630 pixels. If not set, the logo or header image will be used instead.']
+  locales text [not null, note: 'default in Python: default_locales()']
+  content_locales text [not null, note: 'default in Python: default_locales()']
+  locale EventLocale [default: 'en', not null]
+  landing_page_text text [note: 'This text will be shown on the landing page, alongside with links to the CfP and schedule, if appropriate. You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+  featured_sessions_text text [note: 'This text will be shown at the top of the featured sessions page instead of the default text. You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+  plugins text
+
+  indexes {
+    (organiser_id) [name: 'event_event_organiser_id_5182de02']
+    (`LOWER("slug")`) [unique, name: 'event_slug_lower_unique']
+  }
+
+  Note: '''The Event class has direct or indirect relations to all other models.
+
+Since most models depend on the Event model in some way, they should
+preferably be accessed via the reverse relation on the event model to
+prevent data leaks.
+
+:param is_public: Is this event public yet? Should only be set via the
+    ``pretalx.orga.views.EventLive`` view or in another way that processes
+    the ``pretalx.orga.signals.activate_event`` signal.
+:param locales: Contains the event’s active locales as a list of
+    language codes.
+:param content_locales: Contains the event’s active locales available
+    for proposals as a list of language codes.
+:param primary_color: Main event colour. Accepts hex values like
+    ``#00ff00``.
+:param custom_css: Custom event CSS. Has to pass fairly restrictive
+    validation for security considerations.
+:param custom_domain: Custom event domain, starting with ``https://``.
+:param plugins: A list of active plugins as a comma-separated string.
+    Please use the ``plugin_list`` property for interaction.
+:param feature_flags: A JSON field containing feature flags for this event.
+    Please use the ``get_feature_flag`` method to check for features,
+    so that new feature flags can be added without breaking existing events.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table event_event_settingsstore {
+  id integer [pk, increment]
+  key varchar(255) [not null]
+  value text [not null]
+  object_id integer [not null]
+
+  indexes {
+    (object_id) [name: 'event_event_settingsstore_object_id_6fa9ca62']
+    (object_id, key) [unique, name: 'event_event_settingsstore_object_id_key_d1474c74_uniq']
+  }
+
+  Note: '''Columns from BaseHierarkeyStoreModel (abstract): key, value.'''
+}
+
+Table event_eventextralink {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  label text [not null]
+  url varchar(200) [not null]
+  role EventExtraLinkRole [default: 'footer', not null]
+
+  indexes {
+    (event_id) [name: 'event_eventextralink_event_id_2edaba59']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table event_organiser {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  name text [not null]
+  slug varchar(50) [unique, not null, note: 'Should be short, only contain lowercase letters and numbers, and must be unique, as it is used in URLs.']
+
+  Note: '''The Organiser model represents the entity responsible for at least one.
+
+:class:`~pretalx.event.models.event.Event`.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table event_team {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  organiser_id integer [not null]
+  name varchar(190) [not null]
+  all_events bool [default: false, not null]
+  can_create_events bool [default: false, not null]
+  can_change_teams bool [default: false, not null]
+  can_change_organiser_settings bool [default: false, not null]
+  can_change_event_settings bool [default: false, not null]
+  can_change_submissions bool [default: false, not null]
+  is_reviewer bool [default: false, not null]
+  force_hide_speaker_names bool [default: false, not null, note: 'Normally, anonymisation is configured in the event review settings. This setting will <strong>override the event settings</strong> and always hide speaker names for this team.']
+
+  indexes {
+    (organiser_id) [name: 'event_team_organiser_id_feade463']
+  }
+
+  Note: '''A team is a group of people working for the same organiser.
+
+Team members (of type :class:`~pretalx.person.models.user.User`) share
+permissions for one or several events of
+:class:`~pretalx.event.models.organiser.Organiser`.  People can be in
+multiple Teams, and will have all permissions *any* of their teams has.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table event_teaminvite {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  team_id integer [not null]
+  email varchar(254)
+  token varchar(64) [unique, note: 'default in Python: generate_invite_token()']
+
+  indexes {
+    (team_id) [name: 'event_teaminvite_team_id_94fe7de4']
+  }
+
+  Note: '''A TeamInvite is someone who has been invited to a team but hasn\'t accept
+the invitation yet.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table mail_queuedmail {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer
+  template_id integer
+  to varchar(1000) [note: 'One email address or several addresses separated by commas.']
+  reply_to varchar(1000) [note: 'By default, the organiser address is used as Reply-To.']
+  cc varchar(1000) [note: 'One email address or several addresses separated by commas.']
+  bcc varchar(1000) [note: 'One email address or several addresses separated by commas.']
+  subject varchar(200) [not null]
+  text text [not null]
+  text_html text
+  sent datetime
+  state QueuedMailStates [default: 'draft', not null]
+  error_data text [default: null]
+  error_timestamp datetime
+  locale varchar(32)
+  attachments text [default: null]
+
+  indexes {
+    (event_id) [name: 'mail_queuedmail_event_id_ca510901']
+    (template_id) [name: 'mail_queuedmail_template_id_00a74b04']
+    (state) [name: 'mail_queuedmail_state_4b73bea9']
+  }
+
+  Note: '''Emails in pretalx are rarely sent directly, hence the name QueuedMail.
+
+This mechanism allows organisers to make sure they send out the right
+content, and to include personal changes in emails.
+
+:param sent: ``None`` if the mail has not been sent yet.
+:param to_users: All known users to whom this email is addressed.
+:param to: A comma-separated list of email addresses to whom this email
+    is addressed. Does not contain any email addresses known to belong
+    to users.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table mail_mailtemplate {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  role MailTemplateRoles [default: null]
+  subject text [not null]
+  text text [not null]
+  reply_to varchar(200) [note: 'Change the Reply-To address if you do not want to use the default organiser address']
+  bcc varchar(1000) [note: 'Enter comma separated addresses. Will receive a blind copy of every email sent from this template. This may be a LOT!']
+  is_auto_created bool [default: false, not null]
+
+  indexes {
+    (event_id) [name: 'mail_mailtemplate_event_id_5a51c3ca']
+    (event_id, role) [unique, name: 'mail_mailtemplate_event_id_role_cf04c709_uniq']
+  }
+
+  Note: '''MailTemplates can be used to create.
+
+:class:`~pretalx.mail.models.QueuedMail` objects.
+
+The process does not come with variable substitution except for
+special cases, for now.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_attendeeprofile {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  event_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'person_attendeeprofile_user_id_b29b30cb']
+    (event_id) [name: 'person_attendeeprofile_event_id_d85035fc']
+    (event_id, user_id) [unique, name: 'person_attendeeprofile_event_id_user_id_6fdf454a_uniq']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_userapitoken {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  name varchar(190) [not null]
+  token varchar(64) [unique, not null, note: 'default in Python: generate_api_token()']
+  user_id integer [not null]
+  all_events bool [default: false, not null]
+  expires datetime
+  endpoints text [not null, note: 'default in Python: dict()']
+  version varchar(12)
+  last_used datetime
+
+  indexes {
+    (user_id) [name: 'person_userapitoken_user_id_aae629ac']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_speakerinformation {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  target_group SpeakerInformationTargetGroup [default: 'accepted', not null]
+  title text [not null]
+  text text [not null, note: 'You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+  resource varchar(100) [note: 'Please try to keep your upload small, preferably below 16 MB.']
+
+  indexes {
+    (event_id) [name: 'person_speakerinformation_event_id_78cb600b']
+  }
+
+  Note: '''Represents any information organisers want to show all or some
+submitters or speakers.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_profilepicture {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  avatar varchar(100)
+  avatar_thumbnail varchar(100)
+  avatar_thumbnail_tiny varchar(100)
+
+  indexes {
+    (user_id) [name: 'person_profilepicture_user_id_e9610460']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_usereventpreferences {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  event_id integer
+  preferences text [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (user_id) [name: 'person_usereventpreferences_user_id_260c67ae']
+    (event_id) [name: 'person_usereventpreferences_event_id_4a58b755']
+    (user_id, event_id) [unique, name: 'unique_user_event_preferences']
+    (user_id) [unique, name: 'unique_user_global_preferences', note: 'where "event_id" IS NULL']
+  }
+
+  Note: '''Per-user preferences, scoped to an event. ``event=None`` is for
+global preferences, e.g. tables outside of an event context.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_speakerprofile {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  user_id integer
+  event_id integer [not null]
+  name varchar(120)
+  code varchar(16) [not null]
+  biography text
+  has_arrived bool [default: false, not null]
+  internal_notes text [note: 'Internal notes for other organisers/reviewers. Not visible to the speakers or the public.']
+  profile_picture_id integer
+
+  indexes {
+    (user_id) [name: 'person_speakerprofile_user_id_09b02b91']
+    (event_id) [name: 'person_speakerprofile_event_id_b906742f']
+    (profile_picture_id) [name: 'person_speakerprofile_profile_picture_id_c787d307']
+    (event_id, code) [unique, name: 'person_speakerprofile_event_id_code_6694fe39_uniq']
+    (event_id, user_id) [unique, name: 'person_speakerprofile_event_id_user_id_3d8da868_uniq']
+  }
+
+  Note: '''All :class:`~pretalx.event.models.event.Event` related data concerning
+a.
+
+:class:`~pretalx.person.models.user.User` is stored here.
+
+:param has_arrived: Can be set to track speaker arrival. Will be used in
+    warnings about missing speakers.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table person_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  code varchar(16) [unique]
+  nick varchar(60)
+  name varchar(120) [not null, note: 'Please enter the name you wish to be displayed publicly. This name will be used for all events you are participating in on this server.']
+  email varchar(254) [unique, not null, note: 'Your email address will be used for password resets and notification about your event/proposals.']
+  created datetime [not null, note: 'default in Python: now()']
+  is_active bool [default: true, not null, note: 'Inactive users are not allowed to log in.']
+  is_staff bool [default: false, not null, note: 'A default Django flag. Not in use in pretalx.']
+  is_administrator bool [default: false, not null, note: 'Should only be ``True`` for people with administrative access to the server pretalx runs on.']
+  is_superuser bool [default: false, not null, note: 'Never set this flag to ``True``, since it short-circuits all authorisation mechanisms.']
+  locale UserLocale [default: 'en', not null]
+  timezone UserTimezone [default: 'UTC', not null]
+  profile_picture_id integer
+  pw_reset_token varchar(160)
+  pw_reset_time datetime
+
+  indexes {
+    (profile_picture_id) [name: 'person_user_profile_picture_id_c87ac1ce']
+    (`LOWER("email")`) [unique, name: 'person_user_email_unique_ci']
+  }
+
+  Note: '''The pretalx user model.
+
+Users describe all kinds of persons who interact with pretalx: Organisers, reviewers, submitters, speakers.
+
+:param code: A user\'s alphanumeric code is auto generated, may not be
+    changed, and is the unique identifier of that user.
+:param name: A name fit for public display. Will be used in the user
+    interface and for public display for all speakers in all of their
+    events.
+:param password: The password is stored using Django\'s PasswordField. Use
+    the ``set_password`` and ``check_password`` methods to interact with it.
+:param nick: The nickname field has been deprecated and is scheduled to be
+    deleted. Use the email field instead.
+:param groups: Django internals, not used in pretalx.
+:param user_permissions: Django internals, not used in pretalx.
+
+Columns from PermissionsMixin (abstract): is_superuser.
+
+Columns from AbstractBaseUser (abstract): password, last_login.'''
+}
+
+Table schedule_availability {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  person_id integer
+  room_id integer
+  start datetime [not null]
+  end datetime [not null]
+
+  indexes {
+    (event_id) [name: 'schedule_availability_event_id_174e5a0a']
+    (person_id) [name: 'schedule_availability_person_id_e5b2d8e3']
+    (room_id) [name: 'schedule_availability_room_id_4a6ef8be']
+  }
+
+  Note: '''The Availability class models when people or rooms are available for.
+
+:class:`~pretalx.schedule.models.slot.TalkSlot` objects.
+
+The power of this class is not within its rather simple data model,
+but with the operations available on it. An availability object can
+span multiple days, but due to our choice of input widget, it will
+usually only span a single day at most.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table schedule_room {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  name text [not null]
+  guid char(32) [note: 'Unique identifier (UUID) to help external tools identify the room.']
+  description text [note: 'A description for attendees, for example directions.']
+  speaker_info text [note: 'Information relevant for speakers scheduled in this room, for example room size, special directions, available adaptors for video input …']
+  capacity "integer unsigned" [note: 'How many people can fit in the room?']
+  position "integer unsigned"
+
+  indexes {
+    (event_id) [name: 'schedule_room_event_id_e88039cd']
+    (event_id, guid) [unique, name: 'schedule_room_event_id_guid_7845b5a4_uniq']
+  }
+
+  Note: '''A Room is an actual place where talks will be scheduled.
+
+The Room object stores some meta information. Most, like capacity,
+are not in use right now.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table schedule_schedule {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  version varchar(190)
+  published datetime
+  comment text [note: 'This text will be shown in the public changelog and the RSS feed. You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+
+  indexes {
+    (event_id) [name: 'schedule_schedule_event_id_17a9b031']
+    (event_id, version) [unique, name: 'schedule_schedule_event_id_version_527bf2fa_uniq']
+  }
+
+  Note: '''The Schedule model contains all scheduled.
+
+:class:`~pretalx.schedule.models.slot.TalkSlot` objects (visible or not)
+for a schedule release for an :class:`~pretalx.event.models.event.Event`.
+
+:param published: ``None`` if the schedule has not been published yet.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table schedule_talkslot {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer
+  room_id integer [note: 'The room this session is scheduled in, if any']
+  schedule_id integer [not null]
+  is_visible bool [default: false, not null]
+  slot_type SlotType [note: 'For non-submission slots: \'break\' for public breaks, \'blocker\' for hidden blockers']
+  start datetime [note: 'When the session starts, if it is currently scheduled']
+  end datetime [note: 'When the session ends, if it is currently scheduled']
+  description text
+
+  indexes {
+    (submission_id) [name: 'schedule_talkslot_submission_id_4c2e011f']
+    (room_id) [name: 'schedule_talkslot_room_id_1ae74d93']
+    (schedule_id) [name: 'schedule_talkslot_schedule_id_4754e9e5']
+  }
+
+  Note: '''The TalkSlot object is the scheduled version of a.
+
+:class:`~pretalx.submission.models.submission.Submission`.
+
+TalkSlots always belong to one submission and one :class:`~pretalx.schedule.models.schedule.Schedule`.
+
+:param is_visible: This parameter is set on schedule release. Only confirmed talks will be visible.
+:param slot_type: For non-submission slots, distinguishes breaks (visible) from blockers (hidden).
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_submitteraccesscode {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  code varchar(255) [not null]
+  valid_until datetime [note: 'You can set or change this date later to invalidate the access code.']
+  maximum_uses "integer unsigned" [default: 1, note: 'Number of times this access code can be used to submit a proposal. Leave empty for no limit.']
+  redeemed "integer unsigned" [default: 0, not null]
+  internal_notes text [note: 'Internal notes for other organisers/reviewers. Not visible to the speakers or the public.']
+
+  indexes {
+    (event_id) [name: 'submission_submitteraccesscode_event_id_4cfedfb3']
+    (code) [name: 'submission_submitteraccesscode_code_82e63255']
+    (event_id, code) [unique, name: 'submission_submitteraccesscode_event_id_code_6658fa84_uniq']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_cfp {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [unique, not null]
+  headline text
+  text text [note: 'You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+  default_type_id integer [not null]
+  opening datetime [note: 'Please put in the date you want to start accepting proposals from users. Leave the date empty to start accepting proposals immediately once the event is live.']
+  deadline datetime [note: 'Please put in the last date you want to accept proposals from users.']
+  settings text [not null, note: 'default in Python: default_settings()']
+  fields text [not null, note: 'default in Python: default_fields()']
+
+  indexes {
+    (default_type_id) [name: 'submission_cfp_default_type_id_6d7d90e0']
+  }
+
+  Note: '''Every :class:`~pretalx.event.models.event.Event` has one Call for
+Papers/Participation/Proposals.
+
+:param deadline: The regular deadline. Please note that submissions can be available for longer than this if different deadlines are configured on single submission types.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_submissioncomment {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer [not null]
+  user_id integer [not null]
+  text text [not null]
+  reply_to_id integer
+
+  indexes {
+    (submission_id) [name: 'submission_submissioncomment_submission_id_fc9ba045']
+    (user_id) [name: 'submission_submissioncomment_user_id_2aa70c2b']
+    (reply_to_id) [name: 'submission_submissioncomment_reply_to_id_eb41eb34']
+  }
+
+  Note: '''Comments allow reviewers and organisers to discuss submissions.
+
+They are separate from reviews and provide a forum-style discussion space.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_feedback {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  talk_id integer [not null]
+  speaker_id integer
+  rating integer
+  review text [not null]
+
+  indexes {
+    (talk_id) [name: 'submission_feedback_talk_id_e978babd']
+    (speaker_id) [name: 'submission_feedback_speaker_id_f83c9585']
+  }
+
+  Note: '''The Feedback model allows for anonymous feedback by attendees to one or
+all speakers of a.
+
+:class:`~pretalx.submission.models.submission.Submission`.
+
+:param speaker: If the ``speaker`` attribute is not set, the feedback is
+    assumed to be directed to all speakers.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_question {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  variant QuestionVariant [default: 'string', not null]
+  target QuestionTarget [default: 'submission', not null, note: 'Do you require an answer from every speaker or for every session?']
+  deadline datetime [note: 'Set a deadline to make this field required after the given date.']
+  freeze_after datetime [note: 'Set a deadline to stop changes to responses after the given date.']
+  question_required QuestionRequired [default: 'optional', not null]
+  question text [not null]
+  help_text text [note: 'Will appear just like this text below the custom input field. You can use <a href="https://docs.pretalx.org/user/markdown/" target="_blank" rel="noopener">Markdown</a> here.']
+  default_answer text
+  position integer [default: 0, not null]
+  identifier varchar(190) [not null, note: 'You can enter any value here to make it easier to match the data with other sources. If you do not input one, we will generate one automatically.']
+  active bool [default: true, not null, note: 'Inactive fields will no longer be shown.']
+  contains_personal_data bool [default: true, not null, note: 'If a user deletes their account, responses containing personal data will be removed, too.']
+  min_length "integer unsigned" [note: 'Minimum text length in characters or words (set in CfP settings).']
+  max_length "integer unsigned" [note: 'Maximum text length in characters or words (set in CfP settings).']
+  min_number decimal [note: 'declared max_digits=16, decimal_places=6, which the database does not enforce']
+  max_number decimal [note: 'declared max_digits=16, decimal_places=6, which the database does not enforce']
+  min_date date
+  max_date date
+  min_datetime datetime
+  max_datetime datetime
+  is_public bool [default: false, not null, note: 'Responses will be shown on session or speaker pages as appropriate.']
+  is_visible_to_reviewers bool [default: true, not null, note: 'Should responses to this field be shown to reviewers? This is helpful if you want to collect personal information, but use anonymous reviews.']
+  icon QuestionIcon [default: null, note: 'Custom URL fields that are shown publicly can use an icon when displaying the link.']
+
+  indexes {
+    (event_id) [name: 'submission_question_event_id_0e76ef19']
+    (event_id, identifier) [unique, name: 'submission_question_event_id_identifier_0e035842_uniq']
+  }
+
+  Note: '''Questions can be asked per.
+
+:class:`~pretalx.submission.models.submission.Submission`, per speaker, or
+of reviewers per :class:`~pretalx.submission.models.review.Review`.
+
+Questions can have many types, which offers a flexible framework to give organisers
+the opportunity to get all the information they need.
+
+:param variant: Can be any of \'number\', \'string\', \'text\', \'boolean\',
+    \'file\', \'choices\', or \'multiple_choice\'. Defined in the
+    ``QuestionVariant`` class.
+:param target: Can be any of \'submission\', \'speaker\', or \'reviewer\'.
+    Defined in the ``QuestionTarget`` class.
+:param deadline: Datetime field. This field is required for \'after deadline\' and \'freeze after\' options of
+    question_required field and optional for the other ones. For \'after deadline\' it shows that the answer will
+    be optional before the deadline and mandatory after that deadline. For \'freeze after\' it shows that the
+    answer will be allowed before the deadline and frozen after that deadline
+:param question_required: Can be any of \'none\', \'require \', \'after deadline\', or \'freeze after\'.
+    Defined in the ``QuestionRequired`` class.
+    \'required\' answering this question will always be required.
+    \'optional\' means that it will never be mandatory.
+    \'after deadline\' the answer will be optional before the deadline and mandatory after the deadline.
+:param freeze_after: Can be a datetime field or null.
+    For \'freeze after\' the answer will be allowed before the deadline and frozen after the deadline.
+:param position: Position in the question order in this event.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_answeroption {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  question_id integer [not null]
+  answer text [not null]
+  position integer [default: 0, not null]
+  identifier varchar(190) [not null, note: 'You can enter any value here to make it easier to match the data with other sources. If you do not input one, we will generate one automatically.']
+
+  indexes {
+    (question_id) [name: 'submission_answeroption_question_id_6a3c1b6c']
+    (question_id, identifier) [unique, name: 'submission_answeroption_question_id_identifier_78de2880_uniq']
+  }
+
+  Note: '''Provides the possible answers for.
+
+:class:`~pretalx.submission.models.question.Question` objects of variant
+\'choice\' or \'multiple_choice\'.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_answer {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  question_id integer [not null]
+  submission_id integer
+  speaker_id integer
+  review_id integer
+  answer text [not null]
+  answer_file varchar(100)
+
+  indexes {
+    (question_id) [name: 'submission_answer_question_id_6bdb8859']
+    (submission_id) [name: 'submission_answer_submission_id_33bfd6bf']
+    (speaker_id) [name: 'submission_answer_speaker_id_54bde10f']
+    (review_id) [name: 'submission_answer_review_id_76251737']
+  }
+
+  Note: '''Answers are connected to a.
+
+:class:`~pretalx.submission.models.question.Question`, and, depending on
+type, a :class:`~pretalx.person.models.profile.SpeakerProfile`, a
+:class:`~pretalx.submission.models.submission.Submission`, or a
+:class:`~pretalx.submission.models.review.Review`.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_resource {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer [not null]
+  resource varchar(100)
+  link varchar(400)
+  description varchar(1000) [not null]
+  is_public bool [default: true, not null]
+
+  indexes {
+    (submission_id) [name: 'submission_resource_submission_id_f846b95b']
+  }
+
+  Note: '''Resources are file uploads belonging to a :class:`~pretalx.submission.models.submission.Submission`.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_reviewscorecategory {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  name text [not null]
+  weight decimal [default: 1, not null, note: 'declared max_digits=4, decimal_places=1, which the database does not enforce']
+  required bool [default: false, not null]
+  active bool [default: true, not null]
+  is_independent bool [default: false, not null, note: 'Independent scores are not part of the total score. Instead they are shown in a separate column in the review dashboard.']
+
+  indexes {
+    (event_id) [name: 'submission_reviewscorecategory_event_id_02ad9987']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_reviewscore {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  category_id integer [not null]
+  value decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  label varchar(200)
+
+  indexes {
+    (category_id) [name: 'submission_reviewscore_category_id_ce0b8d4b']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_review {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer [not null]
+  user_id integer [not null]
+  text text
+  score decimal [note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (submission_id) [name: 'submission_review_submission_id_b6f4a64a']
+    (user_id) [name: 'submission_review_user_id_5ba496fe']
+    (user_id, submission_id) [unique, name: 'submission_review_user_id_submission_id_a2df67c7_uniq']
+  }
+
+  Note: '''Reviews model the opinion of reviewers of a.
+
+:class:`~pretalx.submission.models.submission.Submission`.
+
+They can, but don\'t have to, include a score and a text.
+
+:param text: The review itself. May be empty.
+:param score: This score is calculated from all the related ``scores``
+    and their weights. Do not set it directly; call
+    ``pretalx.submission.domain.review.update_review_score`` after
+    modifying the m2m scores.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_reviewphase {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  name varchar(100) [not null]
+  start datetime
+  end datetime
+  is_active bool [default: false, not null]
+  can_review bool [default: true, not null]
+  proposal_visibility ReviewPhaseProposalVisibility [default: 'all', not null, note: 'If you select “all”, reviewers can review all proposals that their teams have access to (so either all, or specific tracks). In this mode, assigned proposals will be highlighted and will be shown first in the review workflow.']
+  can_see_other_reviews ReviewPhaseCanSeeOtherReviews [default: 'after_review', not null]
+  can_see_speaker_names bool [default: true, not null]
+  can_see_reviewer_names bool [default: true, not null]
+  can_change_submission_state bool [default: false, not null]
+  can_tag_submissions ReviewPhaseCanTagSubmissions [default: 'never', not null]
+  speakers_can_change_submissions bool [default: false, not null, note: 'By default, modification of proposals is locked after the CfP ends, and is re-enabled once the proposal was accepted.']
+
+  indexes {
+    (event_id) [name: 'submission_reviewphase_event_id_7cbfc828']
+  }
+
+  Note: '''ReviewPhases determine reviewer access rights during a (potentially
+open) time frame.
+
+Phases are ordered by ``(start, end)``, with null-start phases first.
+
+:param is_active: Is this phase currently active? There can be only one
+    active phase per event. Use
+    ``pretalx.submission.domain.review.activate_review_phase`` to
+    activate a phase, since it enforces that invariant.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_attendeesignup {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer [not null]
+  attendee_id integer [not null]
+  state AttendeeSignupStates [default: 'confirmed', not null]
+  position "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (submission_id) [name: 'submission_attendeesignup_submission_id_9daabb9c']
+    (attendee_id) [name: 'submission_attendeesignup_attendee_id_cede0ac0']
+    (submission_id, attendee_id) [unique, name: 'submission_attendeesignup_submission_id_attendee_id_c8ad49b5_uniq']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_speakerrole {
+  id integer [pk, increment]
+  submission_id integer [not null]
+  speaker_id integer [not null]
+  position "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (submission_id) [name: 'submission_speakerrole_submission_id_657749a0']
+    (speaker_id) [name: 'submission_speakerrole_speaker_id_f6da88ef']
+    (submission_id, speaker_id) [unique, name: 'submission_speakerrole_submission_id_speaker_id_93827323_uniq']
+  }
+
+  Note: '''Through model connecting speaker and submission.'''
+}
+
+Table submission_submission {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  code varchar(16) [unique, not null]
+  event_id integer [not null]
+  title varchar(200) [not null]
+  submission_type_id integer [not null]
+  track_id integer
+  state SubmissionStates [default: 'submitted', not null]
+  pending_state SubmissionStates [default: null]
+  abstract text
+  description text
+  notes text [note: 'These notes are meant for the organisers and won’t be made public.']
+  internal_notes text [note: 'Internal notes for other organisers/reviewers. Not visible to the speakers or the public.']
+  duration "integer unsigned" [note: 'Duration in minutes']
+  slot_count integer [default: 1, not null, note: 'How often this session takes place.']
+  attendee_signup_required bool [note: 'Override whether attendees must sign up to attend this session.']
+  attendee_signup_capacity "integer unsigned" [note: 'Override the room capacity for this session.']
+  content_locale varchar(32) [default: 'en', not null]
+  is_featured bool [default: false, not null]
+  do_not_record bool [default: false, not null]
+  image varchar(100) [note: 'Use this if you want an illustration to go with your proposal.']
+  invitation_token varchar(32) [not null, note: 'default in Python: generate_invite_code()']
+  access_code_id integer
+  review_code varchar(32) [unique, note: 'default in Python: generate_invite_code()']
+  anonymised text
+  draft_additional_speakers text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (event_id) [name: 'submission_submission_event_id_7de3d909']
+    (submission_type_id) [name: 'submission_submission_submission_type_id_6d540489']
+    (track_id) [name: 'submission_submission_track_id_a80cae77']
+    (access_code_id) [name: 'submission_submission_access_code_id_2f86d9fe']
+  }
+
+  Note: '''Submissions are, next to :class:`~pretalx.event.models.event.Event`, the
+central model in pretalx.
+
+State changes must go through :func:`pretalx.submission.domain.submission.set_submission_state`,
+which is called by the ``accept()``, ``reject()`` etc model methods.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_submissionfavourite {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  submission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'submission_submissionfavourite_user_id_a861f3e3']
+    (submission_id) [name: 'submission_submissionfavourite_submission_id_067756f6']
+    (user_id, submission_id) [unique, name: 'submission_submissionfavourite_user_id_submission_id_6057fa95_uniq']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_submissioninvitation {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  submission_id integer [not null]
+  email varchar(254) [not null]
+  token varchar(64) [unique, not null, note: 'default in Python: generate_invite_code()']
+
+  indexes {
+    (submission_id) [name: 'submission_submissioninvitation_submission_id_62474769']
+    (submission_id, email) [unique, name: 'submission_submissioninvitation_submission_id_email_985c90da_uniq']
+  }
+
+  Note: '''Track pending speaker invitations for submissions.
+
+When a speaker is invited to a submission, a SubmissionInvitation is created
+with a unique token. The invitation is deleted when the invited person accepts
+it, or can be retracted by organisers or the submitter.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_tag {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  tag varchar(50) [not null]
+  description text [not null]
+  color varchar(7) [not null]
+  is_public bool [default: false, not null, note: 'Public tags can be selected by submitters in the CfP if you activate the tags field. In a future release of pretalx, public tags may also be shown in the public schedule.']
+
+  indexes {
+    (event_id) [name: 'submission_tag_event_id_46923e90']
+    (event_id, tag) [unique, name: 'unique_tag_per_event']
+  }
+
+  Note: '''Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_track {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  name text [not null]
+  description text [not null]
+  color varchar(7) [not null]
+  position "integer unsigned" [note: 'The position field is used to determine the order that tracks are displayed in (lowest first).']
+  requires_access_code bool [default: false, not null, note: 'This track will only be shown to submitters with a matching access code.']
+  attendee_signup_required bool [default: false, not null, note: 'Sessions will require attendee signup by default. You can always override this setting for individual sessions.']
+
+  indexes {
+    (event_id) [name: 'submission_track_event_id_b380882e']
+  }
+
+  Note: '''A track groups :class:`~pretalx.submission.models.submission.Submission`
+objects within an :class:`~pretalx.event.models.event.Event`, e.g. by
+topic.
+
+:param color: The track colour, in the format #012345.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Table submission_submissiontype {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  event_id integer [not null]
+  name text [not null]
+  default_duration "integer unsigned" [default: 30, not null, note: 'Duration in minutes']
+  deadline datetime [note: 'If you want a different deadline than the global deadline for this session type, enter it here.']
+  requires_access_code bool [default: false, not null, note: 'This session type will only be shown to submitters with a matching access code.']
+  attendee_signup_required bool [default: false, not null, note: 'Sessions will require attendee signup by default. You can always override this setting for individual sessions.']
+
+  indexes {
+    (event_id) [name: 'submission_submissiontype_event_id_01588962']
+  }
+
+  Note: '''Each :class:`~pretalx.submission.models.submission.Submission` has one
+SubmissionType.
+
+SubmissionTypes are used to group submissions by default duration (which
+can be overridden on a per-submission basis), and to be able to offer
+different deadlines for some parts of the
+:class:`~pretalx.event.models.event.Event`.
+
+Columns from TimestampedModel (abstract): created, updated.'''
+}
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref authtoken_token_user_id_fk: authtoken_token.user_id - person_user.id [delete: cascade]
+
+Ref common_activitylog_event_id_fk: common_activitylog.event_id > event_event.id [delete: restrict]
+
+Ref common_activitylog_person_id_fk: common_activitylog.person_id > person_user.id [delete: restrict]
+
+Ref common_activitylog_content_type_id_fk: common_activitylog.content_type_id > django_content_type.id [delete: cascade]
+
+Ref event_event_organiser_id_fk: event_event.organiser_id > event_organiser.id [delete: restrict]
+
+Ref event_event_settingsstore_object_id_fk: event_event_settingsstore.object_id > event_event.id [delete: cascade]
+
+Ref event_eventextralink_event_id_fk: event_eventextralink.event_id > event_event.id [delete: cascade]
+
+Ref event_team_organiser_id_fk: event_team.organiser_id > event_organiser.id [delete: cascade]
+
+Table event_team_members {
+  id integer [pk, increment]
+  team_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (team_id) [name: 'event_team_members_team_id_392b939e']
+    (user_id) [name: 'event_team_members_user_id_52e3991e']
+    (team_id, user_id) [unique, name: 'event_team_members_team_id_user_id_d5add263_uniq']
+  }
+}
+
+Ref event_team_members_team_id_fk: event_team_members.team_id > event_team.id [delete: cascade]
+
+Ref event_team_members_user_id_fk: event_team_members.user_id > person_user.id [delete: cascade]
+
+Table event_team_limit_events {
+  id integer [pk, increment]
+  team_id integer [not null]
+  event_id integer [not null]
+
+  indexes {
+    (team_id) [name: 'event_team_limit_events_team_id_2cfd4cae']
+    (event_id) [name: 'event_team_limit_events_event_id_11dea909']
+    (team_id, event_id) [unique, name: 'event_team_limit_events_team_id_event_id_e2c9693e_uniq']
+  }
+}
+
+Ref event_team_limit_events_team_id_fk: event_team_limit_events.team_id > event_team.id [delete: cascade]
+
+Ref event_team_limit_events_event_id_fk: event_team_limit_events.event_id > event_event.id [delete: cascade]
+
+Table event_team_limit_tracks {
+  id integer [pk, increment]
+  team_id integer [not null]
+  track_id integer [not null]
+
+  indexes {
+    (team_id) [name: 'event_team_limit_tracks_team_id_c5f5db71']
+    (track_id) [name: 'event_team_limit_tracks_track_id_9f69e679']
+    (team_id, track_id) [unique, name: 'event_team_limit_tracks_team_id_track_id_0af49018_uniq']
+  }
+}
+
+Ref event_team_limit_tracks_team_id_fk: event_team_limit_tracks.team_id > event_team.id [delete: cascade]
+
+Ref event_team_limit_tracks_track_id_fk: event_team_limit_tracks.track_id > submission_track.id [delete: cascade]
+
+Ref event_teaminvite_team_id_fk: event_teaminvite.team_id > event_team.id [delete: cascade]
+
+Ref mail_queuedmail_event_id_fk: mail_queuedmail.event_id > event_event.id [delete: restrict]
+
+Ref mail_queuedmail_template_id_fk: mail_queuedmail.template_id > mail_mailtemplate.id [delete: set null]
+
+Table mail_queuedmail_to_users {
+  id integer [pk, increment]
+  queuedmail_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (queuedmail_id) [name: 'mail_queuedmail_to_users_queuedmail_id_2f4aed85']
+    (user_id) [name: 'mail_queuedmail_to_users_user_id_7a3d99a9']
+    (queuedmail_id, user_id) [unique, name: 'mail_queuedmail_to_users_queuedmail_id_user_id_b251cf2e_uniq']
+  }
+}
+
+Ref mail_queuedmail_to_users_queuedmail_id_fk: mail_queuedmail_to_users.queuedmail_id > mail_queuedmail.id [delete: cascade]
+
+Ref mail_queuedmail_to_users_user_id_fk: mail_queuedmail_to_users.user_id > person_user.id [delete: cascade]
+
+Table mail_queuedmail_submissions {
+  id integer [pk, increment]
+  queuedmail_id integer [not null]
+  submission_id integer [not null]
+
+  indexes {
+    (queuedmail_id) [name: 'mail_queuedmail_submissions_queuedmail_id_0194ee2f']
+    (submission_id) [name: 'mail_queuedmail_submissions_submission_id_1f4b2987']
+    (queuedmail_id, submission_id) [unique, name: 'mail_queuedmail_submissions_queuedmail_id_submission_id_bdb175a7_uniq']
+  }
+}
+
+Ref mail_queuedmail_submissions_queuedmail_id_fk: mail_queuedmail_submissions.queuedmail_id > mail_queuedmail.id [delete: cascade]
+
+Ref mail_queuedmail_submissions_submission_id_fk: mail_queuedmail_submissions.submission_id > submission_submission.id [delete: cascade]
+
+Ref mail_mailtemplate_event_id_fk: mail_mailtemplate.event_id > event_event.id [delete: restrict]
+
+Ref person_attendeeprofile_user_id_fk: person_attendeeprofile.user_id > person_user.id [delete: cascade]
+
+Ref person_attendeeprofile_event_id_fk: person_attendeeprofile.event_id > event_event.id [delete: cascade]
+
+Ref person_userapitoken_user_id_fk: person_userapitoken.user_id > person_user.id [delete: cascade]
+
+Table person_userapitoken_limit_events {
+  id integer [pk, increment]
+  userapitoken_id integer [not null]
+  event_id integer [not null]
+
+  indexes {
+    (userapitoken_id) [name: 'person_userapitoken_limit_events_userapitoken_id_9766af62']
+    (event_id) [name: 'person_userapitoken_limit_events_event_id_f9a04224']
+    (userapitoken_id, event_id) [unique, name: 'person_userapitoken_limit_events_userapitoken_id_event_id_e4dc22f7_uniq']
+  }
+}
+
+Ref person_userapitoken_limit_events_userapitoken_id_fk: person_userapitoken_limit_events.userapitoken_id > person_userapitoken.id [delete: cascade]
+
+Ref person_userapitoken_limit_events_event_id_fk: person_userapitoken_limit_events.event_id > event_event.id [delete: cascade]
+
+Ref person_speakerinformation_event_id_fk: person_speakerinformation.event_id > event_event.id [delete: cascade]
+
+Table person_speakerinformation_limit_tracks {
+  id integer [pk, increment]
+  speakerinformation_id integer [not null]
+  track_id integer [not null]
+
+  indexes {
+    (speakerinformation_id) [name: 'person_speakerinformation_limit_tracks_speakerinformation_id_5825daf6']
+    (track_id) [name: 'person_speakerinformation_limit_tracks_track_id_a3b3d06f']
+    (speakerinformation_id, track_id) [unique, name: 'person_speakerinformation_limit_tracks_speakerinformation_id_track_id_f18e99b0_uniq']
+  }
+}
+
+Ref person_speakerinformation_limit_tracks_speakerinformation_id_fk: person_speakerinformation_limit_tracks.speakerinformation_id > person_speakerinformation.id [delete: cascade]
+
+Ref person_speakerinformation_limit_tracks_track_id_fk: person_speakerinformation_limit_tracks.track_id > submission_track.id [delete: cascade]
+
+Table person_speakerinformation_limit_types {
+  id integer [pk, increment]
+  speakerinformation_id integer [not null]
+  submissiontype_id integer [not null]
+
+  indexes {
+    (speakerinformation_id) [name: 'person_speakerinformation_limit_types_speakerinformation_id_ab23f5d6']
+    (submissiontype_id) [name: 'person_speakerinformation_limit_types_submissiontype_id_61c114ac']
+    (speakerinformation_id, submissiontype_id) [unique, name: 'person_speakerinformation_limit_types_speakerinformation_id_submissiontype_id_4eef40e3_uniq']
+  }
+}
+
+Ref person_speakerinformation_limit_types_speakerinformation_id_fk: person_speakerinformation_limit_types.speakerinformation_id > person_speakerinformation.id [delete: cascade]
+
+Ref person_speakerinformation_limit_types_submissiontype_id_fk: person_speakerinformation_limit_types.submissiontype_id > submission_submissiontype.id [delete: cascade]
+
+Ref person_profilepicture_user_id_fk: person_profilepicture.user_id > person_user.id [delete: cascade]
+
+Ref person_usereventpreferences_user_id_fk: person_usereventpreferences.user_id > person_user.id [delete: cascade]
+
+Ref person_usereventpreferences_event_id_fk: person_usereventpreferences.event_id > event_event.id [delete: cascade]
+
+Ref person_speakerprofile_user_id_fk: person_speakerprofile.user_id > person_user.id [delete: cascade]
+
+Ref person_speakerprofile_event_id_fk: person_speakerprofile.event_id > event_event.id [delete: cascade]
+
+Ref person_speakerprofile_profile_picture_id_fk: person_speakerprofile.profile_picture_id > person_profilepicture.id [delete: set null]
+
+Ref person_user_profile_picture_id_fk: person_user.profile_picture_id > person_profilepicture.id [delete: set null]
+
+Table person_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'person_user_groups_user_id_de8c4798']
+    (group_id) [name: 'person_user_groups_group_id_0fc51e41']
+    (user_id, group_id) [unique, name: 'person_user_groups_user_id_group_id_634d960f_uniq']
+  }
+}
+
+Ref person_user_groups_user_id_fk: person_user_groups.user_id > person_user.id [delete: cascade]
+
+Ref person_user_groups_group_id_fk: person_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table person_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'person_user_user_permissions_user_id_5b94b720']
+    (permission_id) [name: 'person_user_user_permissions_permission_id_0057dbee']
+    (user_id, permission_id) [unique, name: 'person_user_user_permissions_user_id_permission_id_2c79824d_uniq']
+  }
+}
+
+Ref person_user_user_permissions_user_id_fk: person_user_user_permissions.user_id > person_user.id [delete: cascade]
+
+Ref person_user_user_permissions_permission_id_fk: person_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref schedule_availability_event_id_fk: schedule_availability.event_id > event_event.id [delete: cascade]
+
+Ref schedule_availability_person_id_fk: schedule_availability.person_id > person_speakerprofile.id [delete: cascade]
+
+Ref schedule_availability_room_id_fk: schedule_availability.room_id > schedule_room.id [delete: cascade]
+
+Ref schedule_room_event_id_fk: schedule_room.event_id > event_event.id [delete: restrict]
+
+Ref schedule_schedule_event_id_fk: schedule_schedule.event_id > event_event.id [delete: restrict]
+
+Ref schedule_talkslot_submission_id_fk: schedule_talkslot.submission_id > submission_submission.id [delete: restrict]
+
+Ref schedule_talkslot_room_id_fk: schedule_talkslot.room_id > schedule_room.id [delete: restrict]
+
+Ref schedule_talkslot_schedule_id_fk: schedule_talkslot.schedule_id > schedule_schedule.id [delete: restrict]
+
+Ref submission_submitteraccesscode_event_id_fk: submission_submitteraccesscode.event_id > event_event.id [delete: cascade]
+
+Table submission_submitteraccesscode_tracks {
+  id integer [pk, increment]
+  submitteraccesscode_id integer [not null]
+  track_id integer [not null]
+
+  indexes {
+    (submitteraccesscode_id) [name: 'submission_submitteraccesscode_tracks_submitteraccesscode_id_f8a88a10']
+    (track_id) [name: 'submission_submitteraccesscode_tracks_track_id_54f4d99e']
+    (submitteraccesscode_id, track_id) [unique, name: 'submission_submitteraccesscode_tracks_submitteraccesscode_id_track_id_141b4cd8_uniq']
+  }
+}
+
+Ref submission_submitteraccesscode_tracks_submitteraccesscode_id_fk: submission_submitteraccesscode_tracks.submitteraccesscode_id > submission_submitteraccesscode.id [delete: cascade]
+
+Ref submission_submitteraccesscode_tracks_track_id_fk: submission_submitteraccesscode_tracks.track_id > submission_track.id [delete: cascade]
+
+Table submission_submitteraccesscode_submission_types {
+  id integer [pk, increment]
+  submitteraccesscode_id integer [not null]
+  submissiontype_id integer [not null]
+
+  indexes {
+    (submitteraccesscode_id) [name: 'submission_submitteraccesscode_submission_types_submitteraccesscode_id_5b6b5316']
+    (submissiontype_id) [name: 'submission_submitteraccesscode_submission_types_submissiontype_id_0d3337fe']
+    (submitteraccesscode_id, submissiontype_id) [unique, name: 'submission_submitteraccesscode_submission_types_submitteraccesscode_id_submissiontype_id_8fc2d097_uniq']
+  }
+}
+
+Ref submission_submitteraccesscode_submission_types_submitteraccesscode_id_fk: submission_submitteraccesscode_submission_types.submitteraccesscode_id > submission_submitteraccesscode.id [delete: cascade]
+
+Ref submission_submitteraccesscode_submission_types_submissiontype_id_fk: submission_submitteraccesscode_submission_types.submissiontype_id > submission_submissiontype.id [delete: cascade]
+
+Ref submission_cfp_event_id_fk: submission_cfp.event_id - event_event.id [delete: restrict]
+
+Ref submission_cfp_default_type_id_fk: submission_cfp.default_type_id > submission_submissiontype.id [delete: restrict]
+
+Ref submission_submissioncomment_submission_id_fk: submission_submissioncomment.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_submissioncomment_user_id_fk: submission_submissioncomment.user_id > person_user.id [delete: cascade]
+
+Ref submission_submissioncomment_reply_to_id_fk: submission_submissioncomment.reply_to_id > submission_submissioncomment.id [delete: set null]
+
+Ref submission_feedback_talk_id_fk: submission_feedback.talk_id > submission_submission.id [delete: restrict]
+
+Ref submission_feedback_speaker_id_fk: submission_feedback.speaker_id > person_speakerprofile.id [delete: restrict]
+
+Ref submission_question_event_id_fk: submission_question.event_id > event_event.id [delete: restrict]
+
+Table submission_question_tracks {
+  id integer [pk, increment]
+  question_id integer [not null]
+  track_id integer [not null]
+
+  indexes {
+    (question_id) [name: 'submission_question_tracks_question_id_8c92ec0b']
+    (track_id) [name: 'submission_question_tracks_track_id_d72d6e0b']
+    (question_id, track_id) [unique, name: 'submission_question_tracks_question_id_track_id_8643e020_uniq']
+  }
+}
+
+Ref submission_question_tracks_question_id_fk: submission_question_tracks.question_id > submission_question.id [delete: cascade]
+
+Ref submission_question_tracks_track_id_fk: submission_question_tracks.track_id > submission_track.id [delete: cascade]
+
+Table submission_question_submission_types {
+  id integer [pk, increment]
+  question_id integer [not null]
+  submissiontype_id integer [not null]
+
+  indexes {
+    (question_id) [name: 'submission_question_submission_types_question_id_26b13335']
+    (submissiontype_id) [name: 'submission_question_submission_types_submissiontype_id_24b210f7']
+    (question_id, submissiontype_id) [unique, name: 'submission_question_submission_types_question_id_submissiontype_id_ef2c5360_uniq']
+  }
+}
+
+Ref submission_question_submission_types_question_id_fk: submission_question_submission_types.question_id > submission_question.id [delete: cascade]
+
+Ref submission_question_submission_types_submissiontype_id_fk: submission_question_submission_types.submissiontype_id > submission_submissiontype.id [delete: cascade]
+
+Table submission_question_limit_teams {
+  id integer [pk, increment]
+  question_id integer [not null]
+  team_id integer [not null]
+
+  indexes {
+    (question_id) [name: 'submission_question_limit_teams_question_id_71fb2810']
+    (team_id) [name: 'submission_question_limit_teams_team_id_5a046819']
+    (question_id, team_id) [unique, name: 'submission_question_limit_teams_question_id_team_id_5522458d_uniq']
+  }
+}
+
+Ref submission_question_limit_teams_question_id_fk: submission_question_limit_teams.question_id > submission_question.id [delete: cascade]
+
+Ref submission_question_limit_teams_team_id_fk: submission_question_limit_teams.team_id > event_team.id [delete: cascade]
+
+Ref submission_answeroption_question_id_fk: submission_answeroption.question_id > submission_question.id [delete: restrict]
+
+Ref submission_answer_question_id_fk: submission_answer.question_id > submission_question.id [delete: restrict]
+
+Ref submission_answer_submission_id_fk: submission_answer.submission_id > submission_submission.id [delete: restrict]
+
+Ref submission_answer_speaker_id_fk: submission_answer.speaker_id > person_speakerprofile.id [delete: restrict]
+
+Ref submission_answer_review_id_fk: submission_answer.review_id > submission_review.id [delete: restrict]
+
+Table submission_answer_options {
+  id integer [pk, increment]
+  answer_id integer [not null]
+  answeroption_id integer [not null]
+
+  indexes {
+    (answer_id) [name: 'submission_answer_options_answer_id_e7673eea']
+    (answeroption_id) [name: 'submission_answer_options_answeroption_id_5b4db5e9']
+    (answer_id, answeroption_id) [unique, name: 'submission_answer_options_answer_id_answeroption_id_e7043416_uniq']
+  }
+}
+
+Ref submission_answer_options_answer_id_fk: submission_answer_options.answer_id > submission_answer.id [delete: cascade]
+
+Ref submission_answer_options_answeroption_id_fk: submission_answer_options.answeroption_id > submission_answeroption.id [delete: cascade]
+
+Ref submission_resource_submission_id_fk: submission_resource.submission_id > submission_submission.id [delete: restrict]
+
+Ref submission_reviewscorecategory_event_id_fk: submission_reviewscorecategory.event_id > event_event.id [delete: cascade]
+
+Table submission_reviewscorecategory_limit_tracks {
+  id integer [pk, increment]
+  reviewscorecategory_id integer [not null]
+  track_id integer [not null]
+
+  indexes {
+    (reviewscorecategory_id) [name: 'submission_reviewscorecategory_limit_tracks_reviewscorecategory_id_4ea93d85']
+    (track_id) [name: 'submission_reviewscorecategory_limit_tracks_track_id_1b77dd0f']
+    (reviewscorecategory_id, track_id) [unique, name: 'submission_reviewscorecategory_limit_tracks_reviewscorecategory_id_track_id_dc4fc39b_uniq']
+  }
+}
+
+Ref submission_reviewscorecategory_limit_tracks_reviewscorecategory_id_fk: submission_reviewscorecategory_limit_tracks.reviewscorecategory_id > submission_reviewscorecategory.id [delete: cascade]
+
+Ref submission_reviewscorecategory_limit_tracks_track_id_fk: submission_reviewscorecategory_limit_tracks.track_id > submission_track.id [delete: cascade]
+
+Ref submission_reviewscore_category_id_fk: submission_reviewscore.category_id > submission_reviewscorecategory.id [delete: cascade]
+
+Ref submission_review_submission_id_fk: submission_review.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_review_user_id_fk: submission_review.user_id > person_user.id [delete: cascade]
+
+Table submission_review_scores {
+  id integer [pk, increment]
+  review_id integer [not null]
+  reviewscore_id integer [not null]
+
+  indexes {
+    (review_id) [name: 'submission_review_scores_review_id_c525a785']
+    (reviewscore_id) [name: 'submission_review_scores_reviewscore_id_f4287d6b']
+    (review_id, reviewscore_id) [unique, name: 'submission_review_scores_review_id_reviewscore_id_4ce47242_uniq']
+  }
+}
+
+Ref submission_review_scores_review_id_fk: submission_review_scores.review_id > submission_review.id [delete: cascade]
+
+Ref submission_review_scores_reviewscore_id_fk: submission_review_scores.reviewscore_id > submission_reviewscore.id [delete: cascade]
+
+Ref submission_reviewphase_event_id_fk: submission_reviewphase.event_id > event_event.id [delete: cascade]
+
+Ref submission_attendeesignup_submission_id_fk: submission_attendeesignup.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_attendeesignup_attendee_id_fk: submission_attendeesignup.attendee_id > person_attendeeprofile.id [delete: cascade]
+
+Ref submission_speakerrole_submission_id_fk: submission_speakerrole.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_speakerrole_speaker_id_fk: submission_speakerrole.speaker_id > person_speakerprofile.id [delete: cascade]
+
+Ref submission_submission_event_id_fk: submission_submission.event_id > event_event.id [delete: restrict]
+
+Ref submission_submission_submission_type_id_fk: submission_submission.submission_type_id > submission_submissiontype.id [delete: restrict]
+
+Ref submission_submission_track_id_fk: submission_submission.track_id > submission_track.id [delete: restrict]
+
+Ref submission_submission_access_code_id_fk: submission_submission.access_code_id > submission_submitteraccesscode.id [delete: restrict]
+
+Table submission_submission_tags {
+  id integer [pk, increment]
+  submission_id integer [not null]
+  tag_id integer [not null]
+
+  indexes {
+    (submission_id) [name: 'submission_submission_tags_submission_id_5b921761']
+    (tag_id) [name: 'submission_submission_tags_tag_id_66f8944a']
+    (submission_id, tag_id) [unique, name: 'submission_submission_tags_submission_id_tag_id_16b0b87a_uniq']
+  }
+}
+
+Ref submission_submission_tags_submission_id_fk: submission_submission_tags.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_submission_tags_tag_id_fk: submission_submission_tags.tag_id > submission_tag.id [delete: cascade]
+
+Table submission_submission_assigned_reviewers {
+  id integer [pk, increment]
+  submission_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (submission_id) [name: 'submission_submission_assigned_reviewers_submission_id_a3b9f9be']
+    (user_id) [name: 'submission_submission_assigned_reviewers_user_id_793f7a22']
+    (submission_id, user_id) [unique, name: 'submission_submission_assigned_reviewers_submission_id_user_id_98c25526_uniq']
+  }
+}
+
+Ref submission_submission_assigned_reviewers_submission_id_fk: submission_submission_assigned_reviewers.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_submission_assigned_reviewers_user_id_fk: submission_submission_assigned_reviewers.user_id > person_user.id [delete: cascade]
+
+Ref submission_submissionfavourite_user_id_fk: submission_submissionfavourite.user_id > person_user.id [delete: cascade]
+
+Ref submission_submissionfavourite_submission_id_fk: submission_submissionfavourite.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_submissioninvitation_submission_id_fk: submission_submissioninvitation.submission_id > submission_submission.id [delete: cascade]
+
+Ref submission_tag_event_id_fk: submission_tag.event_id > event_event.id [delete: restrict]
+
+Ref submission_track_event_id_fk: submission_track.event_id > event_event.id [delete: restrict]
+
+Ref submission_submissiontype_event_id_fk: submission_submissiontype.event_id > event_event.id [delete: cascade]

@@ -1,0 +1,72 @@
+Enum ProductKind {
+  "physical"
+  "digital"
+}
+
+Table store_customer {
+  id bigint [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  email varchar(191) [not null, note: '191 characters fit a utf8mb4 index of 767 bytes']
+  name varchar(100) [not null, note: 'collation utf8mb4_unicode_ci']
+  code varchar(20) [unique, not null, note: 'collation utf8mb4_bin']
+  points "integer UNSIGNED" [default: 0, not null]
+  age "smallint UNSIGNED"
+  settings json [not null, note: 'default in Python: dict()']
+  notes longtext [not null]
+  signed_up datetime(6) [not null, note: 'default in Python: now()']
+  last_ip char(39)
+
+  indexes {
+    (`LOWER(`email`)`) [unique, name: 'customer_email_ci_unique']
+  }
+
+  Note: '''People who buy'''
+}
+
+Table store_product {
+  id bigint [pk, increment]
+  name varchar(200) [not null]
+  kind ProductKind [default: 'physical', not null]
+  price "numeric(10, 2)" [not null]
+  stock "bigint UNSIGNED" [default: 0, not null]
+  weight "double precision"
+  tags json [not null, note: 'default in Python: list()']
+  image longblob
+  active bool [default: 1, not null]
+  released date
+  duration bigint
+
+  indexes {
+    (kind, price) [name: 'product_kind_price', note: 'descending: price']
+  }
+
+  checks {
+    ``price` >= 0` [name: 'product_price_not_negative']
+  }
+}
+
+Table store_order {
+  id bigint [pk, increment]
+  customer_id bigint [not null]
+  placed_at datetime(6) [not null, note: 'default in Python: now()']
+  total "numeric(12, 2)" [not null]
+  total_with_tax "numeric(14, 2)" [note: 'generated (virtual): (`total` * 1.1)']
+}
+
+Table store_orderitem {
+  id bigint [pk, increment]
+  order_id bigint [not null]
+  product_id bigint [not null]
+  quantity "smallint UNSIGNED" [default: 1, not null]
+  unit_price "numeric(10, 2)" [not null]
+
+  indexes {
+    (order_id, product_id) [unique, name: 'store_orderitem_order_id_product_id_44513b04_uniq']
+  }
+}
+
+Ref store_order_customer_id_fk: store_order.customer_id > store_customer.id [delete: restrict]
+
+Ref store_orderitem_order_id_fk: store_orderitem.order_id > store_order.id [delete: cascade]
+
+Ref store_orderitem_product_id_fk: store_orderitem.product_id > store_product.id [delete: restrict]

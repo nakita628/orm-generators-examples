@@ -1,0 +1,13 @@
+[project]
+name = "example-pulp-plugins"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "pulpcore", "pulp-container", "pulp-python", "pulp-ansible"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true
+settings = "pulpcore.app.settings"
+env = { PULP_SECRET_KEY = "example", PULP_CONTENT_ORIGIN = "http://localhost", PULP_SETTINGS = "/nonexistent/settings.py", PULP_DB_ENCRYPTION_KEY = "database_fields.symmetric.key" }

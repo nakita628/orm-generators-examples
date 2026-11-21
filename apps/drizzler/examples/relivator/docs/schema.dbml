@@ -1,0 +1,97 @@
+Table uploads {
+  created_at timestamp [not null]
+  id text [pk, not null]
+  key text [not null]
+  type type [not null]
+  updated_at timestamp [not null]
+  url text [not null]
+  user_id text [not null]
+}
+
+Table polar_customer {
+  created_at timestamp [not null]
+  customer_id text [not null, unique]
+  id text [pk, not null]
+  updated_at timestamp [not null]
+  user_id text [not null]
+}
+
+Table polar_subscription {
+  created_at timestamp [not null]
+  customer_id text [not null]
+  id text [pk, not null]
+  product_id text [not null]
+  status text [not null]
+  subscription_id text [not null, unique]
+  updated_at timestamp [not null]
+  user_id text [not null]
+}
+
+Table user {
+  age integer
+  created_at timestamp [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  first_name text
+  id text [pk, not null]
+  image text
+  last_name text
+  name text [not null]
+  two_factor_enabled boolean
+  updated_at timestamp [not null]
+}
+
+Table session {
+  created_at timestamp [not null]
+  expires_at timestamp [not null]
+  id text [pk, not null]
+  ip_address text
+  token text [not null, unique]
+  updated_at timestamp [not null]
+  user_agent text
+  user_id text [not null]
+}
+
+Table account {
+  access_token text
+  access_token_expires_at timestamp
+  account_id text [not null]
+  created_at timestamp [not null]
+  id text [pk, not null]
+  id_token text
+  password text
+  provider_id text [not null]
+  refresh_token text
+  refresh_token_expires_at timestamp
+  scope text
+  updated_at timestamp [not null]
+  user_id text [not null]
+}
+
+Table verification {
+  created_at timestamp
+  expires_at timestamp [not null]
+  id text [pk, not null]
+  identifier text [not null]
+  updated_at timestamp
+  value text [not null]
+}
+
+Table two_factor {
+  backup_codes text [not null]
+  id text [pk, not null]
+  secret text [not null]
+  user_id text [not null]
+}
+
+Ref uploads_user_id_user_id_fk: uploads.user_id > user.id [delete: cascade]
+
+Ref polar_customer_user_id_user_id_fk: polar_customer.user_id > user.id [delete: cascade]
+
+Ref polar_subscription_user_id_user_id_fk: polar_subscription.user_id > user.id [delete: cascade]
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref two_factor_user_id_user_id_fk: two_factor.user_id > user.id [delete: cascade]

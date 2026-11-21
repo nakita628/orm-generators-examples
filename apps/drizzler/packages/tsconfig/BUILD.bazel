@@ -1,0 +1,15 @@
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+npm_link_all_packages(name = "node_modules")
+
+# @drizzler-examples/tsconfig, the base.json every example's tsconfig.json extends; rules_js
+# links it into each example's node_modules from this target.
+npm_package(
+    name = "pkg",
+    srcs = [
+        "base.json",
+        "package.json",
+    ],
+    visibility = ["//visibility:public"],
+)

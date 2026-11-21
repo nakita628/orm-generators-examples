@@ -1,0 +1,1457 @@
+Table user {
+  id integer [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  created_at text [not null]
+  updated_at text [not null]
+  image text
+  profile_views integer [not null]
+  role text [not null]
+  email_verified integer [not null]
+  privacy text [not null]
+  hide_aggregate_ratings integer [not null]
+  grid_list_view integer [not null]
+  show_onboarding integer [not null]
+  show_update_modal integer [not null]
+  background_image text [not null]
+  rating_system text [not null]
+  search_selector text [not null]
+  auto_move_completed_tv_to_on_hold integer [not null]
+  indexes {
+    (name) [unique, name: 'user_name_unique']
+  }
+}
+
+Table session {
+  id integer [pk, not null]
+  expires_at integer [not null]
+  token text [not null, unique]
+  created_at integer [not null]
+  updated_at integer [not null]
+  ip_address text
+  user_agent text
+  user_id integer [not null]
+  indexes {
+    (user_id) [name: 'session_user_id_idx']
+  }
+}
+
+Table account {
+  id integer [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id integer [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at integer
+  refresh_token_expires_at integer
+  scope text
+  password text
+  created_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (user_id) [name: 'account_user_id_idx']
+  }
+}
+
+Table verification {
+  id integer [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at integer [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (identifier) [name: 'verification_identifier_idx']
+  }
+}
+
+Table jwks {
+  id integer [pk, not null]
+  public_key text [not null]
+  private_key text [not null]
+  created_at integer [not null]
+  expires_at integer
+  alg text
+  crv text
+}
+
+Table oauth_client {
+  id integer [pk, not null]
+  client_id text [not null, unique]
+  client_secret text
+  client_discovery_id text
+  disabled integer
+  skip_consent integer
+  enable_end_session integer
+  subject_type text
+  scopes text
+  client_credentials_scopes text
+  user_id integer
+  created_at integer
+  updated_at integer
+  name text
+  uri text
+  icon text
+  contacts text
+  tos text
+  policy text
+  software_id text
+  software_version text
+  software_statement text
+  redirect_uris text [not null]
+  post_logout_redirect_uris text
+  backchannel_logout_uri text
+  backchannel_logout_session_required integer
+  token_endpoint_auth_method text
+  application_type text
+  jwks text
+  jwks_uri text
+  grant_types text
+  response_types text
+  require_pkce integer
+  dpop_bound_access_tokens integer
+  reference_id text
+  metadata text
+  indexes {
+    (user_id) [name: 'oauthClient_userId_idx']
+  }
+}
+
+Table oauth_resource {
+  id integer [pk, not null]
+  identifier text [not null, unique]
+  name text [not null]
+  access_token_ttl integer
+  refresh_token_ttl integer
+  signing_algorithm text
+  signing_key_id text
+  allowed_scopes text
+  custom_claims text
+  dpop_bound_access_tokens_required integer
+  disabled integer
+  created_at integer
+  updated_at integer
+  policy_version integer
+  metadata text
+}
+
+Table oauth_client_resource {
+  id integer [pk, not null]
+  client_id text [not null]
+  resource_id text [not null]
+  metadata text
+  created_at integer
+  indexes {
+    (client_id) [name: 'oauthClientResource_clientId_idx']
+    (resource_id) [name: 'oauthClientResource_resourceId_idx']
+    (client_id, resource_id) [unique, name: 'oauthClientResource_clientId_resourceId_uidx']
+  }
+}
+
+Table oauth_refresh_token {
+  id integer [pk, not null]
+  token text [not null, unique]
+  client_id text [not null]
+  session_id integer
+  user_id integer [not null]
+  reference_id text
+  authorization_code_id text
+  resources text
+  requested_user_info_claims text
+  expires_at integer [not null]
+  created_at integer [not null]
+  revoked integer
+  rotated_at integer
+  rotation_replay_response text
+  rotation_replay_expires_at integer
+  auth_time integer
+  confirmation text
+  scopes text [not null]
+  indexes {
+    (user_id) [name: 'oauthRefreshToken_userId_idx']
+    (client_id) [name: 'oauthRefreshToken_clientId_idx']
+    (session_id) [name: 'oauthRefreshToken_sessionId_idx']
+    (authorization_code_id) [name: 'oauthRefreshToken_authorizationCodeId_idx']
+  }
+}
+
+Table oauth_access_token {
+  id integer [pk, not null]
+  token text [not null, unique]
+  client_id text [not null]
+  session_id integer
+  user_id integer
+  reference_id text
+  authorization_code_id text
+  resources text
+  requested_user_info_claims text
+  refresh_id integer
+  expires_at integer [not null]
+  created_at integer [not null]
+  revoked integer
+  confirmation text
+  scopes text [not null]
+  indexes {
+    (user_id) [name: 'oauthAccessToken_userId_idx']
+    (client_id) [name: 'oauthAccessToken_clientId_idx']
+    (session_id) [name: 'oauthAccessToken_sessionId_idx']
+    (refresh_id) [name: 'oauthAccessToken_refreshId_idx']
+    (authorization_code_id) [name: 'oauthAccessToken_authorizationCodeId_idx']
+  }
+}
+
+Table oauth_consent {
+  id integer [pk, not null]
+  client_id text [not null]
+  user_id integer
+  reference_id text
+  resources text
+  requested_user_info_claims text
+  scopes text [not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (client_id) [name: 'oauthConsent_clientId_idx']
+    (user_id) [name: 'oauthConsent_userId_idx']
+  }
+}
+
+Table oauth_client_assertion {
+  id text [pk, not null]
+  expires_at integer [not null]
+}
+
+Table mcp_revocation {
+  user_id integer [not null]
+  client_id text [not null]
+  revoked_at integer [not null]
+  indexes {
+    (user_id, client_id) [pk]
+  }
+}
+
+Table followers {
+  follower_id integer [not null]
+  followed_id integer [not null]
+  status text [not null]
+  indexes {
+    (follower_id, followed_id) [unique, name: 'ux_followers_follower_followed']
+    (followed_id, status, follower_id) [name: 'ix_followers_followed_status_follower']
+  }
+}
+
+Table user_media_update {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  media_name text [not null]
+  media_type text [not null]
+  update_type text [not null]
+  payload text
+  timestamp text [not null]
+  indexes {
+    (media_type, media_id) [name: 'ix_user_media_update_media_type_media_id']
+    (user_id, timestamp) [name: 'ix_user_media_update_user_timestamp']
+    (user_id, media_type, media_id, update_type, timestamp) [name: 'ix_user_media_update_user_media_kind_timestamp']
+    (timestamp) [name: 'ix_user_media_update_timestamp']
+  }
+}
+
+Table user_media_monthly_activity {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  month_bucket text [not null]
+  progress_gained real [not null]
+  media_type text [not null]
+  redo_gained integer [not null]
+  last_activity_at text [not null]
+  hidden integer [not null]
+  had_completion integer [not null]
+  indexes {
+    (media_id) [name: 'ix_user_media_monthly_activity_media_id']
+    (media_type) [name: 'ix_user_media_monthly_activity_media_type']
+    (month_bucket) [name: 'ix_user_media_monthly_activity_month_bucket']
+    (user_id, last_activity_at) [name: 'ix_user_media_monthly_activity_user_last_activity']
+    (user_id, media_id, media_type, month_bucket) [unique, name: 'ux_user_media_monthly_activity_bucket']
+    (user_id, month_bucket, media_type, last_activity_at) [name: 'ix_user_media_monthly_activity_user_month_type_activity']
+  }
+}
+
+Table user_media_settings {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_type text [not null]
+  time_spent integer [not null]
+  views integer [not null]
+  active integer [not null]
+  total_entries integer [not null]
+  total_redo integer [not null]
+  entries_rated integer [not null]
+  sum_entries_rated integer [not null]
+  entries_commented integer [not null]
+  entries_favorites integer [not null]
+  total_specific integer [not null]
+  status_counts text [not null]
+  release_notifications_enabled integer [not null]
+  indexes {
+    (media_type) [name: 'ix_user_media_settings_media_type']
+    (user_id, media_type) [unique, name: 'ux_user_id_media_type']
+  }
+}
+
+Table user_media_stats_history {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_type text [not null]
+  time_spent integer [not null]
+  views integer [not null]
+  active integer [not null]
+  total_entries integer [not null]
+  total_redo integer [not null]
+  entries_rated integer [not null]
+  sum_entries_rated integer [not null]
+  entries_commented integer [not null]
+  entries_favorites integer [not null]
+  total_specific integer [not null]
+  status_counts text [not null]
+  timestamp text [not null]
+  media_id integer [not null]
+  indexes {
+    (user_id) [name: 'ix_user_media_stats_history_user_id']
+    (media_type) [name: 'ix_user_media_stats_history_media_type']
+    (timestamp) [name: 'ix_user_media_stats_history_timestamp']
+  }
+}
+
+Table profile_custom {
+  id integer [pk, not null]
+  user_id integer [not null]
+  key text [not null]
+  value text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  indexes {
+    (user_id, key) [unique, name: 'ux_profile_custom_user_id_key']
+  }
+}
+
+Table api_tokens {
+  id integer [pk, not null]
+  provider text [not null]
+  access_token text [not null]
+  expires_at integer [not null]
+  indexes {
+    (provider) [unique, name: 'api_tokens_provider_unique']
+  }
+}
+
+Table series {
+  backdrop_path text
+  original_name text
+  last_air_date text
+  homepage text
+  created_by text
+  duration integer [not null]
+  total_seasons integer [not null]
+  total_episodes integer [not null]
+  origin_country text
+  prod_status text
+  vote_average real
+  vote_count real
+  popularity real
+  api_id integer [not null, unique]
+  episode_to_air integer
+  season_to_air integer
+  next_episode_to_air text
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table series_list {
+  current_season integer [not null]
+  current_episode integer [not null]
+  redo integer [not null]
+  total integer [not null]
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table series_list_seasons {
+  rating real
+  season integer [not null]
+  redo integer [not null]
+  list_id integer [not null]
+  indexes {
+    (list_id, season) [pk]
+  }
+}
+
+Table series_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_series_genre_media_name']
+    (name, media_id) [name: 'ix_series_genre_name_media']
+  }
+}
+
+Table series_actors {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_series_actors_media_name']
+    (name, media_id) [name: 'ix_series_actors_name_media']
+  }
+}
+
+Table series_network {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_series_network_media_name']
+    (name, media_id) [name: 'ix_series_network_name_media']
+  }
+}
+
+Table series_episodes_per_season {
+  id integer [pk, not null]
+  media_id integer [not null]
+  season integer [not null]
+  episodes integer [not null]
+  indexes {
+    (media_id, season) [unique, name: 'ux_series_episodes_per_season_media_season']
+  }
+}
+
+Table series_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table anime {
+  backdrop_path text
+  original_name text
+  last_air_date text
+  homepage text
+  created_by text
+  duration integer [not null]
+  total_seasons integer [not null]
+  total_episodes integer [not null]
+  origin_country text
+  prod_status text
+  vote_average real
+  vote_count real
+  popularity real
+  season_to_air integer
+  episode_to_air integer
+  next_episode_to_air text
+  api_id integer [not null, unique]
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table anime_list {
+  current_season integer [not null]
+  current_episode integer [not null]
+  redo integer [not null]
+  total integer [not null]
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table anime_list_seasons {
+  rating real
+  season integer [not null]
+  redo integer [not null]
+  list_id integer [not null]
+  indexes {
+    (list_id, season) [pk]
+  }
+}
+
+Table anime_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_anime_genre_media_name']
+    (name, media_id) [name: 'ix_anime_genre_name_media']
+  }
+}
+
+Table anime_actors {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_anime_actors_media_name']
+    (name, media_id) [name: 'ix_anime_actors_name_media']
+  }
+}
+
+Table anime_network {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_anime_network_media_name']
+    (name, media_id) [name: 'ix_anime_network_name_media']
+  }
+}
+
+Table anime_episodes_per_season {
+  id integer [pk, not null]
+  media_id integer [not null]
+  season integer [not null]
+  episodes integer [not null]
+  indexes {
+    (media_id, season) [unique, name: 'ux_anime_episodes_per_season_media_season']
+  }
+}
+
+Table anime_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table movies {
+  backdrop_path text
+  original_name text
+  homepage text
+  duration integer [not null]
+  original_language text
+  vote_average real
+  vote_count real
+  popularity real
+  budget real
+  revenue real
+  tagline text
+  api_id integer [not null, unique]
+  collection_id integer
+  director_name text
+  compositor_name text
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table movies_list {
+  redo integer [not null]
+  total integer [not null]
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table movies_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_movies_genre_media_name']
+    (name, media_id) [name: 'ix_movies_genre_name_media']
+  }
+}
+
+Table movies_actors {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_movies_actors_media_name']
+    (name, media_id) [name: 'ix_movies_actors_name_media']
+  }
+}
+
+Table movies_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table games {
+  backdrop_image_id text
+  game_engine text
+  game_modes text
+  player_perspective text
+  vote_average real
+  vote_count real
+  igdb_url text
+  hltb_main_time real
+  hltb_last_checked_at text
+  hltb_main_and_extra_time real
+  hltb_total_complete_time real
+  steam_api_id text
+  collection_id integer
+  api_id integer [not null, unique]
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table games_list {
+  playtime integer
+  platform text
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table games_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_games_genre_media_name']
+    (name, media_id) [name: 'ix_games_genre_name_media']
+  }
+}
+
+Table games_platforms {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_games_platforms_media_name']
+    (name, media_id) [name: 'ix_games_platforms_name_media']
+  }
+}
+
+Table games_companies {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  publisher integer [not null]
+  developer integer [not null]
+  indexes {
+    (media_id, name, publisher, developer) [unique, name: 'ux_games_companies_media_name_roles']
+    (name, media_id) [name: 'ix_games_companies_name_media']
+  }
+}
+
+Table games_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table books {
+  pages integer [not null]
+  language text
+  publishers text
+  api_id text [not null, unique]
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table books_list {
+  actual_page integer
+  redo integer [not null]
+  total integer [not null]
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table books_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_books_genre_media_name']
+    (name, media_id) [name: 'ix_books_genre_name_media']
+  }
+}
+
+Table books_authors {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_books_authors_media_name']
+    (name, media_id) [name: 'ix_books_authors_name_media']
+  }
+}
+
+Table books_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table manga {
+  original_name text
+  chapters integer
+  prod_status text
+  site_url text
+  end_date text
+  volumes integer
+  vote_average real
+  vote_count real
+  popularity real
+  publishers text
+  api_id integer [not null, unique]
+  id integer [pk, not null]
+  name text [not null]
+  release_date text
+  synopsis text
+  image_cover text [not null]
+  lock_status integer [not null]
+  added_at text
+  last_api_update text
+}
+
+Table manga_list {
+  current_chapter integer [not null]
+  redo integer [not null]
+  total integer [not null]
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  status text [not null]
+  release_notifications_enabled integer [not null]
+  favorite integer [not null]
+  comment text
+  rating real
+  custom_cover text
+  added_at text
+  last_updated text
+  indexes {
+    (user_id, media_id) [unique]
+    (media_id)
+    (user_id, media_id)
+    (media_id, user_id)
+  }
+}
+
+Table manga_genre {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_manga_genre_media_name']
+    (name, media_id) [name: 'ix_manga_genre_name_media']
+  }
+}
+
+Table manga_authors {
+  id integer [pk, not null]
+  media_id integer [not null]
+  name text [not null]
+  indexes {
+    (media_id, name) [unique, name: 'ux_manga_authors_media_name']
+    (name, media_id) [name: 'ix_manga_authors_name_media']
+  }
+}
+
+Table manga_tags {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_id integer [not null]
+  tag_id integer [not null]
+  indexes {
+    (user_id, media_id, tag_id) [unique]
+    (user_id, tag_id, media_id)
+  }
+}
+
+Table daily_mediadle {
+  id integer [pk, not null]
+  media_type text [not null]
+  media_id integer [not null]
+  date text [not null]
+  pixelation_levels integer [not null]
+  indexes {
+    (media_type, date) [unique, name: 'ux_daily_mediadle_type_date']
+  }
+}
+
+Table mediadle_stats {
+  id integer [pk, not null]
+  user_id integer [not null]
+  media_type text [not null]
+  total_played integer
+  total_won integer
+  average_attempts real
+  streak integer
+  best_streak integer
+  indexes {
+    (user_id, media_type) [unique, name: 'ux_mediadle_stats_user_type']
+  }
+}
+
+Table user_mediadle_progress {
+  id integer [pk, not null]
+  user_id integer [not null]
+  daily_mediadle_id integer [not null]
+  attempts integer [not null]
+  completed integer [not null]
+  succeeded integer [not null]
+  completion_time text
+  indexes {
+    (user_id, daily_mediadle_id) [unique, name: 'ux_user_mediadle_progress_user_daily']
+  }
+}
+
+Table which_came_first_media {
+  media_id integer [not null]
+  release_date text [not null]
+  media_type text [not null]
+  indexes {
+    (media_type, media_id) [pk]
+    (media_type, release_date) [name: 'ix_wcf_media_type_release_date']
+  }
+}
+
+Table which_came_first_runs {
+  id integer [pk, not null]
+  user_id integer [not null]
+  completed_at text
+  score integer [not null]
+  started_at text [not null]
+  selected_media_types text [not null]
+  status text [not null]
+  indexes {
+    (user_id, status) [name: 'ix_wcf_runs_user_status']
+    (user_id, completed_at) [name: 'ix_wcf_runs_user_completed']
+    (user_id) [unique, name: 'ux_wcf_runs_user_active']
+  }
+}
+
+Table which_came_first_rounds {
+  id integer [pk, not null]
+  run_id integer [not null]
+  round_number integer [not null]
+  left_media_id integer [not null]
+  left_release_date text [not null]
+  right_media_id integer [not null]
+  right_release_date text [not null]
+  correct integer
+  selected_side text
+  left_media_type text [not null]
+  right_media_type text [not null]
+  answered_at text
+  created_at text [not null]
+  indexes {
+    (run_id, answered_at) [name: 'ix_wcf_round_run_answered']
+    (run_id, round_number) [unique, name: 'uq_wcf_round_run_number']
+    (run_id) [unique, name: 'ux_wcf_round_run_unanswered']
+  }
+}
+
+Table achievement {
+  id integer [pk, not null]
+  name text [not null]
+  description text [not null]
+  code_name text [not null, unique]
+  media_type text [not null]
+  value text
+}
+
+Table achievement_tier {
+  id integer [pk, not null]
+  achievement_id integer [not null]
+  difficulty text [not null]
+  criteria text [not null]
+  rarity real
+  indexes {
+    (achievement_id, difficulty) [unique, name: 'achievement_difficulty_unique_idx']
+  }
+}
+
+Table user_achievement {
+  id integer [pk, not null]
+  user_id integer [not null]
+  tier_id integer [not null]
+  progress real
+  count real
+  completed integer
+  completed_at text
+  last_calculated_at text
+  indexes {
+    (user_id, tier_id) [unique, name: 'user_achievement_user_tier_unique_idx']
+    (tier_id, user_id) [name: 'ix_user_achievement_tier_user']
+    (user_id, completed_at) [name: 'ix_user_achievement_user_completed_at']
+    (tier_id) [name: 'ix_user_achievement_completed_tier']
+  }
+}
+
+Table social_notifications {
+  id integer [pk, not null]
+  actor_id integer [not null]
+  user_id integer [not null]
+  feature_request_id integer
+  type text [not null]
+  read integer [not null]
+  created_at text [not null]
+  indexes {
+    (user_id, actor_id, type) [unique, name: 'social_notif_unique']
+    (user_id, actor_id, type, feature_request_id) [unique, name: 'social_feature_notif_unique']
+    (user_id, created_at) [name: 'ix_social_notifications_user_created_at']
+    (user_id) [name: 'ix_social_notifications_user_unread']
+  }
+}
+
+Table media_notifications {
+  id integer [pk, not null]
+  user_id integer [not null]
+  name text [not null]
+  media_id integer [not null]
+  media_type text [not null]
+  season integer
+  episode integer
+  is_season_finale integer
+  release_date text
+  read integer [not null]
+  created_at text [not null]
+  indexes {
+    (user_id, created_at) [name: 'ix_media_notifications_user_created_at']
+    (media_type, media_id, user_id, created_at) [name: 'ix_media_notifications_media_user_created_at']
+    (user_id) [name: 'ix_media_notifications_user_unread']
+  }
+}
+
+Table task_history {
+  id integer [pk, increment, not null]
+  task_id text [not null]
+  user_id integer
+  status text [not null]
+  error_message text
+  task_name text [not null]
+  triggered_by text [not null]
+  logs text [not null]
+  started_at text [not null]
+  finished_at text [not null]
+  indexes {
+    (task_id) [name: 'ix_task_history_task_id']
+    (status) [name: 'ix_task_history_status']
+    (user_id) [name: 'ix_task_history_user_id']
+  }
+}
+
+Table year_recap_release {
+  year integer [pk, not null]
+  mode text [not null]
+  updated_at text [not null]
+}
+
+Table inactive_account_deletion {
+  id integer [pk, increment, not null]
+  deleted_at text
+  user_id integer [not null]
+  username text [not null]
+  resurrected_at text
+  warning_sent_at text
+  last_email_error text
+  last_seen_at text [not null]
+  warning_token_hash text
+  last_email_attempt_at text
+  deletion_scheduled_at text [not null]
+  status text [not null]
+  email_retry_count integer [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  indexes {
+    (user_id) [name: 'ix_inactive_account_deletion_user_id']
+    (status) [name: 'ix_inactive_account_deletion_status']
+    (deletion_scheduled_at) [name: 'ix_inactive_account_deletion_deletion_scheduled_at']
+    (warning_token_hash) [unique, name: 'ux_inactive_account_deletion_warning_token_hash']
+  }
+}
+
+Table media_refresh_log {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  media_type text [not null]
+  api_id text [not null]
+  refreshed_at text [not null]
+  indexes {
+    (user_id) [name: 'ix_media_refresh_log_user_id']
+    (refreshed_at) [name: 'ix_media_refresh_log_refreshed_at']
+    (media_type) [name: 'ix_media_refresh_log_media_type']
+  }
+}
+
+Table api_call_rollup {
+  id integer [pk, increment, not null]
+  provider text [not null]
+  bucket_start_ms integer [not null]
+  bucket_start text [not null]
+  total integer [not null]
+  errors integer [not null]
+  duration_ms_total integer [not null]
+  max_second_burst integer [not null]
+  status_counts text [not null]
+  indexes {
+    (provider) [name: 'ix_api_call_rollup_provider']
+    (bucket_start) [name: 'ix_api_call_rollup_bucket_start']
+    (bucket_start_ms, provider) [unique, name: 'ux_api_call_rollup_bucket_provider']
+  }
+}
+
+Table feature_requests {
+  id integer [pk, increment, not null]
+  title text [not null]
+  admin_comment text
+  description text [not null]
+  status text [not null]
+  created_by integer
+  created_at text [not null]
+  indexes {
+    (status) [name: 'ix_feature_requests_status']
+    (created_at) [name: 'ix_feature_requests_created_at']
+  }
+}
+
+Table feature_votes {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  feature_id integer [not null]
+  created_at text [not null]
+  indexes {
+    (user_id) [name: 'ix_feature_votes_user_id']
+    (feature_id, user_id) [unique, name: 'ux_feature_votes_feature_user']
+  }
+}
+
+Table collections {
+  id integer [pk, increment, not null]
+  owner_id integer [not null]
+  profile_position integer
+  title text [not null]
+  description text
+  view_count integer [not null]
+  like_count integer [not null]
+  copied_count integer [not null]
+  ordered integer [not null]
+  privacy text [not null]
+  created_at text [not null]
+  updated_at text
+  indexes {
+    (privacy) [name: 'ix_collections_privacy']
+    (owner_id) [name: 'ix_collections_owner_id']
+    (owner_id, profile_position) [unique, name: 'ux_collections_owner_profile_position']
+  }
+}
+
+Table collection_items {
+  id integer [pk, increment, not null]
+  collection_id integer [not null]
+  annotation text
+  media_id integer [not null]
+  order_index integer [not null]
+  media_type text [not null]
+  created_at text [not null]
+  indexes {
+    (collection_id, order_index) [unique, name: 'ux_collection_items_collection_order']
+    (collection_id, media_type, media_id) [unique, name: 'ux_collection_items_collection_media']
+    (media_type, media_id, collection_id) [name: 'ix_collection_items_media_type_media_collection']
+  }
+}
+
+Table collection_likes {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  collection_id integer [not null]
+  created_at text [not null]
+  indexes {
+    (user_id) [name: 'ix_collection_likes_user_id']
+    (collection_id, user_id) [unique, name: 'ux_collection_likes_collection_user']
+  }
+}
+
+Table import_jobs {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  error text
+  source text [not null]
+  total_count integer [not null]
+  failed_count integer [not null]
+  skipped_count integer [not null]
+  completed_count integer [not null]
+  processed_count integer [not null]
+  status text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  started_at text
+  finished_at text
+  next_attempt_at text
+  indexes {
+    (user_id, created_at) [name: 'ix_import_jobs_user_created_at']
+    (status, created_at) [name: 'ix_import_jobs_status_created_at']
+    (status, next_attempt_at) [name: 'ix_import_jobs_status_next_attempt_at']
+    (user_id) [unique, name: 'ux_import_jobs_user_active']
+  }
+}
+
+Table import_items {
+  id integer [pk, increment, not null]
+  job_id integer [not null]
+  name text
+  release_date text
+  status_reason text
+  external_api_id text
+  row_number integer [not null]
+  matched_media_id integer
+  media_type text
+  payload_json text [not null]
+  external_api_source text
+  status text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  indexes {
+    (job_id, status, media_type) [name: 'ix_import_items_job_status_media_type']
+    (job_id, row_number) [unique, name: 'ux_import_items_job_row']
+  }
+}
+
+Table smart_views {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  profile_position integer
+  spec text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  indexes {
+    (user_id) [name: 'ix_smart_views_user_id']
+    (user_id, profile_position) [unique, name: 'ux_smart_views_user_profile_position']
+  }
+  Note: 'Keep the existing SQLite table and constraints so renaming the feature preserves saved data.'
+}
+
+Table media_tags {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  media_type text [not null]
+  name text [not null]
+  indexes {
+    (user_id, media_type, name) [unique, name: 'ux_media_tags_user_type_name']
+  }
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref oauth_client_user_id_user_id_fk: oauth_client.user_id > user.id [delete: cascade]
+
+Ref oauth_client_resource_client_id_oauth_client_client_id_fk: oauth_client_resource.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_client_resource_resource_id_oauth_resource_identifier_fk: oauth_client_resource.resource_id > oauth_resource.identifier [delete: cascade]
+
+Ref oauth_refresh_token_client_id_oauth_client_client_id_fk: oauth_refresh_token.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_refresh_token_session_id_session_id_fk: oauth_refresh_token.session_id > session.id [delete: set null]
+
+Ref oauth_refresh_token_user_id_user_id_fk: oauth_refresh_token.user_id > user.id [delete: cascade]
+
+Ref oauth_access_token_client_id_oauth_client_client_id_fk: oauth_access_token.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_access_token_session_id_session_id_fk: oauth_access_token.session_id > session.id [delete: set null]
+
+Ref oauth_access_token_user_id_user_id_fk: oauth_access_token.user_id > user.id [delete: cascade]
+
+Ref oauth_access_token_refresh_id_oauth_refresh_token_id_fk: oauth_access_token.refresh_id > oauth_refresh_token.id [delete: cascade]
+
+Ref oauth_consent_client_id_oauth_client_client_id_fk: oauth_consent.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_consent_user_id_user_id_fk: oauth_consent.user_id > user.id [delete: cascade]
+
+Ref mcp_revocation_user_id_user_id_fk: mcp_revocation.user_id > user.id [delete: cascade]
+
+Ref mcp_revocation_client_id_oauth_client_client_id_fk: mcp_revocation.client_id > oauth_client.client_id [delete: cascade]
+
+Ref followers_follower_id_user_id_fk: followers.follower_id > user.id [delete: cascade]
+
+Ref followers_followed_id_user_id_fk: followers.followed_id > user.id [delete: cascade]
+
+Ref user_media_update_user_id_user_id_fk: user_media_update.user_id > user.id [delete: cascade]
+
+Ref user_media_monthly_activity_user_id_user_id_fk: user_media_monthly_activity.user_id > user.id [delete: cascade]
+
+Ref user_media_settings_user_id_user_id_fk: user_media_settings.user_id > user.id [delete: cascade]
+
+Ref user_media_stats_history_user_id_user_id_fk: user_media_stats_history.user_id > user.id [delete: cascade]
+
+Ref profile_custom_user_id_user_id_fk: profile_custom.user_id > user.id [delete: cascade]
+
+Ref series_list_user_id_user_id_fk: series_list.user_id > user.id [delete: cascade]
+
+Ref series_list_media_id_series_id_fk: series_list.media_id > series.id
+
+Ref series_list_seasons_list_id_series_list_id_fk: series_list_seasons.list_id > series_list.id [delete: cascade]
+
+Ref series_genre_media_id_series_id_fk: series_genre.media_id > series.id [delete: cascade]
+
+Ref series_actors_media_id_series_id_fk: series_actors.media_id > series.id [delete: cascade]
+
+Ref series_network_media_id_series_id_fk: series_network.media_id > series.id [delete: cascade]
+
+Ref series_episodes_per_season_media_id_series_id_fk: series_episodes_per_season.media_id > series.id [delete: cascade]
+
+Ref series_tags_user_id_user_id_fk: series_tags.user_id > user.id [delete: cascade]
+
+Ref series_tags_media_id_series_id_fk: series_tags.media_id > series.id [delete: cascade]
+
+Ref series_tags_tag_id_media_tags_id_fk: series_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref anime_list_user_id_user_id_fk: anime_list.user_id > user.id [delete: cascade]
+
+Ref anime_list_media_id_anime_id_fk: anime_list.media_id > anime.id
+
+Ref anime_list_seasons_list_id_anime_list_id_fk: anime_list_seasons.list_id > anime_list.id [delete: cascade]
+
+Ref anime_genre_media_id_anime_id_fk: anime_genre.media_id > anime.id [delete: cascade]
+
+Ref anime_actors_media_id_anime_id_fk: anime_actors.media_id > anime.id [delete: cascade]
+
+Ref anime_network_media_id_anime_id_fk: anime_network.media_id > anime.id [delete: cascade]
+
+Ref anime_episodes_per_season_media_id_anime_id_fk: anime_episodes_per_season.media_id > anime.id [delete: cascade]
+
+Ref anime_tags_user_id_user_id_fk: anime_tags.user_id > user.id [delete: cascade]
+
+Ref anime_tags_media_id_anime_id_fk: anime_tags.media_id > anime.id [delete: cascade]
+
+Ref anime_tags_tag_id_media_tags_id_fk: anime_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref movies_list_user_id_user_id_fk: movies_list.user_id > user.id [delete: cascade]
+
+Ref movies_list_media_id_movies_id_fk: movies_list.media_id > movies.id
+
+Ref movies_genre_media_id_movies_id_fk: movies_genre.media_id > movies.id [delete: cascade]
+
+Ref movies_actors_media_id_movies_id_fk: movies_actors.media_id > movies.id [delete: cascade]
+
+Ref movies_tags_user_id_user_id_fk: movies_tags.user_id > user.id [delete: cascade]
+
+Ref movies_tags_media_id_movies_id_fk: movies_tags.media_id > movies.id [delete: cascade]
+
+Ref movies_tags_tag_id_media_tags_id_fk: movies_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref games_list_user_id_user_id_fk: games_list.user_id > user.id [delete: cascade]
+
+Ref games_list_media_id_games_id_fk: games_list.media_id > games.id
+
+Ref games_genre_media_id_games_id_fk: games_genre.media_id > games.id [delete: cascade]
+
+Ref games_platforms_media_id_games_id_fk: games_platforms.media_id > games.id [delete: cascade]
+
+Ref games_companies_media_id_games_id_fk: games_companies.media_id > games.id [delete: cascade]
+
+Ref games_tags_user_id_user_id_fk: games_tags.user_id > user.id [delete: cascade]
+
+Ref games_tags_media_id_games_id_fk: games_tags.media_id > games.id [delete: cascade]
+
+Ref games_tags_tag_id_media_tags_id_fk: games_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref books_list_user_id_user_id_fk: books_list.user_id > user.id [delete: cascade]
+
+Ref books_list_media_id_books_id_fk: books_list.media_id > books.id
+
+Ref books_genre_media_id_books_id_fk: books_genre.media_id > books.id [delete: cascade]
+
+Ref books_authors_media_id_books_id_fk: books_authors.media_id > books.id [delete: cascade]
+
+Ref books_tags_user_id_user_id_fk: books_tags.user_id > user.id [delete: cascade]
+
+Ref books_tags_media_id_books_id_fk: books_tags.media_id > books.id [delete: cascade]
+
+Ref books_tags_tag_id_media_tags_id_fk: books_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref manga_list_user_id_user_id_fk: manga_list.user_id > user.id [delete: cascade]
+
+Ref manga_list_media_id_manga_id_fk: manga_list.media_id > manga.id
+
+Ref manga_genre_media_id_manga_id_fk: manga_genre.media_id > manga.id [delete: cascade]
+
+Ref manga_authors_media_id_manga_id_fk: manga_authors.media_id > manga.id [delete: cascade]
+
+Ref manga_tags_user_id_user_id_fk: manga_tags.user_id > user.id [delete: cascade]
+
+Ref manga_tags_media_id_manga_id_fk: manga_tags.media_id > manga.id [delete: cascade]
+
+Ref manga_tags_tag_id_media_tags_id_fk: manga_tags.tag_id > media_tags.id [delete: cascade]
+
+Ref mediadle_stats_user_id_user_id_fk: mediadle_stats.user_id > user.id [delete: cascade]
+
+Ref user_mediadle_progress_user_id_user_id_fk: user_mediadle_progress.user_id > user.id [delete: cascade]
+
+Ref user_mediadle_progress_daily_mediadle_id_daily_mediadle_id_fk: user_mediadle_progress.daily_mediadle_id > daily_mediadle.id
+
+Ref which_came_first_runs_user_id_user_id_fk: which_came_first_runs.user_id - user.id [delete: cascade]
+
+Ref which_came_first_rounds_run_id_which_came_first_runs_id_fk: which_came_first_rounds.run_id - which_came_first_runs.id [delete: cascade]
+
+Ref achievement_tier_achievement_id_achievement_id_fk: achievement_tier.achievement_id > achievement.id [delete: cascade]
+
+Ref user_achievement_user_id_user_id_fk: user_achievement.user_id > user.id [delete: cascade]
+
+Ref user_achievement_tier_id_achievement_tier_id_fk: user_achievement.tier_id > achievement_tier.id [delete: cascade]
+
+Ref social_notifications_actor_id_user_id_fk: social_notifications.actor_id > user.id [delete: cascade]
+
+Ref social_notifications_user_id_user_id_fk: social_notifications.user_id > user.id [delete: cascade]
+
+Ref social_notifications_feature_request_id_feature_requests_id_fk: social_notifications.feature_request_id > feature_requests.id [delete: cascade]
+
+Ref media_notifications_user_id_user_id_fk: media_notifications.user_id > user.id [delete: cascade]
+
+Ref task_history_user_id_user_id_fk: task_history.user_id > user.id [delete: cascade]
+
+Ref media_refresh_log_user_id_user_id_fk: media_refresh_log.user_id > user.id [delete: cascade]
+
+Ref feature_requests_created_by_user_id_fk: feature_requests.created_by > user.id [delete: set null]
+
+Ref feature_votes_user_id_user_id_fk: feature_votes.user_id > user.id [delete: cascade]
+
+Ref feature_votes_feature_id_feature_requests_id_fk: feature_votes.feature_id > feature_requests.id [delete: cascade]
+
+Ref collections_owner_id_user_id_fk: collections.owner_id > user.id [delete: cascade]
+
+Ref collection_items_collection_id_collections_id_fk: collection_items.collection_id > collections.id [delete: cascade]
+
+Ref collection_likes_user_id_user_id_fk: collection_likes.user_id > user.id [delete: cascade]
+
+Ref collection_likes_collection_id_collections_id_fk: collection_likes.collection_id > collections.id [delete: cascade]
+
+Ref import_jobs_user_id_user_id_fk: import_jobs.user_id - user.id [delete: cascade]
+
+Ref import_items_job_id_import_jobs_id_fk: import_items.job_id > import_jobs.id [delete: cascade]
+
+Ref smart_views_user_id_user_id_fk: smart_views.user_id > user.id [delete: cascade]
+
+Ref media_tags_user_id_user_id_fk: media_tags.user_id > user.id [delete: cascade]

@@ -1,0 +1,13 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@openstatus/assertions": ["./packages/assertions/src/index.ts"],
+      "@openstatus/locales": ["./packages/locales/index.ts"],
+      "@openstatus/regions": ["./packages/regions/index.ts"],
+      "@openstatus/theme-store": ["./packages/theme-store/src/index.ts"],
+      "@openstatus/utils": ["./packages/utils/src/index.ts"]
+    }
+  },
+  "include": ["packages/db", "drizzle.config.ts"]
+}

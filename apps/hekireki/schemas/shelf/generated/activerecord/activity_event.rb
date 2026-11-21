@@ -1,0 +1,14 @@
+class ActivityEvent < ApplicationRecord
+  self.table_name = "ActivityEvent"
+
+  attribute :id, default: -> { Cuid.generate }
+
+  enum :action, { asset_created: "ASSET_CREATED", asset_name_changed: "ASSET_NAME_CHANGED", asset_description_changed: "ASSET_DESCRIPTION_CHANGED", asset_category_changed: "ASSET_CATEGORY_CHANGED", asset_model_changed: "ASSET_MODEL_CHANGED", asset_kit_changed: "ASSET_KIT_CHANGED", asset_location_changed: "ASSET_LOCATION_CHANGED", asset_tags_changed: "ASSET_TAGS_CHANGED", asset_status_changed: "ASSET_STATUS_CHANGED", asset_valuation_changed: "ASSET_VALUATION_CHANGED", asset_quantity_changed: "ASSET_QUANTITY_CHANGED", asset_min_quantity_changed: "ASSET_MIN_QUANTITY_CHANGED", asset_custom_field_changed: "ASSET_CUSTOM_FIELD_CHANGED", asset_preferred_barcode_changed: "ASSET_PREFERRED_BARCODE_CHANGED", asset_available_to_book_changed: "ASSET_AVAILABLE_TO_BOOK_CHANGED", asset_archived: "ASSET_ARCHIVED", asset_unarchived: "ASSET_UNARCHIVED", asset_deleted: "ASSET_DELETED", custody_assigned: "CUSTODY_ASSIGNED", custody_released: "CUSTODY_RELEASED", booking_created: "BOOKING_CREATED", booking_status_changed: "BOOKING_STATUS_CHANGED", booking_dates_changed: "BOOKING_DATES_CHANGED", booking_assets_added: "BOOKING_ASSETS_ADDED", booking_assets_removed: "BOOKING_ASSETS_REMOVED", booking_checked_out: "BOOKING_CHECKED_OUT", booking_checked_in: "BOOKING_CHECKED_IN", booking_partial_checkin: "BOOKING_PARTIAL_CHECKIN", booking_partial_checkout: "BOOKING_PARTIAL_CHECKOUT", booking_cancelled: "BOOKING_CANCELLED", booking_archived: "BOOKING_ARCHIVED", booking_model_requested: "BOOKING_MODEL_REQUESTED", booking_model_request_changed: "BOOKING_MODEL_REQUEST_CHANGED", booking_model_request_removed: "BOOKING_MODEL_REQUEST_REMOVED", booking_model_request_fulfilled: "BOOKING_MODEL_REQUEST_FULFILLED", audit_created: "AUDIT_CREATED", audit_started: "AUDIT_STARTED", audit_assets_added: "AUDIT_ASSETS_ADDED", audit_assets_removed: "AUDIT_ASSETS_REMOVED", audit_asset_scanned: "AUDIT_ASSET_SCANNED", audit_asset_scan_removed: "AUDIT_ASSET_SCAN_REMOVED", audit_due_date_changed: "AUDIT_DUE_DATE_CHANGED", audit_assignee_added: "AUDIT_ASSIGNEE_ADDED", audit_assignee_removed: "AUDIT_ASSIGNEE_REMOVED", audit_updated: "AUDIT_UPDATED", audit_completed: "AUDIT_COMPLETED", audit_cancelled: "AUDIT_CANCELLED", audit_archived: "AUDIT_ARCHIVED", location_created: "LOCATION_CREATED", location_updated: "LOCATION_UPDATED", kit_created: "KIT_CREATED", kit_updated: "KIT_UPDATED", organization_qr_id_display_preference_changed: "ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED" },
+       validate: true
+  enum :entityType, { asset: "ASSET", booking: "BOOKING", audit: "AUDIT", kit: "KIT", location: "LOCATION", team_member: "TEAM_MEMBER", custody: "CUSTODY", user: "USER", organization: "ORGANIZATION" },
+       validate: true
+
+  validates :entityId, presence: true
+
+  belongs_to :organization, foreign_key: "organizationId", inverse_of: :activity_events
+end

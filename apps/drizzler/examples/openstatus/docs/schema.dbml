@@ -1,0 +1,1164 @@
+Table integration {
+  id integer [pk, not null]
+  name text [not null]
+  workspace_id integer
+  credential text [note: 'Not used yet but we might need to get store something for the integration  webhook url and or secret']
+  external_id text [not null]
+  created_at integer
+  updated_at integer
+  data text [not null]
+  indexes {
+    (workspace_id) [name: 'integration_workspace_id_idx']
+  }
+}
+
+Table workspace {
+  id integer [pk, not null]
+  slug text [not null, unique]
+  name text
+  stripe_id text [unique]
+  subscription_id text
+  plan text
+  ends_at integer
+  paid_until integer
+  trial_ends_at integer
+  trialed_at integer
+  limits text [not null]
+  workos_organization_id text [unique]
+  sso_enabled integer [not null, note: 'Our own permission switch, never mirrored from WorkOS: the downgrade cascade clears it, and a later connection webhook must not resurrect it.']
+  created_at integer
+  updated_at integer
+  dsn text
+  indexes {
+    (id, dsn) [unique]
+  }
+}
+
+Table workspace_sso_domain {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  domain text [not null, unique, note: 'Globally unique: two workspaces claiming the same domain would make the login-time lookup ambiguous, which is an account-takeover vector.']
+  verified_at integer [note: 'Only ever written from the `organization_domain.verified` webhook.']
+  created_at integer
+  indexes {
+    (workspace_id) [name: 'workspace_sso_domain_workspace_id_idx']
+  }
+}
+
+Table user {
+  id integer [pk, not null]
+  tenant_id text [unique, note: 'clerk fields']
+  first_name text
+  last_name text
+  photo_url text
+  name text [note: 'next-auth fields']
+  email text
+  emailVerified integer
+  created_at integer
+  updated_at integer
+  deleted_at integer
+  indexes {
+    (email) [name: 'user_email_idx']
+  }
+}
+
+Table users_to_workspaces {
+  user_id integer [not null]
+  workspace_id integer [not null]
+  role text [not null]
+  created_at integer
+  indexes {
+    (user_id, workspace_id) [pk]
+    (workspace_id) [name: 'users_to_workspaces_workspace_id_idx']
+  }
+}
+
+Table account {
+  user_id integer [not null]
+  type text [not null]
+  provider text [not null]
+  provider_account_id text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, provider_account_id) [pk]
+    (user_id) [name: 'account_user_id_idx']
+  }
+}
+
+Table session {
+  session_token text [pk, not null]
+  user_id integer [not null]
+  expires integer [not null]
+  indexes {
+    (user_id) [name: 'session_user_id_idx']
+  }
+}
+
+Table verification_token {
+  identifier text [not null]
+  token text [not null]
+  expires integer [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Table status_report {
+  id integer [pk, not null]
+  status text [not null]
+  title text [not null]
+  workspace_id integer
+  page_id integer
+  created_by integer
+  updated_by integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id, created_at) [name: 'status_report_workspace_created_idx']
+    (page_id) [name: 'status_report_page_id_idx']
+  }
+}
+
+Table status_report_update {
+  id integer [pk, not null]
+  status text [not null]
+  date integer [not null]
+  message text [not null]
+  status_report_id integer [not null]
+  created_by integer
+  updated_by integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (status_report_id) [name: 'status_report_update_status_report_id_idx']
+  }
+}
+
+Table page {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  title text [not null]
+  description text [not null]
+  icon text
+  slug text [not null, unique]
+  custom_domain text [not null]
+  published integer
+  force_theme text [not null]
+  custom_theme text [note: 'Per-mode CSS variable overrides ({ light, dark }) merged over the configured theme vars. Gated by the "custom-theme" plan limit.']
+  password text [note: 'Password protecting the status page - no specific restriction on password']
+  password_protected integer
+  access_type text
+  auth_email_domains text
+  allowed_ip_ranges text
+  homepage_url text [note: 'links and urls']
+  contact_url text
+  default_locale text [not null]
+  locales text
+  default_timezone text [not null, note: 'IANA zone the public page renders its bars and timestamps in']
+  legacy_page integer [not null]
+  configuration text
+  allow_index integer [not null]
+  show_monitor_values integer [note: 'Displays the total and failed request numbers for each monitor TODO: remove this column - we moved into configuration']
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'page_workspace_id_idx']
+  }
+}
+
+Table monitor {
+  id integer [pk, not null]
+  job_type text [not null]
+  periodicity text [not null]
+  status text [not null]
+  active integer
+  regions text [not null]
+  url text [not null]
+  name text [not null]
+  external_name text
+  description text [not null]
+  headers text
+  body text
+  method text
+  workspace_id integer
+  timeout integer [not null, note: 'Custom timeout for this monitor']
+  degraded_after integer [note: 'Threshold for the monitor to be considered degraded']
+  assertions text
+  otel_endpoint text
+  otel_headers text
+  public integer
+  retry integer
+  follow_redirects integer
+  grpc_service text
+  grpc_tls text
+  heartbeat_token text
+  heartbeat_period integer [note: 'seconds']
+  heartbeat_grace integer
+  heartbeat_cron text
+  heartbeat_tz text
+  created_at integer
+  updated_at integer
+  deleted_at integer
+  indexes {
+    (workspace_id) [name: 'monitor_workspace_id_active_idx']
+    (heartbeat_token) [unique, name: 'monitor_heartbeat_token_idx']
+  }
+}
+
+Table page_subscriber {
+  id integer [pk, not null]
+  email text
+  page_id integer [not null]
+  channel_type text [not null, note: 'Added: channel type discriminator']
+  webhook_url text [note: 'Added: webhook-specific fields (null for email channel)']
+  channel_config text
+  slack_channel_id text [note: 'Slack channel id (null for non-slack channels). teamId + channelName live in channelConfig; the bot token is resolved from the integration row at send time, never persisted here.']
+  source text [not null, note: 'How the subscription was created. Vendor-added rows skip verification and are editable from the dashboard.']
+  name text [note: 'Optional human-readable label (e.g. "Supabase #incidents"). When set, rendered in place of the raw destination in UI.']
+  token text
+  accepted_at integer
+  expires_at integer
+  unsubscribed_at integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (page_id) [name: 'page_subscriber_page_id_idx']
+    (page_id) [unique, name: 'idx_page_subscriber_email_page_active']
+    (page_id) [unique, name: 'idx_page_subscriber_webhook_page_active']
+    (slack_channel_id, page_id) [unique, name: 'idx_page_subscriber_slack_channel_page_active']
+  }
+}
+
+Table page_subscriber_to_page_component {
+  page_subscriber_id integer [not null]
+  page_component_id integer [not null]
+  created_at integer
+  indexes {
+    (page_subscriber_id, page_component_id) [pk]
+  }
+}
+
+Table notification {
+  id integer [pk, not null]
+  name text [not null]
+  provider text [not null]
+  data text
+  workspace_id integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'notification_workspace_id_idx']
+  }
+}
+
+Table notification_trigger {
+  id integer [pk, not null]
+  monitor_id integer
+  notification_id integer
+  cron_timestamp integer [not null]
+  indexes {
+    (notification_id, monitor_id, cron_timestamp) [unique, name: 'notification_id_monitor_id_crontimestampe']
+  }
+}
+
+Table notifications_to_monitors {
+  monitor_id integer [not null]
+  notification_id integer [not null]
+  created_at integer
+  indexes {
+    (monitor_id, notification_id) [pk]
+    (notification_id) [name: 'notifications_to_monitors_notification_id_idx']
+  }
+}
+
+Table notification_outbox {
+  id integer [pk, not null]
+  dedup_key text [not null]
+  monitor_id integer [not null]
+  workspace_id integer
+  notification_id integer [not null]
+  provider text [not null]
+  event_type text [not null]
+  from_status text [not null]
+  to_status text [not null]
+  cron_timestamp integer [not null]
+  incident_id integer
+  payload text [not null]
+  delivery_status text [not null]
+  outcome text
+  attempts integer [not null]
+  next_attempt_at integer [not null]
+  deadline_at integer [not null]
+  locked_by text
+  locked_until integer
+  delivered_at integer
+  last_error text
+  created_at integer [not null]
+  indexes {
+    (dedup_key) [unique, name: 'notification_outbox_dedup_key_idx']
+    (next_attempt_at) [name: 'notification_outbox_claim_idx']
+    (notification_id, cron_timestamp) [name: 'notification_outbox_notification_id_cron_timestamp_idx']
+    (monitor_id, notification_id) [name: 'notification_outbox_channel_idx']
+  }
+}
+
+Table notification_dead_letter {
+  id integer [pk, not null]
+  outbox_id integer [not null]
+  dedup_key text [not null]
+  monitor_id integer [not null]
+  workspace_id integer
+  notification_id integer [not null]
+  provider text [not null]
+  event_type text [not null]
+  from_status text [not null]
+  to_status text [not null]
+  cron_timestamp integer [not null]
+  incident_id integer
+  payload text [not null]
+  attempts integer [not null]
+  final_error text
+  died_at integer [not null]
+  indexes {
+    (dedup_key) [unique, name: 'notification_dead_letter_dedup_key_idx']
+    (workspace_id, died_at) [name: 'notification_dead_letter_workspace_id_died_at_idx']
+  }
+}
+
+Table monitor_status {
+  monitor_id integer [not null]
+  region text [not null]
+  status text [not null]
+  cron_timestamp integer [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (monitor_id, region) [pk]
+    (monitor_id, region) [name: 'monitor_status_idx']
+  }
+}
+
+Table invitation {
+  id integer [pk, not null]
+  email text [not null]
+  role text [not null]
+  workspace_id integer [not null]
+  token text [not null]
+  expires_at integer [not null]
+  created_at integer
+  accepted_at integer
+  indexes {
+    (workspace_id) [name: 'invitation_workspace_id_idx']
+  }
+}
+
+Table monitor_incident {
+  id integer [pk, not null]
+  title text [not null]
+  summary text [not null]
+  status text [not null]
+  monitor_id integer [note: 'Service affected by incident']
+  workspace_id integer [note: 'Workspace where the incident happened']
+  started_at integer [not null, note: 'Data related to incident timeline']
+  acknowledged_at integer [note: 'Who has acknowledged the incident']
+  acknowledged_by integer
+  resolved_at integer [note: 'Who has resolved it']
+  resolved_by integer
+  incident_screenshot_url text
+  recovery_screenshot_url text
+  auto_resolved integer [note: 'If the incident was auto resolved']
+  created_at integer
+  updated_at integer
+  indexes {
+    (monitor_id, started_at) [unique]
+    (workspace_id, started_at) [name: 'monitor_incident_workspace_id_started_at_idx']
+    (monitor_id) [unique, name: 'monitor_incident_open_idx']
+  }
+}
+
+Table monitor_tag {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  name text [not null]
+  color text [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'monitor_tag_workspace_id_idx']
+  }
+}
+
+Table monitor_tag_to_monitor {
+  monitor_id integer [not null]
+  monitor_tag_id integer [not null]
+  created_at integer
+  indexes {
+    (monitor_id, monitor_tag_id) [pk]
+    (monitor_tag_id) [name: 'monitor_tag_to_monitor_monitor_tag_id_idx']
+  }
+}
+
+Table application {
+  id integer [pk, not null]
+  name text
+  dsn text [unique]
+  workspace_id integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'application_workspace_id_idx']
+  }
+}
+
+Table maintenance {
+  id integer [pk, not null]
+  title text [not null]
+  message text [not null, note: 'deprecated: mirror of the first `maintenance_update` (backfilled in migration 0092); dropped in a follow-up']
+  from integer [not null]
+  to integer [not null]
+  workspace_id integer
+  page_id integer
+  created_by integer
+  updated_by integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (page_id) [name: 'maintenance_page_id_idx']
+    (workspace_id) [name: 'maintenance_workspace_id_idx']
+  }
+}
+
+Table maintenance_update {
+  id integer [pk, not null]
+  message text [not null]
+  date integer [not null]
+  maintenance_id integer [not null]
+  created_by integer
+  updated_by integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (maintenance_id) [name: 'maintenance_update_maintenance_id_idx']
+  }
+}
+
+Table check {
+  id integer [pk, increment, not null]
+  regions text [not null]
+  url text [not null]
+  headers text
+  body text
+  method text
+  count_requests integer
+  workspace_id integer
+  created_at integer
+  indexes {
+    (workspace_id) [name: 'check_workspace_id_idx']
+  }
+}
+
+Table monitor_run {
+  id integer [pk, not null]
+  workspace_id integer
+  monitor_id integer
+  runned_at integer
+  created_at integer
+  indexes {
+    (workspace_id, created_at) [name: 'monitor_run_workspace_id_created_at_idx']
+    (monitor_id) [name: 'monitor_run_monitor_id_idx']
+  }
+}
+
+Table private_location_monitor_status {
+  monitor_id integer [not null]
+  private_location_id integer [not null]
+  status text [not null]
+  cron_timestamp integer [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (monitor_id, private_location_id) [pk]
+    (private_location_id) [name: 'private_location_monitor_status_pl_id_idx']
+  }
+}
+
+Table private_location {
+  id integer [pk, not null]
+  name text [not null]
+  token text [not null]
+  status text [not null]
+  metadata text
+  last_seen_at integer
+  workspace_id integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'private_location_workspace_id_idx']
+  }
+}
+
+Table private_location_to_monitor {
+  private_location_id integer
+  monitor_id integer
+  created_at integer
+  deleted_at integer
+  indexes {
+    (private_location_id) [name: 'private_location_to_monitor_private_location_id_idx']
+    (monitor_id) [name: 'private_location_to_monitor_monitor_id_idx']
+  }
+}
+
+Table monitor_group {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  page_id integer [not null]
+  name text [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (workspace_id) [name: 'monitor_group_workspace_id_idx']
+    (page_id) [name: 'monitor_group_page_id_idx']
+  }
+}
+
+Table viewer {
+  id integer [pk, not null]
+  name text
+  email text [unique]
+  emailVerified integer
+  image text
+  created_at integer
+  updated_at integer
+}
+
+Table viewer_session {
+  session_token text [pk, not null]
+  user_id integer [not null]
+  expires integer [not null]
+}
+
+Table viewer_accounts {
+  user_id text [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, providerAccountId) [pk]
+  }
+}
+
+Table api_key {
+  id integer [pk, increment, not null]
+  name text [not null]
+  description text
+  prefix text [not null, unique]
+  hashed_token text [not null, unique]
+  workspace_id integer [not null]
+  created_by_id integer [not null]
+  scopes text [not null, note: 'Stored as a JSON array so per-resource scopes (e.g. \'monitor.read\') can be added later without re-shaping the column. v1 stores a single value: [\'read\'] or [\'write\']. Existing rows backfill to [\'write\'] via the column default to preserve current behavior.']
+  created_at integer
+  expires_at integer
+  last_used_at integer
+  indexes {
+    (prefix) [name: 'api_key_prefix_idx']
+    (workspace_id) [name: 'api_key_workspace_id_idx']
+  }
+}
+
+Table page_component {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  page_id integer [not null]
+  type text [not null]
+  monitor_id integer
+  name text [not null]
+  description text
+  order integer
+  group_id integer
+  group_order integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (page_id, monitor_id) [unique, name: 'page_component_page_id_monitor_id_unique']
+    (workspace_id) [name: 'page_component_workspace_id_idx']
+  }
+}
+
+Table maintenance_to_page_component {
+  maintenance_id integer [not null]
+  page_component_id integer [not null]
+  created_at integer
+  indexes {
+    (maintenance_id, page_component_id) [pk]
+    (page_component_id) [name: 'maintenance_to_page_component_page_component_id_idx']
+  }
+}
+
+Table status_report_to_page_component {
+  status_report_id integer [not null]
+  page_component_id integer [not null]
+  created_at integer
+  indexes {
+    (status_report_id, page_component_id) [pk]
+    (page_component_id) [name: 'status_report_to_page_component_page_component_id_idx']
+  }
+}
+
+Table status_report_update_to_page_component {
+  status_report_update_id integer [not null]
+  page_component_id integer [not null]
+  impact text [not null]
+  created_at integer
+  indexes {
+    (status_report_update_id, page_component_id) [pk]
+    (page_component_id) [name: 'status_report_update_to_page_component_page_component_id_idx']
+  }
+  Note: 'timeline: the impact each update set per component — the only place impact is stored. `status_report_to_page_component` stays the membership source.'
+}
+
+Table page_component_groups {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  page_id integer [not null]
+  name text [not null]
+  default_open integer [not null]
+  created_at integer
+  updated_at integer
+  indexes {
+    (page_id) [name: 'page_component_groups_page_id_idx']
+    (workspace_id) [name: 'page_component_groups_workspace_id_idx']
+  }
+}
+
+Table feedback {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  user_id integer [not null]
+  source text [not null]
+  message text [not null]
+  type text
+  blocker integer
+  path text [not null]
+  metadata text
+  created_at integer [not null]
+  indexes {
+    (workspace_id) [name: 'feedback_workspace_id_idx']
+  }
+}
+
+Table audit_log {
+  id integer [pk, increment, not null]
+  workspace_id integer [not null]
+  actor_type text [not null]
+  actor_id text [not null]
+  actor_user_id integer
+  action text [not null]
+  entity_type text [not null]
+  entity_id text [not null]
+  before text
+  after text
+  metadata text
+  changed_fields text
+  created_at integer [not null]
+  indexes {
+    (workspace_id, created_at) [name: 'audit_log_workspace_created_idx']
+    (workspace_id, entity_type, entity_id, created_at) [name: 'audit_log_entity_idx']
+  }
+  Note: 'Append-only log of mutating actions taken against the workspace. No foreign keys: rows outlive their subjects (workspace / user / monitor deletions must not cascade-remove audit history, and a soft-deleted user must not block inserts). References on columns are informational and enforced in application code. Reads must sort by `(created_at DESC, id DESC)` — bulk operations emit multiple rows in the same millisecond; the autoincrement id gives a deterministic tiebreaker.'
+}
+
+Table external_service {
+  id integer [pk, not null]
+  slug text [not null, unique]
+  aliases text [not null]
+  name text [not null]
+  url text [not null]
+  status_page_url text [not null]
+  provider text [not null]
+  industry text [not null]
+  description text
+  api_config text
+  deleted_at integer
+  created_at integer
+  updated_at integer
+  indexes {
+    (deleted_at) [name: 'external_service_deleted_at_idx']
+  }
+}
+
+Table external_service_component {
+  id integer [pk, not null]
+  external_service_id integer [not null]
+  upstream_component_id text [not null]
+  slug text [not null]
+  aliases text [not null]
+  name text [not null]
+  description text
+  group_name text
+  position integer [not null]
+  indicator text [not null]
+  status text [not null]
+  first_seen_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (external_service_id, upstream_component_id) [unique, name: 'external_service_component_unique_idx']
+    (external_service_id, slug) [unique, name: 'external_service_component_slug_unique_idx']
+  }
+}
+
+Table external_service_incident {
+  id integer [pk, not null]
+  external_service_id integer [not null]
+  provider_incident_id text [not null]
+  name text [not null]
+  status text [not null]
+  impact text
+  shortlink text
+  started_at integer
+  created_at integer [not null]
+  resolved_at integer
+  affected_component_ids text [not null]
+  raw_payload text
+  raw_payload_purged_at integer
+  first_seen_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (external_service_id, provider_incident_id) [unique, name: 'external_service_incident_unique_idx']
+    (external_service_id, started_at) [name: 'external_service_incident_started_at_idx']
+    (resolved_at) [name: 'external_service_incident_resolved_at_idx']
+  }
+}
+
+Table external_service_report {
+  id integer [pk, not null]
+  external_service_id integer [not null]
+  external_service_component_id integer
+  reporter_hash text [not null]
+  country text [not null]
+  created_at integer [not null]
+  indexes {
+    (external_service_id, created_at) [name: 'external_service_report_service_idx']
+    (external_service_component_id, created_at) [name: 'external_service_report_component_idx']
+  }
+}
+
+Table chat_session {
+  id integer [pk, increment, not null]
+  workspace_id integer [not null]
+  user_id integer [not null]
+  title text [not null]
+  messages text [not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (workspace_id, user_id, updated_at) [name: 'chat_session_workspace_user_updated_idx']
+  }
+  Note: 'Surrogate-PK row per dashboard chat conversation. Many rows per (workspace, user). Bounded by application logic on insert (`MAX_CHAT_SESSIONS_PER_USER`); per-row payload bounded by `MAX_CHAT_MESSAGES` and a tool-result compaction policy in the service layer.'
+}
+
+Table frozen_monitor_uptime {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  monitor_id integer [not null]
+  month text [not null, note: 'UTC first-of-month, YYYY-MM-01']
+  days text [not null]
+  created_at integer
+  indexes {
+    (monitor_id, month) [unique, name: 'frozen_monitor_uptime_monitor_id_month_unique']
+    (workspace_id) [name: 'frozen_monitor_uptime_workspace_id_idx']
+  }
+}
+
+Table monitor_transition {
+  id integer [pk, not null]
+  monitor_id integer [not null]
+  region text [not null]
+  cron_timestamp integer [not null]
+  from_status text [not null]
+  to_status text [not null]
+  quorum_count integer [not null]
+  region_count integer [not null]
+  transitioned integer [not null]
+  outbox_rows integer [not null]
+  created_at integer [not null]
+  indexes {
+    (monitor_id, cron_timestamp) [name: 'monitor_transition_monitor_id_cron_timestamp_idx']
+    (created_at) [name: 'monitor_transition_created_at_idx']
+  }
+}
+
+Table oauth_client {
+  id integer [pk, increment, not null]
+  client_id text [not null, unique]
+  name text [not null]
+  redirect_uris text [not null]
+  revoked_at integer
+  created_at integer
+  Note: 'Every client is public (token_endpoint_auth_method "none"), so there is no secret column. Confidential clients are a follow-up.'
+}
+
+Table oauth_session {
+  id text [pk, not null]
+  client_id text [not null]
+  redirect_uri text [not null]
+  scope text [not null]
+  state text
+  resource text
+  code_challenge text [not null]
+  code_challenge_method text [not null]
+  decided_at integer
+  expires_at integer [not null]
+  indexes {
+    (client_id) [name: 'oauth_session_client_id_idx']
+    (expires_at) [name: 'oauth_session_expires_at_idx']
+  }
+  Note: 'Pending authorize request. Lives in a row (not memory) because the server runs several instances and the consent page is served by the dashboard.'
+}
+
+Table oauth_authorization_code {
+  id integer [pk, increment, not null]
+  hash text [not null, unique]
+  client_id text [not null]
+  user_id integer [not null]
+  workspace_id integer [not null]
+  scope text [not null]
+  redirect_uri text [not null]
+  code_challenge text [not null]
+  expires_at integer [not null]
+  consumed_at integer
+  grant_id integer [note: 'Set on exchange so a replayed code can revoke the grant it produced.']
+  indexes {
+    (expires_at) [name: 'oauth_authorization_code_expires_at_idx']
+    (client_id) [name: 'oauth_authorization_code_client_id_idx']
+  }
+}
+
+Table oauth_grant {
+  id integer [pk, increment, not null]
+  client_id text [not null]
+  user_id integer [not null]
+  workspace_id integer [not null]
+  scope text [not null]
+  access_token_hash text [not null, unique]
+  access_token_expires_at integer [not null]
+  refresh_token_hash text [not null, unique]
+  refresh_token_expires_at integer [not null]
+  previous_refresh_token_hash text [note: 'Grace window: the hash rotated out at `rotatedAt` stays valid briefly so two concurrent refreshes do not kill the grant.']
+  rotated_at integer
+  last_used_at integer
+  revoked_at integer
+  created_at integer
+  indexes {
+    (workspace_id) [name: 'oauth_grant_workspace_id_idx']
+    (client_id, user_id) [name: 'oauth_grant_client_id_user_id_idx']
+    (user_id) [name: 'oauth_grant_user_id_idx']
+    (previous_refresh_token_hash) [name: 'oauth_grant_previous_refresh_token_hash_idx']
+    (refresh_token_expires_at) [name: 'oauth_grant_refresh_token_expires_at_idx']
+  }
+  Note: 'One row per consent. Access and refresh token share the row because they are one-to-one and rotate together.'
+}
+
+Table incident {
+  id integer [pk, increment, not null]
+  workspace_id integer [not null]
+  title text [not null]
+  severity text [not null]
+  status text [not null]
+  summary text
+  commander_id integer
+  declared_by integer
+  declared_at integer [not null]
+  started_at integer [not null]
+  mitigated_at integer
+  resolved_at integer
+  resolved_by integer
+  closed_at integer
+  status_report_id integer
+  slack_team_id text
+  slack_channel_id text
+  created_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (workspace_id, status) [name: 'incident_workspace_id_status_idx']
+    (workspace_id, declared_at) [name: 'incident_workspace_id_declared_at_idx']
+    (slack_team_id, slack_channel_id) [unique, name: 'incident_slack_channel_idx']
+    (status_report_id) [unique, name: 'incident_status_report_id_idx']
+  }
+  Note: 'Autoincrement: audit rows outlive a deleted incident, so its id must never be reused.'
+}
+
+Table incident_event {
+  id integer [pk, increment, not null]
+  incident_id integer [not null]
+  type text [not null]
+  message text
+  source text
+  source_ref text
+  created_by integer
+  created_at integer [not null]
+  indexes {
+    (incident_id, created_at) [name: 'incident_event_incident_id_created_at_idx']
+  }
+}
+
+Table incident_postmortem {
+  id integer [pk, increment, not null]
+  incident_id integer [not null, unique]
+  status text [not null]
+  content text [not null]
+  source_transcript text
+  drafted_by text [not null]
+  created_by integer
+  updated_by integer
+  approved_by integer
+  approved_at integer
+  published_at integer
+  created_at integer [not null]
+  updated_at integer [not null]
+}
+
+Table slack_user {
+  id integer [pk, increment, not null]
+  workspace_id integer [not null]
+  slack_team_id text [not null]
+  slack_user_id text [not null]
+  user_id integer [not null]
+  created_at integer [not null]
+  indexes {
+    (workspace_id, slack_team_id, slack_user_id) [unique]
+    (user_id) [name: 'slack_user_user_id_idx']
+  }
+}
+
+Table monitor_heartbeat_state {
+  monitor_id integer [pk, not null]
+  last_ping_at integer
+  last_ping_kind text [not null, note: 'what the last ping reported: a `/fail` keeps the heartbeat down until a success ping']
+  next_due_at integer [note: 'NULL until the first ping, so a new heartbeat never alerts']
+  indexes {
+    (next_due_at) [name: 'monitor_heartbeat_state_next_due_at_idx']
+  }
+}
+
+Ref integration_workspace_id_workspace_id_fk: integration.workspace_id > workspace.id
+
+Ref workspace_sso_domain_workspace_id_workspace_id_fk: workspace_sso_domain.workspace_id > workspace.id [delete: cascade]
+
+Ref users_to_workspaces_user_id_user_id_fk: users_to_workspaces.user_id > user.id
+
+Ref users_to_workspaces_workspace_id_workspace_id_fk: users_to_workspaces.workspace_id > workspace.id
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref status_report_workspace_id_workspace_id_fk: status_report.workspace_id > workspace.id
+
+Ref status_report_page_id_page_id_fk: status_report.page_id > page.id [delete: cascade]
+
+Ref status_report_created_by_user_id_fk: status_report.created_by > user.id
+
+Ref status_report_updated_by_user_id_fk: status_report.updated_by > user.id
+
+Ref status_report_update_status_report_id_status_report_id_fk: status_report_update.status_report_id > status_report.id [delete: cascade]
+
+Ref status_report_update_created_by_user_id_fk: status_report_update.created_by > user.id
+
+Ref status_report_update_updated_by_user_id_fk: status_report_update.updated_by > user.id
+
+Ref page_workspace_id_workspace_id_fk: page.workspace_id > workspace.id [delete: cascade]
+
+Ref monitor_workspace_id_workspace_id_fk: monitor.workspace_id > workspace.id
+
+Ref page_subscriber_page_id_page_id_fk: page_subscriber.page_id - page.id [delete: cascade]
+
+Ref page_subscriber_to_page_component_page_subscriber_id_page_subscriber_id_fk: page_subscriber_to_page_component.page_subscriber_id > page_subscriber.id [delete: cascade]
+
+Ref page_subscriber_to_page_component_page_component_id_page_component_id_fk: page_subscriber_to_page_component.page_component_id > page_component.id [delete: cascade]
+
+Ref notification_workspace_id_workspace_id_fk: notification.workspace_id > workspace.id
+
+Ref notification_trigger_monitor_id_monitor_id_fk: notification_trigger.monitor_id > monitor.id [delete: cascade]
+
+Ref notification_trigger_notification_id_notification_id_fk: notification_trigger.notification_id > notification.id [delete: cascade]
+
+Ref notifications_to_monitors_monitor_id_monitor_id_fk: notifications_to_monitors.monitor_id > monitor.id [delete: cascade]
+
+Ref notifications_to_monitors_notification_id_notification_id_fk: notifications_to_monitors.notification_id > notification.id [delete: cascade]
+
+Ref notification_outbox_monitor_id_monitor_id_fk: notification_outbox.monitor_id > monitor.id [delete: cascade]
+
+Ref notification_outbox_workspace_id_workspace_id_fk: notification_outbox.workspace_id > workspace.id
+
+Ref notification_outbox_notification_id_notification_id_fk: notification_outbox.notification_id > notification.id [delete: cascade]
+
+Ref notification_outbox_incident_id_monitor_incident_id_fk: notification_outbox.incident_id > monitor_incident.id [delete: set null]
+
+Ref notification_dead_letter_monitor_id_monitor_id_fk: notification_dead_letter.monitor_id > monitor.id [delete: cascade]
+
+Ref notification_dead_letter_workspace_id_workspace_id_fk: notification_dead_letter.workspace_id > workspace.id
+
+Ref monitor_status_monitor_id_monitor_id_fk: monitor_status.monitor_id > monitor.id [delete: cascade]
+
+Ref monitor_incident_monitor_id_monitor_id_fk: monitor_incident.monitor_id - monitor.id [delete: set default]
+
+Ref monitor_incident_workspace_id_workspace_id_fk: monitor_incident.workspace_id > workspace.id
+
+Ref monitor_incident_acknowledged_by_user_id_fk: monitor_incident.acknowledged_by > user.id
+
+Ref monitor_incident_resolved_by_user_id_fk: monitor_incident.resolved_by > user.id
+
+Ref monitor_tag_workspace_id_workspace_id_fk: monitor_tag.workspace_id > workspace.id [delete: cascade]
+
+Ref monitor_tag_to_monitor_monitor_id_monitor_id_fk: monitor_tag_to_monitor.monitor_id > monitor.id [delete: cascade]
+
+Ref monitor_tag_to_monitor_monitor_tag_id_monitor_tag_id_fk: monitor_tag_to_monitor.monitor_tag_id > monitor_tag.id [delete: cascade]
+
+Ref application_workspace_id_workspace_id_fk: application.workspace_id > workspace.id
+
+Ref maintenance_workspace_id_workspace_id_fk: maintenance.workspace_id > workspace.id
+
+Ref maintenance_page_id_page_id_fk: maintenance.page_id > page.id [delete: cascade]
+
+Ref maintenance_created_by_user_id_fk: maintenance.created_by > user.id
+
+Ref maintenance_updated_by_user_id_fk: maintenance.updated_by > user.id
+
+Ref maintenance_update_maintenance_id_maintenance_id_fk: maintenance_update.maintenance_id > maintenance.id [delete: cascade]
+
+Ref maintenance_update_created_by_user_id_fk: maintenance_update.created_by > user.id
+
+Ref maintenance_update_updated_by_user_id_fk: maintenance_update.updated_by > user.id
+
+Ref check_workspace_id_workspace_id_fk: check.workspace_id > workspace.id
+
+Ref monitor_run_workspace_id_workspace_id_fk: monitor_run.workspace_id > workspace.id
+
+Ref monitor_run_monitor_id_monitor_id_fk: monitor_run.monitor_id > monitor.id
+
+Ref private_location_monitor_status_monitor_id_monitor_id_fk: private_location_monitor_status.monitor_id > monitor.id [delete: cascade]
+
+Ref private_location_monitor_status_private_location_id_private_location_id_fk: private_location_monitor_status.private_location_id > private_location.id [delete: cascade]
+
+Ref private_location_workspace_id_workspace_id_fk: private_location.workspace_id > workspace.id
+
+Ref private_location_to_monitor_private_location_id_private_location_id_fk: private_location_to_monitor.private_location_id > private_location.id [delete: cascade]
+
+Ref private_location_to_monitor_monitor_id_monitor_id_fk: private_location_to_monitor.monitor_id > monitor.id [delete: cascade]
+
+Ref monitor_group_workspace_id_workspace_id_fk: monitor_group.workspace_id > workspace.id [delete: cascade]
+
+Ref monitor_group_page_id_page_id_fk: monitor_group.page_id > page.id [delete: cascade]
+
+Ref viewer_session_user_id_viewer_id_fk: viewer_session.user_id > viewer.id [delete: cascade]
+
+Ref viewer_accounts_user_id_viewer_id_fk: viewer_accounts.user_id > viewer.id [delete: cascade]
+
+Ref api_key_workspace_id_workspace_id_fk: api_key.workspace_id > workspace.id [delete: cascade]
+
+Ref api_key_created_by_id_user_id_fk: api_key.created_by_id > user.id [delete: cascade]
+
+Ref page_component_workspace_id_workspace_id_fk: page_component.workspace_id > workspace.id [delete: cascade]
+
+Ref page_component_page_id_page_id_fk: page_component.page_id > page.id [delete: cascade]
+
+Ref page_component_monitor_id_monitor_id_fk: page_component.monitor_id > monitor.id [delete: cascade]
+
+Ref page_component_group_id_page_component_groups_id_fk: page_component.group_id > page_component_groups.id [delete: set null]
+
+Ref maintenance_to_page_component_maintenance_id_maintenance_id_fk: maintenance_to_page_component.maintenance_id > maintenance.id [delete: cascade]
+
+Ref maintenance_to_page_component_page_component_id_page_component_id_fk: maintenance_to_page_component.page_component_id > page_component.id [delete: cascade]
+
+Ref status_report_to_page_component_status_report_id_status_report_id_fk: status_report_to_page_component.status_report_id > status_report.id [delete: cascade]
+
+Ref status_report_to_page_component_page_component_id_page_component_id_fk: status_report_to_page_component.page_component_id > page_component.id [delete: cascade]
+
+Ref status_report_update_to_page_component_status_report_update_id_status_report_update_id_fk: status_report_update_to_page_component.status_report_update_id > status_report_update.id [delete: cascade]
+
+Ref status_report_update_to_page_component_page_component_id_page_component_id_fk: status_report_update_to_page_component.page_component_id > page_component.id [delete: cascade]
+
+Ref page_component_groups_workspace_id_workspace_id_fk: page_component_groups.workspace_id > workspace.id [delete: cascade]
+
+Ref page_component_groups_page_id_page_id_fk: page_component_groups.page_id > page.id [delete: cascade]
+
+Ref feedback_workspace_id_workspace_id_fk: feedback.workspace_id > workspace.id [delete: cascade]
+
+Ref feedback_user_id_user_id_fk: feedback.user_id > user.id [delete: cascade]
+
+Ref external_service_component_external_service_id_external_service_id_fk: external_service_component.external_service_id > external_service.id
+
+Ref external_service_incident_external_service_id_external_service_id_fk: external_service_incident.external_service_id > external_service.id
+
+Ref external_service_report_external_service_id_external_service_id_fk: external_service_report.external_service_id > external_service.id
+
+Ref external_service_report_external_service_component_id_external_service_component_id_fk: external_service_report.external_service_component_id > external_service_component.id
+
+Ref chat_session_workspace_id_workspace_id_fk: chat_session.workspace_id > workspace.id [delete: cascade]
+
+Ref chat_session_user_id_user_id_fk: chat_session.user_id > user.id [delete: cascade]
+
+Ref frozen_monitor_uptime_workspace_id_workspace_id_fk: frozen_monitor_uptime.workspace_id > workspace.id [delete: cascade]
+
+Ref frozen_monitor_uptime_monitor_id_monitor_id_fk: frozen_monitor_uptime.monitor_id > monitor.id [delete: cascade]
+
+Ref monitor_transition_monitor_id_monitor_id_fk: monitor_transition.monitor_id > monitor.id [delete: cascade]
+
+Ref oauth_session_client_id_oauth_client_client_id_fk: oauth_session.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_authorization_code_client_id_oauth_client_client_id_fk: oauth_authorization_code.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_authorization_code_user_id_user_id_fk: oauth_authorization_code.user_id > user.id [delete: cascade]
+
+Ref oauth_authorization_code_workspace_id_workspace_id_fk: oauth_authorization_code.workspace_id > workspace.id [delete: cascade]
+
+Ref oauth_authorization_code_grant_id_oauth_grant_id_fk: oauth_authorization_code.grant_id > oauth_grant.id [delete: set null]
+
+Ref oauth_grant_client_id_oauth_client_client_id_fk: oauth_grant.client_id > oauth_client.client_id [delete: cascade]
+
+Ref oauth_grant_user_id_user_id_fk: oauth_grant.user_id > user.id [delete: cascade]
+
+Ref oauth_grant_workspace_id_workspace_id_fk: oauth_grant.workspace_id > workspace.id [delete: cascade]
+
+Ref incident_workspace_id_workspace_id_fk: incident.workspace_id > workspace.id
+
+Ref incident_commander_id_user_id_fk: incident.commander_id > user.id
+
+Ref incident_declared_by_user_id_fk: incident.declared_by > user.id
+
+Ref incident_resolved_by_user_id_fk: incident.resolved_by > user.id
+
+Ref incident_status_report_id_status_report_id_fk: incident.status_report_id - status_report.id [delete: set null]
+
+Ref incident_event_incident_id_incident_id_fk: incident_event.incident_id > incident.id [delete: cascade]
+
+Ref incident_event_created_by_user_id_fk: incident_event.created_by > user.id
+
+Ref incident_postmortem_incident_id_incident_id_fk: incident_postmortem.incident_id - incident.id [delete: cascade]
+
+Ref incident_postmortem_created_by_user_id_fk: incident_postmortem.created_by > user.id
+
+Ref incident_postmortem_updated_by_user_id_fk: incident_postmortem.updated_by > user.id
+
+Ref incident_postmortem_approved_by_user_id_fk: incident_postmortem.approved_by > user.id
+
+Ref slack_user_workspace_id_workspace_id_fk: slack_user.workspace_id > workspace.id [delete: cascade]
+
+Ref slack_user_user_id_user_id_fk: slack_user.user_id > user.id
+
+Ref monitor_heartbeat_state_monitor_id_monitor_id_fk: monitor_heartbeat_state.monitor_id - monitor.id [delete: cascade]
+
+Ref invitation_workspace_id_workspace_id: invitation.workspace_id > workspace.id

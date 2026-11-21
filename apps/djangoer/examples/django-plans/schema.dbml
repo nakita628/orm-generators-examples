@@ -1,0 +1,1551 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum BillingInfoCountry {
+  "AF"
+  "AX"
+  "AL"
+  "DZ"
+  "AS"
+  "AD"
+  "AO"
+  "AI"
+  "AQ"
+  "AG"
+  "AR"
+  "AM"
+  "AW"
+  "AU"
+  "AT"
+  "AZ"
+  "BS"
+  "BH"
+  "BD"
+  "BB"
+  "BY"
+  "BE"
+  "BZ"
+  "BJ"
+  "BM"
+  "BT"
+  "BO"
+  "BQ"
+  "BA"
+  "BW"
+  "BV"
+  "BR"
+  "IO"
+  "BN"
+  "BG"
+  "BF"
+  "BI"
+  "CV"
+  "KH"
+  "CM"
+  "CA"
+  "KY"
+  "CF"
+  "TD"
+  "CL"
+  "CN"
+  "CX"
+  "CC"
+  "CO"
+  "KM"
+  "CG"
+  "CK"
+  "CR"
+  "CI"
+  "HR"
+  "CU"
+  "CW"
+  "CY"
+  "CZ"
+  "CD"
+  "DK"
+  "DJ"
+  "DM"
+  "DO"
+  "EC"
+  "EG"
+  "SV"
+  "GQ"
+  "ER"
+  "EE"
+  "SZ"
+  "ET"
+  "FK"
+  "FO"
+  "FJ"
+  "FI"
+  "FR"
+  "GF"
+  "PF"
+  "TF"
+  "GA"
+  "GM"
+  "GE"
+  "DE"
+  "GH"
+  "GI"
+  "GR"
+  "GL"
+  "GD"
+  "GP"
+  "GU"
+  "GT"
+  "GG"
+  "GN"
+  "GW"
+  "GY"
+  "HT"
+  "HM"
+  "HN"
+  "HK"
+  "HU"
+  "IS"
+  "IN"
+  "ID"
+  "IR"
+  "IQ"
+  "IE"
+  "IM"
+  "IL"
+  "IT"
+  "JM"
+  "JP"
+  "JE"
+  "JO"
+  "KZ"
+  "KE"
+  "KI"
+  "KW"
+  "KG"
+  "LA"
+  "LV"
+  "LB"
+  "LS"
+  "LR"
+  "LY"
+  "LI"
+  "LT"
+  "LU"
+  "MO"
+  "MG"
+  "MW"
+  "MY"
+  "MV"
+  "ML"
+  "MT"
+  "MH"
+  "MQ"
+  "MR"
+  "MU"
+  "YT"
+  "MX"
+  "FM"
+  "MD"
+  "MC"
+  "MN"
+  "ME"
+  "MS"
+  "MA"
+  "MZ"
+  "MM"
+  "NA"
+  "NR"
+  "NP"
+  "NL"
+  "NC"
+  "NZ"
+  "NI"
+  "NE"
+  "NG"
+  "NU"
+  "NF"
+  "KP"
+  "MK"
+  "MP"
+  "NO"
+  "OM"
+  "PK"
+  "PW"
+  "PS"
+  "PA"
+  "PG"
+  "PY"
+  "PE"
+  "PH"
+  "PN"
+  "PL"
+  "PT"
+  "PR"
+  "QA"
+  "RE"
+  "RO"
+  "RU"
+  "RW"
+  "BL"
+  "SH"
+  "KN"
+  "LC"
+  "MF"
+  "PM"
+  "VC"
+  "WS"
+  "SM"
+  "ST"
+  "SA"
+  "SN"
+  "RS"
+  "SC"
+  "SL"
+  "SG"
+  "SX"
+  "SK"
+  "SI"
+  "SB"
+  "SO"
+  "ZA"
+  "GS"
+  "KR"
+  "SS"
+  "ES"
+  "LK"
+  "SD"
+  "SR"
+  "SJ"
+  "SE"
+  "CH"
+  "SY"
+  "TW"
+  "TJ"
+  "TZ"
+  "TH"
+  "TL"
+  "TG"
+  "TK"
+  "TO"
+  "TT"
+  "TN"
+  "TR"
+  "TM"
+  "TC"
+  "TV"
+  "UG"
+  "UA"
+  "AE"
+  "GB"
+  "UM"
+  "US"
+  "UY"
+  "UZ"
+  "VU"
+  "VA"
+  "VE"
+  "VN"
+  "VG"
+  "VI"
+  "WF"
+  "EH"
+  "YE"
+  "ZM"
+  "ZW"
+}
+
+Enum OrderStatus {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum InvoiceType {
+  "1"
+  "2"
+  "3"
+  "4"
+}
+
+Enum InvoiceBuyerCountry {
+  "AF"
+  "AX"
+  "AL"
+  "DZ"
+  "AS"
+  "AD"
+  "AO"
+  "AI"
+  "AQ"
+  "AG"
+  "AR"
+  "AM"
+  "AW"
+  "AU"
+  "AT"
+  "AZ"
+  "BS"
+  "BH"
+  "BD"
+  "BB"
+  "BY"
+  "BE"
+  "BZ"
+  "BJ"
+  "BM"
+  "BT"
+  "BO"
+  "BQ"
+  "BA"
+  "BW"
+  "BV"
+  "BR"
+  "IO"
+  "BN"
+  "BG"
+  "BF"
+  "BI"
+  "CV"
+  "KH"
+  "CM"
+  "CA"
+  "KY"
+  "CF"
+  "TD"
+  "CL"
+  "CN"
+  "CX"
+  "CC"
+  "CO"
+  "KM"
+  "CG"
+  "CK"
+  "CR"
+  "CI"
+  "HR"
+  "CU"
+  "CW"
+  "CY"
+  "CZ"
+  "CD"
+  "DK"
+  "DJ"
+  "DM"
+  "DO"
+  "EC"
+  "EG"
+  "SV"
+  "GQ"
+  "ER"
+  "EE"
+  "SZ"
+  "ET"
+  "FK"
+  "FO"
+  "FJ"
+  "FI"
+  "FR"
+  "GF"
+  "PF"
+  "TF"
+  "GA"
+  "GM"
+  "GE"
+  "DE"
+  "GH"
+  "GI"
+  "GR"
+  "GL"
+  "GD"
+  "GP"
+  "GU"
+  "GT"
+  "GG"
+  "GN"
+  "GW"
+  "GY"
+  "HT"
+  "HM"
+  "HN"
+  "HK"
+  "HU"
+  "IS"
+  "IN"
+  "ID"
+  "IR"
+  "IQ"
+  "IE"
+  "IM"
+  "IL"
+  "IT"
+  "JM"
+  "JP"
+  "JE"
+  "JO"
+  "KZ"
+  "KE"
+  "KI"
+  "KW"
+  "KG"
+  "LA"
+  "LV"
+  "LB"
+  "LS"
+  "LR"
+  "LY"
+  "LI"
+  "LT"
+  "LU"
+  "MO"
+  "MG"
+  "MW"
+  "MY"
+  "MV"
+  "ML"
+  "MT"
+  "MH"
+  "MQ"
+  "MR"
+  "MU"
+  "YT"
+  "MX"
+  "FM"
+  "MD"
+  "MC"
+  "MN"
+  "ME"
+  "MS"
+  "MA"
+  "MZ"
+  "MM"
+  "NA"
+  "NR"
+  "NP"
+  "NL"
+  "NC"
+  "NZ"
+  "NI"
+  "NE"
+  "NG"
+  "NU"
+  "NF"
+  "KP"
+  "MK"
+  "MP"
+  "NO"
+  "OM"
+  "PK"
+  "PW"
+  "PS"
+  "PA"
+  "PG"
+  "PY"
+  "PE"
+  "PH"
+  "PN"
+  "PL"
+  "PT"
+  "PR"
+  "QA"
+  "RE"
+  "RO"
+  "RU"
+  "RW"
+  "BL"
+  "SH"
+  "KN"
+  "LC"
+  "MF"
+  "PM"
+  "VC"
+  "WS"
+  "SM"
+  "ST"
+  "SA"
+  "SN"
+  "RS"
+  "SC"
+  "SL"
+  "SG"
+  "SX"
+  "SK"
+  "SI"
+  "SB"
+  "SO"
+  "ZA"
+  "GS"
+  "KR"
+  "SS"
+  "ES"
+  "LK"
+  "SD"
+  "SR"
+  "SJ"
+  "SE"
+  "CH"
+  "SY"
+  "TW"
+  "TJ"
+  "TZ"
+  "TH"
+  "TL"
+  "TG"
+  "TK"
+  "TO"
+  "TT"
+  "TN"
+  "TR"
+  "TM"
+  "TC"
+  "TV"
+  "UG"
+  "UA"
+  "AE"
+  "GB"
+  "UM"
+  "US"
+  "UY"
+  "UZ"
+  "VU"
+  "VA"
+  "VE"
+  "VN"
+  "VG"
+  "VI"
+  "WF"
+  "EH"
+  "YE"
+  "ZM"
+  "ZW"
+}
+
+Enum InvoiceShippingCountry {
+  "AF"
+  "AX"
+  "AL"
+  "DZ"
+  "AS"
+  "AD"
+  "AO"
+  "AI"
+  "AQ"
+  "AG"
+  "AR"
+  "AM"
+  "AW"
+  "AU"
+  "AT"
+  "AZ"
+  "BS"
+  "BH"
+  "BD"
+  "BB"
+  "BY"
+  "BE"
+  "BZ"
+  "BJ"
+  "BM"
+  "BT"
+  "BO"
+  "BQ"
+  "BA"
+  "BW"
+  "BV"
+  "BR"
+  "IO"
+  "BN"
+  "BG"
+  "BF"
+  "BI"
+  "CV"
+  "KH"
+  "CM"
+  "CA"
+  "KY"
+  "CF"
+  "TD"
+  "CL"
+  "CN"
+  "CX"
+  "CC"
+  "CO"
+  "KM"
+  "CG"
+  "CK"
+  "CR"
+  "CI"
+  "HR"
+  "CU"
+  "CW"
+  "CY"
+  "CZ"
+  "CD"
+  "DK"
+  "DJ"
+  "DM"
+  "DO"
+  "EC"
+  "EG"
+  "SV"
+  "GQ"
+  "ER"
+  "EE"
+  "SZ"
+  "ET"
+  "FK"
+  "FO"
+  "FJ"
+  "FI"
+  "FR"
+  "GF"
+  "PF"
+  "TF"
+  "GA"
+  "GM"
+  "GE"
+  "DE"
+  "GH"
+  "GI"
+  "GR"
+  "GL"
+  "GD"
+  "GP"
+  "GU"
+  "GT"
+  "GG"
+  "GN"
+  "GW"
+  "GY"
+  "HT"
+  "HM"
+  "HN"
+  "HK"
+  "HU"
+  "IS"
+  "IN"
+  "ID"
+  "IR"
+  "IQ"
+  "IE"
+  "IM"
+  "IL"
+  "IT"
+  "JM"
+  "JP"
+  "JE"
+  "JO"
+  "KZ"
+  "KE"
+  "KI"
+  "KW"
+  "KG"
+  "LA"
+  "LV"
+  "LB"
+  "LS"
+  "LR"
+  "LY"
+  "LI"
+  "LT"
+  "LU"
+  "MO"
+  "MG"
+  "MW"
+  "MY"
+  "MV"
+  "ML"
+  "MT"
+  "MH"
+  "MQ"
+  "MR"
+  "MU"
+  "YT"
+  "MX"
+  "FM"
+  "MD"
+  "MC"
+  "MN"
+  "ME"
+  "MS"
+  "MA"
+  "MZ"
+  "MM"
+  "NA"
+  "NR"
+  "NP"
+  "NL"
+  "NC"
+  "NZ"
+  "NI"
+  "NE"
+  "NG"
+  "NU"
+  "NF"
+  "KP"
+  "MK"
+  "MP"
+  "NO"
+  "OM"
+  "PK"
+  "PW"
+  "PS"
+  "PA"
+  "PG"
+  "PY"
+  "PE"
+  "PH"
+  "PN"
+  "PL"
+  "PT"
+  "PR"
+  "QA"
+  "RE"
+  "RO"
+  "RU"
+  "RW"
+  "BL"
+  "SH"
+  "KN"
+  "LC"
+  "MF"
+  "PM"
+  "VC"
+  "WS"
+  "SM"
+  "ST"
+  "SA"
+  "SN"
+  "RS"
+  "SC"
+  "SL"
+  "SG"
+  "SX"
+  "SK"
+  "SI"
+  "SB"
+  "SO"
+  "ZA"
+  "GS"
+  "KR"
+  "SS"
+  "ES"
+  "LK"
+  "SD"
+  "SR"
+  "SJ"
+  "SE"
+  "CH"
+  "SY"
+  "TW"
+  "TJ"
+  "TZ"
+  "TH"
+  "TL"
+  "TG"
+  "TK"
+  "TO"
+  "TT"
+  "TN"
+  "TR"
+  "TM"
+  "TC"
+  "TV"
+  "UG"
+  "UA"
+  "AE"
+  "GB"
+  "UM"
+  "US"
+  "UY"
+  "UZ"
+  "VU"
+  "VA"
+  "VE"
+  "VN"
+  "VG"
+  "VI"
+  "WF"
+  "EH"
+  "YE"
+  "ZM"
+  "ZW"
+}
+
+Enum InvoiceIssuerCountry {
+  "AF"
+  "AX"
+  "AL"
+  "DZ"
+  "AS"
+  "AD"
+  "AO"
+  "AI"
+  "AQ"
+  "AG"
+  "AR"
+  "AM"
+  "AW"
+  "AU"
+  "AT"
+  "AZ"
+  "BS"
+  "BH"
+  "BD"
+  "BB"
+  "BY"
+  "BE"
+  "BZ"
+  "BJ"
+  "BM"
+  "BT"
+  "BO"
+  "BQ"
+  "BA"
+  "BW"
+  "BV"
+  "BR"
+  "IO"
+  "BN"
+  "BG"
+  "BF"
+  "BI"
+  "CV"
+  "KH"
+  "CM"
+  "CA"
+  "KY"
+  "CF"
+  "TD"
+  "CL"
+  "CN"
+  "CX"
+  "CC"
+  "CO"
+  "KM"
+  "CG"
+  "CK"
+  "CR"
+  "CI"
+  "HR"
+  "CU"
+  "CW"
+  "CY"
+  "CZ"
+  "CD"
+  "DK"
+  "DJ"
+  "DM"
+  "DO"
+  "EC"
+  "EG"
+  "SV"
+  "GQ"
+  "ER"
+  "EE"
+  "SZ"
+  "ET"
+  "FK"
+  "FO"
+  "FJ"
+  "FI"
+  "FR"
+  "GF"
+  "PF"
+  "TF"
+  "GA"
+  "GM"
+  "GE"
+  "DE"
+  "GH"
+  "GI"
+  "GR"
+  "GL"
+  "GD"
+  "GP"
+  "GU"
+  "GT"
+  "GG"
+  "GN"
+  "GW"
+  "GY"
+  "HT"
+  "HM"
+  "HN"
+  "HK"
+  "HU"
+  "IS"
+  "IN"
+  "ID"
+  "IR"
+  "IQ"
+  "IE"
+  "IM"
+  "IL"
+  "IT"
+  "JM"
+  "JP"
+  "JE"
+  "JO"
+  "KZ"
+  "KE"
+  "KI"
+  "KW"
+  "KG"
+  "LA"
+  "LV"
+  "LB"
+  "LS"
+  "LR"
+  "LY"
+  "LI"
+  "LT"
+  "LU"
+  "MO"
+  "MG"
+  "MW"
+  "MY"
+  "MV"
+  "ML"
+  "MT"
+  "MH"
+  "MQ"
+  "MR"
+  "MU"
+  "YT"
+  "MX"
+  "FM"
+  "MD"
+  "MC"
+  "MN"
+  "ME"
+  "MS"
+  "MA"
+  "MZ"
+  "MM"
+  "NA"
+  "NR"
+  "NP"
+  "NL"
+  "NC"
+  "NZ"
+  "NI"
+  "NE"
+  "NG"
+  "NU"
+  "NF"
+  "KP"
+  "MK"
+  "MP"
+  "NO"
+  "OM"
+  "PK"
+  "PW"
+  "PS"
+  "PA"
+  "PG"
+  "PY"
+  "PE"
+  "PH"
+  "PN"
+  "PL"
+  "PT"
+  "PR"
+  "QA"
+  "RE"
+  "RO"
+  "RU"
+  "RW"
+  "BL"
+  "SH"
+  "KN"
+  "LC"
+  "MF"
+  "PM"
+  "VC"
+  "WS"
+  "SM"
+  "ST"
+  "SA"
+  "SN"
+  "RS"
+  "SC"
+  "SL"
+  "SG"
+  "SX"
+  "SK"
+  "SI"
+  "SB"
+  "SO"
+  "ZA"
+  "GS"
+  "KR"
+  "SS"
+  "ES"
+  "LK"
+  "SD"
+  "SR"
+  "SJ"
+  "SE"
+  "CH"
+  "SY"
+  "TW"
+  "TJ"
+  "TZ"
+  "TH"
+  "TL"
+  "TG"
+  "TK"
+  "TO"
+  "TT"
+  "TN"
+  "TR"
+  "TM"
+  "TC"
+  "TV"
+  "UG"
+  "UA"
+  "AE"
+  "GB"
+  "UM"
+  "US"
+  "UY"
+  "UZ"
+  "VU"
+  "VA"
+  "VE"
+  "VN"
+  "VG"
+  "VI"
+  "WF"
+  "EH"
+  "YE"
+  "ZM"
+  "ZW"
+}
+
+Enum RecurringUserPlanRenewalTriggeredBy {
+  "1"
+  "2"
+  "3"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table plans_plan {
+  id integer [pk, increment]
+  order "integer unsigned" [not null]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  name varchar(100) [not null]
+  slug varchar(100) [unique, not null]
+  description text [not null]
+  default bool [unique, default: null, note: 'Both "Unknown" and "No" means that the plan is not default']
+  available bool [default: false, not null, note: 'Is still available for purchase']
+  visible bool [default: true, not null, note: 'Is visible in current offer']
+  customized_id integer
+  url varchar(200) [not null, note: 'Optional link to page with more information (for clickable pricing table headers)']
+
+  indexes {
+    (order) [name: 'plans_plan_order_579f69c5']
+    (created) [name: 'plans_plan_created_07bdbc3f']
+    (available) [name: 'plans_plan_available_a258855c']
+    (visible) [name: 'plans_plan_visible_f04f078b']
+    (customized_id) [name: 'plans_plan_customized_id_a5e0e78b']
+  }
+
+  Note: '''Columns from AbstractPlan (abstract): name, slug, description, default, available, visible, customized_id, url.
+
+Columns from BaseMixin (abstract): created, updated_at.
+
+Columns from OrderedModel (abstract): order.'''
+}
+
+Table plans_billinginfo {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  user_id integer [unique, not null]
+  tax_number varchar(200) [not null]
+  name varchar(200) [not null]
+  street varchar(200) [not null]
+  zipcode varchar(200) [not null]
+  city varchar(200) [not null]
+  country BillingInfoCountry [not null]
+  shipping_name varchar(200) [not null, note: 'optional']
+  shipping_street varchar(200) [not null, note: 'optional']
+  shipping_zipcode varchar(200) [not null, note: 'optional']
+  shipping_city varchar(200) [not null, note: 'optional']
+
+  indexes {
+    (created) [name: 'plans_billinginfo_created_e5762fb7']
+    (tax_number) [name: 'plans_billinginfo_tax_number_afb5dea3']
+    (name) [name: 'plans_billinginfo_name_e69c18c3']
+  }
+
+  Note: '''Columns from AbstractBillingInfo (abstract): user_id, tax_number, name, street, zipcode, city, country, shipping_name, shipping_street, shipping_zipcode, shipping_city.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_userplan {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  user_id integer [unique, not null]
+  plan_id bigint [not null]
+  expire date [default: null]
+  active bool [default: true, not null]
+
+  indexes {
+    (created) [name: 'plans_userplan_created_5193d3db']
+    (plan_id) [name: 'plans_userplan_plan_id_0d1d0b4b']
+    (expire) [name: 'plans_userplan_expire_f939a8c9']
+    (active) [name: 'plans_userplan_active_d4023ffa']
+  }
+
+  Note: '''Columns from AbstractUserPlan (abstract): user_id, plan_id, expire, active.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_pricing {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  name varchar(100) [not null]
+  period "integer unsigned" [default: 30]
+  url varchar(200) [not null, note: 'Optional link to page with more information (for clickable pricing table headers)']
+
+  indexes {
+    (created) [name: 'plans_pricing_created_211aacc8']
+    (period) [name: 'plans_pricing_period_db4f2428']
+  }
+
+  Note: '''Columns from AbstractPricing (abstract): name, period, url.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_planpricing {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  plan_id bigint [not null]
+  pricing_id bigint [not null]
+  price decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  order integer [default: 0, not null]
+  has_automatic_renewal bool [default: false, not null, note: 'Use automatic renewal if possible?']
+  visible bool [default: true, not null, note: 'Is visible in current offer']
+
+  indexes {
+    (created) [name: 'plans_planpricing_created_e2beaf3d']
+    (plan_id) [name: 'plans_planpricing_plan_id_4072d329']
+    (pricing_id) [name: 'plans_planpricing_pricing_id_2c2b0761']
+    (price) [name: 'plans_planpricing_price_3d4f8940']
+  }
+
+  Note: '''Columns from AbstractPlanPricing (abstract): plan_id, pricing_id, price, order, has_automatic_renewal, visible.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_quota {
+  id integer [pk, increment]
+  order "integer unsigned" [not null]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  codename varchar(50) [unique, not null]
+  name varchar(100) [not null]
+  unit varchar(100) [not null]
+  description text [not null]
+  is_boolean bool [default: false, not null]
+  url varchar(200) [not null, note: 'Optional link to page with more information (for clickable pricing table headers)']
+
+  indexes {
+    (order) [name: 'plans_quota_order_dee24da3']
+    (created) [name: 'plans_quota_created_8ae02a42']
+  }
+
+  Note: '''Columns from AbstractQuota (abstract): codename, name, unit, description, is_boolean, url.
+
+Columns from BaseMixin (abstract): created, updated_at.
+
+Columns from OrderedModel (abstract): order.'''
+}
+
+Table plans_planquota {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  plan_id bigint [not null]
+  quota_id bigint [not null]
+  value bigint [default: 1]
+
+  indexes {
+    (created) [name: 'plans_planquota_created_afe30275']
+    (plan_id) [name: 'plans_planquota_plan_id_9d7fe141']
+    (quota_id) [name: 'plans_planquota_quota_id_72a65bec']
+  }
+
+  Note: '''Columns from AbstractPlanQuota (abstract): plan_id, quota_id, value.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_order {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  flat_name varchar(200)
+  plan_id bigint [not null]
+  pricing_id bigint
+  completed datetime
+  plan_extended_from date [note: 'The plan was extended from this date']
+  plan_extended_until date [note: 'The plan was extended until this date']
+  userplan_expire_before date [note: 'Snapshot of ``UserPlan.expire`` taken before this order extended the user\'s plan. Used to restore expire on refund.']
+  userplan_active_before bool [note: 'Snapshot of ``UserPlan.active`` taken before this order extended the user\'s plan. Doubles as the marker that a snapshot was taken: it\'s None for legacy orders completed before the snapshot fields existed and either True or False for new orders.']
+  userplan_plan_before_id bigint [note: 'Snapshot of ``UserPlan.plan`` taken before this order extended the user\'s plan. Used to restore the plan on refund when the order is fully unwound: without it, refunding a first purchase (free -> paid) would leave the user on the paid plan with expire=None. None for legacy orders predating this field.']
+  amount decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  tax decimal [note: 'declared max_digits=4, decimal_places=2, which the database does not enforce']
+  gross_amount decimal [note: 'Tax-inclusive total of the order, for orders priced tax-inclusive (e.g. a fixed amount charged by the payment provider). When set, it is the order total and the tax amount is the difference between it and the net amount; the net amount is then expected to be derived from it with net_from_gross(). Leave empty to compute the total from the net amount and the tax rate.. declared max_digits=7, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [default: 'EUR', not null]
+  status OrderStatus [default: 1, not null]
+
+  indexes {
+    (created) [name: 'plans_order_created_643392c9']
+    (user_id) [name: 'plans_order_user_id_d59f4b51']
+    (plan_id) [name: 'plans_order_plan_id_a7d62a45']
+    (pricing_id) [name: 'plans_order_pricing_id_0dbc53e8']
+    (completed) [name: 'plans_order_completed_6c33dd84']
+    (userplan_plan_before_id) [name: 'plans_order_userplan_plan_before_id_7b2d56f3']
+    (amount) [name: 'plans_order_amount_b26e68f2']
+    (tax) [name: 'plans_order_tax_1ee29bf0']
+  }
+
+  Note: '''Columns from AbstractOrder (abstract): user_id, flat_name, plan_id, pricing_id, completed, plan_extended_from, plan_extended_until, userplan_expire_before, userplan_active_before, userplan_plan_before_id, amount, tax, gross_amount, currency, status.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_invoice {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  user_id integer [not null]
+  order_id bigint [not null]
+  credit_note_for_id bigint
+  number integer [not null]
+  full_number varchar(200) [not null]
+  type InvoiceType [default: 1, not null]
+  issued date [not null]
+  issued_duplicate date
+  selling_date date
+  payment_date date [not null]
+  unit_price_net decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  quantity integer [default: 1, not null]
+  total_net decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  total decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  tax_total decimal [not null, note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  tax decimal [note: 'declared max_digits=4, decimal_places=2, which the database does not enforce']
+  rebate decimal [not null, note: 'default in Python: Decimal(\'0\'). declared max_digits=4, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [default: 'EUR', not null]
+  item_description varchar(200) [not null]
+  buyer_name varchar(200) [not null]
+  buyer_street varchar(200) [not null]
+  buyer_zipcode varchar(200) [not null]
+  buyer_city varchar(200) [not null]
+  buyer_country InvoiceBuyerCountry [default: 'PL', not null]
+  buyer_tax_number varchar(200) [not null]
+  shipping_name varchar(200) [not null]
+  shipping_street varchar(200) [not null]
+  shipping_zipcode varchar(200) [not null]
+  shipping_city varchar(200) [not null]
+  shipping_country InvoiceShippingCountry [default: 'PL', not null]
+  require_shipment bool [default: false, not null]
+  issuer_name varchar(200) [not null]
+  issuer_street varchar(200) [not null]
+  issuer_zipcode varchar(200) [not null]
+  issuer_city varchar(200) [not null]
+  issuer_country InvoiceIssuerCountry [default: 'PL', not null]
+  issuer_tax_number varchar(200) [not null]
+  cancellation_reason text [not null]
+
+  indexes {
+    (created) [name: 'plans_invoice_created_d7962606']
+    (user_id) [name: 'plans_invoice_user_id_2acf7921']
+    (order_id) [name: 'plans_invoice_order_id_85fdb39d']
+    (credit_note_for_id) [name: 'plans_invoice_credit_note_for_id_1da49395']
+    (number) [name: 'plans_invoice_number_029c6241']
+    (type) [name: 'plans_invoice_type_d48ee091']
+    (issued) [name: 'plans_invoice_issued_74955383']
+    (issued_duplicate) [name: 'plans_invoice_issued_duplicate_3993f4e4']
+    (selling_date) [name: 'plans_invoice_selling_date_a8bf61a5']
+    (payment_date) [name: 'plans_invoice_payment_date_165bea35']
+    (tax) [name: 'plans_invoice_tax_bbc119a4']
+    (require_shipment) [name: 'plans_invoice_require_shipment_6591adce']
+  }
+
+  Note: '''Columns from AbstractInvoice (abstract): user_id, order_id, credit_note_for_id, number, full_number, type, issued, issued_duplicate, selling_date, payment_date, unit_price_net, quantity, total_net, total, tax_total, tax, rebate, currency, item_description, buyer_name, buyer_street, buyer_zipcode, buyer_city, buyer_country, buyer_tax_number, shipping_name, shipping_street, shipping_zipcode, shipping_city, shipping_country, require_shipment, issuer_name, issuer_street, issuer_zipcode, issuer_city, issuer_country, issuer_tax_number, cancellation_reason.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Table plans_recurringuserplan {
+  id integer [pk, increment]
+  created datetime [note: 'default in Python: now()']
+  updated_at datetime [note: 'default in Python: now()']
+  user_plan_id bigint [unique, not null]
+  token varchar(255) [default: null, note: 'Token, that will be used for payment renewal. Depends on used payment provider']
+  payment_provider varchar(255) [default: null, note: 'Provider, that will be used for payment renewal']
+  pricing_id bigint [default: null, note: 'Recurring pricing']
+  amount decimal [note: 'declared max_digits=7, decimal_places=2, which the database does not enforce']
+  tax decimal [note: 'declared max_digits=4, decimal_places=2, which the database does not enforce']
+  currency varchar(3)
+  renewal_triggered_by RecurringUserPlanRenewalTriggeredBy [default: 2, not null, note: 'The source of the associated plan\'s renewal (USER = user-initiated renewal, TASK = autorenew_account-task-initiated renewal, OTHER = renewal is triggered using another mechanism).']
+  has_automatic_renewal bool [default: false, not null, note: 'Automatic renewal is enabled for associated plan. If False, the plan renewal can be still initiated by user.']
+  token_verified bool [default: false, not null, note: 'The recurring token has been verified by at least one payment to be working.']
+  card_expire_year integer
+  card_expire_month integer
+  card_masked_number varchar(255)
+  last_renewal_attempt datetime
+
+  indexes {
+    (created) [name: 'plans_recurringuserplan_created_e1b360e5']
+    (pricing_id) [name: 'plans_recurringuserplan_pricing_id_d27a589c']
+    (amount) [name: 'plans_recurringuserplan_amount_bb726812']
+    (tax) [name: 'plans_recurringuserplan_tax_fb303de5']
+    (renewal_triggered_by) [name: 'plans_recurringuserplan_renewal_triggered_by_c4ca3377']
+  }
+
+  Note: '''Columns from AbstractRecurringUserPlan (abstract): user_plan_id, token, payment_provider, pricing_id, amount, tax, currency, renewal_triggered_by, _has_automatic_renewal_backup_deprecated, token_verified, card_expire_year, card_expire_month, card_masked_number, last_renewal_attempt.
+
+Columns from BaseMixin (abstract): created, updated_at.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref plans_plan_customized_id_fk: plans_plan.customized_id > auth_user.id [delete: cascade]
+
+Ref plans_billinginfo_user_id_fk: plans_billinginfo.user_id - auth_user.id [delete: cascade]
+
+Ref plans_userplan_user_id_fk: plans_userplan.user_id - auth_user.id [delete: cascade]
+
+Ref plans_userplan_plan_id_fk: plans_userplan.plan_id > plans_plan.id [delete: cascade]
+
+Ref plans_planpricing_plan_id_fk: plans_planpricing.plan_id > plans_plan.id [delete: cascade]
+
+Ref plans_planpricing_pricing_id_fk: plans_planpricing.pricing_id > plans_pricing.id [delete: cascade]
+
+Ref plans_planquota_plan_id_fk: plans_planquota.plan_id > plans_plan.id [delete: cascade]
+
+Ref plans_planquota_quota_id_fk: plans_planquota.quota_id > plans_quota.id [delete: cascade]
+
+Ref plans_order_user_id_fk: plans_order.user_id > auth_user.id [delete: cascade]
+
+Ref plans_order_plan_id_fk: plans_order.plan_id > plans_plan.id [delete: cascade]
+
+Ref plans_order_pricing_id_fk: plans_order.pricing_id > plans_pricing.id [delete: cascade]
+
+Ref plans_order_userplan_plan_before_id_fk: plans_order.userplan_plan_before_id > plans_plan.id [delete: set null]
+
+Ref plans_invoice_user_id_fk: plans_invoice.user_id > auth_user.id [delete: cascade]
+
+Ref plans_invoice_order_id_fk: plans_invoice.order_id > plans_order.id [delete: cascade]
+
+Ref plans_invoice_credit_note_for_id_fk: plans_invoice.credit_note_for_id > plans_invoice.id [delete: set null]
+
+Ref plans_recurringuserplan_user_plan_id_fk: plans_recurringuserplan.user_plan_id - plans_userplan.id [delete: cascade]
+
+Ref plans_recurringuserplan_pricing_id_fk: plans_recurringuserplan.pricing_id > plans_pricing.id [delete: cascade]

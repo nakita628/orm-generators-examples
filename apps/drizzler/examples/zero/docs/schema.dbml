@@ -1,0 +1,346 @@
+Table mail0_user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  default_connection_id text
+  custom_prompt text
+  phone_number text [unique]
+  phone_number_verified boolean
+}
+
+Table mail0_assistant_conversation {
+  id text [pk, not null]
+  user_id text [not null]
+  created_at timestamptz [not null]
+  indexes {
+    (user_id) [name: 'assistant_conversation_user']
+  }
+  Note: 'Authorization binding only; Keiki owns the transcript and agent runtime.'
+}
+
+Table mail0_assistant_identity {
+  id text [pk, not null]
+  channel text [not null]
+  gateway text [not null]
+  sender text [not null]
+  user_id text [note: 'Retain a tombstone after deletion: never reuse another person\'s transcript.']
+  active boolean [not null]
+  created_at timestamptz [not null]
+  indexes {
+    (channel, gateway, sender) [unique, name: 'assistant_identity_sender']
+    (user_id) [name: 'assistant_identity_user']
+  }
+}
+
+Table mail0_assistant_link {
+  token_hash text [pk, not null]
+  channel text [not null]
+  gateway text [not null]
+  sender text [not null]
+  user_id text
+  challenge text
+  expires_at timestamptz [not null]
+  consumed_at timestamptz
+  created_at timestamptz [not null]
+  indexes {
+    (channel, gateway, sender) [name: 'assistant_link_sender']
+  }
+}
+
+Table mail0_assistant_action {
+  id text [pk, not null]
+  user_id text [not null]
+  connection_id text [not null]
+  tool text [not null]
+  input jsonb [not null]
+  status text [not null]
+  result jsonb
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  indexes {
+    (user_id) [name: 'assistant_action_user']
+  }
+}
+
+Table mail0_session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'session_user_id_idx']
+    (expires_at) [name: 'session_expires_at_idx']
+  }
+}
+
+Table mail0_account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'account_user_id_idx']
+    (provider_id, user_id) [name: 'account_provider_user_id_idx']
+    (access_token_expires_at) [name: 'account_expires_at_idx']
+  }
+}
+
+Table mail0_user_hotkeys {
+  user_id text [pk, not null]
+  shortcuts jsonb [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (shortcuts) [name: 'user_hotkeys_shortcuts_idx']
+  }
+}
+
+Table mail0_verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (identifier) [name: 'verification_identifier_idx']
+    (expires_at) [name: 'verification_expires_at_idx']
+  }
+}
+
+Table mail0_early_access {
+  id text [pk, not null]
+  email text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  is_early_access boolean [not null]
+  has_used_ticket text
+  indexes {
+    (is_early_access) [name: 'early_access_is_early_access_idx']
+  }
+}
+
+Table mail0_connection {
+  id text [pk, not null]
+  user_id text [not null]
+  email text [not null]
+  name text
+  picture text
+  access_token text [note: 'OAuth providers: the provider access token. IMAP: a non-secret marker (password auth) or the XOAUTH2 access token. `null` means the connection must be reauthorized.']
+  refresh_token text
+  scope text [not null]
+  provider_id text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id, email) [unique]
+    (user_id) [name: 'connection_user_id_idx']
+    (expires_at) [name: 'connection_expires_at_idx']
+    (provider_id) [name: 'connection_provider_id_idx']
+  }
+}
+
+Table mail0_connection_imap {
+  connection_id text [pk, not null]
+  imap_host text [not null]
+  imap_port integer [not null]
+  imap_security text [not null]
+  imap_username text [not null]
+  smtp_host text [not null]
+  smtp_port integer [not null]
+  smtp_security text [not null]
+  smtp_username text [not null]
+  auth_method text [not null]
+  oauth_provider text [note: 'XOAUTH2 only: which OAuth provider issued the tokens (used for refresh).']
+  encrypted_secret text [not null, note: 'AES-GCM ciphertext of the password (password auth) or refresh token (XOAUTH2).']
+  iv text [not null]
+  key_version integer [not null]
+  server_saves_sent boolean [not null, note: 'Whether the SMTP server files sent mail into the Sent folder by itself.']
+  capabilities jsonb
+  status text [not null]
+  last_error text
+  last_sync_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  Note: 'Server settings and encrypted credentials for `providerId = \'imap\'` connections.'
+}
+
+Table mail0_summary {
+  message_id text [pk, not null]
+  content text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  connection_id text [not null]
+  saved boolean [not null]
+  tags text
+  suggested_reply text
+  indexes {
+    (connection_id) [name: 'summary_connection_id_idx']
+    (connection_id, saved) [name: 'summary_connection_id_saved_idx']
+    (saved) [name: 'summary_saved_idx']
+  }
+}
+
+Table mail0_note {
+  id text [pk, not null]
+  user_id text [not null]
+  thread_id text [not null]
+  content text [not null]
+  color text [not null]
+  is_pinned boolean
+  order integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'note_user_id_idx']
+    (thread_id) [name: 'note_thread_id_idx']
+    (user_id, thread_id) [name: 'note_user_thread_idx']
+    (is_pinned) [name: 'note_is_pinned_idx']
+  }
+  Note: 'Testing'
+}
+
+Table mail0_user_settings {
+  id text [pk, not null]
+  user_id text [not null, unique]
+  settings jsonb [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (settings) [name: 'user_settings_settings_idx']
+  }
+}
+
+Table mail0_writing_style_matrix {
+  connectionId text [not null]
+  numMessages integer [not null]
+  style jsonb [not null, note: 'TODO: way too much pain to get this type to work, revisit later']
+  updatedAt timestamp [not null]
+}
+
+Table mail0_jwks {
+  id text [pk, not null]
+  public_key text [not null]
+  private_key text [not null]
+  created_at timestamp [not null]
+  indexes {
+    (created_at) [name: 'jwks_created_at_idx']
+  }
+}
+
+Table mail0_oauth_application {
+  id text [pk, not null]
+  name text
+  icon text
+  metadata text
+  client_id text [unique]
+  client_secret text
+  redirect_u_r_ls text
+  type text
+  disabled boolean
+  user_id text
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (user_id) [name: 'oauth_application_user_id_idx']
+    (disabled) [name: 'oauth_application_disabled_idx']
+  }
+}
+
+Table mail0_oauth_access_token {
+  id text [pk, not null]
+  access_token text [unique]
+  refresh_token text [unique]
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  client_id text
+  user_id text
+  scopes text
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (user_id) [name: 'oauth_access_token_user_id_idx']
+    (client_id) [name: 'oauth_access_token_client_id_idx']
+    (access_token_expires_at) [name: 'oauth_access_token_expires_at_idx']
+  }
+}
+
+Table mail0_oauth_consent {
+  id text [pk, not null]
+  client_id text
+  user_id text
+  scopes text
+  created_at timestamp
+  updated_at timestamp
+  consent_given boolean
+  indexes {
+    (user_id) [name: 'oauth_consent_user_id_idx']
+    (client_id) [name: 'oauth_consent_client_id_idx']
+    (consent_given) [name: 'oauth_consent_given_idx']
+  }
+}
+
+Table mail0_email_template {
+  id text [pk, not null]
+  user_id text [not null]
+  name text [not null]
+  subject text
+  body text
+  to jsonb
+  cc jsonb
+  bcc jsonb
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'idx_mail0_email_template_user_id']
+    (user_id, name) [unique, name: 'mail0_email_template_user_id_name_unique']
+  }
+}
+
+Ref mail0_assistant_conversation_user_id_mail0_user_id_fk: mail0_assistant_conversation.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_assistant_identity_user_id_mail0_user_id_fk: mail0_assistant_identity.user_id > mail0_user.id [delete: set null]
+
+Ref mail0_assistant_link_user_id_mail0_user_id_fk: mail0_assistant_link.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_assistant_action_user_id_mail0_user_id_fk: mail0_assistant_action.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_assistant_action_connection_id_mail0_connection_id_fk: mail0_assistant_action.connection_id > mail0_connection.id [delete: cascade]
+
+Ref mail0_session_user_id_mail0_user_id_fk: mail0_session.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_account_user_id_mail0_user_id_fk: mail0_account.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_user_hotkeys_user_id_mail0_user_id_fk: mail0_user_hotkeys.user_id - mail0_user.id [delete: cascade]
+
+Ref mail0_connection_user_id_mail0_user_id_fk: mail0_connection.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_connection_imap_connection_id_mail0_connection_id_fk: mail0_connection_imap.connection_id - mail0_connection.id [delete: cascade]
+
+Ref mail0_summary_connection_id_mail0_connection_id_fk: mail0_summary.connection_id > mail0_connection.id [delete: cascade]
+
+Ref mail0_note_user_id_mail0_user_id_fk: mail0_note.user_id > mail0_user.id [delete: cascade]
+
+Ref mail0_user_settings_user_id_mail0_user_id_fk: mail0_user_settings.user_id - mail0_user.id [delete: cascade]
+
+Ref mail0_writing_style_matrix_connectionId_mail0_connection_id_fk: mail0_writing_style_matrix.connectionId > mail0_connection.id [delete: cascade]
+
+Ref mail0_email_template_user_id_mail0_user_id_fk: mail0_email_template.user_id > mail0_user.id [delete: cascade]

@@ -1,0 +1,131 @@
+Table session {
+  id text [pk, not null]
+  user_id text [not null]
+  expires_at timestamp [not null]
+}
+
+Table users {
+  id text [pk, not null]
+  auth_id text [not null]
+  slug text [not null, unique]
+  banned boolean [not null]
+  ban_reason text [not null]
+  banned_by text [not null]
+  username text [not null]
+  username_set boolean [not null]
+  user_created timestamptz [not null]
+  last_username_change_time timestamp
+  linked boolean [not null]
+  linked_google boolean [not null]
+  linked_discord boolean [not null]
+  loadout json [not null]
+}
+
+Table items {
+  user_id text [not null]
+  type text [not null]
+  time_acquired bigint [not null]
+  source text [not null]
+  status integer [not null]
+  indexes {
+    (user_id, type) [unique, name: 'uq_items_user_type']
+  }
+}
+
+Table user_pass {
+  user_id text [not null]
+  pass_type text [not null]
+  total_xp integer [not null]
+  unlocks json [not null]
+  new_items boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id, pass_type) [unique, name: 'user_pass_user_type']
+  }
+}
+
+Table user_quest {
+  id serial [pk, increment, not null]
+  user_id text [not null]
+  idx integer [not null]
+  quest_type text [not null]
+  progress integer [not null]
+  target integer [not null]
+  complete boolean [not null]
+  rerolled boolean [not null]
+  time_acquired bigint [not null]
+  next_refresh_at bigint [not null]
+  indexes {
+    (user_id, idx) [unique, name: 'user_quest_user_idx']
+  }
+}
+
+Table match_data {
+  user_id text
+  user_banned boolean
+  created_at timestamptz [not null]
+  region text [not null]
+  map_id integer [not null]
+  game_id uuid [not null]
+  map_seed bigint [not null]
+  username text [not null]
+  player_id integer [not null]
+  team_mode integer [not null]
+  team_count integer [not null]
+  team_total integer [not null]
+  team_id integer [not null]
+  time_alive integer [not null]
+  rank integer [not null]
+  died boolean [not null]
+  kills integer [not null]
+  team_kills integer [not null]
+  damage_dealt integer [not null]
+  damage_taken integer [not null]
+  killer_id integer [not null]
+  killed_ids integer [not null]
+  role text [not null]
+  indexes {
+    (game_id, player_id) [pk]
+    (user_id, team_mode, rank, kills, damage_dealt, time_alive) [name: 'idx_match_data_user_stats']
+    (game_id) [name: 'idx_game_id']
+    (user_id) [name: 'idx_user_id']
+    (team_mode, map_id, created_at, game_id, team_id, region, kills) [name: 'idx_match_data_team_query']
+  }
+}
+
+Table ip_logs {
+  id serial [pk, increment, not null]
+  created_at timestamptz [not null]
+  region text [not null]
+  game_id text [not null]
+  map_id integer [not null]
+  username text [not null]
+  user_id text
+  encoded_ip text [not null]
+  team_mode integer [not null]
+  ip text [not null]
+  find_game_ip text [not null, note: 'also store the IP that was used in api/find_game... since one could exploit that to never get banned by requesting it with a different IP than the in-game one']
+  find_game_encoded_ip text [not null]
+  indexes {
+    (username, created_at) [name: 'name_created_at_idx']
+  }
+  Note: 'LOGS'
+}
+
+Table banned_ips {
+  created_at timestamptz [not null]
+  expires_in timestamp [not null]
+  encoded_ip text [pk, not null]
+  permanent boolean [not null]
+  reason text [not null]
+  banned_by text [not null]
+}
+
+Ref session_user_id_users_id_fk: session.user_id > users.id [delete: cascade, update: cascade]
+
+Ref items_user_id_users_id_fk: items.user_id > users.id [delete: cascade, update: cascade]
+
+Ref user_pass_user_id_users_id_fk: user_pass.user_id > users.id [delete: cascade, update: cascade]
+
+Ref user_quest_user_id_users_id_fk: user_quest.user_id > users.id [delete: cascade, update: cascade]

@@ -1,0 +1,13 @@
+use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
+
+/// What makes a creative appear. A creative left with no action never shows; it never falls back to
+/// every page view.
+#[derive(Debug, Clone, PartialEq, Eq, EnumIter, DeriveActiveEnum, Serialize, Deserialize)]
+#[sea_orm(rs_type = "String", db_type = "Enum", enum_name = "CreativeShowOn")]
+pub enum CreativeShowOn {
+    #[sea_orm(string_value = "pageView")]
+    Pageview,
+    #[sea_orm(string_value = "action")]
+    Action,
+}

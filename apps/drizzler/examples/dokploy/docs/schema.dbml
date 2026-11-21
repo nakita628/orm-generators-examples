@@ -1,0 +1,1514 @@
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  is2FAEnabled boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  resetPasswordToken text
+  resetPasswordExpiresAt text
+  confirmationToken text
+  confirmationExpiresAt text
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table organization {
+  id text [pk, not null]
+  name text [not null]
+  slug text [unique]
+  logo text
+  created_at timestamp [not null]
+  metadata text
+  default_role text
+  owner_id text [not null]
+}
+
+Table organization_role {
+  id text [pk, not null]
+  organization_id text [not null]
+  role text [not null]
+  permission text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  indexes {
+    (organization_id) [name: 'organizationRole_organizationId_idx']
+    (role) [name: 'organizationRole_role_idx']
+  }
+}
+
+Table member {
+  id text [pk, not null]
+  organization_id text [not null]
+  user_id text [not null]
+  role text [not null]
+  created_at timestamp [not null]
+  team_id text
+  is_default boolean [not null]
+  canCreateProjects boolean [not null, note: 'Permissions']
+  canAccessToSSHKeys boolean [not null]
+  canCreateServices boolean [not null]
+  canDeleteProjects boolean [not null]
+  canDeleteServices boolean [not null]
+  canAccessToDocker boolean [not null]
+  canAccessToAPI boolean [not null]
+  canAccessToGitProviders boolean [not null]
+  canAccessToTraefikFiles boolean [not null]
+  canDeleteEnvironments boolean [not null]
+  canCreateEnvironments boolean [not null]
+  accesedProjects text [not null]
+  accessedEnvironments text [not null]
+  accesedServices text [not null]
+  accessedGitProviders text [not null]
+  accessedServers text [not null]
+}
+
+Table invitation {
+  id text [pk, not null]
+  organization_id text [not null]
+  email text [not null]
+  role text
+  status text [not null]
+  expires_at timestamp [not null]
+  inviter_id text [not null]
+  team_id text
+  created_at timestamp [not null]
+}
+
+Table two_factor {
+  id text [pk, not null]
+  secret text [not null]
+  backup_codes text [not null]
+  user_id text [not null]
+  verified boolean [not null]
+  failed_verification_count integer [not null]
+  locked_until timestamp
+}
+
+Table passkey {
+  id text [pk, not null]
+  name text
+  public_key text [not null]
+  user_id text [not null]
+  credential_id text [not null]
+  counter integer [not null]
+  device_type text [not null]
+  backed_up boolean [not null]
+  transports text
+  created_at timestamp
+  aaguid text
+  indexes {
+    (user_id) [name: 'passkey_userId_idx']
+    (credential_id) [name: 'passkey_credentialID_idx']
+  }
+}
+
+Table apikey {
+  id text [pk, not null]
+  name text
+  start text
+  prefix text
+  key text [not null]
+  config_id text [not null]
+  reference_id text [not null]
+  refill_interval integer
+  refill_amount integer
+  last_refill_at timestamp
+  enabled boolean
+  rate_limit_enabled boolean
+  rate_limit_time_window integer
+  rate_limit_max integer
+  request_count integer
+  remaining integer
+  last_request timestamp
+  expires_at timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  permissions text
+  metadata text
+}
+
+Table ai {
+  aiId text [pk, not null]
+  name text [not null]
+  apiUrl text [not null]
+  apiKey text [not null]
+  model text [not null]
+  isEnabled boolean [not null]
+  organizationId text [not null]
+  createdAt text [not null]
+}
+
+Table application {
+  applicationId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  env text
+  previewEnv text
+  watchPaths text
+  previewBuildArgs text
+  previewBuildSecrets text
+  previewLabels text
+  previewWildcard text
+  previewPort integer
+  previewHttps boolean [not null]
+  previewPath text
+  certificateType certificateType [not null]
+  previewCustomCertResolver text
+  previewLimit integer
+  previewForwardAuthEnabled boolean [not null]
+  isPreviewDeploymentsActive boolean
+  previewRequireCollaboratorPermissions boolean [note: 'Security: Require collaborator permissions for preview deployments']
+  rollbackActive boolean
+  buildArgs text
+  buildSecrets text
+  memoryReservation text
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  title text
+  enabled boolean
+  subtitle text
+  command text
+  args text
+  icon text
+  refreshToken text
+  sourceType sourceType [not null]
+  cleanCache boolean
+  repository text [note: 'Github']
+  owner text
+  branch text
+  buildPath text
+  triggerType triggerType
+  autoDeploy boolean
+  gitlabProjectId integer [note: 'Gitlab']
+  gitlabRepository text
+  gitlabOwner text
+  gitlabBranch text
+  gitlabBuildPath text
+  gitlabPathNamespace text
+  giteaRepository text [note: 'Gitea']
+  giteaOwner text
+  giteaBranch text
+  giteaBuildPath text
+  bitbucketRepository text [note: 'Bitbucket']
+  bitbucketRepositorySlug text
+  bitbucketOwner text
+  bitbucketBranch text
+  bitbucketBuildPath text
+  username text [note: 'Docker']
+  password text
+  dockerImage text
+  registryUrl text
+  customGitUrl text [note: 'Git']
+  customGitBranch text
+  customGitBuildPath text
+  customGitSSHKeyId text
+  enableSubmodules boolean [not null]
+  dockerfile text
+  dockerContextPath text
+  dockerBuildStage text
+  dropBuildPath text [note: 'Drop']
+  healthCheckSwarm json [note: 'Docker swarm json']
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  applicationStatus applicationStatus [not null]
+  buildType buildType [not null]
+  railpackVersion text
+  herokuVersion text
+  publishDirectory text
+  isStaticSpa boolean
+  createEnvFile boolean [not null]
+  createdAt text [not null]
+  registryId text
+  rollbackRegistryId text
+  environmentId text [not null]
+  githubId text
+  gitlabId text
+  giteaId text
+  bitbucketId text
+  serverId text
+  buildServerId text
+  buildRegistryId text
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table audit_log {
+  id text [pk, not null]
+  organization_id text
+  user_id text
+  user_email text [not null]
+  user_role text [not null]
+  action text [not null]
+  resource_type text [not null]
+  resource_id text
+  resource_name text
+  metadata text
+  created_at timestamp [not null]
+  indexes {
+    (organization_id) [name: 'auditLog_organizationId_idx']
+    (user_id) [name: 'auditLog_userId_idx']
+    (created_at) [name: 'auditLog_createdAt_idx']
+  }
+}
+
+Table backup {
+  backupId text [pk, not null]
+  appName text [not null, unique]
+  schedule text [not null]
+  enabled boolean
+  database text [not null]
+  prefix text [not null]
+  customName text
+  serviceName text
+  destinationId text [not null]
+  keepLatestCount integer
+  includeEncryptionKey boolean [not null]
+  backupType backupType [not null]
+  databaseType databaseType [not null]
+  composeId text
+  postgresId text
+  mariadbId text
+  mysqlId text
+  mongoId text
+  libsqlId text
+  userId text
+  metadata jsonb [note: 'Only for compose backups']
+}
+
+Table bitbucket {
+  bitbucketId text [pk, not null]
+  bitbucketUsername text
+  bitbucketEmail text
+  appPassword text
+  apiToken text
+  bitbucketWorkspaceName text
+  gitProviderId text [not null]
+}
+
+Table certificate {
+  certificateId text [pk, not null]
+  name text [not null]
+  certificateData text [not null]
+  privateKey text [not null]
+  certificatePath text [not null, unique]
+  autoRenew boolean
+  organizationId text [not null]
+  serverId text
+}
+
+Table compose {
+  composeId text [pk, not null]
+  name text [not null]
+  appName text [not null]
+  description text
+  env text
+  composeFile text [not null]
+  refreshToken text
+  sourceType sourceTypeCompose [not null]
+  composeType composeType [not null]
+  repository text [note: 'Github']
+  owner text
+  branch text
+  autoDeploy boolean
+  gitlabProjectId integer [note: 'Gitlab']
+  gitlabRepository text
+  gitlabOwner text
+  gitlabBranch text
+  gitlabPathNamespace text
+  bitbucketRepository text [note: 'Bitbucket']
+  bitbucketRepositorySlug text
+  bitbucketOwner text
+  bitbucketBranch text
+  giteaRepository text [note: 'Gitea']
+  giteaOwner text
+  giteaBranch text
+  customGitUrl text [note: 'Git']
+  customGitBranch text
+  customGitSSHKeyId text
+  command text [not null]
+  createEnvFile boolean [not null]
+  enableSubmodules boolean [not null]
+  composePath text [not null]
+  suffix text [not null]
+  randomize boolean [not null]
+  isolatedDeployment boolean [not null]
+  isolatedDeploymentsVolume boolean [not null, note: 'Keep this for backward compatibility since we will not add the prefix anymore to volumes']
+  pullImages boolean [not null]
+  triggerType triggerType
+  composeStatus applicationStatus [not null]
+  icon text
+  environmentId text [not null]
+  createdAt text [not null]
+  watchPaths text
+  githubId text
+  gitlabId text
+  bitbucketId text
+  giteaId text
+  serverId text
+  serviceNetworks jsonb
+}
+
+Table deployment {
+  deploymentId text [pk, not null]
+  title text [not null]
+  description text
+  status deploymentStatus
+  logPath text [not null]
+  pid text
+  applicationId text
+  composeId text
+  serverId text
+  isPreviewDeployment boolean
+  previewDeploymentId text
+  createdAt text [not null]
+  startedAt text
+  finishedAt text
+  errorMessage text
+  scheduleId text
+  backupId text
+  rollbackId text
+  volumeBackupId text
+  buildServerId text
+}
+
+Table destination {
+  destinationId text [pk, not null]
+  name text [not null]
+  provider text
+  accessKey text [not null]
+  secretAccessKey text [not null]
+  bucket text [not null]
+  region text [not null]
+  endpoint text [not null]
+  additionalFlags text
+  organizationId text [not null]
+  createdAt timestamp [not null]
+}
+
+Table dns_provider {
+  dnsProviderId text [pk, not null]
+  name text [not null]
+  providerType DnsProviderType [not null]
+  config jsonb [not null]
+  organizationId text [not null]
+  createdAt text [not null]
+  indexes {
+    (organizationId, name) [unique, name: 'dns_provider_org_name_idx']
+  }
+}
+
+Table domain {
+  domainId text [pk, not null]
+  host text [not null]
+  https boolean [not null]
+  port integer
+  customEntrypoint text
+  path text
+  serviceName text
+  domainType domainType
+  uniqueConfigKey serial [increment]
+  createdAt text [not null]
+  composeId text
+  customCertResolver text
+  applicationId text
+  previewDeploymentId text
+  certificateType certificateType [not null]
+  internalPath text
+  stripPath boolean [not null]
+  middlewares text
+  forwardAuthEnabled boolean [not null]
+  enabled boolean [not null]
+}
+
+Table environment {
+  environmentId text [pk, not null]
+  name text [not null]
+  description text
+  createdAt text [not null]
+  env text [not null]
+  projectId text [not null]
+  isDefault boolean [not null]
+}
+
+Table forward_auth_settings {
+  forwardAuthSettingsId text [pk, not null]
+  authDomain text [not null]
+  baseDomain text [not null]
+  https boolean [not null]
+  certificateType certificateType [not null]
+  customCertResolver text
+  providerId text
+  serverId text [unique]
+  createdAt text [not null]
+}
+
+Table git_provider {
+  gitProviderId text [pk, not null]
+  name text [not null]
+  providerType gitProviderType [not null]
+  createdAt text [not null]
+  organizationId text [not null]
+  userId text [not null]
+  sharedWithOrganization boolean [not null]
+}
+
+Table gitea {
+  giteaId text [pk, not null]
+  giteaUrl text [not null]
+  giteaInternalUrl text
+  redirect_uri text
+  client_id text
+  client_secret text
+  gitProviderId text [not null]
+  access_token text
+  refresh_token text
+  expires_at integer
+  scopes text
+  last_authenticated_at integer
+}
+
+Table github {
+  githubId text [pk, not null]
+  githubAppName text
+  githubAppId integer
+  githubClientId text
+  githubClientSecret text
+  githubInstallationId text
+  githubPrivateKey text
+  githubWebhookSecret text
+  githubUrl text [not null]
+  gitProviderId text [not null]
+}
+
+Table gitlab {
+  gitlabId text [pk, not null]
+  gitlabUrl text [not null]
+  gitlabInternalUrl text
+  application_id text
+  redirect_uri text
+  secret text
+  access_token text
+  refresh_token text
+  group_name text
+  expires_at integer
+  gitProviderId text [not null]
+}
+
+Table libsql {
+  libsqlId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  databaseUser text [not null]
+  databasePassword text [not null]
+  sqldNode sqldNode [not null]
+  sqldPrimaryUrl text
+  enableNamespaces boolean [not null]
+  dockerImage text [not null]
+  command text
+  env text
+  memoryReservation text [note: 'RESOURCES']
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  externalPort integer
+  externalGRPCPort integer
+  externalAdminPort integer
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  replicas integer [not null]
+  networkIds text
+  detachDokployNetwork boolean [not null]
+  createdAt text [not null]
+  environmentId text [not null]
+  serverId text
+}
+
+Table mariadb {
+  mariadbId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  databaseName text [not null]
+  databaseUser text [not null]
+  databasePassword text [not null]
+  rootPassword text [not null]
+  dockerImage text [not null]
+  command text
+  args text
+  env text
+  memoryReservation text [note: 'RESOURCES']
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  externalPort integer
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  createdAt text [not null]
+  environmentId text [not null]
+  serverId text
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table mongo {
+  mongoId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  databaseUser text [not null]
+  databasePassword text [not null]
+  dockerImage text [not null]
+  command text
+  args text
+  env text
+  memoryReservation text
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  externalPort integer
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  createdAt text [not null]
+  environmentId text [not null]
+  serverId text
+  replicaSets boolean
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table mount {
+  mountId text [pk, not null]
+  type mountType [not null]
+  hostPath text
+  volumeName text
+  filePath text
+  content text
+  serviceType serviceType [not null]
+  mountPath text [not null]
+  applicationId text
+  composeId text
+  libsqlId text
+  mariadbId text
+  mongoId text
+  mysqlId text
+  postgresId text
+  redisId text
+}
+
+Table mysql {
+  mysqlId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  databaseName text [not null]
+  databaseUser text [not null]
+  databasePassword text [not null]
+  rootPassword text [not null]
+  dockerImage text [not null]
+  command text
+  args text
+  env text
+  memoryReservation text
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  externalPort integer
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  createdAt text [not null]
+  environmentId text [not null]
+  serverId text
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table network {
+  networkId text [pk, not null]
+  name text [not null]
+  dockerId text
+  driver networkDriver [not null]
+  internal boolean [not null]
+  attachable boolean [not null]
+  enableIPv4 boolean [not null]
+  enableIPv6 boolean [not null]
+  mtu integer
+  ipam jsonb
+  createdAt text [not null]
+  organizationId text [not null]
+  serverId text
+}
+
+Table notification {
+  notificationId text [pk, not null]
+  name text [not null]
+  appDeploy boolean [not null]
+  appBuildError boolean [not null]
+  databaseBackup boolean [not null]
+  volumeBackup boolean [not null]
+  dokployRestart boolean [not null]
+  dokployBackup boolean [not null]
+  dockerCleanup boolean [not null]
+  serverThreshold boolean [not null]
+  notificationType notificationType [not null]
+  createdAt text [not null]
+  slackId text
+  telegramId text
+  discordId text
+  emailId text
+  resendId text
+  gotifyId text
+  ntfyId text
+  mattermostId text
+  customId text
+  larkId text
+  pushoverId text
+  teamsId text
+  organizationId text [not null]
+}
+
+Table slack {
+  slackId text [pk, not null]
+  webhookUrl text [not null]
+  channel text
+}
+
+Table telegram {
+  telegramId text [pk, not null]
+  botToken text [not null]
+  chatId text [not null]
+  messageThreadId text
+}
+
+Table discord {
+  discordId text [pk, not null]
+  webhookUrl text [not null]
+  decoration boolean
+}
+
+Table email {
+  emailId text [pk, not null]
+  smtpServer text [not null]
+  smtpPort integer [not null]
+  username text [not null]
+  password text [not null]
+  fromAddress text [not null]
+  toAddress text [not null]
+}
+
+Table resend {
+  resendId text [pk, not null]
+  apiKey text [not null]
+  fromAddress text [not null]
+  toAddress text [not null]
+}
+
+Table gotify {
+  gotifyId text [pk, not null]
+  serverUrl text [not null]
+  appToken text [not null]
+  priority integer [not null]
+  decoration boolean
+}
+
+Table ntfy {
+  ntfyId text [pk, not null]
+  serverUrl text [not null]
+  topic text [not null]
+  accessToken text
+  priority integer [not null]
+}
+
+Table mattermost {
+  mattermostId text [pk, not null]
+  webhookUrl text [not null]
+  channel text
+  username text
+}
+
+Table custom {
+  customId text [pk, not null]
+  endpoint text [not null]
+  headers jsonb
+}
+
+Table lark {
+  larkId text [pk, not null]
+  webhookUrl text [not null]
+}
+
+Table pushover {
+  pushoverId text [pk, not null]
+  userKey text [not null]
+  apiToken text [not null]
+  priority integer [not null]
+  retry integer
+  expire integer
+}
+
+Table teams {
+  teamsId text [pk, not null]
+  webhookUrl text [not null]
+}
+
+Table patch {
+  patchId text [pk, not null]
+  type patchType [not null]
+  filePath text [not null]
+  enabled boolean [not null]
+  content text [not null]
+  createdAt text [not null]
+  updatedAt text
+  applicationId text [note: 'Relations - one of these must be set']
+  composeId text
+  indexes {
+    (filePath, applicationId) [unique, name: 'patch_filepath_application_unique']
+    (filePath, composeId) [unique, name: 'patch_filepath_compose_unique']
+  }
+}
+
+Table port {
+  portId text [pk, not null]
+  publishedPort integer [not null]
+  publishMode publishModeType [not null]
+  targetPort integer [not null]
+  protocol protocolType [not null]
+  applicationId text [not null]
+}
+
+Table postgres {
+  postgresId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  databaseName text [not null]
+  databaseUser text [not null]
+  databasePassword text [not null]
+  description text
+  dockerImage text [not null]
+  command text
+  args text
+  env text
+  memoryReservation text
+  externalPort integer
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  createdAt text [not null]
+  environmentId text [not null]
+  serverId text
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table preview_deployments {
+  previewDeploymentId text [pk, not null]
+  branch text [not null]
+  pullRequestId text [not null]
+  pullRequestNumber text [not null]
+  pullRequestURL text [not null]
+  pullRequestTitle text [not null]
+  pullRequestCommentId text [not null]
+  previewStatus applicationStatus [not null]
+  appName text [not null, unique]
+  applicationId text [not null]
+  domainId text
+  createdAt text [not null]
+  expiresAt text
+}
+
+Table project {
+  projectId text [pk, not null]
+  name text [not null]
+  description text
+  createdAt text [not null]
+  organizationId text [not null]
+  env text [not null]
+}
+
+Table redirect {
+  redirectId text [pk, not null]
+  regex text [not null]
+  replacement text [not null]
+  permanent boolean [not null]
+  uniqueConfigKey serial [increment]
+  createdAt text [not null]
+  applicationId text [not null]
+}
+
+Table redis {
+  redisId text [pk, not null]
+  name text [not null]
+  appName text [not null, unique]
+  description text
+  password text [not null]
+  dockerImage text [not null]
+  command text
+  args text
+  env text
+  memoryReservation text
+  memoryLimit text
+  cpuReservation text
+  cpuLimit text
+  externalPort integer
+  createdAt text [not null]
+  applicationStatus applicationStatus [not null]
+  healthCheckSwarm json
+  restartPolicySwarm json
+  placementSwarm json
+  updateConfigSwarm json
+  rollbackConfigSwarm json
+  modeSwarm json
+  labelsSwarm json
+  networkSwarm json
+  stopGracePeriodSwarm bigint
+  endpointSpecSwarm json
+  ulimitsSwarm json
+  replicas integer [not null]
+  environmentId text [not null]
+  serverId text
+  networkIds text
+  detachDokployNetwork boolean [not null]
+}
+
+Table registry {
+  registryId text [pk, not null]
+  registryName text [not null]
+  imagePrefix text
+  username text [not null]
+  password text [not null]
+  registryUrl text [not null]
+  createdAt text [not null]
+  selfHosted RegistryType [not null]
+  organizationId text [not null]
+}
+
+Table rollback {
+  rollbackId text [pk, not null]
+  deploymentId text [not null]
+  version serial [increment]
+  image text
+  createdAt text [not null]
+  fullContext jsonb
+}
+
+Table sandbox {
+  sandboxId text [pk, not null]
+  name text [not null]
+  organizationId text [not null]
+  serverId text
+  image text [not null]
+  template text
+  containerId text
+  status sandboxStatus [not null]
+  cpu real [not null]
+  memoryMb integer [not null]
+  pidsLimit integer [not null]
+  timeoutMs integer [not null]
+  expiresAt timestamptz
+  deadlineAt timestamptz [not null]
+  lastActivityAt timestamptz
+  networkMode sandboxNetworkMode [not null]
+  envVars text
+  workdir text [not null]
+  user text
+  runtime text
+  createdAt text [not null]
+  killedAt timestamptz
+}
+
+Table schedule {
+  scheduleId text [pk, not null]
+  name text [not null]
+  description text
+  cronExpression text [not null]
+  appName text [not null]
+  serviceName text
+  shellType shellType [not null]
+  scheduleType scheduleType [not null]
+  command text [not null]
+  script text
+  applicationId text
+  composeId text
+  serverId text
+  organizationId text
+  enabled boolean [not null]
+  timezone text
+  createdAt text [not null]
+}
+
+Table scim_provider {
+  id text [pk, not null]
+  provider_id text [not null, unique]
+  scim_token text [not null, unique]
+  organization_id text
+}
+
+Table security {
+  securityId text [pk, not null]
+  username text [not null]
+  password text [not null]
+  createdAt text [not null]
+  applicationId text [not null]
+  indexes {
+    (username, applicationId) [unique]
+  }
+}
+
+Table server {
+  serverId text [pk, not null]
+  name text [not null]
+  description text
+  ipAddress text [not null]
+  port integer [not null]
+  username text [not null]
+  appName text [not null]
+  enableDockerCleanup boolean [not null]
+  telemetryProviderIds text [not null]
+  buildsConcurrency integer [not null]
+  createdAt text [not null]
+  organizationId text [not null]
+  serverStatus serverStatus [not null]
+  serverType serverType [not null]
+  command text [not null]
+  sshKeyId text
+  metricsConfig jsonb [not null]
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  impersonated_by text
+  active_organization_id text
+  Note: 'OLD TABLE'
+}
+
+Table "ssh-key" {
+  sshKeyId text [pk, not null]
+  privateKey text [not null]
+  publicKey text [not null]
+  name text [not null]
+  description text
+  createdAt text [not null]
+  lastUsedAt text
+  organizationId text [not null]
+}
+
+Table sso_provider {
+  id text [pk, not null]
+  issuer text [not null]
+  oidc_config text
+  saml_config text
+  provider_id text [not null, unique]
+  user_id text
+  organization_id text
+  domain text [not null]
+  domain_verified boolean [not null]
+  created_at timestamp [not null]
+}
+
+Table tag {
+  tagId text [pk, not null]
+  name text [not null]
+  color text
+  createdAt text [not null]
+  organizationId text [not null]
+  indexes {
+    (organizationId, name) [unique, name: 'unique_org_tag_name']
+  }
+}
+
+Table project_tag {
+  id text [pk, not null]
+  projectId text [not null]
+  tagId text [not null]
+  indexes {
+    (projectId, tagId) [unique, name: 'unique_project_tag']
+  }
+}
+
+Table telemetryProvider {
+  telemetryProviderId text [pk, not null]
+  name text [not null]
+  providerType TelemetryProviderType [not null]
+  signals text [not null]
+  endpoint text
+  apiKey text
+  apiSecret text
+  extraConfig jsonb
+  enabled boolean [not null]
+  createdAt text [not null]
+  organizationId text [not null]
+}
+
+Table user {
+  id text [pk, not null]
+  firstName text [not null]
+  lastName text [not null]
+  isRegistered boolean [not null]
+  expirationDate text [not null]
+  createdAt text [not null]
+  created_at timestamp
+  two_factor_enabled boolean [note: 'Auth']
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  banned boolean
+  ban_reason text
+  ban_expires timestamp
+  updated_at timestamp [not null]
+  role text [not null, note: 'Admin']
+  enablePaidFeatures boolean [not null, note: 'Metrics']
+  allowImpersonation boolean [not null]
+  enableEnterpriseFeatures boolean [not null, note: 'Enterprise / proprietary features']
+  licenseKey text
+  isValidEnterpriseLicense boolean [not null]
+  stripeCustomerId text
+  stripeSubscriptionId text
+  serversQuantity integer [not null]
+  sendInvoiceNotifications boolean [not null]
+  isEnterpriseCloud boolean [not null]
+  trustedOrigins text
+  bookmarkedTemplates text
+  onboardingCompletedAt timestamp
+  onboardingStep text
+  onboardingReturnEmails integer [not null]
+  trialPlanPromptSubscriptionId text
+  serverSetupFailedEmailAt timestamp
+  serverConnectFailure text
+  Note: 'TEMP'
+}
+
+Table vault_provider {
+  vaultProviderId text [pk, not null]
+  name text [not null]
+  providerType VaultProviderType [not null]
+  config jsonb [not null]
+  assignments jsonb [not null]
+  organizationId text [not null]
+  createdAt text [not null]
+  indexes {
+    (organizationId, name) [unique, name: 'vault_provider_org_name_idx']
+  }
+}
+
+Table volume_backup {
+  volumeBackupId text [pk, not null]
+  name text [not null]
+  volumeName text [not null]
+  prefix text [not null]
+  serviceType serviceType [not null]
+  appName text [not null]
+  serviceName text
+  turnOff boolean [not null]
+  cronExpression text [not null]
+  keepLatestCount integer
+  enabled boolean
+  applicationId text
+  postgresId text
+  mariadbId text
+  mongoId text
+  mysqlId text
+  redisId text
+  libsqlId text
+  composeId text
+  createdAt text [not null]
+  destinationId text [not null]
+}
+
+Table webServerSettings {
+  id text [pk, not null]
+  serverIp text [note: 'Web Server Configuration']
+  certificateType certificateType [not null]
+  https boolean [not null]
+  host text
+  letsEncryptEmail text
+  sshPrivateKey text
+  enableDockerCleanup boolean [not null]
+  logCleanupCron text
+  telemetryProviderIds text [not null]
+  vectorAgentOrganizationId text
+  metricsConfig jsonb [not null, note: 'Metrics Configuration']
+  whitelabelingConfig jsonb [note: 'Whitelabeling Configuration (Enterprise / Proprietary)']
+  remoteServersOnly boolean [not null, note: 'Deployment Configuration (self-hosted only)']
+  buildsConcurrency integer [not null, note: 'Concurrent builds on the local web server']
+  enforceSSO boolean [not null, note: 'Auth Configuration (self-hosted only)']
+  cleanupCacheApplications boolean [not null, note: 'Cache Cleanup Configuration']
+  cleanupCacheOnPreviews boolean [not null]
+  cleanupCacheOnCompose boolean [not null]
+  created_at timestamp
+  updated_at timestamp [not null]
+}
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref organization_owner_id_user_id_fk: organization.owner_id > user.id [delete: cascade]
+
+Ref organization_role_organization_id_organization_id_fk: organization_role.organization_id > organization.id [delete: cascade]
+
+Ref member_organization_id_organization_id_fk: member.organization_id > organization.id [delete: cascade]
+
+Ref member_user_id_user_id_fk: member.user_id > user.id [delete: cascade]
+
+Ref invitation_organization_id_organization_id_fk: invitation.organization_id > organization.id [delete: cascade]
+
+Ref invitation_inviter_id_user_id_fk: invitation.inviter_id > user.id [delete: cascade]
+
+Ref two_factor_user_id_user_id_fk: two_factor.user_id > user.id [delete: cascade]
+
+Ref passkey_user_id_user_id_fk: passkey.user_id > user.id [delete: cascade]
+
+Ref apikey_reference_id_user_id_fk: apikey.reference_id > user.id [delete: cascade]
+
+Ref ai_organizationId_organization_id_fk: ai.organizationId > organization.id [delete: cascade]
+
+Ref "application_customGitSSHKeyId_ssh-key_sshKeyId_fk": application.customGitSSHKeyId > "ssh-key".sshKeyId [delete: set null]
+
+Ref application_registryId_registry_registryId_fk: application.registryId > registry.registryId [delete: set null]
+
+Ref application_rollbackRegistryId_registry_registryId_fk: application.rollbackRegistryId > registry.registryId [delete: set null]
+
+Ref application_environmentId_environment_environmentId_fk: application.environmentId > environment.environmentId [delete: cascade]
+
+Ref application_githubId_github_githubId_fk: application.githubId > github.githubId [delete: set null]
+
+Ref application_gitlabId_gitlab_gitlabId_fk: application.gitlabId > gitlab.gitlabId [delete: set null]
+
+Ref application_giteaId_gitea_giteaId_fk: application.giteaId > gitea.giteaId [delete: set null]
+
+Ref application_bitbucketId_bitbucket_bitbucketId_fk: application.bitbucketId > bitbucket.bitbucketId [delete: set null]
+
+Ref application_serverId_server_serverId_fk: application.serverId > server.serverId [delete: cascade]
+
+Ref application_buildServerId_server_serverId_fk: application.buildServerId > server.serverId [delete: set null]
+
+Ref application_buildRegistryId_registry_registryId_fk: application.buildRegistryId > registry.registryId [delete: set null]
+
+Ref audit_log_organization_id_organization_id_fk: audit_log.organization_id > organization.id [delete: set null]
+
+Ref audit_log_user_id_user_id_fk: audit_log.user_id > user.id [delete: set null]
+
+Ref backup_destinationId_destination_destinationId_fk: backup.destinationId > destination.destinationId [delete: cascade]
+
+Ref backup_composeId_compose_composeId_fk: backup.composeId > compose.composeId [delete: cascade]
+
+Ref backup_postgresId_postgres_postgresId_fk: backup.postgresId > postgres.postgresId [delete: cascade]
+
+Ref backup_mariadbId_mariadb_mariadbId_fk: backup.mariadbId > mariadb.mariadbId [delete: cascade]
+
+Ref backup_mysqlId_mysql_mysqlId_fk: backup.mysqlId > mysql.mysqlId [delete: cascade]
+
+Ref backup_mongoId_mongo_mongoId_fk: backup.mongoId > mongo.mongoId [delete: cascade]
+
+Ref backup_libsqlId_libsql_libsqlId_fk: backup.libsqlId > libsql.libsqlId [delete: cascade]
+
+Ref backup_userId_user_id_fk: backup.userId > user.id
+
+Ref bitbucket_gitProviderId_git_provider_gitProviderId_fk: bitbucket.gitProviderId > git_provider.gitProviderId [delete: cascade]
+
+Ref certificate_organizationId_organization_id_fk: certificate.organizationId > organization.id [delete: cascade]
+
+Ref certificate_serverId_server_serverId_fk: certificate.serverId > server.serverId [delete: cascade]
+
+Ref "compose_customGitSSHKeyId_ssh-key_sshKeyId_fk": compose.customGitSSHKeyId > "ssh-key".sshKeyId [delete: set null]
+
+Ref compose_environmentId_environment_environmentId_fk: compose.environmentId > environment.environmentId [delete: cascade]
+
+Ref compose_githubId_github_githubId_fk: compose.githubId > github.githubId [delete: set null]
+
+Ref compose_gitlabId_gitlab_gitlabId_fk: compose.gitlabId > gitlab.gitlabId [delete: set null]
+
+Ref compose_bitbucketId_bitbucket_bitbucketId_fk: compose.bitbucketId > bitbucket.bitbucketId [delete: set null]
+
+Ref compose_giteaId_gitea_giteaId_fk: compose.giteaId > gitea.giteaId [delete: set null]
+
+Ref compose_serverId_server_serverId_fk: compose.serverId > server.serverId [delete: cascade]
+
+Ref deployment_applicationId_application_applicationId_fk: deployment.applicationId > application.applicationId [delete: cascade]
+
+Ref deployment_composeId_compose_composeId_fk: deployment.composeId > compose.composeId [delete: cascade]
+
+Ref deployment_serverId_server_serverId_fk: deployment.serverId > server.serverId [delete: cascade]
+
+Ref deployment_previewDeploymentId_preview_deployments_previewDeploymentId_fk: deployment.previewDeploymentId > preview_deployments.previewDeploymentId [delete: cascade]
+
+Ref deployment_scheduleId_schedule_scheduleId_fk: deployment.scheduleId > schedule.scheduleId [delete: cascade]
+
+Ref deployment_backupId_backup_backupId_fk: deployment.backupId > backup.backupId [delete: cascade]
+
+Ref deployment_rollbackId_rollback_rollbackId_fk: deployment.rollbackId > rollback.rollbackId [delete: cascade]
+
+Ref deployment_volumeBackupId_volume_backup_volumeBackupId_fk: deployment.volumeBackupId > volume_backup.volumeBackupId [delete: cascade]
+
+Ref deployment_buildServerId_server_serverId_fk: deployment.buildServerId > server.serverId [delete: cascade]
+
+Ref destination_organizationId_organization_id_fk: destination.organizationId > organization.id [delete: cascade]
+
+Ref dns_provider_organizationId_organization_id_fk: dns_provider.organizationId > organization.id [delete: cascade]
+
+Ref domain_composeId_compose_composeId_fk: domain.composeId > compose.composeId [delete: cascade]
+
+Ref domain_applicationId_application_applicationId_fk: domain.applicationId > application.applicationId [delete: cascade]
+
+Ref domain_previewDeploymentId_preview_deployments_previewDeploymentId_fk: domain.previewDeploymentId > preview_deployments.previewDeploymentId [delete: cascade]
+
+Ref environment_projectId_project_projectId_fk: environment.projectId > project.projectId [delete: cascade]
+
+Ref forward_auth_settings_providerId_sso_provider_provider_id_fk: forward_auth_settings.providerId > sso_provider.provider_id [delete: set null]
+
+Ref forward_auth_settings_serverId_server_serverId_fk: forward_auth_settings.serverId - server.serverId [delete: cascade]
+
+Ref git_provider_organizationId_organization_id_fk: git_provider.organizationId > organization.id [delete: cascade]
+
+Ref git_provider_userId_user_id_fk: git_provider.userId > user.id [delete: cascade]
+
+Ref gitea_gitProviderId_git_provider_gitProviderId_fk: gitea.gitProviderId > git_provider.gitProviderId [delete: cascade]
+
+Ref github_gitProviderId_git_provider_gitProviderId_fk: github.gitProviderId > git_provider.gitProviderId [delete: cascade]
+
+Ref gitlab_gitProviderId_git_provider_gitProviderId_fk: gitlab.gitProviderId > git_provider.gitProviderId [delete: cascade]
+
+Ref libsql_environmentId_environment_environmentId_fk: libsql.environmentId > environment.environmentId [delete: cascade]
+
+Ref libsql_serverId_server_serverId_fk: libsql.serverId > server.serverId [delete: cascade]
+
+Ref mariadb_environmentId_environment_environmentId_fk: mariadb.environmentId > environment.environmentId [delete: cascade]
+
+Ref mariadb_serverId_server_serverId_fk: mariadb.serverId > server.serverId [delete: cascade]
+
+Ref mongo_environmentId_environment_environmentId_fk: mongo.environmentId > environment.environmentId [delete: cascade]
+
+Ref mongo_serverId_server_serverId_fk: mongo.serverId > server.serverId [delete: cascade]
+
+Ref mount_applicationId_application_applicationId_fk: mount.applicationId > application.applicationId [delete: cascade]
+
+Ref mount_composeId_compose_composeId_fk: mount.composeId > compose.composeId [delete: cascade]
+
+Ref mount_libsqlId_libsql_libsqlId_fk: mount.libsqlId > libsql.libsqlId [delete: cascade]
+
+Ref mount_mariadbId_mariadb_mariadbId_fk: mount.mariadbId > mariadb.mariadbId [delete: cascade]
+
+Ref mount_mongoId_mongo_mongoId_fk: mount.mongoId > mongo.mongoId [delete: cascade]
+
+Ref mount_mysqlId_mysql_mysqlId_fk: mount.mysqlId > mysql.mysqlId [delete: cascade]
+
+Ref mount_postgresId_postgres_postgresId_fk: mount.postgresId > postgres.postgresId [delete: cascade]
+
+Ref mount_redisId_redis_redisId_fk: mount.redisId > redis.redisId [delete: cascade]
+
+Ref mysql_environmentId_environment_environmentId_fk: mysql.environmentId > environment.environmentId [delete: cascade]
+
+Ref mysql_serverId_server_serverId_fk: mysql.serverId > server.serverId [delete: cascade]
+
+Ref network_organizationId_organization_id_fk: network.organizationId > organization.id [delete: cascade]
+
+Ref network_serverId_server_serverId_fk: network.serverId > server.serverId [delete: cascade]
+
+Ref notification_slackId_slack_slackId_fk: notification.slackId > slack.slackId [delete: cascade]
+
+Ref notification_telegramId_telegram_telegramId_fk: notification.telegramId > telegram.telegramId [delete: cascade]
+
+Ref notification_discordId_discord_discordId_fk: notification.discordId > discord.discordId [delete: cascade]
+
+Ref notification_emailId_email_emailId_fk: notification.emailId > email.emailId [delete: cascade]
+
+Ref notification_resendId_resend_resendId_fk: notification.resendId > resend.resendId [delete: cascade]
+
+Ref notification_gotifyId_gotify_gotifyId_fk: notification.gotifyId > gotify.gotifyId [delete: cascade]
+
+Ref notification_ntfyId_ntfy_ntfyId_fk: notification.ntfyId > ntfy.ntfyId [delete: cascade]
+
+Ref notification_mattermostId_mattermost_mattermostId_fk: notification.mattermostId > mattermost.mattermostId [delete: cascade]
+
+Ref notification_customId_custom_customId_fk: notification.customId > custom.customId [delete: cascade]
+
+Ref notification_larkId_lark_larkId_fk: notification.larkId > lark.larkId [delete: cascade]
+
+Ref notification_pushoverId_pushover_pushoverId_fk: notification.pushoverId > pushover.pushoverId [delete: cascade]
+
+Ref notification_teamsId_teams_teamsId_fk: notification.teamsId > teams.teamsId [delete: cascade]
+
+Ref notification_organizationId_organization_id_fk: notification.organizationId > organization.id [delete: cascade]
+
+Ref patch_applicationId_application_applicationId_fk: patch.applicationId > application.applicationId [delete: cascade]
+
+Ref patch_composeId_compose_composeId_fk: patch.composeId > compose.composeId [delete: cascade]
+
+Ref port_applicationId_application_applicationId_fk: port.applicationId > application.applicationId [delete: cascade]
+
+Ref postgres_environmentId_environment_environmentId_fk: postgres.environmentId > environment.environmentId [delete: cascade]
+
+Ref postgres_serverId_server_serverId_fk: postgres.serverId > server.serverId [delete: cascade]
+
+Ref preview_deployments_applicationId_application_applicationId_fk: preview_deployments.applicationId > application.applicationId [delete: cascade]
+
+Ref preview_deployments_domainId_domain_domainId_fk: preview_deployments.domainId > domain.domainId [delete: cascade]
+
+Ref project_organizationId_organization_id_fk: project.organizationId > organization.id [delete: cascade]
+
+Ref redirect_applicationId_application_applicationId_fk: redirect.applicationId > application.applicationId [delete: cascade]
+
+Ref redis_environmentId_environment_environmentId_fk: redis.environmentId > environment.environmentId [delete: cascade]
+
+Ref redis_serverId_server_serverId_fk: redis.serverId > server.serverId [delete: cascade]
+
+Ref registry_organizationId_organization_id_fk: registry.organizationId > organization.id [delete: cascade]
+
+Ref rollback_deploymentId_deployment_deploymentId_fk: rollback.deploymentId > deployment.deploymentId [delete: cascade]
+
+Ref sandbox_organizationId_organization_id_fk: sandbox.organizationId > organization.id [delete: cascade]
+
+Ref sandbox_serverId_server_serverId_fk: sandbox.serverId > server.serverId [delete: cascade]
+
+Ref schedule_applicationId_application_applicationId_fk: schedule.applicationId > application.applicationId [delete: cascade]
+
+Ref schedule_composeId_compose_composeId_fk: schedule.composeId > compose.composeId [delete: cascade]
+
+Ref schedule_serverId_server_serverId_fk: schedule.serverId > server.serverId [delete: cascade]
+
+Ref schedule_organizationId_organization_id_fk: schedule.organizationId > organization.id [delete: cascade]
+
+Ref scim_provider_organization_id_organization_id_fk: scim_provider.organization_id > organization.id [delete: cascade]
+
+Ref security_applicationId_application_applicationId_fk: security.applicationId > application.applicationId [delete: cascade]
+
+Ref server_organizationId_organization_id_fk: server.organizationId > organization.id [delete: cascade]
+
+Ref "server_sshKeyId_ssh-key_sshKeyId_fk": server.sshKeyId > "ssh-key".sshKeyId [delete: set null]
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref "ssh-key_organizationId_organization_id_fk": "ssh-key".organizationId > organization.id [delete: cascade]
+
+Ref sso_provider_user_id_user_id_fk: sso_provider.user_id > user.id [delete: set null]
+
+Ref sso_provider_organization_id_organization_id_fk: sso_provider.organization_id > organization.id [delete: cascade]
+
+Ref tag_organizationId_organization_id_fk: tag.organizationId > organization.id [delete: cascade]
+
+Ref project_tag_projectId_project_projectId_fk: project_tag.projectId > project.projectId [delete: cascade]
+
+Ref project_tag_tagId_tag_tagId_fk: project_tag.tagId > tag.tagId [delete: cascade]
+
+Ref telemetryProvider_organizationId_organization_id_fk: telemetryProvider.organizationId > organization.id [delete: cascade]
+
+Ref vault_provider_organizationId_organization_id_fk: vault_provider.organizationId > organization.id [delete: cascade]
+
+Ref volume_backup_applicationId_application_applicationId_fk: volume_backup.applicationId > application.applicationId [delete: cascade]
+
+Ref volume_backup_postgresId_postgres_postgresId_fk: volume_backup.postgresId > postgres.postgresId [delete: cascade]
+
+Ref volume_backup_mariadbId_mariadb_mariadbId_fk: volume_backup.mariadbId > mariadb.mariadbId [delete: cascade]
+
+Ref volume_backup_mongoId_mongo_mongoId_fk: volume_backup.mongoId > mongo.mongoId [delete: cascade]
+
+Ref volume_backup_mysqlId_mysql_mysqlId_fk: volume_backup.mysqlId > mysql.mysqlId [delete: cascade]
+
+Ref volume_backup_redisId_redis_redisId_fk: volume_backup.redisId > redis.redisId [delete: cascade]
+
+Ref volume_backup_libsqlId_libsql_libsqlId_fk: volume_backup.libsqlId > libsql.libsqlId [delete: cascade]
+
+Ref volume_backup_composeId_compose_composeId_fk: volume_backup.composeId > compose.composeId [delete: cascade]
+
+Ref volume_backup_destinationId_destination_destinationId_fk: volume_backup.destinationId > destination.destinationId [delete: cascade]
+
+Ref webServerSettings_vectorAgentOrganizationId_organization_id_fk: webServerSettings.vectorAgentOrganizationId > organization.id [delete: set null]
+
+Ref deployment_deploymentId_rollback_deploymentId: deployment.deploymentId - rollback.deploymentId
+
+Ref git_provider_gitProviderId_github_gitProviderId: git_provider.gitProviderId - github.gitProviderId
+
+Ref git_provider_gitProviderId_gitlab_gitProviderId: git_provider.gitProviderId - gitlab.gitProviderId
+
+Ref git_provider_gitProviderId_bitbucket_gitProviderId: git_provider.gitProviderId - bitbucket.gitProviderId
+
+Ref git_provider_gitProviderId_gitea_gitProviderId: git_provider.gitProviderId - gitea.gitProviderId
+
+Ref user_id_account_user_id: user.id - account.user_id

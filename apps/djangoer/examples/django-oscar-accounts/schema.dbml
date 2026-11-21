@@ -1,0 +1,2164 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum UserAddressTitle {
+  "Mr"
+  "Miss"
+  "Mrs"
+  "Ms"
+  "Dr"
+}
+
+Enum ProductStructure {
+  "standalone"
+  "parent"
+  "child"
+}
+
+Enum ProductAttributeType {
+  "text"
+  "integer"
+  "boolean"
+  "float"
+  "richtext"
+  "date"
+  "datetime"
+  "option"
+  "multi_option"
+  "entity"
+  "file"
+  "image"
+}
+
+Enum OptionType {
+  "text"
+  "integer"
+  "boolean"
+  "float"
+  "date"
+  "select"
+  "radio"
+  "multi_select"
+  "checkbox"
+}
+
+Enum ProductReviewScore {
+  "0"
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum ProductReviewStatus {
+  "0"
+  "1"
+  "2"
+}
+
+Enum VoteDelta {
+  "1"
+  "-1"
+}
+
+Enum CommunicationEventTypeCategory {
+  "Order related"
+  "User related"
+}
+
+Enum NotificationLocation {
+  "Inbox"
+  "Archive"
+}
+
+Enum PartnerAddressTitle {
+  "Mr"
+  "Miss"
+  "Mrs"
+  "Ms"
+  "Dr"
+}
+
+Enum StockAlertStatus {
+  "Open"
+  "Closed"
+}
+
+Enum BasketStatus {
+  "Open"
+  "Merged"
+  "Saved"
+  "Frozen"
+  "Submitted"
+}
+
+Enum ConditionalOfferOfferType {
+  "Site"
+  "Voucher"
+  "User"
+  "Session"
+}
+
+Enum BenefitType {
+  "Percentage"
+  "Absolute"
+  "Fixed"
+  "Multibuy"
+  "Fixed price"
+  "Shipping absolute"
+  "Shipping fixed price"
+  "Shipping percentage"
+}
+
+Enum ConditionType {
+  "Count"
+  "Value"
+  "Coverage"
+}
+
+Enum RangeProductFileUploadUploadType {
+  "included"
+  "excluded"
+}
+
+Enum RangeProductFileUploadStatus {
+  "Pending"
+  "Failed"
+  "Processed"
+}
+
+Enum ShippingAddressTitle {
+  "Mr"
+  "Miss"
+  "Mrs"
+  "Ms"
+  "Dr"
+}
+
+Enum BillingAddressTitle {
+  "Mr"
+  "Miss"
+  "Mrs"
+  "Ms"
+  "Dr"
+}
+
+Enum OrderDiscountCategory {
+  "Basket"
+  "Shipping"
+  "Deferred"
+}
+
+Enum ProductAlertStatus {
+  "Unconfirmed"
+  "Active"
+  "Cancelled"
+  "Closed"
+}
+
+Enum VoucherUsage {
+  "Single use"
+  "Multi-use"
+  "Once per customer"
+}
+
+Enum WishListVisibility {
+  "Private"
+  "Shared"
+  "Public"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table django_flatpage {
+  id integer [pk, increment]
+  url varchar(100) [not null]
+  title varchar(200) [not null]
+  content text [not null]
+  enable_comments bool [default: false, not null]
+  template_name varchar(70) [not null, note: 'Example: “flatpages/contact_page.html”. If this isn’t provided, the system will use “flatpages/default.html”.']
+  registration_required bool [default: false, not null, note: 'If this is checked, only logged-in users will be able to view the page.']
+
+  indexes {
+    (url) [name: 'django_flatpage_url_41612362']
+  }
+}
+
+Table analytics_productrecord {
+  id integer [pk, increment]
+  product_id bigint [unique, not null]
+  num_views "integer unsigned" [default: 0, not null]
+  num_basket_additions "integer unsigned" [default: 0, not null]
+  num_purchases "integer unsigned" [default: 0, not null]
+  score real [default: 0.0, not null]
+
+  indexes {
+    (num_purchases) [name: 'analytics_productrecord_num_purchases_405301a0']
+  }
+
+  Note: '''Columns from AbstractProductRecord (abstract): product_id, num_views, num_basket_additions, num_purchases, score.'''
+}
+
+Table analytics_userrecord {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  num_product_views "integer unsigned" [default: 0, not null]
+  num_basket_additions "integer unsigned" [default: 0, not null]
+  num_orders "integer unsigned" [default: 0, not null]
+  num_order_lines "integer unsigned" [default: 0, not null]
+  num_order_items "integer unsigned" [default: 0, not null]
+  total_spent decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  date_last_order datetime
+
+  indexes {
+    (num_orders) [name: 'analytics_userrecord_num_orders_b352ffd1']
+    (num_order_lines) [name: 'analytics_userrecord_num_order_lines_97cc087f']
+    (num_order_items) [name: 'analytics_userrecord_num_order_items_fb2a8304']
+  }
+
+  Note: '''Columns from AbstractUserRecord (abstract): user_id, num_product_views, num_basket_additions, num_orders, num_order_lines, num_order_items, total_spent, date_last_order.'''
+}
+
+Table analytics_userproductview {
+  id integer [pk, increment]
+  user_id integer [not null]
+  product_id bigint [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'analytics_userproductview_user_id_5e49a8b1']
+    (product_id) [name: 'analytics_userproductview_product_id_a55b87ad']
+  }
+
+  Note: '''Columns from AbstractUserProductView (abstract): user_id, product_id, date_created.'''
+}
+
+Table analytics_usersearch {
+  id integer [pk, increment]
+  user_id integer [not null]
+  query varchar(255) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'analytics_usersearch_user_id_1775992d']
+    (query) [name: 'analytics_usersearch_query_ad36478b']
+  }
+
+  Note: '''Columns from AbstractUserSearch (abstract): user_id, query, date_created.'''
+}
+
+Table address_useraddress {
+  id integer [pk, increment]
+  code varchar(255) [unique]
+  title UserAddressTitle [not null]
+  first_name varchar(255) [not null]
+  last_name varchar(255) [not null]
+  line1 varchar(255) [not null]
+  line2 varchar(255) [not null]
+  line3 varchar(255) [not null]
+  line4 varchar(255) [not null]
+  state varchar(255) [not null]
+  postcode varchar(64) [not null]
+  country_id varchar(2) [not null]
+  search_text text [not null]
+  phone_number varchar(128) [not null, note: 'In case we need to call you about your order']
+  notes text [not null, note: 'Tell us anything we should know when delivering your order.']
+  user_id integer [not null]
+  is_default_for_shipping bool [default: false, not null]
+  is_default_for_billing bool [default: false, not null]
+  num_orders_as_shipping_address "integer unsigned" [default: 0, not null]
+  num_orders_as_billing_address "integer unsigned" [default: 0, not null]
+  hash varchar(255) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (country_id) [name: 'address_useraddress_country_id_fa26a249']
+    (user_id) [name: 'address_useraddress_user_id_6edf0244']
+    (hash) [name: 'address_useraddress_hash_e0a6b290']
+    (user_id, hash) [unique, name: 'address_useraddress_user_id_hash_9d1738c7_uniq']
+  }
+
+  Note: '''Columns from AbstractUserAddress (abstract): user_id, is_default_for_shipping, is_default_for_billing, num_orders_as_shipping_address, num_orders_as_billing_address, hash, date_created.
+
+Columns from AbstractShippingAddress (abstract): phone_number, notes.
+
+Columns from AbstractAddress (abstract): code, title, first_name, last_name, line1, line2, line3, line4, state, postcode, country_id, search_text.'''
+}
+
+Table address_country {
+  iso_3166_1_a2 varchar(2) [pk]
+  iso_3166_1_a3 varchar(3) [not null]
+  iso_3166_1_numeric varchar(3) [not null]
+  printable_name varchar(128) [not null]
+  name varchar(128) [not null]
+  display_order "smallint unsigned" [default: 0, not null, note: 'Higher the number, higher the country in the list.']
+  is_shipping_country bool [default: false, not null]
+
+  indexes {
+    (printable_name) [name: 'address_country_printable_name_450b016c']
+    (display_order) [name: 'address_country_display_order_dc88cde8']
+    (is_shipping_country) [name: 'address_country_is_shipping_country_f7b6c461']
+  }
+
+  Note: '''Columns from AbstractCountry (abstract): iso_3166_1_a2, iso_3166_1_a3, iso_3166_1_numeric, printable_name, name, display_order, is_shipping_country.'''
+}
+
+Table shipping_orderanditemcharges {
+  id integer [pk, increment]
+  code varchar(128) [unique, not null]
+  name varchar(128) [unique, not null]
+  description text [not null]
+  price_per_order decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  price_per_item decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  free_shipping_threshold decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+
+  Note: '''Columns from AbstractOrderAndItemCharges (abstract): price_per_order, price_per_item, free_shipping_threshold.
+
+Columns from AbstractBase (abstract): code, name, description.'''
+}
+
+Table shipping_weightbased {
+  id integer [pk, increment]
+  code varchar(128) [unique, not null]
+  name varchar(128) [unique, not null]
+  description text [not null]
+  default_weight decimal [not null, note: 'Default product weight in kg when no weight attribute is defined. default in Python: Decimal(\'0.000\'). declared max_digits=12, decimal_places=3, which the database does not enforce']
+
+  Note: '''Columns from AbstractWeightBased (abstract): default_weight.
+
+Columns from AbstractBase (abstract): code, name, description.'''
+}
+
+Table shipping_weightband {
+  id integer [pk, increment]
+  method_id bigint [not null]
+  upper_limit decimal [not null, note: 'Enter upper limit of this weight band in kg. The lower limit will be determined by the other weight bands.. declared max_digits=12, decimal_places=3, which the database does not enforce']
+  charge decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (method_id) [name: 'shipping_weightband_method_id_b699a1ba']
+    (upper_limit) [name: 'shipping_weightband_upper_limit_9edc5097']
+  }
+
+  Note: '''Columns from AbstractWeightBand (abstract): method_id, upper_limit, charge.'''
+}
+
+Table catalogue_productclass {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+  slug varchar(128) [unique, not null]
+  requires_shipping bool [default: true, not null]
+  track_stock bool [default: true, not null]
+
+  Note: '''Columns from AbstractProductClass (abstract): name, slug, requires_shipping, track_stock.'''
+}
+
+Table catalogue_category {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  name varchar(255) [not null]
+  code varchar(255) [unique]
+  description text [not null]
+  long_description text [not null]
+  meta_title varchar(255)
+  meta_description text
+  image varchar(255)
+  slug varchar(255) [not null]
+  exclude_from_menu bool [default: false, not null, note: 'Exclude this category from the menu.']
+  is_public bool [default: true, not null, note: 'Show this category in search results and catalogue listings.']
+  ancestors_are_public bool [default: true, not null, note: 'The ancestors of this category are public']
+
+  indexes {
+    (name) [name: 'catalogue_category_name_1f342ac2']
+    (slug) [name: 'catalogue_category_slug_9635febd']
+    (exclude_from_menu) [name: 'catalogue_category_exclude_from_menu_898e8583']
+    (is_public) [name: 'catalogue_category_is_public_ab0536be']
+    (ancestors_are_public) [name: 'catalogue_category_ancestors_are_public_d088d0db']
+  }
+
+  Note: '''Columns from AbstractCategory (abstract): name, code, description, long_description, meta_title, meta_description, image, slug, exclude_from_menu, is_public, ancestors_are_public.
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table catalogue_productcategory {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  category_id bigint [not null]
+
+  indexes {
+    (product_id) [name: 'catalogue_productcategory_product_id_846a4061']
+    (category_id) [name: 'catalogue_productcategory_category_id_176db535']
+    (product_id, category_id) [unique, name: 'catalogue_productcategory_product_id_category_id_8f0dbfe2_uniq']
+  }
+
+  Note: '''Columns from AbstractProductCategory (abstract): product_id, category_id.'''
+}
+
+Table catalogue_product {
+  id integer [pk, increment]
+  structure ProductStructure [default: 'standalone', not null]
+  is_public bool [default: true, not null, note: 'Show this product in search results and catalogue listings.']
+  upc varchar(64) [unique, note: 'Universal Product Code (UPC) is an identifier for a product which is not specific to a particular  supplier. Eg an ISBN for a book.']
+  parent_id bigint [note: 'Only choose a parent product if you\'re creating a child product.  For example if this is a size 4 of a particular t-shirt.  Leave blank if this is a stand-alone product (i.e. there is only one version of this product).']
+  title varchar(255) [not null]
+  slug varchar(255) [not null]
+  description text [not null]
+  meta_title varchar(255)
+  meta_description text
+  priority smallint [default: 0, not null, note: 'The highest priority products are shown first']
+  product_class_id bigint [note: 'Choose what type of product this is']
+  rating real
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_updated datetime [not null, note: 'default in Python: now()']
+  is_discountable bool [default: true, not null, note: 'This flag indicates if this product can be used in an offer or not']
+  code varchar(255) [unique]
+
+  indexes {
+    (is_public) [name: 'catalogue_product_is_public_1cf798c5']
+    (parent_id) [name: 'catalogue_product_parent_id_9bfd2382']
+    (slug) [name: 'catalogue_product_slug_c8e2e2b9']
+    (priority) [name: 'catalogue_product_priority_983a8f56']
+    (product_class_id) [name: 'catalogue_product_product_class_id_0c6c5b54']
+    (date_created) [name: 'catalogue_product_date_created_d66f485a']
+    (date_updated) [name: 'catalogue_product_date_updated_d3a1785d']
+  }
+
+  Note: '''Columns from AbstractProduct (abstract): structure, is_public, upc, parent_id, title, slug, description, meta_title, meta_description, priority, product_class_id, rating, date_created, date_updated, is_discountable, code.'''
+}
+
+Table catalogue_productrecommendation {
+  id integer [pk, increment]
+  primary_id bigint [not null]
+  recommendation_id bigint [not null]
+  ranking "smallint unsigned" [default: 0, not null, note: 'Determines order of the products. A product with a higher value will appear before one with a lower ranking.']
+
+  indexes {
+    (primary_id) [name: 'catalogue_productrecommendation_primary_id_6e51a55c']
+    (recommendation_id) [name: 'catalogue_productrecommendation_recommendation_id_daf8ae95']
+    (ranking) [name: 'catalogue_productrecommendation_ranking_e7a0f7fd']
+    (primary_id, recommendation_id) [unique, name: 'catalogue_productrecommendation_primary_id_recommendation_id_da1fdf43_uniq']
+  }
+
+  Note: '''Columns from AbstractProductRecommendation (abstract): primary_id, recommendation_id, ranking.'''
+}
+
+Table catalogue_productattribute {
+  id integer [pk, increment]
+  product_class_id bigint
+  name varchar(128) [not null]
+  code varchar(128) [not null]
+  type ProductAttributeType [default: 'text', not null]
+  option_group_id bigint [note: 'Select an option group if using type "Option" or "Multi Option"']
+  required bool [default: false, not null]
+
+  indexes {
+    (product_class_id) [name: 'catalogue_productattribute_product_class_id_7af808ec']
+    (code) [name: 'catalogue_productattribute_code_9ffea293']
+    (option_group_id) [name: 'catalogue_productattribute_option_group_id_6b422dc2']
+    (code, product_class_id) [unique, name: 'catalogue_productattribute_code_product_class_id_82f69012_uniq']
+  }
+
+  Note: '''Columns from AbstractProductAttribute (abstract): product_class_id, name, code, type, option_group_id, required.'''
+}
+
+Table catalogue_productattributevalue {
+  id integer [pk, increment]
+  attribute_id bigint [not null]
+  product_id bigint [not null]
+  value_text text
+  value_integer integer
+  value_boolean bool
+  value_float real
+  value_richtext text
+  value_date date
+  value_datetime datetime
+  value_option_id bigint
+  value_file varchar(255)
+  value_image varchar(255)
+  entity_content_type_id integer
+  entity_object_id "integer unsigned" [note: 'value_entity: with entity_content_type_id, a generic foreign key to a row of any model']
+
+  indexes {
+    (attribute_id) [name: 'catalogue_productattributevalue_attribute_id_0287c1e7']
+    (product_id) [name: 'catalogue_productattributevalue_product_id_a03cd90e']
+    (value_integer) [name: 'catalogue_productattributevalue_value_integer_55fbb7d6']
+    (value_boolean) [name: 'catalogue_productattributevalue_value_boolean_c5b0d66a']
+    (value_float) [name: 'catalogue_productattributevalue_value_float_5ef8d3db']
+    (value_date) [name: 'catalogue_productattributevalue_value_date_d18775c1']
+    (value_datetime) [name: 'catalogue_productattributevalue_value_datetime_b474ac38']
+    (value_option_id) [name: 'catalogue_productattributevalue_value_option_id_21026066']
+    (entity_content_type_id) [name: 'catalogue_productattributevalue_entity_content_type_id_f7186ab5']
+    (attribute_id, product_id) [unique, name: 'catalogue_productattributevalue_attribute_id_product_id_1e8e7112_uniq']
+  }
+
+  Note: '''Columns from AbstractProductAttributeValue (abstract): attribute_id, product_id, value_text, value_integer, value_boolean, value_float, value_richtext, value_date, value_datetime, value_option_id, value_file, value_image, entity_content_type_id, entity_object_id.'''
+}
+
+Table catalogue_attributeoptiongroup {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+  code varchar(255) [unique]
+
+  Note: '''Columns from AbstractAttributeOptionGroup (abstract): name, code.'''
+}
+
+Table catalogue_attributeoption {
+  id integer [pk, increment]
+  group_id bigint [not null]
+  option varchar(255) [not null]
+  code varchar(255) [unique]
+
+  indexes {
+    (group_id) [name: 'catalogue_attributeoption_group_id_3d4a5e24']
+    (group_id, option) [unique, name: 'catalogue_attributeoption_group_id_option_7a8f6c11_uniq']
+  }
+
+  Note: '''Columns from AbstractAttributeOption (abstract): group_id, option, code.'''
+}
+
+Table catalogue_option {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+  code varchar(128) [unique, not null]
+  type OptionType [default: 'text', not null]
+  required bool [default: false, not null]
+  option_group_id bigint [note: 'Select an option group if using type "Option" or "Multi Option"']
+  help_text varchar(255) [note: 'Help text shown to the user on the add to cart form']
+  order integer [note: 'Controls the ordering of product options on product detail pages']
+
+  indexes {
+    (name) [name: 'catalogue_option_name_7b84926d']
+    (option_group_id) [name: 'catalogue_option_option_group_id_2fd86269']
+    (order) [name: 'catalogue_option_order_d4ee348f']
+  }
+
+  Note: '''Columns from AbstractOption (abstract): name, code, type, required, option_group_id, help_text, order.'''
+}
+
+Table catalogue_productimage {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  code varchar(255) [unique]
+  original varchar(255) [not null]
+  caption varchar(200) [not null]
+  display_order "integer unsigned" [default: 0, not null, note: 'An image with a display order of zero will be the primary image for a product']
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (product_id) [name: 'catalogue_productimage_product_id_49474fe8']
+    (display_order) [name: 'catalogue_productimage_display_order_9fa741ac']
+  }
+
+  Note: '''Columns from AbstractProductImage (abstract): product_id, code, original, caption, display_order, date_created.'''
+}
+
+Table catalogue_product_category_hierarchy {
+  id varchar(255) [pk]
+  product_id integer [not null]
+  category_id integer [not null]
+
+  Note: '''Not managed by Django (managed = False).
+
+Columns from AbstractProductCategoryHierarchy (abstract): id, product_id, category_id.'''
+}
+
+Table reviews_productreview {
+  id integer [pk, increment]
+  product_id bigint
+  score ProductReviewScore [not null]
+  title varchar(255) [not null]
+  body text [not null]
+  user_id integer
+  name varchar(255) [not null]
+  email varchar(254) [not null]
+  homepage varchar(200) [not null]
+  status ProductReviewStatus [not null, note: 'default in Python: get_default_review_status()']
+  code varchar(255) [unique]
+  total_votes integer [default: 0, not null]
+  delta_votes integer [default: 0, not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (product_id) [name: 'reviews_productreview_product_id_52e52a32']
+    (user_id) [name: 'reviews_productreview_user_id_8acb5ddd']
+    (delta_votes) [name: 'reviews_productreview_delta_votes_bd8ffc87']
+    (product_id, user_id) [unique, name: 'reviews_productreview_product_id_user_id_c4fdc4cd_uniq']
+  }
+
+  Note: '''Columns from AbstractProductReview (abstract): product_id, score, title, body, user_id, name, email, homepage, status, code, total_votes, delta_votes, date_created.'''
+}
+
+Table reviews_vote {
+  id integer [pk, increment]
+  review_id bigint [not null]
+  user_id integer [not null]
+  delta VoteDelta [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (review_id) [name: 'reviews_vote_review_id_371b2d8d']
+    (user_id) [name: 'reviews_vote_user_id_5fb87b53']
+    (user_id, review_id) [unique, name: 'reviews_vote_user_id_review_id_bb858939_uniq']
+  }
+
+  Note: '''Columns from AbstractVote (abstract): review_id, user_id, delta, date_created.'''
+}
+
+Table communication_email {
+  id integer [pk, increment]
+  user_id integer
+  email varchar(254)
+  subject text [not null]
+  body_text text [not null]
+  body_html text [not null]
+  date_sent datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'communication_email_user_id_a6eae16a']
+  }
+
+  Note: '''Columns from AbstractEmail (abstract): user_id, email, subject, body_text, body_html, date_sent.'''
+}
+
+Table communication_communicationeventtype {
+  id integer [pk, increment]
+  code varchar(128) [unique, not null, note: 'Code used for looking up this event programmatically']
+  name varchar(255) [not null]
+  category CommunicationEventTypeCategory [default: 'Order related', not null]
+  email_subject_template varchar(255)
+  email_body_template text
+  email_body_html_template text [note: 'HTML template']
+  sms_template varchar(170) [note: 'SMS template']
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (name) [name: 'communication_communicationeventtype_name_45761eb9']
+  }
+
+  Note: '''Columns from AbstractCommunicationEventType (abstract): code, name, category, email_subject_template, email_body_template, email_body_html_template, sms_template, date_created, date_updated.'''
+}
+
+Table communication_notification {
+  id integer [pk, increment]
+  recipient_id integer [not null]
+  sender_id integer
+  subject varchar(255) [not null]
+  body text [not null]
+  location NotificationLocation [default: 'Inbox', not null]
+  date_sent datetime [not null, note: 'default in Python: now()']
+  date_read datetime
+
+  indexes {
+    (recipient_id) [name: 'communication_notification_recipient_id_2f83b142']
+    (sender_id) [name: 'communication_notification_sender_id_f1fdd4c8']
+  }
+
+  Note: '''Columns from AbstractNotification (abstract): recipient_id, sender_id, subject, body, location, date_sent, date_read.'''
+}
+
+Table partner_partner {
+  id integer [pk, increment]
+  code varchar(128) [unique, not null]
+  name varchar(128) [not null]
+
+  indexes {
+    (name) [name: 'partner_partner_name_caa0c2ee']
+  }
+
+  Note: '''Columns from AbstractPartner (abstract): code, name.'''
+}
+
+Table partner_partneraddress {
+  id integer [pk, increment]
+  code varchar(255) [unique]
+  title PartnerAddressTitle [not null]
+  first_name varchar(255) [not null]
+  last_name varchar(255) [not null]
+  line1 varchar(255) [not null]
+  line2 varchar(255) [not null]
+  line3 varchar(255) [not null]
+  line4 varchar(255) [not null]
+  state varchar(255) [not null]
+  postcode varchar(64) [not null]
+  country_id varchar(2) [not null]
+  search_text text [not null]
+  partner_id bigint [not null]
+
+  indexes {
+    (country_id) [name: 'partner_partneraddress_country_id_02c4f979']
+    (partner_id) [name: 'partner_partneraddress_partner_id_59551b0a']
+  }
+
+  Note: '''Columns from AbstractPartnerAddress (abstract): partner_id.
+
+Columns from AbstractAddress (abstract): code, title, first_name, last_name, line1, line2, line3, line4, state, postcode, country_id, search_text.'''
+}
+
+Table partner_stockrecord {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  partner_id bigint [not null]
+  partner_sku varchar(128) [not null]
+  price_currency varchar(12) [not null, note: 'default in Python: get_default_currency()']
+  price decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  num_in_stock "integer unsigned"
+  num_allocated integer
+  low_stock_threshold "integer unsigned"
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (product_id) [name: 'partner_stockrecord_product_id_62fd9e45']
+    (partner_id) [name: 'partner_stockrecord_partner_id_4155a586']
+    (date_updated) [name: 'partner_stockrecord_date_updated_e6ae5f14']
+    (partner_id, partner_sku) [unique, name: 'partner_stockrecord_partner_id_partner_sku_8441e010_uniq']
+  }
+
+  Note: '''Columns from AbstractStockRecord (abstract): product_id, partner_id, partner_sku, price_currency, price, num_in_stock, num_allocated, low_stock_threshold, date_created, date_updated.'''
+}
+
+Table partner_stockalert {
+  id integer [pk, increment]
+  stockrecord_id bigint [not null]
+  threshold "integer unsigned" [not null]
+  status StockAlertStatus [default: 'Open', not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_closed datetime
+
+  indexes {
+    (stockrecord_id) [name: 'partner_stockalert_stockrecord_id_68ad503a']
+    (date_created) [name: 'partner_stockalert_date_created_832cf043']
+  }
+
+  Note: '''Columns from AbstractStockAlert (abstract): stockrecord_id, threshold, status, date_created, date_closed.'''
+}
+
+Table basket_basket {
+  id integer [pk, increment]
+  owner_id integer
+  status BasketStatus [default: 'Open', not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_merged datetime
+  date_submitted datetime
+
+  indexes {
+    (owner_id) [name: 'basket_basket_owner_id_3a018de5']
+  }
+
+  Note: '''Columns from AbstractBasket (abstract): owner_id, status, date_created, date_merged, date_submitted.'''
+}
+
+Table basket_line {
+  id integer [pk, increment]
+  basket_id bigint [not null]
+  line_reference varchar(128) [not null]
+  product_id bigint [not null]
+  stockrecord_id bigint [not null]
+  quantity "integer unsigned" [default: 1, not null]
+  price_currency varchar(12) [not null, note: 'default in Python: get_default_currency()']
+  price_excl_tax decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  price_incl_tax decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  tax_code varchar(64)
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (basket_id) [name: 'basket_line_basket_id_b615c905']
+    (line_reference) [name: 'basket_line_line_reference_08e91113']
+    (product_id) [name: 'basket_line_product_id_303d743e']
+    (stockrecord_id) [name: 'basket_line_stockrecord_id_7039d8a4']
+    (date_created) [name: 'basket_line_date_created_eb0dfb1b']
+    (date_updated) [name: 'basket_line_date_updated_a74d069d']
+    (basket_id, line_reference) [unique, name: 'basket_line_basket_id_line_reference_8977e974_uniq']
+  }
+
+  Note: '''Columns from AbstractLine (abstract): basket_id, line_reference, product_id, stockrecord_id, quantity, price_currency, price_excl_tax, price_incl_tax, tax_code, date_created, date_updated.'''
+}
+
+Table basket_lineattribute {
+  id integer [pk, increment]
+  line_id bigint [not null]
+  option_id bigint [not null]
+  value text [not null]
+
+  indexes {
+    (line_id) [name: 'basket_lineattribute_line_id_c41e0cdf']
+    (option_id) [name: 'basket_lineattribute_option_id_9387a3f7']
+  }
+
+  Note: '''Columns from AbstractLineAttribute (abstract): line_id, option_id, value.'''
+}
+
+Table payment_transaction {
+  id integer [pk, increment]
+  source_id bigint [not null]
+  txn_type varchar(128) [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  reference varchar(128) [not null]
+  status varchar(128) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (source_id) [name: 'payment_transaction_source_id_c5ac31e8']
+    (date_created) [name: 'payment_transaction_date_created_f887f6bc']
+  }
+
+  Note: '''Columns from AbstractTransaction (abstract): source_id, txn_type, amount, reference, status, date_created.'''
+}
+
+Table payment_source {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  source_type_id bigint [not null]
+  currency varchar(12) [not null, note: 'default in Python: get_default_currency()']
+  amount_allocated decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  amount_debited decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  amount_refunded decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  reference varchar(255) [not null]
+  label varchar(128) [not null]
+
+  indexes {
+    (order_id) [name: 'payment_source_order_id_6b7f2215']
+    (source_type_id) [name: 'payment_source_source_type_id_700828fe']
+  }
+
+  Note: '''Columns from AbstractSource (abstract): order_id, source_type_id, currency, amount_allocated, amount_debited, amount_refunded, reference, label.'''
+}
+
+Table payment_sourcetype {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+  code varchar(128) [unique, not null, note: 'This is used within forms to identify this source type']
+
+  indexes {
+    (name) [name: 'payment_sourcetype_name_a980e862']
+  }
+
+  Note: '''Columns from AbstractSourceType (abstract): name, code.'''
+}
+
+Table payment_bankcard {
+  id integer [pk, increment]
+  user_id integer [not null]
+  card_type varchar(128) [not null]
+  name varchar(255) [not null]
+  number varchar(32) [not null]
+  expiry_date date [not null]
+  partner_reference varchar(255) [not null]
+
+  indexes {
+    (user_id) [name: 'payment_bankcard_user_id_08e1d04c']
+  }
+
+  Note: '''Columns from AbstractBankcard (abstract): user_id, card_type, name, number, expiry_date, partner_reference.'''
+}
+
+Table offer_conditionaloffer {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null, note: 'This is displayed within the customer\'s cart']
+  slug varchar(128) [unique, not null]
+  description text [not null, note: 'This is displayed on the offer browsing page']
+  offer_type ConditionalOfferOfferType [default: 'Site', not null]
+  exclusive bool [default: true, not null, note: 'Exclusive offers cannot be combined on the same items']
+  status varchar(64) [default: 'Open', not null]
+  condition_id bigint [not null]
+  benefit_id bigint [not null]
+  priority integer [default: 0, not null, note: 'The highest priority offers are applied first']
+  start_datetime datetime [note: 'Offers are active from the start date. Leave this empty if the offer has no start date.']
+  end_datetime datetime [note: 'Offers are active until the end date. Leave this empty if the offer has no expiry date.']
+  max_global_applications "integer unsigned" [note: 'The number of times this offer can be used before it is unavailable']
+  max_user_applications "integer unsigned" [note: 'The number of times a single user can use this offer']
+  max_basket_applications "integer unsigned" [note: 'The number of times this offer can be applied to a cart (and order)']
+  max_discount decimal [note: 'When an offer has given more discount to orders than this threshold, then the offer becomes unavailable. declared max_digits=12, decimal_places=2, which the database does not enforce']
+  total_discount decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  num_applications "integer unsigned" [default: 0, not null]
+  num_orders "integer unsigned" [default: 0, not null]
+  redirect_url varchar(200) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (condition_id) [name: 'offer_conditionaloffer_condition_id_e6baa945']
+    (benefit_id) [name: 'offer_conditionaloffer_benefit_id_f43f68b5']
+    (priority) [name: 'offer_conditionaloffer_priority_4c2fc582']
+  }
+
+  Note: '''Columns from AbstractConditionalOffer (abstract): name, slug, description, offer_type, exclusive, status, condition_id, benefit_id, priority, start_datetime, end_datetime, max_global_applications, max_user_applications, max_basket_applications, max_discount, total_discount, num_applications, num_orders, redirect_url, date_created.'''
+}
+
+Table offer_benefit {
+  id integer [pk, increment]
+  range_id bigint
+  type BenefitType [not null]
+  value decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  max_affected_items "integer unsigned" [note: 'Set this to prevent the discount consuming all items within the range that are in the cart.']
+  proxy_class varchar(255) [default: null]
+
+  indexes {
+    (range_id) [name: 'offer_benefit_range_id_ab19c5ab']
+  }
+
+  Note: '''Proxy models: PercentageDiscountBenefit, AbsoluteDiscountBenefit, FixedUnitDiscountBenefit, FixedPriceBenefit, MultibuyDiscountBenefit, ShippingBenefit, ShippingAbsoluteDiscountBenefit, ShippingFixedPriceBenefit, ShippingPercentageDiscountBenefit.
+
+Columns from AbstractBenefit (abstract): range_id, type, value, max_affected_items, proxy_class.'''
+}
+
+Table offer_condition {
+  id integer [pk, increment]
+  range_id bigint
+  type ConditionType [not null]
+  value decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  proxy_class varchar(255) [default: null]
+
+  indexes {
+    (range_id) [name: 'offer_condition_range_id_b023a2aa']
+  }
+
+  Note: '''Proxy models: CountCondition, CoverageCondition, ValueCondition.
+
+Columns from AbstractCondition (abstract): range_id, type, value, proxy_class.'''
+}
+
+Table offer_range {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null]
+  slug varchar(128) [unique, not null]
+  description text [not null]
+  is_public bool [default: false, not null, note: 'Public ranges have a customer-facing page']
+  includes_all_products bool [default: false, not null]
+  proxy_class varchar(255) [unique, default: null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Columns from AbstractRange (abstract): name, slug, description, is_public, includes_all_products, proxy_class, date_created.'''
+}
+
+Table offer_rangeproduct {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  product_id bigint [not null]
+  display_order integer [default: 0, not null]
+
+  indexes {
+    (range_id) [name: 'offer_rangeproduct_range_id_ee358495']
+    (product_id) [name: 'offer_rangeproduct_product_id_723b3ea3']
+    (range_id, product_id) [unique, name: 'offer_rangeproduct_range_id_product_id_c46b1be8_uniq']
+  }
+
+  Note: '''Columns from AbstractRangeProduct (abstract): range_id, product_id, display_order.'''
+}
+
+Table offer_rangeproductfileupload {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  filepath varchar(255) [not null]
+  size "integer unsigned" [not null]
+  uploaded_by_id integer [not null]
+  date_uploaded datetime [not null, note: 'default in Python: now()']
+  upload_type RangeProductFileUploadUploadType [default: 'included', not null]
+  status RangeProductFileUploadStatus [default: 'Pending', not null]
+  error_message varchar(255) [not null]
+  date_processed datetime
+  num_new_skus "integer unsigned"
+  num_unknown_skus "integer unsigned"
+  num_duplicate_skus "integer unsigned"
+
+  indexes {
+    (range_id) [name: 'offer_rangeproductfileupload_range_id_c055ebf8']
+    (uploaded_by_id) [name: 'offer_rangeproductfileupload_uploaded_by_id_c01a3250']
+    (date_uploaded) [name: 'offer_rangeproductfileupload_date_uploaded_f0a4f9ae']
+  }
+
+  Note: '''Columns from AbstractRangeProductFileUpload (abstract): range_id, filepath, size, uploaded_by_id, date_uploaded, upload_type, status, error_message, date_processed, num_new_skus, num_unknown_skus, num_duplicate_skus.'''
+}
+
+Table order_paymenteventquantity {
+  id integer [pk, increment]
+  event_id bigint [not null]
+  line_id bigint [not null]
+  quantity "integer unsigned" [not null]
+
+  indexes {
+    (event_id) [name: 'order_paymenteventquantity_event_id_a540165a']
+    (line_id) [name: 'order_paymenteventquantity_line_id_df44b021']
+    (event_id, line_id) [unique, name: 'order_paymenteventquantity_event_id_line_id_765c5209_uniq']
+  }
+
+  Note: '''A "through" model linking lines to payment events'''
+}
+
+Table order_order {
+  id integer [pk, increment]
+  number varchar(128) [unique, not null]
+  site_id integer
+  basket_id bigint
+  user_id integer
+  billing_address_id bigint
+  currency varchar(12) [not null, note: 'default in Python: get_default_currency()']
+  total_incl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  total_excl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_incl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_excl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_tax_code varchar(64)
+  shipping_address_id bigint
+  shipping_method varchar(128) [not null]
+  shipping_code varchar(128) [default: '', not null]
+  status varchar(100) [not null]
+  guest_email varchar(254) [not null]
+  date_placed datetime [not null]
+  analytics_tracked bool [default: false, not null]
+
+  indexes {
+    (site_id) [name: 'order_order_site_id_e27f3526']
+    (basket_id) [name: 'order_order_basket_id_8b0acbb2']
+    (user_id) [name: 'order_order_user_id_7cf9bc2b']
+    (billing_address_id) [name: 'order_order_billing_address_id_8fe537cf']
+    (shipping_address_id) [name: 'order_order_shipping_address_id_57e64931']
+    (date_placed) [name: 'order_order_date_placed_506a9365']
+  }
+
+  Note: '''Columns from AbstractOrder (abstract): number, site_id, basket_id, user_id, billing_address_id, currency, total_incl_tax, total_excl_tax, shipping_incl_tax, shipping_excl_tax, shipping_tax_code, shipping_address_id, shipping_method, shipping_code, status, guest_email, date_placed, analytics_tracked.'''
+}
+
+Table order_ordernote {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  user_id integer
+  note_type varchar(128) [not null]
+  message text [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'order_ordernote_order_id_7d97583d']
+    (user_id) [name: 'order_ordernote_user_id_48d7a672']
+  }
+
+  Note: '''Columns from AbstractOrderNote (abstract): order_id, user_id, note_type, message, date_created, date_updated.'''
+}
+
+Table order_orderstatuschange {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  old_status varchar(100) [not null]
+  new_status varchar(100) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'order_orderstatuschange_order_id_43efdbe5']
+    (date_created) [name: 'order_orderstatuschange_date_created_a5107b93']
+  }
+
+  Note: '''Columns from AbstractOrderStatusChange (abstract): order_id, old_status, new_status, date_created.'''
+}
+
+Table order_communicationevent {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  event_type_id bigint [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'order_communicationevent_order_id_94e784ac']
+    (event_type_id) [name: 'order_communicationevent_event_type_id_4bc9ee29']
+    (date_created) [name: 'order_communicationevent_date_created_ce404d62']
+  }
+
+  Note: '''Columns from AbstractCommunicationEvent (abstract): order_id, event_type_id, date_created.'''
+}
+
+Table order_shippingaddress {
+  id integer [pk, increment]
+  code varchar(255) [unique]
+  title ShippingAddressTitle [not null]
+  first_name varchar(255) [not null]
+  last_name varchar(255) [not null]
+  line1 varchar(255) [not null]
+  line2 varchar(255) [not null]
+  line3 varchar(255) [not null]
+  line4 varchar(255) [not null]
+  state varchar(255) [not null]
+  postcode varchar(64) [not null]
+  country_id varchar(2) [not null]
+  search_text text [not null]
+  phone_number varchar(128) [not null, note: 'In case we need to call you about your order']
+  notes text [not null, note: 'Tell us anything we should know when delivering your order.']
+
+  indexes {
+    (country_id) [name: 'order_shippingaddress_country_id_29abf9a0']
+  }
+
+  Note: '''Columns from AbstractShippingAddress (abstract): phone_number, notes.
+
+Columns from AbstractAddress (abstract): code, title, first_name, last_name, line1, line2, line3, line4, state, postcode, country_id, search_text.'''
+}
+
+Table order_billingaddress {
+  id integer [pk, increment]
+  code varchar(255) [unique]
+  title BillingAddressTitle [not null]
+  first_name varchar(255) [not null]
+  last_name varchar(255) [not null]
+  line1 varchar(255) [not null]
+  line2 varchar(255) [not null]
+  line3 varchar(255) [not null]
+  line4 varchar(255) [not null]
+  state varchar(255) [not null]
+  postcode varchar(64) [not null]
+  country_id varchar(2) [not null]
+  search_text text [not null]
+
+  indexes {
+    (country_id) [name: 'order_billingaddress_country_id_17f57dca']
+  }
+
+  Note: '''Columns from AbstractAddress (abstract): code, title, first_name, last_name, line1, line2, line3, line4, state, postcode, country_id, search_text.'''
+}
+
+Table order_line {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  partner_id bigint
+  partner_name varchar(128) [not null]
+  partner_sku varchar(128) [not null]
+  partner_line_reference varchar(128) [not null, note: 'This is the item number that the partner uses within their system']
+  partner_line_notes text [not null]
+  stockrecord_id bigint
+  product_id bigint
+  title varchar(255) [not null]
+  upc varchar(128)
+  quantity "integer unsigned" [default: 1, not null]
+  line_price_incl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  line_price_excl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  line_price_before_discounts_incl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  line_price_before_discounts_excl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  unit_price_incl_tax decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  unit_price_excl_tax decimal [note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  tax_code varchar(64)
+  status varchar(255) [not null]
+  num_allocated "integer unsigned" [not null]
+  allocation_cancelled bool [default: false, not null]
+
+  indexes {
+    (order_id) [name: 'order_line_order_id_b9148391']
+    (partner_id) [name: 'order_line_partner_id_258a2fb9']
+    (stockrecord_id) [name: 'order_line_stockrecord_id_1d65aff5']
+    (product_id) [name: 'order_line_product_id_e620902d']
+  }
+
+  Note: '''Columns from AbstractLine (abstract): order_id, partner_id, partner_name, partner_sku, partner_line_reference, partner_line_notes, stockrecord_id, product_id, title, upc, quantity, line_price_incl_tax, line_price_excl_tax, line_price_before_discounts_incl_tax, line_price_before_discounts_excl_tax, unit_price_incl_tax, unit_price_excl_tax, tax_code, status, num_allocated, allocation_cancelled.'''
+}
+
+Table order_lineprice {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  line_id bigint [not null]
+  quantity "integer unsigned" [default: 1, not null]
+  price_incl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  price_excl_tax decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_incl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_excl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  tax_code varchar(64)
+
+  indexes {
+    (order_id) [name: 'order_lineprice_order_id_66792e56']
+    (line_id) [name: 'order_lineprice_line_id_2de52446']
+  }
+
+  Note: '''Columns from AbstractLinePrice (abstract): order_id, line_id, quantity, price_incl_tax, price_excl_tax, shipping_incl_tax, shipping_excl_tax, tax_code.'''
+}
+
+Table order_lineattribute {
+  id integer [pk, increment]
+  line_id bigint [not null]
+  option_id bigint
+  type varchar(128) [not null]
+  value text [not null]
+
+  indexes {
+    (line_id) [name: 'order_lineattribute_line_id_adf6dd87']
+    (option_id) [name: 'order_lineattribute_option_id_b54d597c']
+  }
+
+  Note: '''Columns from AbstractLineAttribute (abstract): line_id, option_id, type, value.'''
+}
+
+Table order_shippingevent {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  event_type_id bigint [not null]
+  notes text [not null, note: 'This could be the dispatch reference, or a tracking number']
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'order_shippingevent_order_id_8c031fb6']
+    (event_type_id) [name: 'order_shippingevent_event_type_id_9f1efb20']
+    (date_created) [name: 'order_shippingevent_date_created_74c4a6fa']
+  }
+
+  Note: '''Columns from AbstractShippingEvent (abstract): order_id, event_type_id, notes, date_created.'''
+}
+
+Table order_shippingeventquantity {
+  id integer [pk, increment]
+  event_id bigint [not null]
+  line_id bigint [not null]
+  quantity "integer unsigned" [not null]
+
+  indexes {
+    (event_id) [name: 'order_shippingeventquantity_event_id_1c7fb9c7']
+    (line_id) [name: 'order_shippingeventquantity_line_id_3b089ee0']
+    (event_id, line_id) [unique, name: 'order_shippingeventquantity_event_id_line_id_91687107_uniq']
+  }
+
+  Note: '''Columns from AbstractShippingEventQuantity (abstract): event_id, line_id, quantity.'''
+}
+
+Table order_shippingeventtype {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  code varchar(128) [unique, not null]
+
+  Note: '''Columns from AbstractShippingEventType (abstract): name, code.'''
+}
+
+Table order_paymentevent {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  reference varchar(128) [not null]
+  event_type_id bigint [not null]
+  shipping_event_id bigint
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'order_paymentevent_order_id_395b3e82']
+    (event_type_id) [name: 'order_paymentevent_event_type_id_568c7161']
+    (shipping_event_id) [name: 'order_paymentevent_shipping_event_id_213dcfb8']
+    (date_created) [name: 'order_paymentevent_date_created_05d8c079']
+  }
+
+  Note: '''Columns from AbstractPaymentEvent (abstract): order_id, amount, reference, event_type_id, shipping_event_id, date_created.'''
+}
+
+Table order_paymenteventtype {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null]
+  code varchar(128) [unique, not null]
+
+  Note: '''Columns from AbstractPaymentEventType (abstract): name, code.'''
+}
+
+Table order_orderdiscount {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  category OrderDiscountCategory [default: 'Basket', not null]
+  offer_id "integer unsigned"
+  offer_name varchar(128) [not null]
+  voucher_id "integer unsigned"
+  voucher_code varchar(128) [not null]
+  frequency "integer unsigned"
+  amount decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  message text [not null]
+
+  indexes {
+    (order_id) [name: 'order_orderdiscount_order_id_bc91e123']
+    (offer_name) [name: 'order_orderdiscount_offer_name_706d6119']
+    (voucher_code) [name: 'order_orderdiscount_voucher_code_6ee4f360']
+  }
+
+  Note: '''Columns from AbstractOrderDiscount (abstract): order_id, category, offer_id, offer_name, voucher_id, voucher_code, frequency, amount, message.'''
+}
+
+Table order_orderlinediscount {
+  id integer [pk, increment]
+  line_id bigint [not null]
+  order_discount_id bigint [not null]
+  is_incl_tax bool [not null]
+  amount decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (line_id) [name: 'order_orderlinediscount_line_id_88fbcd4a']
+    (order_discount_id) [name: 'order_orderlinediscount_order_discount_id_b9dfa715']
+  }
+
+  Note: '''Columns from AbstractOrderLineDiscount (abstract): line_id, order_discount_id, is_incl_tax, amount.'''
+}
+
+Table order_surcharge {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  name varchar(128) [not null]
+  code varchar(128) [not null]
+  incl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  excl_tax decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  tax_code varchar(64)
+
+  indexes {
+    (order_id) [name: 'order_surcharge_order_id_5c0a94f5']
+  }
+
+  Note: '''Columns from AbstractSurcharge (abstract): order_id, name, code, incl_tax, excl_tax, tax_code.'''
+}
+
+Table customer_productalert {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  user_id integer
+  email varchar(254) [not null]
+  key varchar(128) [not null]
+  status ProductAlertStatus [default: 'Active', not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_confirmed datetime
+  date_cancelled datetime
+  date_closed datetime
+
+  indexes {
+    (product_id) [name: 'customer_productalert_product_id_7e529a41']
+    (user_id) [name: 'customer_productalert_user_id_677ad6d6']
+    (email) [name: 'customer_productalert_email_e5f35f45']
+    (key) [name: 'customer_productalert_key_a26f3bdc']
+    (date_created) [name: 'customer_productalert_date_created_00622b1c']
+  }
+
+  Note: '''Columns from AbstractProductAlert (abstract): product_id, user_id, email, key, status, date_created, date_confirmed, date_cancelled, date_closed.'''
+}
+
+Table voucher_voucherset {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null]
+  count "integer unsigned" [not null]
+  code_length integer [default: 12, not null]
+  description text [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  start_datetime datetime [not null]
+  end_datetime datetime [not null]
+
+  indexes {
+    (date_created) [name: 'voucher_voucherset_date_created_3dd68c8e']
+  }
+
+  Note: '''Columns from AbstractVoucherSet (abstract): name, count, code_length, description, date_created, start_datetime, end_datetime.'''
+}
+
+Table voucher_voucher {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null, note: 'This will be shown in the checkout and basket once the coupon is entered']
+  code varchar(128) [unique, not null, note: 'Case insensitive / No spaces allowed']
+  usage VoucherUsage [default: 'Multi-use', not null]
+  start_datetime datetime [not null]
+  end_datetime datetime [not null]
+  num_basket_additions "integer unsigned" [default: 0, not null]
+  num_orders "integer unsigned" [default: 0, not null]
+  total_discount decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  voucher_set_id bigint
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (start_datetime) [name: 'voucher_voucher_start_datetime_bfb7df84']
+    (end_datetime) [name: 'voucher_voucher_end_datetime_db182297']
+    (voucher_set_id) [name: 'voucher_voucher_voucher_set_id_17b96a54']
+    (date_created) [name: 'voucher_voucher_date_created_f3081a03']
+  }
+
+  Note: '''Columns from AbstractVoucher (abstract): name, code, usage, start_datetime, end_datetime, num_basket_additions, num_orders, total_discount, voucher_set_id, date_created.'''
+}
+
+Table voucher_voucherapplication {
+  id integer [pk, increment]
+  voucher_id bigint [not null]
+  user_id integer
+  order_id bigint [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (voucher_id) [name: 'voucher_voucherapplication_voucher_id_5204edb7']
+    (user_id) [name: 'voucher_voucherapplication_user_id_df53a393']
+    (order_id) [name: 'voucher_voucherapplication_order_id_30248a05']
+    (date_created) [name: 'voucher_voucherapplication_date_created_2d9acdaf']
+  }
+
+  Note: '''Columns from AbstractVoucherApplication (abstract): voucher_id, user_id, order_id, date_created.'''
+}
+
+Table wishlists_wishlist {
+  id integer [pk, increment]
+  owner_id integer [not null]
+  name varchar(255) [default: 'Default', not null]
+  key varchar(6) [unique, not null]
+  visibility WishListVisibility [default: 'Private', not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (owner_id) [name: 'wishlists_wishlist_owner_id_d5464c62']
+    (date_created) [name: 'wishlists_wishlist_date_created_c05d5e7f']
+  }
+
+  Note: '''Columns from AbstractWishList (abstract): owner_id, name, key, visibility, date_created.'''
+}
+
+Table wishlists_line {
+  id integer [pk, increment]
+  wishlist_id bigint [not null]
+  product_id bigint
+  quantity "integer unsigned" [default: 1, not null]
+  title varchar(255) [not null]
+
+  indexes {
+    (wishlist_id) [name: 'wishlists_line_wishlist_id_4cffe302']
+    (product_id) [name: 'wishlists_line_product_id_9d6d9b37']
+    (wishlist_id, product_id) [unique, name: 'wishlists_line_wishlist_id_product_id_78f04673_uniq']
+  }
+
+  Note: '''Columns from AbstractLine (abstract): wishlist_id, product_id, quantity, title.'''
+}
+
+Table wishlists_wishlistsharedemail {
+  id integer [pk, increment]
+  wishlist_id bigint [not null]
+  email varchar(254) [not null]
+
+  indexes {
+    (wishlist_id) [name: 'wishlists_wishlistsharedemail_wishlist_id_d7500842']
+  }
+
+  Note: '''Columns from AbstractWishListSharedEmail (abstract): wishlist_id, email.'''
+}
+
+Table thumbnail_kvstore {
+  key varchar(200) [pk]
+  value text [not null]
+}
+
+Table oscar_accounts_accounttype {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  code varchar(128) [unique]
+  name varchar(128) [not null]
+
+  Note: '''Columns from AccountType (abstract): code, name.
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table oscar_accounts_account {
+  id integer [pk, increment]
+  name varchar(128) [unique]
+  description text [note: 'This text is shown to customers during checkout']
+  account_type_id bigint
+  code varchar(128) [unique]
+  primary_user_id integer
+  status varchar(32) [default: 'Open', not null]
+  credit_limit decimal [note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  balance decimal [note: 'default in Python: Decimal(\'0.00\'). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  start_date datetime
+  end_date datetime
+  product_range_id bigint
+  can_be_used_for_non_products bool [default: true, not null, note: 'Whether this account can be used to pay for shipping and other charges']
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (account_type_id) [name: 'oscar_accounts_account_account_type_id_ce445182']
+    (primary_user_id) [name: 'oscar_accounts_account_primary_user_id_95919c13']
+    (product_range_id) [name: 'oscar_accounts_account_product_range_id_b773d7c3']
+  }
+
+  Note: '''Columns from Account (abstract): name, description, account_type_id, code, primary_user_id, status, credit_limit, balance, start_date, end_date, product_range_id, can_be_used_for_non_products, date_created.'''
+}
+
+Table oscar_accounts_transfer {
+  id integer [pk, increment]
+  reference varchar(64) [unique]
+  source_id bigint [not null]
+  destination_id bigint [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  parent_id bigint
+  merchant_reference varchar(128)
+  description varchar(256)
+  user_id integer
+  username varchar(150) [not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (source_id) [name: 'oscar_accounts_transfer_source_id_0f016dfb']
+    (destination_id) [name: 'oscar_accounts_transfer_destination_id_540bd15f']
+    (parent_id) [name: 'oscar_accounts_transfer_parent_id_e1d7ef5b']
+    (user_id) [name: 'oscar_accounts_transfer_user_id_c34c8716']
+  }
+
+  Note: '''Columns from Transfer (abstract): reference, source_id, destination_id, amount, parent_id, merchant_reference, description, user_id, username, date_created.'''
+}
+
+Table oscar_accounts_transaction {
+  id integer [pk, increment]
+  transfer_id bigint [not null]
+  account_id bigint [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  date_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (transfer_id) [name: 'oscar_accounts_transaction_transfer_id_08f32042']
+    (account_id) [name: 'oscar_accounts_transaction_account_id_c9c544ff']
+    (transfer_id, account_id) [unique, name: 'oscar_accounts_transaction_transfer_id_account_id_051060d4_uniq']
+  }
+
+  Note: '''Columns from Transaction (abstract): transfer_id, account_id, amount, date_created.'''
+}
+
+Table oscar_accounts_ipaddressrecord {
+  id integer [pk, increment]
+  ip_address char(39) [unique, not null]
+  total_failures "integer unsigned" [default: 0, not null]
+  consecutive_failures "integer unsigned" [default: 0, not null]
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_last_failure datetime
+
+  Note: '''Columns from IPAddressRecord (abstract): ip_address, total_failures, consecutive_failures, date_created, date_last_failure.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table django_flatpage_sites {
+  id integer [pk, increment]
+  flatpage_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (flatpage_id) [name: 'django_flatpage_sites_flatpage_id_078bbc8b']
+    (site_id) [name: 'django_flatpage_sites_site_id_bfd8ea84']
+    (flatpage_id, site_id) [unique, name: 'django_flatpage_sites_flatpage_id_site_id_0d29d9d1_uniq']
+  }
+}
+
+Ref django_flatpage_sites_flatpage_id_fk: django_flatpage_sites.flatpage_id > django_flatpage.id [delete: cascade]
+
+Ref django_flatpage_sites_site_id_fk: django_flatpage_sites.site_id > django_site.id [delete: cascade]
+
+Ref analytics_productrecord_product_id_fk: analytics_productrecord.product_id - catalogue_product.id [delete: cascade]
+
+Ref analytics_userrecord_user_id_fk: analytics_userrecord.user_id - auth_user.id [delete: cascade]
+
+Ref analytics_userproductview_user_id_fk: analytics_userproductview.user_id > auth_user.id [delete: cascade]
+
+Ref analytics_userproductview_product_id_fk: analytics_userproductview.product_id > catalogue_product.id [delete: cascade]
+
+Ref analytics_usersearch_user_id_fk: analytics_usersearch.user_id > auth_user.id [delete: cascade]
+
+Ref address_useraddress_country_id_fk: address_useraddress.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Ref address_useraddress_user_id_fk: address_useraddress.user_id > auth_user.id [delete: cascade]
+
+Table shipping_orderanditemcharges_countries {
+  id integer [pk, increment]
+  orderanditemcharges_id bigint [not null]
+  country_id varchar(2) [not null]
+
+  indexes {
+    (orderanditemcharges_id) [name: 'shipping_orderanditemcharges_countries_orderanditemcharges_id_bf5bfee9']
+    (country_id) [name: 'shipping_orderanditemcharges_countries_country_id_30387f2e']
+    (orderanditemcharges_id, country_id) [unique, name: 'shipping_orderanditemcharges_countries_orderanditemcharges_id_country_id_9f0c9c8f_uniq']
+  }
+}
+
+Ref shipping_orderanditemcharges_countries_orderanditemcharges_id_fk: shipping_orderanditemcharges_countries.orderanditemcharges_id > shipping_orderanditemcharges.id [delete: cascade]
+
+Ref shipping_orderanditemcharges_countries_country_id_fk: shipping_orderanditemcharges_countries.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Table shipping_weightbased_countries {
+  id integer [pk, increment]
+  weightbased_id bigint [not null]
+  country_id varchar(2) [not null]
+
+  indexes {
+    (weightbased_id) [name: 'shipping_weightbased_countries_weightbased_id_93e3132f']
+    (country_id) [name: 'shipping_weightbased_countries_country_id_06117384']
+    (weightbased_id, country_id) [unique, name: 'shipping_weightbased_countries_weightbased_id_country_id_de8c5e42_uniq']
+  }
+}
+
+Ref shipping_weightbased_countries_weightbased_id_fk: shipping_weightbased_countries.weightbased_id > shipping_weightbased.id [delete: cascade]
+
+Ref shipping_weightbased_countries_country_id_fk: shipping_weightbased_countries.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Ref shipping_weightband_method_id_fk: shipping_weightband.method_id > shipping_weightbased.id [delete: cascade]
+
+Table catalogue_productclass_options {
+  id integer [pk, increment]
+  productclass_id bigint [not null]
+  option_id bigint [not null]
+
+  indexes {
+    (productclass_id) [name: 'catalogue_productclass_options_productclass_id_732df4c8']
+    (option_id) [name: 'catalogue_productclass_options_option_id_b099542c']
+    (productclass_id, option_id) [unique, name: 'catalogue_productclass_options_productclass_id_option_id_2266c635_uniq']
+  }
+}
+
+Ref catalogue_productclass_options_productclass_id_fk: catalogue_productclass_options.productclass_id > catalogue_productclass.id [delete: cascade]
+
+Ref catalogue_productclass_options_option_id_fk: catalogue_productclass_options.option_id > catalogue_option.id [delete: cascade]
+
+Ref catalogue_productcategory_product_id_fk: catalogue_productcategory.product_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_productcategory_category_id_fk: catalogue_productcategory.category_id > catalogue_category.id [delete: cascade]
+
+Ref catalogue_product_parent_id_fk: catalogue_product.parent_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_product_product_class_id_fk: catalogue_product.product_class_id > catalogue_productclass.id [delete: restrict]
+
+Table catalogue_product_product_options {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  option_id bigint [not null]
+
+  indexes {
+    (product_id) [name: 'catalogue_product_product_options_product_id_ad2b46bd']
+    (option_id) [name: 'catalogue_product_product_options_option_id_ff470e13']
+    (product_id, option_id) [unique, name: 'catalogue_product_product_options_product_id_option_id_9b3abb31_uniq']
+  }
+}
+
+Ref catalogue_product_product_options_product_id_fk: catalogue_product_product_options.product_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_product_product_options_option_id_fk: catalogue_product_product_options.option_id > catalogue_option.id [delete: cascade]
+
+Ref catalogue_productrecommendation_primary_id_fk: catalogue_productrecommendation.primary_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_productrecommendation_recommendation_id_fk: catalogue_productrecommendation.recommendation_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_productattribute_product_class_id_fk: catalogue_productattribute.product_class_id > catalogue_productclass.id [delete: cascade]
+
+Ref catalogue_productattribute_option_group_id_fk: catalogue_productattribute.option_group_id > catalogue_attributeoptiongroup.id [delete: cascade]
+
+Ref catalogue_productattributevalue_attribute_id_fk: catalogue_productattributevalue.attribute_id > catalogue_productattribute.id [delete: cascade]
+
+Ref catalogue_productattributevalue_product_id_fk: catalogue_productattributevalue.product_id > catalogue_product.id [delete: cascade]
+
+Ref catalogue_productattributevalue_value_option_id_fk: catalogue_productattributevalue.value_option_id > catalogue_attributeoption.id [delete: cascade]
+
+Ref catalogue_productattributevalue_entity_content_type_id_fk: catalogue_productattributevalue.entity_content_type_id > django_content_type.id [delete: cascade]
+
+Table catalogue_productattributevalue_value_multi_option {
+  id integer [pk, increment]
+  productattributevalue_id bigint [not null]
+  attributeoption_id bigint [not null]
+
+  indexes {
+    (productattributevalue_id) [name: 'catalogue_productattributevalue_value_multi_option_productattributevalue_id_9c7c031e']
+    (attributeoption_id) [name: 'catalogue_productattributevalue_value_multi_option_attributeoption_id_962b600b']
+    (productattributevalue_id, attributeoption_id) [unique, name: 'catalogue_productattributevalue_value_multi_option_productattributevalue_id_attributeoption_id_a1760824_uniq']
+  }
+}
+
+Ref catalogue_productattributevalue_value_multi_option_productattributevalue_id_fk: catalogue_productattributevalue_value_multi_option.productattributevalue_id > catalogue_productattributevalue.id [delete: cascade]
+
+Ref catalogue_productattributevalue_value_multi_option_attributeoption_id_fk: catalogue_productattributevalue_value_multi_option.attributeoption_id > catalogue_attributeoption.id [delete: cascade]
+
+Ref catalogue_attributeoption_group_id_fk: catalogue_attributeoption.group_id > catalogue_attributeoptiongroup.id [delete: cascade]
+
+Ref catalogue_option_option_group_id_fk: catalogue_option.option_group_id > catalogue_attributeoptiongroup.id [delete: cascade]
+
+Ref catalogue_productimage_product_id_fk: catalogue_productimage.product_id > catalogue_product.id [delete: cascade]
+
+Ref reviews_productreview_product_id_fk: reviews_productreview.product_id > catalogue_product.id [delete: cascade]
+
+Ref reviews_productreview_user_id_fk: reviews_productreview.user_id > auth_user.id [delete: cascade]
+
+Ref reviews_vote_review_id_fk: reviews_vote.review_id > reviews_productreview.id [delete: cascade]
+
+Ref reviews_vote_user_id_fk: reviews_vote.user_id > auth_user.id [delete: cascade]
+
+Ref communication_email_user_id_fk: communication_email.user_id > auth_user.id [delete: cascade]
+
+Ref communication_notification_recipient_id_fk: communication_notification.recipient_id > auth_user.id [delete: cascade]
+
+Ref communication_notification_sender_id_fk: communication_notification.sender_id > auth_user.id [delete: cascade]
+
+Table partner_partner_users {
+  id integer [pk, increment]
+  partner_id bigint [not null]
+  user_id integer [not null]
+
+  indexes {
+    (partner_id) [name: 'partner_partner_users_partner_id_1883dfd9']
+    (user_id) [name: 'partner_partner_users_user_id_d75d6e40']
+    (partner_id, user_id) [unique, name: 'partner_partner_users_partner_id_user_id_9e5c0517_uniq']
+  }
+}
+
+Ref partner_partner_users_partner_id_fk: partner_partner_users.partner_id > partner_partner.id [delete: cascade]
+
+Ref partner_partner_users_user_id_fk: partner_partner_users.user_id > auth_user.id [delete: cascade]
+
+Ref partner_partneraddress_country_id_fk: partner_partneraddress.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Ref partner_partneraddress_partner_id_fk: partner_partneraddress.partner_id > partner_partner.id [delete: cascade]
+
+Ref partner_stockrecord_product_id_fk: partner_stockrecord.product_id > catalogue_product.id [delete: cascade]
+
+Ref partner_stockrecord_partner_id_fk: partner_stockrecord.partner_id > partner_partner.id [delete: cascade]
+
+Ref partner_stockalert_stockrecord_id_fk: partner_stockalert.stockrecord_id > partner_stockrecord.id [delete: cascade]
+
+Ref basket_basket_owner_id_fk: basket_basket.owner_id > auth_user.id [delete: cascade]
+
+Table basket_basket_vouchers {
+  id integer [pk, increment]
+  basket_id bigint [not null]
+  voucher_id bigint [not null]
+
+  indexes {
+    (basket_id) [name: 'basket_basket_vouchers_basket_id_f857c2f8']
+    (voucher_id) [name: 'basket_basket_vouchers_voucher_id_c2b66981']
+    (basket_id, voucher_id) [unique, name: 'basket_basket_vouchers_basket_id_voucher_id_0731eee2_uniq']
+  }
+}
+
+Ref basket_basket_vouchers_basket_id_fk: basket_basket_vouchers.basket_id > basket_basket.id [delete: cascade]
+
+Ref basket_basket_vouchers_voucher_id_fk: basket_basket_vouchers.voucher_id > voucher_voucher.id [delete: cascade]
+
+Ref basket_line_basket_id_fk: basket_line.basket_id > basket_basket.id [delete: cascade]
+
+Ref basket_line_product_id_fk: basket_line.product_id > catalogue_product.id [delete: cascade]
+
+Ref basket_line_stockrecord_id_fk: basket_line.stockrecord_id > partner_stockrecord.id [delete: cascade]
+
+Ref basket_lineattribute_line_id_fk: basket_lineattribute.line_id > basket_line.id [delete: cascade]
+
+Ref basket_lineattribute_option_id_fk: basket_lineattribute.option_id > catalogue_option.id [delete: cascade]
+
+Ref payment_transaction_source_id_fk: payment_transaction.source_id > payment_source.id [delete: cascade]
+
+Ref payment_source_order_id_fk: payment_source.order_id > order_order.id [delete: cascade]
+
+Ref payment_source_source_type_id_fk: payment_source.source_type_id > payment_sourcetype.id [delete: cascade]
+
+Ref payment_bankcard_user_id_fk: payment_bankcard.user_id > auth_user.id [delete: cascade]
+
+Ref offer_conditionaloffer_condition_id_fk: offer_conditionaloffer.condition_id > offer_condition.id [delete: cascade]
+
+Ref offer_conditionaloffer_benefit_id_fk: offer_conditionaloffer.benefit_id > offer_benefit.id [delete: cascade]
+
+Table offer_conditionaloffer_combinations {
+  id integer [pk, increment]
+  from_conditionaloffer_id bigint [not null]
+  to_conditionaloffer_id bigint [not null]
+
+  indexes {
+    (from_conditionaloffer_id) [name: 'offer_conditionaloffer_combinations_from_conditionaloffer_id_85c3bd9f']
+    (to_conditionaloffer_id) [name: 'offer_conditionaloffer_combinations_to_conditionaloffer_id_ae993478']
+    (from_conditionaloffer_id, to_conditionaloffer_id) [unique, name: 'offer_conditionaloffer_combinations_from_conditionaloffer_id_to_conditionaloffer_id_2e3e9ffe_uniq']
+  }
+}
+
+Ref offer_conditionaloffer_combinations_from_conditionaloffer_id_fk: offer_conditionaloffer_combinations.from_conditionaloffer_id > offer_conditionaloffer.id [delete: cascade]
+
+Ref offer_conditionaloffer_combinations_to_conditionaloffer_id_fk: offer_conditionaloffer_combinations.to_conditionaloffer_id > offer_conditionaloffer.id [delete: cascade]
+
+Ref offer_benefit_range_id_fk: offer_benefit.range_id > offer_range.id [delete: cascade]
+
+Ref offer_condition_range_id_fk: offer_condition.range_id > offer_range.id [delete: cascade]
+
+Table offer_range_excluded_products {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  product_id bigint [not null]
+
+  indexes {
+    (range_id) [name: 'offer_range_excluded_products_range_id_cce4a032']
+    (product_id) [name: 'offer_range_excluded_products_product_id_78c49bfc']
+    (range_id, product_id) [unique, name: 'offer_range_excluded_products_range_id_product_id_eb1cfe87_uniq']
+  }
+}
+
+Ref offer_range_excluded_products_range_id_fk: offer_range_excluded_products.range_id > offer_range.id [delete: cascade]
+
+Ref offer_range_excluded_products_product_id_fk: offer_range_excluded_products.product_id > catalogue_product.id [delete: cascade]
+
+Table offer_range_classes {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  productclass_id bigint [not null]
+
+  indexes {
+    (range_id) [name: 'offer_range_classes_range_id_7d3e573e']
+    (productclass_id) [name: 'offer_range_classes_productclass_id_6f6de46d']
+    (range_id, productclass_id) [unique, name: 'offer_range_classes_range_id_productclass_id_28eeefae_uniq']
+  }
+}
+
+Ref offer_range_classes_range_id_fk: offer_range_classes.range_id > offer_range.id [delete: cascade]
+
+Ref offer_range_classes_productclass_id_fk: offer_range_classes.productclass_id > catalogue_productclass.id [delete: cascade]
+
+Table offer_range_included_categories {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  category_id bigint [not null]
+
+  indexes {
+    (range_id) [name: 'offer_range_included_categories_range_id_1b616138']
+    (category_id) [name: 'offer_range_included_categories_category_id_c61569a5']
+    (range_id, category_id) [unique, name: 'offer_range_included_categories_range_id_category_id_a661d336_uniq']
+  }
+}
+
+Ref offer_range_included_categories_range_id_fk: offer_range_included_categories.range_id > offer_range.id [delete: cascade]
+
+Ref offer_range_included_categories_category_id_fk: offer_range_included_categories.category_id > catalogue_category.id [delete: cascade]
+
+Table offer_range_excluded_categories {
+  id integer [pk, increment]
+  range_id bigint [not null]
+  category_id bigint [not null]
+
+  indexes {
+    (range_id) [name: 'offer_range_excluded_categories_range_id_6346945d']
+    (category_id) [name: 'offer_range_excluded_categories_category_id_c16fd4f7']
+    (range_id, category_id) [unique, name: 'offer_range_excluded_categories_range_id_category_id_2f84ef27_uniq']
+  }
+}
+
+Ref offer_range_excluded_categories_range_id_fk: offer_range_excluded_categories.range_id > offer_range.id [delete: cascade]
+
+Ref offer_range_excluded_categories_category_id_fk: offer_range_excluded_categories.category_id > catalogue_category.id [delete: cascade]
+
+Ref offer_rangeproduct_range_id_fk: offer_rangeproduct.range_id > offer_range.id [delete: cascade]
+
+Ref offer_rangeproduct_product_id_fk: offer_rangeproduct.product_id > catalogue_product.id [delete: cascade]
+
+Ref offer_rangeproductfileupload_range_id_fk: offer_rangeproductfileupload.range_id > offer_range.id [delete: cascade]
+
+Ref offer_rangeproductfileupload_uploaded_by_id_fk: offer_rangeproductfileupload.uploaded_by_id > auth_user.id [delete: cascade]
+
+Ref order_paymenteventquantity_event_id_fk: order_paymenteventquantity.event_id > order_paymentevent.id [delete: cascade]
+
+Ref order_paymenteventquantity_line_id_fk: order_paymenteventquantity.line_id > order_line.id [delete: cascade]
+
+Ref order_order_site_id_fk: order_order.site_id > django_site.id [delete: set null]
+
+Ref order_order_basket_id_fk: order_order.basket_id > basket_basket.id [delete: set null]
+
+Ref order_order_user_id_fk: order_order.user_id > auth_user.id [delete: set null]
+
+Ref order_order_billing_address_id_fk: order_order.billing_address_id > order_billingaddress.id [delete: set null]
+
+Ref order_order_shipping_address_id_fk: order_order.shipping_address_id > order_shippingaddress.id [delete: set null]
+
+Ref order_ordernote_order_id_fk: order_ordernote.order_id > order_order.id [delete: cascade]
+
+Ref order_ordernote_user_id_fk: order_ordernote.user_id > auth_user.id [delete: cascade]
+
+Ref order_orderstatuschange_order_id_fk: order_orderstatuschange.order_id > order_order.id [delete: cascade]
+
+Ref order_communicationevent_order_id_fk: order_communicationevent.order_id > order_order.id [delete: cascade]
+
+Ref order_communicationevent_event_type_id_fk: order_communicationevent.event_type_id > communication_communicationeventtype.id [delete: cascade]
+
+Ref order_shippingaddress_country_id_fk: order_shippingaddress.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Ref order_billingaddress_country_id_fk: order_billingaddress.country_id > address_country.iso_3166_1_a2 [delete: cascade]
+
+Ref order_line_order_id_fk: order_line.order_id > order_order.id [delete: cascade]
+
+Ref order_line_partner_id_fk: order_line.partner_id > partner_partner.id [delete: set null]
+
+Ref order_line_stockrecord_id_fk: order_line.stockrecord_id > partner_stockrecord.id [delete: set null]
+
+Ref order_line_product_id_fk: order_line.product_id > catalogue_product.id [delete: set null]
+
+Ref order_lineprice_order_id_fk: order_lineprice.order_id > order_order.id [delete: cascade]
+
+Ref order_lineprice_line_id_fk: order_lineprice.line_id > order_line.id [delete: cascade]
+
+Ref order_lineattribute_line_id_fk: order_lineattribute.line_id > order_line.id [delete: cascade]
+
+Ref order_lineattribute_option_id_fk: order_lineattribute.option_id > catalogue_option.id [delete: set null]
+
+Ref order_shippingevent_order_id_fk: order_shippingevent.order_id > order_order.id [delete: cascade]
+
+Ref order_shippingevent_event_type_id_fk: order_shippingevent.event_type_id > order_shippingeventtype.id [delete: cascade]
+
+Ref order_shippingeventquantity_event_id_fk: order_shippingeventquantity.event_id > order_shippingevent.id [delete: cascade]
+
+Ref order_shippingeventquantity_line_id_fk: order_shippingeventquantity.line_id > order_line.id [delete: cascade]
+
+Ref order_paymentevent_order_id_fk: order_paymentevent.order_id > order_order.id [delete: cascade]
+
+Ref order_paymentevent_event_type_id_fk: order_paymentevent.event_type_id > order_paymenteventtype.id [delete: cascade]
+
+Ref order_paymentevent_shipping_event_id_fk: order_paymentevent.shipping_event_id > order_shippingevent.id [delete: cascade]
+
+Ref order_orderdiscount_order_id_fk: order_orderdiscount.order_id > order_order.id [delete: cascade]
+
+Ref order_orderlinediscount_line_id_fk: order_orderlinediscount.line_id > order_line.id [delete: cascade]
+
+Ref order_orderlinediscount_order_discount_id_fk: order_orderlinediscount.order_discount_id > order_orderdiscount.id [delete: cascade]
+
+Ref order_surcharge_order_id_fk: order_surcharge.order_id > order_order.id [delete: cascade]
+
+Ref customer_productalert_product_id_fk: customer_productalert.product_id > catalogue_product.id [delete: cascade]
+
+Ref customer_productalert_user_id_fk: customer_productalert.user_id > auth_user.id [delete: cascade]
+
+Ref voucher_voucher_voucher_set_id_fk: voucher_voucher.voucher_set_id > voucher_voucherset.id [delete: cascade]
+
+Table voucher_voucher_offers {
+  id integer [pk, increment]
+  voucher_id bigint [not null]
+  conditionaloffer_id bigint [not null]
+
+  indexes {
+    (voucher_id) [name: 'voucher_voucher_offers_voucher_id_7f9c575d']
+    (conditionaloffer_id) [name: 'voucher_voucher_offers_conditionaloffer_id_f9682bfb']
+    (voucher_id, conditionaloffer_id) [unique, name: 'voucher_voucher_offers_voucher_id_conditionaloffer_id_01628a7f_uniq']
+  }
+}
+
+Ref voucher_voucher_offers_voucher_id_fk: voucher_voucher_offers.voucher_id > voucher_voucher.id [delete: cascade]
+
+Ref voucher_voucher_offers_conditionaloffer_id_fk: voucher_voucher_offers.conditionaloffer_id > offer_conditionaloffer.id [delete: cascade]
+
+Ref voucher_voucherapplication_voucher_id_fk: voucher_voucherapplication.voucher_id > voucher_voucher.id [delete: cascade]
+
+Ref voucher_voucherapplication_user_id_fk: voucher_voucherapplication.user_id > auth_user.id [delete: cascade]
+
+Ref voucher_voucherapplication_order_id_fk: voucher_voucherapplication.order_id > order_order.id [delete: cascade]
+
+Ref wishlists_wishlist_owner_id_fk: wishlists_wishlist.owner_id > auth_user.id [delete: cascade]
+
+Ref wishlists_line_wishlist_id_fk: wishlists_line.wishlist_id > wishlists_wishlist.id [delete: cascade]
+
+Ref wishlists_line_product_id_fk: wishlists_line.product_id > catalogue_product.id [delete: set null]
+
+Ref wishlists_wishlistsharedemail_wishlist_id_fk: wishlists_wishlistsharedemail.wishlist_id > wishlists_wishlist.id [delete: cascade]
+
+Ref oscar_accounts_account_account_type_id_fk: oscar_accounts_account.account_type_id > oscar_accounts_accounttype.id [delete: cascade]
+
+Ref oscar_accounts_account_primary_user_id_fk: oscar_accounts_account.primary_user_id > auth_user.id [delete: set null]
+
+Ref oscar_accounts_account_product_range_id_fk: oscar_accounts_account.product_range_id > offer_range.id [delete: cascade]
+
+Table oscar_accounts_account_secondary_users {
+  id integer [pk, increment]
+  account_id bigint [not null]
+  user_id integer [not null]
+
+  indexes {
+    (account_id) [name: 'oscar_accounts_account_secondary_users_account_id_5ba1ded6']
+    (user_id) [name: 'oscar_accounts_account_secondary_users_user_id_b4a44a6f']
+    (account_id, user_id) [unique, name: 'oscar_accounts_account_secondary_users_account_id_user_id_87e6566a_uniq']
+  }
+}
+
+Ref oscar_accounts_account_secondary_users_account_id_fk: oscar_accounts_account_secondary_users.account_id > oscar_accounts_account.id [delete: cascade]
+
+Ref oscar_accounts_account_secondary_users_user_id_fk: oscar_accounts_account_secondary_users.user_id > auth_user.id [delete: cascade]
+
+Ref oscar_accounts_transfer_source_id_fk: oscar_accounts_transfer.source_id > oscar_accounts_account.id [delete: cascade]
+
+Ref oscar_accounts_transfer_destination_id_fk: oscar_accounts_transfer.destination_id > oscar_accounts_account.id [delete: cascade]
+
+Ref oscar_accounts_transfer_parent_id_fk: oscar_accounts_transfer.parent_id > oscar_accounts_transfer.id [delete: cascade]
+
+Ref oscar_accounts_transfer_user_id_fk: oscar_accounts_transfer.user_id > auth_user.id [delete: set null]
+
+Ref oscar_accounts_transaction_transfer_id_fk: oscar_accounts_transaction.transfer_id > oscar_accounts_transfer.id [delete: cascade]
+
+Ref oscar_accounts_transaction_account_id_fk: oscar_accounts_transaction.account_id > oscar_accounts_account.id [delete: cascade]

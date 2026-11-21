@@ -1,0 +1,160 @@
+Table inheritance_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+  nickname varchar(30) [not null]
+
+  Note: '''The project\'s own user, in place of auth.User (AUTH_USER_MODEL).
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table inheritance_article {
+  id integer [pk, increment]
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  owner_id bigint [not null]
+  title varchar(100) [not null]
+
+  indexes {
+    (owner_id) [name: 'inheritance_article_owner_id_8253ce6b']
+  }
+
+  Note: '''Columns from Timestamped (abstract): created, modified, owner_id.'''
+}
+
+Table inheritance_video {
+  id integer [pk, increment]
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  owner_id bigint [not null]
+  url varchar(200) [not null]
+
+  indexes {
+    (owner_id) [name: 'inheritance_video_owner_id_a80486d8']
+  }
+
+  Note: '''Columns from Timestamped (abstract): created, modified, owner_id.'''
+}
+
+Table inheritance_place {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+}
+
+Table inheritance_restaurant {
+  place_ptr_id bigint [pk, note: 'parent link: a Restaurant is a Place (multi-table inheritance)']
+  serves_pizza bool [default: false, not null]
+
+  Note: '''Proxy models: OpenRestaurant.'''
+}
+
+Table inheritance_pizzeria {
+  restaurant_ptr_id bigint [pk, note: 'parent link: a Pizzeria is a Restaurant (multi-table inheritance)']
+  oven varchar(20) [not null]
+}
+
+Table inheritance_cafe {
+  place_id bigint [pk, note: 'parent link: a Cafe is a Place (multi-table inheritance)']
+  has_wifi bool [default: true, not null]
+}
+
+Table inheritance_step {
+  id integer [pk, increment]
+  recipe_id bigint [not null]
+  text text [not null]
+  _order integer [not null]
+
+  indexes {
+    (recipe_id) [name: 'inheritance_step_recipe_id_967ccabe']
+  }
+}
+
+Table inheritance_recipe {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Table inheritance_user_groups {
+  id integer [pk, increment]
+  user_id bigint [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'inheritance_user_groups_user_id_d4609eb1']
+    (group_id) [name: 'inheritance_user_groups_group_id_f2bd876e']
+    (user_id, group_id) [unique, name: 'inheritance_user_groups_user_id_group_id_aadf7250_uniq']
+  }
+}
+
+Ref inheritance_user_groups_user_id_fk: inheritance_user_groups.user_id > inheritance_user.id [delete: cascade]
+
+Ref inheritance_user_groups_group_id_fk: inheritance_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table inheritance_user_user_permissions {
+  id integer [pk, increment]
+  user_id bigint [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'inheritance_user_user_permissions_user_id_230d96e8']
+    (permission_id) [name: 'inheritance_user_user_permissions_permission_id_7f1345d9']
+    (user_id, permission_id) [unique, name: 'inheritance_user_user_permissions_user_id_permission_id_8c1f9d93_uniq']
+  }
+}
+
+Ref inheritance_user_user_permissions_user_id_fk: inheritance_user_user_permissions.user_id > inheritance_user.id [delete: cascade]
+
+Ref inheritance_user_user_permissions_permission_id_fk: inheritance_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref inheritance_article_owner_id_fk: inheritance_article.owner_id > inheritance_user.id [delete: cascade]
+
+Ref inheritance_video_owner_id_fk: inheritance_video.owner_id > inheritance_user.id [delete: cascade]
+
+Table inheritance_place_neighbours {
+  id integer [pk, increment]
+  from_place_id bigint [not null]
+  to_place_id bigint [not null]
+
+  indexes {
+    (from_place_id) [name: 'inheritance_place_neighbours_from_place_id_cee82684']
+    (to_place_id) [name: 'inheritance_place_neighbours_to_place_id_7b63a29d']
+    (from_place_id, to_place_id) [unique, name: 'inheritance_place_neighbours_from_place_id_to_place_id_66d01626_uniq']
+  }
+}
+
+Ref inheritance_place_neighbours_from_place_id_fk: inheritance_place_neighbours.from_place_id > inheritance_place.id [delete: cascade]
+
+Ref inheritance_place_neighbours_to_place_id_fk: inheritance_place_neighbours.to_place_id > inheritance_place.id [delete: cascade]
+
+Ref inheritance_restaurant_place_ptr_id_fk: inheritance_restaurant.place_ptr_id - inheritance_place.id [delete: cascade]
+
+Ref inheritance_pizzeria_restaurant_ptr_id_fk: inheritance_pizzeria.restaurant_ptr_id - inheritance_restaurant.place_ptr_id [delete: cascade]
+
+Ref inheritance_cafe_place_id_fk: inheritance_cafe.place_id - inheritance_place.id [delete: cascade]
+
+Ref inheritance_step_recipe_id_fk: inheritance_step.recipe_id > inheritance_recipe.id [delete: cascade]

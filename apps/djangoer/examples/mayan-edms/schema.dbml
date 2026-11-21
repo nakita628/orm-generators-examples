@@ -1,0 +1,3125 @@
+Enum SolarScheduleEvent {
+  "dawn_astronomical"
+  "dawn_civil"
+  "dawn_nautical"
+  "dusk_astronomical"
+  "dusk_civil"
+  "dusk_nautical"
+  "solar_noon"
+  "sunrise"
+  "sunset"
+}
+
+Enum IntervalSchedulePeriod {
+  "days"
+  "hours"
+  "minutes"
+  "seconds"
+  "microseconds"
+}
+
+Enum CrontabScheduleTimezone {
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Asmara"
+  "Africa/Asmera"
+  "Africa/Bamako"
+  "Africa/Bangui"
+  "Africa/Banjul"
+  "Africa/Bissau"
+  "Africa/Blantyre"
+  "Africa/Brazzaville"
+  "Africa/Bujumbura"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Ceuta"
+  "Africa/Conakry"
+  "Africa/Dakar"
+  "Africa/Dar_es_Salaam"
+  "Africa/Djibouti"
+  "Africa/Douala"
+  "Africa/El_Aaiun"
+  "Africa/Freetown"
+  "Africa/Gaborone"
+  "Africa/Harare"
+  "Africa/Johannesburg"
+  "Africa/Juba"
+  "Africa/Kampala"
+  "Africa/Khartoum"
+  "Africa/Kigali"
+  "Africa/Kinshasa"
+  "Africa/Lagos"
+  "Africa/Libreville"
+  "Africa/Lome"
+  "Africa/Luanda"
+  "Africa/Lubumbashi"
+  "Africa/Lusaka"
+  "Africa/Malabo"
+  "Africa/Maputo"
+  "Africa/Maseru"
+  "Africa/Mbabane"
+  "Africa/Mogadishu"
+  "Africa/Monrovia"
+  "Africa/Nairobi"
+  "Africa/Ndjamena"
+  "Africa/Niamey"
+  "Africa/Nouakchott"
+  "Africa/Ouagadougou"
+  "Africa/Porto-Novo"
+  "Africa/Sao_Tome"
+  "Africa/Timbuktu"
+  "Africa/Tripoli"
+  "Africa/Tunis"
+  "Africa/Windhoek"
+  "America/Adak"
+  "America/Anchorage"
+  "America/Anguilla"
+  "America/Antigua"
+  "America/Araguaina"
+  "America/Argentina/Buenos_Aires"
+  "America/Argentina/Catamarca"
+  "America/Argentina/ComodRivadavia"
+  "America/Argentina/Cordoba"
+  "America/Argentina/Jujuy"
+  "America/Argentina/La_Rioja"
+  "America/Argentina/Mendoza"
+  "America/Argentina/Rio_Gallegos"
+  "America/Argentina/Salta"
+  "America/Argentina/San_Juan"
+  "America/Argentina/San_Luis"
+  "America/Argentina/Tucuman"
+  "America/Argentina/Ushuaia"
+  "America/Aruba"
+  "America/Asuncion"
+  "America/Atikokan"
+  "America/Atka"
+  "America/Bahia"
+  "America/Bahia_Banderas"
+  "America/Barbados"
+  "America/Belem"
+  "America/Belize"
+  "America/Blanc-Sablon"
+  "America/Boa_Vista"
+  "America/Bogota"
+  "America/Boise"
+  "America/Buenos_Aires"
+  "America/Cambridge_Bay"
+  "America/Campo_Grande"
+  "America/Cancun"
+  "America/Caracas"
+  "America/Catamarca"
+  "America/Cayenne"
+  "America/Cayman"
+  "America/Chicago"
+  "America/Chihuahua"
+  "America/Ciudad_Juarez"
+  "America/Coral_Harbour"
+  "America/Cordoba"
+  "America/Costa_Rica"
+  "America/Coyhaique"
+  "America/Creston"
+  "America/Cuiaba"
+  "America/Curacao"
+  "America/Danmarkshavn"
+  "America/Dawson"
+  "America/Dawson_Creek"
+  "America/Denver"
+  "America/Detroit"
+  "America/Dominica"
+  "America/Edmonton"
+  "America/Eirunepe"
+  "America/El_Salvador"
+  "America/Ensenada"
+  "America/Fort_Nelson"
+  "America/Fort_Wayne"
+  "America/Fortaleza"
+  "America/Glace_Bay"
+  "America/Godthab"
+  "America/Goose_Bay"
+  "America/Grand_Turk"
+  "America/Grenada"
+  "America/Guadeloupe"
+  "America/Guatemala"
+  "America/Guayaquil"
+  "America/Guyana"
+  "America/Halifax"
+  "America/Havana"
+  "America/Hermosillo"
+  "America/Indiana/Indianapolis"
+  "America/Indiana/Knox"
+  "America/Indiana/Marengo"
+  "America/Indiana/Petersburg"
+  "America/Indiana/Tell_City"
+  "America/Indiana/Vevay"
+  "America/Indiana/Vincennes"
+  "America/Indiana/Winamac"
+  "America/Indianapolis"
+  "America/Inuvik"
+  "America/Iqaluit"
+  "America/Jamaica"
+  "America/Jujuy"
+  "America/Juneau"
+  "America/Kentucky/Louisville"
+  "America/Kentucky/Monticello"
+  "America/Knox_IN"
+  "America/Kralendijk"
+  "America/La_Paz"
+  "America/Lima"
+  "America/Los_Angeles"
+  "America/Louisville"
+  "America/Lower_Princes"
+  "America/Maceio"
+  "America/Managua"
+  "America/Manaus"
+  "America/Marigot"
+  "America/Martinique"
+  "America/Matamoros"
+  "America/Mazatlan"
+  "America/Mendoza"
+  "America/Menominee"
+  "America/Merida"
+  "America/Metlakatla"
+  "America/Mexico_City"
+  "America/Miquelon"
+  "America/Moncton"
+  "America/Monterrey"
+  "America/Montevideo"
+  "America/Montreal"
+  "America/Montserrat"
+  "America/Nassau"
+  "America/New_York"
+  "America/Nipigon"
+  "America/Nome"
+  "America/Noronha"
+  "America/North_Dakota/Beulah"
+  "America/North_Dakota/Center"
+  "America/North_Dakota/New_Salem"
+  "America/Nuuk"
+  "America/Ojinaga"
+  "America/Panama"
+  "America/Pangnirtung"
+  "America/Paramaribo"
+  "America/Phoenix"
+  "America/Port-au-Prince"
+  "America/Port_of_Spain"
+  "America/Porto_Acre"
+  "America/Porto_Velho"
+  "America/Puerto_Rico"
+  "America/Punta_Arenas"
+  "America/Rainy_River"
+  "America/Rankin_Inlet"
+  "America/Recife"
+  "America/Regina"
+  "America/Resolute"
+  "America/Rio_Branco"
+  "America/Rosario"
+  "America/Santa_Isabel"
+  "America/Santarem"
+  "America/Santiago"
+  "America/Santo_Domingo"
+  "America/Sao_Paulo"
+  "America/Scoresbysund"
+  "America/Shiprock"
+  "America/Sitka"
+  "America/St_Barthelemy"
+  "America/St_Johns"
+  "America/St_Kitts"
+  "America/St_Lucia"
+  "America/St_Thomas"
+  "America/St_Vincent"
+  "America/Swift_Current"
+  "America/Tegucigalpa"
+  "America/Thule"
+  "America/Thunder_Bay"
+  "America/Tijuana"
+  "America/Toronto"
+  "America/Tortola"
+  "America/Vancouver"
+  "America/Virgin"
+  "America/Whitehorse"
+  "America/Winnipeg"
+  "America/Yakutat"
+  "America/Yellowknife"
+  "Antarctica/Casey"
+  "Antarctica/Davis"
+  "Antarctica/DumontDUrville"
+  "Antarctica/Macquarie"
+  "Antarctica/Mawson"
+  "Antarctica/McMurdo"
+  "Antarctica/Palmer"
+  "Antarctica/Rothera"
+  "Antarctica/South_Pole"
+  "Antarctica/Syowa"
+  "Antarctica/Troll"
+  "Antarctica/Vostok"
+  "Arctic/Longyearbyen"
+  "Asia/Aden"
+  "Asia/Almaty"
+  "Asia/Amman"
+  "Asia/Anadyr"
+  "Asia/Aqtau"
+  "Asia/Aqtobe"
+  "Asia/Ashgabat"
+  "Asia/Ashkhabad"
+  "Asia/Atyrau"
+  "Asia/Baghdad"
+  "Asia/Bahrain"
+  "Asia/Baku"
+  "Asia/Bangkok"
+  "Asia/Barnaul"
+  "Asia/Beirut"
+  "Asia/Bishkek"
+  "Asia/Brunei"
+  "Asia/Calcutta"
+  "Asia/Chita"
+  "Asia/Choibalsan"
+  "Asia/Chongqing"
+  "Asia/Chungking"
+  "Asia/Colombo"
+  "Asia/Dacca"
+  "Asia/Damascus"
+  "Asia/Dhaka"
+  "Asia/Dili"
+  "Asia/Dubai"
+  "Asia/Dushanbe"
+  "Asia/Famagusta"
+  "Asia/Gaza"
+  "Asia/Harbin"
+  "Asia/Hebron"
+  "Asia/Ho_Chi_Minh"
+  "Asia/Hong_Kong"
+  "Asia/Hovd"
+  "Asia/Irkutsk"
+  "Asia/Istanbul"
+  "Asia/Jakarta"
+  "Asia/Jayapura"
+  "Asia/Jerusalem"
+  "Asia/Kabul"
+  "Asia/Kamchatka"
+  "Asia/Karachi"
+  "Asia/Kashgar"
+  "Asia/Kathmandu"
+  "Asia/Katmandu"
+  "Asia/Khandyga"
+  "Asia/Kolkata"
+  "Asia/Krasnoyarsk"
+  "Asia/Kuala_Lumpur"
+  "Asia/Kuching"
+  "Asia/Kuwait"
+  "Asia/Macao"
+  "Asia/Macau"
+  "Asia/Magadan"
+  "Asia/Makassar"
+  "Asia/Manila"
+  "Asia/Muscat"
+  "Asia/Nicosia"
+  "Asia/Novokuznetsk"
+  "Asia/Novosibirsk"
+  "Asia/Omsk"
+  "Asia/Oral"
+  "Asia/Phnom_Penh"
+  "Asia/Pontianak"
+  "Asia/Pyongyang"
+  "Asia/Qatar"
+  "Asia/Qostanay"
+  "Asia/Qyzylorda"
+  "Asia/Rangoon"
+  "Asia/Riyadh"
+  "Asia/Saigon"
+  "Asia/Sakhalin"
+  "Asia/Samarkand"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Srednekolymsk"
+  "Asia/Taipei"
+  "Asia/Tashkent"
+  "Asia/Tbilisi"
+  "Asia/Tehran"
+  "Asia/Tel_Aviv"
+  "Asia/Thimbu"
+  "Asia/Thimphu"
+  "Asia/Tokyo"
+  "Asia/Tomsk"
+  "Asia/Ujung_Pandang"
+  "Asia/Ulaanbaatar"
+  "Asia/Ulan_Bator"
+  "Asia/Urumqi"
+  "Asia/Ust-Nera"
+  "Asia/Vientiane"
+  "Asia/Vladivostok"
+  "Asia/Yakutsk"
+  "Asia/Yangon"
+  "Asia/Yekaterinburg"
+  "Asia/Yerevan"
+  "Atlantic/Azores"
+  "Atlantic/Bermuda"
+  "Atlantic/Canary"
+  "Atlantic/Cape_Verde"
+  "Atlantic/Faeroe"
+  "Atlantic/Faroe"
+  "Atlantic/Jan_Mayen"
+  "Atlantic/Madeira"
+  "Atlantic/Reykjavik"
+  "Atlantic/South_Georgia"
+  "Atlantic/St_Helena"
+  "Atlantic/Stanley"
+  "Australia/ACT"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Broken_Hill"
+  "Australia/Canberra"
+  "Australia/Currie"
+  "Australia/Darwin"
+  "Australia/Eucla"
+  "Australia/Hobart"
+  "Australia/LHI"
+  "Australia/Lindeman"
+  "Australia/Lord_Howe"
+  "Australia/Melbourne"
+  "Australia/NSW"
+  "Australia/North"
+  "Australia/Perth"
+  "Australia/Queensland"
+  "Australia/South"
+  "Australia/Sydney"
+  "Australia/Tasmania"
+  "Australia/Victoria"
+  "Australia/West"
+  "Australia/Yancowinna"
+  "Brazil/Acre"
+  "Brazil/DeNoronha"
+  "Brazil/East"
+  "Brazil/West"
+  "CET"
+  "CST6CDT"
+  "Canada/Atlantic"
+  "Canada/Central"
+  "Canada/Eastern"
+  "Canada/Mountain"
+  "Canada/Newfoundland"
+  "Canada/Pacific"
+  "Canada/Saskatchewan"
+  "Canada/Yukon"
+  "Chile/Continental"
+  "Chile/EasterIsland"
+  "Cuba"
+  "EET"
+  "EST"
+  "EST5EDT"
+  "Egypt"
+  "Eire"
+  "Etc/GMT"
+  "Etc/GMT-0"
+  "Etc/GMT-1"
+  "Etc/GMT-10"
+  "Etc/GMT-11"
+  "Etc/GMT-12"
+  "Etc/GMT-13"
+  "Etc/GMT-14"
+  "Etc/GMT-2"
+  "Etc/GMT-3"
+  "Etc/GMT-4"
+  "Etc/GMT-5"
+  "Etc/GMT-6"
+  "Etc/GMT-7"
+  "Etc/GMT-8"
+  "Etc/GMT-9"
+  "Etc/GMT+0"
+  "Etc/GMT+1"
+  "Etc/GMT+10"
+  "Etc/GMT+11"
+  "Etc/GMT+12"
+  "Etc/GMT+2"
+  "Etc/GMT+3"
+  "Etc/GMT+4"
+  "Etc/GMT+5"
+  "Etc/GMT+6"
+  "Etc/GMT+7"
+  "Etc/GMT+8"
+  "Etc/GMT+9"
+  "Etc/GMT0"
+  "Etc/Greenwich"
+  "Etc/UCT"
+  "Etc/UTC"
+  "Etc/Universal"
+  "Etc/Zulu"
+  "Europe/Amsterdam"
+  "Europe/Andorra"
+  "Europe/Astrakhan"
+  "Europe/Athens"
+  "Europe/Belfast"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Bratislava"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Busingen"
+  "Europe/Chisinau"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Gibraltar"
+  "Europe/Guernsey"
+  "Europe/Helsinki"
+  "Europe/Isle_of_Man"
+  "Europe/Istanbul"
+  "Europe/Jersey"
+  "Europe/Kaliningrad"
+  "Europe/Kiev"
+  "Europe/Kirov"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Malta"
+  "Europe/Mariehamn"
+  "Europe/Minsk"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Nicosia"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Podgorica"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Samara"
+  "Europe/San_Marino"
+  "Europe/Sarajevo"
+  "Europe/Saratov"
+  "Europe/Simferopol"
+  "Europe/Skopje"
+  "Europe/Sofia"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Tirane"
+  "Europe/Tiraspol"
+  "Europe/Ulyanovsk"
+  "Europe/Uzhgorod"
+  "Europe/Vaduz"
+  "Europe/Vatican"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Volgograd"
+  "Europe/Warsaw"
+  "Europe/Zagreb"
+  "Europe/Zaporozhye"
+  "Europe/Zurich"
+  "GB"
+  "GB-Eire"
+  "GMT"
+  "GMT-0"
+  "GMT+0"
+  "GMT0"
+  "Greenwich"
+  "HST"
+  "Hongkong"
+  "Iceland"
+  "Indian/Antananarivo"
+  "Indian/Chagos"
+  "Indian/Christmas"
+  "Indian/Cocos"
+  "Indian/Comoro"
+  "Indian/Kerguelen"
+  "Indian/Mahe"
+  "Indian/Maldives"
+  "Indian/Mauritius"
+  "Indian/Mayotte"
+  "Indian/Reunion"
+  "Iran"
+  "Israel"
+  "Jamaica"
+  "Japan"
+  "Kwajalein"
+  "Libya"
+  "MET"
+  "MST"
+  "MST7MDT"
+  "Mexico/BajaNorte"
+  "Mexico/BajaSur"
+  "Mexico/General"
+  "NZ"
+  "NZ-CHAT"
+  "Navajo"
+  "PRC"
+  "PST8PDT"
+  "Pacific/Apia"
+  "Pacific/Auckland"
+  "Pacific/Bougainville"
+  "Pacific/Chatham"
+  "Pacific/Chuuk"
+  "Pacific/Easter"
+  "Pacific/Efate"
+  "Pacific/Enderbury"
+  "Pacific/Fakaofo"
+  "Pacific/Fiji"
+  "Pacific/Funafuti"
+  "Pacific/Galapagos"
+  "Pacific/Gambier"
+  "Pacific/Guadalcanal"
+  "Pacific/Guam"
+  "Pacific/Honolulu"
+  "Pacific/Johnston"
+  "Pacific/Kanton"
+  "Pacific/Kiritimati"
+  "Pacific/Kosrae"
+  "Pacific/Kwajalein"
+  "Pacific/Majuro"
+  "Pacific/Marquesas"
+  "Pacific/Midway"
+  "Pacific/Nauru"
+  "Pacific/Niue"
+  "Pacific/Norfolk"
+  "Pacific/Noumea"
+  "Pacific/Pago_Pago"
+  "Pacific/Palau"
+  "Pacific/Pitcairn"
+  "Pacific/Pohnpei"
+  "Pacific/Ponape"
+  "Pacific/Port_Moresby"
+  "Pacific/Rarotonga"
+  "Pacific/Saipan"
+  "Pacific/Samoa"
+  "Pacific/Tahiti"
+  "Pacific/Tarawa"
+  "Pacific/Tongatapu"
+  "Pacific/Truk"
+  "Pacific/Wake"
+  "Pacific/Wallis"
+  "Pacific/Yap"
+  "Poland"
+  "Portugal"
+  "ROC"
+  "ROK"
+  "Singapore"
+  "Turkey"
+  "UCT"
+  "US/Alaska"
+  "US/Aleutian"
+  "US/Arizona"
+  "US/Central"
+  "US/East-Indiana"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Indiana-Starke"
+  "US/Michigan"
+  "US/Mountain"
+  "US/Pacific"
+  "US/Samoa"
+  "UTC"
+  "Universal"
+  "W-SU"
+  "WET"
+  "Zulu"
+  "localtime"
+}
+
+Enum LoginAttemptResult {
+  "failure"
+  "success"
+}
+
+Enum LoginAttemptSource {
+  "api"
+  "session"
+}
+
+Enum KeyKeyType {
+  "pub"
+  "sec"
+}
+
+Enum UserLocaleProfileTimezone {
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Asmara"
+  "Africa/Bamako"
+  "Africa/Bangui"
+  "Africa/Banjul"
+  "Africa/Bissau"
+  "Africa/Blantyre"
+  "Africa/Brazzaville"
+  "Africa/Bujumbura"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Ceuta"
+  "Africa/Conakry"
+  "Africa/Dakar"
+  "Africa/Dar_es_Salaam"
+  "Africa/Djibouti"
+  "Africa/Douala"
+  "Africa/El_Aaiun"
+  "Africa/Freetown"
+  "Africa/Gaborone"
+  "Africa/Harare"
+  "Africa/Johannesburg"
+  "Africa/Juba"
+  "Africa/Kampala"
+  "Africa/Khartoum"
+  "Africa/Kigali"
+  "Africa/Kinshasa"
+  "Africa/Lagos"
+  "Africa/Libreville"
+  "Africa/Lome"
+  "Africa/Luanda"
+  "Africa/Lubumbashi"
+  "Africa/Lusaka"
+  "Africa/Malabo"
+  "Africa/Maputo"
+  "Africa/Maseru"
+  "Africa/Mbabane"
+  "Africa/Mogadishu"
+  "Africa/Monrovia"
+  "Africa/Nairobi"
+  "Africa/Ndjamena"
+  "Africa/Niamey"
+  "Africa/Nouakchott"
+  "Africa/Ouagadougou"
+  "Africa/Porto-Novo"
+  "Africa/Sao_Tome"
+  "Africa/Tripoli"
+  "Africa/Tunis"
+  "Africa/Windhoek"
+  "America/Adak"
+  "America/Anchorage"
+  "America/Anguilla"
+  "America/Antigua"
+  "America/Araguaina"
+  "America/Argentina/Buenos_Aires"
+  "America/Argentina/Catamarca"
+  "America/Argentina/Cordoba"
+  "America/Argentina/Jujuy"
+  "America/Argentina/La_Rioja"
+  "America/Argentina/Mendoza"
+  "America/Argentina/Rio_Gallegos"
+  "America/Argentina/Salta"
+  "America/Argentina/San_Juan"
+  "America/Argentina/San_Luis"
+  "America/Argentina/Tucuman"
+  "America/Argentina/Ushuaia"
+  "America/Aruba"
+  "America/Asuncion"
+  "America/Atikokan"
+  "America/Bahia"
+  "America/Bahia_Banderas"
+  "America/Barbados"
+  "America/Belem"
+  "America/Belize"
+  "America/Blanc-Sablon"
+  "America/Boa_Vista"
+  "America/Bogota"
+  "America/Boise"
+  "America/Cambridge_Bay"
+  "America/Campo_Grande"
+  "America/Cancun"
+  "America/Caracas"
+  "America/Cayenne"
+  "America/Cayman"
+  "America/Chicago"
+  "America/Chihuahua"
+  "America/Ciudad_Juarez"
+  "America/Costa_Rica"
+  "America/Coyhaique"
+  "America/Creston"
+  "America/Cuiaba"
+  "America/Curacao"
+  "America/Danmarkshavn"
+  "America/Dawson"
+  "America/Dawson_Creek"
+  "America/Denver"
+  "America/Detroit"
+  "America/Dominica"
+  "America/Edmonton"
+  "America/Eirunepe"
+  "America/El_Salvador"
+  "America/Fort_Nelson"
+  "America/Fortaleza"
+  "America/Glace_Bay"
+  "America/Goose_Bay"
+  "America/Grand_Turk"
+  "America/Grenada"
+  "America/Guadeloupe"
+  "America/Guatemala"
+  "America/Guayaquil"
+  "America/Guyana"
+  "America/Halifax"
+  "America/Havana"
+  "America/Hermosillo"
+  "America/Indiana/Indianapolis"
+  "America/Indiana/Knox"
+  "America/Indiana/Marengo"
+  "America/Indiana/Petersburg"
+  "America/Indiana/Tell_City"
+  "America/Indiana/Vevay"
+  "America/Indiana/Vincennes"
+  "America/Indiana/Winamac"
+  "America/Inuvik"
+  "America/Iqaluit"
+  "America/Jamaica"
+  "America/Juneau"
+  "America/Kentucky/Louisville"
+  "America/Kentucky/Monticello"
+  "America/Kralendijk"
+  "America/La_Paz"
+  "America/Lima"
+  "America/Los_Angeles"
+  "America/Lower_Princes"
+  "America/Maceio"
+  "America/Managua"
+  "America/Manaus"
+  "America/Marigot"
+  "America/Martinique"
+  "America/Matamoros"
+  "America/Mazatlan"
+  "America/Menominee"
+  "America/Merida"
+  "America/Metlakatla"
+  "America/Mexico_City"
+  "America/Miquelon"
+  "America/Moncton"
+  "America/Monterrey"
+  "America/Montevideo"
+  "America/Montserrat"
+  "America/Nassau"
+  "America/New_York"
+  "America/Nome"
+  "America/Noronha"
+  "America/North_Dakota/Beulah"
+  "America/North_Dakota/Center"
+  "America/North_Dakota/New_Salem"
+  "America/Nuuk"
+  "America/Ojinaga"
+  "America/Panama"
+  "America/Paramaribo"
+  "America/Phoenix"
+  "America/Port-au-Prince"
+  "America/Port_of_Spain"
+  "America/Porto_Velho"
+  "America/Puerto_Rico"
+  "America/Punta_Arenas"
+  "America/Rankin_Inlet"
+  "America/Recife"
+  "America/Regina"
+  "America/Resolute"
+  "America/Rio_Branco"
+  "America/Santarem"
+  "America/Santiago"
+  "America/Santo_Domingo"
+  "America/Sao_Paulo"
+  "America/Scoresbysund"
+  "America/Sitka"
+  "America/St_Barthelemy"
+  "America/St_Johns"
+  "America/St_Kitts"
+  "America/St_Lucia"
+  "America/St_Thomas"
+  "America/St_Vincent"
+  "America/Swift_Current"
+  "America/Tegucigalpa"
+  "America/Thule"
+  "America/Tijuana"
+  "America/Toronto"
+  "America/Tortola"
+  "America/Vancouver"
+  "America/Whitehorse"
+  "America/Winnipeg"
+  "America/Yakutat"
+  "Antarctica/Casey"
+  "Antarctica/Davis"
+  "Antarctica/DumontDUrville"
+  "Antarctica/Macquarie"
+  "Antarctica/Mawson"
+  "Antarctica/McMurdo"
+  "Antarctica/Palmer"
+  "Antarctica/Rothera"
+  "Antarctica/Syowa"
+  "Antarctica/Troll"
+  "Antarctica/Vostok"
+  "Arctic/Longyearbyen"
+  "Asia/Aden"
+  "Asia/Almaty"
+  "Asia/Amman"
+  "Asia/Anadyr"
+  "Asia/Aqtau"
+  "Asia/Aqtobe"
+  "Asia/Ashgabat"
+  "Asia/Atyrau"
+  "Asia/Baghdad"
+  "Asia/Bahrain"
+  "Asia/Baku"
+  "Asia/Bangkok"
+  "Asia/Barnaul"
+  "Asia/Beirut"
+  "Asia/Bishkek"
+  "Asia/Brunei"
+  "Asia/Chita"
+  "Asia/Colombo"
+  "Asia/Damascus"
+  "Asia/Dhaka"
+  "Asia/Dili"
+  "Asia/Dubai"
+  "Asia/Dushanbe"
+  "Asia/Famagusta"
+  "Asia/Gaza"
+  "Asia/Hebron"
+  "Asia/Ho_Chi_Minh"
+  "Asia/Hong_Kong"
+  "Asia/Hovd"
+  "Asia/Irkutsk"
+  "Asia/Jakarta"
+  "Asia/Jayapura"
+  "Asia/Jerusalem"
+  "Asia/Kabul"
+  "Asia/Kamchatka"
+  "Asia/Karachi"
+  "Asia/Kathmandu"
+  "Asia/Khandyga"
+  "Asia/Kolkata"
+  "Asia/Krasnoyarsk"
+  "Asia/Kuala_Lumpur"
+  "Asia/Kuching"
+  "Asia/Kuwait"
+  "Asia/Macau"
+  "Asia/Magadan"
+  "Asia/Makassar"
+  "Asia/Manila"
+  "Asia/Muscat"
+  "Asia/Nicosia"
+  "Asia/Novokuznetsk"
+  "Asia/Novosibirsk"
+  "Asia/Omsk"
+  "Asia/Oral"
+  "Asia/Phnom_Penh"
+  "Asia/Pontianak"
+  "Asia/Pyongyang"
+  "Asia/Qatar"
+  "Asia/Qostanay"
+  "Asia/Qyzylorda"
+  "Asia/Riyadh"
+  "Asia/Sakhalin"
+  "Asia/Samarkand"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Srednekolymsk"
+  "Asia/Taipei"
+  "Asia/Tashkent"
+  "Asia/Tbilisi"
+  "Asia/Tehran"
+  "Asia/Thimphu"
+  "Asia/Tokyo"
+  "Asia/Tomsk"
+  "Asia/Ulaanbaatar"
+  "Asia/Urumqi"
+  "Asia/Ust-Nera"
+  "Asia/Vientiane"
+  "Asia/Vladivostok"
+  "Asia/Yakutsk"
+  "Asia/Yangon"
+  "Asia/Yekaterinburg"
+  "Asia/Yerevan"
+  "Atlantic/Azores"
+  "Atlantic/Bermuda"
+  "Atlantic/Canary"
+  "Atlantic/Cape_Verde"
+  "Atlantic/Faroe"
+  "Atlantic/Madeira"
+  "Atlantic/Reykjavik"
+  "Atlantic/South_Georgia"
+  "Atlantic/St_Helena"
+  "Atlantic/Stanley"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Broken_Hill"
+  "Australia/Darwin"
+  "Australia/Eucla"
+  "Australia/Hobart"
+  "Australia/Lindeman"
+  "Australia/Lord_Howe"
+  "Australia/Melbourne"
+  "Australia/Perth"
+  "Australia/Sydney"
+  "Canada/Atlantic"
+  "Canada/Central"
+  "Canada/Eastern"
+  "Canada/Mountain"
+  "Canada/Newfoundland"
+  "Canada/Pacific"
+  "Europe/Amsterdam"
+  "Europe/Andorra"
+  "Europe/Astrakhan"
+  "Europe/Athens"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Bratislava"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Busingen"
+  "Europe/Chisinau"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Gibraltar"
+  "Europe/Guernsey"
+  "Europe/Helsinki"
+  "Europe/Isle_of_Man"
+  "Europe/Istanbul"
+  "Europe/Jersey"
+  "Europe/Kaliningrad"
+  "Europe/Kirov"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Malta"
+  "Europe/Mariehamn"
+  "Europe/Minsk"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Podgorica"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Samara"
+  "Europe/San_Marino"
+  "Europe/Sarajevo"
+  "Europe/Saratov"
+  "Europe/Simferopol"
+  "Europe/Skopje"
+  "Europe/Sofia"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Tirane"
+  "Europe/Ulyanovsk"
+  "Europe/Vaduz"
+  "Europe/Vatican"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Volgograd"
+  "Europe/Warsaw"
+  "Europe/Zagreb"
+  "Europe/Zurich"
+  "GMT"
+  "Indian/Antananarivo"
+  "Indian/Chagos"
+  "Indian/Christmas"
+  "Indian/Cocos"
+  "Indian/Comoro"
+  "Indian/Kerguelen"
+  "Indian/Mahe"
+  "Indian/Maldives"
+  "Indian/Mauritius"
+  "Indian/Mayotte"
+  "Indian/Reunion"
+  "Pacific/Apia"
+  "Pacific/Auckland"
+  "Pacific/Bougainville"
+  "Pacific/Chatham"
+  "Pacific/Chuuk"
+  "Pacific/Easter"
+  "Pacific/Efate"
+  "Pacific/Fakaofo"
+  "Pacific/Fiji"
+  "Pacific/Funafuti"
+  "Pacific/Galapagos"
+  "Pacific/Gambier"
+  "Pacific/Guadalcanal"
+  "Pacific/Guam"
+  "Pacific/Honolulu"
+  "Pacific/Kanton"
+  "Pacific/Kiritimati"
+  "Pacific/Kosrae"
+  "Pacific/Kwajalein"
+  "Pacific/Majuro"
+  "Pacific/Marquesas"
+  "Pacific/Midway"
+  "Pacific/Nauru"
+  "Pacific/Niue"
+  "Pacific/Norfolk"
+  "Pacific/Noumea"
+  "Pacific/Pago_Pago"
+  "Pacific/Palau"
+  "Pacific/Pitcairn"
+  "Pacific/Pohnpei"
+  "Pacific/Port_Moresby"
+  "Pacific/Rarotonga"
+  "Pacific/Saipan"
+  "Pacific/Tahiti"
+  "Pacific/Tarawa"
+  "Pacific/Tongatapu"
+  "Pacific/Wake"
+  "Pacific/Wallis"
+  "US/Alaska"
+  "US/Arizona"
+  "US/Central"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Mountain"
+  "US/Pacific"
+  "UTC"
+}
+
+Enum UserLocaleProfileLanguage {
+  "sq"
+  "ar"
+  "ar-eg"
+  "hy-am"
+  "bs"
+  "bg"
+  "bg-bg"
+  "ca"
+  "zh-cn"
+  "zh-hans"
+  "zh-tw"
+  "hr"
+  "cs"
+  "da"
+  "nl"
+  "en"
+  "fr"
+  "fr-fr"
+  "de"
+  "de-at"
+  "de-de"
+  "el"
+  "el-gr"
+  "he-il"
+  "hu"
+  "hu-hu"
+  "hu-sk"
+  "id"
+  "it"
+  "ja"
+  "lv"
+  "mn-mn"
+  "fa"
+  "fa-ir"
+  "pl"
+  "pt"
+  "pt-br"
+  "ro-ro"
+  "ru"
+  "ru-ru"
+  "sl"
+  "es"
+  "es-ec"
+  "es-mx"
+  "es-pr"
+  "es-es"
+  "th"
+  "bo"
+  "tr"
+  "tr-tr"
+  "uk"
+  "uk-ua"
+  "vi"
+}
+
+Enum DocumentTypeTrashTimeUnit {
+  "days"
+  "hours"
+  "minutes"
+}
+
+Enum DocumentTypeDeleteTimeUnit {
+  "days"
+  "hours"
+  "minutes"
+}
+
+Enum WorkflowTransitionFieldFieldType {
+  "1"
+  "2"
+}
+
+Enum WorkflowTransitionFieldWidget {
+  "1"
+}
+
+Enum WorkflowStateActionWhen {
+  "1"
+  "2"
+}
+
+Enum WorkflowStateEscalationUnit {
+  "days"
+  "hours"
+  "minutes"
+}
+
+Enum SmartLinkConditionInclusion {
+  "&"
+  "|"
+}
+
+Enum SmartLinkConditionOperator {
+  "exact"
+  "iexact"
+  "contains"
+  "icontains"
+  "in"
+  "gt"
+  "gte"
+  "lt"
+  "lte"
+  "startswith"
+  "istartswith"
+  "endswith"
+  "iendswith"
+  "regex"
+  "iregex"
+}
+
+Enum SequenceOnLimit {
+  "raise"
+  "wrap"
+}
+
+Table events_storedeventtype {
+  id integer [pk, increment]
+  name varchar(64) [unique, not null]
+}
+
+Table events_eventsubscription {
+  id integer [pk, increment]
+  user_id integer [not null]
+  stored_event_type_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'events_eventsubscription_user_id_9394816f']
+    (stored_event_type_id) [name: 'events_eventsubscription_stored_event_type_id_ba59355c']
+  }
+}
+
+Table events_notification {
+  id integer [pk, increment]
+  user_id integer [not null]
+  action_id integer [not null]
+  read bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'events_notification_user_id_4644c4f1']
+    (action_id) [name: 'events_notification_action_id_d4f1ce8c']
+  }
+}
+
+Table events_objecteventsubscription {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  user_id integer [not null]
+  stored_event_type_id integer [not null]
+
+  indexes {
+    (content_type_id) [name: 'events_objecteventsubscription_content_type_id_4f27d971']
+    (user_id) [name: 'events_objecteventsubscription_user_id_87c8d5cc']
+    (stored_event_type_id) [name: 'events_objecteventsubscription_stored_event_type_id_a545d6e2']
+  }
+}
+
+Table appearance_usersetting {
+  id integer [pk, increment]
+  user_id integer [not null]
+  namespace varchar(64) [not null, note: 'Axis or frontend that owns this setting.']
+  key varchar(64) [not null]
+  value text [not null]
+
+  indexes {
+    (user_id) [name: 'appearance_usersetting_user_id_a5b51332']
+    (namespace) [name: 'appearance_usersetting_namespace_b2ac44d1']
+    (key) [name: 'appearance_usersetting_key_18a101fa']
+    (user_id, namespace, key) [unique, name: 'appearance_usersetting_user_id_namespace_key_628aab5d_uniq']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null, note: 'The given name of the user.']
+  last_name varchar(150) [not null, note: 'The family name of the user.']
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table actstream_follow {
+  id integer [pk, increment]
+  user_id integer [not null]
+  content_type_id integer [not null]
+  object_id varchar(255) [not null, note: 'follow_object: with content_type_id, a generic foreign key to a row of any model']
+  actor_only bool [default: true, not null]
+  flag varchar(255) [default: '', not null]
+  started datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'actstream_follow_user_id_e9d4e1ff']
+    (content_type_id) [name: 'actstream_follow_content_type_id_ba287eb9']
+    (object_id) [name: 'actstream_follow_object_id_d790e00d']
+    (flag) [name: 'actstream_follow_flag_0e741c24']
+    (started) [name: 'actstream_follow_started_254c63bd']
+    (user_id, content_type_id, object_id, flag) [unique, name: 'actstream_follow_user_id_content_type_id_object_id_flag_b3632d76_uniq']
+  }
+
+  Note: '''Lets a user follow the activities of any specific actor'''
+}
+
+Table actstream_action {
+  id integer [pk, increment]
+  actor_content_type_id integer [not null]
+  actor_object_id varchar(255) [not null, note: 'actor: with actor_content_type_id, a generic foreign key to a row of any model (from Group.actor_actions, User.actor_actions, AccessControlList.actor_actions, LoginAttempt.actor_actions, Asset.actor_actions, StoredCredential.actor_actions, StoredDashboard.actor_actions, Key.actor_actions, SavedResultset.actor_actions, Cache.actor_actions, CachePartition.actor_actions, Message.actor_actions, Role.actor_actions, StoredPermission.actor_actions, Quota.actor_actions, DownloadFile.actor_actions, Announcement.actor_actions, DocumentType.actor_actions, DocumentTypeFilename.actor_actions, Document.actor_actions, DocumentFile.actor_actions, DocumentVersion.actor_actions, DocumentVersionPage.actor_actions, DocumentFilePage.actor_actions, Cabinet.actor_actions, Comment.actor_actions, IndexTemplate.actor_actions, DetachedSignature.actor_actions, EmbeddedSignature.actor_actions, Workflow.actor_actions, WorkflowState.actor_actions, WorkflowTransition.actor_actions, WorkflowTransitionField.actor_actions, WorkflowInstance.actor_actions, WorkflowStateAction.actor_actions, WorkflowStateEscalation.actor_actions, WorkflowTransitionTriggerEvent.actor_actions, StoredDriver.actor_actions, SmartLink.actor_actions, SmartLinkCondition.actor_actions, UserMailer.actor_actions, MetadataType.actor_actions, DocumentTypeMetadataType.actor_actions, Sequence.actor_actions, SignatureCapture.actor_actions, Source.actor_actions, Tag.actor_actions, WebLink.actor_actions)']
+  verb varchar(255) [not null]
+  description text
+  target_content_type_id integer
+  target_object_id varchar(255) [note: 'target: with target_content_type_id, a generic foreign key to a row of any model (from Group.target_actions, User.target_actions, AccessControlList.target_actions, LoginAttempt.target_actions, Asset.target_actions, StoredCredential.target_actions, StoredDashboard.target_actions, Key.target_actions, SavedResultset.target_actions, Cache.target_actions, CachePartition.target_actions, Message.target_actions, Role.target_actions, StoredPermission.target_actions, Quota.target_actions, DownloadFile.target_actions, Announcement.target_actions, DocumentType.target_actions, DocumentTypeFilename.target_actions, Document.target_actions, DocumentFile.target_actions, DocumentVersion.target_actions, DocumentVersionPage.target_actions, DocumentFilePage.target_actions, Cabinet.target_actions, Comment.target_actions, IndexTemplate.target_actions, DetachedSignature.target_actions, EmbeddedSignature.target_actions, Workflow.target_actions, WorkflowState.target_actions, WorkflowTransition.target_actions, WorkflowTransitionField.target_actions, WorkflowInstance.target_actions, WorkflowStateAction.target_actions, WorkflowStateEscalation.target_actions, WorkflowTransitionTriggerEvent.target_actions, StoredDriver.target_actions, SmartLink.target_actions, SmartLinkCondition.target_actions, UserMailer.target_actions, MetadataType.target_actions, DocumentTypeMetadataType.target_actions, Sequence.target_actions, SignatureCapture.target_actions, Source.target_actions, Tag.target_actions, WebLink.target_actions)']
+  action_object_content_type_id integer
+  action_object_object_id varchar(255) [note: 'action_object: with action_object_content_type_id, a generic foreign key to a row of any model (from Group.action_object_actions, User.action_object_actions, AccessControlList.action_object_actions, LoginAttempt.action_object_actions, Asset.action_object_actions, StoredCredential.action_object_actions, StoredDashboard.action_object_actions, Key.action_object_actions, SavedResultset.action_object_actions, Cache.action_object_actions, CachePartition.action_object_actions, Message.action_object_actions, Role.action_object_actions, StoredPermission.action_object_actions, Quota.action_object_actions, DownloadFile.action_object_actions, Announcement.action_object_actions, DocumentType.action_object_actions, DocumentTypeFilename.action_object_actions, Document.action_object_actions, DocumentFile.action_object_actions, DocumentVersion.action_object_actions, DocumentVersionPage.action_object_actions, DocumentFilePage.action_object_actions, Cabinet.action_object_actions, Comment.action_object_actions, IndexTemplate.action_object_actions, DetachedSignature.action_object_actions, EmbeddedSignature.action_object_actions, Workflow.action_object_actions, WorkflowState.action_object_actions, WorkflowTransition.action_object_actions, WorkflowTransitionField.action_object_actions, WorkflowInstance.action_object_actions, WorkflowStateAction.action_object_actions, WorkflowStateEscalation.action_object_actions, WorkflowTransitionTriggerEvent.action_object_actions, StoredDriver.action_object_actions, SmartLink.action_object_actions, SmartLinkCondition.action_object_actions, UserMailer.action_object_actions, MetadataType.action_object_actions, DocumentTypeMetadataType.action_object_actions, Sequence.action_object_actions, SignatureCapture.action_object_actions, Source.action_object_actions, Tag.action_object_actions, WebLink.action_object_actions)']
+  timestamp datetime [not null, note: 'default in Python: now()']
+  public bool [default: true, not null]
+
+  indexes {
+    (actor_content_type_id) [name: 'actstream_action_actor_content_type_id_d5e5ec2a']
+    (actor_object_id) [name: 'actstream_action_actor_object_id_72ef0cfa']
+    (verb) [name: 'actstream_action_verb_83f768b7']
+    (target_content_type_id) [name: 'actstream_action_target_content_type_id_187fa164']
+    (target_object_id) [name: 'actstream_action_target_object_id_e080d801']
+    (action_object_content_type_id) [name: 'actstream_action_action_object_content_type_id_ee623c15']
+    (action_object_object_id) [name: 'actstream_action_action_object_object_id_6433bdf7']
+    (timestamp) [name: 'actstream_action_timestamp_a23fe3ae']
+    (public) [name: 'actstream_action_public_ac0653e9']
+  }
+
+  Note: '''Action model describing the actor acting out a verb (on an optional
+target).
+Nomenclature based on http://activitystrea.ms/specs/atom/1.0/
+
+Generalized Format::
+
+    <actor> <verb> <time>
+    <actor> <verb> <target> <time>
+    <actor> <verb> <action_object> <target> <time>
+
+Examples::
+
+    <justquick> <reached level 60> <1 minute ago>
+    <brosner> <commented on> <pinax/pinax> <2 hours ago>
+    <washingtontimes> <started follow> <justquick> <8 minutes ago>
+    <mitsuhiko> <closed> <issue 70> on <mitsuhiko/flask> <about 2 hours ago>
+
+Unicode Representation::
+
+    justquick reached level 60 1 minute ago
+    mitsuhiko closed issue 70 on mitsuhiko/flask 3 hours ago
+
+HTML Representation::
+
+    <a href="http://oebfare.com/">brosner</a> commented on <a href="http://github.com/pinax/pinax">pinax/pinax</a> 2 hours ago'''
+}
+
+Table axes_accessfailurelog {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  locked_out bool [default: false, not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accessfailurelog_user_agent_ea145dda']
+    (ip_address) [name: 'axes_accessfailurelog_ip_address_2e9f5a7f']
+    (username) [name: 'axes_accessfailurelog_username_a8b7e8a4']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table axes_accessattempt {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  get_data text [not null]
+  post_data text [not null]
+  failures_since_start "integer unsigned" [not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accessattempt_user_agent_ad89678b']
+    (ip_address) [name: 'axes_accessattempt_ip_address_10922d9c']
+    (username) [name: 'axes_accessattempt_username_3f2d4ca0']
+    (username, ip_address, user_agent) [unique, name: 'axes_accessattempt_username_ip_address_user_agent_8ea22282_uniq']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table axes_accessattemptexpiration {
+  access_attempt_id integer [pk]
+  expires_at datetime [not null, note: 'The time when access attempt expires and is no longer valid.']
+}
+
+Table axes_accesslog {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  logout_time datetime
+  session_hash varchar(64) [default: '', not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accesslog_user_agent_0e659004']
+    (ip_address) [name: 'axes_accesslog_ip_address_86b417e5']
+    (username) [name: 'axes_accesslog_username_df93064b']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table django_celery_beat_solarschedule {
+  id integer [pk, increment]
+  event SolarScheduleEvent [not null, note: 'The type of solar event when the job should run']
+  latitude decimal [not null, note: 'Run the task when the event happens at this latitude. declared max_digits=9, decimal_places=6, which the database does not enforce']
+  longitude decimal [not null, note: 'Run the task when the event happens at this longitude. declared max_digits=9, decimal_places=6, which the database does not enforce']
+
+  indexes {
+    (event, latitude, longitude) [unique, name: 'django_celery_beat_solarschedule_event_latitude_longitude_ba64999a_uniq']
+  }
+
+  Note: '''Schedule following astronomical patterns.
+
+Example: to run every sunrise in New York City:
+
+>>> event=\'sunrise\', latitude=40.7128, longitude=74.0060'''
+}
+
+Table django_celery_beat_intervalschedule {
+  id integer [pk, increment]
+  every integer [not null, note: 'Number of interval periods to wait before running the task again']
+  period IntervalSchedulePeriod [not null, note: 'The type of period between task runs (Example: days)']
+
+  Note: '''Schedule executing on a regular interval.
+
+Example: execute every 2 days:
+
+>>> every=2, period=DAYS'''
+}
+
+Table django_celery_beat_clockedschedule {
+  id integer [pk, increment]
+  clocked_time datetime [not null, note: 'Run the task at clocked time']
+
+  Note: '''clocked schedule.'''
+}
+
+Table django_celery_beat_crontabschedule {
+  id integer [pk, increment]
+  minute varchar(240) [default: '*', not null, note: 'Cron Minutes to Run. Use "*" for "all". (Example: "0,30")']
+  hour varchar(96) [default: '*', not null, note: 'Cron Hours to Run. Use "*" for "all". (Example: "8,20")']
+  day_of_month varchar(124) [default: '*', not null, note: 'Cron Days Of The Month to Run. Use "*" for "all". (Example: "1,15")']
+  month_of_year varchar(64) [default: '*', not null, note: 'Cron Months (1-12) Of The Year to Run. Use "*" for "all". (Example: "1,12")']
+  day_of_week varchar(64) [default: '*', not null, note: 'Cron Days Of The Week to Run. Use "*" for "all", Sunday is 0 or 7, Monday is 1. (Example: "0,5")']
+  timezone CrontabScheduleTimezone [not null, note: 'Timezone to Run the Cron Schedule on. Default is UTC.. default in Python: crontab_schedule_celery_timezone()']
+
+  Note: '''Timezone Aware Crontab-like schedule.
+
+Example:  Run every hour at 0 minutes for days of month 10-15:
+
+>>> minute="0", hour="*", day_of_week="*",
+... day_of_month="10-15", month_of_year="*"'''
+}
+
+Table django_celery_beat_periodictasks {
+  ident smallint [pk, default: 1]
+  last_update datetime [not null]
+
+  Note: '''Helper table for tracking updates to periodic tasks.
+
+This stores a single row with ``ident=1``. ``last_update`` is updated via
+signals whenever anything changes in the :class:`~.PeriodicTask` model.
+Basically this acts like a DB data audit trigger.
+Doing this so we also track deletions, and not just insert/update.'''
+}
+
+Table django_celery_beat_periodictask {
+  id integer [pk, increment]
+  name varchar(200) [unique, not null, note: 'Short Description For This Task']
+  task varchar(200) [not null, note: 'The Name of the Celery Task that Should be Run.  (Example: "proj.tasks.import_contacts")']
+  interval_id integer [note: 'Interval Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  crontab_id integer [note: 'Crontab Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  solar_id integer [note: 'Solar Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  clocked_id integer [note: 'Clocked Schedule to run the task on.  Set only one schedule type, leave the others null.']
+  args text [default: '[]', not null, note: 'JSON encoded positional arguments (Example: ["arg1", "arg2"])']
+  kwargs text [default: '{}', not null, note: 'JSON encoded keyword arguments (Example: {"argument": "value"})']
+  queue varchar(200) [default: null, note: 'Queue defined in CELERY_TASK_QUEUES. Leave None for default queuing.']
+  exchange varchar(200) [default: null, note: 'Override Exchange for low-level AMQP routing']
+  routing_key varchar(200) [default: null, note: 'Override Routing Key for low-level AMQP routing']
+  headers text [default: '{}', not null, note: 'JSON encoded message headers for the AMQP message.']
+  priority "integer unsigned" [default: null, note: 'Priority Number between 0 and 255. Supported by: RabbitMQ, Redis (priority reversed, 0 is highest).']
+  expires datetime [note: 'Datetime after which the schedule will no longer trigger the task to run']
+  expire_seconds "integer unsigned" [note: 'Timedelta with seconds which the schedule will no longer trigger the task to run']
+  one_off bool [default: false, not null, note: 'If True, the schedule will only run the task a single time']
+  start_time datetime [note: 'Datetime when the schedule should begin triggering the task to run']
+  enabled bool [default: true, not null, note: 'Set to False to disable the schedule']
+  last_run_at datetime [note: 'Datetime that the schedule last triggered the task to run. Reset to None if enabled is set to False.']
+  total_run_count "integer unsigned" [default: 0, not null, note: 'Running count of how many times the schedule has triggered the task']
+  date_changed datetime [not null, note: 'Datetime that this PeriodicTask was last modified. default in Python: now()']
+  description text [not null, note: 'Detailed description about the details of this Periodic Task']
+
+  indexes {
+    (interval_id) [name: 'django_celery_beat_periodictask_interval_id_a8ca27da']
+    (crontab_id) [name: 'django_celery_beat_periodictask_crontab_id_d3cba168']
+    (solar_id) [name: 'django_celery_beat_periodictask_solar_id_a87ce72c']
+    (clocked_id) [name: 'django_celery_beat_periodictask_clocked_id_47a69f82']
+  }
+
+  Note: '''Model representing a periodic task.'''
+}
+
+Table authtoken_token {
+  key varchar(40) [pk]
+  user_id integer [unique, not null]
+  created datetime [not null, note: 'default in Python: now()']
+
+  Note: '''The default authorization token model.
+
+Proxy models: TokenProxy.'''
+}
+
+Table logging_storederrorlog {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null]
+}
+
+Table logging_errorlogpartition {
+  id integer [pk, increment]
+  error_log_id integer [not null]
+  name varchar(128) [not null]
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from User.error_log_partitions, Document.error_log_partitions, DocumentFile.error_log_partitions, DocumentVersion.error_log_partitions, DocumentVersionPage.error_log_partitions, DocumentFilePage.error_log_partitions, WorkflowStateAction.error_log_partitions, UserMailer.error_log_partitions, Source.error_log_partitions)']
+
+  indexes {
+    (error_log_id) [name: 'logging_errorlogpartition_error_log_id_b2d3d59f']
+    (name) [name: 'logging_errorlogpartition_name_67ff5750']
+    (content_type_id) [name: 'logging_errorlogpartition_content_type_id_d67b36e9']
+    (error_log_id, name) [unique, name: 'logging_errorlogpartition_error_log_id_name_aaba9828_uniq']
+    (error_log_id, content_type_id, object_id) [unique, name: 'logging_errorlogpartition_error_log_id_content_type_id_object_id_6d7187b4_uniq']
+  }
+}
+
+Table logging_errorlogpartitionentry {
+  id integer [pk, increment]
+  error_log_partition_id integer [not null]
+  datetime datetime [not null, note: 'default in Python: now()']
+  domain_name varchar(128) [default: 'logging', not null]
+  text text
+
+  indexes {
+    (error_log_partition_id) [name: 'logging_errorlogpartitionentry_error_log_partition_id_7531a31d']
+    (datetime) [name: 'logging_errorlogpartitionentry_datetime_51490d5a']
+    (domain_name) [name: 'logging_errorlogpartitionentry_domain_name_9c3d0ff0']
+  }
+
+  Note: '''Proxy models: GlobalErrorLogPartitionEntry.'''
+}
+
+Table task_manager_taskdeduplicationentry {
+  id integer [pk, increment]
+  dotted_path varchar(255) [not null, note: 'Python path of the task type the marker suppresses.']
+  key text [not null, note: 'Serialized keyword arguments identifying the unit of work requested.']
+  key_hash varchar(64) [not null, note: 'Hash of the key. The unique constraint is applied to this field and not to the key itself because the length of a key is decided by the task requesting the work, and an index over an unbounded column exceeds the size limit of some database managers.']
+  datetime_created datetime [not null, note: 'Date and time the work was requested or last re-dispatched. A marker whose work has not begun stops suppressing requests once this is older than the queued interval, which is what allows a worker that ended before publishing its task to recover without intervention.. default in Python: now()']
+  datetime_started datetime [note: 'Date and time a worker began performing the work. Until it is set, the task the marker stands for is still waiting in the queue and has not read the object it will act on, so a request arriving in that period asks for work the queued task is already going to perform.']
+  is_dirty bool [default: false, not null, note: 'A new request for the same unit of work arrived after the task began performing it, therefore too late for the task to take it into account. The work is dispatched once more when the task completes.']
+
+  indexes {
+    (dotted_path) [name: 'task_manager_taskdeduplicationentry_dotted_path_3a38748b']
+    (datetime_created) [name: 'task_manager_taskdeduplicationentry_datetime_created_c6213bd3']
+    (datetime_started) [name: 'task_manager_taskdeduplicationentry_datetime_started_4807565c']
+    (dotted_path, key_hash) [unique, name: 'task_manager_taskdeduplicationentry_unique_key']
+  }
+}
+
+Table acls_accesscontrollist {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Group.acls, User.acls, Asset.acls, StoredCredential.acls, StoredDashboard.acls, Key.acls, SavedResultset.acls, Cache.acls, CachePartition.acls, Message.acls, Role.acls, Quota.acls, DownloadFile.acls, Announcement.acls, DocumentType.acls, DocumentTypeFilename.acls, Document.acls, DocumentFile.acls, DocumentVersion.acls, DocumentVersionPage.acls, DocumentFilePage.acls, Cabinet.acls, Comment.acls, IndexTemplate.acls, DetachedSignature.acls, EmbeddedSignature.acls, Workflow.acls, WorkflowState.acls, WorkflowTransition.acls, WorkflowTransitionField.acls, WorkflowInstance.acls, WorkflowStateAction.acls, WorkflowStateEscalation.acls, WorkflowTransitionTriggerEvent.acls, StoredDriver.acls, SmartLink.acls, SmartLinkCondition.acls, UserMailer.acls, MetadataType.acls, DocumentTypeMetadataType.acls, Sequence.acls, SignatureCapture.acls, Source.acls, Tag.acls, WebLink.acls)']
+  role_id integer [not null, note: 'Role to which the access is granted for the specified object.']
+
+  indexes {
+    (content_type_id) [name: 'acls_accesscontrollist_content_type_id_324a36ca']
+    (role_id) [name: 'acls_accesscontrollist_role_id_935b00e2']
+    (content_type_id, object_id, role_id) [unique, name: 'acls_accesscontrollist_content_type_id_object_id_role_id_071de930_uniq']
+  }
+
+  Note: '''Proxy models: GlobalAccessControlListProxy.'''
+}
+
+Table user_management_useroptions {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  block_password_change bool [default: false, not null]
+}
+
+Table authentication_attempts_loginattempt {
+  id integer [pk, increment]
+  username varchar(254) [not null, note: 'The username exactly as it was supplied for the authentication attempt. For failed attempts this may not match any existing account.']
+  user_id integer [note: 'The existing account that the supplied username resolved to, if any.']
+  result LoginAttemptResult [not null, note: 'Whether the authentication attempt succeeded or failed.']
+  source LoginAttemptSource [default: 'session', not null, note: 'The subsystem through which the authentication was attempted, such as the interactive session or the API.']
+  ip_address char(39) [note: 'The client address as resolved by the lockout layer. Behind a reverse proxy this is only meaningful when the proxy trust is configured; treat it as best effort.']
+  user_agent text [not null, note: 'Information about the web browser or application used to make the login attempt.']
+  datetime datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (username) [name: 'authentication_attempts_loginattempt_username_c515de48']
+    (user_id) [name: 'authentication_attempts_loginattempt_user_id_9d4e81b6']
+    (result) [name: 'authentication_attempts_loginattempt_result_c188bd00']
+    (datetime) [name: 'authentication_attempts_loginattempt_datetime_b4d514e5']
+  }
+}
+
+Table authentication_otp_userotpdata {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  secret varchar(96) [not null]
+}
+
+Table autoadmin_autoadminsingleton {
+  id integer [pk, increment]
+  account_id integer
+  password varchar(128)
+  password_hash varchar(128)
+
+  indexes {
+    (account_id) [name: 'autoadmin_autoadminsingleton_account_id_9082b87a']
+  }
+}
+
+Table converter_asset {
+  id integer [pk, increment]
+  label varchar(96) [unique, not null]
+  internal_name varchar(255) [unique, not null, note: 'This value will be used when referencing this asset. Can only contain letters, numbers, and underscores.']
+  file varchar(100) [not null]
+  file_hash varchar(64) [note: 'A hash/checksum generated from the asset file. Used to invalidate cached images that use the asset when the asset file changes.']
+}
+
+Table converter_storedlayer {
+  id integer [pk, increment]
+  name varchar(64) [unique, not null]
+  order "integer unsigned" [unique, not null]
+}
+
+Table converter_objectlayer {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  enabled bool [default: true, not null]
+  stored_layer_id integer [not null]
+
+  indexes {
+    (content_type_id) [name: 'converter_objectlayer_content_type_id_3f77d1c1']
+    (stored_layer_id) [name: 'converter_objectlayer_stored_layer_id_a23e6eb0']
+    (content_type_id, object_id, stored_layer_id) [unique, name: 'converter_objectlayer_content_type_id_object_id_stored_layer_id_967137bc_uniq']
+  }
+}
+
+Table converter_layertransformation {
+  id integer [pk, increment]
+  object_layer_id integer [not null]
+  order "integer unsigned" [default: 0, not null, note: 'Order in which the transformations will be executed. If left unchanged, an automatic order value will be assigned.']
+  name varchar(128) [not null]
+  arguments text [not null, note: 'Enter the arguments for the transformation as a YAML dictionary. ie: {"degrees": 180}']
+  enabled bool [default: true, not null]
+
+  indexes {
+    (object_layer_id) [name: 'converter_layertransformation_object_layer_id_9ed104d0']
+    (order) [name: 'converter_layertransformation_order_84376246']
+    (object_layer_id, order) [unique, name: 'converter_layertransformation_object_layer_id_order_ca82a520_uniq']
+  }
+}
+
+Table credentials_storedcredential {
+  id integer [pk, increment]
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+  label varchar(128) [unique, not null, note: 'Short description of this credential.']
+  internal_name varchar(255) [unique, not null, note: 'This value will be used by other apps to reference this credential. Can only contain letters, numbers, and underscores.']
+
+  Note: '''Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table dashboards_storeddashboard {
+  id integer [pk, increment]
+  name varchar(128) [unique, not null]
+}
+
+Table django_gpg_key {
+  id integer [pk, increment]
+  key_data text [not null, note: 'ASCII armored version of the key.']
+  creation_date datetime [not null]
+  expiration_date datetime
+  fingerprint varchar(40) [unique, not null]
+  length "integer unsigned" [not null]
+  algorithm "integer unsigned" [not null]
+  user_id text [not null]
+  key_type KeyKeyType [not null]
+}
+
+Table dynamic_search_savedresultset {
+  id integer [pk, increment]
+  time_to_live "integer unsigned" [not null, note: 'Time to keep the resultset in seconds. This value is increased every time the resultset is accessed.']
+  timestamp datetime [not null, note: 'The server date and time when the resultset was created.']
+  epoch "bigint unsigned" [not null]
+  app_label varchar(64) [not null]
+  model_name varchar(64) [not null]
+  search_query_text text [not null]
+  search_explainer_text text [not null]
+  result_count "integer unsigned" [not null, note: 'Number of results stored in the resultset.']
+  user_id integer [not null, note: 'User for which the resultset was created.']
+
+  indexes {
+    (timestamp) [name: 'dynamic_search_savedresultset_timestamp_98ee21e2']
+    (user_id) [name: 'dynamic_search_savedresultset_user_id_daf15991']
+  }
+}
+
+Table dynamic_search_savedresultsetentry {
+  id integer [pk, increment]
+  saved_resultset_id integer [not null]
+  object_id bigint [not null]
+
+  indexes {
+    (saved_resultset_id) [name: 'dynamic_search_savedresultsetentry_saved_resultset_id_28bd6562']
+  }
+}
+
+Table file_caching_cache {
+  id integer [pk, increment]
+  defined_storage_name varchar(96) [unique, not null, note: 'Internal name of the defined storage for this cache.']
+  maximum_size "bigint unsigned" [not null, note: 'Maximum size of the cache in bytes.']
+  maximum_size_old "bigint unsigned" [not null, note: 'Previous maximum size of the cache in bytes.']
+
+  indexes {
+    (maximum_size) [name: 'file_caching_cache_maximum_size_852f8b68']
+  }
+}
+
+Table file_caching_cachepartition {
+  id integer [pk, increment]
+  cache_id integer [not null]
+  name varchar(128) [not null]
+
+  indexes {
+    (cache_id) [name: 'file_caching_cachepartition_cache_id_07f1f088']
+    (cache_id, name) [unique, name: 'file_caching_cachepartition_cache_id_name_aa955bb8_uniq']
+  }
+}
+
+Table file_caching_cachepartitionfile {
+  id integer [pk, increment]
+  partition_id integer [not null]
+  datetime datetime [not null, note: 'default in Python: now()']
+  accessed datetime [not null, note: 'Last date and time this cache partition file was read. Used to evict the least recently used files first.. default in Python: now()']
+  filename varchar(255) [not null]
+  file_size "integer unsigned" [default: 0, not null]
+  hits "integer unsigned" [default: 0, not null, note: 'Times this cache partition file has been accessed.']
+
+  indexes {
+    (partition_id) [name: 'file_caching_cachepartitionfile_partition_id_252758cf']
+    (datetime) [name: 'file_caching_cachepartitionfile_datetime_2202b95d']
+    (accessed) [name: 'file_caching_cachepartitionfile_accessed_7fe95c8d']
+    (hits) [name: 'file_caching_cachepartitionfile_hits_b22c51f7']
+    (partition_id, filename) [unique, name: 'file_caching_cachepartitionfile_partition_id_filename_e553caf0_uniq']
+  }
+}
+
+Table locales_userlocaleprofile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  timezone UserLocaleProfileTimezone [not null]
+  language UserLocaleProfileLanguage [not null]
+}
+
+Table lock_manager_lock {
+  id integer [pk, increment]
+  creation_datetime datetime [not null, note: 'default in Python: now()']
+  timeout integer [default: 30, not null]
+  name varchar(255) [unique, not null]
+}
+
+Table messaging_message {
+  id integer [pk, increment]
+  sender_content_type_id integer
+  sender_object_id "integer unsigned" [note: 'sender_object: with sender_content_type_id, a generic foreign key to a row of any model']
+  user_id integer [not null]
+  subject varchar(255) [not null, note: 'Short description of this message.']
+  body text [not null, note: 'The actual content of the message.']
+  read bool [default: false, not null, note: 'This field determines if the message has been read or not.']
+  date_time datetime [not null, note: 'Date and time of the message creation.. default in Python: now()']
+
+  indexes {
+    (sender_content_type_id) [name: 'messaging_message_sender_content_type_id_441fbdd2']
+    (user_id) [name: 'messaging_message_user_id_d58e6394']
+  }
+}
+
+Table permissions_role {
+  id integer [pk, increment]
+  label varchar(128) [unique, not null, note: 'A short text describing the role.']
+}
+
+Table permissions_storedpermission {
+  id integer [pk, increment]
+  namespace varchar(64) [not null]
+  name varchar(64) [not null]
+
+  indexes {
+    (namespace, name) [unique, name: 'permissions_storedpermission_namespace_name_fb9a3732_uniq']
+  }
+}
+
+Table quotas_quota {
+  id integer [pk, increment]
+  backend_path varchar(255) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null]
+  enabled bool [default: true, not null, note: 'Allow quick disable or enable of the quota.']
+}
+
+Table server_side_events_streamevent {
+  id integer [pk, increment]
+  user_id integer [not null]
+  event_type varchar(128) [not null]
+  payload text [not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'server_side_events_streamevent_user_id_359b0c51']
+    (event_type) [name: 'server_side_events_streamevent_event_type_c4137a0e']
+    (datetime_created) [name: 'server_side_events_streamevent_datetime_created_0026bcec']
+  }
+}
+
+Table smart_settings_updatedstoredsetting {
+  id integer [pk, increment]
+  key varchar(255) [unique, not null, note: 'A unique identifier.']
+  value text
+}
+
+Table storage_downloadfile {
+  id integer [pk, increment]
+  filename varchar(255) [not null]
+  datetime datetime [not null, note: 'default in Python: now()']
+  file varchar(100) [not null]
+  label varchar(192) [not null]
+  user_id integer [not null]
+
+  indexes {
+    (filename) [name: 'storage_downloadfile_filename_639d6892']
+    (label) [name: 'storage_downloadfile_label_a0b9590b']
+    (user_id) [name: 'storage_downloadfile_user_id_16c8b643']
+  }
+
+  Note: '''Columns from DatabaseFileModelMixin (abstract): filename, datetime.'''
+}
+
+Table storage_shareduploadedfile {
+  id integer [pk, increment]
+  datetime datetime [not null, note: 'default in Python: now()']
+  file varchar(100) [not null]
+  filename varchar(255) [not null]
+
+  Note: '''Columns from DatabaseFileModelMixin (abstract): filename, datetime.'''
+}
+
+Table views_userconfirmview {
+  id integer [pk, increment]
+  namespace varchar(200) [not null]
+  name varchar(200) [not null, note: 'Full name of the view including the namespace.']
+  user_id integer [not null]
+  remember bool [default: false, not null, note: 'Remember the last confirmation of the view.']
+
+  indexes {
+    (namespace) [name: 'views_userconfirmview_namespace_ee073ad8']
+    (name) [name: 'views_userconfirmview_name_6b65bb7d']
+    (user_id) [name: 'views_userconfirmview_user_id_294bb79d']
+    (user_id, name) [unique, name: 'views_userconfirmview_user_id_name_acc2168b_uniq']
+  }
+}
+
+Table views_userviewmode {
+  id integer [pk, increment]
+  namespace varchar(200) [not null]
+  name varchar(200) [not null, note: 'Full name of the view including the namespace.']
+  user_id integer [not null]
+  value varchar(5) [not null, note: 'Stored value used to identify the display mode of the view.']
+
+  indexes {
+    (namespace) [name: 'views_userviewmode_namespace_10d9dcab']
+    (name) [name: 'views_userviewmode_name_3103c477']
+    (user_id) [name: 'views_userviewmode_user_id_c2870aa8']
+    (value) [name: 'views_userviewmode_value_f63ba571']
+    (user_id, name) [unique, name: 'views_userviewmode_user_id_name_48ba57ad_uniq']
+  }
+}
+
+Table announcements_announcement {
+  id integer [pk, increment]
+  label varchar(32) [not null, note: 'Short description of this announcement.']
+  text text [not null, note: 'The actual text to be displayed.']
+  enabled bool [default: true, not null]
+  start_datetime datetime [note: 'Date and time after which this announcement will be displayed.']
+  end_datetime datetime [note: 'Date and time until when this announcement is to be displayed.']
+}
+
+Table documents_documenttype {
+  id integer [pk, increment]
+  label varchar(196) [unique, not null, note: 'A short text identifying the document type.']
+  filename_generator_backend varchar(224) [default: 'uuid', not null, note: 'The class responsible for producing the actual filename used to store the uploaded documents.']
+  filename_generator_backend_arguments text [not null, note: 'The arguments for the filename generator backend as a YAML dictionary.']
+  trash_time_period "integer unsigned" [note: 'Amount of time after which documents of this type will be moved to the trash.']
+  trash_time_unit DocumentTypeTrashTimeUnit
+  delete_time_period "integer unsigned" [default: 30, note: 'Amount of time after which documents of this type in the trash will be deleted.']
+  delete_time_unit DocumentTypeDeleteTimeUnit [default: 'days']
+  document_stub_pruning_enabled bool [default: true, not null, note: 'Delete documents that do not contain any files after a configured expiration interval.']
+  document_stub_expiration_interval "bigint unsigned" [default: 86400, not null, note: 'Time (in seconds) after which a document stub will be considered invalid and deleted, if pruning is enabled. This an optimization setting and should only be changed for specific circumstances.']
+}
+
+Table documents_documenttypefilename {
+  id integer [pk, increment]
+  document_type_id integer [not null]
+  filename varchar(128) [not null]
+  enabled bool [default: true, not null]
+
+  indexes {
+    (document_type_id) [name: 'documents_documenttypefilename_document_type_id_56f21f7f']
+    (filename) [name: 'documents_documenttypefilename_filename_15dfc133']
+    (document_type_id, filename) [unique, name: 'documents_documenttypefilename_document_type_id_filename_cffa5dbb_uniq']
+  }
+}
+
+Table documents_document {
+  id integer [pk, increment]
+  file_latest_id integer [unique]
+  uuid char(32) [not null, note: 'UUID of a document, universally Unique ID. An unique identifier generated for each document.. default in Python: uuid4()']
+  document_type_id integer [not null, note: 'The document type of the document.']
+  label varchar(255) [default: '', not null, note: 'A short text identifying the document. By default, will be set to the filename of the first file uploaded to the document.']
+  description text [default: '', not null, note: 'An optional short text describing a document.']
+  datetime_created datetime [not null, note: 'The date and time of the document creation.. default in Python: now()']
+  language varchar(8) [default: 'eng', not null, note: 'The primary language in the document.']
+  in_trash bool [default: false, not null, note: 'Whether or not this document is in the trash.']
+  trashed_date_time datetime [note: 'The server date and time when the document was moved to the trash.']
+  is_stub bool [default: true, not null, note: 'A document stub is a document with an entry on the database but no file uploaded. This could be an interrupted upload or a deferred upload via the API.']
+  version_active_id integer [unique]
+
+  indexes {
+    (document_type_id) [name: 'documents_document_document_type_id_1f88b50c']
+    (label) [name: 'documents_document_label_556c6583']
+    (datetime_created) [name: 'documents_document_datetime_created_c0d566d6']
+    (in_trash) [name: 'documents_document_in_trash_99a07799']
+    (is_stub) [name: 'documents_document_is_stub_7a1cdd11']
+  }
+
+  Note: '''Proxy models: DocumentSearchResult, RecentlyCreatedDocument, RecentlyAccessedDocumentProxy, TrashedDocument, CheckedOutDocument, FavoriteDocumentProxy, DuplicateSourceDocument, DuplicateTargetDocument.'''
+}
+
+Table documents_documentfile {
+  id integer [pk, increment]
+  document_id integer [not null]
+  timestamp datetime [not null, note: 'The server date and time when the document file was processed.. default in Python: now()']
+  comment text [default: '', not null, note: 'An optional short text describing the document file.']
+  file varchar(100) [not null]
+  filename varchar(255) [not null]
+  mimetype varchar(255) [note: 'The document file\'s file mimetype. MIME types are a standard way to describe the format of a file, in this case the file format of the document. Some examples: "text/plain" or "image/jpeg".']
+  encoding varchar(64) [note: 'The document file file encoding. binary 7-bit, binary 8-bit, text, base64, etc.']
+  checksum varchar(64) [note: 'A hash/checkdigit/fingerprint generated from the document\'s binary data. Only identical documents will have the same checksum.']
+  size "bigint unsigned" [note: 'The size of the file in bytes.']
+
+  indexes {
+    (document_id) [name: 'documents_documentfile_document_id_5b31b6f0']
+    (timestamp) [name: 'documents_documentfile_timestamp_58ec4afb']
+    (checksum) [name: 'documents_documentfile_checksum_0110fee6']
+    (size) [name: 'documents_documentfile_size_4f23f14b']
+  }
+
+  Note: '''Proxy models: DocumentFileSearchResult.'''
+}
+
+Table documents_documentversion {
+  id integer [pk, increment]
+  document_id integer [not null]
+  timestamp datetime [not null, note: 'The server date and time when the document version was created.. default in Python: now()']
+  comment text [default: '', not null, note: 'An optional short text describing the document version.']
+  active bool [default: false, not null, note: 'Determines the active version of the document.']
+
+  indexes {
+    (document_id) [name: 'documents_documentversion_document_id_42757b7a']
+    (timestamp) [name: 'documents_documentversion_timestamp_30bada95']
+  }
+
+  Note: '''Proxy models: DocumentVersionSearchResult.'''
+}
+
+Table documents_documentversionpage {
+  id integer [pk, increment]
+  document_version_id integer [not null]
+  page_number "integer unsigned" [default: 1, not null, note: 'Unique integer number for the page. Pages are ordered by this number.']
+  content_type_id integer [not null, note: 'Content type for the source object of the page.']
+  object_id "integer unsigned" [not null, note: 'ID for the source object of the page.. content_object: with content_type_id, a generic foreign key to a row of any model']
+
+  indexes {
+    (document_version_id) [name: 'documents_documentversionpage_document_version_id_941cf2d3']
+    (page_number) [name: 'documents_documentversionpage_page_number_15bf5ac0']
+    (content_type_id) [name: 'documents_documentversionpage_content_type_id_13b68cd8']
+    (document_version_id, page_number) [unique, name: 'documents_documentversionpage_document_version_id_page_number_a90994fe_uniq']
+  }
+
+  Note: '''Proxy models: DocumentVersionPageSearchResult.'''
+}
+
+Table documents_documentfilepage {
+  id integer [pk, increment]
+  document_file_id integer [not null]
+  page_number "integer unsigned" [default: 1, not null]
+
+  indexes {
+    (document_file_id) [name: 'documents_documentfilepage_document_file_id_cc720df4']
+    (page_number) [name: 'documents_documentfilepage_page_number_0e56c261']
+  }
+
+  Note: '''Proxy models: DocumentFilePageSearchResult.'''
+}
+
+Table documents_recentlyaccesseddocument {
+  id integer [pk, increment]
+  user_id integer [not null]
+  document_id integer [not null]
+  datetime_accessed datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'documents_recentlyaccesseddocument_user_id_8c95f526']
+    (document_id) [name: 'documents_recentlyaccesseddocument_document_id_ad334148']
+    (datetime_accessed) [name: 'documents_recentlyaccesseddocument_datetime_accessed_853ecc10']
+  }
+}
+
+Table cabinets_cabinet {
+  id integer [pk, increment]
+  parent_id integer
+  label varchar(128) [not null, note: 'A short text used to identify the cabinet.']
+  lft "integer unsigned" [not null]
+  rght "integer unsigned" [not null]
+  tree_id "integer unsigned" [not null]
+  level "integer unsigned" [not null]
+
+  indexes {
+    (parent_id) [name: 'cabinets_cabinet_parent_id_0939a3c3']
+    (tree_id) [name: 'cabinets_cabinet_tree_id_c9719a3c']
+    (parent_id, label) [unique, name: 'cabinets_cabinet_parent_id_label_441a7709_uniq']
+    (tree_id, lft) [name: 'cabinets_cabinet_tree_id_l3e14']
+  }
+
+  Note: '''Proxy models: CabinetSearchResult, DocumentCabinet.'''
+}
+
+Table checkouts_documentcheckout {
+  id integer [pk, increment]
+  document_id integer [unique, not null]
+  checkout_datetime datetime [not null, note: 'default in Python: now()']
+  expiration_datetime datetime [not null, note: 'Amount of time to hold the document checked out in minutes.']
+  user_id integer [not null]
+  block_new_file bool [default: true, not null, note: 'Do not allow new file of this document to be uploaded.']
+
+  indexes {
+    (user_id) [name: 'checkouts_documentcheckout_user_id_f3ea15e3']
+  }
+}
+
+Table document_comments_comment {
+  id integer [pk, increment]
+  document_id integer [not null]
+  user_id integer [not null, note: 'The user account that made the comment.']
+  text text [not null, note: 'Actual text content of the comment.']
+  submit_date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (document_id) [name: 'document_comments_comment_document_id_2435cfe5']
+    (user_id) [name: 'document_comments_comment_user_id_cfa5a004']
+    (submit_date) [name: 'document_comments_comment_submit_date_c3c6a9cc']
+  }
+}
+
+Table documents_favoritedocument {
+  id integer [pk, increment]
+  user_id integer [not null]
+  document_id integer [not null]
+  datetime_added datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'documents_favoritedocument_user_id_d10ba5d2']
+    (document_id) [name: 'documents_favoritedocument_document_id_0ea7eea9']
+    (datetime_added) [name: 'documents_favoritedocument_datetime_added_43dd9aba']
+    (document_id, user_id) [unique, name: 'documents_favoritedocument_document_id_user_id_f621d645_uniq']
+  }
+}
+
+Table document_indexing_indextemplate {
+  id integer [pk, increment]
+  label varchar(128) [unique, not null, note: 'Short description of this index.']
+  slug varchar(128) [unique, not null, note: 'This value will be used by other apps to reference this index.']
+  enabled bool [default: true, not null, note: 'Causes this index to be visible and updated when document data changes.']
+
+  Note: '''Proxy models: IndexInstance.'''
+}
+
+Table document_indexing_indextemplateeventtrigger {
+  id integer [pk, increment]
+  index_template_id integer [not null]
+  stored_event_type_id integer [not null]
+
+  indexes {
+    (index_template_id) [name: 'document_indexing_indextemplateeventtrigger_index_template_id_6d620204']
+    (stored_event_type_id) [name: 'document_indexing_indextemplateeventtrigger_stored_event_type_id_301c833e']
+    (index_template_id, stored_event_type_id) [unique, name: 'document_indexing_indextemplateeventtrigger_index_template_id_stored_event_type_id_e0516a83_uniq']
+  }
+}
+
+Table document_indexing_indextemplatenode {
+  id integer [pk, increment]
+  parent_id integer [note: 'Parent index template node of this node.']
+  index_id integer [not null]
+  expression text [not null, note: 'Enter a template to render. Use Django\'s default templating language.']
+  enabled bool [default: true, not null, note: 'Causes this node to be visible and updated when document data changes.']
+  link_documents bool [default: false, not null, note: 'Check this option to have this node act as a container for documents and not as a parent for further nodes.']
+  lft "integer unsigned" [not null]
+  rght "integer unsigned" [not null]
+  tree_id "integer unsigned" [not null]
+  level "integer unsigned" [not null]
+
+  indexes {
+    (parent_id) [name: 'document_indexing_indextemplatenode_parent_id_27089927']
+    (index_id) [name: 'document_indexing_indextemplatenode_index_id_1a5de5b2']
+    (tree_id) [name: 'document_indexing_indextemplatenode_tree_id_36218774']
+    (tree_id, lft) [name: 'document_indexing_indextema426']
+  }
+}
+
+Table document_indexing_indexinstancenode {
+  id integer [pk, increment]
+  parent_id integer
+  index_template_node_id integer [not null]
+  value varchar(255) [not null]
+  lft "integer unsigned" [not null]
+  rght "integer unsigned" [not null]
+  tree_id "integer unsigned" [not null]
+  level "integer unsigned" [not null]
+
+  indexes {
+    (parent_id) [name: 'document_indexing_indexinstancenode_parent_id_3db469f0']
+    (index_template_node_id) [name: 'document_indexing_indexinstancenode_index_template_node_id_366c4e5a']
+    (value) [name: 'document_indexing_indexinstancenode_value_cf7fc740']
+    (tree_id) [name: 'document_indexing_indexinstancenode_tree_id_4b10b72a']
+    (index_template_node_id, parent_id, value) [unique, name: 'document_indexing_indexinstancenode_index_template_node_id_parent_id_value_3d01ac7c_uniq']
+    (tree_id, lft) [name: 'document_indexing_indexins009e']
+  }
+
+  Note: '''Proxy models: DocumentIndexInstanceNode, IndexInstanceNodeSearchResult.'''
+}
+
+Table document_parsing_documentfilepagecontent {
+  id integer [pk, increment]
+  document_file_page_id integer [unique, not null]
+  content text [not null, note: 'The actual text content as extracted by the document parsing backend.']
+}
+
+Table document_parsing_documenttypesettings {
+  id integer [pk, increment]
+  document_type_id integer [unique, not null]
+  auto_parsing bool [default: true, not null, note: 'Automatically queue newly created documents for parsing.']
+}
+
+Table document_signatures_signaturebasemodel {
+  id integer [pk, increment]
+  document_file_id integer [not null]
+  date_time datetime
+  key_id varchar(40) [not null, note: 'ID of the key that will be used to sign the document.']
+  signature_id varchar(64)
+  public_key_fingerprint varchar(40)
+
+  indexes {
+    (document_file_id) [name: 'document_signatures_signaturebasemodel_document_file_id_91187afc']
+  }
+}
+
+Table document_signatures_detachedsignature {
+  signaturebasemodel_ptr_id integer [pk, note: 'parent link: a DetachedSignature is a SignatureBaseModel (multi-table inheritance)']
+  signature_file varchar(100) [note: 'Signature file previously generated.']
+}
+
+Table document_signatures_embeddedsignature {
+  signaturebasemodel_ptr_id integer [pk, note: 'parent link: a EmbeddedSignature is a SignatureBaseModel (multi-table inheritance)']
+}
+
+Table document_states_workflow {
+  id integer [pk, increment]
+  auto_launch bool [default: true, not null, note: 'Launch workflow when document is created.']
+  internal_name varchar(255) [unique, not null, note: 'This value will be used by other apps to reference this workflow. Can only contain letters, numbers, and underscores.']
+  label varchar(255) [unique, not null, note: 'A short text to describe the workflow.']
+  ignore_completed bool [default: false, not null, note: 'Ignore workflow instances if they are in their final state.']
+
+  Note: '''Proxy models: WorkflowRuntimeProxy.'''
+}
+
+Table document_states_workflowstate {
+  id integer [pk, increment]
+  workflow_id integer [not null]
+  label varchar(255) [not null, note: 'A short text to describe the workflow state.']
+  initial bool [default: false, not null, note: 'The state at which the workflow will start in. Only one state can be the initial state.']
+  final bool [default: false, not null, note: 'The state at which the workflow will stop. Only one state can be the final state.']
+  completion integer [default: 0, not null, note: 'The percent of completion that this state represents in relation to the workflow. Use numbers without the percent sign.']
+
+  indexes {
+    (workflow_id) [name: 'document_states_workflowstate_workflow_id_83e30228']
+    (workflow_id, label) [unique, name: 'document_states_workflowstate_workflow_id_label_3bfff872_uniq']
+  }
+
+  Note: '''Proxy models: WorkflowStateRuntimeProxy.'''
+}
+
+Table document_states_workflowtransition {
+  id integer [pk, increment]
+  condition text [not null, note: 'The condition that will determine if this transition is enabled or not. The condition is evaluated against the workflow instance. Conditions that do not return any value, that return the Python logical None, or an empty string (\'\') are considered to be logical false, any other value is considered to be the logical true.']
+  workflow_id integer [not null]
+  label varchar(255) [not null, note: 'A short text to describe the transition.']
+  origin_state_id integer [not null]
+  destination_state_id integer [not null]
+
+  indexes {
+    (workflow_id) [name: 'document_states_workflowtransition_workflow_id_76c0f75a']
+    (origin_state_id) [name: 'document_states_workflowtransition_origin_state_id_7f22d544']
+    (destination_state_id) [name: 'document_states_workflowtransition_destination_state_id_3dfa519e']
+    (workflow_id, label, origin_state_id, destination_state_id) [unique, name: 'document_states_workflowtransition_workflow_id_label_origin_state_id_destination_state_id_b75b400d_uniq']
+  }
+
+  Note: '''Columns from ModelMixinConditionField (abstract): condition.'''
+}
+
+Table document_states_workflowtransitionfield {
+  id integer [pk, increment]
+  transition_id integer [not null]
+  field_type WorkflowTransitionFieldFieldType [not null]
+  name varchar(128) [not null, note: 'The name that will be used to identify this field in other parts of the workflow system.']
+  label varchar(128) [not null, note: 'The field name that will be shown on the user interface.']
+  default text [note: 'Optional default value for the field. Can be a template.']
+  lookup text [note: 'Enter a template to render. Must result in a comma delimited string.']
+  help_text text [not null, note: 'An optional message that will help users better understand the purpose of the field and data to provide.']
+  required bool [default: false, not null, note: 'Whether this field needs to be filled out or not to proceed.']
+  widget WorkflowTransitionFieldWidget [note: 'An optional class to change the default presentation of the field.']
+  widget_kwargs text [not null, note: 'A group of keyword arguments to customize the widget. Use YAML format.']
+
+  indexes {
+    (transition_id) [name: 'document_states_workflowtransitionfield_transition_id_78a123d7']
+    (transition_id, name) [unique, name: 'document_states_workflowtransitionfield_transition_id_name_14d6756b_uniq']
+  }
+}
+
+Table document_states_workflowinstance {
+  id integer [pk, increment]
+  workflow_id integer [not null, note: 'The workflow template.']
+  datetime datetime [not null, note: 'Workflow instance creation date time.. default in Python: now()']
+  document_id integer [not null, note: 'The document to which the workflow instance is attached.']
+  context text [not null]
+  state_active_id integer [not null, note: 'The currently active state of the workflow instance.']
+
+  indexes {
+    (workflow_id) [name: 'document_states_workflowinstance_workflow_id_41b3b62c']
+    (datetime) [name: 'document_states_workflowinstance_datetime_c7071dde']
+    (document_id) [name: 'document_states_workflowinstance_document_id_61923007']
+    (state_active_id) [name: 'document_states_workflowinstance_state_active_id_355df488']
+    (document_id, workflow_id) [unique, name: 'document_states_workflowinstance_document_id_workflow_id_e7ebd6de_uniq']
+  }
+}
+
+Table document_states_workflowinstancelogentry {
+  id integer [pk, increment]
+  workflow_instance_id integer [not null]
+  datetime datetime [not null, note: 'default in Python: now()']
+  transition_id integer
+  user_id integer
+  comment text [not null]
+  extra_data text [not null]
+
+  indexes {
+    (workflow_instance_id) [name: 'document_states_workflowinstancelogentry_workflow_instance_id_33bbb3e4']
+    (datetime) [name: 'document_states_workflowinstancelogentry_datetime_71aa06ef']
+    (transition_id) [name: 'document_states_workflowinstancelogentry_transition_id_dbc22ff8']
+    (user_id) [name: 'document_states_workflowinstancelogentry_user_id_a4e95628']
+  }
+}
+
+Table document_states_workflowstateaction {
+  id integer [pk, increment]
+  condition text [not null, note: 'The condition that will determine if this state action is executed or not. The condition is evaluated against the workflow instance. Conditions that do not return any value, that return the Python logical None, or an empty string (\'\') are considered to be logical false, any other value is considered to be the logical true.']
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+  state_id integer [not null]
+  label varchar(255) [not null, note: 'A short text describing the action. Actions are execute by alphabetical order.']
+  enabled bool [default: true, not null]
+  when WorkflowStateActionWhen [default: 1, not null, note: 'At which moment of the state this action will execute.']
+
+  indexes {
+    (state_id) [name: 'document_states_workflowstateaction_state_id_0a0fa8cf']
+    (state_id, label) [unique, name: 'document_states_workflowstateaction_state_id_label_f489b938_uniq']
+  }
+
+  Note: '''Columns from ModelMixinConditionField (abstract): condition.
+
+Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table document_states_workflowstateescalation {
+  id integer [pk, increment]
+  condition text [not null, note: 'The condition that will determine if this object is executed or not. Conditions that do not return any value, that return the Python logical None, or an empty string (\'\') are considered to be logical false, any other value is considered to be the logical true.']
+  state_id integer [not null]
+  transition_id integer [not null]
+  priority integer [default: 0, not null, note: 'Determine the order in which the escalations will be evaluated. Escalations with a lower priority number are executed before escalations with a higher priority number.']
+  enabled bool [default: true, not null, note: 'Enable automatic transition the workflow after a specified amount of time has elapsed in the state without change.']
+  unit WorkflowStateEscalationUnit [default: 'days', not null]
+  amount "integer unsigned" [default: 1, not null, note: 'Amount of the selected escalation units of time.']
+  comment text [not null, note: 'Comment to save to the workflow instance when the escalation is executed.']
+
+  indexes {
+    (state_id) [name: 'document_states_workflowstateescalation_state_id_7bc35dd0']
+    (transition_id) [name: 'document_states_workflowstateescalation_transition_id_92490b8a']
+    (priority) [name: 'document_states_workflowstateescalation_priority_e2277477']
+    (state_id, transition_id) [unique, name: 'document_states_workflowstateescalation_state_id_transition_id_0e172780_uniq']
+  }
+
+  Note: '''Columns from ModelMixinConditionField (abstract): condition.'''
+}
+
+Table document_states_workflowtransitiontriggerevent {
+  id integer [pk, increment]
+  transition_id integer [not null]
+  event_type_id integer [not null]
+
+  indexes {
+    (transition_id) [name: 'document_states_workflowtransitiontriggerevent_transition_id_a56afcf3']
+    (event_type_id) [name: 'document_states_workflowtransitiontriggerevent_event_type_id_5a1f23db']
+    (transition_id, event_type_id) [unique, name: 'document_states_workflowtransitiontriggerevent_transition_id_event_type_id_c68d4949_uniq']
+  }
+}
+
+Table duplicates_storedduplicatebackend {
+  id integer [pk, increment]
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+
+  Note: '''Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table duplicates_duplicatebackendentry {
+  id integer [pk, increment]
+  stored_backend_id integer [not null]
+  document_id integer [not null]
+
+  indexes {
+    (stored_backend_id) [name: 'duplicates_duplicatebackendentry_stored_backend_id_1619c3c0']
+    (document_id) [name: 'duplicates_duplicatebackendentry_document_id_7eaff110']
+    (stored_backend_id, document_id) [unique, name: 'duplicates_duplicatebackendentry_stored_backend_id_document_id_91fc4fe1_uniq']
+  }
+}
+
+Table file_metadata_documentfiledriverentry {
+  id integer [pk, increment]
+  driver_id integer [not null]
+  document_file_id integer [not null]
+
+  indexes {
+    (driver_id) [name: 'file_metadata_documentfiledriverentry_driver_id_5a57e171']
+    (document_file_id) [name: 'file_metadata_documentfiledriverentry_document_file_id_65f84183']
+    (driver_id, document_file_id) [unique, name: 'file_metadata_documentfiledriverentry_driver_id_document_file_id_4a64e3bf_uniq']
+  }
+}
+
+Table file_metadata_documenttypedriverconfiguration {
+  id integer [pk, increment]
+  arguments text [not null, note: 'Enter the arguments for the drive for the specific document type as a YAML dictionary. ie: {"degrees": 180}']
+  document_type_id integer [not null]
+  stored_driver_id integer [not null]
+  enabled bool [default: true, not null, note: 'Enable this driver to process document files of the selected document type.']
+
+  indexes {
+    (document_type_id) [name: 'file_metadata_documenttypedriverconfiguration_document_type_id_e2fe4340']
+    (stored_driver_id) [name: 'file_metadata_documenttypedriverconfiguration_stored_driver_id_229ea4e4']
+    (document_type_id, stored_driver_id) [unique, name: 'file_metadata_documenttypedriverconfiguration_document_type_id_stored_driver_id_7a6f5ba6_uniq']
+  }
+}
+
+Table file_metadata_filemetadataentry {
+  id integer [pk, increment]
+  document_file_driver_entry_id integer [not null]
+  internal_name varchar(255) [not null, note: 'Normalized name of the file metadata entry.']
+  key varchar(255) [not null, note: 'Name of the file metadata entry as provided by the driver.']
+  value text [not null, note: 'Value of the file metadata entry.']
+
+  indexes {
+    (document_file_driver_entry_id) [name: 'file_metadata_filemetadataentry_document_file_driver_entry_id_1aa867c7']
+    (internal_name) [name: 'file_metadata_filemetadataentry_internal_name_6cc03004']
+    (document_file_driver_entry_id, internal_name) [unique, name: 'file_metadata_filemetadataentry_document_file_driver_entry_id_internal_name_223f9656_uniq']
+  }
+}
+
+Table file_metadata_storeddriver {
+  id integer [pk, increment]
+  driver_path varchar(255) [unique, not null]
+  internal_name varchar(128) [unique, not null]
+  exists bool [default: true, not null, note: 'The class defined by this instance is valid and active.']
+}
+
+Table linking_smartlink {
+  id integer [pk, increment]
+  label varchar(128) [not null, note: 'A short text describing the smart link.']
+  dynamic_label varchar(96) [not null, note: 'Use this field to show a unique label depending on the document from which the smart link is being accessed.']
+  enabled bool [default: true, not null]
+
+  indexes {
+    (label) [name: 'linking_smartlink_label_3321a5d9']
+  }
+
+  Note: '''Proxy models: ResolvedSmartLink.'''
+}
+
+Table linking_smartlinkcondition {
+  id integer [pk, increment]
+  smart_link_id integer [not null]
+  inclusion SmartLinkConditionInclusion [default: '&', not null, note: 'The inclusion is ignored for the first item.']
+  foreign_document_data varchar(128) [not null, note: 'This represents the metadata of all other documents.']
+  operator SmartLinkConditionOperator [not null]
+  expression text [not null, note: 'The expression using document properties to be evaluated against the foreign document field.']
+  negated bool [default: false, not null, note: 'Inverts the logic of the operator.']
+  enabled bool [default: true, not null]
+
+  indexes {
+    (smart_link_id) [name: 'linking_smartlinkcondition_smart_link_id_0b7e5753']
+  }
+}
+
+Table mailer_usermailer {
+  id integer [pk, increment]
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+  label varchar(128) [unique, not null, note: 'A short text describing the mailing profile.']
+  default bool [default: true, not null, note: 'If default, this mailing profile will be pre-selected on the document mailing form.']
+  enabled bool [default: true, not null]
+
+  Note: '''Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table mayan_statistics_statisticresult {
+  id integer [pk, increment]
+  slug varchar(50) [unique, not null]
+  datetime datetime [not null, note: 'default in Python: now()']
+  serialize_data text [not null]
+}
+
+Table metadata_metadatatype {
+  id integer [pk, increment]
+  name varchar(48) [unique, not null, note: 'Name used by other apps to reference this metadata type. Do not use python reserved words, or spaces.']
+  label varchar(48) [not null, note: 'Short description of this metadata type.']
+  default varchar(128) [note: 'Enter a template to render.']
+  lookup text [note: 'Enter a template to render. Must result in a comma delimited string.']
+  validation varchar(224) [not null, note: 'The validator will reject data entry if the value entered does not conform to the expected format.']
+  validation_arguments text [not null, note: 'Enter the arguments for the validator in YAML format.']
+  parser varchar(224) [not null, note: 'The parser will reformat the value entered to conform to the expected format.']
+  parser_arguments text [not null, note: 'Enter the arguments for the parser in YAML format.']
+}
+
+Table metadata_documenttypemetadatatype {
+  id integer [pk, increment]
+  document_type_id integer [not null]
+  metadata_type_id integer [not null]
+  required bool [default: false, not null]
+
+  indexes {
+    (document_type_id) [name: 'metadata_documenttypemetadatatype_document_type_id_3cd67d88']
+    (metadata_type_id) [name: 'metadata_documenttypemetadatatype_metadata_type_id_3590987f']
+    (document_type_id, metadata_type_id) [unique, name: 'metadata_documenttypemetadatatype_document_type_id_metadata_type_id_c88d1cb7_uniq']
+  }
+}
+
+Table metadata_documentmetadata {
+  id integer [pk, increment]
+  document_id integer [not null]
+  metadata_type_id integer [not null]
+  value text [note: 'The actual value stored in the metadata type field for the document.']
+
+  indexes {
+    (document_id) [name: 'metadata_documentmetadata_document_id_b0b10479']
+    (metadata_type_id) [name: 'metadata_documentmetadata_metadata_type_id_b3eee3ed']
+    (document_id, metadata_type_id) [unique, name: 'metadata_documentmetadata_document_id_metadata_type_id_34933d91_uniq']
+  }
+
+  Note: '''Proxy models: DocumentMetadataSearchResult.'''
+}
+
+Table ocr_documenttypeocrsettings {
+  id integer [pk, increment]
+  document_type_id integer [unique, not null]
+  auto_ocr bool [default: true, not null, note: 'Automatically queue newly created documents for OCR.']
+}
+
+Table ocr_documentversionpageocrcontent {
+  id integer [pk, increment]
+  document_version_page_id integer [unique, not null]
+  content text [not null, note: 'The actual text content extracted by the OCR backend.']
+}
+
+Table sequences_sequence {
+  id integer [pk, increment]
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+  label varchar(128) [unique, not null, note: 'Short description of this sequence.']
+  internal_name varchar(255) [unique, not null, note: 'This value will be used by other apps to reference this sequence. Can only contain letters, numbers, and underscores.']
+  position bigint [default: 0, not null, note: 'Zero based counter of how many values have been consumed. Set this to continue the numbering of a system being replaced.']
+  value_is_unique bool [default: true, note: 'Whether a value of this sequence identifies a single position. Recorded when the sequence is saved and not entered by hand.']
+  on_limit SequenceOnLimit [default: 'raise', not null, note: 'What to do when the sequence reaches the last position its backend is able to represent.']
+
+  indexes {
+    (position) [name: 'sequences_sequence_position_e4f13f60']
+  }
+
+  Note: '''Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table signature_captures_signaturecapture {
+  id integer [pk, increment]
+  document_id integer [not null]
+  data text [not null, note: 'Data representing the handwritten signature.']
+  svg text [not null, note: 'Vector representation of the handwritten signature.']
+  text varchar(224) [not null, note: 'Print version of the captured signature.']
+  user_id integer [not null]
+  date_time_created datetime [not null, note: 'default in Python: now()']
+  date_time_edited datetime [not null, note: 'default in Python: now()']
+  internal_name varchar(255) [not null, note: 'This value will be used when referencing this signature capture in relationship to the document. Can only contain letters, numbers, and underscores.']
+
+  indexes {
+    (document_id) [name: 'signature_captures_signaturecapture_document_id_529330b3']
+    (user_id) [name: 'signature_captures_signaturecapture_user_id_84504446']
+    (date_time_created) [name: 'signature_captures_signaturecapture_date_time_created_cfc23864']
+    (date_time_edited) [name: 'signature_captures_signaturecapture_date_time_edited_d7d1c32d']
+    (internal_name) [name: 'signature_captures_signaturecapture_internal_name_7736e98f']
+    (document_id, internal_name) [unique, name: 'signature_captures_signaturecapture_document_id_internal_name_e9027790_uniq']
+  }
+}
+
+Table sources_documentfilesourcemetadata {
+  id integer [pk, increment]
+  document_file_id integer [not null]
+  key varchar(255) [not null, note: 'Name of the source metadata entry.']
+  value text [note: 'The actual value stored in the source metadata for the document file.']
+
+  indexes {
+    (document_file_id) [name: 'sources_documentfilesourcemetadata_document_file_id_aa02ac84']
+    (key) [name: 'sources_documentfilesourcemetadata_key_c7a46275']
+    (document_file_id, key) [unique, name: 'sources_documentfilesourcemetadata_document_file_id_key_d359a46d_uniq']
+  }
+}
+
+Table sources_source {
+  id integer [pk, increment]
+  backend_path varchar(128) [not null, note: 'The dotted Python path to the backend class.']
+  backend_data text [not null, note: 'JSON encoded data for the backend class.']
+  label varchar(128) [unique, not null, note: 'A short text to describe this source.']
+  enabled bool [default: true, not null]
+
+  Note: '''Columns from BackendModelMixin (abstract): backend_path, backend_data.'''
+}
+
+Table tags_tag {
+  id integer [pk, increment]
+  label varchar(128) [unique, not null, note: 'A short text used as the tag name.']
+  color varchar(7) [not null, note: 'The RGB color values for the tag.']
+
+  Note: '''Proxy models: DocumentTag.'''
+}
+
+Table web_links_weblink {
+  id integer [pk, increment]
+  label varchar(96) [unique, not null, note: 'A short text describing the web link.']
+  template text [not null, note: 'Template that will be used to craft the final URL of the web link.']
+  enabled bool [default: true, not null]
+
+  Note: '''Proxy models: ResolvedWebLink.'''
+}
+
+Ref events_eventsubscription_user_id_fk: events_eventsubscription.user_id > auth_user.id [delete: cascade]
+
+Ref events_eventsubscription_stored_event_type_id_fk: events_eventsubscription.stored_event_type_id > events_storedeventtype.id [delete: cascade]
+
+Ref events_notification_user_id_fk: events_notification.user_id > auth_user.id [delete: cascade]
+
+Ref events_notification_action_id_fk: events_notification.action_id > actstream_action.id [delete: cascade]
+
+Ref events_objecteventsubscription_content_type_id_fk: events_objecteventsubscription.content_type_id > django_content_type.id [delete: cascade]
+
+Ref events_objecteventsubscription_user_id_fk: events_objecteventsubscription.user_id > auth_user.id [delete: cascade]
+
+Ref events_objecteventsubscription_stored_event_type_id_fk: events_objecteventsubscription.stored_event_type_id > events_storedeventtype.id [delete: cascade]
+
+Ref appearance_usersetting_user_id_fk: appearance_usersetting.user_id > auth_user.id [delete: cascade]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref actstream_follow_user_id_fk: actstream_follow.user_id > auth_user.id [delete: cascade]
+
+Ref actstream_follow_content_type_id_fk: actstream_follow.content_type_id > django_content_type.id [delete: cascade]
+
+Ref actstream_action_actor_content_type_id_fk: actstream_action.actor_content_type_id > django_content_type.id [delete: cascade]
+
+Ref actstream_action_target_content_type_id_fk: actstream_action.target_content_type_id > django_content_type.id [delete: cascade]
+
+Ref actstream_action_action_object_content_type_id_fk: actstream_action.action_object_content_type_id > django_content_type.id [delete: cascade]
+
+Ref axes_accessattemptexpiration_access_attempt_id_fk: axes_accessattemptexpiration.access_attempt_id - axes_accessattempt.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_interval_id_fk: django_celery_beat_periodictask.interval_id > django_celery_beat_intervalschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_crontab_id_fk: django_celery_beat_periodictask.crontab_id > django_celery_beat_crontabschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_solar_id_fk: django_celery_beat_periodictask.solar_id > django_celery_beat_solarschedule.id [delete: cascade]
+
+Ref django_celery_beat_periodictask_clocked_id_fk: django_celery_beat_periodictask.clocked_id > django_celery_beat_clockedschedule.id [delete: cascade]
+
+Ref authtoken_token_user_id_fk: authtoken_token.user_id - auth_user.id [delete: cascade]
+
+Ref logging_errorlogpartition_error_log_id_fk: logging_errorlogpartition.error_log_id > logging_storederrorlog.id [delete: cascade]
+
+Ref logging_errorlogpartition_content_type_id_fk: logging_errorlogpartition.content_type_id > django_content_type.id [delete: cascade]
+
+Ref logging_errorlogpartitionentry_error_log_partition_id_fk: logging_errorlogpartitionentry.error_log_partition_id > logging_errorlogpartition.id [delete: cascade]
+
+Ref acls_accesscontrollist_content_type_id_fk: acls_accesscontrollist.content_type_id > django_content_type.id [delete: cascade]
+
+Ref acls_accesscontrollist_role_id_fk: acls_accesscontrollist.role_id > permissions_role.id [delete: cascade]
+
+Table acls_accesscontrollist_permissions {
+  id integer [pk, increment]
+  accesscontrollist_id integer [not null]
+  storedpermission_id integer [not null]
+
+  indexes {
+    (accesscontrollist_id) [name: 'acls_accesscontrollist_permissions_accesscontrollist_id_c84800e5']
+    (storedpermission_id) [name: 'acls_accesscontrollist_permissions_storedpermission_id_342d4fc3']
+    (accesscontrollist_id, storedpermission_id) [unique, name: 'acls_accesscontrollist_permissions_accesscontrollist_id_storedpermission_id_a6be00ef_uniq']
+  }
+}
+
+Ref acls_accesscontrollist_permissions_accesscontrollist_id_fk: acls_accesscontrollist_permissions.accesscontrollist_id > acls_accesscontrollist.id [delete: cascade]
+
+Ref acls_accesscontrollist_permissions_storedpermission_id_fk: acls_accesscontrollist_permissions.storedpermission_id > permissions_storedpermission.id [delete: cascade]
+
+Ref user_management_useroptions_user_id_fk: user_management_useroptions.user_id - auth_user.id [delete: cascade]
+
+Ref authentication_attempts_loginattempt_user_id_fk: authentication_attempts_loginattempt.user_id > auth_user.id [delete: set null]
+
+Ref authentication_otp_userotpdata_user_id_fk: authentication_otp_userotpdata.user_id - auth_user.id [delete: cascade]
+
+Ref autoadmin_autoadminsingleton_account_id_fk: autoadmin_autoadminsingleton.account_id > auth_user.id [delete: cascade]
+
+Ref converter_objectlayer_content_type_id_fk: converter_objectlayer.content_type_id > django_content_type.id [delete: cascade]
+
+Ref converter_objectlayer_stored_layer_id_fk: converter_objectlayer.stored_layer_id > converter_storedlayer.id [delete: cascade]
+
+Ref converter_layertransformation_object_layer_id_fk: converter_layertransformation.object_layer_id > converter_objectlayer.id [delete: cascade]
+
+Ref dynamic_search_savedresultset_user_id_fk: dynamic_search_savedresultset.user_id > auth_user.id [delete: cascade]
+
+Ref dynamic_search_savedresultsetentry_saved_resultset_id_fk: dynamic_search_savedresultsetentry.saved_resultset_id > dynamic_search_savedresultset.id [delete: cascade]
+
+Ref file_caching_cachepartition_cache_id_fk: file_caching_cachepartition.cache_id > file_caching_cache.id [delete: cascade]
+
+Ref file_caching_cachepartitionfile_partition_id_fk: file_caching_cachepartitionfile.partition_id > file_caching_cachepartition.id [delete: cascade]
+
+Ref locales_userlocaleprofile_user_id_fk: locales_userlocaleprofile.user_id - auth_user.id [delete: cascade]
+
+Ref messaging_message_sender_content_type_id_fk: messaging_message.sender_content_type_id > django_content_type.id [delete: cascade]
+
+Ref messaging_message_user_id_fk: messaging_message.user_id > auth_user.id [delete: cascade]
+
+Table permissions_role_permissions {
+  id integer [pk, increment]
+  role_id integer [not null]
+  storedpermission_id integer [not null]
+
+  indexes {
+    (role_id) [name: 'permissions_role_permissions_role_id_9313389c']
+    (storedpermission_id) [name: 'permissions_role_permissions_storedpermission_id_8f157086']
+    (role_id, storedpermission_id) [unique, name: 'permissions_role_permissions_role_id_storedpermission_id_d9d895c7_uniq']
+  }
+}
+
+Ref permissions_role_permissions_role_id_fk: permissions_role_permissions.role_id > permissions_role.id [delete: cascade]
+
+Ref permissions_role_permissions_storedpermission_id_fk: permissions_role_permissions.storedpermission_id > permissions_storedpermission.id [delete: cascade]
+
+Table permissions_role_groups {
+  id integer [pk, increment]
+  role_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (role_id) [name: 'permissions_role_groups_role_id_bd491961']
+    (group_id) [name: 'permissions_role_groups_group_id_cc37ac20']
+    (role_id, group_id) [unique, name: 'permissions_role_groups_role_id_group_id_e958b421_uniq']
+  }
+}
+
+Ref permissions_role_groups_role_id_fk: permissions_role_groups.role_id > permissions_role.id [delete: cascade]
+
+Ref permissions_role_groups_group_id_fk: permissions_role_groups.group_id > auth_group.id [delete: cascade]
+
+Ref server_side_events_streamevent_user_id_fk: server_side_events_streamevent.user_id > auth_user.id [delete: cascade]
+
+Ref storage_downloadfile_user_id_fk: storage_downloadfile.user_id > auth_user.id [delete: cascade]
+
+Ref views_userconfirmview_user_id_fk: views_userconfirmview.user_id > auth_user.id [delete: cascade]
+
+Ref views_userviewmode_user_id_fk: views_userviewmode.user_id > auth_user.id [delete: cascade]
+
+Ref documents_documenttypefilename_document_type_id_fk: documents_documenttypefilename.document_type_id > documents_documenttype.id [delete: cascade]
+
+Ref documents_document_file_latest_id_fk: documents_document.file_latest_id - documents_documentfile.id [delete: set null]
+
+Ref documents_document_document_type_id_fk: documents_document.document_type_id > documents_documenttype.id [delete: cascade]
+
+Ref documents_document_version_active_id_fk: documents_document.version_active_id - documents_documentversion.id [delete: set null]
+
+Ref documents_documentfile_document_id_fk: documents_documentfile.document_id > documents_document.id [delete: cascade]
+
+Ref documents_documentversion_document_id_fk: documents_documentversion.document_id > documents_document.id [delete: cascade]
+
+Ref documents_documentversionpage_document_version_id_fk: documents_documentversionpage.document_version_id > documents_documentversion.id [delete: cascade]
+
+Ref documents_documentversionpage_content_type_id_fk: documents_documentversionpage.content_type_id > django_content_type.id [delete: cascade]
+
+Ref documents_documentfilepage_document_file_id_fk: documents_documentfilepage.document_file_id > documents_documentfile.id [delete: cascade]
+
+Ref documents_recentlyaccesseddocument_user_id_fk: documents_recentlyaccesseddocument.user_id > auth_user.id [delete: cascade]
+
+Ref documents_recentlyaccesseddocument_document_id_fk: documents_recentlyaccesseddocument.document_id > documents_document.id [delete: cascade]
+
+Ref cabinets_cabinet_parent_id_fk: cabinets_cabinet.parent_id > cabinets_cabinet.id [delete: cascade]
+
+Table cabinets_cabinet_documents {
+  id integer [pk, increment]
+  cabinet_id integer [not null]
+  document_id integer [not null]
+
+  indexes {
+    (cabinet_id) [name: 'cabinets_cabinet_documents_cabinet_id_5f9ca709']
+    (document_id) [name: 'cabinets_cabinet_documents_document_id_0f2a0f7a']
+    (cabinet_id, document_id) [unique, name: 'cabinets_cabinet_documents_cabinet_id_document_id_fb3935b0_uniq']
+  }
+}
+
+Ref cabinets_cabinet_documents_cabinet_id_fk: cabinets_cabinet_documents.cabinet_id > cabinets_cabinet.id [delete: cascade]
+
+Ref cabinets_cabinet_documents_document_id_fk: cabinets_cabinet_documents.document_id > documents_document.id [delete: cascade]
+
+Ref checkouts_documentcheckout_document_id_fk: checkouts_documentcheckout.document_id - documents_document.id [delete: cascade]
+
+Ref checkouts_documentcheckout_user_id_fk: checkouts_documentcheckout.user_id > auth_user.id [delete: cascade]
+
+Ref document_comments_comment_document_id_fk: document_comments_comment.document_id > documents_document.id [delete: cascade]
+
+Ref document_comments_comment_user_id_fk: document_comments_comment.user_id > auth_user.id [delete: cascade]
+
+Ref documents_favoritedocument_user_id_fk: documents_favoritedocument.user_id > auth_user.id [delete: cascade]
+
+Ref documents_favoritedocument_document_id_fk: documents_favoritedocument.document_id > documents_document.id [delete: cascade]
+
+Table document_indexing_indextemplate_document_types {
+  id integer [pk, increment]
+  indextemplate_id integer [not null]
+  documenttype_id integer [not null]
+
+  indexes {
+    (indextemplate_id) [name: 'document_indexing_indextemplate_document_types_indextemplate_id_67865e15']
+    (documenttype_id) [name: 'document_indexing_indextemplate_document_types_documenttype_id_ffba2d3d']
+    (indextemplate_id, documenttype_id) [unique, name: 'document_indexing_indextemplate_document_types_indextemplate_id_documenttype_id_584849fa_uniq']
+  }
+}
+
+Ref document_indexing_indextemplate_document_types_indextemplate_id_fk: document_indexing_indextemplate_document_types.indextemplate_id > document_indexing_indextemplate.id [delete: cascade]
+
+Ref document_indexing_indextemplate_document_types_documenttype_id_fk: document_indexing_indextemplate_document_types.documenttype_id > documents_documenttype.id [delete: cascade]
+
+Ref document_indexing_indextemplateeventtrigger_index_template_id_fk: document_indexing_indextemplateeventtrigger.index_template_id > document_indexing_indextemplate.id [delete: cascade]
+
+Ref document_indexing_indextemplateeventtrigger_stored_event_type_id_fk: document_indexing_indextemplateeventtrigger.stored_event_type_id > events_storedeventtype.id [delete: cascade]
+
+Ref document_indexing_indextemplatenode_parent_id_fk: document_indexing_indextemplatenode.parent_id > document_indexing_indextemplatenode.id [delete: cascade]
+
+Ref document_indexing_indextemplatenode_index_id_fk: document_indexing_indextemplatenode.index_id > document_indexing_indextemplate.id [delete: cascade]
+
+Ref document_indexing_indexinstancenode_parent_id_fk: document_indexing_indexinstancenode.parent_id > document_indexing_indexinstancenode.id [delete: cascade]
+
+Ref document_indexing_indexinstancenode_index_template_node_id_fk: document_indexing_indexinstancenode.index_template_node_id > document_indexing_indextemplatenode.id [delete: cascade]
+
+Table document_indexing_indexinstancenode_documents {
+  id integer [pk, increment]
+  indexinstancenode_id integer [not null]
+  document_id integer [not null]
+
+  indexes {
+    (indexinstancenode_id) [name: 'document_indexing_indexinstancenode_documents_indexinstancenode_id_9f4e413e']
+    (document_id) [name: 'document_indexing_indexinstancenode_documents_document_id_01ea67cd']
+    (indexinstancenode_id, document_id) [unique, name: 'document_indexing_indexinstancenode_documents_indexinstancenode_id_document_id_6bb4c624_uniq']
+  }
+}
+
+Ref document_indexing_indexinstancenode_documents_indexinstancenode_id_fk: document_indexing_indexinstancenode_documents.indexinstancenode_id > document_indexing_indexinstancenode.id [delete: cascade]
+
+Ref document_indexing_indexinstancenode_documents_document_id_fk: document_indexing_indexinstancenode_documents.document_id > documents_document.id [delete: cascade]
+
+Ref document_parsing_documentfilepagecontent_document_file_page_id_fk: document_parsing_documentfilepagecontent.document_file_page_id - documents_documentfilepage.id [delete: cascade]
+
+Ref document_parsing_documenttypesettings_document_type_id_fk: document_parsing_documenttypesettings.document_type_id - documents_documenttype.id [delete: cascade]
+
+Ref document_signatures_signaturebasemodel_document_file_id_fk: document_signatures_signaturebasemodel.document_file_id > documents_documentfile.id [delete: cascade]
+
+Ref document_signatures_detachedsignature_signaturebasemodel_ptr_id_fk: document_signatures_detachedsignature.signaturebasemodel_ptr_id - document_signatures_signaturebasemodel.id [delete: cascade]
+
+Ref document_signatures_embeddedsignature_signaturebasemodel_ptr_id_fk: document_signatures_embeddedsignature.signaturebasemodel_ptr_id - document_signatures_signaturebasemodel.id [delete: cascade]
+
+Table document_states_workflow_document_types {
+  id integer [pk, increment]
+  workflow_id integer [not null]
+  documenttype_id integer [not null]
+
+  indexes {
+    (workflow_id) [name: 'document_states_workflow_document_types_workflow_id_b1dfb20a']
+    (documenttype_id) [name: 'document_states_workflow_document_types_documenttype_id_d68c08bd']
+    (workflow_id, documenttype_id) [unique, name: 'document_states_workflow_document_types_workflow_id_documenttype_id_1ae46739_uniq']
+  }
+}
+
+Ref document_states_workflow_document_types_workflow_id_fk: document_states_workflow_document_types.workflow_id > document_states_workflow.id [delete: cascade]
+
+Ref document_states_workflow_document_types_documenttype_id_fk: document_states_workflow_document_types.documenttype_id > documents_documenttype.id [delete: cascade]
+
+Ref document_states_workflowstate_workflow_id_fk: document_states_workflowstate.workflow_id > document_states_workflow.id [delete: cascade]
+
+Ref document_states_workflowtransition_workflow_id_fk: document_states_workflowtransition.workflow_id > document_states_workflow.id [delete: cascade]
+
+Ref document_states_workflowtransition_origin_state_id_fk: document_states_workflowtransition.origin_state_id > document_states_workflowstate.id [delete: cascade]
+
+Ref document_states_workflowtransition_destination_state_id_fk: document_states_workflowtransition.destination_state_id > document_states_workflowstate.id [delete: cascade]
+
+Ref document_states_workflowtransitionfield_transition_id_fk: document_states_workflowtransitionfield.transition_id > document_states_workflowtransition.id [delete: cascade]
+
+Ref document_states_workflowinstance_workflow_id_fk: document_states_workflowinstance.workflow_id > document_states_workflow.id [delete: cascade]
+
+Ref document_states_workflowinstance_document_id_fk: document_states_workflowinstance.document_id > documents_document.id [delete: cascade]
+
+Ref document_states_workflowinstance_state_active_id_fk: document_states_workflowinstance.state_active_id > document_states_workflowstate.id [delete: cascade]
+
+Ref document_states_workflowinstancelogentry_workflow_instance_id_fk: document_states_workflowinstancelogentry.workflow_instance_id > document_states_workflowinstance.id [delete: cascade]
+
+Ref document_states_workflowinstancelogentry_transition_id_fk: document_states_workflowinstancelogentry.transition_id > document_states_workflowtransition.id [delete: cascade]
+
+Ref document_states_workflowinstancelogentry_user_id_fk: document_states_workflowinstancelogentry.user_id > auth_user.id [delete: cascade]
+
+Ref document_states_workflowstateaction_state_id_fk: document_states_workflowstateaction.state_id > document_states_workflowstate.id [delete: cascade]
+
+Ref document_states_workflowstateescalation_state_id_fk: document_states_workflowstateescalation.state_id > document_states_workflowstate.id [delete: cascade]
+
+Ref document_states_workflowstateescalation_transition_id_fk: document_states_workflowstateescalation.transition_id > document_states_workflowtransition.id [delete: cascade]
+
+Ref document_states_workflowtransitiontriggerevent_transition_id_fk: document_states_workflowtransitiontriggerevent.transition_id > document_states_workflowtransition.id [delete: cascade]
+
+Ref document_states_workflowtransitiontriggerevent_event_type_id_fk: document_states_workflowtransitiontriggerevent.event_type_id > events_storedeventtype.id [delete: cascade]
+
+Ref duplicates_duplicatebackendentry_stored_backend_id_fk: duplicates_duplicatebackendentry.stored_backend_id > duplicates_storedduplicatebackend.id [delete: cascade]
+
+Ref duplicates_duplicatebackendentry_document_id_fk: duplicates_duplicatebackendentry.document_id > documents_document.id [delete: cascade]
+
+Table duplicates_duplicatebackendentry_documents {
+  id integer [pk, increment]
+  duplicatebackendentry_id integer [not null]
+  document_id integer [not null]
+
+  indexes {
+    (duplicatebackendentry_id) [name: 'duplicates_duplicatebackendentry_documents_duplicatebackendentry_id_d9460182']
+    (document_id) [name: 'duplicates_duplicatebackendentry_documents_document_id_0df5b22b']
+    (duplicatebackendentry_id, document_id) [unique, name: 'duplicates_duplicatebackendentry_documents_duplicatebackendentry_id_document_id_030fe7f1_uniq']
+  }
+}
+
+Ref duplicates_duplicatebackendentry_documents_duplicatebackendentry_id_fk: duplicates_duplicatebackendentry_documents.duplicatebackendentry_id > duplicates_duplicatebackendentry.id [delete: cascade]
+
+Ref duplicates_duplicatebackendentry_documents_document_id_fk: duplicates_duplicatebackendentry_documents.document_id > documents_document.id [delete: cascade]
+
+Ref file_metadata_documentfiledriverentry_driver_id_fk: file_metadata_documentfiledriverentry.driver_id > file_metadata_storeddriver.id [delete: cascade]
+
+Ref file_metadata_documentfiledriverentry_document_file_id_fk: file_metadata_documentfiledriverentry.document_file_id > documents_documentfile.id [delete: cascade]
+
+Ref file_metadata_documenttypedriverconfiguration_document_type_id_fk: file_metadata_documenttypedriverconfiguration.document_type_id > documents_documenttype.id [delete: cascade]
+
+Ref file_metadata_documenttypedriverconfiguration_stored_driver_id_fk: file_metadata_documenttypedriverconfiguration.stored_driver_id > file_metadata_storeddriver.id [delete: cascade]
+
+Ref file_metadata_filemetadataentry_document_file_driver_entry_id_fk: file_metadata_filemetadataentry.document_file_driver_entry_id > file_metadata_documentfiledriverentry.id [delete: cascade]
+
+Table linking_smartlink_document_types {
+  id integer [pk, increment]
+  smartlink_id integer [not null]
+  documenttype_id integer [not null]
+
+  indexes {
+    (smartlink_id) [name: 'linking_smartlink_document_types_smartlink_id_a8c9443b']
+    (documenttype_id) [name: 'linking_smartlink_document_types_documenttype_id_4dba045b']
+    (smartlink_id, documenttype_id) [unique, name: 'linking_smartlink_document_types_smartlink_id_documenttype_id_962d0f83_uniq']
+  }
+}
+
+Ref linking_smartlink_document_types_smartlink_id_fk: linking_smartlink_document_types.smartlink_id > linking_smartlink.id [delete: cascade]
+
+Ref linking_smartlink_document_types_documenttype_id_fk: linking_smartlink_document_types.documenttype_id > documents_documenttype.id [delete: cascade]
+
+Ref linking_smartlinkcondition_smart_link_id_fk: linking_smartlinkcondition.smart_link_id > linking_smartlink.id [delete: cascade]
+
+Ref metadata_documenttypemetadatatype_document_type_id_fk: metadata_documenttypemetadatatype.document_type_id > documents_documenttype.id [delete: cascade]
+
+Ref metadata_documenttypemetadatatype_metadata_type_id_fk: metadata_documenttypemetadatatype.metadata_type_id > metadata_metadatatype.id [delete: cascade]
+
+Ref metadata_documentmetadata_document_id_fk: metadata_documentmetadata.document_id > documents_document.id [delete: cascade]
+
+Ref metadata_documentmetadata_metadata_type_id_fk: metadata_documentmetadata.metadata_type_id > metadata_metadatatype.id [delete: cascade]
+
+Ref ocr_documenttypeocrsettings_document_type_id_fk: ocr_documenttypeocrsettings.document_type_id - documents_documenttype.id [delete: cascade]
+
+Ref ocr_documentversionpageocrcontent_document_version_page_id_fk: ocr_documentversionpageocrcontent.document_version_page_id - documents_documentversionpage.id [delete: cascade]
+
+Table sequences_sequence_document_types {
+  id integer [pk, increment]
+  sequence_id integer [not null]
+  documenttype_id integer [not null]
+
+  indexes {
+    (sequence_id) [name: 'sequences_sequence_document_types_sequence_id_e8b8d240']
+    (documenttype_id) [name: 'sequences_sequence_document_types_documenttype_id_ac1f991a']
+    (sequence_id, documenttype_id) [unique, name: 'sequences_sequence_document_types_sequence_id_documenttype_id_58ccc952_uniq']
+  }
+}
+
+Ref sequences_sequence_document_types_sequence_id_fk: sequences_sequence_document_types.sequence_id > sequences_sequence.id [delete: cascade]
+
+Ref sequences_sequence_document_types_documenttype_id_fk: sequences_sequence_document_types.documenttype_id > documents_documenttype.id [delete: cascade]
+
+Ref signature_captures_signaturecapture_document_id_fk: signature_captures_signaturecapture.document_id > documents_document.id [delete: cascade]
+
+Ref signature_captures_signaturecapture_user_id_fk: signature_captures_signaturecapture.user_id > auth_user.id [delete: cascade]
+
+Ref sources_documentfilesourcemetadata_document_file_id_fk: sources_documentfilesourcemetadata.document_file_id > documents_documentfile.id [delete: cascade]
+
+Table tags_tag_documents {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  document_id integer [not null]
+
+  indexes {
+    (tag_id) [name: 'tags_tag_documents_tag_id_2fe342c7']
+    (document_id) [name: 'tags_tag_documents_document_id_cbf643eb']
+    (tag_id, document_id) [unique, name: 'tags_tag_documents_tag_id_document_id_7698ad5e_uniq']
+  }
+}
+
+Ref tags_tag_documents_tag_id_fk: tags_tag_documents.tag_id > tags_tag.id [delete: cascade]
+
+Ref tags_tag_documents_document_id_fk: tags_tag_documents.document_id > documents_document.id [delete: cascade]
+
+Table web_links_weblink_document_types {
+  id integer [pk, increment]
+  weblink_id integer [not null]
+  documenttype_id integer [not null]
+
+  indexes {
+    (weblink_id) [name: 'web_links_weblink_document_types_weblink_id_3ed180df']
+    (documenttype_id) [name: 'web_links_weblink_document_types_documenttype_id_310c1b1e']
+    (weblink_id, documenttype_id) [unique, name: 'web_links_weblink_document_types_weblink_id_documenttype_id_bb0577ad_uniq']
+  }
+}
+
+Ref web_links_weblink_document_types_weblink_id_fk: web_links_weblink_document_types.weblink_id > web_links_weblink.id [delete: cascade]
+
+Ref web_links_weblink_document_types_documenttype_id_fk: web_links_weblink_document_types.documenttype_id > documents_documenttype.id [delete: cascade]

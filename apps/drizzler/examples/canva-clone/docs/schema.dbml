@@ -1,0 +1,90 @@
+Table user {
+  id text [pk, not null]
+  name text
+  email text [not null]
+  emailVerified timestamp
+  image text
+  password text
+}
+
+Table account {
+  userId text [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, providerAccountId) [pk]
+  }
+}
+
+Table session {
+  sessionToken text [pk, not null]
+  userId text [not null]
+  expires timestamp [not null]
+}
+
+Table verificationToken {
+  identifier text [not null]
+  token text [not null]
+  expires timestamp [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Table authenticator {
+  credentialID text [not null, unique]
+  userId text [not null]
+  providerAccountId text [not null]
+  credentialPublicKey text [not null]
+  counter integer [not null]
+  credentialDeviceType text [not null]
+  credentialBackedUp boolean [not null]
+  transports text
+  indexes {
+    (userId, credentialID) [pk]
+  }
+}
+
+Table project {
+  id text [pk, not null]
+  name text [not null]
+  userId text [not null]
+  json text [not null]
+  height integer [not null]
+  width integer [not null]
+  thumbnailUrl text
+  isTemplate boolean
+  isPro boolean
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table subscription {
+  id text [pk, not null]
+  userId text [not null]
+  subscriptionId text [not null]
+  customerId text [not null]
+  priceId text [not null]
+  status text [not null]
+  currentPeriodEnd timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]
+
+Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
+
+Ref authenticator_userId_user_id_fk: authenticator.userId > user.id [delete: cascade]
+
+Ref project_userId_user_id_fk: project.userId > user.id [delete: cascade]
+
+Ref subscription_userId_user_id_fk: subscription.userId > user.id [delete: cascade]

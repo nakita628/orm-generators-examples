@@ -1,0 +1,565 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ScheduleScheduleType {
+  "O"
+  "I"
+  "H"
+  "D"
+  "W"
+  "BW"
+  "M"
+  "BM"
+  "Q"
+  "Y"
+  "C"
+}
+
+Enum AppointmentRequestPaymentType {
+  "full"
+  "down"
+}
+
+Enum AppointmentRescheduleHistoryRescheduleStatus {
+  "pending"
+  "confirmed"
+}
+
+Enum PasswordResetTokenTokenStatus {
+  "active"
+  "verified"
+  "invalidated"
+}
+
+Enum WorkingHoursDayOfWeek {
+  "0"
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+  "6"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_q_task {
+  id varchar(32) [pk, note: '32-character task identifier.']
+  name varchar(100) [not null, note: 'Optional human-readable name for lookup and display.']
+  func varchar(256) [not null, note: 'Dotted import path to the callable, e.g. myapp.tasks.job.']
+  hook varchar(256) [note: 'Optional dotted path to a callback that receives the task result.']
+  args text [note: 'Pickled positional arguments (tuple).']
+  kwargs text [note: 'Pickled keyword arguments (dict).']
+  result text [note: 'Pickled return value or error payload.']
+  group varchar(100) [note: 'Optional group id to aggregate related tasks.']
+  cluster varchar(100) [default: null, note: 'Name of the cluster that executed this task.']
+  started datetime [not null, note: 'When the worker started executing the task.']
+  stopped datetime [not null, note: 'When the worker finished (success or failure).']
+  success bool [default: true, not null, note: 'False if the task raised an exception or timed out.']
+  attempt_count integer [default: 0, not null, note: 'How many times execution was attempted.']
+
+  indexes {
+    (group, name, func) [name: 'success_index', note: 'where "success" = 1']
+  }
+
+  Note: '''Proxy models: Success, Failure.'''
+}
+
+Table django_q_schedule {
+  id integer [pk, increment]
+  name varchar(100) [note: 'Optional label to identify this schedule in the admin.']
+  func varchar(256) [not null, note: 'e.g. module.tasks.function']
+  hook varchar(256) [note: 'e.g. module.tasks.result_function']
+  args text [note: 'e.g. 1, 2, \'John\'']
+  kwargs text [note: 'e.g. x=1, y=2, name=\'John\'']
+  schedule_type ScheduleScheduleType [default: 'O', not null, note: 'How often this task should be enqueued.']
+  minutes "smallint unsigned" [note: 'Number of minutes for the Minutes type']
+  repeats integer [default: -1, not null, note: 'n = n times, -1 = forever']
+  next_run datetime [note: 'When this schedule runs next (stored in UTC).. default in Python: now()']
+  cron varchar(100) [note: 'Cron expression']
+  task varchar(100) [note: 'Id of the last task spawned from this schedule (read-only).']
+  cluster varchar(100) [default: null, note: 'Name of the target cluster']
+  intended_date_kwarg varchar(100) [note: 'Name of kwarg to pass intended schedule date']
+}
+
+Table django_q_ormq {
+  id integer [pk, increment]
+  key varchar(100) [not null, note: 'Name of the target cluster']
+  payload text [not null, note: 'Signed serialized task package (do not edit manually).']
+  lock datetime [note: 'Prevent any cluster from pulling until']
+}
+
+Table appointment_service {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  description text
+  duration bigint [not null]
+  price decimal [not null, note: 'declared max_digits=8, decimal_places=2, which the database does not enforce']
+  down_payment decimal [default: 0, not null, note: 'declared max_digits=6, decimal_places=2, which the database does not enforce']
+  image varchar(100)
+  currency varchar(3) [default: 'USD', not null]
+  background_color varchar(50) [note: 'default in Python: generate_rgb_color()']
+  reschedule_limit "integer unsigned" [default: 0, not null, note: 'Maximum number of times an appointment can be rescheduled.']
+  allow_rescheduling bool [default: false, not null, note: 'Indicates whether appointments for this service can be rescheduled.']
+  use_service_duration_as_slot bool [default: true, not null, note: 'If enabled, the service\'s actual duration is used when checking slot availability, preventing overlaps for services longer than the default slot duration. Only evaluated when \'Default to service duration\' is disabled in Config.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (name) [name: 'appointment_name_c25ec8_idx']
+    (price) [name: 'appointment_price_0f5143_idx']
+  }
+
+  Note: '''Represents a service provided by the appointment system.
+
+Author: Adams Pierre David
+Version: 1.1.0
+Since: 1.0.0'''
+}
+
+Table appointment_staffmember {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  slot_duration "integer unsigned" [note: 'Minimum time for an appointment in minutes, recommended 30.']
+  lead_time time [note: 'Time when the staff member starts working.']
+  finish_time time [note: 'Time when the staff member stops working.']
+  appointment_buffer_time real [note: 'Time between now and the first available slot for the current day (doesn\'t affect tomorrow). e.g: If you start working at 9:00 AM and the current time is 8:30 AM and you set it to 30 minutes, the first available slot will be at 9:00 AM. If you set the appointment buffer time to 60 minutes, the first available slot will be at 9:30 AM.']
+  slot_gap_time "integer unsigned" [note: 'Required rest time in minutes between the end of one appointment and the start of the next. Overrides the global Config setting for this staff member.']
+  work_on_saturday bool [default: false, not null, note: 'Indicates whether this staff member works on Saturdays.']
+  work_on_sunday bool [default: false, not null, note: 'Indicates whether this staff member works on Sundays.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+}
+
+Table appointment_appointmentrequest {
+  id integer [pk, increment]
+  date date [not null, note: 'The date of the appointment request.']
+  start_time time [not null, note: 'The start time of the appointment request.']
+  end_time time [not null, note: 'The end time of the appointment request.']
+  service_id bigint [not null]
+  staff_member_id bigint
+  payment_type AppointmentRequestPaymentType [default: 'full', not null]
+  id_request varchar(100)
+  reschedule_attempts "integer unsigned" [default: 0, not null, note: 'Number of times this appointment has been rescheduled.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (service_id) [name: 'appointment_appointmentrequest_service_id_776d762d']
+    (staff_member_id) [name: 'appointment_appointmentrequest_staff_member_id_c6000f09']
+    (date, start_time) [name: 'appointment_date_eff862_idx']
+    (staff_member_id, date) [name: 'appointment_staff_m_13c670_idx']
+  }
+
+  Note: '''Represents an appointment request made by a client.
+
+Author: Adams Pierre David
+Since: 1.0.0'''
+}
+
+Table appointment_appointmentreschedulehistory {
+  id integer [pk, increment]
+  appointment_request_id bigint [not null, note: 'The appointment request made by a client.']
+  date date [not null, note: 'The previous date of the appointment before it was rescheduled.']
+  start_time time [not null, note: 'The previous start time of the appointment before it was rescheduled.']
+  end_time time [not null, note: 'The previous end time of the appointment before it was rescheduled.']
+  staff_member_id bigint [note: 'The previous staff member of the appointment before it was rescheduled.']
+  reason_for_rescheduling text [note: 'Reason for the appointment reschedule.']
+  reschedule_status AppointmentRescheduleHistoryRescheduleStatus [default: 'pending', not null, note: 'Indicates the status of the reschedule action.']
+  id_request varchar(100)
+  created_at datetime [not null, note: 'The date and time the reschedule was recorded.. default in Python: now()']
+  updated_at datetime [not null, note: 'The date and time the reschedule was confirmed.. default in Python: now()']
+
+  indexes {
+    (appointment_request_id) [name: 'appointment_appointmentreschedulehistory_appointment_request_id_1e3c5054']
+    (staff_member_id) [name: 'appointment_appointmentreschedulehistory_staff_member_id_32ce3411']
+  }
+}
+
+Table appointment_appointment {
+  id integer [pk, increment]
+  client_id integer [note: 'The user who made the appointment request.']
+  appointment_request_id bigint [unique, not null, note: 'The appointment request made by the client.']
+  phone varchar(128) [not null]
+  address varchar(255) [default: '', note: 'Does not have to be specific, just the city and the state']
+  want_reminder bool [default: false, not null, note: 'Indicates whether the client wants a reminder for the appointment.']
+  additional_info text [note: 'Any additional information the client wants to provide for the appointment.']
+  paid bool [default: false, not null, note: 'Indicates whether the appointment has been paid for.']
+  amount_to_pay decimal [note: 'The amount to be paid for the appointment. If 0, it means the appointment is free or already paid.. declared max_digits=10, decimal_places=2, which the database does not enforce']
+  id_request varchar(100)
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (client_id) [name: 'appointment_appointment_client_id_9829a0eb']
+    (client_id, created_at) [name: 'appointment_client__b0d651_idx', note: 'descending: created_at']
+  }
+
+  checks {
+    `"amount_to_pay" >= '0'` [name: 'positive_amount_to_pay']
+  }
+
+  Note: '''Represents an appointment made by a client. It is created when the client confirms the appointment request.
+
+Author: Adams Pierre David
+Version: 1.1.0
+Since: 1.0.0'''
+}
+
+Table appointment_config {
+  id integer [pk, increment]
+  slot_duration "integer unsigned" [note: 'Minimum time for an appointment in minutes, recommended 30.']
+  lead_time time [note: 'Time when we start working.']
+  finish_time time [note: 'Time when we stop working.']
+  appointment_buffer_time real [note: 'Time between now and the first available slot for the current day (doesn\'t affect tomorrow).']
+  website_name varchar(255) [default: '', not null, note: 'Name of your website.']
+  app_offered_by_label varchar(255) [default: 'Offered by', not null, note: 'Label for `Offered by` on the appointment page']
+  default_reschedule_limit "integer unsigned" [default: 3, not null, note: 'Default maximum number of times an appointment can be rescheduled across all services.']
+  allow_staff_change_on_reschedule bool [default: true, not null, note: 'Allows clients to change the staff member when rescheduling an appointment.']
+  default_to_service_duration bool [default: true, not null, note: 'When enabled, all services automatically use their own duration when checking slot availability, preventing overlaps for longer services. When disabled, each service\'s individual \'Use Service Duration as Slot\' setting is respected instead.']
+  slot_gap_time "integer unsigned" [note: 'Required rest time in minutes between the end of one appointment and the start of the next. Applies to all staff members unless overridden per staff member.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Represents configuration settings for the appointment system. There can only be one Config object in the database.
+If you want to change the settings, you must edit the existing Config object.
+
+Author: Adams Pierre David
+Version: 1.1.0
+Since: 1.1.0'''
+}
+
+Table appointment_paymentinfo {
+  id integer [pk, increment]
+  appointment_id bigint [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (appointment_id) [name: 'appointment_paymentinfo_appointment_id_a0eb36ed']
+  }
+
+  Note: '''Represents payment information for an appointment.
+
+Author: Adams Pierre David
+Version: 1.1.0
+Since: 1.0.0'''
+}
+
+Table appointment_emailverificationcode {
+  id integer [pk, increment]
+  user_id integer [not null]
+  code varchar(6) [not null, note: 'The verification code sent to the user\'s email.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'appointment_emailverificationcode_user_id_a2b675c9']
+  }
+
+  Note: '''Represents an email verification code for a user when the email already exists in the database.
+
+Author: Adams Pierre David
+Version: 1.1.0
+Since: 1.1.0'''
+}
+
+Table appointment_passwordresettoken {
+  id integer [pk, increment]
+  user_id integer [not null]
+  token char(32) [unique, not null, note: 'default in Python: uuid4()']
+  expires_at datetime [not null]
+  status PasswordResetTokenTokenStatus [default: 'active', not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'appointment_passwordresettoken_user_id_38b97e5a']
+  }
+
+  Note: '''Represents a password reset token for users.
+
+Author: Adams Pierre David
+Version: 3.x.x
+Since: 3.x.x'''
+}
+
+Table appointment_dayoff {
+  id integer [pk, increment]
+  staff_member_id bigint [not null]
+  start_date date [not null]
+  end_date date [not null]
+  description varchar(255)
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (staff_member_id) [name: 'appointment_dayoff_staff_member_id_f0c08dcf']
+  }
+}
+
+Table appointment_unavailability {
+  id integer [pk, increment]
+  staff_member_id bigint [not null]
+  description varchar(255)
+  date date [not null]
+  start_time time [not null]
+  end_time time [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (staff_member_id) [name: 'appointment_unavailability_staff_member_id_17b40658']
+  }
+
+  checks {
+    `"start_time" < ("end_time")` [name: 'unavailability_start_time_before_end_time']
+  }
+}
+
+Table appointment_workinghours {
+  id integer [pk, increment]
+  staff_member_id bigint [not null]
+  day_of_week WorkingHoursDayOfWeek [not null]
+  start_time time [not null]
+  end_time time [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (staff_member_id) [name: 'appointment_workinghours_staff_member_id_8e0c8746']
+    (staff_member_id, day_of_week) [unique, name: 'appointment_workinghours_staff_member_id_day_of_week_d1d65265_uniq']
+  }
+
+  checks {
+    `"start_time" < ("end_time")` [name: 'working_hours_start_time_before_end_time']
+  }
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref appointment_staffmember_user_id_fk: appointment_staffmember.user_id - auth_user.id [delete: cascade]
+
+Table appointment_staffmember_services_offered {
+  id integer [pk, increment]
+  staffmember_id bigint [not null]
+  service_id bigint [not null]
+
+  indexes {
+    (staffmember_id) [name: 'appointment_staffmember_services_offered_staffmember_id_a871c65b']
+    (service_id) [name: 'appointment_staffmember_services_offered_service_id_ce2c8c07']
+    (staffmember_id, service_id) [unique, name: 'appointment_staffmember_services_offered_staffmember_id_service_id_f101118c_uniq']
+  }
+}
+
+Ref appointment_staffmember_services_offered_staffmember_id_fk: appointment_staffmember_services_offered.staffmember_id > appointment_staffmember.id [delete: cascade]
+
+Ref appointment_staffmember_services_offered_service_id_fk: appointment_staffmember_services_offered.service_id > appointment_service.id [delete: cascade]
+
+Ref appointment_appointmentrequest_service_id_fk: appointment_appointmentrequest.service_id > appointment_service.id [delete: cascade]
+
+Ref appointment_appointmentrequest_staff_member_id_fk: appointment_appointmentrequest.staff_member_id > appointment_staffmember.id [delete: set null]
+
+Ref appointment_appointmentreschedulehistory_appointment_request_id_fk: appointment_appointmentreschedulehistory.appointment_request_id > appointment_appointmentrequest.id [delete: cascade]
+
+Ref appointment_appointmentreschedulehistory_staff_member_id_fk: appointment_appointmentreschedulehistory.staff_member_id > appointment_staffmember.id [delete: set null]
+
+Ref appointment_appointment_client_id_fk: appointment_appointment.client_id > auth_user.id [delete: set null]
+
+Ref appointment_appointment_appointment_request_id_fk: appointment_appointment.appointment_request_id - appointment_appointmentrequest.id [delete: cascade]
+
+Ref appointment_paymentinfo_appointment_id_fk: appointment_paymentinfo.appointment_id > appointment_appointment.id [delete: cascade]
+
+Ref appointment_emailverificationcode_user_id_fk: appointment_emailverificationcode.user_id > auth_user.id [delete: cascade]
+
+Ref appointment_passwordresettoken_user_id_fk: appointment_passwordresettoken.user_id > auth_user.id [delete: cascade]
+
+Ref appointment_dayoff_staff_member_id_fk: appointment_dayoff.staff_member_id > appointment_staffmember.id [delete: cascade]
+
+Ref appointment_unavailability_staff_member_id_fk: appointment_unavailability.staff_member_id > appointment_staffmember.id [delete: cascade]
+
+Ref appointment_workinghours_staff_member_id_fk: appointment_workinghours.staff_member_id > appointment_staffmember.id [delete: cascade]

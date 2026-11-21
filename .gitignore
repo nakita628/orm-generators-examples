@@ -1,0 +1,36 @@
+# Bazel: the convenience symlinks and machine-specific flags. MODULE.bazel.lock is committed.
+/bazel-*
+/user.bazelrc
+
+# Node (the pnpm workspace: apps/hekireki, apps/drizzler)
+node_modules/
+*.log
+*.tsbuildinfo
+
+# Python (apps/djangoer)
+.venv/
+__pycache__/
+*.py[cod]
+.ruff_cache/
+.mypy_cache/
+# What a Django example writes at runtime when Djangoer imports it: clones, data, logs, caches.
+apps/djangoer/examples/*/src/
+apps/djangoer/examples/*/data/
+apps/djangoer/examples/*/media/
+apps/djangoer/examples/*/*/photos/cache/
+
+# hekireki's language checks (run in temp copies; these are their outputs if run in place)
+apps/hekireki/checks/*/target/
+apps/hekireki/checks/*/_build/
+apps/hekireki/checks/*/deps/
+apps/hekireki/checks/*/vendor/
+apps/hekireki/checks/*/bin/
+apps/hekireki/checks/*/obj/
+apps/hekireki/checks/*/build/
+apps/hekireki/checks/*/.gradle/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp

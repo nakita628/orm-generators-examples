@@ -1,0 +1,1161 @@
+Table users {
+  id varchar [pk, not null]
+  name varchar
+  lastName varchar
+  email varchar [not null]
+  emailVerified timestamp
+  image varchar
+  stripeCustomerId varchar
+  stripeSubscriptionId varchar
+  thirdPartyStripeSubscriptionId varchar
+  stripeSubscriptionStatus varchar
+  stripeSubscriptionPriceId varchar
+  preferences json
+  activeOrganizationId varchar
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  onboardingSteps json
+  onboarding_completed_at timestamp
+  customBucket varchar
+  inviteQuota integer [not null]
+  defaultOrgId varchar
+  authSessionVersion integer [not null]
+  marketingOrigin varchar [not null]
+  indexes {
+    (email) [unique, name: 'email_idx']
+  }
+}
+
+Table loops_sync_jobs {
+  userId varchar [pk, not null]
+  revision integer [not null]
+  nextAttemptAt datetime [not null]
+  leaseToken varchar
+  leaseUntil datetime
+  failures integer [not null]
+  lastError varchar
+  profileHash varchar
+  teammateJoinedAt datetime
+  syncedEmail varchar
+  lastSyncedAt datetime
+  indexes {
+    (nextAttemptAt) [name: 'loops_sync_due_idx']
+  }
+}
+
+Table accounts {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  type varchar [not null]
+  provider varchar [not null]
+  providerAccountId varchar [not null]
+  access_token text
+  expires_in integer
+  id_token text
+  refresh_token text
+  refresh_token_expires_in integer
+  scope varchar
+  token_type varchar
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  tempColumn text
+  indexes {
+    (userId) [name: 'user_id_idx']
+    (providerAccountId) [name: 'provider_account_id_idx']
+  }
+}
+
+Table sessions {
+  id varchar [pk, not null]
+  sessionToken varchar [not null]
+  userId varchar [not null]
+  expires datetime [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (sessionToken) [unique, name: 'session_token_idx']
+    (userId) [name: 'user_id_idx']
+  }
+}
+
+Table verification_tokens {
+  identifier varchar [pk, not null]
+  token varchar [not null, unique]
+  expires datetime [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table organizations {
+  id varchar [pk, not null]
+  name varchar [not null]
+  ownerId varchar [not null]
+  metadata json
+  tombstoneAt timestamp
+  allowedEmailDomain varchar
+  defaultVideoVisibility varchar
+  customDomain varchar
+  domainVerified timestamp
+  settings json
+  iconUrl varchar
+  shareableLinkIconUrl varchar
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  workosOrganizationId varchar
+  workosConnectionId varchar
+  indexes {
+    (ownerId, tombstoneAt) [name: 'owner_id_tombstone_idx']
+    (customDomain) [name: 'custom_domain_idx']
+    (workosOrganizationId) [unique, name: 'workos_organization_id_idx']
+  }
+}
+
+Table organization_sso {
+  organizationId varchar [pk, not null]
+  purchasedByUserId varchar [not null]
+  stripeCustomerId varchar
+  stripeSubscriptionId varchar
+  stripePriceId varchar
+  status varchar [not null]
+  paidThrough datetime
+  currentPeriodEnd datetime
+  cancelAtPeriodEnd boolean [not null]
+  checkoutAttemptId varchar
+  checkoutCurrency varchar
+  checkoutPriceId varchar
+  checkoutSessionId varchar
+  checkoutStartedAt datetime
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (stripeSubscriptionId) [unique, name: 'sso_stripe_subscription_id_idx']
+  }
+}
+
+Table organization_directory_sync {
+  organizationId varchar [pk, not null]
+  requestedAt datetime
+  syncedAt datetime
+  leaseExpiresAt datetime
+  lastError varchar
+  heldRemovals integer [not null]
+  removalsApprovedAt datetime
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table directory_users {
+  id varchar [pk, not null]
+  organizationId varchar [not null]
+  directoryId varchar [not null]
+  userId varchar [not null]
+  email varchar [not null]
+  active boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (organizationId) [name: 'directory_users_organization_id_idx']
+    (userId, organizationId) [name: 'directory_users_user_org_idx']
+  }
+}
+
+Table organization_members {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  organizationId varchar [not null]
+  role varchar [not null]
+  hasProSeat boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (organizationId) [name: 'organization_id_idx']
+    (userId, organizationId) [name: 'user_id_organization_id_idx']
+  }
+}
+
+Table integration_installations {
+  id varchar [pk, not null]
+  provider varchar [not null]
+  externalId varchar [not null]
+  displayName varchar [not null]
+  organizationId varchar [not null]
+  installedByUserId varchar [not null]
+  encryptedCredentials text [not null]
+  metadata json [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (provider, externalId) [unique, name: 'provider_external_id_idx']
+    (organizationId, provider, displayName) [name: 'organization_provider_display_name_idx']
+  }
+}
+
+Table organization_invites {
+  id varchar [pk, not null]
+  organizationId varchar [not null]
+  invitedEmail varchar [not null]
+  invitedByUserId varchar [not null]
+  role varchar [not null]
+  status varchar [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  expiresAt timestamp
+  indexes {
+    (organizationId) [name: 'organization_id_idx']
+    (invitedEmail) [name: 'invited_email_idx']
+    (invitedByUserId) [name: 'invited_by_user_id_idx']
+    (status) [name: 'status_idx']
+  }
+}
+
+Table folders {
+  id varchar [pk, not null]
+  name varchar [not null]
+  color varchar [not null]
+  public boolean [not null, note: 'Internet-facing public collection link (/c/[id]).']
+  settings json
+  organizationId varchar [not null]
+  createdById varchar [not null]
+  parentId varchar
+  spaceId varchar
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (organizationId) [name: 'organization_id_idx']
+    (createdById) [name: 'created_by_id_idx']
+    (parentId) [name: 'parent_id_idx']
+    (spaceId) [name: 'space_id_idx']
+    (public, parentId) [name: 'public_parent_id_idx']
+    (public, spaceId, parentId) [name: 'public_space_parent_id_idx']
+  }
+}
+
+Table videos {
+  id varchar [pk, not null]
+  ownerId varchar [not null]
+  orgId varchar [not null]
+  name varchar [not null]
+  bucket varchar
+  storageIntegrationId varchar
+  duration float [note: 'in seconds']
+  width integer
+  height integer
+  fps integer
+  metadata json
+  public boolean [not null]
+  settings json
+  transcriptionStatus varchar
+  source json [not null]
+  folderId varchar
+  createdAt timestamp [not null]
+  effectiveCreatedAt datetime
+  updatedAt timestamp [not null]
+  password text [note: 'PRIVATE']
+  xStreamInfo text [note: 'LEGACY']
+  firstViewEmailSentAt timestamp
+  isScreenshot boolean [not null]
+  awsRegion varchar [note: 'DEPRECATED']
+  awsBucket varchar
+  videoStartTime varchar
+  audioStartTime varchar
+  jobId varchar
+  jobStatus varchar
+  skipProcessing boolean [not null]
+  indexes {
+    (ownerId) [name: 'owner_id_idx']
+    (ownerId, updatedAt, id) [name: 'owner_updated_id_idx']
+    (public) [name: 'is_public_idx']
+    (folderId) [name: 'folder_id_idx']
+    (storageIntegrationId) [name: 'storage_integration_id_idx']
+    (orgId, ownerId, folderId) [name: 'org_owner_folder_idx']
+    (orgId, ownerId, folderId, effectiveCreatedAt) [name: 'org_owner_folder_effective_idx']
+    (orgId, effectiveCreatedAt) [name: 'org_effective_created_idx']
+    (isScreenshot, transcriptionStatus, createdAt) [name: 'screenshot_transcription_created_idx']
+  }
+}
+
+Table video_edits {
+  videoId varchar [pk, not null]
+  sourceKey varchar [not null]
+  editSpec json [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table shared_videos {
+  id varchar [pk, not null]
+  videoId varchar [not null]
+  folderId varchar
+  organizationId varchar [not null]
+  sharedByUserId varchar [not null]
+  sharedAt timestamp [not null]
+  indexes {
+    (folderId) [name: 'folder_id_idx']
+    (organizationId) [name: 'organization_id_idx']
+    (sharedByUserId) [name: 'shared_by_user_id_idx']
+    (videoId, organizationId) [name: 'video_id_organization_id_idx']
+    (videoId, folderId) [name: 'video_id_folder_id_idx']
+  }
+}
+
+Table video_viewer_grants {
+  id varchar [pk, not null]
+  videoId varchar [not null]
+  email varchar [not null]
+  invitedByUserId varchar [not null]
+  createdAt timestamp [not null]
+  revokedAt timestamp
+  indexes {
+    (videoId, email) [unique, name: 'video_email_idx']
+  }
+}
+
+Table comments {
+  id varchar [pk, not null]
+  type varchar [not null]
+  content text [not null]
+  timestamp float
+  authorId varchar [not null]
+  videoId varchar [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  parentCommentId varchar
+  mediaKey varchar [note: 'Media comments ("video"/"audio" type): object key under the parent video\'s prefix (`${ownerId}/${videoId}/comments/${commentId}/...`), served via /api/storage/object which asserts that prefix.']
+  mediaDuration float
+  mediaMeta json
+  indexes {
+    (videoId, type, createdAt, id) [name: 'video_type_created_idx']
+    (authorId) [name: 'author_id_idx']
+    (parentCommentId) [name: 'parent_comment_id_idx']
+  }
+}
+
+Table notifications {
+  id varchar [pk, not null]
+  orgId varchar [not null]
+  recipientId varchar [not null]
+  type varchar [not null]
+  data json [not null]
+  videoId varchar
+  dedupKey varchar
+  readAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (orgId) [name: 'org_id_idx']
+    (type) [name: 'type_idx']
+    (readAt) [name: 'read_at_idx']
+    (createdAt) [name: 'created_at_idx']
+    (recipientId, readAt) [name: 'recipient_read_idx']
+    (recipientId, createdAt) [name: 'recipient_created_idx']
+    (dedupKey) [unique, name: 'dedup_key_idx']
+    (type, recipientId, createdAt) [name: 'type_recipient_created_idx']
+    (type, recipientId, videoId, createdAt) [name: 'type_recipient_video_created_idx']
+    (videoId) [name: 'video_id_idx']
+  }
+}
+
+Table messenger_conversations {
+  id varchar [pk, not null]
+  agent varchar [not null]
+  mode varchar [not null]
+  userId varchar
+  anonymousId varchar
+  takeoverByUserId varchar
+  takeoverAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  lastMessageAt timestamp [not null]
+  indexes {
+    (userId, lastMessageAt) [name: 'user_last_message_idx']
+    (anonymousId, lastMessageAt) [name: 'anonymous_last_message_idx']
+    (mode, lastMessageAt) [name: 'mode_last_message_idx']
+    (updatedAt) [name: 'updated_at_idx']
+  }
+}
+
+Table messenger_messages {
+  id varchar [pk, not null]
+  conversationId varchar [not null]
+  role varchar [not null]
+  content text [not null]
+  userId varchar
+  anonymousId varchar
+  createdAt timestamp [not null]
+  indexes {
+    (conversationId, createdAt) [name: 'conversation_created_at_idx']
+    (role, createdAt) [name: 'role_created_at_idx']
+  }
+}
+
+Table messenger_support_emails {
+  id varchar [pk, not null]
+  conversationId varchar [not null]
+  userId varchar [not null]
+  userEmail varchar [not null]
+  subject varchar [not null]
+  message text [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (userId, createdAt) [name: 'support_email_user_created_at_idx']
+    (conversationId, createdAt) [name: 'support_email_conversation_created_at_idx']
+  }
+}
+
+Table signed_baas {
+  id varchar [pk, not null]
+  organizationId varchar [not null]
+  userId varchar [not null]
+  status varchar [not null]
+  stripeSubscriptionId varchar
+  entityName varchar [not null]
+  entityType varchar [not null]
+  entityAddress varchar [not null]
+  signerName varchar [not null]
+  signerTitle varchar [not null]
+  noticesEmail varchar [not null]
+  signatureData longtext [not null]
+  signedAt timestamp
+  emailSentAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (organizationId) [unique, name: 'signed_baa_organization_id_idx']
+    (stripeSubscriptionId) [name: 'signed_baa_stripe_subscription_idx']
+  }
+}
+
+Table s3_buckets {
+  id varchar [pk, not null]
+  ownerId varchar [not null]
+  organizationId varchar
+  region text [not null]
+  endpoint text
+  bucketName text [not null]
+  accessKeyId text [not null]
+  secretAccessKey text [not null]
+  provider text [not null]
+  active boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (ownerId, organizationId) [name: 'owner_organization_idx']
+    (organizationId) [name: 'organization_id_idx']
+    (organizationId, active, updatedAt) [name: 'organization_active_idx']
+  }
+}
+
+Table storage_integrations {
+  id varchar [pk, not null]
+  ownerId varchar [not null]
+  organizationId varchar
+  provider varchar [not null]
+  displayName varchar [not null]
+  status varchar [not null]
+  active boolean [not null]
+  encryptedConfig text [not null]
+  googleDriveAccessToken text
+  googleDriveAccessTokenExpiresAt timestamp
+  googleDriveTokenRefreshLeaseId varchar
+  googleDriveTokenRefreshLeaseExpiresAt timestamp
+  googleDriveStorageQuotaCache json
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (ownerId, provider) [name: 'owner_provider_idx']
+    (ownerId, active) [name: 'owner_active_idx']
+    (organizationId, provider) [name: 'organization_provider_idx']
+    (organizationId, active, status) [name: 'organization_active_idx']
+  }
+}
+
+Table storage_objects {
+  id varchar [pk, not null]
+  integrationId varchar [not null]
+  ownerId varchar [not null]
+  videoId varchar
+  objectKey text [not null]
+  objectKeyHash varchar [not null]
+  providerObjectId varchar [not null]
+  uploadSessionUrl text
+  uploadStatus varchar [not null]
+  contentType varchar
+  contentLength bigint
+  metadata json
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (integrationId, objectKeyHash) [unique, name: 'integration_key_hash_idx']
+    (integrationId, uploadStatus) [name: 'integration_status_idx']
+    (integrationId) [name: 'integration_object_key_prefix_idx']
+    (videoId) [name: 'video_id_idx']
+    (ownerId) [name: 'owner_id_idx']
+  }
+}
+
+Table auth_api_keys {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  source varchar [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (userId, createdAt) [name: 'user_id_created_at_idx']
+  }
+}
+
+Table mobile_push_tokens {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  token varchar [not null]
+  sessionHash varchar [not null, note: 'SHA-256 of the auth_api_keys id that registered it, so the token dies with that session.']
+  environment varchar [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (token) [unique, name: 'token_idx']
+    (userId) [name: 'user_id_idx']
+    (sessionHash) [name: 'session_hash_idx']
+  }
+}
+
+Table mobile_push_claims {
+  id varchar [pk, not null]
+  createdAt timestamp [not null]
+  indexes {
+    (createdAt) [name: 'created_at_idx']
+  }
+  Note: 'One row per push that must send at most once, such as a Cap\'s view push for a 10-minute window.'
+}
+
+Table agent_api_keys {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  tokenHash varchar [not null]
+  name varchar [not null]
+  scopes json [not null]
+  expiresAt timestamp [not null]
+  revokedAt timestamp
+  createdAt timestamp [not null]
+  lastUsedAt timestamp
+  indexes {
+    (tokenHash) [unique, name: 'token_hash_idx']
+    (userId, createdAt) [name: 'user_created_at_idx']
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
+Table agent_api_idempotency {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  operation varchar [not null]
+  keyHash varchar [not null]
+  requestHash varchar [not null]
+  state varchar [not null]
+  statusCode integer
+  response json
+  expiresAt timestamp [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (userId, operation, keyHash) [unique, name: 'user_operation_key_idx']
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
+Table agent_api_authorization_codes {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  codeHash varchar [not null]
+  codeChallenge varchar [not null]
+  redirectUri varchar [not null]
+  scopes json [not null]
+  expiresAt timestamp [not null]
+  consumedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (codeHash) [unique, name: 'code_hash_idx']
+    (expiresAt) [name: 'expires_at_idx']
+    (userId, createdAt) [name: 'user_created_at_idx']
+  }
+}
+
+Table mcp_oauth_clients {
+  id varchar [pk, not null]
+  clientId varchar [not null]
+  clientName varchar [not null]
+  redirectUris json [not null]
+  activatedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (clientId) [unique, name: 'client_id_idx']
+    (activatedAt, createdAt) [name: 'inactive_created_at_idx']
+  }
+}
+
+Table mcp_oauth_registration_quotas {
+  windowId varchar [pk, not null]
+  registrations integer [not null]
+  expiresAt timestamp [not null]
+  indexes {
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
+Table mcp_oauth_codes {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  clientId varchar [not null]
+  codeHash varchar [not null]
+  codeChallenge varchar [not null]
+  redirectUri varchar [not null]
+  resource varchar [not null]
+  expiresAt timestamp [not null]
+  consumedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (codeHash) [unique, name: 'code_hash_idx']
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
+Table mcp_oauth_tokens {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  clientId varchar [not null]
+  familyId varchar [not null]
+  resource varchar [not null]
+  accessHash varchar [not null]
+  refreshHash varchar [not null]
+  accessExpiresAt timestamp [not null]
+  refreshExpiresAt timestamp [not null]
+  revokedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (accessHash) [unique, name: 'access_hash_idx']
+    (refreshHash) [unique, name: 'refresh_hash_idx']
+    (familyId) [name: 'family_id_idx']
+    (clientId, revokedAt, refreshExpiresAt) [name: 'client_active_idx']
+    (refreshExpiresAt) [name: 'refresh_expires_at_idx']
+  }
+}
+
+Table agent_api_operations {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  kind varchar [not null]
+  resourceId varchar [not null]
+  resultResourceId varchar
+  state varchar [not null]
+  payload json [not null]
+  result json
+  errorCode varchar
+  errorMessage text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  completedAt timestamp
+  indexes {
+    (userId, createdAt) [name: 'user_created_at_idx']
+    (state, updatedAt) [name: 'state_updated_at_idx']
+    (resourceId) [name: 'resource_id_idx']
+  }
+}
+
+Table spaces {
+  id varchar [pk, not null]
+  primary boolean [not null]
+  name varchar [not null]
+  organizationId varchar [not null]
+  createdById varchar [not null]
+  iconUrl varchar
+  description varchar
+  settings json
+  password text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  privacy varchar [not null, note: 'Org-internal browsability: "Public" spaces are visible to all org members. Unrelated to the internet-facing `public` flag below.']
+  public boolean [not null, note: 'Internet-facing public collection link (/c/[id]).']
+  indexes {
+    (organizationId) [name: 'organization_id_idx']
+    (createdById) [name: 'created_by_id_idx']
+    (public, organizationId) [name: 'public_organization_id_idx']
+  }
+}
+
+Table space_members {
+  id varchar [pk, not null]
+  spaceId varchar [not null]
+  userId varchar [not null]
+  role varchar [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (userId) [name: 'user_id_idx']
+    (spaceId, userId) [unique, name: 'space_id_user_id_unique']
+  }
+}
+
+Table space_videos {
+  id varchar [pk, not null]
+  spaceId varchar [not null]
+  folderId varchar
+  videoId varchar [not null]
+  addedById varchar [not null]
+  addedAt timestamp [not null]
+  indexes {
+    (folderId) [name: 'folder_id_idx']
+    (videoId) [name: 'video_id_idx']
+    (addedById) [name: 'added_by_id_idx']
+    (spaceId, videoId) [name: 'space_id_video_id_idx']
+    (spaceId, folderId) [name: 'space_id_folder_id_idx']
+  }
+}
+
+Table video_uploads {
+  video_id varchar [pk, not null]
+  uploaded bigint [not null]
+  total bigint [not null]
+  started_at timestamp [not null]
+  updated_at timestamp [not null]
+  mode varchar
+  phase varchar [not null]
+  processing_progress integer [not null]
+  processing_message varchar
+  processing_error text
+  raw_file_key varchar
+  indexes {
+    (phase, updated_at, video_id) [name: 'phase_updated_at_video_id_idx']
+    (started_at) [name: 'started_at_idx']
+  }
+}
+
+Table video_processing_jobs {
+  video_id varchar [pk, not null]
+  owner_id varchar [not null]
+  generation varchar [not null]
+  manifest_sha256 varchar
+  state varchar [not null]
+  attempt_id varchar
+  attempt_count integer [not null]
+  lease_expires_at datetime
+  next_retry_at datetime [not null]
+  workflow_run_id varchar
+  remote_job_id varchar
+  source json
+  verification json
+  output json
+  error_code varchar
+  error_message text
+  created_at datetime [not null]
+  updated_at datetime [not null]
+  indexes {
+    (state, next_retry_at, video_id) [name: 'processing_state_retry_video_idx']
+    (state, lease_expires_at, video_id) [name: 'processing_state_lease_video_idx']
+  }
+}
+
+Table media_processing_budgets {
+  id varchar [pk, not null]
+  reserved_bytes bigint [not null]
+  limit_bytes bigint [not null]
+  expires_at datetime [not null]
+  indexes {
+    (expires_at) [name: 'media_budget_expiry_idx']
+  }
+}
+
+Table imported_videos {
+  id varchar [not null]
+  orgId varchar [not null]
+  source varchar [not null]
+  source_id varchar [not null]
+  indexes {
+    (orgId, source, source_id) [pk]
+    (id) [name: 'id_idx']
+  }
+}
+
+Table loom_migration_requests {
+  id varchar [pk, not null]
+  organizationId varchar [not null]
+  activeOrganizationId varchar
+  requestedByUserId varchar [not null]
+  workspaceName varchar
+  customerNote text
+  customerReply text
+  invitedAt datetime
+  status varchar [not null]
+  capMessage text
+  expectedVideoCount integer
+  importedVideoCount integer [not null]
+  queuedVideoCount integer [not null]
+  activeImportCount integer [not null]
+  activeImportLeaseToken varchar
+  activeImportLeaseUntil datetime
+  lastOperatorUserId varchar
+  lastOperatorAt datetime
+  completedAt datetime
+  createdAt datetime [not null]
+  updatedAt datetime [not null]
+  indexes {
+    (activeOrganizationId) [unique, name: 'loom_migration_active_org_idx']
+    (organizationId, createdAt) [name: 'loom_migration_org_created_idx']
+    (status, createdAt) [name: 'loom_migration_status_created_idx']
+  }
+}
+
+Table loom_migration_imports {
+  videoId varchar [pk, not null]
+  requestId varchar [not null]
+  createdAt datetime [not null]
+  indexes {
+    (requestId) [name: 'loom_migration_imports_request_idx']
+  }
+}
+
+Table developer_apps {
+  id varchar [pk, not null]
+  ownerId varchar [not null]
+  name varchar [not null]
+  environment varchar [not null]
+  logoUrl varchar
+  deletedAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (ownerId, deletedAt) [name: 'owner_deleted_idx']
+  }
+}
+
+Table developer_app_domains {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  domain varchar [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (appId, domain) [unique, name: 'app_domain_unique']
+  }
+}
+
+Table developer_api_keys {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  keyType varchar [not null]
+  keyPrefix varchar [not null]
+  keyHash varchar [not null]
+  encryptedKey text [not null]
+  lastUsedAt timestamp
+  revokedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (keyHash) [unique, name: 'key_hash_idx']
+    (appId, keyType) [name: 'app_key_type_idx']
+  }
+}
+
+Table developer_videos {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  externalUserId varchar
+  name varchar [not null]
+  duration float
+  width integer
+  height integer
+  fps integer
+  s3Key varchar
+  transcriptionStatus varchar
+  metadata json
+  status varchar [not null]
+  playbackId varchar
+  maxResolutionTier varchar [not null]
+  renditions json
+  storedBytes bigint
+  errorReason varchar
+  processing json
+  storagePaidUntil timestamp
+  deletedAt timestamp
+  filesDeletedAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (appId, createdAt) [name: 'app_created_idx']
+    (appId, externalUserId) [name: 'app_user_idx']
+    (appId, deletedAt) [name: 'app_deleted_idx']
+    (playbackId) [unique, name: 'playback_id_idx']
+    (filesDeletedAt, deletedAt) [name: 'files_pending_idx']
+    (appId, deletedAt, status, maxResolutionTier, width, height, storagePaidUntil, duration, createdAt) [name: 'app_storage_idx']
+    (storagePaidUntil, status, createdAt) [name: 'first_month_due_idx']
+  }
+}
+
+Table developer_transcripts {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  externalUserId varchar
+  name varchar [not null]
+  status varchar [not null]
+  sourceType varchar [not null]
+  sourceUrl varchar
+  videoId varchar
+  requestedAt timestamp
+  s3Key varchar
+  resultKey varchar
+  sourceBytes bigint
+  durationSeconds float
+  requestedLanguage varchar
+  language varchar
+  text mediumtext
+  wordCount integer
+  reservedMicroCredits bigint [not null]
+  billedMicroCredits bigint [not null]
+  errorCode varchar
+  errorMessage varchar
+  metadata json
+  runId varchar
+  queuedAt timestamp
+  startedAt timestamp
+  completedAt timestamp
+  deletedAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (appId, deletedAt, createdAt, id) [name: 'dev_transcripts_app_list_idx']
+    (appId, externalUserId, createdAt) [name: 'dev_transcripts_app_user_idx']
+    (appId, status, createdAt) [name: 'dev_transcripts_app_status_idx']
+    (status, updatedAt) [name: 'dev_transcripts_status_updated_idx']
+    (appId, status, completedAt, durationSeconds, billedMicroCredits) [name: 'dev_transcripts_app_completed_idx']
+    (appId, status, createdAt, deletedAt, reservedMicroCredits) [name: 'dev_transcripts_app_status_held_idx']
+    (appId, videoId, requestedAt, id) [name: 'dev_transcripts_app_video_idx']
+  }
+}
+
+Table developer_credit_accounts {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  ownerId varchar [not null]
+  balanceMicroCredits bigint [not null]
+  stripeCustomerId varchar
+  stripePaymentMethodId varchar
+  autoTopUpEnabled boolean [not null]
+  autoTopUpThresholdMicroCredits bigint [not null]
+  autoTopUpAmountCents integer [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (appId) [unique, name: 'app_id_unique']
+    (ownerId) [name: 'owner_idx']
+    (autoTopUpEnabled) [name: 'auto_top_up_idx']
+  }
+}
+
+Table developer_credit_transactions {
+  id varchar [pk, not null]
+  accountId varchar [not null]
+  type varchar [not null]
+  amountMicroCredits bigint [not null]
+  balanceAfterMicroCredits bigint [not null]
+  referenceId varchar
+  referenceType varchar
+  metadata json
+  createdAt timestamp [not null]
+  indexes {
+    (accountId, type, createdAt) [name: 'account_type_created_idx']
+    (accountId, createdAt) [name: 'account_created_idx']
+    (accountId, referenceId, referenceType) [name: 'account_ref_dedup_idx']
+    (referenceType, referenceId) [name: 'reference_type_id_idx']
+  }
+}
+
+Table developer_daily_storage_snapshots {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  snapshotDate varchar [not null]
+  totalDurationMinutes float [not null]
+  videoCount integer [not null]
+  microCreditsCharged bigint [not null]
+  processedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (appId, snapshotDate) [unique, name: 'app_date_unique']
+  }
+}
+
+Table developer_delivery_daily {
+  appId varchar [not null]
+  day date [not null]
+  tier varchar [not null]
+  seconds bigint [not null]
+  bytes bigint [not null]
+  requests integer [not null]
+  abandonedBytes bigint [not null]
+  final boolean [not null]
+  finalizedAt timestamp
+  updatedAt timestamp [not null]
+  indexes {
+    (appId, day, tier) [pk]
+    (day) [name: 'day_idx']
+  }
+}
+
+Table developer_delivery_log_files {
+  logFile varchar [pk, not null]
+  etag varchar [not null]
+  logHour datetime [not null]
+  parts json [not null]
+  processedAt timestamp [not null]
+  indexes {
+    (logHour) [name: 'log_hour_idx']
+  }
+}
+
+Table developer_webhook_endpoints {
+  id varchar [pk, not null]
+  appId varchar [not null]
+  url varchar [not null]
+  secretPrefix varchar [not null]
+  encryptedSecret text [not null]
+  events json [not null]
+  enabled boolean [not null]
+  disabledReason varchar
+  lastDeliveryAt timestamp
+  lastDeliveryStatus varchar
+  lastResponseStatus integer
+  lastErrorCode varchar
+  consecutiveFailures integer [not null]
+  failingSince timestamp
+  deletedAt timestamp
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (appId, deletedAt, createdAt, id) [name: 'dev_webhooks_app_list_idx']
+  }
+}
+
+Table developer_video_imports {
+  videoId varchar [pk, not null]
+  appId varchar [not null]
+  keyId varchar [not null]
+  sourceUrl varchar [not null]
+  state varchar [not null]
+  bytes bigint
+  errorCode varchar
+  startedAt timestamp [not null]
+  finishedAt timestamp
+  createdAt timestamp [not null]
+  indexes {
+    (appId, state) [name: 'dev_imports_app_state_idx']
+    (keyId, createdAt) [name: 'dev_imports_key_created_idx']
+  }
+}
+
+Ref videos_storageIntegrationId_storage_integrations_id_fk: videos.storageIntegrationId > storage_integrations.id [delete: restrict]
+
+Ref video_edits_videoId_videos_id_fk: video_edits.videoId - videos.id [delete: cascade]
+
+Ref video_viewer_grants_videoId_videos_id_fk: video_viewer_grants.videoId > videos.id [delete: cascade]
+
+Ref messenger_messages_conversationId_messenger_conversations_id_fk: messenger_messages.conversationId > messenger_conversations.id [delete: cascade]
+
+Ref messenger_support_emails_conversationId_messenger_conversations_id_fk: messenger_support_emails.conversationId > messenger_conversations.id [delete: cascade]
+
+Ref storage_objects_integrationId_storage_integrations_id_fk: storage_objects.integrationId > storage_integrations.id [delete: restrict]
+
+Ref developer_app_domains_appId_developer_apps_id_fk: developer_app_domains.appId > developer_apps.id
+
+Ref developer_api_keys_appId_developer_apps_id_fk: developer_api_keys.appId > developer_apps.id
+
+Ref developer_videos_appId_developer_apps_id_fk: developer_videos.appId > developer_apps.id
+
+Ref developer_transcripts_appId_developer_apps_id_fk: developer_transcripts.appId > developer_apps.id
+
+Ref developer_credit_accounts_appId_developer_apps_id_fk: developer_credit_accounts.appId - developer_apps.id
+
+Ref developer_credit_transactions_accountId_developer_credit_accounts_id_fk: developer_credit_transactions.accountId > developer_credit_accounts.id
+
+Ref developer_daily_storage_snapshots_appId_developer_apps_id_fk: developer_daily_storage_snapshots.appId > developer_apps.id
+
+Ref developer_delivery_daily_appId_developer_apps_id_fk: developer_delivery_daily.appId > developer_apps.id
+
+Ref developer_webhook_endpoints_appId_developer_apps_id_fk: developer_webhook_endpoints.appId > developer_apps.id
+
+Ref developer_video_imports_appId_developer_apps_id_fk: developer_video_imports.appId > developer_apps.id
+
+Ref notifications_orgId_organizations_id: notifications.orgId > organizations.id
+
+Ref notifications_recipientId_users_id: notifications.recipientId > users.id
+
+Ref comments_authorId_users_id: comments.authorId > users.id
+
+Ref comments_videoId_videos_id: comments.videoId > videos.id
+
+Ref comments_parentCommentId_comments_id: comments.parentCommentId > comments.id
+
+Ref messenger_conversations_userId_users_id: messenger_conversations.userId > users.id
+
+Ref messenger_messages_userId_users_id: messenger_messages.userId > users.id
+
+Ref messenger_support_emails_userId_users_id: messenger_support_emails.userId > users.id
+
+Ref accounts_userId_users_id: accounts.userId > users.id
+
+Ref s3_buckets_ownerId_users_id: s3_buckets.ownerId > users.id
+
+Ref s3_buckets_organizationId_organizations_id: s3_buckets.organizationId > organizations.id
+
+Ref storage_integrations_ownerId_users_id: storage_integrations.ownerId > users.id
+
+Ref storage_integrations_organizationId_organizations_id: storage_integrations.organizationId > organizations.id
+
+Ref storage_objects_videoId_videos_id: storage_objects.videoId > videos.id
+
+Ref organizations_ownerId_users_id: organizations.ownerId > users.id
+
+Ref sessions_userId_users_id: sessions.userId > users.id
+
+Ref organization_members_userId_users_id: organization_members.userId > users.id
+
+Ref organization_members_organizationId_organizations_id: organization_members.organizationId > organizations.id
+
+Ref integration_installations_organizationId_organizations_id: integration_installations.organizationId > organizations.id
+
+Ref integration_installations_installedByUserId_users_id: integration_installations.installedByUserId > users.id
+
+Ref organization_invites_organizationId_organizations_id: organization_invites.organizationId > organizations.id
+
+Ref organization_invites_invitedByUserId_users_id: organization_invites.invitedByUserId > users.id
+
+Ref videos_ownerId_users_id: videos.ownerId > users.id
+
+Ref videos_id_video_edits_videoId: videos.id - video_edits.videoId
+
+Ref videos_folderId_folders_id: videos.folderId > folders.id
+
+Ref shared_videos_videoId_videos_id: shared_videos.videoId > videos.id
+
+Ref shared_videos_organizationId_organizations_id: shared_videos.organizationId > organizations.id
+
+Ref shared_videos_sharedByUserId_users_id: shared_videos.sharedByUserId > users.id
+
+Ref spaces_organizationId_organizations_id: spaces.organizationId > organizations.id
+
+Ref spaces_createdById_users_id: spaces.createdById > users.id
+
+Ref space_members_spaceId_spaces_id: space_members.spaceId > spaces.id
+
+Ref space_members_userId_users_id: space_members.userId > users.id
+
+Ref space_videos_spaceId_spaces_id: space_videos.spaceId > spaces.id
+
+Ref space_videos_videoId_videos_id: space_videos.videoId > videos.id
+
+Ref space_videos_addedById_users_id: space_videos.addedById > users.id
+
+Ref folders_organizationId_organizations_id: folders.organizationId > organizations.id
+
+Ref folders_createdById_users_id: folders.createdById > users.id
+
+Ref folders_parentId_folders_id: folders.parentId > folders.id
+
+Ref developer_apps_ownerId_users_id: developer_apps.ownerId > users.id
+
+Ref developer_apps_id_developer_credit_accounts_appId: developer_apps.id - developer_credit_accounts.appId
+
+Ref developer_credit_accounts_ownerId_users_id: developer_credit_accounts.ownerId > users.id

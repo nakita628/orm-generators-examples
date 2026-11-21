@@ -1,0 +1,1183 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum UserSettingsLanguage {
+  "en"
+}
+
+Enum PageTemplate {
+  "INHERIT"
+}
+
+Enum PageLimitVisibilityInMenu {
+  "1"
+  "2"
+}
+
+Enum PageXframeOptions {
+  "0"
+  "1"
+  "2"
+  "3"
+}
+
+Enum PagePermissionGrantOn {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum StaticPlaceholderCreationMethod {
+  "template"
+  "code"
+}
+
+Enum FolderPermissionType {
+  "0"
+  "1"
+  "2"
+}
+
+Enum FolderPermissionCanRead {
+  "None"
+  "1"
+  "0"
+}
+
+Enum FolderPermissionCanEdit {
+  "None"
+  "1"
+  "0"
+}
+
+Enum FolderPermissionCanAddChildren {
+  "None"
+  "1"
+  "0"
+}
+
+Enum BlogConfigTranslationLanguageCode {
+  "en"
+}
+
+Enum BlogCategoryTranslationLanguageCode {
+  "en"
+}
+
+Enum PostTranslationLanguageCode {
+  "en"
+}
+
+Enum LatestPostsPluginTemplateFolder {
+  "plugins"
+}
+
+Enum AuthorEntriesPluginTemplateFolder {
+  "plugins"
+}
+
+Enum FeaturedPostsPluginTemplateFolder {
+  "plugins"
+}
+
+Enum GenericBlogPluginTemplateFolder {
+  "plugins"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table cms_usersettings {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  language UserSettingsLanguage [not null, note: 'The language for the admin interface and toolbar']
+  clipboard_id integer
+
+  indexes {
+    (clipboard_id) [name: 'cms_usersettings_clipboard_id_3ae17c19']
+  }
+}
+
+Table cms_treenode {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  parent_id integer
+  site_id integer [not null]
+
+  indexes {
+    (parent_id) [name: 'cms_treenode_parent_id_59bb02c4']
+    (site_id) [name: 'cms_treenode_site_id_d3f46985']
+  }
+
+  Note: '''Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table cms_page {
+  id integer [pk, increment]
+  created_by varchar(255) [not null]
+  changed_by varchar(255) [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  changed_date datetime [not null, note: 'default in Python: now()']
+  publication_date datetime [note: 'When the page should go live. Status must be "Published" for page to go live.']
+  publication_end_date datetime [note: 'When to expire the page. Leave empty to never expire.']
+  in_navigation bool [default: true, not null]
+  soft_root bool [default: false, not null, note: 'All ancestors will not be displayed in the navigation']
+  reverse_id varchar(40) [note: 'A unique identifier that is used with the page_url templatetag for linking to this page']
+  navigation_extenders varchar(80)
+  template PageTemplate [default: 'INHERIT', not null, note: 'The template used to render the content.']
+  login_required bool [default: false, not null]
+  limit_visibility_in_menu PageLimitVisibilityInMenu [default: null, note: 'limit when this page is visible in the menu']
+  is_home bool [default: false, not null]
+  application_urls varchar(200)
+  application_namespace varchar(200)
+  publisher_is_draft bool [default: true, not null]
+  publisher_public_id integer [unique]
+  languages varchar(255)
+  xframe_options PageXframeOptions [default: 0, not null]
+  is_page_type bool [default: false, not null]
+  node_id integer [not null]
+
+  indexes {
+    (publication_date) [name: 'cms_page_publication_date_684fabf7']
+    (publication_end_date) [name: 'cms_page_publication_end_date_12a0c46a']
+    (in_navigation) [name: 'cms_page_in_navigation_01c24279']
+    (soft_root) [name: 'cms_page_soft_root_51efccbe']
+    (reverse_id) [name: 'cms_page_reverse_id_ffc9ede2']
+    (navigation_extenders) [name: 'cms_page_navigation_extenders_c24af8dd']
+    (limit_visibility_in_menu) [name: 'cms_page_limit_visibility_in_menu_30db6aa6']
+    (is_home) [name: 'cms_page_is_home_edadca07']
+    (application_urls) [name: 'cms_page_application_urls_9ef47497']
+    (publisher_is_draft) [name: 'cms_page_publisher_is_draft_141cba60']
+    (node_id) [name: 'cms_page_node_id_c87b85a9']
+    (node_id, publisher_is_draft) [unique, name: 'cms_page_node_id_publisher_is_draft_c1293d6a_uniq']
+  }
+
+  Note: '''A simple hierarchical page model
+
+Proxy models: PageType.'''
+}
+
+Table cms_globalpagepermission {
+  id integer [pk, increment]
+  user_id integer
+  group_id integer
+  can_change bool [default: true, not null]
+  can_add bool [default: true, not null]
+  can_delete bool [default: true, not null]
+  can_change_advanced_settings bool [default: false, not null]
+  can_publish bool [default: true, not null]
+  can_change_permissions bool [default: false, not null, note: 'on page level']
+  can_move_page bool [default: true, not null]
+  can_view bool [default: false, not null, note: 'frontend view restriction']
+  can_recover_page bool [default: true, not null, note: 'can recover any deleted page']
+
+  indexes {
+    (user_id) [name: 'cms_globalpagepermission_user_id_a227cee1']
+    (group_id) [name: 'cms_globalpagepermission_group_id_991b4733']
+  }
+
+  Note: '''Permissions for all pages (global).
+
+Columns from AbstractPagePermission (abstract): user_id, group_id, can_change, can_add, can_delete, can_change_advanced_settings, can_publish, can_change_permissions, can_move_page, can_view.'''
+}
+
+Table cms_pagepermission {
+  id integer [pk, increment]
+  user_id integer
+  group_id integer
+  can_change bool [default: true, not null]
+  can_add bool [default: true, not null]
+  can_delete bool [default: true, not null]
+  can_change_advanced_settings bool [default: false, not null]
+  can_publish bool [default: true, not null]
+  can_change_permissions bool [default: false, not null, note: 'on page level']
+  can_move_page bool [default: true, not null]
+  can_view bool [default: false, not null, note: 'frontend view restriction']
+  grant_on PagePermissionGrantOn [default: 5, not null]
+  page_id integer
+
+  indexes {
+    (user_id) [name: 'cms_pagepermission_user_id_0c7d2b3c']
+    (group_id) [name: 'cms_pagepermission_group_id_af5af193']
+    (page_id) [name: 'cms_pagepermission_page_id_0ae9a163']
+  }
+
+  Note: '''Page permissions for a single page
+
+Columns from AbstractPagePermission (abstract): user_id, group_id, can_change, can_add, can_delete, can_change_advanced_settings, can_publish, can_change_permissions, can_move_page, can_view.'''
+}
+
+Table cms_pageuser {
+  user_ptr_id integer [pk, note: 'parent link: a PageUser is a User (multi-table inheritance)']
+  created_by_id integer [not null]
+
+  indexes {
+    (created_by_id) [name: 'cms_pageuser_created_by_id_8e9fbf83']
+  }
+
+  Note: '''Cms specific user data, required for permission system'''
+}
+
+Table cms_pageusergroup {
+  group_ptr_id integer [pk, note: 'parent link: a PageUserGroup is a Group (multi-table inheritance)']
+  created_by_id integer [not null]
+
+  indexes {
+    (created_by_id) [name: 'cms_pageusergroup_created_by_id_7d57fa39']
+  }
+
+  Note: '''Cms specific group data, required for permission system'''
+}
+
+Table cms_placeholder {
+  id integer [pk, increment]
+  slot varchar(255) [not null]
+  default_width "smallint unsigned"
+
+  indexes {
+    (slot) [name: 'cms_placeholder_slot_0bc04d21']
+  }
+
+  Note: '''Attributes:
+    is_static       Set to "True" for static placeholders by the template tag
+    is_editable     If False the content of the placeholder is not editable in the frontend'''
+}
+
+Table cms_cmsplugin {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  placeholder_id integer
+  parent_id integer
+  position "smallint unsigned" [default: 0, not null]
+  language varchar(15) [not null]
+  plugin_type varchar(50) [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  changed_date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (placeholder_id) [name: 'cms_cmsplugin_placeholder_id_0bfa3b26']
+    (parent_id) [name: 'cms_cmsplugin_parent_id_fd3bd9dd']
+    (language) [name: 'cms_cmsplugin_language_bbea8a48']
+    (plugin_type) [name: 'cms_cmsplugin_plugin_type_94e96ebf']
+  }
+
+  Note: '''The base class for a CMS plugin model. When defining a new custom plugin, you should
+store plugin-instance specific information on a subclass of this class.
+
+An example for this would be to store the number of pictures to display in a galery.
+
+Two restrictions apply when subclassing this to use in your own models:
+1. Subclasses of CMSPlugin *cannot be further subclassed*
+2. Subclasses of CMSPlugin cannot define a "text" field.
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table cms_title {
+  id integer [pk, increment]
+  language varchar(15) [not null]
+  title varchar(255) [not null]
+  page_title varchar(255) [note: 'overwrite the title (html title tag)']
+  menu_title varchar(255) [note: 'overwrite the title in the menu']
+  meta_description text [note: 'The text displayed in search engines.']
+  slug varchar(255) [not null]
+  path varchar(255) [not null]
+  has_url_overwrite bool [default: false, not null]
+  redirect varchar(2048)
+  page_id integer [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  published bool [default: false, not null]
+  publisher_is_draft bool [default: true, not null]
+  publisher_public_id integer [unique]
+  publisher_state smallint [default: 0, not null]
+
+  indexes {
+    (language) [name: 'cms_title_language_50a0dfa1']
+    (slug) [name: 'cms_title_slug_4947d146']
+    (path) [name: 'cms_title_path_c484314c']
+    (has_url_overwrite) [name: 'cms_title_has_url_overwrite_ecf27bb9']
+    (page_id) [name: 'cms_title_page_id_5fade2a3']
+    (publisher_is_draft) [name: 'cms_title_publisher_is_draft_95874c88']
+    (publisher_state) [name: 'cms_title_publisher_state_9a952b0f']
+    (language, page_id) [unique, name: 'cms_title_language_page_id_61aaf084_uniq']
+  }
+}
+
+Table cms_placeholderreference {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a PlaceholderReference is a CMSPlugin (multi-table inheritance)']
+  name varchar(255) [not null]
+  placeholder_ref_id integer
+
+  indexes {
+    (placeholder_ref_id) [name: 'cms_placeholderreference_placeholder_ref_id_244759b1']
+  }
+}
+
+Table cms_staticplaceholder {
+  id integer [pk, increment]
+  name varchar(255) [default: '', not null, note: 'Descriptive name to identify this static placeholder. Not displayed to users.']
+  code varchar(255) [not null, note: 'To render the static placeholder in templates.']
+  draft_id integer
+  public_id integer
+  dirty bool [default: false, not null]
+  creation_method StaticPlaceholderCreationMethod [default: 'code', not null]
+  site_id integer
+
+  indexes {
+    (draft_id) [name: 'cms_staticplaceholder_draft_id_5aee407b']
+    (public_id) [name: 'cms_staticplaceholder_public_id_876aaa66']
+    (site_id) [name: 'cms_staticplaceholder_site_id_dc6a85b6']
+    (code, site_id) [unique, name: 'cms_staticplaceholder_code_site_id_21ba079c_uniq']
+  }
+}
+
+Table cms_aliaspluginmodel {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a AliasPluginModel is a CMSPlugin (multi-table inheritance)']
+  plugin_id integer
+  alias_placeholder_id integer
+
+  indexes {
+    (plugin_id) [name: 'cms_aliaspluginmodel_plugin_id_9867676e']
+    (alias_placeholder_id) [name: 'cms_aliaspluginmodel_alias_placeholder_id_6d6e0c8a']
+  }
+}
+
+Table cms_urlconfrevision {
+  id integer [pk, increment]
+  revision varchar(255) [not null]
+}
+
+Table menus_cachekey {
+  id integer [pk, increment]
+  language varchar(255) [not null]
+  site "integer unsigned" [not null]
+  key varchar(255) [not null]
+
+  Note: '''This is to store a "set" of cache keys in a fashion where it\'s accessible
+by multiple processes / machines.
+Multiple Django instances will then share the keys.
+This allows for selective invalidation of the menu trees (per site, per
+language), in the cache.'''
+}
+
+Table easy_thumbnails_source {
+  id integer [pk, increment]
+  storage_hash varchar(40) [not null]
+  name varchar(255) [not null]
+  modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (storage_hash) [name: 'easy_thumbnails_source_storage_hash_946cbcc9']
+    (name) [name: 'easy_thumbnails_source_name_5fe0edc6']
+    (storage_hash, name) [unique, name: 'easy_thumbnails_source_storage_hash_name_481ce32d_uniq']
+  }
+
+  Note: '''Columns from File (abstract): storage_hash, name, modified.'''
+}
+
+Table easy_thumbnails_thumbnail {
+  id integer [pk, increment]
+  storage_hash varchar(40) [not null]
+  name varchar(255) [not null]
+  modified datetime [not null, note: 'default in Python: now()']
+  source_id integer [not null]
+
+  indexes {
+    (storage_hash) [name: 'easy_thumbnails_thumbnail_storage_hash_f1435f49']
+    (name) [name: 'easy_thumbnails_thumbnail_name_b5882c31']
+    (source_id) [name: 'easy_thumbnails_thumbnail_source_id_5b57bc77']
+    (storage_hash, name, source_id) [unique, name: 'easy_thumbnails_thumbnail_storage_hash_name_source_id_fb375270_uniq']
+  }
+
+  Note: '''Columns from File (abstract): storage_hash, name, modified.'''
+}
+
+Table easy_thumbnails_thumbnaildimensions {
+  id integer [pk, increment]
+  thumbnail_id integer [unique, not null]
+  width "integer unsigned"
+  height "integer unsigned"
+}
+
+Table filer_folder {
+  id integer [pk, increment]
+  parent_id integer
+  name varchar(255) [not null]
+  owner_id integer
+  uploaded_at datetime [not null, note: 'default in Python: now()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  modified_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (parent_id) [name: 'filer_folder_parent_id_308aecda']
+    (owner_id) [name: 'filer_folder_owner_id_be530fb4']
+    (parent_id, name) [unique, name: 'filer_folder_parent_id_name_bc773258_uniq']
+  }
+
+  Note: '''Represents a Folder that things (files) can be put into. Folders are *NOT*
+mirrored in the Filesystem and can have any unicode chars as their name.
+Other models may attach to a folder with a ForeignKey. If the related name
+ends with "_files" they will automatically be listed in the
+folder.files list along with all the other models that link to the folder
+in this way. Make sure the linked models obey the AbstractFile interface
+(Duck Type).'''
+}
+
+Table filer_folderpermission {
+  id integer [pk, increment]
+  folder_id integer
+  type FolderPermissionType [default: 0, not null]
+  user_id integer
+  group_id integer
+  everybody bool [default: false, not null]
+  can_read FolderPermissionCanRead [default: null]
+  can_edit FolderPermissionCanEdit [default: null]
+  can_add_children FolderPermissionCanAddChildren [default: null]
+
+  indexes {
+    (folder_id) [name: 'filer_folderpermission_folder_id_5d02f1da']
+    (user_id) [name: 'filer_folderpermission_user_id_7673d4b6']
+    (group_id) [name: 'filer_folderpermission_group_id_8901bafa']
+  }
+}
+
+Table filer_file {
+  id integer [pk, increment]
+  polymorphic_ctype_id integer
+  folder_id integer
+  file varchar(255)
+  _file_size bigint
+  sha1 varchar(40) [default: '', not null]
+  has_all_mandatory_data bool [default: false, not null]
+  original_filename varchar(255)
+  name varchar(255) [default: '', not null]
+  description text
+  owner_id integer
+  uploaded_at datetime [not null, note: 'default in Python: now()']
+  modified_at datetime [not null, note: 'default in Python: now()']
+  is_public bool [not null, note: 'Disable any permission checking for this file. File will be publicly accessible to anyone.. default in Python: is_public_default()']
+  mime_type varchar(255) [default: 'application/octet-stream', not null, note: 'MIME type of uploaded content']
+
+  indexes {
+    (polymorphic_ctype_id) [name: 'filer_file_polymorphic_ctype_id_f44903c1']
+    (folder_id) [name: 'filer_file_folder_id_af803bbb']
+    (owner_id) [name: 'filer_file_owner_id_b9e32671']
+  }
+
+  Note: '''Columns from PolymorphicModel (abstract): polymorphic_ctype_id.'''
+}
+
+Table filer_clipboard {
+  id integer [pk, increment]
+  user_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'filer_clipboard_user_id_b52ff0bc']
+  }
+}
+
+Table filer_clipboarditem {
+  id integer [pk, increment]
+  file_id integer [not null]
+  clipboard_id integer [not null]
+
+  indexes {
+    (file_id) [name: 'filer_clipboarditem_file_id_06196f80']
+    (clipboard_id) [name: 'filer_clipboarditem_clipboard_id_7a76518b']
+  }
+}
+
+Table filer_image {
+  _height real
+  _width real
+  _transparent bool [default: false, not null]
+  default_alt_text varchar(255)
+  default_caption varchar(255)
+  subject_location varchar(64) [default: '', not null]
+  file_ptr_id integer [pk, note: 'parent link: a Image is a File (multi-table inheritance)']
+  date_taken datetime
+  author varchar(255)
+  must_always_publish_author_credit bool [default: false, not null]
+  must_always_publish_copyright bool [default: false, not null]
+
+  Note: '''Columns from BaseImage (abstract): _height, _width, _transparent, default_alt_text, default_caption, subject_location, file_ptr_id.'''
+}
+
+Table filer_thumbnailoption {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  width integer [not null, note: 'width in pixel.']
+  height integer [not null, note: 'height in pixel.']
+  crop bool [default: true, not null]
+  upscale bool [default: true, not null]
+
+  Note: '''This class defines the option use to create the thumbnail.'''
+}
+
+Table djangocms_text_text {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Text is a CMSPlugin (multi-table inheritance)']
+  body text [not null]
+  json text
+  rte varchar(16) [default: '', not null, note: 'The rich text editor used to create this text. JSON formats vary between editors.']
+
+  Note: '''Columns from AbstractText (abstract): cmsplugin_ptr_id, body, json, rte.'''
+}
+
+Table taggit_tag {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null]
+  slug varchar(100) [unique, not null]
+
+  Note: '''Columns from TagBase (abstract): name, slug.'''
+}
+
+Table taggit_taggeditem {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Post.tagged_items, LatestPostsPlugin.tagged_items)']
+
+  indexes {
+    (tag_id) [name: 'taggit_taggeditem_tag_id_f4f5b767']
+    (content_type_id) [name: 'taggit_taggeditem_content_type_id_9957a03c']
+    (object_id) [name: 'taggit_taggeditem_object_id_e2d7d1df']
+    (content_type_id, object_id, tag_id) [unique, name: 'taggit_taggeditem_content_type_id_object_id_tag_id_4bb97a8e_uniq']
+    (content_type_id, object_id) [name: 'taggit_tagg_content_8fc721_idx']
+  }
+
+  Note: '''Columns from GenericTaggedItemBase (abstract): object_id.
+
+Columns from CommonGenericTaggedItemBase (abstract): content_type_id.
+
+Columns from TaggedItemBase (abstract): tag_id.'''
+}
+
+Table djangocms_blog_blogconfig_translation {
+  id integer [pk, increment]
+  language_code BlogConfigTranslationLanguageCode [not null]
+  app_title varchar(234) [not null]
+  object_name varchar(234) [default: 'Article', not null]
+  master_id bigint
+
+  indexes {
+    (language_code) [name: 'djangocms_blog_blogconfig_translation_language_code_7ea60850']
+    (master_id) [name: 'djangocms_blog_blogconfig_translation_master_id_151749d4']
+    (language_code, master_id) [unique, name: 'djangocms_blog_blogconfig_translation_uniq_lang']
+  }
+
+  Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
+}
+
+Table djangocms_blog_blogconfig {
+  id integer [pk, increment]
+  type varchar(100) [not null]
+  namespace varchar(100) [unique, default: null, not null]
+  app_data text [default: '{}', not null]
+
+  Note: '''Adds translatable, per-app-instance fields.
+
+Columns from AppHookConfig (abstract): type, namespace, app_data.'''
+}
+
+Table djangocms_blog_blogcategory_translation {
+  id integer [pk, increment]
+  language_code BlogCategoryTranslationLanguageCode [not null]
+  name varchar(752) [not null]
+  slug varchar(752) [not null]
+  meta_description text [default: '', not null]
+  master_id bigint
+
+  indexes {
+    (language_code) [name: 'djangocms_blog_blogcategory_translation_language_code_b6d813ea']
+    (slug) [name: 'djangocms_blog_blogcategory_translation_slug_5bb923d9']
+    (master_id) [name: 'djangocms_blog_blogcategory_translation_master_id_ea2a1c61']
+    (language_code, slug) [unique, name: 'djangocms_blog_blogcategory_translation_language_code_slug_01f38e6e_uniq']
+    (language_code, master_id) [unique, name: 'djangocms_blog_blogcategory_translation_uniq_lang']
+  }
+
+  Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
+}
+
+Table djangocms_blog_blogcategory {
+  id integer [pk, increment]
+  parent_id bigint
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_modified datetime [not null, note: 'default in Python: now()']
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+
+  indexes {
+    (parent_id) [name: 'djangocms_blog_blogcategory_parent_id_91f19b13']
+    (app_config_id) [name: 'djangocms_blog_blogcategory_app_config_id_979d1f2c']
+  }
+
+  Note: '''Blog category'''
+}
+
+Table djangocms_blog_post_translation {
+  id integer [pk, increment]
+  language_code PostTranslationLanguageCode [not null]
+  title varchar(752) [not null]
+  slug varchar(752) [not null]
+  subtitle varchar(767) [default: '', not null]
+  abstract text [default: '', not null]
+  meta_description text [default: '', not null]
+  meta_keywords text [default: '', not null]
+  meta_title varchar(2000) [default: '', not null, note: 'used in title tag and social sharing']
+  post_text text [default: '', not null]
+  master_id bigint
+
+  indexes {
+    (language_code) [name: 'djangocms_blog_post_translation_language_code_d6b20a83']
+    (slug) [name: 'djangocms_blog_post_translation_slug_9dea8ad2']
+    (master_id) [name: 'djangocms_blog_post_translation_master_id_4d7607b6']
+    (language_code, slug) [unique, name: 'djangocms_blog_post_translation_language_code_slug_39d00571_uniq']
+    (language_code, master_id) [unique, name: 'djangocms_blog_post_translation_uniq_lang']
+  }
+
+  Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
+}
+
+Table djangocms_blog_post {
+  id integer [pk, increment]
+  author_id integer
+  date_created datetime [not null, note: 'default in Python: now()']
+  date_modified datetime [not null, note: 'default in Python: now()']
+  date_published datetime
+  date_published_end datetime
+  date_featured datetime
+  publish bool [default: false, not null]
+  include_in_rss bool [default: true, not null]
+  main_image_id integer
+  main_image_thumbnail_id integer
+  main_image_full_id integer
+  enable_comments bool [default: true, not null]
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+  media_id integer
+  content_id integer
+  liveblog_id integer
+  enable_liveblog bool [default: false, not null]
+
+  indexes {
+    (author_id) [name: 'djangocms_blog_post_author_id_6f01c20d']
+    (main_image_id) [name: 'djangocms_blog_post_main_image_id_885d781b']
+    (main_image_thumbnail_id) [name: 'djangocms_blog_post_main_image_thumbnail_id_075ca88d']
+    (main_image_full_id) [name: 'djangocms_blog_post_main_image_full_id_50b37cd8']
+    (app_config_id) [name: 'djangocms_blog_post_app_config_id_3f1a4082']
+    (media_id) [name: 'djangocms_blog_post_media_id_6ab58f9b']
+    (content_id) [name: 'djangocms_blog_post_content_id_8dbf092f']
+    (liveblog_id) [name: 'djangocms_blog_post_liveblog_id_c71ae462']
+  }
+
+  Note: '''Blog post'''
+}
+
+Table djangocms_blog_latestpostsplugin {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a LatestPostsPlugin is a CMSPlugin (multi-table inheritance)']
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+  current_site bool [default: true, not null, note: 'Select items from the current site only']
+  template_folder LatestPostsPluginTemplateFolder [default: 'plugins', not null, note: 'Select plugin template to load for this instance']
+  latest_posts integer [default: 5, not null, note: 'The number of latests articles to be displayed.']
+
+  indexes {
+    (app_config_id) [name: 'djangocms_blog_latestpostsplugin_app_config_id_7b061885']
+  }
+
+  Note: '''Columns from BasePostPlugin (abstract): cmsplugin_ptr_id, app_config_id, current_site, template_folder.'''
+}
+
+Table djangocms_blog_authorentriesplugin {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a AuthorEntriesPlugin is a CMSPlugin (multi-table inheritance)']
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+  current_site bool [default: true, not null, note: 'Select items from the current site only']
+  template_folder AuthorEntriesPluginTemplateFolder [default: 'plugins', not null, note: 'Select plugin template to load for this instance']
+  latest_posts integer [default: 5, not null, note: 'The number of author articles to be displayed.']
+
+  indexes {
+    (app_config_id) [name: 'djangocms_blog_authorentriesplugin_app_config_id_21fb69d9']
+  }
+
+  Note: '''Columns from BasePostPlugin (abstract): cmsplugin_ptr_id, app_config_id, current_site, template_folder.'''
+}
+
+Table djangocms_blog_featuredpostsplugin {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FeaturedPostsPlugin is a CMSPlugin (multi-table inheritance)']
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+  current_site bool [default: true, not null, note: 'Select items from the current site only']
+  template_folder FeaturedPostsPluginTemplateFolder [default: 'plugins', not null, note: 'Select plugin template to load for this instance']
+
+  indexes {
+    (app_config_id) [name: 'djangocms_blog_featuredpostsplugin_app_config_id_7c8c4c89']
+  }
+
+  Note: '''Columns from BasePostPlugin (abstract): cmsplugin_ptr_id, app_config_id, current_site, template_folder.'''
+}
+
+Table djangocms_blog_genericblogplugin {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a GenericBlogPlugin is a CMSPlugin (multi-table inheritance)']
+  app_config_id bigint [note: 'When selecting a value, the form is reloaded to get the updated default']
+  current_site bool [default: true, not null, note: 'Select items from the current site only']
+  template_folder GenericBlogPluginTemplateFolder [default: 'plugins', not null, note: 'Select plugin template to load for this instance']
+
+  indexes {
+    (app_config_id) [name: 'djangocms_blog_genericblogplugin_app_config_id_738b9c8b']
+  }
+
+  Note: '''Columns from BasePostPlugin (abstract): cmsplugin_ptr_id, app_config_id, current_site, template_folder.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref cms_usersettings_user_id_fk: cms_usersettings.user_id - auth_user.id [delete: cascade]
+
+Ref cms_usersettings_clipboard_id_fk: cms_usersettings.clipboard_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_treenode_parent_id_fk: cms_treenode.parent_id > cms_treenode.id [delete: cascade]
+
+Ref cms_treenode_site_id_fk: cms_treenode.site_id > django_site.id [delete: cascade]
+
+Ref cms_page_publisher_public_id_fk: cms_page.publisher_public_id - cms_page.id [delete: cascade]
+
+Ref cms_page_node_id_fk: cms_page.node_id > cms_treenode.id [delete: cascade]
+
+Table cms_page_placeholders {
+  id integer [pk, increment]
+  page_id integer [not null]
+  placeholder_id integer [not null]
+
+  indexes {
+    (page_id) [name: 'cms_page_placeholders_page_id_f2ce8dec']
+    (placeholder_id) [name: 'cms_page_placeholders_placeholder_id_6b120886']
+    (page_id, placeholder_id) [unique, name: 'cms_page_placeholders_page_id_placeholder_id_ab7fbfb8_uniq']
+  }
+}
+
+Ref cms_page_placeholders_page_id_fk: cms_page_placeholders.page_id > cms_page.id [delete: cascade]
+
+Ref cms_page_placeholders_placeholder_id_fk: cms_page_placeholders.placeholder_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_globalpagepermission_user_id_fk: cms_globalpagepermission.user_id > auth_user.id [delete: cascade]
+
+Ref cms_globalpagepermission_group_id_fk: cms_globalpagepermission.group_id > auth_group.id [delete: cascade]
+
+Table cms_globalpagepermission_sites {
+  id integer [pk, increment]
+  globalpagepermission_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (globalpagepermission_id) [name: 'cms_globalpagepermission_sites_globalpagepermission_id_46bd2681']
+    (site_id) [name: 'cms_globalpagepermission_sites_site_id_00460b53']
+    (globalpagepermission_id, site_id) [unique, name: 'cms_globalpagepermission_sites_globalpagepermission_id_site_id_db684f41_uniq']
+  }
+}
+
+Ref cms_globalpagepermission_sites_globalpagepermission_id_fk: cms_globalpagepermission_sites.globalpagepermission_id > cms_globalpagepermission.id [delete: cascade]
+
+Ref cms_globalpagepermission_sites_site_id_fk: cms_globalpagepermission_sites.site_id > django_site.id [delete: cascade]
+
+Ref cms_pagepermission_user_id_fk: cms_pagepermission.user_id > auth_user.id [delete: cascade]
+
+Ref cms_pagepermission_group_id_fk: cms_pagepermission.group_id > auth_group.id [delete: cascade]
+
+Ref cms_pagepermission_page_id_fk: cms_pagepermission.page_id > cms_page.id [delete: cascade]
+
+Ref cms_pageuser_user_ptr_id_fk: cms_pageuser.user_ptr_id - auth_user.id [delete: cascade]
+
+Ref cms_pageuser_created_by_id_fk: cms_pageuser.created_by_id > auth_user.id [delete: cascade]
+
+Ref cms_pageusergroup_group_ptr_id_fk: cms_pageusergroup.group_ptr_id - auth_group.id [delete: cascade]
+
+Ref cms_pageusergroup_created_by_id_fk: cms_pageusergroup.created_by_id > auth_user.id [delete: cascade]
+
+Ref cms_cmsplugin_placeholder_id_fk: cms_cmsplugin.placeholder_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_cmsplugin_parent_id_fk: cms_cmsplugin.parent_id > cms_cmsplugin.id [delete: cascade]
+
+Ref cms_title_page_id_fk: cms_title.page_id > cms_page.id [delete: cascade]
+
+Ref cms_title_publisher_public_id_fk: cms_title.publisher_public_id - cms_title.id [delete: cascade]
+
+Ref cms_placeholderreference_cmsplugin_ptr_id_fk: cms_placeholderreference.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_placeholderreference_placeholder_ref_id_fk: cms_placeholderreference.placeholder_ref_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_staticplaceholder_draft_id_fk: cms_staticplaceholder.draft_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_staticplaceholder_public_id_fk: cms_staticplaceholder.public_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_staticplaceholder_site_id_fk: cms_staticplaceholder.site_id > django_site.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_cmsplugin_ptr_id_fk: cms_aliaspluginmodel.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_plugin_id_fk: cms_aliaspluginmodel.plugin_id > cms_cmsplugin.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_alias_placeholder_id_fk: cms_aliaspluginmodel.alias_placeholder_id > cms_placeholder.id [delete: cascade]
+
+Ref easy_thumbnails_thumbnail_source_id_fk: easy_thumbnails_thumbnail.source_id > easy_thumbnails_source.id [delete: cascade]
+
+Ref easy_thumbnails_thumbnaildimensions_thumbnail_id_fk: easy_thumbnails_thumbnaildimensions.thumbnail_id - easy_thumbnails_thumbnail.id [delete: cascade]
+
+Ref filer_folder_parent_id_fk: filer_folder.parent_id > filer_folder.id [delete: cascade]
+
+Ref filer_folder_owner_id_fk: filer_folder.owner_id > auth_user.id [delete: set null]
+
+Ref filer_folderpermission_folder_id_fk: filer_folderpermission.folder_id > filer_folder.id [delete: cascade]
+
+Ref filer_folderpermission_user_id_fk: filer_folderpermission.user_id > auth_user.id [delete: set null]
+
+Ref filer_folderpermission_group_id_fk: filer_folderpermission.group_id > auth_group.id [delete: cascade]
+
+Ref filer_file_polymorphic_ctype_id_fk: filer_file.polymorphic_ctype_id > django_content_type.id
+
+Ref filer_file_folder_id_fk: filer_file.folder_id > filer_folder.id
+
+Ref filer_file_owner_id_fk: filer_file.owner_id > auth_user.id
+
+Ref filer_clipboard_user_id_fk: filer_clipboard.user_id > auth_user.id [delete: cascade]
+
+Ref filer_clipboarditem_file_id_fk: filer_clipboarditem.file_id > filer_file.id [delete: cascade]
+
+Ref filer_clipboarditem_clipboard_id_fk: filer_clipboarditem.clipboard_id > filer_clipboard.id [delete: cascade]
+
+Ref filer_image_file_ptr_id_fk: filer_image.file_ptr_id - filer_file.id
+
+Ref djangocms_text_text_cmsplugin_ptr_id_fk: djangocms_text_text.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref taggit_taggeditem_tag_id_fk: taggit_taggeditem.tag_id > taggit_tag.id [delete: cascade]
+
+Ref taggit_taggeditem_content_type_id_fk: taggit_taggeditem.content_type_id > django_content_type.id [delete: cascade]
+
+Ref djangocms_blog_blogconfig_translation_master_id_fk: djangocms_blog_blogconfig_translation.master_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Ref djangocms_blog_blogcategory_translation_master_id_fk: djangocms_blog_blogcategory_translation.master_id > djangocms_blog_blogcategory.id [delete: cascade]
+
+Ref djangocms_blog_blogcategory_parent_id_fk: djangocms_blog_blogcategory.parent_id > djangocms_blog_blogcategory.id [delete: cascade]
+
+Ref djangocms_blog_blogcategory_app_config_id_fk: djangocms_blog_blogcategory.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Ref djangocms_blog_post_translation_master_id_fk: djangocms_blog_post_translation.master_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_post_author_id_fk: djangocms_blog_post.author_id > auth_user.id [delete: restrict]
+
+Ref djangocms_blog_post_main_image_id_fk: djangocms_blog_post.main_image_id > filer_image.file_ptr_id [delete: set null]
+
+Ref djangocms_blog_post_main_image_thumbnail_id_fk: djangocms_blog_post.main_image_thumbnail_id > filer_thumbnailoption.id [delete: set null]
+
+Ref djangocms_blog_post_main_image_full_id_fk: djangocms_blog_post.main_image_full_id > filer_thumbnailoption.id [delete: set null]
+
+Ref djangocms_blog_post_app_config_id_fk: djangocms_blog_post.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Ref djangocms_blog_post_media_id_fk: djangocms_blog_post.media_id > cms_placeholder.id [delete: cascade]
+
+Ref djangocms_blog_post_content_id_fk: djangocms_blog_post.content_id > cms_placeholder.id [delete: cascade]
+
+Ref djangocms_blog_post_liveblog_id_fk: djangocms_blog_post.liveblog_id > cms_placeholder.id [delete: cascade]
+
+Table djangocms_blog_post_categories {
+  id integer [pk, increment]
+  post_id bigint [not null]
+  blogcategory_id bigint [not null]
+
+  indexes {
+    (post_id) [name: 'djangocms_blog_post_categories_post_id_9a0528c3']
+    (blogcategory_id) [name: 'djangocms_blog_post_categories_blogcategory_id_3c5d1b9b']
+    (post_id, blogcategory_id) [unique, name: 'djangocms_blog_post_categories_post_id_blogcategory_id_85ffd9f3_uniq']
+  }
+}
+
+Ref djangocms_blog_post_categories_post_id_fk: djangocms_blog_post_categories.post_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_post_categories_blogcategory_id_fk: djangocms_blog_post_categories.blogcategory_id > djangocms_blog_blogcategory.id [delete: cascade]
+
+Table djangocms_blog_post_sites {
+  id integer [pk, increment]
+  post_id bigint [not null]
+  site_id integer [not null]
+
+  indexes {
+    (post_id) [name: 'djangocms_blog_post_sites_post_id_4e5295d8']
+    (site_id) [name: 'djangocms_blog_post_sites_site_id_d2f7f59d']
+    (post_id, site_id) [unique, name: 'djangocms_blog_post_sites_post_id_site_id_ea203167_uniq']
+  }
+}
+
+Ref djangocms_blog_post_sites_post_id_fk: djangocms_blog_post_sites.post_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_post_sites_site_id_fk: djangocms_blog_post_sites.site_id > django_site.id [delete: cascade]
+
+Table djangocms_blog_post_related {
+  id integer [pk, increment]
+  sort_value integer [default: 0, not null]
+  from_post_id bigint [not null]
+  to_post_id bigint [not null]
+
+  indexes {
+    (from_post_id) [name: 'djangocms_blog_post_related_from_post_id_6d56d870']
+    (to_post_id) [name: 'djangocms_blog_post_related_to_post_id_9b378705']
+    (from_post_id, to_post_id) [unique, name: 'djangocms_blog_post_related_from_post_id_to_post_id_55f7a6be_uniq']
+  }
+}
+
+Ref djangocms_blog_post_related_from_post_id_fk: djangocms_blog_post_related.from_post_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_post_related_to_post_id_fk: djangocms_blog_post_related.to_post_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_latestpostsplugin_cmsplugin_ptr_id_fk: djangocms_blog_latestpostsplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_blog_latestpostsplugin_app_config_id_fk: djangocms_blog_latestpostsplugin.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Table djangocms_blog_latestpostsplugin_categories {
+  id integer [pk, increment]
+  latestpostsplugin_id integer [not null]
+  blogcategory_id bigint [not null]
+
+  indexes {
+    (latestpostsplugin_id) [name: 'djangocms_blog_latestpostsplugin_categories_latestpostsplugin_id_66049b83']
+    (blogcategory_id) [name: 'djangocms_blog_latestpostsplugin_categories_blogcategory_id_67fc1e4a']
+    (latestpostsplugin_id, blogcategory_id) [unique, name: 'djangocms_blog_latestpostsplugin_categories_latestpostsplugin_id_blogcategory_id_5c7dad66_uniq']
+  }
+}
+
+Ref djangocms_blog_latestpostsplugin_categories_latestpostsplugin_id_fk: djangocms_blog_latestpostsplugin_categories.latestpostsplugin_id > djangocms_blog_latestpostsplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref djangocms_blog_latestpostsplugin_categories_blogcategory_id_fk: djangocms_blog_latestpostsplugin_categories.blogcategory_id > djangocms_blog_blogcategory.id [delete: cascade]
+
+Ref djangocms_blog_authorentriesplugin_cmsplugin_ptr_id_fk: djangocms_blog_authorentriesplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_blog_authorentriesplugin_app_config_id_fk: djangocms_blog_authorentriesplugin.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Table djangocms_blog_authorentriesplugin_authors {
+  id integer [pk, increment]
+  authorentriesplugin_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (authorentriesplugin_id) [name: 'djangocms_blog_authorentriesplugin_authors_authorentriesplugin_id_f34e7662']
+    (user_id) [name: 'djangocms_blog_authorentriesplugin_authors_user_id_9953e0f5']
+    (authorentriesplugin_id, user_id) [unique, name: 'djangocms_blog_authorentriesplugin_authors_authorentriesplugin_id_user_id_f65a98d3_uniq']
+  }
+}
+
+Ref djangocms_blog_authorentriesplugin_authors_authorentriesplugin_id_fk: djangocms_blog_authorentriesplugin_authors.authorentriesplugin_id > djangocms_blog_authorentriesplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref djangocms_blog_authorentriesplugin_authors_user_id_fk: djangocms_blog_authorentriesplugin_authors.user_id > auth_user.id [delete: cascade]
+
+Ref djangocms_blog_featuredpostsplugin_cmsplugin_ptr_id_fk: djangocms_blog_featuredpostsplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_blog_featuredpostsplugin_app_config_id_fk: djangocms_blog_featuredpostsplugin.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]
+
+Table djangocms_blog_featuredpostsplugin_posts {
+  id integer [pk, increment]
+  sort_value integer [default: 0, not null]
+  featuredpostsplugin_id integer [not null]
+  post_id bigint [not null]
+
+  indexes {
+    (featuredpostsplugin_id) [name: 'djangocms_blog_featuredpostsplugin_posts_featuredpostsplugin_id_e087bc7d']
+    (post_id) [name: 'djangocms_blog_featuredpostsplugin_posts_post_id_f83c10b1']
+    (featuredpostsplugin_id, post_id) [unique, name: 'djangocms_blog_featuredpostsplugin_posts_featuredpostsplugin_id_post_id_579eed44_uniq']
+  }
+}
+
+Ref djangocms_blog_featuredpostsplugin_posts_featuredpostsplugin_id_fk: djangocms_blog_featuredpostsplugin_posts.featuredpostsplugin_id > djangocms_blog_featuredpostsplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref djangocms_blog_featuredpostsplugin_posts_post_id_fk: djangocms_blog_featuredpostsplugin_posts.post_id > djangocms_blog_post.id [delete: cascade]
+
+Ref djangocms_blog_genericblogplugin_cmsplugin_ptr_id_fk: djangocms_blog_genericblogplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_blog_genericblogplugin_app_config_id_fk: djangocms_blog_genericblogplugin.app_config_id > djangocms_blog_blogconfig.id [delete: cascade]

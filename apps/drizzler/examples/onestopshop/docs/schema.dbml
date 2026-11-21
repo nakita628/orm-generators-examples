@@ -1,0 +1,65 @@
+Table stores {
+  id serial [pk, increment, not null]
+  store_name varchar
+  industry text
+  description text
+  slug varchar
+  indexes {
+    (store_name) [unique, name: 'store_name_index']
+    (slug) [unique, name: 'store_slug_index']
+  }
+}
+
+Table products {
+  id serial [pk, increment, not null]
+  name text
+  price decimal
+  description text
+  inventory decimal
+  images json
+  store_id integer
+}
+
+Table carts {
+  id serial [pk, increment, not null]
+  items json
+  payment_intent_id text
+  client_secret text
+  is_closed boolean
+}
+
+Table payments {
+  id serial [pk, increment, not null]
+  store_id integer
+  stripe_account_id text
+  stripe_account_created_at integer
+  stripe_account_expires_at integer
+  details_submitted boolean
+}
+
+Table orders {
+  id serial [pk, increment, not null]
+  pretty_order_id integer
+  store_id integer
+  items json
+  total decimal
+  stripe_payment_intent_id varchar
+  stripe_payment_intent_status text
+  name text
+  email text
+  created_at integer
+  address integer
+  indexes {
+    (stripe_payment_intent_id) [unique, name: 'stripe_payment_intent_id_index']
+  }
+}
+
+Table addresses {
+  id serial [pk, increment, not null]
+  line1 text
+  line2 text
+  city text
+  state text
+  postal_code text
+  country text
+}

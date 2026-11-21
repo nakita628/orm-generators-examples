@@ -1,0 +1,329 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ResponseTypeValue {
+  "code"
+  "id_token"
+  "id_token token"
+  "code token"
+  "code id_token"
+  "code id_token token"
+}
+
+Enum ClientClientType {
+  "confidential"
+  "public"
+}
+
+Enum ClientJwtAlg {
+  "HS256"
+  "RS256"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table oidc_provider_responsetype {
+  id integer [pk, increment]
+  value ResponseTypeValue [unique, not null]
+  description varchar(50) [not null]
+}
+
+Table oidc_provider_client {
+  id integer [pk, increment]
+  name varchar(100) [default: '', not null]
+  owner_id integer [default: null]
+  client_type ClientClientType [default: 'confidential', not null, note: '<b>Confidential</b> clients are capable of maintaining the confidentiality of their credentials. <b>Public</b> clients are incapable.']
+  client_id varchar(255) [unique, not null]
+  client_secret varchar(255) [not null]
+  jwt_alg ClientJwtAlg [default: 'RS256', not null, note: 'Algorithm used to encode ID Tokens.']
+  date_created date [not null, note: 'default in Python: now()']
+  website_url varchar(255) [default: '', not null]
+  terms_url varchar(255) [default: '', not null, note: 'External reference to the privacy policy of the client.']
+  contact_email varchar(255) [default: '', not null]
+  logo varchar(100) [default: '', not null]
+  reuse_consent bool [default: true, not null, note: 'If enabled, server will save the user consent given to a specific client, so that user won\'t be prompted for the same authorization multiple times.']
+  require_consent bool [default: true, not null, note: 'If disabled, the Server will NEVER ask the user for consent.']
+  _redirect_uris text [default: '', not null, note: 'Enter each URI on a new line.']
+  _post_logout_redirect_uris text [default: '', not null, note: 'Enter each URI on a new line.']
+  _scope text [default: '', not null, note: 'Specifies the authorized scope values for the client app.']
+
+  indexes {
+    (owner_id) [name: 'oidc_provider_client_owner_id_735e6178']
+  }
+}
+
+Table oidc_provider_code {
+  id integer [pk, increment]
+  client_id bigint [not null]
+  expires_at datetime [not null]
+  _scope text [default: '', not null]
+  user_id integer [not null]
+  code varchar(255) [unique, not null]
+  nonce varchar(255) [default: '', not null]
+  is_authentication bool [default: false, not null]
+  code_challenge varchar(255)
+  code_challenge_method varchar(255)
+
+  indexes {
+    (client_id) [name: 'oidc_provider_code_client_id_2449f20c']
+    (user_id) [name: 'oidc_provider_code_user_id_14775b3f']
+  }
+
+  Note: '''Columns from BaseCodeTokenModel (abstract): client_id, expires_at, _scope.'''
+}
+
+Table oidc_provider_token {
+  id integer [pk, increment]
+  client_id bigint [not null]
+  expires_at datetime [not null]
+  _scope text [default: '', not null]
+  user_id integer
+  access_token varchar(255) [unique, not null]
+  refresh_token varchar(255) [unique, not null]
+  _id_token text [not null]
+
+  indexes {
+    (client_id) [name: 'oidc_provider_token_client_id_86a72d16']
+    (user_id) [name: 'oidc_provider_token_user_id_c61045ea']
+  }
+
+  Note: '''Columns from BaseCodeTokenModel (abstract): client_id, expires_at, _scope.'''
+}
+
+Table oidc_provider_userconsent {
+  id integer [pk, increment]
+  client_id bigint [not null]
+  expires_at datetime [not null]
+  _scope text [default: '', not null]
+  user_id integer [not null]
+  date_given datetime [not null]
+
+  indexes {
+    (client_id) [name: 'oidc_provider_userconsent_client_id_7837dc61']
+    (user_id) [name: 'oidc_provider_userconsent_user_id_ebaddfd3']
+    (user_id, client_id) [unique, name: 'oidc_provider_userconsent_user_id_client_id_1c2032f6_uniq']
+  }
+
+  Note: '''Columns from BaseCodeTokenModel (abstract): client_id, expires_at, _scope.'''
+}
+
+Table oidc_provider_rsakey {
+  id integer [pk, increment]
+  key text [not null, note: 'Paste your private RSA Key here.']
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref oidc_provider_client_owner_id_fk: oidc_provider_client.owner_id > auth_user.id [delete: set null]
+
+Table oidc_provider_client_response_types {
+  id integer [pk, increment]
+  client_id bigint [not null]
+  responsetype_id bigint [not null]
+
+  indexes {
+    (client_id) [name: 'oidc_provider_client_response_types_client_id_576aac8c']
+    (responsetype_id) [name: 'oidc_provider_client_response_types_responsetype_id_c90751ad']
+    (client_id, responsetype_id) [unique, name: 'oidc_provider_client_response_types_client_id_responsetype_id_0d116294_uniq']
+  }
+}
+
+Ref oidc_provider_client_response_types_client_id_fk: oidc_provider_client_response_types.client_id > oidc_provider_client.id [delete: cascade]
+
+Ref oidc_provider_client_response_types_responsetype_id_fk: oidc_provider_client_response_types.responsetype_id > oidc_provider_responsetype.id [delete: cascade]
+
+Ref oidc_provider_code_client_id_fk: oidc_provider_code.client_id > oidc_provider_client.id [delete: cascade]
+
+Ref oidc_provider_code_user_id_fk: oidc_provider_code.user_id > auth_user.id [delete: cascade]
+
+Ref oidc_provider_token_client_id_fk: oidc_provider_token.client_id > oidc_provider_client.id [delete: cascade]
+
+Ref oidc_provider_token_user_id_fk: oidc_provider_token.user_id > auth_user.id [delete: cascade]
+
+Ref oidc_provider_userconsent_client_id_fk: oidc_provider_userconsent.client_id > oidc_provider_client.id [delete: cascade]
+
+Ref oidc_provider_userconsent_user_id_fk: oidc_provider_userconsent.user_id > auth_user.id [delete: cascade]

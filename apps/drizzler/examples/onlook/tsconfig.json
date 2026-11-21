@@ -1,0 +1,10 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@onlook/models": ["./stubs/onlook-models/index.ts"],
+      "@onlook/stripe": ["./stubs/onlook-stripe/index.ts"]
+    }
+  },
+  "include": ["src", "stubs", "drizzle.config.ts"]
+}

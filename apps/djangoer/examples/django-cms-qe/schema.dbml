@@ -1,0 +1,2156 @@
+Enum MenuPluginModelOrientation {
+  "1"
+  "2"
+}
+
+Enum MailingListExternalService {
+  "1"
+  "2"
+}
+
+Enum SubscribeTaskType {
+  "1"
+  "2"
+}
+
+Enum HostingVideoPlayerVideoHostingService {
+  "1"
+  "2"
+  "3"
+}
+
+Enum VideoTrackKind {
+  "subtitles"
+  "captions"
+  "descriptions"
+  "chapters"
+}
+
+Enum ScriptCrossOrigin {
+  // "" (): the empty string, which DBML cannot name
+  "anonymous"
+  "use-credentials"
+}
+
+Enum ScriptReferrerPolicy {
+  // "" (): the empty string, which DBML cannot name
+  "no-referrer"
+  "no-referrer-when-downgrade"
+  "origin"
+  "origin-when-cross-origin"
+  "unsafe-url"
+  "same-origin"
+  "strict-origin"
+  "strict-origin-when-cross-origin"
+}
+
+Enum CmsQePluginsLinkRel {
+  "alternate"
+  "author"
+  "dns-prefetch"
+  "help"
+  "icon"
+  "license"
+  "next"
+  "pingback"
+  "preconnect"
+  "prefetch"
+  "preload"
+  "prerender"
+  "prev"
+  "search"
+  "stylesheet"
+}
+
+Enum CmsQePluginsLinkCrossOrigin {
+  // "" (): the empty string, which DBML cannot name
+  "anonymous"
+  "use-credentials"
+}
+
+Enum CmsQePluginsLinkReferrerPolicy {
+  // "" (): the empty string, which DBML cannot name
+  "no-referrer"
+  "no-referrer-when-downgrade"
+  "origin"
+  "origin-when-cross-origin"
+  "unsafe-url"
+}
+
+Enum IframeLoading {
+  // "" (): the empty string, which DBML cannot name
+  "eager"
+  "lazy"
+}
+
+Enum IframeReferrerPolicy {
+  // "" (): the empty string, which DBML cannot name
+  "no-referrer"
+  "no-referrer-when-downgrade"
+  "origin"
+  "origin-when-cross-origin"
+  "unsafe-url"
+  "same-origin"
+  "strict-origin"
+  "strict-origin-when-cross-origin"
+}
+
+Enum IframeSandbox {
+  // "" (): the empty string, which DBML cannot name
+  "allow-forms"
+  "allow-pointer-lock"
+  "allow-popups"
+  "allow-same-origin"
+  "allow-scripts"
+  "allow-top-navigation"
+}
+
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum UserSettingsLanguage {
+  "en"
+}
+
+Enum PagePermissionGrantOn {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum PageContentTemplate {
+  "cms_qe/home.html"
+  "INHERIT"
+}
+
+Enum PageContentLimitVisibilityInMenu {
+  "None"
+  "1"
+  "2"
+}
+
+Enum PageContentXframeOptions {
+  "0"
+  "1"
+  "2"
+  "3"
+}
+
+Enum DjangocmsLinkLinkTemplate {
+  "default"
+}
+
+Enum DjangocmsLinkLinkLinkTarget {
+  "_blank"
+  "_self"
+  "_parent"
+  "_top"
+}
+
+Enum CategoryTranslationLanguageCode {
+  "en"
+}
+
+Enum AliasCreationMethod {
+  "template"
+  "code"
+}
+
+Enum AliasPluginTemplate {
+  "default"
+}
+
+Enum VersionState {
+  "draft"
+  "published"
+  "unpublished"
+  "archived"
+}
+
+Enum StateTrackingOldState {
+  "draft"
+  "published"
+  "unpublished"
+  "archived"
+}
+
+Enum StateTrackingNewState {
+  "draft"
+  "published"
+  "unpublished"
+  "archived"
+}
+
+Enum GoogleMapTemplate {
+  "default"
+}
+
+Enum GoogleMapZoom {
+  "0"
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+  "6"
+  "7"
+  "8"
+  "9"
+  "10"
+  "11"
+  "12"
+  "13"
+  "14"
+  "15"
+  "16"
+  "17"
+  "18"
+  "19"
+  "20"
+  "21"
+}
+
+Enum GoogleMapMapTypeControl {
+  "ROADMAP"
+  "SATELLITE"
+  "HYBRID"
+  "TERRAIN"
+}
+
+Enum GoogleMapRouteTravelMode {
+  "DRIVING"
+  "BICYCLING"
+  "TRANSIT"
+  "WALKING"
+}
+
+Enum FolderPermissionType {
+  "0"
+  "1"
+  "2"
+}
+
+Enum FolderPermissionCanRead {
+  "None"
+  "1"
+  "0"
+}
+
+Enum FolderPermissionCanEdit {
+  "None"
+  "1"
+  "0"
+}
+
+Enum FolderPermissionCanAddChildren {
+  "None"
+  "1"
+  "0"
+}
+
+Enum DjangocmsFileFileTemplate {
+  "default"
+}
+
+Enum DjangocmsFileFileLinkTarget {
+  "_self"
+  "_blank"
+  "_parent"
+  "_top"
+}
+
+Enum DjangocmsFileFolderTemplate {
+  "default"
+}
+
+Enum DjangocmsFileFolderLinkTarget {
+  "_self"
+  "_blank"
+  "_parent"
+  "_top"
+}
+
+Enum IconTemplate {
+  "default"
+}
+
+Enum PictureTemplate {
+  "default"
+}
+
+Enum PictureAlignment {
+  "left"
+  "right"
+  "center"
+}
+
+Enum PictureLinkTarget {
+  "_blank"
+  "_self"
+  "_parent"
+  "_top"
+}
+
+Enum PictureUseResponsiveImage {
+  "inherit"
+  "yes"
+  "no"
+}
+
+Enum WebhookMethod {
+  "post"
+  "json"
+}
+
+Enum FormPluginFormTemplate {
+  "aldryn_forms/form.html"
+}
+
+Enum EmailNotificationTheme {
+  "default"
+}
+
+Table cms_qe_auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table cms_qe_menu_menupluginmodel {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a MenuPluginModel is a CMSPlugin (multi-table inheritance)']
+  orientation MenuPluginModelOrientation [default: 1, not null]
+  start_page varchar(50) [not null, note: 'ID of page in advanced settings.']
+  end_level integer [default: 2, not null, note: '''Specify at which level the navigation should stop.
+
+            Keep in mind that Bootstrap by default does not support dropdown submenu.
+            Any deep dropdown menu is not very well accessible from mobile devices.''']
+  submenu_in_inactive_item bool [default: true, not null]
+}
+
+Table cms_qe_newsletter_newsletterpluginmodel {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a NewsletterPluginModel is a CMSPlugin (multi-table inheritance)']
+  title varchar(150) [not null, note: 'The title of subscribes that will be shown to users']
+  fullname_show bool [default: false, not null]
+  fullname_require bool [default: false, not null]
+
+  Note: '''Configuration model for newsletter plugin.
+Allows to set:
+* Title
+* Mail lists on mailchimp to which subscribers will be added
+* Show or hide full name
+* Require full name or not'''
+}
+
+Table cms_qe_newsletter_mailinglist {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+  external_service MailingListExternalService [default: 1, not null]
+  external_id varchar(10)
+
+  Note: '''Mailing list model which also synchronize with external services like Mailchimp.
+If ``external_id`` is not set then subscriber is not synchronized.'''
+}
+
+Table cms_qe_newsletter_subscriber {
+  id integer [pk, increment]
+  mailing_list_id bigint [not null]
+  email varchar(254) [not null]
+  first_name varchar(50) [not null]
+  last_name varchar(50) [not null]
+  external_id varchar(50)
+
+  indexes {
+    (mailing_list_id) [name: 'cms_qe_newsletter_subscriber_mailing_list_id_2776912a']
+  }
+
+  Note: '''Subscriber model which also synchronize with external services like Mailchimp.
+If ``external_id`` is not set then subscriber is not synchronized.'''
+}
+
+Table cms_qe_newsletter_subscribetask {
+  id integer [pk, increment]
+  mailing_list_id bigint
+  email varchar(254) [not null]
+  first_name varchar(50)
+  last_name varchar(50)
+  external_id varchar(10)
+  type SubscribeTaskType [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  attempts "smallint unsigned" [default: 0, not null]
+  last_error text [not null]
+
+  indexes {
+    (mailing_list_id) [name: 'cms_qe_newsletter_subscribetask_mailing_list_id_356da1d6']
+  }
+
+  Note: '''Item for task queue for subscribing and unsubscribing members on the external
+service like Mailchimp. The queue can is processed by ``cms-qe-newsletter-sync`` command.'''
+}
+
+Table cms_qe_table_tablepluginmodel {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a TablePluginModel is a CMSPlugin (multi-table inheritance)']
+  table varchar(100) [not null]
+  columns text [not null, note: 'default in Python: dict()']
+  filter text [not null, note: 'default in Python: dict()']
+  paging_show bool [default: true, not null]
+  paging_per_page integer [default: 20, not null]
+
+  Note: '''Configuration model for plugin Table for Django CMS QE. Possibility to specify
+table, columns, order, filtering etc. etc.'''
+}
+
+Table cms_qe_video_sourcefilevideoplayer {
+  label varchar(255) [not null]
+  poster_id integer
+  width integer [note: 'Leave it blank to make a video player of the default width of video source']
+  height integer [note: 'Leave it blank to make a video player of the default width of video source']
+  controls bool [default: true, not null]
+  autoplay bool [default: false, not null]
+  loop bool [default: false, not null]
+  other_attributes text [not null, note: 'default in Python: dict()']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a SourceFileVideoPlayer is a CMSPlugin (multi-table inheritance)']
+  source_file_id integer
+  text_title varchar(255) [not null]
+  text_description text [not null]
+  attributes text [not null, note: 'default in Python: dict()']
+  muted bool [default: false, not null]
+
+  indexes {
+    (poster_id) [name: 'cms_qe_video_sourcefilevideoplayer_poster_id_5d111ef3']
+    (source_file_id) [name: 'cms_qe_video_sourcefilevideoplayer_source_file_id_70953750']
+  }
+
+  Note: '''Configuration model for video player to play video from file on local disk.
+
+Columns from AbstractVideoPlayer (abstract): label, poster_id, width, height, controls, autoplay, loop, other_attributes, cmsplugin_ptr_id.'''
+}
+
+Table cms_qe_video_hostingvideoplayer {
+  label varchar(255) [not null]
+  poster_id integer
+  width integer [note: 'Leave it blank to make a video player of the default width of video source']
+  height integer [note: 'Leave it blank to make a video player of the default width of video source']
+  controls bool [default: true, not null]
+  autoplay bool [default: false, not null]
+  loop bool [default: false, not null]
+  other_attributes text [not null, note: 'default in Python: dict()']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a HostingVideoPlayer is a CMSPlugin (multi-table inheritance)']
+  video_hosting_service HostingVideoPlayerVideoHostingService [default: 3, not null]
+  video_url varchar(255) [not null, note: 'Use this field to embed videos from external services such as YouTube, Vimeo or others.']
+
+  indexes {
+    (poster_id) [name: 'cms_qe_video_hostingvideoplayer_poster_id_30161606']
+  }
+
+  Note: '''Configuration model for video player to play video from video hosting services.
+
+Columns from AbstractVideoPlayer (abstract): label, poster_id, width, height, controls, autoplay, loop, other_attributes, cmsplugin_ptr_id.'''
+}
+
+Table cms_qe_video_videotrack {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a VideoTrack is a CMSPlugin (multi-table inheritance)']
+  kind VideoTrackKind [not null]
+  src_id integer
+  srclang varchar(255) [not null, note: 'Examples: "en" or "de" etc.']
+  label varchar(255) [not null]
+  attributes text [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (src_id) [name: 'cms_qe_video_videotrack_src_id_481fb094']
+  }
+
+  Note: '''Renders the HTML <track> element inside <video>.'''
+}
+
+Table cms_qe_plugins_script {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Script is a CMSPlugin (multi-table inheritance)']
+  src varchar(255) [not null, note: 'Specifies the location of the linked script.']
+  asyncf bool [default: false, not null, note: 'Specifies that the script is downloaded in parallel to parsing the page, and executed as soon as it is available (before parsing completes) (only for external scripts)']
+  cross_origin ScriptCrossOrigin [default: null, note: 'Sets the mode of the request to an HTTP CORS Request.']
+  defer bool [default: false, not null, note: 'Specifies that the script is downloaded in parallel to parsing the page, and executed after the page has finished parsing (only for external scripts)']
+  integrity varchar(255) [note: 'Allows a browser to check the fetched script to ensure that the code is never loaded if the source has been manipulated']
+  nomodule bool [default: false, not null, note: 'Specifies that the script should not be executed in browsers supporting ES2015 modules.']
+  referrer_policy ScriptReferrerPolicy [default: null, note: 'Specifies which referrer to use when fetching the resource.']
+  type varchar(255) [note: 'Specifies the media type of the script.']
+  attributes text [note: 'More attributes as JSON data. E.g. {"data-name": "value", "id": 42}']
+
+  Note: '''HTML Script tag.'''
+}
+
+Table cms_qe_plugins_link {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a cms_qe_plugins.Link is a CMSPlugin (multi-table inheritance)']
+  href varchar(255) [not null, note: 'Specifies the location of the linked document.']
+  rel CmsQePluginsLinkRel [default: 'stylesheet', not null, note: 'Required. Specifies the relationship between the current document and the linked document.']
+  cross_origin CmsQePluginsLinkCrossOrigin [default: null, note: 'Specifies how the element handles cross-origin requests.']
+  hreflang varchar(30) [note: 'Specifies the language of the text in the linked document.']
+  media varchar(255) [note: 'Specifies on what device the linked document will be displayed.']
+  referrer_policy CmsQePluginsLinkReferrerPolicy [default: null, note: 'Specifies which referrer to use when fetching the resource.']
+  sizes varchar(255) [note: 'Specifies the size of the linked resource. Only for rel="icon".']
+  title varchar(255) [note: 'Defines a preferred or an alternate stylesheet.']
+  type varchar(255) [note: 'Specifies the media type of the linked document. E.g. \'text/css\'.']
+  attributes text [note: 'More attributes as JSON data. E.g. {"data-name": "value", "id": 42}']
+
+  Note: '''HTML Link tag.'''
+}
+
+Table cms_qe_plugins_iframe {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Iframe is a CMSPlugin (multi-table inheritance)']
+  src varchar(255) [not null, note: 'Specifies the address of the document to embed in the &lt;iframe&gt;.']
+  allow varchar(255) [note: 'Specifies a feature policy for the &lt;iframe&gt;. Form more see <a href=\'https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#allow\' target=\'_blank\'>IFrame attributes.</a>.']
+  allow_full_screen bool [note: 'Set to true if the &lt;iframe&gt; can activate fullscreen mode by calling the requestFullscreen() method.']
+  allow_payment_request bool [note: 'Set to true if a cross-origin &lt;iframe&gt; should be allowed to invoke the Payment Request API.']
+  height integer [note: 'Specifies the height of an &lt;iframe&gt;. Default height is 150 pixels.']
+  width integer [note: 'Specifies the width of an &lt;iframe&gt;. Default width is 300 pixels.']
+  loading IframeLoading [default: null, note: 'Specifies whether a browser should load an iframe immediately or to defer loading of iframes until some conditions are met.']
+  name varchar(255) [note: 'Specifies the name of an &lt;iframe&gt;.']
+  referrer_policy IframeReferrerPolicy [default: null, note: 'Specifies which referrer information to send when fetching the iframe.']
+  sandbox IframeSandbox [default: null, note: 'Enables an extra set of restrictions for the content in an &lt;iframe&gt;.']
+  src_doc text [note: 'Specifies the HTML content of the page to show in the &lt;iframe&gt;.']
+  attributes text [note: 'More attributes as JSON data. E.g. {"data-name": "value", "id": 42}']
+
+  Note: '''HTML Iframe tag.'''
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id bigint [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table cms_usersettings {
+  id integer [pk, increment]
+  user_id bigint [unique, not null]
+  language UserSettingsLanguage [not null, note: 'The language for the admin interface and toolbar']
+  clipboard_id integer
+
+  indexes {
+    (clipboard_id) [name: 'cms_usersettings_clipboard_id_3ae17c19']
+  }
+}
+
+Table cms_page {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  parent_id integer
+  site_id integer [not null]
+  created_by varchar(255) [not null]
+  changed_by varchar(255) [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  changed_date datetime [not null, note: 'default in Python: now()']
+  reverse_id varchar(40) [note: 'A unique identifier that is used with the page_url templatetag for linking to this page']
+  navigation_extenders varchar(80)
+  login_required bool [default: false, not null]
+  is_home bool [default: false, not null]
+  application_urls varchar(200)
+  application_namespace varchar(200)
+  is_page_type bool [default: false, not null, note: 'Mark this page as a page type']
+
+  indexes {
+    (parent_id) [name: 'cms_page_parent_id_f89b72e4']
+    (site_id) [name: 'cms_page_site_id_4323d3ff']
+    (reverse_id) [name: 'cms_page_reverse_id_ffc9ede2']
+    (navigation_extenders) [name: 'cms_page_navigation_extenders_c24af8dd']
+    (is_home) [name: 'cms_page_is_home_edadca07']
+    (application_urls) [name: 'cms_page_application_urls_9ef47497']
+  }
+
+  Note: '''A ``Page`` is the basic unit of site structure in django CMS. The CMS uses a hierarchical page model: each page
+stands in relation to other pages as parent, child or sibling. This hierarchy is managed by the `django-treebeard
+<http://django-treebeard.readthedocs.io/en/latest/>`_ library.
+
+A ``Page`` is an abstract entity. It does not have any content associated with it, nor does is provide any slugs to
+build a URL. This is part of the model :class:`~cms.models.contentmodels.PageContent` and
+:class:`~cms.models.pagemodel.PageUrl` respectively.
+
+Proxy models: PageType.
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table cms_pageurl {
+  id integer [pk, increment]
+  slug varchar(255) [not null]
+  path varchar(255)
+  language varchar(15) [not null]
+  page_id integer [not null]
+  site_id integer [not null]
+  managed bool [default: false, not null]
+
+  indexes {
+    (slug) [name: 'cms_pageurl_slug_f8d42287']
+    (path) [name: 'cms_pageurl_path_9f26e673']
+    (language) [name: 'cms_pageurl_language_a10302dc']
+    (page_id) [name: 'cms_pageurl_page_id_dbf4793a']
+    (site_id) [name: 'cms_pageurl_site_id_7d6fd976']
+    (page_id, language) [unique, name: 'unique_together_page_language']
+    (site_id, language, path) [unique, name: 'unique_site_language_path']
+  }
+}
+
+Table cms_globalpagepermission {
+  id integer [pk, increment]
+  user_id bigint
+  group_id integer
+  can_change bool [default: true, not null]
+  can_add bool [default: true, not null]
+  can_delete bool [default: true, not null]
+  can_publish bool [default: true, not null]
+  can_change_advanced_settings bool [default: false, not null]
+  can_change_permissions bool [default: false, not null, note: 'Allows this user to grant and revoke page permissions for other users.']
+  can_move_page bool [default: true, not null]
+  can_view bool [default: false, not null, note: 'Grants frontend view access. Note: as soon as any user or group is given view access to a page, that page becomes restricted — only users/groups with view access can then see it on the frontend.']
+  can_recover_page bool [default: true, not null, note: 'can recover any deleted page']
+
+  indexes {
+    (user_id) [name: 'cms_globalpagepermission_user_id_a227cee1']
+    (group_id) [name: 'cms_globalpagepermission_group_id_991b4733']
+  }
+
+  Note: '''Permissions for all pages (global).
+
+Columns from AbstractPagePermission (abstract): user_id, group_id, can_change, can_add, can_delete, can_publish, can_change_advanced_settings, can_change_permissions, can_move_page, can_view.'''
+}
+
+Table cms_pagepermission {
+  id integer [pk, increment]
+  user_id bigint
+  group_id integer
+  can_change bool [default: true, not null]
+  can_add bool [default: true, not null]
+  can_delete bool [default: true, not null]
+  can_publish bool [default: true, not null]
+  can_change_advanced_settings bool [default: false, not null]
+  can_change_permissions bool [default: false, not null, note: 'Allows this user to grant and revoke page permissions for other users.']
+  can_move_page bool [default: true, not null]
+  can_view bool [default: false, not null, note: 'Grants frontend view access. Note: as soon as any user or group is given view access to a page, that page becomes restricted — only users/groups with view access can then see it on the frontend.']
+  grant_on PagePermissionGrantOn [default: 5, not null]
+  page_id integer
+
+  indexes {
+    (user_id) [name: 'cms_pagepermission_user_id_0c7d2b3c']
+    (group_id) [name: 'cms_pagepermission_group_id_af5af193']
+    (page_id) [name: 'cms_pagepermission_page_id_0ae9a163']
+  }
+
+  Note: '''Page permissions for a single page
+
+Columns from AbstractPagePermission (abstract): user_id, group_id, can_change, can_add, can_delete, can_publish, can_change_advanced_settings, can_change_permissions, can_move_page, can_view.'''
+}
+
+Table cms_pageuser {
+  user_ptr_id bigint [pk, note: 'parent link: a PageUser is a User (multi-table inheritance)']
+  created_by_id bigint
+
+  indexes {
+    (created_by_id) [name: 'cms_pageuser_created_by_id_8e9fbf83']
+  }
+
+  Note: '''Cms specific user data, required for permission system'''
+}
+
+Table cms_pageusergroup {
+  group_ptr_id integer [pk, note: 'parent link: a PageUserGroup is a Group (multi-table inheritance)']
+  created_by_id bigint
+
+  indexes {
+    (created_by_id) [name: 'cms_pageusergroup_created_by_id_7d57fa39']
+  }
+
+  Note: '''Cms specific group data, required for permission system'''
+}
+
+Table cms_placeholder {
+  id integer [pk, increment]
+  slot varchar(255) [not null]
+  default_width "smallint unsigned"
+  content_type_id integer
+  object_id "integer unsigned" [note: 'source: with content_type_id, a generic foreign key to a row of any model (from PageContent.placeholders, PlaceholderReference.placeholders, AliasContent.placeholders)']
+
+  indexes {
+    (slot) [name: 'cms_placeholder_slot_0bc04d21']
+    (content_type_id) [name: 'cms_placeholder_content_type_id_a7659d9c']
+  }
+
+  Note: '''``Placeholders`` can be filled with plugins, which store or generate content.'''
+}
+
+Table cms_cmsplugin {
+  id integer [pk, increment]
+  placeholder_id integer
+  parent_id integer
+  position smallint [default: 1, not null]
+  language varchar(15) [not null]
+  plugin_type varchar(50) [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  changed_date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (placeholder_id) [name: 'cms_cmsplugin_placeholder_id_0bfa3b26']
+    (parent_id) [name: 'cms_cmsplugin_parent_id_fd3bd9dd']
+    (language) [name: 'cms_cmsplugin_language_bbea8a48']
+    (plugin_type) [name: 'cms_cmsplugin_plugin_type_94e96ebf']
+    (placeholder_id, language, position) [unique, name: 'cms_cmsplugin_placeholder_id_language_position_bad60ebe_uniq']
+    (placeholder_id, language, position) [name: 'cms_cmsplug_placeho_3f2b0f_idx']
+  }
+
+  Note: '''The base class for a CMS plugin model. When defining a new custom plugin, you should
+store plugin-instance specific information on a subclass of this class. (An example for this
+would be to store the number of pictures to display in a gallery.)
+
+Two restrictions apply when subclassing this to use in your own models:
+
+1. Subclasses of CMSPlugin **cannot be further subclassed**
+2. Subclasses of CMSPlugin cannot define a "text" field.
+
+Proxy models: SlotModel.'''
+}
+
+Table cms_pagecontent {
+  id integer [pk, increment]
+  language varchar(15) [not null]
+  title varchar(255) [not null, note: 'The default title']
+  page_title varchar(255) [note: 'Overwrites what is displayed at the top of your browser or in bookmarks']
+  menu_title varchar(255) [note: 'Overwrite what is displayed in the menu']
+  meta_description text [note: 'A description of the page used by search engines.']
+  redirect varchar(2048) [note: 'Redirects to this URL.']
+  slug varchar(255) [not null, note: 'The part of the title that is used in the URL']
+  overwrite_url varchar(255) [note: 'Keep this field empty if standard path should be used.']
+  page_id integer [not null]
+  creation_date datetime [not null, note: 'default in Python: now()']
+  created_by varchar(255) [not null]
+  changed_by varchar(255) [not null]
+  changed_date datetime [not null, note: 'default in Python: now()']
+  in_navigation bool [default: true, not null]
+  soft_root bool [default: false, not null, note: 'All ancestors will not be displayed in the navigation']
+  template PageContentTemplate [default: 'INHERIT', not null, note: 'The template used to render the content.']
+  limit_visibility_in_menu PageContentLimitVisibilityInMenu [default: null, note: 'limit when this page is visible in the menu']
+  xframe_options PageContentXframeOptions [default: 2, not null]
+
+  indexes {
+    (language) [name: 'cms_pagecontent_language_0b8ccf12']
+    (slug) [name: 'cms_pagecontent_slug_23c7b868']
+    (page_id) [name: 'cms_pagecontent_page_id_b958451e']
+    (in_navigation) [name: 'cms_pagecontent_in_navigation_c35c26ba']
+    (soft_root) [name: 'cms_pagecontent_soft_root_ea2486e9']
+    (limit_visibility_in_menu) [name: 'cms_pagecontent_limit_visibility_in_menu_e1d68dcf']
+  }
+}
+
+Table cms_placeholderreference {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a PlaceholderReference is a CMSPlugin (multi-table inheritance)']
+  name varchar(255) [not null]
+}
+
+Table cms_aliaspluginmodel {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a AliasPluginModel is a CMSPlugin (multi-table inheritance)']
+  plugin_id integer
+  alias_placeholder_id integer
+
+  indexes {
+    (plugin_id) [name: 'cms_aliaspluginmodel_plugin_id_9867676e']
+    (alias_placeholder_id) [name: 'cms_aliaspluginmodel_alias_placeholder_id_6d6e0c8a']
+  }
+
+  Note: '''AliasPlugin is deprecated,
+and it will be removed;
+please use the package djangocms-alias instead'''
+}
+
+Table cms_urlconfrevision {
+  id integer [pk, increment]
+  revision varchar(255) [not null]
+}
+
+Table menus_cachekey {
+  id integer [pk, increment]
+  language varchar(255) [not null]
+  site "integer unsigned" [not null]
+  key varchar(255) [not null]
+
+  Note: '''This model stores a set of cache keys accessible by multiple processes/machines.
+Multiple Django instances will then share the keys, allowing selective invalidation
+of menu trees (per site, per language) in the cache.'''
+}
+
+Table djangocms_text_text {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Text is a CMSPlugin (multi-table inheritance)']
+  body text [not null]
+  json text
+  rte varchar(16) [default: '', not null, note: 'The rich text editor used to create this text. JSON formats vary between editors.']
+
+  Note: '''Columns from AbstractText (abstract): cmsplugin_ptr_id, body, json, rte.'''
+}
+
+Table djangocms_link_link {
+  template DjangocmsLinkLinkTemplate [default: 'default', not null]
+  name varchar(255) [not null]
+  link text [not null, note: '-. default in Python: dict()']
+  link_target DjangocmsLinkLinkLinkTarget [not null]
+  attributes text [not null, note: 'default in Python: dict()']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a djangocms_link.Link is a CMSPlugin (multi-table inheritance)']
+
+  Note: '''Columns from AbstractLink (abstract): template, name, link, link_target, attributes, cmsplugin_ptr_id.'''
+}
+
+Table djangocms_alias_category_translation {
+  id integer [pk, increment]
+  language_code CategoryTranslationLanguageCode [not null]
+  name varchar(120) [not null]
+  master_id bigint
+
+  indexes {
+    (language_code) [name: 'djangocms_alias_category_translation_language_code_95644158']
+    (master_id) [name: 'djangocms_alias_category_translation_master_id_65c3ac44']
+    (name, language_code) [unique, name: 'djangocms_alias_category_translation_name_language_code_45c565e3_uniq']
+    (language_code, master_id) [unique, name: 'djangocms_alias_category_translation_uniq_lang']
+  }
+
+  Note: '''Columns from TranslatedFieldsModel (abstract): language_code.'''
+}
+
+Table djangocms_alias_category {
+  id integer [pk, increment]
+}
+
+Table djangocms_alias_alias {
+  id integer [pk, increment]
+  creation_method AliasCreationMethod [default: 'code', not null]
+  category_id bigint [not null]
+  position "integer unsigned" [default: 0, not null]
+  static_code varchar(255) [note: 'To render the alias in templates.']
+  site_id integer
+
+  indexes {
+    (category_id) [name: 'djangocms_alias_alias_category_id_96da6da6']
+    (site_id) [name: 'djangocms_alias_alias_site_id_d4e42897']
+    (static_code, site_id) [unique, name: 'djangocms_alias_alias_static_code_site_id_e5afbc06_uniq']
+  }
+}
+
+Table djangocms_alias_aliascontent {
+  id integer [pk, increment]
+  alias_id bigint [not null]
+  name varchar(120) [not null]
+  language varchar(10) [not null, note: 'default in Python: get_language()']
+
+  indexes {
+    (alias_id) [name: 'djangocms_alias_aliascontent_alias_id_e36dc314']
+  }
+}
+
+Table djangocms_alias_aliasplugin {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a AliasPlugin is a CMSPlugin (multi-table inheritance)']
+  alias_id bigint [not null]
+  template AliasPluginTemplate [default: 'default', not null]
+
+  indexes {
+    (alias_id) [name: 'djangocms_alias_aliasplugin_alias_id_d425895e']
+  }
+}
+
+Table djangocms_versioning_version {
+  id integer [pk, increment]
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+  created_by_id bigint [not null]
+  number varchar(11) [not null]
+  content_type_id integer [not null]
+  object_id "integer unsigned" [not null, note: 'content: with content_type_id, a generic foreign key to a row of any model (from PageContent.versions, AliasContent.versions)']
+  state VersionState [default: 'draft', not null]
+  locked_by_id bigint [default: null]
+  source_id integer
+
+  indexes {
+    (created_by_id) [name: 'djangocms_versioning_version_created_by_id_0a7b7c9d']
+    (content_type_id) [name: 'djangocms_versioning_version_content_type_id_04f95e7d']
+    (locked_by_id) [name: 'djangocms_versioning_version_locked_by_id_87332f7c']
+    (source_id) [name: 'djangocms_versioning_version_source_id_d0664b18']
+    (content_type_id, object_id) [unique, name: 'djangocms_versioning_version_content_type_id_object_id_fac3dca5_uniq']
+  }
+
+  Note: '''Proxy models: AliasContentVersion, PageContentVersion.'''
+}
+
+Table djangocms_versioning_statetracking {
+  id integer [pk, increment]
+  version_id integer [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  old_state StateTrackingOldState [not null]
+  new_state StateTrackingNewState [not null]
+  user_id bigint [not null]
+
+  indexes {
+    (version_id) [name: 'djangocms_versioning_statetracking_version_id_bda1e5ca']
+    (user_id) [name: 'djangocms_versioning_statetracking_user_id_93cc4ccb']
+  }
+}
+
+Table djangocms_googlemap_googlemap {
+  template GoogleMapTemplate [default: 'default', not null]
+  title varchar(255) [not null]
+  width varchar(6) [default: '100%', not null, note: 'Width of the map, including the CSS length units (e.g. "100%", "400px" or "400rem").']
+  height varchar(6) [default: '400px', not null, note: 'Height of the map, including the CSS length units (e.g. "400px" or "400rem").']
+  style text [not null, note: 'Provide a valid (escaped) JSON configuration. See http://developers.google.com/maps/documentation/javascript/styling']
+  map_id varchar(32) [not null, note: 'Map ID of Cloud-based maps styling. See https://developers.google.com/maps/documentation/cloud-customization/overview']
+  lat real [note: 'Default Geographical latitude in degrees (e.g. "46.947973").']
+  lng real [note: 'Default Geographical longitude in degrees (e.g. "7.447446").']
+  zoom GoogleMapZoom [default: 13, not null]
+  map_type_control GoogleMapMapTypeControl [default: 'ROADMAP', not null]
+  zoom_control bool [default: true, not null, note: 'Enabling zooming allows the user to view the map at different scales.']
+  street_view_control bool [default: true, not null, note: 'Street View allows the user to see street-level imagery.']
+  rotate_control bool [default: true, not null, note: 'Allows the user to change the orientation of the map.']
+  scale_control bool [default: true, not null, note: 'Displays a linear distance scale on the map.']
+  fullscreen_control bool [default: true, not null, note: 'Allows the user to select a fullscreen view of the map.']
+  pan_control bool [default: true, not null, note: 'Allows the user to move the map using the cursor keys to see new areas.']
+  double_click_zoom bool [default: true, not null, note: 'Allows the user to zoom and centre the map with a double-click or double-tap.']
+  draggable bool [default: true, not null, note: 'Allows the user to drag the map to see new areas.']
+  keyboard_shortcuts bool [default: true, not null, note: 'Allows the user to control the map using the keyboard.']
+  scrollwheel bool [default: true, not null, note: 'Allows the user to control the zoom level with a scroll-wheel.']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a GoogleMap is a CMSPlugin (multi-table inheritance)']
+
+  Note: '''Renders the Google Maps wrapper'''
+}
+
+Table djangocms_googlemap_googlemapmarker {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a GoogleMapMarker is a CMSPlugin (multi-table inheritance)']
+  title varchar(255) [not null]
+  address varchar(255) [not null, note: 'Note: Latitude and longitude can be used to fine-tune the location.']
+  lat real [note: 'Geographical latitude in degrees (e.g. "46.947973").']
+  lng real [note: 'Geographical longitude in degrees (e.g. "7.447446").']
+  icon_id integer [note: 'A marker icon identifies a location on a map. By default, it uses a standard image from Google.']
+  show_content bool [default: true, not null, note: 'Display the info window when the map loads.']
+  info_content text [not null, note: 'Will be displayed in the info window attached to the marker.']
+
+  indexes {
+    (icon_id) [name: 'djangocms_googlemap_googlemapmarker_icon_id_3b103213']
+  }
+
+  Note: '''Renders a marker inside the Google Maps wrapper'''
+}
+
+Table djangocms_googlemap_googlemaproute {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a GoogleMapRoute is a CMSPlugin (multi-table inheritance)']
+  title varchar(255) [not null]
+  origin varchar(255) [not null, note: 'Will be determined by user\'s location (if possible) if left blank.']
+  destination varchar(255) [not null]
+  travel_mode GoogleMapRouteTravelMode [default: 'DRIVING', not null]
+
+  Note: '''Renders a route option inside the map'''
+}
+
+Table filer_folder {
+  id integer [pk, increment]
+  parent_id integer
+  name varchar(255) [not null]
+  owner_id bigint
+  uploaded_at datetime [not null, note: 'default in Python: now()']
+  created_at datetime [not null, note: 'default in Python: now()']
+  modified_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (parent_id) [name: 'filer_folder_parent_id_308aecda']
+    (owner_id) [name: 'filer_folder_owner_id_be530fb4']
+    (parent_id, name) [unique, name: 'filer_folder_parent_id_name_bc773258_uniq']
+  }
+
+  Note: '''Represents a Folder that things (files) can be put into. Folders are *NOT*
+mirrored in the Filesystem and can have any unicode chars as their name.
+Other models may attach to a folder with a ForeignKey. If the related name
+ends with "_files" they will automatically be listed in the
+folder.files list along with all the other models that link to the folder
+in this way. Make sure the linked models obey the AbstractFile interface
+(Duck Type).'''
+}
+
+Table filer_folderpermission {
+  id integer [pk, increment]
+  folder_id integer
+  type FolderPermissionType [default: 0, not null]
+  user_id bigint
+  group_id integer
+  everybody bool [default: false, not null]
+  can_read FolderPermissionCanRead [default: null]
+  can_edit FolderPermissionCanEdit [default: null]
+  can_add_children FolderPermissionCanAddChildren [default: null]
+
+  indexes {
+    (folder_id) [name: 'filer_folderpermission_folder_id_5d02f1da']
+    (user_id) [name: 'filer_folderpermission_user_id_7673d4b6']
+    (group_id) [name: 'filer_folderpermission_group_id_8901bafa']
+  }
+}
+
+Table filer_file {
+  id integer [pk, increment]
+  polymorphic_ctype_id integer
+  folder_id integer
+  file varchar(255)
+  _file_size bigint
+  sha1 varchar(40) [default: '', not null]
+  has_all_mandatory_data bool [default: false, not null]
+  original_filename varchar(255)
+  name varchar(255) [default: '', not null]
+  description text
+  owner_id bigint
+  uploaded_at datetime [not null, note: 'default in Python: now()']
+  modified_at datetime [not null, note: 'default in Python: now()']
+  is_public bool [not null, note: 'Disable any permission checking for this file. File will be publicly accessible to anyone.. default in Python: is_public_default()']
+  mime_type varchar(255) [default: 'application/octet-stream', not null, note: 'MIME type of uploaded content']
+
+  indexes {
+    (polymorphic_ctype_id) [name: 'filer_file_polymorphic_ctype_id_f44903c1']
+    (folder_id) [name: 'filer_file_folder_id_af803bbb']
+    (owner_id) [name: 'filer_file_owner_id_b9e32671']
+  }
+
+  Note: '''Columns from PolymorphicModel (abstract): polymorphic_ctype_id.'''
+}
+
+Table filer_clipboard {
+  id integer [pk, increment]
+  user_id bigint [not null]
+
+  indexes {
+    (user_id) [name: 'filer_clipboard_user_id_b52ff0bc']
+  }
+}
+
+Table filer_clipboarditem {
+  id integer [pk, increment]
+  file_id integer [not null]
+  clipboard_id integer [not null]
+
+  indexes {
+    (file_id) [name: 'filer_clipboarditem_file_id_06196f80']
+    (clipboard_id) [name: 'filer_clipboarditem_clipboard_id_7a76518b']
+  }
+}
+
+Table filer_image {
+  _height real
+  _width real
+  _transparent bool [default: false, not null]
+  default_alt_text varchar(255)
+  default_caption varchar(255)
+  subject_location varchar(64) [default: '', not null]
+  file_ptr_id integer [pk, note: 'parent link: a Image is a filer.File (multi-table inheritance)']
+  date_taken datetime
+  author varchar(255)
+  must_always_publish_author_credit bool [default: false, not null]
+  must_always_publish_copyright bool [default: false, not null]
+
+  Note: '''Columns from BaseImage (abstract): _height, _width, _transparent, default_alt_text, default_caption, subject_location, file_ptr_id.'''
+}
+
+Table filer_thumbnailoption {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  width integer [not null, note: 'width in pixel.']
+  height integer [not null, note: 'height in pixel.']
+  crop bool [default: true, not null]
+  upscale bool [default: true, not null]
+
+  Note: '''This class defines the option use to create the thumbnail.'''
+}
+
+Table easy_thumbnails_source {
+  id integer [pk, increment]
+  storage_hash varchar(40) [not null]
+  name varchar(255) [not null]
+  modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (storage_hash) [name: 'easy_thumbnails_source_storage_hash_946cbcc9']
+    (name) [name: 'easy_thumbnails_source_name_5fe0edc6']
+    (storage_hash, name) [unique, name: 'easy_thumbnails_source_storage_hash_name_481ce32d_uniq']
+  }
+
+  Note: '''Columns from File (abstract): storage_hash, name, modified.'''
+}
+
+Table easy_thumbnails_thumbnail {
+  id integer [pk, increment]
+  storage_hash varchar(40) [not null]
+  name varchar(255) [not null]
+  modified datetime [not null, note: 'default in Python: now()']
+  source_id integer [not null]
+
+  indexes {
+    (storage_hash) [name: 'easy_thumbnails_thumbnail_storage_hash_f1435f49']
+    (name) [name: 'easy_thumbnails_thumbnail_name_b5882c31']
+    (source_id) [name: 'easy_thumbnails_thumbnail_source_id_5b57bc77']
+    (storage_hash, name, source_id) [unique, name: 'easy_thumbnails_thumbnail_storage_hash_name_source_id_fb375270_uniq']
+  }
+
+  Note: '''Columns from File (abstract): storage_hash, name, modified.'''
+}
+
+Table easy_thumbnails_thumbnaildimensions {
+  id integer [pk, increment]
+  thumbnail_id integer [unique, not null]
+  width "integer unsigned"
+  height "integer unsigned"
+}
+
+Table djangocms_file_file {
+  template DjangocmsFileFileTemplate [default: 'default', not null]
+  file_src_id integer
+  file_name varchar(255) [not null, note: 'Overrides the default file name with the given value.']
+  link_target DjangocmsFileFileLinkTarget [default: '', not null]
+  link_title varchar(255) [not null]
+  show_file_size bool [default: false, not null, note: 'Appends the file size at the end of the name.']
+  attributes text [not null, note: 'default in Python: dict()']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a djangocms_file.File is a CMSPlugin (multi-table inheritance)']
+
+  indexes {
+    (file_src_id) [name: 'djangocms_file_file_file_src_id_74ac14a5']
+  }
+
+  Note: '''Columns from AbstractFile (abstract): template, file_src_id, file_name, link_target, link_title, show_file_size, attributes, cmsplugin_ptr_id.'''
+}
+
+Table djangocms_file_folder {
+  template DjangocmsFileFolderTemplate [default: 'default', not null]
+  folder_src_id integer
+  link_target DjangocmsFileFolderLinkTarget [default: '', not null]
+  show_file_size bool [default: false, not null, note: 'Appends the file size at the end of the name.']
+  attributes text [not null, note: 'default in Python: dict()']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a djangocms_file.Folder is a CMSPlugin (multi-table inheritance)']
+
+  indexes {
+    (folder_src_id) [name: 'djangocms_file_folder_folder_src_id_9558406a']
+  }
+
+  Note: '''Columns from AbstractFolder (abstract): template, folder_src_id, link_target, show_file_size, attributes, cmsplugin_ptr_id.'''
+}
+
+Table djangocms_icon_icon {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Icon is a CMSPlugin (multi-table inheritance)']
+  icon varchar(255) [default: '', not null]
+  template IconTemplate [default: 'default', not null]
+  label varchar(255) [not null]
+  attributes text [not null, note: 'default in Python: dict()']
+
+  Note: '''Columns from AbstractIcon (abstract): cmsplugin_ptr_id, icon, template, label, attributes.'''
+}
+
+Table djangocms_picture_picture {
+  template PictureTemplate [default: 'default', not null]
+  picture_id integer
+  external_picture varchar(255) [note: 'If provided, overrides the embedded image. Certain options such as cropping are not applicable to external images.']
+  width "integer unsigned" [note: 'The image width as number in pixels. Example: "720" and not "720px".']
+  height "integer unsigned" [note: 'The image height as number in pixels. Example: "720" and not "720px".']
+  alignment PictureAlignment [not null, note: 'Aligns the image according to the selected option.']
+  caption_text text [note: 'Provide a description, attribution, copyright or other information.']
+  attributes text [not null, note: 'default in Python: dict()']
+  link_url varchar(2040) [note: 'Wraps the image in a link to an external URL.']
+  link_page_id integer [note: 'Wraps the image in a link to an internal (page) URL.']
+  link_target PictureLinkTarget [not null]
+  link_attributes text [not null, note: 'default in Python: dict()']
+  use_automatic_scaling bool [default: true, not null, note: 'Uses the placeholder dimensions to automatically calculate the size.']
+  use_no_cropping bool [default: false, not null, note: 'Outputs the raw image without cropping.']
+  use_crop bool [default: false, not null, note: 'Crops the image according to the thumbnail settings provided in the template.']
+  use_upscale bool [default: false, not null, note: 'Upscales the image to the size of the thumbnail settings in the template.']
+  use_responsive_image PictureUseResponsiveImage [default: 'inherit', not null, note: 'Uses responsive image technique to choose better image to display based upon screen viewport. This configuration only applies to uploaded images (external pictures will not be affected).']
+  thumbnail_options_id integer [note: 'Overrides width, height, and crop; scales up to the provided preset dimensions.']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Picture is a CMSPlugin (multi-table inheritance)']
+
+  indexes {
+    (picture_id) [name: 'djangocms_picture_picture_picture_id_f7d6711b']
+    (link_page_id) [name: 'djangocms_picture_picture_link_page_id_dbec9beb']
+    (thumbnail_options_id) [name: 'djangocms_picture_picture_thumbnail_options_id_59cf80d1']
+  }
+
+  Note: '''Columns from AbstractPicture (abstract): template, picture_id, external_picture, width, height, alignment, caption_text, attributes, link_url, link_page_id, link_target, link_attributes, use_automatic_scaling, use_no_cropping, use_crop, use_upscale, use_responsive_image, thumbnail_options_id, cmsplugin_ptr_id.'''
+}
+
+Table djangocms_frontend_frontenduiitem {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FrontendUIItem is a CMSPlugin (multi-table inheritance)']
+  ui_item varchar(30) [not null]
+  tag_type varchar(255) [default: 'div', not null, note: 'Select the HTML tag to be used.']
+  config text [not null, note: 'default in Python: dict()']
+
+  Note: '''Class: FrontendUIItem
+
+Inherits From: AbstractFrontendUIItem
+
+Description:
+This class represents a UI item in the frontend. It is used to define the behavior and attributes
+of a UI item in the user interface.
+
+Use this class as a base class for custom plugins that do not add their own database fields but
+use the entangled form fields instead.
+
+Attributes:
+- verbose_name (str): The verbose name of the UI item.
+
+Methods:
+None
+
+Proxy models: Accordion, AccordionItem, Alert, Badge, CardLayout, Card, CardInner, Carousel, CarouselSlide, Collapse, CollapseTrigger, CollapseContainer, CodeBlock, Blockquote, Figure, GridContainer, GridRow, GridColumn, Icon, Image, Jumbotron, Link, ListGroup, ListGroupItem, Media, MediaBody, Navigation, NavContainer, NavLink, PageTree, NavBrand, Tab, TabItem, Spacing, Heading, TableOfContents.
+
+Columns from AbstractFrontendUIItem (abstract): cmsplugin_ptr_id, ui_item, tag_type, config.'''
+}
+
+Table djangocms_render_context_rendercontext {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a RenderContext is a CMSPlugin (multi-table inheritance)']
+  mimetype varchar(255) [default: 'application/json', not null, note: 'The format must be consistent with the data in the context.']
+  context text [note: 'Context data in selected format. They take precedence over the source file and source URL.']
+  config text [note: 'Additional configuration for spreadsheet with source data. The configuration is automatically added or updated when the spreadsheet is saved. To edit the configuration "manually", you must have the Data for the context set to Source.']
+  file_id integer [note: 'Context data file. If Data is specified for the context, the source file is not used even though it is specified.']
+  source varchar(200) [note: 'The URL of the source from which the data will be downloaded. If Data for Context or Source File is specified, the source URL is not used even though it is specified.']
+  cached "smallint unsigned" [default: 5, not null, note: 'The time in minutes during which data will not be retrieved from the Source URL, but will remain in the cache. If set to zero, data from the source URL is not cached, but is loaded every time.']
+  template text [note: 'Django template for the context. It takes precedence over the template selected from the list. The context is available through the "data" value.']
+  template_list varchar(255) [note: 'List of templates. If Template is specified, the template set in the list will not be used.']
+  path varchar(255) [note: 'The path to the data in the form "name.name.name". The "data" context in the template starts from this key.']
+  processor varchar(255) [note: 'List of functions that process the context.']
+  detail_extends varchar(255) [note: 'The detail uses a template. If not specified, the default template is used.']
+  detail_template text [note: 'Django template for the context. It takes precedence over the template selected from the list. The context is available through the "detail" value. The entire context is still available via the "data" key.']
+  detail_template_list varchar(255) [note: 'List of templates. If Template is specified, the template set in the list will not be used.']
+  detail_processor varchar(255) [note: 'List of functions that process the context.']
+
+  indexes {
+    (file_id) [name: 'djangocms_render_context_rendercontext_file_id_1b33b25f']
+  }
+}
+
+Table djangocms_render_context_default {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Default is a CMSPlugin (multi-table inheritance)']
+  code varchar(255) [default: 'D', not null, note: 'The value name for the default type.']
+}
+
+Table djangocms_render_context_stack {
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a Stack is a CMSPlugin (multi-table inheritance)']
+  selector varchar(255) [not null, note: 'Keys or indexes separated by a dot.']
+}
+
+Table axes_accessfailurelog {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  locked_out bool [default: false, not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accessfailurelog_user_agent_ea145dda']
+    (ip_address) [name: 'axes_accessfailurelog_ip_address_2e9f5a7f']
+    (username) [name: 'axes_accessfailurelog_username_a8b7e8a4']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table axes_accessattempt {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  get_data text [not null]
+  post_data text [not null]
+  failures_since_start "integer unsigned" [not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accessattempt_user_agent_ad89678b']
+    (ip_address) [name: 'axes_accessattempt_ip_address_10922d9c']
+    (username) [name: 'axes_accessattempt_username_3f2d4ca0']
+    (username, ip_address, user_agent) [unique, name: 'axes_accessattempt_username_ip_address_user_agent_8ea22282_uniq']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table axes_accessattemptexpiration {
+  access_attempt_id integer [pk]
+  expires_at datetime [not null, note: 'The time when access attempt expires and is no longer valid.']
+}
+
+Table axes_accesslog {
+  id integer [pk, increment]
+  user_agent varchar(255) [not null]
+  ip_address char(39)
+  username varchar(255)
+  http_accept varchar(1025) [not null]
+  path_info varchar(255) [not null]
+  attempt_time datetime [not null, note: 'default in Python: now()']
+  logout_time datetime
+  session_hash varchar(64) [default: '', not null]
+
+  indexes {
+    (user_agent) [name: 'axes_accesslog_user_agent_0e659004']
+    (ip_address) [name: 'axes_accesslog_ip_address_86b417e5']
+    (username) [name: 'axes_accesslog_username_df93064b']
+  }
+
+  Note: '''Columns from AccessBase (abstract): user_agent, ip_address, username, http_accept, path_info, attempt_time.'''
+}
+
+Table constance_constance {
+  id integer [pk, increment]
+  key varchar(255) [unique, not null]
+  value text
+}
+
+Table aldryn_forms_webhook {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  url varchar(200) [unique, not null]
+  method WebhookMethod [not null, note: 'default in Python: (\'post\', \'POST\')']
+  transform text
+}
+
+Table aldryn_forms_formplugin {
+  name varchar(255) [not null, note: 'Used to filter out form submissions.']
+  error_message text [note: 'An error message that will be displayed if the form doesn\'t validate.']
+  success_message text [note: 'An success message that will be displayed.']
+  message_on_form bool [default: false, not null]
+  hide_form_after_redirection bool [default: false, not null]
+  redirect_to text [note: '-. default in Python: dict()']
+  custom_classes varchar(255) [not null]
+  form_template FormPluginFormTemplate [default: 'aldryn_forms/form.html', not null]
+  action_backend varchar(15) [default: 'default', not null]
+  form_attributes text [not null, note: 'default in Python: dict()']
+  is_enable_autofill_from_url_params bool [default: false, not null, note: 'Eg if you open the form with a url that contains parameters as \'https://example.com/sub-page/?email=hello@example.com&name=Alex\', then the fields \'email\' and \'name\' are going to to be filled in automatically.']
+  use_form_action bool [default: false, not null, note: 'Use the URL or CMS Page in the form attribute "action".']
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FormPlugin is a CMSPlugin (multi-table inheritance)']
+
+  Note: '''Proxy models: EmailNotificationFormPlugin.
+
+Columns from BaseFormPlugin (abstract): name, error_message, success_message, message_on_form, hide_form_after_redirection, redirect_to, custom_classes, form_template, action_backend, form_attributes, is_enable_autofill_from_url_params, use_form_action, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_fieldsetplugin {
+  legend varchar(255) [not null]
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FieldsetPlugin is a CMSPlugin (multi-table inheritance)']
+}
+
+Table aldryn_forms_fieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FieldPlugin is a CMSPlugin (multi-table inheritance)']
+  pattern varchar(255) [note: 'A regular expression to match for the value. It must be a valid JavaScript regular expression.']
+
+  Note: '''Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_textareafieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a TextAreaFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  text_area_columns "integer unsigned"
+  text_area_rows "integer unsigned"
+
+  Note: '''Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_emailfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a EmailFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  email_send_notification bool [default: false, not null, note: 'When checked, the value of this field will be used to send an email notification.']
+  email_subject varchar(255) [default: '', not null, note: 'Used as the email subject when email_send_notification is checked.']
+  email_body text [default: '', not null, note: 'Additional body text used when email notifications are active.']
+  pattern varchar(255) [note: 'A regular expression to match for the value. It must be a valid JavaScript regular expression.']
+
+  Note: '''Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_fileuploadfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FileUploadFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  upload_to_id integer [not null, note: 'Select a folder to which all files submitted through this field will be uploaded to.']
+  max_size bigint [note: 'The maximum size of all files to upload, in bytes. You can use common size suffixes (kB, MB, GB, ...).']
+  enable_js bool [note: 'Enable javascript to view files for upload.']
+  accepted_types varchar(255) [note: 'The list of accepted types. E.g. ".pdf .jpg .png text/plain application/msword image/*".']
+  is_private bool [default: false, not null, note: 'The file is private.']
+
+  indexes {
+    (upload_to_id) [name: 'aldryn_forms_fileuploadfieldplugin_upload_to_id_f9b06fd3']
+  }
+
+  Note: '''Columns from FileFieldPluginBase (abstract): upload_to_id, max_size, enable_js.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_multiplefilesuploadfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a MultipleFilesUploadFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  upload_to_id integer [not null, note: 'Select a folder to which all files submitted through this field will be uploaded to.']
+  max_size bigint [note: 'The maximum size of all files to upload, in bytes. You can use common size suffixes (kB, MB, GB, ...).']
+  enable_js bool [note: 'Enable javascript to view files for upload.']
+  accepted_types varchar(255) [note: 'The list of accepted types. E.g. ".pdf .jpg .png text/plain application/msword image/*".']
+  max_files "smallint unsigned" [note: 'Maximum number of uploaded files.']
+  is_private bool [default: false, not null, note: 'The files are private.']
+
+  indexes {
+    (upload_to_id) [name: 'aldryn_forms_multiplefilesuploadfieldplugin_upload_to_id_2f6b8149']
+  }
+
+  Note: '''Columns from FileFieldPluginBase (abstract): upload_to_id, max_size, enable_js.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_imageuploadfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a ImageUploadFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  upload_to_id integer [not null, note: 'Select a folder to which all files submitted through this field will be uploaded to.']
+  max_size bigint [note: 'The maximum size of all files to upload, in bytes. You can use common size suffixes (kB, MB, GB, ...).']
+  enable_js bool [note: 'Enable javascript to view files for upload.']
+  max_width "integer unsigned" [note: 'The maximum width of the uploaded image, in pixels.']
+  max_height "integer unsigned" [note: 'The maximum height of the uploaded image, in pixels.']
+  is_private bool [default: false, not null, note: 'The file is private.']
+
+  indexes {
+    (upload_to_id) [name: 'aldryn_forms_imageuploadfieldplugin_upload_to_id_1c21f9fc']
+  }
+
+  Note: '''Columns from FileFieldPluginBase (abstract): upload_to_id, max_size, enable_js.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_datefieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a DateFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  earliest_date date [note: 'The earliest date to accept.']
+  latest_date date [note: 'The latest date to accept.']
+  input_step "integer unsigned" [note: 'The granularity numnber.']
+
+  Note: '''Date field plugin.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_datetimelocalfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a DateTimeLocalFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  earliest_datetime datetime [note: 'The earliest datetime to accept.']
+  latest_datetime datetime [note: 'The latest datetime to accept.']
+  input_step "integer unsigned" [note: 'The granularity numnber.']
+
+  Note: '''Date time local field plugin.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_timefieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a TimeFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  earliest_time time [note: 'The earliest time to accept.']
+  latest_time time [note: 'The latest time to accept.']
+  input_step "integer unsigned" [note: 'The granularity numnber.']
+  data_list varchar(50) [note: 'Datalist id of html element datalist with options.']
+  readonly bool [default: false, not null, note: 'The field cannot be edited by the user.']
+
+  indexes {
+    (data_list) [name: 'aldryn_forms_timefieldplugin_data_list_3ed83043']
+  }
+
+  Note: '''Time field plugin.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_urlfieldplugin {
+  name varchar(255) [not null, note: 'Used to set the field name']
+  label varchar(255) [not null]
+  required bool [default: false, not null]
+  required_message text [note: 'Error message displayed if the required field is left empty. Default: "This field is required".']
+  placeholder_text varchar(255) [not null, note: 'Default text in a form. Disappears when user starts typing. Example: "email@example.com"']
+  help_text text [note: 'Explanatory text displayed next to input field. Just like this one.']
+  attributes text [not null, note: 'default in Python: dict()']
+  min_value "integer unsigned"
+  max_value "integer unsigned"
+  initial_value varchar(255) [not null, note: 'Default value of field.']
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a URLFieldPlugin is a CMSPlugin (multi-table inheritance)']
+  list text [note: 'A list of predefined url values. Each url is on a separate line. The first word is the url. The next (optional) words are a description for the url.']
+  pattern varchar(255) [note: 'A regular expression to match for the value. It must be a valid JavaScript regular expression.']
+  readonly bool [note: 'The field cannot be edited by the user.']
+  size smallint [note: 'How many characters wide the input field should be. The default value is 20.']
+  spellcheck bool [note: 'To enable spell-checking for an element.']
+
+  Note: '''URL field plugin.
+
+Columns from FieldPluginBase (abstract): name, label, required, required_message, placeholder_text, help_text, attributes, min_value, max_value, initial_value, custom_classes, cmsplugin_ptr_id.'''
+}
+
+Table aldryn_forms_option {
+  id integer [pk, increment]
+  field_id integer [not null]
+  value varchar(255) [not null]
+  widget_value varchar(255)
+  default_value bool [default: false, not null]
+  position "integer unsigned" [not null]
+
+  indexes {
+    (field_id) [name: 'aldryn_forms_option_field_id_288dfe99']
+  }
+}
+
+Table aldryn_forms_formbuttonplugin {
+  label varchar(255) [not null]
+  custom_classes varchar(255) [not null]
+  cmsplugin_ptr_id integer [pk, note: 'parent link: a FormButtonPlugin is a CMSPlugin (multi-table inheritance)']
+}
+
+Table aldryn_forms_formsubmission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  data text [not null]
+  recipients text [not null, note: 'People who got a notification when form was submitted.']
+  language varchar(10) [not null]
+  form_url varchar(255) [not null]
+  sent_at datetime [not null, note: 'default in Python: now()']
+  post_ident varchar(64)
+  honeypot_filled bool [default: false, not null]
+
+  indexes {
+    (name) [name: 'aldryn_forms_formsubmission_name_35e5af34']
+  }
+
+  Note: '''Columns from FormSubmissionBase (abstract): name, data, recipients, language, form_url, sent_at, post_ident, honeypot_filled.'''
+}
+
+Table aldryn_forms_submittedtobesent {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  data text [not null]
+  recipients text [not null, note: 'People who got a notification when form was submitted.']
+  language varchar(10) [not null]
+  form_url varchar(255) [not null]
+  sent_at datetime [not null, note: 'default in Python: now()']
+  post_ident varchar(64)
+  honeypot_filled bool [default: false, not null]
+
+  indexes {
+    (name) [name: 'aldryn_forms_submittedtobesent_name_085796cf']
+  }
+
+  Note: '''Submitted form to be sent by email.
+
+Columns from FormSubmissionBase (abstract): name, data, recipients, language, form_url, sent_at, post_ident, honeypot_filled.'''
+}
+
+Table email_notifications_emailnotification {
+  id integer [pk, increment]
+  theme EmailNotificationTheme [not null, note: 'Provides the base theme for the email.']
+  to_name varchar(200) [not null]
+  to_email varchar(200) [not null]
+  to_user_id bigint
+  from_name varchar(200) [not null]
+  from_email varchar(200) [not null]
+  reply_to_email varchar(200) [not null]
+  subject varchar(200) [not null]
+  body_text text [not null, note: 'used when rendering the email in text only mode.']
+  body_html text [not null, note: 'used when rendering the email in html.']
+  form_id integer [not null]
+
+  indexes {
+    (to_user_id) [name: 'email_notifications_emailnotification_to_user_id_39c2ddbf']
+    (form_id) [name: 'email_notifications_emailnotification_form_id_0b744878']
+  }
+}
+
+Table captcha_captchastore {
+  id integer [pk, increment]
+  challenge varchar(32) [not null]
+  response varchar(32) [not null]
+  hashkey varchar(40) [unique, not null]
+  expiration datetime [not null]
+}
+
+Table knox_authtoken {
+  digest varchar(128) [pk]
+  token_key varchar(25) [not null]
+  user_id bigint [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  expiry datetime
+
+  indexes {
+    (token_key) [name: 'knox_authtoken_token_key_8f4f7d47']
+    (user_id) [name: 'knox_authtoken_user_id_e5a5d899']
+  }
+
+  Note: '''Columns from AbstractAuthToken (abstract): digest, token_key, user_id, created, expiry.'''
+}
+
+Table cms_qe_auth_user_groups {
+  id integer [pk, increment]
+  user_id bigint [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'cms_qe_auth_user_groups_user_id_d3891ddc']
+    (group_id) [name: 'cms_qe_auth_user_groups_group_id_d0712ce1']
+    (user_id, group_id) [unique, name: 'cms_qe_auth_user_groups_user_id_group_id_13ea86d5_uniq']
+  }
+}
+
+Ref cms_qe_auth_user_groups_user_id_fk: cms_qe_auth_user_groups.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_qe_auth_user_groups_group_id_fk: cms_qe_auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table cms_qe_auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id bigint [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'cms_qe_auth_user_user_permissions_user_id_1effb006']
+    (permission_id) [name: 'cms_qe_auth_user_user_permissions_permission_id_b9772ad6']
+    (user_id, permission_id) [unique, name: 'cms_qe_auth_user_user_permissions_user_id_permission_id_f1bc89b5_uniq']
+  }
+}
+
+Ref cms_qe_auth_user_user_permissions_user_id_fk: cms_qe_auth_user_user_permissions.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_qe_auth_user_user_permissions_permission_id_fk: cms_qe_auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref cms_qe_menu_menupluginmodel_cmsplugin_ptr_id_fk: cms_qe_menu_menupluginmodel.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_newsletter_newsletterpluginmodel_cmsplugin_ptr_id_fk: cms_qe_newsletter_newsletterpluginmodel.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Table cms_qe_newsletter_newsletterpluginmodel_mailing_lists {
+  id integer [pk, increment]
+  newsletterpluginmodel_id integer [not null]
+  mailinglist_id bigint [not null]
+
+  indexes {
+    (newsletterpluginmodel_id) [name: 'cms_qe_newsletter_newsletterpluginmodel_mailing_lists_newsletterpluginmodel_id_bd8c8b2a']
+    (mailinglist_id) [name: 'cms_qe_newsletter_newsletterpluginmodel_mailing_lists_mailinglist_id_fd57516e']
+    (newsletterpluginmodel_id, mailinglist_id) [unique, name: 'cms_qe_newsletter_newsletterpluginmodel_mailing_lists_newsletterpluginmodel_id_mailinglist_id_56514e4a_uniq']
+  }
+}
+
+Ref cms_qe_newsletter_newsletterpluginmodel_mailing_lists_newsletterpluginmodel_id_fk: cms_qe_newsletter_newsletterpluginmodel_mailing_lists.newsletterpluginmodel_id > cms_qe_newsletter_newsletterpluginmodel.cmsplugin_ptr_id [delete: cascade]
+
+Ref cms_qe_newsletter_newsletterpluginmodel_mailing_lists_mailinglist_id_fk: cms_qe_newsletter_newsletterpluginmodel_mailing_lists.mailinglist_id > cms_qe_newsletter_mailinglist.id [delete: cascade]
+
+Ref cms_qe_newsletter_subscriber_mailing_list_id_fk: cms_qe_newsletter_subscriber.mailing_list_id > cms_qe_newsletter_mailinglist.id [delete: cascade]
+
+Ref cms_qe_newsletter_subscribetask_mailing_list_id_fk: cms_qe_newsletter_subscribetask.mailing_list_id > cms_qe_newsletter_mailinglist.id [delete: cascade]
+
+Ref cms_qe_table_tablepluginmodel_cmsplugin_ptr_id_fk: cms_qe_table_tablepluginmodel.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_video_sourcefilevideoplayer_poster_id_fk: cms_qe_video_sourcefilevideoplayer.poster_id > filer_image.file_ptr_id [delete: set null]
+
+Ref cms_qe_video_sourcefilevideoplayer_cmsplugin_ptr_id_fk: cms_qe_video_sourcefilevideoplayer.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_video_sourcefilevideoplayer_source_file_id_fk: cms_qe_video_sourcefilevideoplayer.source_file_id > filer_file.id [delete: set null]
+
+Ref cms_qe_video_hostingvideoplayer_poster_id_fk: cms_qe_video_hostingvideoplayer.poster_id > filer_image.file_ptr_id [delete: set null]
+
+Ref cms_qe_video_hostingvideoplayer_cmsplugin_ptr_id_fk: cms_qe_video_hostingvideoplayer.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_video_videotrack_cmsplugin_ptr_id_fk: cms_qe_video_videotrack.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_video_videotrack_src_id_fk: cms_qe_video_videotrack.src_id > filer_file.id [delete: set null]
+
+Ref cms_qe_plugins_script_cmsplugin_ptr_id_fk: cms_qe_plugins_script.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_plugins_link_cmsplugin_ptr_id_fk: cms_qe_plugins_link.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_qe_plugins_iframe_cmsplugin_ptr_id_fk: cms_qe_plugins_iframe.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref cms_usersettings_user_id_fk: cms_usersettings.user_id - cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_usersettings_clipboard_id_fk: cms_usersettings.clipboard_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_page_parent_id_fk: cms_page.parent_id > cms_page.id [delete: cascade]
+
+Ref cms_page_site_id_fk: cms_page.site_id > django_site.id [delete: cascade]
+
+Ref cms_pageurl_page_id_fk: cms_pageurl.page_id > cms_page.id [delete: cascade]
+
+Ref cms_pageurl_site_id_fk: cms_pageurl.site_id > django_site.id [delete: cascade]
+
+Ref cms_globalpagepermission_user_id_fk: cms_globalpagepermission.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_globalpagepermission_group_id_fk: cms_globalpagepermission.group_id > auth_group.id [delete: cascade]
+
+Table cms_globalpagepermission_sites {
+  id integer [pk, increment]
+  globalpagepermission_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (globalpagepermission_id) [name: 'cms_globalpagepermission_sites_globalpagepermission_id_46bd2681']
+    (site_id) [name: 'cms_globalpagepermission_sites_site_id_00460b53']
+    (globalpagepermission_id, site_id) [unique, name: 'cms_globalpagepermission_sites_globalpagepermission_id_site_id_db684f41_uniq']
+  }
+}
+
+Ref cms_globalpagepermission_sites_globalpagepermission_id_fk: cms_globalpagepermission_sites.globalpagepermission_id > cms_globalpagepermission.id [delete: cascade]
+
+Ref cms_globalpagepermission_sites_site_id_fk: cms_globalpagepermission_sites.site_id > django_site.id [delete: cascade]
+
+Ref cms_pagepermission_user_id_fk: cms_pagepermission.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_pagepermission_group_id_fk: cms_pagepermission.group_id > auth_group.id [delete: cascade]
+
+Ref cms_pagepermission_page_id_fk: cms_pagepermission.page_id > cms_page.id [delete: cascade]
+
+Ref cms_pageuser_user_ptr_id_fk: cms_pageuser.user_ptr_id - cms_qe_auth_user.id [delete: cascade]
+
+Ref cms_pageuser_created_by_id_fk: cms_pageuser.created_by_id > cms_qe_auth_user.id [delete: set null]
+
+Ref cms_pageusergroup_group_ptr_id_fk: cms_pageusergroup.group_ptr_id - auth_group.id [delete: cascade]
+
+Ref cms_pageusergroup_created_by_id_fk: cms_pageusergroup.created_by_id > cms_qe_auth_user.id [delete: set null]
+
+Ref cms_placeholder_content_type_id_fk: cms_placeholder.content_type_id > django_content_type.id [delete: set null]
+
+Ref cms_cmsplugin_placeholder_id_fk: cms_cmsplugin.placeholder_id > cms_placeholder.id [delete: cascade]
+
+Ref cms_cmsplugin_parent_id_fk: cms_cmsplugin.parent_id > cms_cmsplugin.id [delete: cascade]
+
+Ref cms_pagecontent_page_id_fk: cms_pagecontent.page_id > cms_page.id [delete: cascade]
+
+Ref cms_placeholderreference_cmsplugin_ptr_id_fk: cms_placeholderreference.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_cmsplugin_ptr_id_fk: cms_aliaspluginmodel.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_plugin_id_fk: cms_aliaspluginmodel.plugin_id > cms_cmsplugin.id [delete: cascade]
+
+Ref cms_aliaspluginmodel_alias_placeholder_id_fk: cms_aliaspluginmodel.alias_placeholder_id > cms_placeholder.id [delete: cascade]
+
+Ref djangocms_text_text_cmsplugin_ptr_id_fk: djangocms_text_text.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_link_link_cmsplugin_ptr_id_fk: djangocms_link_link.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_alias_category_translation_master_id_fk: djangocms_alias_category_translation.master_id > djangocms_alias_category.id [delete: cascade]
+
+Ref djangocms_alias_alias_category_id_fk: djangocms_alias_alias.category_id > djangocms_alias_category.id [delete: restrict]
+
+Ref djangocms_alias_alias_site_id_fk: djangocms_alias_alias.site_id > django_site.id [delete: cascade]
+
+Ref djangocms_alias_aliascontent_alias_id_fk: djangocms_alias_aliascontent.alias_id > djangocms_alias_alias.id [delete: cascade]
+
+Ref djangocms_alias_aliasplugin_cmsplugin_ptr_id_fk: djangocms_alias_aliasplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_alias_aliasplugin_alias_id_fk: djangocms_alias_aliasplugin.alias_id > djangocms_alias_alias.id [delete: restrict]
+
+Ref djangocms_versioning_version_created_by_id_fk: djangocms_versioning_version.created_by_id > cms_qe_auth_user.id [delete: restrict]
+
+Ref djangocms_versioning_version_content_type_id_fk: djangocms_versioning_version.content_type_id > django_content_type.id [delete: restrict]
+
+Ref djangocms_versioning_version_locked_by_id_fk: djangocms_versioning_version.locked_by_id > cms_qe_auth_user.id [delete: set null]
+
+Ref djangocms_versioning_version_source_id_fk: djangocms_versioning_version.source_id > djangocms_versioning_version.id
+
+Ref djangocms_versioning_statetracking_version_id_fk: djangocms_versioning_statetracking.version_id > djangocms_versioning_version.id [delete: cascade]
+
+Ref djangocms_versioning_statetracking_user_id_fk: djangocms_versioning_statetracking.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref djangocms_googlemap_googlemap_cmsplugin_ptr_id_fk: djangocms_googlemap_googlemap.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_googlemap_googlemapmarker_cmsplugin_ptr_id_fk: djangocms_googlemap_googlemapmarker.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_googlemap_googlemapmarker_icon_id_fk: djangocms_googlemap_googlemapmarker.icon_id > filer_image.file_ptr_id [delete: set null]
+
+Ref djangocms_googlemap_googlemaproute_cmsplugin_ptr_id_fk: djangocms_googlemap_googlemaproute.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref filer_folder_parent_id_fk: filer_folder.parent_id > filer_folder.id [delete: cascade]
+
+Ref filer_folder_owner_id_fk: filer_folder.owner_id > cms_qe_auth_user.id [delete: set null]
+
+Ref filer_folderpermission_folder_id_fk: filer_folderpermission.folder_id > filer_folder.id [delete: cascade]
+
+Ref filer_folderpermission_user_id_fk: filer_folderpermission.user_id > cms_qe_auth_user.id [delete: set null]
+
+Ref filer_folderpermission_group_id_fk: filer_folderpermission.group_id > auth_group.id [delete: cascade]
+
+Ref filer_file_polymorphic_ctype_id_fk: filer_file.polymorphic_ctype_id > django_content_type.id
+
+Ref filer_file_folder_id_fk: filer_file.folder_id > filer_folder.id
+
+Ref filer_file_owner_id_fk: filer_file.owner_id > cms_qe_auth_user.id
+
+Ref filer_clipboard_user_id_fk: filer_clipboard.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref filer_clipboarditem_file_id_fk: filer_clipboarditem.file_id > filer_file.id [delete: cascade]
+
+Ref filer_clipboarditem_clipboard_id_fk: filer_clipboarditem.clipboard_id > filer_clipboard.id [delete: cascade]
+
+Ref filer_image_file_ptr_id_fk: filer_image.file_ptr_id - filer_file.id
+
+Ref easy_thumbnails_thumbnail_source_id_fk: easy_thumbnails_thumbnail.source_id > easy_thumbnails_source.id [delete: cascade]
+
+Ref easy_thumbnails_thumbnaildimensions_thumbnail_id_fk: easy_thumbnails_thumbnaildimensions.thumbnail_id - easy_thumbnails_thumbnail.id [delete: cascade]
+
+Ref djangocms_file_file_file_src_id_fk: djangocms_file_file.file_src_id > filer_file.id [delete: set null]
+
+Ref djangocms_file_file_cmsplugin_ptr_id_fk: djangocms_file_file.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_file_folder_folder_src_id_fk: djangocms_file_folder.folder_src_id > filer_folder.id [delete: set null]
+
+Ref djangocms_file_folder_cmsplugin_ptr_id_fk: djangocms_file_folder.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_icon_icon_cmsplugin_ptr_id_fk: djangocms_icon_icon.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_picture_picture_picture_id_fk: djangocms_picture_picture.picture_id > filer_image.file_ptr_id [delete: set null]
+
+Ref djangocms_picture_picture_link_page_id_fk: djangocms_picture_picture.link_page_id > cms_page.id [delete: cascade]
+
+Ref djangocms_picture_picture_thumbnail_options_id_fk: djangocms_picture_picture.thumbnail_options_id > filer_thumbnailoption.id [delete: cascade]
+
+Ref djangocms_picture_picture_cmsplugin_ptr_id_fk: djangocms_picture_picture.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_frontend_frontenduiitem_cmsplugin_ptr_id_fk: djangocms_frontend_frontenduiitem.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_render_context_rendercontext_cmsplugin_ptr_id_fk: djangocms_render_context_rendercontext.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_render_context_rendercontext_file_id_fk: djangocms_render_context_rendercontext.file_id > filer_file.id [delete: set null]
+
+Ref djangocms_render_context_default_cmsplugin_ptr_id_fk: djangocms_render_context_default.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref djangocms_render_context_stack_cmsplugin_ptr_id_fk: djangocms_render_context_stack.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref axes_accessattemptexpiration_access_attempt_id_fk: axes_accessattemptexpiration.access_attempt_id - axes_accessattempt.id [delete: cascade]
+
+Ref aldryn_forms_formplugin_cmsplugin_ptr_id_fk: aldryn_forms_formplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Table aldryn_forms_formplugin_recipients {
+  id integer [pk, increment]
+  formplugin_id integer [not null]
+  user_id bigint [not null]
+
+  indexes {
+    (formplugin_id) [name: 'aldryn_forms_formplugin_recipients_formplugin_id_3802a9df']
+    (user_id) [name: 'aldryn_forms_formplugin_recipients_user_id_571b3c8c']
+    (formplugin_id, user_id) [unique, name: 'aldryn_forms_formplugin_recipients_formplugin_id_user_id_a8a62f6e_uniq']
+  }
+}
+
+Ref aldryn_forms_formplugin_recipients_formplugin_id_fk: aldryn_forms_formplugin_recipients.formplugin_id > aldryn_forms_formplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref aldryn_forms_formplugin_recipients_user_id_fk: aldryn_forms_formplugin_recipients.user_id > cms_qe_auth_user.id [delete: cascade]
+
+Table aldryn_forms_formplugin_webhooks {
+  id integer [pk, increment]
+  formplugin_id integer [not null]
+  webhook_id bigint [not null]
+
+  indexes {
+    (formplugin_id) [name: 'aldryn_forms_formplugin_webhooks_formplugin_id_b996d7ca']
+    (webhook_id) [name: 'aldryn_forms_formplugin_webhooks_webhook_id_8e95194e']
+    (formplugin_id, webhook_id) [unique, name: 'aldryn_forms_formplugin_webhooks_formplugin_id_webhook_id_efb9f8b6_uniq']
+  }
+}
+
+Ref aldryn_forms_formplugin_webhooks_formplugin_id_fk: aldryn_forms_formplugin_webhooks.formplugin_id > aldryn_forms_formplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref aldryn_forms_formplugin_webhooks_webhook_id_fk: aldryn_forms_formplugin_webhooks.webhook_id > aldryn_forms_webhook.id [delete: cascade]
+
+Ref aldryn_forms_fieldsetplugin_cmsplugin_ptr_id_fk: aldryn_forms_fieldsetplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_fieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_fieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_textareafieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_textareafieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_emailfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_emailfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_fileuploadfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_fileuploadfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_fileuploadfieldplugin_upload_to_id_fk: aldryn_forms_fileuploadfieldplugin.upload_to_id > filer_folder.id [delete: cascade]
+
+Ref aldryn_forms_multiplefilesuploadfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_multiplefilesuploadfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_multiplefilesuploadfieldplugin_upload_to_id_fk: aldryn_forms_multiplefilesuploadfieldplugin.upload_to_id > filer_folder.id [delete: cascade]
+
+Ref aldryn_forms_imageuploadfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_imageuploadfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_imageuploadfieldplugin_upload_to_id_fk: aldryn_forms_imageuploadfieldplugin.upload_to_id > filer_folder.id [delete: cascade]
+
+Ref aldryn_forms_datefieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_datefieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_datetimelocalfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_datetimelocalfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_timefieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_timefieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_urlfieldplugin_cmsplugin_ptr_id_fk: aldryn_forms_urlfieldplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Ref aldryn_forms_option_field_id_fk: aldryn_forms_option.field_id > aldryn_forms_fieldplugin.cmsplugin_ptr_id [delete: cascade]
+
+Ref aldryn_forms_formbuttonplugin_cmsplugin_ptr_id_fk: aldryn_forms_formbuttonplugin.cmsplugin_ptr_id - cms_cmsplugin.id [delete: cascade]
+
+Table aldryn_forms_formsubmission_webhooks {
+  id integer [pk, increment]
+  formsubmission_id bigint [not null]
+  webhook_id bigint [not null]
+
+  indexes {
+    (formsubmission_id) [name: 'aldryn_forms_formsubmission_webhooks_formsubmission_id_d4e28b26']
+    (webhook_id) [name: 'aldryn_forms_formsubmission_webhooks_webhook_id_9dd382f5']
+    (formsubmission_id, webhook_id) [unique, name: 'aldryn_forms_formsubmission_webhooks_formsubmission_id_webhook_id_a1344f28_uniq']
+  }
+}
+
+Ref aldryn_forms_formsubmission_webhooks_formsubmission_id_fk: aldryn_forms_formsubmission_webhooks.formsubmission_id > aldryn_forms_formsubmission.id [delete: cascade]
+
+Ref aldryn_forms_formsubmission_webhooks_webhook_id_fk: aldryn_forms_formsubmission_webhooks.webhook_id > aldryn_forms_webhook.id [delete: cascade]
+
+Table aldryn_forms_submittedtobesent_webhooks {
+  id integer [pk, increment]
+  submittedtobesent_id bigint [not null]
+  webhook_id bigint [not null]
+
+  indexes {
+    (submittedtobesent_id) [name: 'aldryn_forms_submittedtobesent_webhooks_submittedtobesent_id_8ae90d8d']
+    (webhook_id) [name: 'aldryn_forms_submittedtobesent_webhooks_webhook_id_1d776670']
+    (submittedtobesent_id, webhook_id) [unique, name: 'aldryn_forms_submittedtobesent_webhooks_submittedtobesent_id_webhook_id_a49f42b6_uniq']
+  }
+}
+
+Ref aldryn_forms_submittedtobesent_webhooks_submittedtobesent_id_fk: aldryn_forms_submittedtobesent_webhooks.submittedtobesent_id > aldryn_forms_submittedtobesent.id [delete: cascade]
+
+Ref aldryn_forms_submittedtobesent_webhooks_webhook_id_fk: aldryn_forms_submittedtobesent_webhooks.webhook_id > aldryn_forms_webhook.id [delete: cascade]
+
+Ref email_notifications_emailnotification_to_user_id_fk: email_notifications_emailnotification.to_user_id > cms_qe_auth_user.id [delete: cascade]
+
+Ref knox_authtoken_user_id_fk: knox_authtoken.user_id > cms_qe_auth_user.id [delete: cascade]

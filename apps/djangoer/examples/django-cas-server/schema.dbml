@@ -1,0 +1,484 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum FederatedIendityProviderCasProtocolVersion {
+  "1"
+  "2"
+  "3"
+  "CAS_2_SAML_1_0"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table cas_server_federatediendityprovider {
+  id integer [pk, increment]
+  suffix varchar(30) [unique, not null, note: 'Suffix append to backend CAS returned username: ``returned_username`` @ ``suffix``.']
+  server_url varchar(255) [not null]
+  cas_protocol_version FederatedIendityProviderCasProtocolVersion [default: '3', not null, note: 'Version of the CAS protocol to use when sending requests the the backend CAS.']
+  verbose_name varchar(255) [not null, note: 'Name for this identity provider displayed on the login page.']
+  pos integer [default: 100, not null, note: 'Position of the identity provider on the login page. Identity provider are sorted using the (position, verbose name, suffix) attributes.']
+  display bool [default: true, not null, note: 'Display the provider on the login page.']
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+An identity provider for the federated mode'''
+}
+
+Table cas_server_federateduser {
+  id integer [pk, increment]
+  _attributs text [default: null]
+  username varchar(124) [not null]
+  provider_id bigint [not null]
+  ticket varchar(255) [not null]
+  last_update datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (provider_id) [name: 'cas_server_federateduser_provider_id_38a00ea4']
+    (username, provider_id) [unique, name: 'cas_server_federateduser_username_provider_id_e0605d8d_uniq']
+  }
+
+  Note: '''Bases: :class:`JsonAttributes`
+
+A federated user as returner by a CAS provider (username and attributes)
+
+Columns from JsonAttributes (abstract): _attributs.'''
+}
+
+Table cas_server_federateslo {
+  id integer [pk, increment]
+  username varchar(30) [not null]
+  session_key varchar(40)
+  ticket varchar(255) [not null]
+
+  indexes {
+    (ticket) [name: 'cas_server_federateslo_ticket_4abd5ad5']
+    (username, session_key, ticket) [unique, name: 'cas_server_federateslo_username_session_key_ticket_5e7cc301_uniq']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+An association between a CAS provider ticket and a (username, session) for processing SLO'''
+}
+
+Table cas_server_userattributes {
+  id integer [pk, increment]
+  _attributs text [default: null]
+  username varchar(155) [unique, not null]
+
+  Note: '''Bases: :class:`JsonAttributes`
+
+Local cache of the user attributes, used then needed
+
+Columns from JsonAttributes (abstract): _attributs.'''
+}
+
+Table cas_server_user {
+  id integer [pk, increment]
+  session_key varchar(40)
+  username varchar(250) [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  last_login datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (username, session_key) [unique, name: 'cas_server_user_username_session_key_37827f92_uniq']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A user logged into the CAS'''
+}
+
+Table cas_server_servicepattern {
+  id integer [pk, increment]
+  pos integer [default: 100, not null, note: 'service patterns are sorted using the position attribute']
+  name varchar(255) [unique, note: 'A name for the service']
+  pattern varchar(255) [unique, not null, note: 'A regular expression matching services. Will usually looks like \'^https://some\\.server\\.com/path/.*$\'.As it is a regular expression, special character must be escaped with a \'\\\'.']
+  user_field varchar(255) [default: '', not null, note: 'Name of the attribute to transmit as username, empty = login']
+  restrict_users bool [default: false, not null, note: 'Limit username allowed to connect to the list provided bellow']
+  proxy bool [default: false, not null, note: 'Proxy tickets can be delivered to the service']
+  proxy_callback bool [default: false, not null, note: 'can be used as a proxy callback to deliver PGT']
+  single_log_out bool [default: false, not null, note: 'Enable SLO for the service']
+  single_log_out_callback varchar(255) [default: '', not null, note: '''URL where the SLO request will be POST. empty = service url
+This is usefull for non HTTP proxied services.''']
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+Allowed services pattern against services are tested to'''
+}
+
+Table cas_server_username {
+  id integer [pk, increment]
+  value varchar(255) [not null, note: 'username allowed to connect to the service']
+  service_pattern_id bigint [not null]
+
+  indexes {
+    (service_pattern_id) [name: 'cas_server_username_service_pattern_id_ca43f74e']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A list of allowed usernames on a :class:`ServicePattern`'''
+}
+
+Table cas_server_replaceattributname {
+  id integer [pk, increment]
+  name varchar(255) [not null, note: 'name of an attribute to send to the service, use * for all attributes']
+  replace varchar(255) [not null, note: 'name under which the attribute will be show to the service. empty = default name of the attribut']
+  service_pattern_id bigint [not null]
+
+  indexes {
+    (service_pattern_id) [name: 'cas_server_replaceattributname_service_pattern_id_951038d2']
+    (name, replace, service_pattern_id) [unique, name: 'cas_server_replaceattributname_name_replace_service_pattern_id_5e627e3c_uniq']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A replacement of an attribute name for a :class:`ServicePattern`. It also tell to transmit
+an attribute of :attr:`User.attributs` to the service. An empty :attr:`replace` mean
+to use the original attribute name.'''
+}
+
+Table cas_server_filterattributvalue {
+  id integer [pk, increment]
+  attribut varchar(255) [not null, note: 'Name of the attribute which must verify pattern']
+  pattern varchar(255) [not null, note: 'a regular expression']
+  service_pattern_id bigint [not null]
+
+  indexes {
+    (service_pattern_id) [name: 'cas_server_filterattributvalue_service_pattern_id_9223c12f']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A filter on :attr:`User.attributs` for a :class:`ServicePattern`. If a :class:`User` do not
+have an attribute :attr:`attribut` or its value do not match :attr:`pattern`, then
+:meth:`ServicePattern.check_user` will raises :class:`BadFilter` if called with that user.'''
+}
+
+Table cas_server_replaceattributvalue {
+  id integer [pk, increment]
+  attribut varchar(255) [not null, note: 'Name of the attribute for which the value must be replace']
+  pattern varchar(255) [not null, note: 'An regular expression maching whats need to be replaced']
+  replace varchar(255) [not null, note: 'replace expression, groups are capture by \\1, \\2 …']
+  service_pattern_id bigint [not null]
+
+  indexes {
+    (service_pattern_id) [name: 'cas_server_replaceattributvalue_service_pattern_id_08190d2c']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A replacement (using a regular expression) of an attribute value for a
+:class:`ServicePattern`.'''
+}
+
+Table cas_server_serviceticket {
+  id integer [pk, increment]
+  _attributs text [default: null]
+  user_id bigint [not null]
+  validate bool [default: false, not null]
+  service text [not null]
+  service_pattern_id bigint [not null]
+  creation datetime [not null, note: 'default in Python: now()']
+  renew bool [default: false, not null]
+  single_log_out bool [default: false, not null]
+  value varchar(255) [unique, not null, note: 'default in Python: gen_st()']
+
+  indexes {
+    (user_id) [name: 'cas_server_serviceticket_user_id_5a6bd990']
+    (service_pattern_id) [name: 'cas_server_serviceticket_service_pattern_id_fc4c43a5']
+  }
+
+  Note: '''Bases: :class:`Ticket`
+
+A Service Ticket
+
+Columns from Ticket (abstract): user_id, validate, service, service_pattern_id, creation, renew, single_log_out.
+
+Columns from JsonAttributes (abstract): _attributs.'''
+}
+
+Table cas_server_proxyticket {
+  id integer [pk, increment]
+  _attributs text [default: null]
+  user_id bigint [not null]
+  validate bool [default: false, not null]
+  service text [not null]
+  service_pattern_id bigint [not null]
+  creation datetime [not null, note: 'default in Python: now()']
+  renew bool [default: false, not null]
+  single_log_out bool [default: false, not null]
+  value varchar(255) [unique, not null, note: 'default in Python: gen_pt()']
+
+  indexes {
+    (user_id) [name: 'cas_server_proxyticket_user_id_bcd4494a']
+    (service_pattern_id) [name: 'cas_server_proxyticket_service_pattern_id_f2861282']
+  }
+
+  Note: '''Bases: :class:`Ticket`
+
+A Proxy Ticket
+
+Columns from Ticket (abstract): user_id, validate, service, service_pattern_id, creation, renew, single_log_out.
+
+Columns from JsonAttributes (abstract): _attributs.'''
+}
+
+Table cas_server_proxygrantingticket {
+  id integer [pk, increment]
+  _attributs text [default: null]
+  user_id bigint [not null]
+  validate bool [default: false, not null]
+  service text [not null]
+  service_pattern_id bigint [not null]
+  creation datetime [not null, note: 'default in Python: now()']
+  renew bool [default: false, not null]
+  single_log_out bool [default: false, not null]
+  value varchar(255) [unique, not null, note: 'default in Python: gen_pgt()']
+
+  indexes {
+    (user_id) [name: 'cas_server_proxygrantingticket_user_id_cc540046']
+    (service_pattern_id) [name: 'cas_server_proxygrantingticket_service_pattern_id_6b7981ac']
+  }
+
+  Note: '''Bases: :class:`Ticket`
+
+A Proxy Granting Ticket
+
+Columns from Ticket (abstract): user_id, validate, service, service_pattern_id, creation, renew, single_log_out.
+
+Columns from JsonAttributes (abstract): _attributs.'''
+}
+
+Table cas_server_proxy {
+  id integer [pk, increment]
+  url varchar(255) [not null]
+  proxy_ticket_id bigint [not null]
+
+  indexes {
+    (proxy_ticket_id) [name: 'cas_server_proxy_proxy_ticket_id_5c6e1aed']
+  }
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+A list of proxies on :class:`ProxyTicket`'''
+}
+
+Table cas_server_newversionwarning {
+  id integer [pk, increment]
+  version varchar(255) [not null]
+
+  Note: '''Bases: :class:`django.db.models.Model`
+
+The last new version available version sent'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref cas_server_federateduser_provider_id_fk: cas_server_federateduser.provider_id > cas_server_federatediendityprovider.id [delete: cascade]
+
+Ref cas_server_username_service_pattern_id_fk: cas_server_username.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_replaceattributname_service_pattern_id_fk: cas_server_replaceattributname.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_filterattributvalue_service_pattern_id_fk: cas_server_filterattributvalue.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_replaceattributvalue_service_pattern_id_fk: cas_server_replaceattributvalue.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_serviceticket_user_id_fk: cas_server_serviceticket.user_id > cas_server_user.id [delete: cascade]
+
+Ref cas_server_serviceticket_service_pattern_id_fk: cas_server_serviceticket.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_proxyticket_user_id_fk: cas_server_proxyticket.user_id > cas_server_user.id [delete: cascade]
+
+Ref cas_server_proxyticket_service_pattern_id_fk: cas_server_proxyticket.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_proxygrantingticket_user_id_fk: cas_server_proxygrantingticket.user_id > cas_server_user.id [delete: cascade]
+
+Ref cas_server_proxygrantingticket_service_pattern_id_fk: cas_server_proxygrantingticket.service_pattern_id > cas_server_servicepattern.id [delete: cascade]
+
+Ref cas_server_proxy_proxy_ticket_id_fk: cas_server_proxy.proxy_ticket_id > cas_server_proxyticket.id [delete: cascade]

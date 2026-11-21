@@ -1,0 +1,79 @@
+Table user {
+  id text [pk, not null]
+  name text
+  email text [not null]
+  emailVerified integer
+  image text
+  created_at integer [not null]
+}
+
+Table account {
+  userId text [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  created_at integer [not null]
+  indexes {
+    (provider, providerAccountId) [pk]
+    (userId) [name: 'accounts_userId_idx']
+  }
+}
+
+Table session {
+  sessionToken text [pk, not null]
+  userId text [not null]
+  expires integer [not null]
+  created_at integer [not null]
+  indexes {
+    (userId) [name: 'sessions_userId_idx']
+  }
+}
+
+Table verificationToken {
+  identifier text [not null]
+  token text [not null]
+  expires integer [not null]
+  created_at integer [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Table userLink {
+  id text [pk, not null]
+  userId text
+  total_links integer [not null]
+  created_at integer [not null]
+  indexes {
+    (userId) [unique, name: 'userLinks_userId_idx']
+  }
+}
+
+Table link {
+  slug text [pk, not null]
+  userLinkId text [not null]
+  description text
+  url text [not null]
+  clicks integer [not null]
+  created_at integer [not null]
+  indexes {
+    (userLinkId) [name: 'userLinkId_idx']
+  }
+}
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]
+
+Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
+
+Ref userLink_userId_user_id_fk: userLink.userId - user.id [delete: cascade]
+
+Ref link_userLinkId_userLink_id_fk: link.userLinkId > userLink.id [delete: cascade]
+
+Ref user_id_userLink_userId: user.id - userLink.userId

@@ -1,0 +1,20 @@
+load("//apps/hekireki/checks:defs.bzl", "lang_checks")
+
+# tsc --strict against the real drizzle-orm and kysely for the schema and the DB interface of
+# every schema. The packages come from the lockfile through rules_js rather than from a toolchain
+# on PATH, so this check also runs under `bazel test //...` on a machine with nothing but node.
+lang_checks(
+    lang = "typescript",
+    harness = [
+        "tsconfig.json",
+        "//apps/hekireki/checks:common.sh",
+        "//apps/hekireki:node_modules/@paralleldrive/cuid2",
+        "//apps/hekireki:node_modules/@types/node",
+        "//apps/hekireki:node_modules/cuid",
+        "//apps/hekireki:node_modules/drizzle-orm",
+        "//apps/hekireki:node_modules/nanoid",
+        "//apps/hekireki:node_modules/kysely",
+        "//apps/hekireki:node_modules/typescript",
+        "//apps/hekireki:node_modules/uuid",
+    ],
+)

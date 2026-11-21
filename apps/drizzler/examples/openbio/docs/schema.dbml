@@ -1,0 +1,112 @@
+Table user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  plan text [not null]
+  polar_customer_id text [unique]
+  subscription_id text
+  subscription_ends_at timestamptz
+  trial_ends_at timestamptz
+  ai_credits integer [not null]
+  ai_credits_reset_at timestamptz
+  email_digest boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamptz [not null]
+  token text [not null, unique]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamptz
+  refresh_token_expires_at timestamptz
+  scope text
+  password text
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz
+  updated_at timestamptz
+}
+
+Table link {
+  id uuid [pk, not null]
+  link text [not null, unique]
+  image text
+  name text [not null]
+  bio text
+  bento json [not null]
+  custom_domain text [unique]
+  theme text [not null]
+  accent_color text
+  dark_mode boolean [not null]
+  custom_footer text
+  is_public boolean [not null]
+  created_at timestamptz
+  updated_at timestamptz
+  user_id text [not null]
+}
+
+Table link_view {
+  id uuid [pk, not null]
+  ip text [not null]
+  user_agent text [not null]
+  referrer text
+  country varchar
+  created_at timestamptz
+  updated_at timestamptz
+  link_id uuid [not null]
+}
+
+Table link_click {
+  id uuid [pk, not null]
+  bento_id text [not null]
+  href text [not null]
+  ip text [not null]
+  user_agent text [not null]
+  referrer text
+  created_at timestamptz
+  link_id uuid [not null]
+}
+
+Table email_subscriber {
+  id uuid [pk, not null]
+  email text [not null]
+  link_id uuid [not null]
+  created_at timestamptz [not null]
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref email_subscriber_link_id_link_id_fk: email_subscriber.link_id > link.id [delete: cascade]
+
+Ref link_user_id_user_id: link.user_id > user.id
+
+Ref link_view_link_id_link_id: link_view.link_id > link.id
+
+Ref link_click_link_id_link_id: link_click.link_id > link.id

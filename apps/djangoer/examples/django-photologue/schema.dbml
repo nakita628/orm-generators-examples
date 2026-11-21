@@ -1,0 +1,364 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum PhotoCropFrom {
+  "top"
+  "right"
+  "bottom"
+  "left"
+  "center"
+}
+
+Enum PhotoEffectTransposeMethod {
+  "FLIP_LEFT_RIGHT"
+  "FLIP_TOP_BOTTOM"
+  "ROTATE_90"
+  "ROTATE_270"
+  "ROTATE_180"
+}
+
+Enum WatermarkStyle {
+  "tile"
+  "scale"
+}
+
+Enum PhotoSizeQuality {
+  "30"
+  "40"
+  "50"
+  "60"
+  "70"
+  "80"
+  "90"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table photologue_gallery {
+  id integer [pk, increment]
+  date_added datetime [not null, note: 'default in Python: now()']
+  title varchar(250) [unique, not null]
+  slug varchar(250) [unique, not null, note: 'A "slug" is a unique URL-friendly title for an object.']
+  description text [not null]
+  is_public bool [default: true, not null, note: 'Public galleries will be displayed in the default views.']
+}
+
+Table photologue_photo {
+  id integer [pk, increment]
+  image varchar(100) [not null]
+  date_taken datetime [note: 'Date image was taken; is obtained from the image EXIF data.']
+  view_count "integer unsigned" [default: 0, not null]
+  crop_from PhotoCropFrom [default: 'center', not null]
+  effect_id integer
+  title varchar(250) [unique, not null]
+  slug varchar(250) [unique, not null, note: 'A "slug" is a unique URL-friendly title for an object.']
+  caption text [not null]
+  date_added datetime [not null, note: 'default in Python: now()']
+  is_public bool [default: true, not null, note: 'Public photographs will be displayed in the default views.']
+
+  indexes {
+    (effect_id) [name: 'photologue_photo_effect_id_5f27aba5']
+  }
+
+  Note: '''Columns from ImageModel (abstract): image, date_taken, view_count, crop_from, effect_id.'''
+}
+
+Table photologue_photoeffect {
+  id integer [pk, increment]
+  name varchar(30) [unique, not null]
+  description text [not null]
+  transpose_method PhotoEffectTransposeMethod [not null]
+  color real [default: 1.0, not null, note: 'A factor of 0.0 gives a black and white image, a factor of 1.0 gives the original image.']
+  brightness real [default: 1.0, not null, note: 'A factor of 0.0 gives a black image, a factor of 1.0 gives the original image.']
+  contrast real [default: 1.0, not null, note: 'A factor of 0.0 gives a solid grey image, a factor of 1.0 gives the original image.']
+  sharpness real [default: 1.0, not null, note: 'A factor of 0.0 gives a blurred image, a factor of 1.0 gives the original image.']
+  filters varchar(200) [not null, note: 'Chain multiple filters using the following pattern "FILTER_ONE->FILTER_TWO->FILTER_THREE". Image filters will be applied in order. The following filters are available: BLUR, CONTOUR, DETAIL, EDGE_ENHANCE, EDGE_ENHANCE_MORE, EMBOSS, FIND_EDGES, Kernel, SHARPEN, SMOOTH, SMOOTH_MORE.']
+  reflection_size real [default: 0, not null, note: 'The height of the reflection as a percentage of the orignal image. A factor of 0.0 adds no reflection, a factor of 1.0 adds a reflection equal to the height of the orignal image.']
+  reflection_strength real [default: 0.6, not null, note: 'The initial opacity of the reflection gradient.']
+  background_color varchar(7) [default: '#FFFFFF', not null, note: 'The background color of the reflection gradient. Set this to match the background color of your page.']
+
+  Note: '''A pre-defined effect to apply to photos
+
+Columns from BaseEffect (abstract): name, description.'''
+}
+
+Table photologue_watermark {
+  id integer [pk, increment]
+  name varchar(30) [unique, not null]
+  description text [not null]
+  image varchar(100) [not null]
+  style WatermarkStyle [default: 'scale', not null]
+  opacity real [default: 1, not null, note: 'The opacity of the overlay.']
+
+  Note: '''Columns from BaseEffect (abstract): name, description.'''
+}
+
+Table photologue_photosize {
+  id integer [pk, increment]
+  name varchar(40) [unique, not null, note: 'Photo size name should contain only letters, numbers and underscores. Examples: "thumbnail", "display", "small", "main_page_widget".']
+  width "integer unsigned" [default: 0, not null, note: 'If width is set to "0" the image will be scaled to the supplied height.']
+  height "integer unsigned" [default: 0, not null, note: 'If height is set to "0" the image will be scaled to the supplied width']
+  quality PhotoSizeQuality [default: 70, not null, note: 'JPEG image quality.']
+  upscale bool [default: false, not null, note: 'If selected the image will be scaled up if necessary to fit the supplied dimensions. Cropped sizes will be upscaled regardless of this setting.']
+  crop bool [default: false, not null, note: 'If selected the image will be scaled and cropped to fit the supplied dimensions.']
+  pre_cache bool [default: false, not null, note: 'If selected this photo size will be pre-cached as photos are added.']
+  increment_count bool [default: false, not null, note: 'If selected the image\'s "view_count" will be incremented when this photo size is displayed.']
+  effect_id integer
+  watermark_id integer
+
+  indexes {
+    (effect_id) [name: 'photologue_photosize_effect_id_1d9b1b30']
+    (watermark_id) [name: 'photologue_photosize_watermark_id_f9419f99']
+  }
+
+  Note: '''About the Photosize name: it\'s used to create get_PHOTOSIZE_url() methods,
+so the name has to follow the same restrictions as any Python method name,
+e.g. no spaces or non-ascii characters.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table photologue_gallery_photos {
+  id integer [pk, increment]
+  sort_value integer [default: 0, not null]
+  gallery_id integer [not null]
+  photo_id integer [not null]
+
+  indexes {
+    (gallery_id) [name: 'photologue_gallery_photos_gallery_id_770eac69']
+    (photo_id) [name: 'photologue_gallery_photos_photo_id_38de5ebc']
+    (gallery_id, photo_id) [unique, name: 'photologue_gallery_photos_gallery_id_photo_id_ac3d7969_uniq']
+  }
+}
+
+Ref photologue_gallery_photos_gallery_id_fk: photologue_gallery_photos.gallery_id > photologue_gallery.id [delete: cascade]
+
+Ref photologue_gallery_photos_photo_id_fk: photologue_gallery_photos.photo_id > photologue_photo.id [delete: cascade]
+
+Table photologue_gallery_sites {
+  id integer [pk, increment]
+  gallery_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (gallery_id) [name: 'photologue_gallery_sites_gallery_id_263bc875']
+    (site_id) [name: 'photologue_gallery_sites_site_id_ff8bed9d']
+    (gallery_id, site_id) [unique, name: 'photologue_gallery_sites_gallery_id_site_id_4158504d_uniq']
+  }
+}
+
+Ref photologue_gallery_sites_gallery_id_fk: photologue_gallery_sites.gallery_id > photologue_gallery.id [delete: cascade]
+
+Ref photologue_gallery_sites_site_id_fk: photologue_gallery_sites.site_id > django_site.id [delete: cascade]
+
+Ref photologue_photo_effect_id_fk: photologue_photo.effect_id > photologue_photoeffect.id [delete: cascade]
+
+Table photologue_photo_sites {
+  id integer [pk, increment]
+  photo_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (photo_id) [name: 'photologue_photo_sites_photo_id_1e4e4a98']
+    (site_id) [name: 'photologue_photo_sites_site_id_a26b734c']
+    (photo_id, site_id) [unique, name: 'photologue_photo_sites_photo_id_site_id_a8528863_uniq']
+  }
+}
+
+Ref photologue_photo_sites_photo_id_fk: photologue_photo_sites.photo_id > photologue_photo.id [delete: cascade]
+
+Ref photologue_photo_sites_site_id_fk: photologue_photo_sites.site_id > django_site.id [delete: cascade]
+
+Ref photologue_photosize_effect_id_fk: photologue_photosize.effect_id > photologue_photoeffect.id [delete: cascade]
+
+Ref photologue_photosize_watermark_id_fk: photologue_photosize.watermark_id > photologue_watermark.id [delete: cascade]

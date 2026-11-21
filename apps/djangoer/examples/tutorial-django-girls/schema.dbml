@@ -1,0 +1,35 @@
+Table blog_post {
+  id integer [pk, increment]
+  author_id integer [not null]
+  title varchar(200) [not null]
+  text text [not null]
+  created_date datetime [not null, note: 'default in Python: now()']
+  published_date datetime
+
+  indexes {
+    (author_id) [name: 'blog_post_author_id_dd7a8485']
+  }
+}
+
+Table blog_comment {
+  id integer [pk, increment]
+  post_id bigint [not null]
+  author varchar(200) [not null]
+  text text [not null]
+  created_date datetime [not null, note: 'default in Python: now()']
+  approved_comment bool [default: false, not null]
+
+  indexes {
+    (post_id) [name: 'blog_comment_post_id_580e96ef']
+  }
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref blog_post_author_id_fk: blog_post.author_id > auth_user.id [delete: cascade]
+
+Ref blog_comment_post_id_fk: blog_comment.post_id > blog_post.id [delete: cascade]

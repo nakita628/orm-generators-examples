@@ -1,0 +1,12 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@sim/logger": ["./stubs/sim/logger.ts"],
+      "@sim/security/encryption": ["./stubs/sim/security-encryption.ts"],
+      "@sim/utils/object": ["./stubs/sim/utils-object.ts"],
+      "@sim/utils/string": ["./stubs/sim/utils-string.ts"]
+    }
+  },
+  "include": ["src", "stubs", "drizzle.config.ts"]
+}

@@ -1,0 +1,11 @@
+[project]
+name = "example-djangocms-plugins"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "djangocms-alias", "djangocms-snippet", "djangocms-picture", "djangocms-file", "djangocms-video", "djangocms-text", "djangocms-versioning"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true

@@ -1,0 +1,207 @@
+Enum MovementReason {
+  "receipt"
+  "shipment"
+  "transfer"
+  "adjustment"
+  "return"
+}
+
+Enum PurchaseOrderStatus {
+  "draft"
+  "sent"
+  "partial"
+  "received"
+  "cancelled"
+}
+
+Table inventory_warehouse {
+  id integer [pk, increment]
+  code varchar(10) [unique, not null]
+  name varchar(100) [not null]
+  address text [not null]
+}
+
+Table inventory_location {
+  id integer [pk, increment]
+  warehouse_id bigint [not null]
+  parent_id bigint
+  code varchar(30) [not null]
+  is_pickable bool [default: true, not null]
+
+  indexes {
+    (warehouse_id) [name: 'inventory_location_warehouse_id_972ee1ee']
+    (parent_id) [name: 'inventory_location_parent_id_34319007']
+    (warehouse_id, code) [unique, name: 'inventory_location_warehouse_id_code_0454aa8d_uniq']
+  }
+
+  Note: '''A shelf or bin, inside another location or at the top of a warehouse.'''
+}
+
+Table inventory_unitofmeasure {
+  code varchar(10) [pk]
+  name varchar(30) [not null]
+}
+
+Table inventory_item {
+  id integer [pk, increment]
+  sku varchar(40) [unique, not null]
+  name varchar(200) [not null]
+  unit_id varchar(10) [not null]
+  barcode varchar(50) [unique]
+  tracks_lots bool [default: false, not null]
+  reorder_point decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+
+  indexes {
+    (unit_id) [name: 'inventory_item_unit_id_9cc1c17e']
+  }
+}
+
+Table inventory_lot {
+  id integer [pk, increment]
+  item_id bigint [not null]
+  number varchar(40) [not null]
+  expires_on date
+
+  indexes {
+    (item_id) [name: 'inventory_lot_item_id_e323754c']
+    (item_id, number) [unique, name: 'inventory_lot_item_id_number_c238e926_uniq']
+  }
+}
+
+Table inventory_stock {
+  id integer [pk, increment]
+  item_id bigint [not null]
+  location_id bigint [not null]
+  lot_id bigint
+  quantity decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+  reserved decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+
+  indexes {
+    (item_id) [name: 'inventory_stock_item_id_51ef1040']
+    (location_id) [name: 'inventory_stock_location_id_be05a9db']
+    (lot_id) [name: 'inventory_stock_lot_id_e5cead22']
+    (item_id, location_id, lot_id) [unique, name: 'stock_one_row_per_lot']
+    (item_id, location_id) [unique, name: 'stock_one_row_without_lot', note: 'where "lot_id" IS NULL']
+  }
+
+  checks {
+    `"quantity" >= '0'` [name: 'stock_not_negative']
+    `"reserved" <= ("quantity")` [name: 'stock_reserved_within']
+  }
+}
+
+Table inventory_movement {
+  id integer [pk, increment]
+  item_id bigint [not null]
+  lot_id bigint
+  from_location_id bigint
+  to_location_id bigint
+  quantity decimal [not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+  reason MovementReason [not null]
+  reference varchar(50) [not null]
+  by_id integer [not null]
+  at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (item_id) [name: 'inventory_movement_item_id_20793f0e']
+    (lot_id) [name: 'inventory_movement_lot_id_c6953902']
+    (from_location_id) [name: 'inventory_movement_from_location_id_93fc7483']
+    (to_location_id) [name: 'inventory_movement_to_location_id_081c2524']
+    (by_id) [name: 'inventory_movement_by_id_758aa06e']
+  }
+
+  checks {
+    `"quantity" > '0'` [name: 'movement_positive']
+    `("from_location_id" IS NOT NULL OR "to_location_id" IS NOT NULL)` [name: 'movement_has_a_location']
+  }
+}
+
+Table inventory_supplier {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  email varchar(254) [not null]
+}
+
+Table inventory_supplieritem {
+  id integer [pk, increment]
+  supplier_id bigint [not null]
+  item_id bigint [not null]
+  supplier_sku varchar(40) [not null]
+  unit_cost decimal [not null, note: 'declared max_digits=10, decimal_places=4, which the database does not enforce']
+  lead_time_days "smallint unsigned" [default: 7, not null]
+
+  indexes {
+    (supplier_id) [name: 'inventory_supplieritem_supplier_id_b5039002']
+    (item_id) [name: 'inventory_supplieritem_item_id_589828f9']
+  }
+}
+
+Table inventory_purchaseorder {
+  id integer [pk, increment]
+  supplier_id bigint [not null]
+  warehouse_id bigint [not null]
+  status PurchaseOrderStatus [default: 'draft', not null]
+  ordered_on date
+  expected_on date
+
+  indexes {
+    (supplier_id) [name: 'inventory_purchaseorder_supplier_id_c6bc28e9']
+    (warehouse_id) [name: 'inventory_purchaseorder_warehouse_id_72f41103']
+  }
+}
+
+Table inventory_purchaseorderline {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  item_id bigint [not null]
+  quantity decimal [not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+  received decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=3, which the database does not enforce']
+  unit_cost decimal [not null, note: 'declared max_digits=10, decimal_places=4, which the database does not enforce']
+
+  indexes {
+    (order_id) [name: 'inventory_purchaseorderline_order_id_2e62329b']
+    (item_id) [name: 'inventory_purchaseorderline_item_id_cf711322']
+  }
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref inventory_location_warehouse_id_fk: inventory_location.warehouse_id > inventory_warehouse.id [delete: cascade]
+
+Ref inventory_location_parent_id_fk: inventory_location.parent_id > inventory_location.id [delete: cascade]
+
+Ref inventory_item_unit_id_fk: inventory_item.unit_id > inventory_unitofmeasure.code [delete: restrict]
+
+Ref inventory_lot_item_id_fk: inventory_lot.item_id > inventory_item.id [delete: cascade]
+
+Ref inventory_stock_item_id_fk: inventory_stock.item_id > inventory_item.id [delete: cascade]
+
+Ref inventory_stock_location_id_fk: inventory_stock.location_id > inventory_location.id [delete: cascade]
+
+Ref inventory_stock_lot_id_fk: inventory_stock.lot_id > inventory_lot.id [delete: cascade]
+
+Ref inventory_movement_item_id_fk: inventory_movement.item_id > inventory_item.id [delete: restrict]
+
+Ref inventory_movement_lot_id_fk: inventory_movement.lot_id > inventory_lot.id [delete: restrict]
+
+Ref inventory_movement_from_location_id_fk: inventory_movement.from_location_id > inventory_location.id [delete: restrict]
+
+Ref inventory_movement_to_location_id_fk: inventory_movement.to_location_id > inventory_location.id [delete: restrict]
+
+Ref inventory_movement_by_id_fk: inventory_movement.by_id > auth_user.id [delete: restrict]
+
+Ref inventory_supplieritem_supplier_id_fk: inventory_supplieritem.supplier_id > inventory_supplier.id [delete: cascade]
+
+Ref inventory_supplieritem_item_id_fk: inventory_supplieritem.item_id > inventory_item.id [delete: cascade]
+
+Ref inventory_purchaseorder_supplier_id_fk: inventory_purchaseorder.supplier_id > inventory_supplier.id [delete: restrict]
+
+Ref inventory_purchaseorder_warehouse_id_fk: inventory_purchaseorder.warehouse_id > inventory_warehouse.id [delete: restrict]
+
+Ref inventory_purchaseorderline_order_id_fk: inventory_purchaseorderline.order_id > inventory_purchaseorder.id [delete: cascade]
+
+Ref inventory_purchaseorderline_item_id_fk: inventory_purchaseorderline.item_id > inventory_item.id [delete: restrict]

@@ -1,0 +1,61 @@
+Table project1_post {
+  id integer [pk, increment, not null]
+  name text
+  createdById text [not null]
+  createdAt integer [not null]
+  updatedAt integer
+  indexes {
+    (createdById) [name: 'created_by_idx']
+    (name) [name: 'name_idx']
+  }
+}
+
+Table project1_user {
+  id text [pk, not null]
+  name text
+  email text [not null]
+  emailVerified integer
+  image text
+}
+
+Table project1_account {
+  userId text [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, providerAccountId) [pk]
+    (userId) [name: 'account_user_id_idx']
+  }
+}
+
+Table project1_session {
+  sessionToken text [pk, not null]
+  userId text [not null]
+  expires integer [not null]
+  indexes {
+    (userId) [name: 'session_userId_idx']
+  }
+}
+
+Table project1_verification_token {
+  identifier text [not null]
+  token text [not null]
+  expires integer [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Ref project1_post_createdById_project1_user_id_fk: project1_post.createdById > project1_user.id
+
+Ref project1_account_userId_project1_user_id_fk: project1_account.userId > project1_user.id
+
+Ref project1_session_userId_project1_user_id_fk: project1_session.userId > project1_user.id

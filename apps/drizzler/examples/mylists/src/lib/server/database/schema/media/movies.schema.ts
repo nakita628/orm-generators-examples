@@ -1,0 +1,108 @@
+import {MediaType} from "@/lib/utils/enums";
+import {relations} from "drizzle-orm/_relations";
+import {user} from "@/lib/server/database/schema/auth.schema";
+import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
+import {integer, real, snakeCase, text} from "drizzle-orm/sqlite-core";
+import {
+    commonGenericCols,
+    commonGenericIndexes,
+    commonMediaCols,
+    commonMediaListCols,
+    commonMediaListIndexes,
+    commonMediaTagsCols,
+    commonMediaTagsIndexes
+} from "@/lib/server/database/schema/media/_helper";
+
+
+export const movies = snakeCase.table("movies", {
+    backdropPath: text(),
+    originalName: text(),
+    homepage: text(),
+    duration: integer().notNull(),
+    originalLanguage: text(),
+    voteAverage: real(),
+    voteCount: real(),
+    popularity: real(),
+    budget: real(),
+    revenue: real(),
+    tagline: text(),
+    apiId: integer().unique().notNull(),
+    collectionId: integer(),
+    directorName: text(),
+    compositorName: text(),
+    ...commonMediaCols(MediaType.MOVIES),
+});
+
+
+export const moviesList = snakeCase.table("movies_list", {
+    redo: integer().default(0).notNull(),
+    total: integer("total").default(0).notNull(),
+    ...commonMediaListCols(movies.id, MediaType.MOVIES),
+}, (table) => commonMediaListIndexes(table, MediaType.MOVIES));
+
+
+export const moviesGenre = snakeCase.table("movies_genre", {
+    ...commonGenericCols(movies.id),
+}, (table) => commonGenericIndexes(table, "movies_genre"));
+
+
+export const moviesActors = snakeCase.table("movies_actors", {
+    ...commonGenericCols(movies.id),
+}, (table) => commonGenericIndexes(table, "movies_actors"));
+
+
+export const moviesTags = snakeCase.table("movies_tags", {
+    ...commonMediaTagsCols(movies.id),
+}, (table) => commonMediaTagsIndexes(table, MediaType.MOVIES));
+
+
+export const moviesRelations = relations(movies, ({ many }) => ({
+    moviesGenres: many(moviesGenre),
+    moviesTags: many(moviesTags),
+    moviesLists: many(moviesList),
+    moviesActors: many(moviesActors),
+}));
+
+
+export const moviesListRelations = relations(moviesList, ({ one }) => ({
+    movie: one(movies, {
+        fields: [moviesList.mediaId],
+        references: [movies.id]
+    }),
+    user: one(user, {
+        fields: [moviesList.userId],
+        references: [user.id]
+    }),
+}));
+
+
+export const moviesGenreRelations = relations(moviesGenre, ({ one }) => ({
+    movie: one(movies, {
+        fields: [moviesGenre.mediaId],
+        references: [movies.id]
+    }),
+}));
+
+
+export const moviesActorsRelations = relations(moviesActors, ({ one }) => ({
+    movie: one(movies, {
+        fields: [moviesActors.mediaId],
+        references: [movies.id]
+    }),
+}));
+
+
+export const moviesTagsRelations = relations(moviesTags, ({ one }) => ({
+    tag: one(mediaTags, {
+        fields: [moviesTags.tagId],
+        references: [mediaTags.id],
+    }),
+    user: one(user, {
+        fields: [moviesTags.userId],
+        references: [user.id]
+    }),
+    movie: one(movies, {
+        fields: [moviesTags.mediaId],
+        references: [movies.id]
+    }),
+}));

@@ -1,0 +1,456 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table lti_tool_key {
+  id integer [pk, increment]
+  public_key text [not null]
+  private_key text [not null]
+  is_active bool [default: true, not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  Note: '''A keypair for use in LTI integrations.
+
+Attributes:
+    public_key (str): Public key data.
+    private_key (str): Private key data.
+    is_active (bool): Indicates if the key is present in the JWKS.
+    datetime_created (datetime): When the key was created.
+    datetime_modified (datetime): When the key was last modified.'''
+}
+
+Table lti_tool_ltiregistration {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  uuid char(32) [not null, note: 'default in Python: uuid4()']
+  issuer varchar(255) [not null]
+  client_id varchar(255) [not null]
+  audience varchar(255) [not null]
+  auth_url varchar(200) [not null]
+  token_url varchar(200) [not null]
+  keyset_url varchar(200) [not null]
+  is_active bool [default: true, not null]
+  public_key text [not null]
+  private_key text [not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (issuer, client_id) [unique, name: 'unique_client_id_per_issuer']
+  }
+
+  Note: '''An LTI platform registration.
+
+Attributes:
+    name (str): A display name for this registration
+    uuid (uuid4): A unique identifier for registraitons for use in OIDC login init.
+    issuer (str): The platform\'s issuer.
+    client_id (str): The client ID assigned to the tool by the platform.
+    audience (str): The platforms\'s OAuth2 audience.
+    auth_url (str): The platform\'s auth login URL.
+    token_url (str): The platform\'s access token retrieval URL.
+    keyset_url (str): The platform\'s JWKS URL.
+    is_active (bool): Indicates if the registration is active within the tool.
+    public_key (str): Public key data specific to this registration. Only to be used
+        when the platform cannot retrieve keys from a tool\'s JWKS URL.
+    private_key (str): Private key data specific to this registration. Only to be
+        used when the platform cannot retrieve keys from a tool\'s JWKS URL.
+    datetime_created (datetime): When the registration was created.
+    datetime_modified (datetime): When the registration was last modified.'''
+}
+
+Table lti_tool_ltiplatforminstance {
+  id integer [pk, increment]
+  issuer varchar(255) [not null]
+  guid varchar(255) [not null]
+  lti1p1_id_on_platform varchar(255) [not null]
+  contact_email varchar(254) [not null]
+  description text [not null]
+  name varchar(500) [not null]
+  url varchar(200) [not null]
+  product_family_code varchar(500) [not null]
+  version varchar(500) [not null]
+
+  indexes {
+    (issuer, guid) [unique, name: 'unique_guid_per_issuer']
+  }
+
+  Note: '''An instance of a LTI learning platform.
+
+The platform instance claim is described in the LTI spec at
+https://www.imsglobal.org/spec/lti/v1p3/#platform-instance-claim'''
+}
+
+Table lti_tool_ltideployment {
+  id integer [pk, increment]
+  registration_id integer [not null]
+  deployment_id varchar(255) [not null]
+  is_active bool [default: false, not null]
+  platform_instance_id integer
+  pns_url varchar(200) [not null]
+  supports_context_copy_notice bool [default: false, not null]
+  supports_asset_processor_submission_notice bool [default: false, not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (registration_id) [name: 'lti_tool_ltideployment_registration_id_cb081313']
+    (platform_instance_id) [name: 'lti_tool_ltideployment_platform_instance_id_3af9e722']
+    (registration_id, deployment_id) [unique, name: 'unique_deployment_id_per_registration']
+  }
+
+  Note: '''A LTI deployment.
+
+Deployments are described in the LTI 1.3 core specification at
+https://www.imsglobal.org/spec/lti/v1p3/#tool-deployment.
+
+Attributes:
+    registration (LtiRegistration): The platform registration associated with
+        this deployment.
+    deployment_id (str): The deployment ID as provided by the platform.
+    is_active (bool): Indicates if the deployment has been activated in the tool.
+    platform_instance (LtiPlatformInstance): The platform instance associated with
+        this deployment.
+    pns_url (str): The URL for the Platform Notification Service.
+    supports_context_copy_notice (bool): Indicates if the deployment supports
+        the Context Copy Notice.
+    supports_asset_processor_submission_notice (bool): Indicates if the deployment
+        supports the Asset Processor Submission Notice.
+    datetime_created (datetime): When the deployment was created.
+    datetime_modified (datetime): When the deployment was last modified.'''
+}
+
+Table lti_tool_ltiuser {
+  id integer [pk, increment]
+  registration_id integer [not null]
+  sub varchar(255) [not null]
+  lti1p1_id_on_platform varchar(255) [not null]
+  given_name varchar(500) [not null]
+  family_name varchar(500) [not null]
+  name varchar(500) [not null]
+  email varchar(254) [not null]
+  picture_url varchar(200) [not null]
+  auth_user_id integer
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (registration_id) [name: 'lti_tool_ltiuser_registration_id_9eb044b9']
+    (auth_user_id) [name: 'lti_tool_ltiuser_auth_user_id_c6b9c91c']
+    (registration_id, sub) [unique, name: 'unique_sub_per_registration']
+  }
+
+  Note: '''A platform user as described by an LTI launch.
+
+The user identity claims are described in the LTI spec at
+https://www.imsglobal.org/spec/lti/v1p3/#user-identity-claims'''
+}
+
+Table lti_tool_lticontext {
+  id integer [pk, increment]
+  deployment_id integer [not null]
+  id_on_platform varchar(255) [not null]
+  lti1p1_id_on_platform varchar(255) [not null]
+  label varchar(255) [not null]
+  title varchar(500) [not null]
+  is_course_template bool [default: false, not null]
+  is_course_offering bool [default: false, not null]
+  is_course_section bool [default: false, not null]
+  is_group bool [default: false, not null]
+  memberships_url varchar(200) [not null]
+  lineitems_url varchar(200) [not null]
+  can_query_lineitems bool [default: false, not null]
+  can_manage_lineitems bool [default: false, not null]
+  can_publish_scores bool [default: false, not null]
+  can_access_results bool [default: false, not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (deployment_id) [name: 'lti_tool_lticontext_deployment_id_2a02049c']
+    (deployment_id, id_on_platform) [unique, name: 'unique_context_id_per_deployment']
+  }
+
+  Note: '''Describes the context of a LTI launch.
+
+The context claim are described in the LTI spec at
+https://www.imsglobal.org/spec/lti/v1p3/#context-claim'''
+}
+
+Table lti_tool_ltimembership {
+  id integer [pk, increment]
+  user_id integer [not null]
+  context_id integer [not null]
+  is_administrator bool [default: false, not null]
+  is_content_developer bool [default: false, not null]
+  is_instructor bool [default: false, not null]
+  is_learner bool [default: false, not null]
+  is_mentor bool [default: false, not null]
+  is_active bool [default: true, not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'lti_tool_ltimembership_user_id_f52055e9']
+    (context_id) [name: 'lti_tool_ltimembership_context_id_8eeef5a6']
+    (user_id, context_id) [unique, name: 'no_duplicate_memberships']
+  }
+
+  Note: '''A user\'s role within a learning context.
+
+Roles are described in the LTI spec at
+https://www.imsglobal.org/spec/lti/v1p3/#roles-claim'''
+}
+
+Table lti_tool_ltiresourcelink {
+  id integer [pk, increment]
+  context_id integer [not null]
+  id_on_platform varchar(255) [not null]
+  lti1p1_id_on_platform varchar(255) [not null]
+  title varchar(500) [not null]
+  description text [not null]
+  datetime_created datetime [not null, note: 'default in Python: now()']
+  datetime_modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (context_id) [name: 'lti_tool_ltiresourcelink_context_id_a17e2ea2']
+    (context_id, id_on_platform) [unique, name: 'unique_resource_link_id_per_context']
+  }
+
+  Note: '''Represents a resource link in an LTI launch.
+
+The resource link claim is described in the LTI spec at
+https://www.imsglobal.org/spec/lti/v1p3/#resource-link-claim'''
+}
+
+Table lti_tool_ltilineitem {
+  id integer [pk, increment]
+  context_id integer [not null]
+  url varchar(200) [unique, not null]
+  maximum_score real [not null]
+  label varchar(255) [not null]
+  tag varchar(255) [not null]
+  resource_id varchar(255) [not null]
+  resource_link_id integer
+  start_datetime datetime
+  end_datetime datetime
+
+  indexes {
+    (context_id) [name: 'lti_tool_ltilineitem_context_id_812de9e7']
+    (resource_link_id) [name: 'lti_tool_ltilineitem_resource_link_id_28f7637a']
+  }
+
+  Note: '''Represents an LTI LineItem for assignment scoring.
+
+The line item scope and methods are described in the LTI Assignment and Grade
+Services 2.0 spec at
+https://www.imsglobal.org/spec/lti-ags/v2p0#line-item-service-scope-and-allowed-http-methods'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref lti_tool_ltideployment_registration_id_fk: lti_tool_ltideployment.registration_id > lti_tool_ltiregistration.id [delete: cascade]
+
+Ref lti_tool_ltideployment_platform_instance_id_fk: lti_tool_ltideployment.platform_instance_id > lti_tool_ltiplatforminstance.id [delete: set null]
+
+Ref lti_tool_ltiuser_registration_id_fk: lti_tool_ltiuser.registration_id > lti_tool_ltiregistration.id [delete: cascade]
+
+Ref lti_tool_ltiuser_auth_user_id_fk: lti_tool_ltiuser.auth_user_id > auth_user.id [delete: set null]
+
+Ref lti_tool_lticontext_deployment_id_fk: lti_tool_lticontext.deployment_id > lti_tool_ltideployment.id [delete: cascade]
+
+Ref lti_tool_ltimembership_user_id_fk: lti_tool_ltimembership.user_id > lti_tool_ltiuser.id [delete: cascade]
+
+Ref lti_tool_ltimembership_context_id_fk: lti_tool_ltimembership.context_id > lti_tool_lticontext.id [delete: cascade]
+
+Ref lti_tool_ltiresourcelink_context_id_fk: lti_tool_ltiresourcelink.context_id > lti_tool_lticontext.id [delete: cascade]
+
+Ref lti_tool_ltilineitem_context_id_fk: lti_tool_ltilineitem.context_id > lti_tool_lticontext.id [delete: cascade]
+
+Ref lti_tool_ltilineitem_resource_link_id_fk: lti_tool_ltilineitem.resource_link_id > lti_tool_ltiresourcelink.id [delete: set null]

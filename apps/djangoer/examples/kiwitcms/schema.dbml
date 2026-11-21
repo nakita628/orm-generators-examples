@@ -1,0 +1,1156 @@
+Enum HistoricalTestCaseHistoryType {
+  "+"
+  "~"
+  "-"
+}
+
+Enum HistoricalTemplateHistoryType {
+  "+"
+  "~"
+  "-"
+}
+
+Enum HistoricalTestPlanHistoryType {
+  "+"
+  "~"
+  "-"
+}
+
+Enum HistoricalTestRunHistoryType {
+  "+"
+  "~"
+  "-"
+}
+
+Enum HistoricalTestExecutionHistoryType {
+  "+"
+  "~"
+  "-"
+}
+
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table guardian_userobjectpermission {
+  id integer [pk, increment]
+  permission_id integer [not null]
+  content_type_id integer [not null]
+  object_pk varchar(255) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  user_id integer [not null]
+
+  indexes {
+    (permission_id) [name: 'guardian_userobjectpermission_permission_id_71807bfc']
+    (content_type_id) [name: 'guardian_userobjectpermission_content_type_id_2e892405']
+    (user_id) [name: 'guardian_userobjectpermission_user_id_d5c1e964']
+    (user_id, permission_id, object_pk) [unique, name: 'guardian_userobjectpermission_user_id_permission_id_object_pk_b0b3d2fc_uniq']
+    (content_type_id, object_pk) [name: 'guardian_us_content_179ed2_idx']
+  }
+
+  Note: '''Columns from UserObjectPermissionBase (abstract): user_id.
+
+Columns from BaseObjectPermission (abstract): permission_id.
+
+Columns from BaseGenericObjectPermission (abstract): content_type_id, object_pk.'''
+}
+
+Table guardian_groupobjectpermission {
+  id integer [pk, increment]
+  permission_id integer [not null]
+  content_type_id integer [not null]
+  object_pk varchar(255) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  group_id integer [not null]
+
+  indexes {
+    (permission_id) [name: 'guardian_groupobjectpermission_permission_id_36572738']
+    (content_type_id) [name: 'guardian_groupobjectpermission_content_type_id_7ade36b8']
+    (group_id) [name: 'guardian_groupobjectpermission_group_id_4bbbfb62']
+    (group_id, permission_id, object_pk) [unique, name: 'guardian_groupobjectpermission_group_id_permission_id_object_pk_3f189f7c_uniq']
+    (content_type_id, object_pk) [name: 'guardian_gr_content_ae6aec_idx']
+  }
+
+  Note: '''Columns from GroupObjectPermissionBase (abstract): group_id.
+
+Columns from BaseObjectPermission (abstract): permission_id.
+
+Columns from BaseGenericObjectPermission (abstract): content_type_id, object_pk.'''
+}
+
+Table django_comments {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_pk varchar(64) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  site_id integer [not null]
+  user_id integer
+  user_name varchar(50) [not null]
+  user_email varchar(254) [not null]
+  user_url varchar(200) [not null]
+  comment text [not null]
+  submit_date datetime [default: null, not null]
+  ip_address char(39)
+  is_public bool [default: true, not null, note: 'Uncheck this box to make the comment effectively disappear from the site.']
+  is_removed bool [default: false, not null, note: 'Check this box if the comment is inappropriate. A "This comment has been removed" message will be displayed instead.']
+
+  indexes {
+    (content_type_id) [name: 'django_comments_content_type_id_c4afe962']
+    (object_pk) [name: 'django_comments_object_pk_7fc98e83']
+    (site_id) [name: 'django_comments_site_id_9dcf666e']
+    (user_id) [name: 'django_comments_user_id_a0a440a1']
+    (submit_date) [name: 'django_comments_submit_date_514ed2d9']
+    (is_removed) [name: 'django_comments_is_removed_52a03ae3']
+  }
+
+  Note: '''Columns from CommentAbstractModel (abstract): user_id, user_name, user_email, user_url, comment, submit_date, ip_address, is_public, is_removed.
+
+Columns from BaseCommentAbstractModel (abstract): content_type_id, object_pk, site_id.'''
+}
+
+Table django_comment_flags {
+  id integer [pk, increment]
+  user_id integer [not null]
+  comment_id integer [not null]
+  flag varchar(30) [not null]
+  flag_date datetime [default: null, not null]
+
+  indexes {
+    (user_id) [name: 'django_comment_flags_user_id_f3f81f0a']
+    (comment_id) [name: 'django_comment_flags_comment_id_d8054933']
+    (flag) [name: 'django_comment_flags_flag_8b141fcb']
+    (user_id, comment_id, flag) [unique, name: 'django_comment_flags_user_id_comment_id_flag_537f77a7_uniq']
+  }
+
+  Note: '''Records a flag on a comment. This is intentionally flexible; right now, a
+flag could be:
+
+    * A "removal suggestion" -- where a user suggests a comment for (potential) removal.
+
+    * A "moderator deletion" -- used when a moderator deletes a comment.
+
+You can (ab)use this model to add other flags, if needed. However, by
+design users are only allowed to flag a comment with a given flag once;
+if you want rating look elsewhere.'''
+}
+
+Table attachments_attachment {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_id varchar(64) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  creator_id integer [not null]
+  attachment_file varchar(100) [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (content_type_id) [name: 'attachments_attachment_content_type_id_35dd9d5d']
+    (object_id) [name: 'attachments_attachment_object_id_102ce831']
+    (creator_id) [name: 'attachments_attachment_creator_id_d471ef83']
+    (created) [name: 'attachments_attachment_created_96fbcd43']
+    (modified) [name: 'attachments_attachment_modified_1d39a3d7']
+  }
+}
+
+Table linkreference_linkreference {
+  id integer [pk, increment]
+  execution_id integer [not null]
+  name varchar(64) [default: '', not null]
+  url varchar(200) [not null]
+  created_on datetime [not null, note: 'default in Python: now()']
+  is_defect bool [default: false, not null]
+
+  indexes {
+    (execution_id) [name: 'linkreference_linkreference_execution_id_0f007e30']
+    (url) [name: 'linkreference_linkreference_url_a67ef7ca']
+    (created_on) [name: 'linkreference_linkreference_created_on_9a8e5281']
+    (is_defect) [name: 'linkreference_linkreference_is_defect_1afb0f5c']
+  }
+}
+
+Table management_classification {
+  id integer [pk, increment]
+  name varchar(64) [unique, not null]
+}
+
+Table management_product {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  classification_id integer [not null]
+  description text [not null]
+
+  indexes {
+    (classification_id) [name: 'management_product_classification_id_e4e18e09']
+  }
+}
+
+Table management_priority {
+  id integer [pk, increment]
+  value varchar(64) [unique, not null]
+  is_active bool [default: true, not null]
+}
+
+Table management_component {
+  id integer [pk, increment]
+  name varchar(64) [not null]
+  product_id integer [not null]
+  initial_owner_id integer
+  initial_qa_contact_id integer
+  description text [not null]
+
+  indexes {
+    (product_id) [name: 'management_component_product_id_82d6de7e']
+    (initial_owner_id) [name: 'management_component_initial_owner_id_983a4de8']
+    (initial_qa_contact_id) [name: 'management_component_initial_qa_contact_id_00659846']
+    (product_id, name) [unique, name: 'management_component_product_id_name_2bff48aa_uniq']
+  }
+}
+
+Table management_version {
+  id integer [pk, increment]
+  value varchar(192) [not null]
+  product_id integer [not null]
+
+  indexes {
+    (product_id) [name: 'management_version_product_id_f1cf2daf']
+    (product_id, value) [unique, name: 'management_version_product_id_value_97d2c1b8_uniq']
+  }
+}
+
+Table management_build {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  version_id integer [not null]
+  is_active bool [default: true, not null]
+
+  indexes {
+    (version_id) [name: 'management_build_version_id_b16465e8']
+    (version_id, name) [unique, name: 'management_build_version_id_name_0ca02373_uniq']
+  }
+}
+
+Table management_tag {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+}
+
+Table testcases_testcasestatus {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  description text
+  is_confirmed bool [default: false, not null]
+
+  indexes {
+    (is_confirmed) [name: 'testcases_testcasestatus_is_confirmed_ba7f915d']
+  }
+}
+
+Table testcases_category {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  product_id integer [not null]
+  description text [not null]
+
+  indexes {
+    (product_id) [name: 'testcases_category_product_id_f26067e7']
+    (product_id, name) [unique, name: 'testcases_category_product_id_name_6f991fe0_uniq']
+  }
+}
+
+Table testcases_historicaltestcase {
+  id integer [not null]
+  create_date datetime [not null]
+  is_automated bool [default: false, not null]
+  script text
+  arguments text
+  extra_link varchar(1024) [default: null]
+  summary varchar(255) [not null]
+  requirement varchar(255)
+  notes text
+  text text [not null]
+  setup_duration bigint
+  testing_duration bigint
+  case_status_id integer [note: 'refers to testcases_testcasestatus.id, with no foreign key in the database']
+  category_id integer [note: 'refers to testcases_category.id, with no foreign key in the database']
+  priority_id integer [note: 'refers to management_priority.id, with no foreign key in the database']
+  author_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  default_tester_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  reviewer_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  history_id integer [pk, increment]
+  history_date datetime [not null]
+  history_change_reason text
+  history_type HistoricalTestCaseHistoryType [not null]
+  history_user_id integer
+
+  indexes {
+    (id) [name: 'testcases_historicaltestcase_id_12c89411']
+    (summary) [name: 'testcases_historicaltestcase_summary_92d50821']
+    (setup_duration) [name: 'testcases_historicaltestcase_setup_duration_2342e865']
+    (testing_duration) [name: 'testcases_historicaltestcase_testing_duration_63c88e57']
+    (case_status_id) [name: 'testcases_historicaltestcase_case_status_id_35c6b721']
+    (category_id) [name: 'testcases_historicaltestcase_category_id_05519a7a']
+    (priority_id) [name: 'testcases_historicaltestcase_priority_id_defa02c4']
+    (author_id) [name: 'testcases_historicaltestcase_author_id_0cb2d010']
+    (default_tester_id) [name: 'testcases_historicaltestcase_default_tester_id_4096f1c6']
+    (reviewer_id) [name: 'testcases_historicaltestcase_reviewer_id_33c64d01']
+    (history_date) [name: 'testcases_historicaltestcase_history_date_fe588372']
+    (history_user_id) [name: 'testcases_historicaltestcase_history_user_id_7091ce1e']
+  }
+}
+
+Table testcases_testcase {
+  id integer [pk, increment]
+  create_date datetime [not null, note: 'default in Python: now()']
+  is_automated bool [default: false, not null]
+  script text
+  arguments text
+  extra_link varchar(1024) [default: null]
+  summary varchar(255) [not null]
+  requirement varchar(255)
+  notes text
+  text text [not null]
+  setup_duration bigint
+  testing_duration bigint
+  case_status_id integer [not null]
+  category_id integer [not null]
+  priority_id integer [not null]
+  author_id integer [not null]
+  default_tester_id integer
+  reviewer_id integer
+
+  indexes {
+    (summary) [name: 'testcases_testcase_summary_511d8323']
+    (setup_duration) [name: 'testcases_testcase_setup_duration_56e5887d']
+    (testing_duration) [name: 'testcases_testcase_testing_duration_3ae6ba2d']
+    (case_status_id) [name: 'testcases_testcase_case_status_id_506e2b3f']
+    (category_id) [name: 'testcases_testcase_category_id_f52a4b36']
+    (priority_id) [name: 'testcases_testcase_priority_id_06e62b85']
+    (author_id) [name: 'testcases_testcase_author_id_40ee8140']
+    (default_tester_id) [name: 'testcases_testcase_default_tester_id_d9c8faf2']
+    (reviewer_id) [name: 'testcases_testcase_reviewer_id_4be5756e']
+  }
+}
+
+Table testcases_property {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  value varchar(255) [not null]
+  case_id integer [not null]
+
+  indexes {
+    (case_id) [name: 'testcases_property_case_id_ce458207']
+  }
+
+  Note: '''Columns from Property (abstract): name, value.'''
+}
+
+Table testcases_testcaseplan {
+  id integer [pk, increment]
+  plan_id integer [not null]
+  case_id integer [not null]
+  sortkey integer
+
+  indexes {
+    (plan_id) [name: 'testcases_testcaseplan_plan_id_40b3d762']
+    (case_id) [name: 'testcases_testcaseplan_case_id_89f638fc']
+    (plan_id, case_id) [unique, name: 'testcases_testcaseplan_plan_id_case_id_16d50827_uniq']
+  }
+}
+
+Table testcases_testcasecomponent {
+  id integer [pk, increment]
+  case_id integer [not null]
+  component_id integer [not null]
+
+  indexes {
+    (case_id) [name: 'testcases_testcasecomponent_case_id_fc27e38a']
+    (component_id) [name: 'testcases_testcasecomponent_component_id_edd78178']
+  }
+}
+
+Table testcases_testcasetag {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  case_id integer [not null]
+
+  indexes {
+    (tag_id) [name: 'testcases_testcasetag_tag_id_b16f414a']
+    (case_id) [name: 'testcases_testcasetag_case_id_338ecd07']
+  }
+}
+
+Table testcases_bugsystem {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  tracker_type varchar(128) [default: 'IssueTrackerType', not null, note: 'This determines how Kiwi TCMS integrates with the IT system']
+  base_url varchar(1024) [note: '''Base URL, for example <strong>https://bugzilla.example.com</strong>!
+Leave empty to disable!''']
+  api_url varchar(1024) [note: 'This is the URL to which API requests will be sent. Leave empty to disable!']
+  api_username varchar(256)
+  api_password varchar(256)
+
+  Note: '''This model describes a bug tracking system used in
+Kiwi TCMS. Fields below can be configured via
+the admin interface and their meaning is:
+
+#. **name:** a visual name for this bug tracker, e.g. `Kiwi TCMS GitHub`;
+#. **tracker_type:** a select menu to specify what kind of external
+   system we interface with, e.g. Bugzilla, JIRA, others;
+   The available options for this field are automatically populated
+   by Kiwi TCMS;
+
+   .. warning::
+
+        Once this field is set it can\'t be reset to ``NULL``. Although
+        Kiwi TCMS takes care to handle misconfigurations we advise you to
+        configure your API credentials properly!
+
+#. **base_url:** base URL of this bug tracker.
+
+   .. warning::
+
+        If this field is left empty funtionality that depends on it will be disabled!
+
+#. **api_url, api_username, api_password:** configuration for an internal RPC object
+   that communicate to the issue tracking system when necessary. Depending on the
+   actual type of IT we\'re interfacing with some of these values may not be necessary.
+   Refer to :mod:`tcms.issuetracker.types` for more information!
+
+   .. warning::
+
+        This is saved as plain-text in the database because it needs to be passed
+        to the internal RPC object!'''
+}
+
+Table testcases_testcaseemailsettings {
+  id integer [pk, increment]
+  case_id integer [unique, not null]
+  notify_on_case_update bool [default: true, not null]
+  notify_on_case_delete bool [default: true, not null]
+  auto_to_case_author bool [default: true, not null]
+  auto_to_case_tester bool [default: true, not null]
+  auto_to_run_manager bool [default: true, not null]
+  auto_to_run_tester bool [default: true, not null]
+  auto_to_execution_assignee bool [default: true, not null]
+  cc_list text [default: '', not null]
+}
+
+Table testcases_historicaltemplate {
+  id integer [not null]
+  name varchar(255) [not null]
+  text text [not null]
+  history_id integer [pk, increment]
+  history_date datetime [not null]
+  history_change_reason text
+  history_type HistoricalTemplateHistoryType [not null]
+  history_user_id integer
+
+  indexes {
+    (id) [name: 'testcases_historicaltemplate_id_75442f7f']
+    (history_date) [name: 'testcases_historicaltemplate_history_date_b1bbfd15']
+    (history_user_id) [name: 'testcases_historicaltemplate_history_user_id_0234739e']
+  }
+}
+
+Table testcases_template {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  text text [not null]
+}
+
+Table testplans_plantype {
+  id integer [pk, increment]
+  name varchar(64) [unique, not null]
+  description text
+}
+
+Table testplans_historicaltestplan {
+  id integer [not null]
+  name varchar(255) [not null]
+  text text [not null]
+  create_date datetime [not null]
+  is_active bool [default: true, not null]
+  extra_link varchar(1024) [default: null]
+  parent_id integer [note: 'refers to testplans_testplan.id, with no foreign key in the database']
+  product_version_id integer [note: 'refers to management_version.id, with no foreign key in the database']
+  author_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  product_id integer [note: 'refers to management_product.id, with no foreign key in the database']
+  type_id integer [note: 'refers to testplans_plantype.id, with no foreign key in the database']
+  history_id integer [pk, increment]
+  history_date datetime [not null]
+  history_change_reason text
+  history_type HistoricalTestPlanHistoryType [not null]
+  history_user_id integer
+
+  indexes {
+    (id) [name: 'testplans_historicaltestplan_id_1f0d0717']
+    (name) [name: 'testplans_historicaltestplan_name_d1afc49f']
+    (is_active) [name: 'testplans_historicaltestplan_is_active_aa220a2c']
+    (parent_id) [name: 'testplans_historicaltestplan_parent_id_4d7e6ee8']
+    (product_version_id) [name: 'testplans_historicaltestplan_product_version_id_4598a8b7']
+    (author_id) [name: 'testplans_historicaltestplan_author_id_7de6569d']
+    (product_id) [name: 'testplans_historicaltestplan_product_id_2410d78b']
+    (type_id) [name: 'testplans_historicaltestplan_type_id_65c12bbd']
+    (history_date) [name: 'testplans_historicaltestplan_history_date_3078d054']
+    (history_user_id) [name: 'testplans_historicaltestplan_history_user_id_0b43ff14']
+  }
+}
+
+Table testplans_testplan {
+  id integer [pk, increment]
+  parent_id integer
+  name varchar(255) [not null]
+  text text [not null]
+  create_date datetime [not null, note: 'default in Python: now()']
+  is_active bool [default: true, not null]
+  extra_link varchar(1024) [default: null]
+  product_version_id integer [not null]
+  author_id integer [not null]
+  product_id integer [not null]
+  type_id integer [not null]
+
+  indexes {
+    (parent_id) [name: 'testplans_testplan_parent_id_c3460a73']
+    (name) [name: 'testplans_testplan_name_0bcb1318']
+    (is_active) [name: 'testplans_testplan_is_active_66e60279']
+    (product_version_id) [name: 'testplans_testplan_product_version_id_0ad731f7']
+    (author_id) [name: 'testplans_testplan_author_id_8fc1910b']
+    (product_id) [name: 'testplans_testplan_product_id_6e99180c']
+    (type_id) [name: 'testplans_testplan_type_id_b83ae87b']
+  }
+
+  Note: '''A plan within the TCMS
+
+Columns from TreeNode (abstract): parent_id.'''
+}
+
+Table testplans_testplantag {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  plan_id integer [not null]
+
+  indexes {
+    (tag_id) [name: 'testplans_testplantag_tag_id_4a5c61b6']
+    (plan_id) [name: 'testplans_testplantag_plan_id_f5c9e46a']
+  }
+}
+
+Table testplans_testplanemailsettings {
+  id integer [pk, increment]
+  plan_id integer [unique, not null]
+  auto_to_plan_author bool [default: true, not null]
+  auto_to_case_owner bool [default: true, not null]
+  auto_to_case_default_tester bool [default: true, not null]
+  notify_on_plan_update bool [default: true, not null]
+  notify_on_case_update bool [default: true, not null]
+}
+
+Table testruns_historicaltestrun {
+  id integer [not null]
+  start_date datetime
+  stop_date datetime
+  planned_start datetime
+  planned_stop datetime
+  summary text [not null]
+  notes text [not null]
+  plan_id integer [note: 'refers to testplans_testplan.id, with no foreign key in the database']
+  build_id integer [note: 'refers to management_build.id, with no foreign key in the database']
+  manager_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  default_tester_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  history_id integer [pk, increment]
+  history_date datetime [not null]
+  history_change_reason text
+  history_type HistoricalTestRunHistoryType [not null]
+  history_user_id integer
+
+  indexes {
+    (id) [name: 'testruns_historicaltestrun_id_5b716816']
+    (start_date) [name: 'testruns_historicaltestrun_start_date_2966e83c']
+    (stop_date) [name: 'testruns_historicaltestrun_stop_date_df8f576c']
+    (planned_start) [name: 'testruns_historicaltestrun_planned_start_614a868d']
+    (planned_stop) [name: 'testruns_historicaltestrun_planned_stop_f3a63beb']
+    (plan_id) [name: 'testruns_historicaltestrun_plan_id_adfcb9d1']
+    (build_id) [name: 'testruns_historicaltestrun_build_id_83cb88d1']
+    (manager_id) [name: 'testruns_historicaltestrun_manager_id_48e016d3']
+    (default_tester_id) [name: 'testruns_historicaltestrun_default_tester_id_bfc251b2']
+    (history_date) [name: 'testruns_historicaltestrun_history_date_c382be04']
+    (history_user_id) [name: 'testruns_historicaltestrun_history_user_id_8021d038']
+  }
+}
+
+Table testruns_testrun {
+  id integer [pk, increment]
+  start_date datetime
+  stop_date datetime
+  planned_start datetime
+  planned_stop datetime
+  summary text [not null]
+  notes text [not null]
+  plan_id integer [not null]
+  build_id integer [not null]
+  manager_id integer [not null]
+  default_tester_id integer
+
+  indexes {
+    (start_date) [name: 'testruns_testrun_start_date_069af648']
+    (stop_date) [name: 'testruns_testrun_stop_date_ef2271e8']
+    (planned_start) [name: 'testruns_testrun_planned_start_ea8990da']
+    (planned_stop) [name: 'testruns_testrun_planned_stop_db2c9977']
+    (plan_id) [name: 'testruns_testrun_plan_id_6c5c942a']
+    (build_id) [name: 'testruns_testrun_build_id_fca012cf']
+    (manager_id) [name: 'testruns_testrun_manager_id_3b380cf6']
+    (default_tester_id) [name: 'testruns_testrun_default_tester_id_cfd29db3']
+  }
+}
+
+Table testruns_testexecutionstatus {
+  id integer [pk, increment]
+  name varchar(60) [unique, not null]
+  weight integer [default: 0, not null]
+  icon varchar(64) [not null]
+  color varchar(18) [default: '#FFFFFF', not null]
+}
+
+Table testruns_historicaltestexecution {
+  id integer [not null]
+  case_text_version integer [not null]
+  start_date datetime
+  stop_date datetime
+  sortkey integer
+  assignee_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  tested_by_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  run_id integer [note: 'refers to testruns_testrun.id, with no foreign key in the database']
+  case_id integer [note: 'refers to testcases_testcase.id, with no foreign key in the database']
+  status_id integer [note: 'refers to testruns_testexecutionstatus.id, with no foreign key in the database']
+  build_id integer [note: 'refers to management_build.id, with no foreign key in the database']
+  history_id integer [pk, increment]
+  history_date datetime [not null]
+  history_change_reason text
+  history_type HistoricalTestExecutionHistoryType [not null]
+  history_user_id integer
+
+  indexes {
+    (id) [name: 'testruns_historicaltestexecution_id_69b1b1b1']
+    (start_date) [name: 'testruns_historicaltestexecution_start_date_3e5ed561']
+    (stop_date) [name: 'testruns_historicaltestexecution_stop_date_d659f81c']
+    (assignee_id) [name: 'testruns_historicaltestexecution_assignee_id_f690ec0e']
+    (tested_by_id) [name: 'testruns_historicaltestexecution_tested_by_id_a30c4c8c']
+    (run_id) [name: 'testruns_historicaltestexecution_run_id_3e1696ea']
+    (case_id) [name: 'testruns_historicaltestexecution_case_id_1cc6facc']
+    (status_id) [name: 'testruns_historicaltestexecution_status_id_52897e9a']
+    (build_id) [name: 'testruns_historicaltestexecution_build_id_3b63ffa5']
+    (history_date) [name: 'testruns_historicaltestexecution_history_date_035536b8']
+    (history_user_id) [name: 'testruns_historicaltestexecution_history_user_id_cfb71d7e']
+  }
+}
+
+Table testruns_testexecution {
+  id integer [pk, increment]
+  assignee_id integer
+  tested_by_id integer
+  case_text_version integer [not null]
+  start_date datetime
+  stop_date datetime
+  sortkey integer
+  run_id integer [not null]
+  case_id integer [not null]
+  status_id integer [not null]
+  build_id integer [not null]
+
+  indexes {
+    (assignee_id) [name: 'testruns_testexecution_assignee_id_0daefb61']
+    (tested_by_id) [name: 'testruns_testexecution_tested_by_id_23ec246c']
+    (start_date) [name: 'testruns_testexecution_start_date_d50373f5']
+    (stop_date) [name: 'testruns_testexecution_stop_date_1e245a90']
+    (run_id) [name: 'testruns_testexecution_run_id_b07eceea']
+    (case_id) [name: 'testruns_testexecution_case_id_24b74b89']
+    (status_id) [name: 'testruns_testexecution_status_id_82e677b4']
+    (build_id) [name: 'testruns_testexecution_build_id_511386d9']
+  }
+}
+
+Table testruns_testexecutionproperty {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  value varchar(255) [not null]
+  execution_id integer [not null]
+
+  indexes {
+    (execution_id) [name: 'testruns_testexecutionproperty_execution_id_5b7ba16e']
+  }
+
+  Note: '''Columns from Property (abstract): name, value.'''
+}
+
+Table testruns_testruntag {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  run_id integer [not null]
+
+  indexes {
+    (tag_id) [name: 'testruns_testruntag_tag_id_71c717c0']
+    (run_id) [name: 'testruns_testruntag_run_id_08efd935']
+  }
+}
+
+Table testruns_testruncc {
+  id integer [pk, increment]
+  run_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (run_id) [name: 'testruns_testruncc_run_id_e1329c9b']
+    (user_id) [name: 'testruns_testruncc_user_id_d87465d8']
+    (run_id, user_id) [unique, name: 'testruns_testruncc_run_id_user_id_33646180_uniq']
+  }
+}
+
+Table testruns_environment {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  description text [not null]
+}
+
+Table testruns_environmentproperty {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  value varchar(255) [not null]
+  environment_id integer [not null]
+
+  indexes {
+    (environment_id) [name: 'testruns_environmentproperty_environment_id_f9ac7236']
+  }
+
+  Note: '''Columns from Property (abstract): name, value.'''
+}
+
+Table testruns_property {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  value varchar(255) [not null]
+  run_id integer [not null]
+
+  indexes {
+    (run_id) [name: 'testruns_property_run_id_71808437']
+  }
+
+  Note: '''Columns from Property (abstract): name, value.'''
+}
+
+Table bugs_severity {
+  id integer [pk, increment]
+  name varchar(64) [unique, not null]
+  weight integer [default: 0, not null]
+  icon varchar(64) [not null]
+  color varchar(18) [default: '#FFFFFF', not null]
+}
+
+Table bugs_bug {
+  id integer [pk, increment]
+  summary varchar(255) [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  status bool [default: true, not null]
+  reporter_id integer [not null]
+  assignee_id integer
+  product_id integer [not null]
+  version_id integer [not null]
+  build_id integer [not null]
+  severity_id integer
+
+  indexes {
+    (summary) [name: 'bugs_bug_summary_8321d37f']
+    (created_at) [name: 'bugs_bug_created_at_f132529e']
+    (status) [name: 'bugs_bug_status_3e54f71f']
+    (reporter_id) [name: 'bugs_bug_reporter_id_f3c433c0']
+    (assignee_id) [name: 'bugs_bug_assignee_id_2006cbf7']
+    (product_id) [name: 'bugs_bug_product_id_a052f422']
+    (version_id) [name: 'bugs_bug_version_id_9e5c9e9d']
+    (build_id) [name: 'bugs_bug_build_id_f3b6bc1b']
+    (severity_id) [name: 'bugs_bug_severity_id_e3498925']
+  }
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table captcha_captchastore {
+  id integer [pk, increment]
+  challenge varchar(32) [not null]
+  response varchar(32) [not null]
+  hashkey varchar(40) [unique, not null]
+  expiration datetime [not null]
+}
+
+Table kiwi_auth_useractivationkey {
+  id integer [pk, increment]
+  user_id integer [not null]
+  activation_key varchar(64)
+  key_expires datetime
+
+  indexes {
+    (user_id) [name: 'kiwi_auth_useractivationkey_user_id_cb6f6f73']
+  }
+}
+
+Ref guardian_userobjectpermission_permission_id_fk: guardian_userobjectpermission.permission_id > auth_permission.id [delete: cascade]
+
+Ref guardian_userobjectpermission_content_type_id_fk: guardian_userobjectpermission.content_type_id > django_content_type.id [delete: cascade]
+
+Ref guardian_userobjectpermission_user_id_fk: guardian_userobjectpermission.user_id > auth_user.id [delete: cascade]
+
+Ref guardian_groupobjectpermission_permission_id_fk: guardian_groupobjectpermission.permission_id > auth_permission.id [delete: cascade]
+
+Ref guardian_groupobjectpermission_content_type_id_fk: guardian_groupobjectpermission.content_type_id > django_content_type.id [delete: cascade]
+
+Ref guardian_groupobjectpermission_group_id_fk: guardian_groupobjectpermission.group_id > auth_group.id [delete: cascade]
+
+Ref django_comments_content_type_id_fk: django_comments.content_type_id > django_content_type.id [delete: cascade]
+
+Ref django_comments_site_id_fk: django_comments.site_id > django_site.id [delete: cascade]
+
+Ref django_comments_user_id_fk: django_comments.user_id > auth_user.id [delete: set null]
+
+Ref django_comment_flags_user_id_fk: django_comment_flags.user_id > auth_user.id [delete: cascade]
+
+Ref django_comment_flags_comment_id_fk: django_comment_flags.comment_id > django_comments.id [delete: cascade]
+
+Ref attachments_attachment_content_type_id_fk: attachments_attachment.content_type_id > django_content_type.id [delete: cascade]
+
+Ref attachments_attachment_creator_id_fk: attachments_attachment.creator_id > auth_user.id [delete: cascade]
+
+Ref linkreference_linkreference_execution_id_fk: linkreference_linkreference.execution_id > testruns_testexecution.id [delete: cascade]
+
+Ref management_product_classification_id_fk: management_product.classification_id > management_classification.id [delete: cascade]
+
+Ref management_component_product_id_fk: management_component.product_id > management_product.id [delete: cascade]
+
+Ref management_component_initial_owner_id_fk: management_component.initial_owner_id > auth_user.id [delete: cascade]
+
+Ref management_component_initial_qa_contact_id_fk: management_component.initial_qa_contact_id > auth_user.id [delete: cascade]
+
+Ref management_version_product_id_fk: management_version.product_id > management_product.id [delete: cascade]
+
+Ref management_build_version_id_fk: management_build.version_id > management_version.id [delete: cascade]
+
+Ref testcases_category_product_id_fk: testcases_category.product_id > management_product.id [delete: cascade]
+
+Ref testcases_historicaltestcase_history_user_id_fk: testcases_historicaltestcase.history_user_id > auth_user.id [delete: set null]
+
+Ref testcases_testcase_case_status_id_fk: testcases_testcase.case_status_id > testcases_testcasestatus.id [delete: cascade]
+
+Ref testcases_testcase_category_id_fk: testcases_testcase.category_id > testcases_category.id [delete: cascade]
+
+Ref testcases_testcase_priority_id_fk: testcases_testcase.priority_id > management_priority.id [delete: cascade]
+
+Ref testcases_testcase_author_id_fk: testcases_testcase.author_id > auth_user.id [delete: cascade]
+
+Ref testcases_testcase_default_tester_id_fk: testcases_testcase.default_tester_id > auth_user.id [delete: cascade]
+
+Ref testcases_testcase_reviewer_id_fk: testcases_testcase.reviewer_id > auth_user.id [delete: cascade]
+
+Ref testcases_property_case_id_fk: testcases_property.case_id > testcases_testcase.id [delete: cascade]
+
+Ref testcases_testcaseplan_plan_id_fk: testcases_testcaseplan.plan_id > testplans_testplan.id [delete: cascade]
+
+Ref testcases_testcaseplan_case_id_fk: testcases_testcaseplan.case_id > testcases_testcase.id [delete: cascade]
+
+Ref testcases_testcasecomponent_case_id_fk: testcases_testcasecomponent.case_id > testcases_testcase.id [delete: cascade]
+
+Ref testcases_testcasecomponent_component_id_fk: testcases_testcasecomponent.component_id > management_component.id [delete: cascade]
+
+Ref testcases_testcasetag_tag_id_fk: testcases_testcasetag.tag_id > management_tag.id [delete: cascade]
+
+Ref testcases_testcasetag_case_id_fk: testcases_testcasetag.case_id > testcases_testcase.id [delete: cascade]
+
+Ref testcases_testcaseemailsettings_case_id_fk: testcases_testcaseemailsettings.case_id - testcases_testcase.id [delete: cascade]
+
+Ref testcases_historicaltemplate_history_user_id_fk: testcases_historicaltemplate.history_user_id > auth_user.id [delete: set null]
+
+Ref testplans_historicaltestplan_history_user_id_fk: testplans_historicaltestplan.history_user_id > auth_user.id [delete: set null]
+
+Ref testplans_testplan_parent_id_fk: testplans_testplan.parent_id > testplans_testplan.id [delete: cascade]
+
+Ref testplans_testplan_product_version_id_fk: testplans_testplan.product_version_id > management_version.id [delete: cascade]
+
+Ref testplans_testplan_author_id_fk: testplans_testplan.author_id > auth_user.id [delete: cascade]
+
+Ref testplans_testplan_product_id_fk: testplans_testplan.product_id > management_product.id [delete: cascade]
+
+Ref testplans_testplan_type_id_fk: testplans_testplan.type_id > testplans_plantype.id [delete: cascade]
+
+Ref testplans_testplantag_tag_id_fk: testplans_testplantag.tag_id > management_tag.id [delete: cascade]
+
+Ref testplans_testplantag_plan_id_fk: testplans_testplantag.plan_id > testplans_testplan.id [delete: cascade]
+
+Ref testplans_testplanemailsettings_plan_id_fk: testplans_testplanemailsettings.plan_id - testplans_testplan.id [delete: cascade]
+
+Ref testruns_historicaltestrun_history_user_id_fk: testruns_historicaltestrun.history_user_id > auth_user.id [delete: set null]
+
+Ref testruns_testrun_plan_id_fk: testruns_testrun.plan_id > testplans_testplan.id [delete: cascade]
+
+Ref testruns_testrun_build_id_fk: testruns_testrun.build_id > management_build.id [delete: cascade]
+
+Ref testruns_testrun_manager_id_fk: testruns_testrun.manager_id > auth_user.id [delete: cascade]
+
+Ref testruns_testrun_default_tester_id_fk: testruns_testrun.default_tester_id > auth_user.id [delete: cascade]
+
+Ref testruns_historicaltestexecution_history_user_id_fk: testruns_historicaltestexecution.history_user_id > auth_user.id [delete: set null]
+
+Ref testruns_testexecution_assignee_id_fk: testruns_testexecution.assignee_id > auth_user.id [delete: cascade]
+
+Ref testruns_testexecution_tested_by_id_fk: testruns_testexecution.tested_by_id > auth_user.id [delete: cascade]
+
+Ref testruns_testexecution_run_id_fk: testruns_testexecution.run_id > testruns_testrun.id [delete: cascade]
+
+Ref testruns_testexecution_case_id_fk: testruns_testexecution.case_id > testcases_testcase.id [delete: cascade]
+
+Ref testruns_testexecution_status_id_fk: testruns_testexecution.status_id > testruns_testexecutionstatus.id [delete: cascade]
+
+Ref testruns_testexecution_build_id_fk: testruns_testexecution.build_id > management_build.id [delete: cascade]
+
+Ref testruns_testexecutionproperty_execution_id_fk: testruns_testexecutionproperty.execution_id > testruns_testexecution.id [delete: cascade]
+
+Ref testruns_testruntag_tag_id_fk: testruns_testruntag.tag_id > management_tag.id [delete: cascade]
+
+Ref testruns_testruntag_run_id_fk: testruns_testruntag.run_id > testruns_testrun.id [delete: cascade]
+
+Ref testruns_testruncc_run_id_fk: testruns_testruncc.run_id > testruns_testrun.id [delete: cascade]
+
+Ref testruns_testruncc_user_id_fk: testruns_testruncc.user_id > auth_user.id [delete: cascade]
+
+Ref testruns_environmentproperty_environment_id_fk: testruns_environmentproperty.environment_id > testruns_environment.id [delete: cascade]
+
+Ref testruns_property_run_id_fk: testruns_property.run_id > testruns_testrun.id [delete: cascade]
+
+Ref bugs_bug_reporter_id_fk: bugs_bug.reporter_id > auth_user.id [delete: cascade]
+
+Ref bugs_bug_assignee_id_fk: bugs_bug.assignee_id > auth_user.id [delete: cascade]
+
+Ref bugs_bug_product_id_fk: bugs_bug.product_id > management_product.id [delete: cascade]
+
+Ref bugs_bug_version_id_fk: bugs_bug.version_id > management_version.id [delete: cascade]
+
+Ref bugs_bug_build_id_fk: bugs_bug.build_id > management_build.id [delete: cascade]
+
+Ref bugs_bug_severity_id_fk: bugs_bug.severity_id > bugs_severity.id [delete: cascade]
+
+Table bugs_bug_executions {
+  id integer [pk, increment]
+  bug_id integer [not null]
+  testexecution_id integer [not null]
+
+  indexes {
+    (bug_id) [name: 'bugs_bug_executions_bug_id_3a87c570']
+    (testexecution_id) [name: 'bugs_bug_executions_testexecution_id_b835d93d']
+    (bug_id, testexecution_id) [unique, name: 'bugs_bug_executions_bug_id_testexecution_id_0fd55cb1_uniq']
+  }
+}
+
+Ref bugs_bug_executions_bug_id_fk: bugs_bug_executions.bug_id > bugs_bug.id [delete: cascade]
+
+Ref bugs_bug_executions_testexecution_id_fk: bugs_bug_executions.testexecution_id > testruns_testexecution.id [delete: cascade]
+
+Table bugs_bug_tags {
+  id integer [pk, increment]
+  bug_id integer [not null]
+  tag_id integer [not null]
+
+  indexes {
+    (bug_id) [name: 'bugs_bug_tags_bug_id_d465bac2']
+    (tag_id) [name: 'bugs_bug_tags_tag_id_c3ddee2f']
+    (bug_id, tag_id) [unique, name: 'bugs_bug_tags_bug_id_tag_id_e88c85cd_uniq']
+  }
+}
+
+Ref bugs_bug_tags_bug_id_fk: bugs_bug_tags.bug_id > bugs_bug.id [delete: cascade]
+
+Ref bugs_bug_tags_tag_id_fk: bugs_bug_tags.tag_id > management_tag.id [delete: cascade]
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref kiwi_auth_useractivationkey_user_id_fk: kiwi_auth_useractivationkey.user_id > auth_user.id [delete: cascade]

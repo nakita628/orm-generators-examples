@@ -1,0 +1,10 @@
+load("//apps/hekireki/checks:defs.bzl", "lang_checks")
+
+# mix compile --warnings-as-errors against Ecto for the schemas of every schema.prisma.
+lang_checks(
+    lang = "ecto",
+    harness = [
+        "mix.exs",
+        "//apps/hekireki/checks:common.sh",
+    ],
+)

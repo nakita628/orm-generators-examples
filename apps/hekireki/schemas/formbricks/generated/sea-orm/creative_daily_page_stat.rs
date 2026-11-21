@@ -1,0 +1,42 @@
+use sea_orm::entity::prelude::*;
+use serde::{Deserialize, Serialize};
+
+/// A creative's Impressions and Clicks on one UTC day on one page (host + path), written like
+/// `CreativeDailyStat`. At most 1000 pages per creative per day; the rest are counted under `(other)`.
+#[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
+#[sea_orm(table_name = "CreativeDailyPageStat")]
+pub struct Model {
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_name = "creativeId")]
+    pub creative_id: String,
+    /// UTC day.
+    #[sea_orm(primary_key, auto_increment = false)]
+    #[sea_orm(column_type = "Date")]
+    pub date: Date,
+    /// Host + path, without query string or hash, or `(other)`.
+    #[sea_orm(primary_key, auto_increment = false)]
+    pub page: String,
+    #[sea_orm(default_value = 0)]
+    pub impressions: i32,
+    #[sea_orm(default_value = 0)]
+    pub clicks: i32,
+}
+
+#[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
+pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::creative::Entity",
+        from = "Column::CreativeId",
+        to = "super::creative::Column::Id",
+        on_delete = "Cascade"
+    )]
+    Creative,
+}
+
+impl Related<super::creative::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Creative.def()
+    }
+}
+
+impl ActiveModelBehavior for ActiveModel {}

@@ -1,0 +1,28 @@
+load("@rules_shell//shell:sh_test.bzl", "sh_test")
+
+exports_files([".python-version"])
+
+# ruff over this app's scripts and samples, and README.md against what scripts/readme.py writes.
+# Tagged `djangoer` like the examples: uv installs ruff and Python from the network.
+sh_test(
+    name = "lint",
+    srcs = ["lint.sh"],
+    args = ["$(rootpath //tools/uv)"],
+    data = [
+        ".python-version",
+        "README.md",
+        "pyproject.toml",
+        "uv.lock",
+        "//apps/djangoer/scripts:py",
+        "//apps/djangoer/tools:py",
+        "//tools/uv",
+    ] + [
+        "//apps/djangoer/%s:lint_inputs" % example
+        for example in subpackages(include = ["examples/*"])
+    ],
+    tags = [
+        "djangoer",
+        "no-sandbox",
+        "requires-network",
+    ],
+)

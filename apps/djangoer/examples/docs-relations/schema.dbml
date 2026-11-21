@@ -1,0 +1,71 @@
+Table many_to_one_reporter {
+  id integer [pk, increment]
+  first_name varchar(30) [not null]
+  last_name varchar(30) [not null]
+  email varchar(254) [not null]
+}
+
+Table many_to_one_article {
+  id integer [pk, increment]
+  headline varchar(100) [not null]
+  pub_date date [not null]
+  reporter_id bigint [not null]
+
+  indexes {
+    (reporter_id) [name: 'many_to_one_article_reporter_id_68e5b821']
+  }
+}
+
+Table many_to_many_publication {
+  id integer [pk, increment]
+  title varchar(30) [not null]
+}
+
+Table many_to_many_article {
+  id integer [pk, increment]
+  headline varchar(100) [not null]
+}
+
+Table one_to_one_place {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+  address varchar(80) [not null]
+}
+
+Table one_to_one_restaurant {
+  place_id bigint [pk]
+  serves_hot_dogs bool [default: false, not null]
+  serves_pizza bool [default: false, not null]
+}
+
+Table one_to_one_waiter {
+  id integer [pk, increment]
+  restaurant_id bigint [not null]
+  name varchar(50) [not null]
+
+  indexes {
+    (restaurant_id) [name: 'one_to_one_waiter_restaurant_id_1c997397']
+  }
+}
+
+Ref many_to_one_article_reporter_id_fk: many_to_one_article.reporter_id > many_to_one_reporter.id [delete: cascade]
+
+Table many_to_many_article_publications {
+  id integer [pk, increment]
+  article_id bigint [not null]
+  publication_id bigint [not null]
+
+  indexes {
+    (article_id) [name: 'many_to_many_article_publications_article_id_a11ac1d9']
+    (publication_id) [name: 'many_to_many_article_publications_publication_id_6ba0d70a']
+    (article_id, publication_id) [unique, name: 'many_to_many_article_publications_article_id_publication_id_caad31f7_uniq']
+  }
+}
+
+Ref many_to_many_article_publications_article_id_fk: many_to_many_article_publications.article_id > many_to_many_article.id [delete: cascade]
+
+Ref many_to_many_article_publications_publication_id_fk: many_to_many_article_publications.publication_id > many_to_many_publication.id [delete: cascade]
+
+Ref one_to_one_restaurant_place_id_fk: one_to_one_restaurant.place_id - one_to_one_place.id [delete: cascade]
+
+Ref one_to_one_waiter_restaurant_id_fk: one_to_one_waiter.restaurant_id > one_to_one_restaurant.place_id [delete: cascade]

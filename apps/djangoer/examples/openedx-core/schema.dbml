@@ -1,0 +1,1592 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum TagImportTaskState {
+  "loading_data"
+  "planning"
+  "executing"
+  "success"
+  "error"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table openedx_content_learningpackage {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  package_ref varchar(500) [not null]
+  title varchar(500) [not null]
+  description text [default: '', not null]
+  created datetime [not null]
+  updated datetime [not null]
+
+  indexes {
+    (package_ref) [unique, name: 'oel_publishing_lp_uniq_key']
+  }
+
+  Note: '''Top level container for a grouping of authored content.
+
+Each :class:`PublishableEntity` belongs to exactly one
+:class:`LearningPackage`.'''
+}
+
+Table openedx_content_publishableentity {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  learning_package_id integer [not null]
+  entity_ref varchar(500) [not null]
+  created datetime [not null]
+  created_by_id integer
+  can_stand_alone bool [default: true, not null, note: 'Set to True when created independently, False when created as part of a container.']
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_publishableentity_learning_package_id_80eac4ef']
+    (created_by_id) [name: 'openedx_content_publishableentity_created_by_id_d7f80bf0']
+    (learning_package_id, entity_ref) [unique, name: 'oel_pub_ent_uniq_lp_key']
+    (entity_ref) [name: 'oel_pub_ent_idx_key']
+    (learning_package_id, created) [name: 'oel_pub_ent_idx_lp_rcreated', note: 'descending: created']
+  }
+
+  Note: '''This represents any publishable thing that has ever existed in a
+:class:`LearningPackage`. It serves as a stable model that will not go
+away even if these things are later unpublished or deleted.
+
+A :class:`PublishableEntity` belongs to exactly one
+:class:`LearningPackage`.
+
+Examples of Publishable Entities
+--------------------------------
+
+:class:`Component` objects (e.g. VideoBlock, ProblemBlock), Units, and
+Sections/Subsections would all be considered Publishable Entites. But
+anything that can be imported, exported, published, and reverted in a
+course or library could be modeled as a :class:`PublishableEntity`,
+including things like Grading Policy or possibly Taxonomies (?).
+
+How to use this model
+---------------------
+
+The publishing app understands that publishable entities exist, along
+with their drafts and published versions. It has some basic metadata,
+such as identifiers, who created it, and when it was created. It\'s
+meant to encapsulate the draft and publishing related aspects of your
+content, but the :mod:`publishing` app doesn\'t know anything about
+the actual content being referenced.
+
+You have to provide actual meaning to :class:`PublishableEntity` by
+creating your own models that will represent your particular content
+and associating them to :class:`PublishableEntity` via a
+``OneToOneField`` with ``primary_key=True``. The easiest way to do
+this is to have your model inherit from :class:`PublishableEntityMixin`.
+
+Identifiers
+-----------
+The UUID is globally unique and should be treated as immutable.
+
+The key field *is* mutable, but changing it will affect all
+:class:`PublishableEntityVersion` objects. They are locally unique
+within the :class:`LearningPackage`.
+
+If you are referencing this model from within the same process, use a
+foreign key to the id. If you are referencing this
+:class:`PublishableEntity` from an external system/service, use the
+UUID. The key is the part that is most likely to be human-readable,
+and may be exported/copied, but try not to rely on it, since this
+value may change.
+
+Note: When we actually implement the ability to change identifiers, we
+should make a history table and a modified attribute on this model.
+
+Why are Identifiers in this Model?
+----------------------------------
+
+A :class:`PublishableEntity` never stands alone–it\'s always intended
+to be used with a 1:1 model like :class:`Component` or Unit. So why
+have all the identifiers in this model instead of storing them in
+those other models? Two reasons:
+
+* Published things need to have the right identifiers so they can be
+  used throughout the system, and the UUID is serving the role of
+  ISBN in physical book publishing.
+* We want to be able to enforce the idea that ``entity_ref`` is
+  locally unique across all :class:`PublishableEntity` objects within
+  a given :class:`LearningPackage`. :class:`Component` and Unit can\'t
+  do that without a shared model.
+
+That being said, models that build on :class:`PublishableEntity` are
+free to add their own identifiers if it\'s useful to do so.
+
+Why not Inherit from this Model?
+--------------------------------
+
+Django supports `multi-table inheritance
+<https://docs.djangoproject.com/en/4.2/topics/db/models/#multi-table-inheritance>`_.
+
+We don\'t use that, primarily because we want to more clearly decouple
+publishing concerns from the rest of the logic around
+:class:`Component` objects, Units, etc. If you made a
+:class:`Component` and :class:`ComponentVersion` models that
+subclassed :class:`PublishableEntity` and
+:class:`PublishableEntityVersion`, and then accessed
+``component.versions``, you might expect :class:`ComponentVersion`
+objects to come back and be surprised when you get EntityVersions
+instead.
+
+In general, we want freedom to add new Publishing models, fields, and
+methods without having to worry about the downstream name collisions
+with other apps (many of which might live in other repositories).
+The helper mixins will provide a little syntactic sugar to make
+common access patterns more convenient, like file access.'''
+}
+
+Table openedx_content_publishableentityversion {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  entity_id bigint [not null]
+  title varchar(500) [default: '', not null]
+  version_num "integer unsigned" [not null]
+  created datetime [not null]
+  created_by_id integer
+
+  indexes {
+    (entity_id) [name: 'openedx_content_publishableentityversion_entity_id_b3d3bd5b']
+    (created_by_id) [name: 'openedx_content_publishableentityversion_created_by_id_199f8b23']
+    (entity_id, version_num) [unique, name: 'oel_pv_uniq_entity_version_num']
+    (entity_id, created) [name: 'oel_pv_idx_entity_rcreated', note: 'descending: created']
+    (title) [name: 'oel_pv_idx_title']
+  }
+
+  Note: '''A particular version of a :class:`PublishableEntity`.
+
+This model has its own ``uuid`` so that it can be referenced directly.
+The ``uuid`` should be treated as immutable.
+
+:class:`PublishableEntityVersion` objects are created once and never
+updated. So for instance, the ``title`` should never be modified.
+
+Like :class:`PublishableEntity`, the data in this model is only enough
+to cover the parts that are most important for the actual process of
+managing drafts and publishes. You will want to create your own
+models to represent the actual content data that\'s associated with
+this :class:`PublishableEntityVersion`, and connect them using a
+``OneToOneField`` with ``primary_key=True``. The easiest way to do
+this is to inherit from :class:`PublishableEntityVersionMixin`. Be
+sure to treat these versioned models in your app as immutable as
+well.
+
+.. no_pii:'''
+}
+
+Table openedx_content_publishableentityversiondependency {
+  id integer [pk, increment]
+  referring_version_id bigint [not null]
+  referenced_entity_id bigint [not null]
+
+  indexes {
+    (referring_version_id) [name: 'openedx_content_publishableentityversiondependency_referring_version_id_334fdbd7']
+    (referenced_entity_id) [name: 'openedx_content_publishableentityversiondependency_referenced_entity_id_079e04be']
+    (referring_version_id, referenced_entity_id) [unique, name: 'oel_pevd_uniq_rv_re']
+  }
+
+  Note: '''Track the :class:`PublishableEntity` objects that a
+:class:`PublishableEntityVersion` depends on.
+
+For example, a partcular version of a Unit (U1.v1) might be defined to
+have unpinned references to Components C1 and C2. That means that any
+changes in C1 or C2 will affect U1.v1 via :class:`DraftSideEffect` and
+:class:`PublishSideEffect`. We say that C1 and C2 are dependencies of
+U1.v1.
+
+An important restriction is that a :class:`PublishableEntityVersion`\'s
+list of dependencies are defined when the version is created. It is
+not modified after that. No matter what happens to C1 or C2 (e.g.
+edit, deletion, un-deletion, reset-draft-version-to-published), they
+will always be dependencies of U1.v1.
+
+If someone removes C2 from U1, then that requires creating a new
+version of U1 (so U1.v2).
+
+This restriction is important because our ability to calculate and
+cache the state of "this version of this publishable entity and all
+its dependencies (children)" relies on this being true.
+
+.. no_pii:'''
+}
+
+Table openedx_content_draft {
+  entity_id bigint [pk]
+  version_id bigint [unique]
+  draft_log_record_id bigint
+
+  indexes {
+    (draft_log_record_id) [name: 'openedx_content_draft_draft_log_record_id_add2f996']
+  }
+
+  Note: '''Find the active draft version of an entity (usually most recently
+created).
+
+This model mostly only exists to allow us to join against a bunch of
+:class:`PublishableEntity` objects at once and get all their latest
+drafts. You might use this together with :class:`Published` in order
+to see which Drafts haven\'t been published yet.
+
+A :class:`Draft` entry should be created whenever a new
+:class:`PublishableEntityVersion` is created. This means there are
+three possible states:
+
+1. No :class:`Draft` entry for a :class:`PublishableEntity`: This means
+   a :class:`PublishableEntity` was created, but no
+   :class:`PublishableEntityVersion` was ever made for it, so there
+   was never a Draft version.
+2. A :class:`Draft` entry exists and points to a
+   :class:`PublishableEntityVersion`: This is the most common state.
+3. A :class:`Draft` entry exists and points to a null version: This
+   means a version used to be the draft, but it\'s been functionally
+   "deleted". The versions still exist in our history, but we\'re done
+   using it.
+
+It would have saved a little space to add this data to the
+:class:`Published` model (and possibly call the combined model
+something else). Split Modulestore did this with its
+``active_versions`` table. I keep it separate here to get a better
+separation of lifecycle events: i.e. this table *only* changes when
+drafts are updated, not when publishing happens. The :class:`Published`
+model only changes when something is published.
+
+.. no_pii:'''
+}
+
+Table openedx_content_draftchangelog {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  learning_package_id integer [not null]
+  changed_at datetime [not null]
+  changed_by_id integer
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_draftchangelog_learning_package_id_3c996125']
+    (changed_by_id) [name: 'openedx_content_draftchangelog_changed_by_id_ad10fa85']
+  }
+
+  Note: '''There is one row in this table for every time :class:`Draft` objects are
+created/modified.
+
+There are some operations that affect many :class:`Draft` objects at
+once, such as discarding changes (i.e. reset to the published versions)
+or doing an import. These would be represented by one
+:class:`DraftChangeLog` with many :class:`DraftChangeLogRecord` objects
+in it—one :class:`DraftChangeLogRecord` for every
+:class:`PublishableEntity` that was modified.
+
+Even if we\'re only directly changing the draft version of one
+:class:`PublishableEntity`, we will get multiple
+:class:`DraftChangeLogRecord` objects if changing that entity causes
+side-effects. See the docstrings for :class:`DraftChangeLogRecord` and
+:class:`DraftSideEffect` for more details.
+
+.. no_pii:'''
+}
+
+Table openedx_content_draftchangelogrecord {
+  id integer [pk, increment]
+  draft_change_log_id bigint [not null]
+  entity_id bigint [not null]
+  old_version_id bigint
+  new_version_id bigint
+  dependencies_hash_digest varchar(8) [default: '', not null]
+
+  indexes {
+    (draft_change_log_id) [name: 'openedx_content_draftchangelogrecord_draft_change_log_id_d73b7256']
+    (entity_id) [name: 'openedx_content_draftchangelogrecord_entity_id_4aea1ee5']
+    (old_version_id) [name: 'openedx_content_draftchangelogrecord_old_version_id_9e002973']
+    (new_version_id) [name: 'openedx_content_draftchangelogrecord_new_version_id_132fcc8d']
+    (draft_change_log_id, entity_id) [unique, name: 'oel_dlr_uniq_dcl']
+    (entity_id, draft_change_log_id) [name: 'oel_dlr_idx_entity_rdcl', note: 'descending: draft_change_log_id']
+  }
+
+  Note: '''A single change in the :class:`PublishableEntity` that :class:`Draft`
+points to.
+
+Within a single :class:`DraftChangeLog`, there can be only one
+:class:`DraftChangeLogRecord` per :class:`PublishableEntity`. If a
+:class:`PublishableEntity` goes from v1 → v2 and then v2 → v3 within
+the same :class:`DraftChangeLog`, the expectation is that these will
+be collapsed into one :class:`DraftChangeLogRecord` that goes from
+v1 → v3. A single :class:`PublishableEntity` may have many
+:class:`DraftChangeLogRecord` objects that describe its full draft
+edit history, but each :class:`DraftChangeLogRecord` will be a part of
+a different :class:`DraftChangeLog`.
+
+New :class:`PublishableEntityVersion` objects are created with a
+monotonically increasing ``version_num`` for their
+:class:`PublishableEntity`. However, knowing that is not enough to
+accurately reconstruct how the :class:`Draft` changes over time
+because the :class:`Draft` does not always point to the most recently
+created :class:`PublishableEntityVersion`. We also have the concept
+of side-effects, where we consider a :class:`PublishableEntity` to
+have changed in some way, even if no new version is explicitly
+created.
+
+The following scenarios may occur:
+
+**Scenario 1: old_version is None, new_version.version_num = 1**
+
+This is the common case when we\'re creating the first version for
+editing.
+
+**Scenario 2: old_version.version_num + 1 == new_version.version_num**
+
+This is the common case when we\'ve made an edit to something, which
+creates the next version of an entity, which we then point the
+:class:`Draft` at.
+
+**Scenario 3: old_version.version_num >=1, new_version is None**
+
+This is a soft-deletion. We never actually delete a row from the
+:class:`PublishableEntity` model, but set its current :class:`Draft`
+version to be None instead.
+
+**Scenario 4: old_version.version_num > new_version.version_num**
+
+This can happen if we "discard changes", meaning that we call
+``reset_drafts_to_published()``. The versions we created before
+resetting don\'t get deleted, but the :class:`Draft` model\'s pointer
+to the current version has been reset to match the :class:`Published`
+model.
+
+**Scenario 5: old_version.version_num + 1 < new_version.version_num**
+
+Sometimes we\'ll have a gap between the two version numbers that is
+> 1. This can happen if we make edits (new versions) after we called
+``reset_drafts_to_published``. :class:`PublishableEntityVersion`
+objects are created with a monotonically incrementing ``version_num``
+which will continue to go up with the next edit, regardless of
+whether :class:`Draft` is pointing to the most recently created
+version or not. In terms of (``old_version``, ``new_version``)
+changes, it could look like this:
+
+- (None, v1): Initial creation
+- # Publish happens here, so v1 of this :class:`PublishableEntity` is
+  published.
+- (v1, v2): Normal edit in draft
+- (v2, v3): Normal edit in draft
+- (v3, v1): Reset to published happened here.
+- (v1, v4): Normal edit in draft
+
+This could also technically happen if we change the same entity more
+than once in the the same ``bulk_draft_changes_for()`` context,
+thereby putting them into the same :class:`DraftChangeLog`, which
+forces us to squash the changes together into one
+:class:`DraftChangeLogRecord`.
+
+**Scenario 6: old_version is None, new_version > 1**
+
+This edge case can happen if we soft-deleted a published entity, and
+then called ``reset_drafts_to_published`` before we published that
+soft-deletion. It would effectively undo our soft-delete because the
+published version was not yet marked as deleted.
+
+**Scenario 7: old_version == new_version**
+
+This means that the data associated with the :class:`Draft` version of
+an entity has changed purely as a side-effect of some other entity
+changing.
+
+The main example we have of this are containers. Imagine that we have
+a Unit that is at v1, and has unpinned references to various
+Components that are its children. The Unit\'s version does not get
+incremented when the Components are edited, because the Unit
+container is defined to always get the most recent version of those
+Components. We would only make a new version of the Unit if we
+changed the metadata of the Unit itself (e.g. the title), or if we
+added, removed, or reordered the children.
+
+Yet updating a Component intuitively changes what we think of as the
+content of the Unit. Users who are working on Units also expect that
+a change to a Component will be reflected when looking at a Unit\'s
+"last updated" info. The ``old_version == new_version`` convention
+lets us represent that in a useful way because that Unit *is* a part
+of the change set represented by a :class:`DraftChangeLog`, even if
+its own versioned data hasn\'t changed.
+
+.. no_pii:'''
+}
+
+Table openedx_content_draftsideeffect {
+  id integer [pk, increment]
+  cause_id bigint [not null]
+  effect_id bigint [not null]
+
+  indexes {
+    (cause_id) [name: 'openedx_content_draftsideeffect_cause_id_75d6a806']
+    (effect_id) [name: 'openedx_content_draftsideeffect_effect_id_567b298a']
+    (cause_id, effect_id) [unique, name: 'oel_pub_dse_uniq_c_e']
+  }
+
+  Note: '''Model to track when a change in one :class:`Draft` affects other
+:class:`Draft` objects.
+
+Our first use case for this is that changes involving child components
+are thought to affect parent Units, even if the parent\'s version
+doesn\'t change.
+
+Side-effects are recorded in a collapsed form that only captures one
+level. So if Components C1 and C2 are both changed and they are part
+of Unit U1, which is in turn a part of Subsection SS1, then the
+:class:`DraftSideEffect` entries are::
+
+  (C1, U1)
+  (C2, U1)
+  (U1, SS1)
+
+We do not keep entries for ``(C1, SS1)`` or ``(C2, SS1)``. This is to
+make the model simpler, so we don\'t have to differentiate between
+direct side-effects and transitive side-effects in the model.
+
+We will record side-effects on a parent container whenever a child
+changes, even if the parent container is also changing in the same
+:class:`DraftChangeLog`. The child change is still affecting the
+parent container, whether the container happens to be changing for
+other reasons as well. Whether a parent-child relationship exists or
+not depends on the draft state of the container at the *end* of a
+``bulk_draft_changes_for`` context. To give concrete examples:
+
+Setup: A Unit version U1.v1 has defined C1 to be a child. The current
+draft version of C1 is C1.v1.
+
+**Scenario 1: In the a bulk_draft_changes_for context, we edit C1 so
+that the draft version of C1 is now C1.v2.**
+
+Result:
+
+- a :class:`DraftChangeLogRecord` is created for C1.v1 → C1.v2
+- a :class:`DraftChangeLogRecord` is created for U1.v1 → U1.v1
+- a :class:`DraftSideEffect` is created with cause (C1.v1 → C1.v2) and
+  effect (U1.v1 → U1.v1). The Unit draft version has not been
+  incremented because the metadata a Unit defines for itself hasn\'t
+  been altered, but the Unit has *changed* in some way because of the
+  side effect of its child being edited.
+
+**Scenario 2: In a bulk_draft_changes_for context, we edit C1 so that
+the draft version of C1 is now C1.v2. In the same context, we edit
+U1\'s metadata so that the draft version of U1 is now U1.v2. U1.v2
+still lists C1 as a child entity.**
+
+Result:
+
+- a :class:`DraftChangeLogRecord` is created for C1.v1 → C1.v2
+- a :class:`DraftChangeLogRecord` is created for U1.v1 → U1.v2
+- a :class:`DraftSideEffect` is created with cause (C1.v1 → C1.v2) and
+  effect (U1.v1 → U1.v2)
+
+**Scenario 3: In a bulk_draft_changes_for context, we edit C1 so that
+the draft version of C1 is now C1.v2. In the same context, we edit
+U1\'s list of children so that C1 is no longer a child of U1.v2.**
+
+Result:
+
+- a :class:`DraftChangeLogRecord` is created for C1.v1 → C1.v2
+- a :class:`DraftChangeLogRecord` is created for U1.v1 → U1.v2
+- no SideEffect is created, since changing C1 does not have an impact
+  on the current draft of U1 (U1.v2). A :class:`DraftChangeLog` is
+  considered a single atomic operation, so there was never a point at
+  which C1.v1 → C1.v2 affected the draft state of U1.
+
+.. no_pii:'''
+}
+
+Table openedx_content_publishlog {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  learning_package_id integer [not null]
+  message varchar(500) [default: '', not null]
+  published_at datetime [not null]
+  published_by_id integer
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_publishlog_learning_package_id_5bf49306']
+    (published_by_id) [name: 'openedx_content_publishlog_published_by_id_79acc442']
+  }
+
+  Note: '''There is one row in this table for every time content is published.
+
+Each :class:`PublishLog` has 0 or more :class:`PublishLogRecord`
+objects describing exactly which :class:`PublishableEntity` objects
+were published and what the version changes are. A :class:`PublishLog`
+is like a git commit in that sense, with individual
+:class:`PublishLogRecord` objects representing the files changed.
+
+Open question: Empty publishes are allowed at this time, and might be
+useful for "fake" publishes that are necessary to invoke other
+post-publish actions. It\'s not clear at this point how useful this
+will actually be.
+
+The absence of a ``version_num`` field in this model is intentional,
+because having one would potentially cause write contention/locking
+issues when there are many people working on different entities in a
+very large library. We already see some contention issues occuring in
+ModuleStore for courses, and we want to support Libraries that are
+far larger.
+
+If you need a :class:`LearningPackage`-wide indicator for version and
+the only thing you care about is "has *something* changed?", you can
+make a foreign key to the most recent :class:`PublishLog`, or use the
+most recent :class:`PublishLog`\'s primary key. This should be
+monotonically increasing, though there will be large gaps in values,
+e.g. (5, 190, 1291, etc.). Be warned that this value will not port
+across sites. If you need site-portability, the UUIDs for this model
+are a safer bet, though there\'s a lot about import/export that we
+haven\'t fully mapped out yet.'''
+}
+
+Table openedx_content_publishlogrecord {
+  id integer [pk, increment]
+  publish_log_id bigint [not null]
+  entity_id bigint [not null]
+  old_version_id bigint
+  new_version_id bigint
+  dependencies_hash_digest varchar(8) [default: '', not null]
+  direct bool [default: false]
+
+  indexes {
+    (publish_log_id) [name: 'openedx_content_publishlogrecord_publish_log_id_f50dd1ec']
+    (entity_id) [name: 'openedx_content_publishlogrecord_entity_id_d7267f94']
+    (old_version_id) [name: 'openedx_content_publishlogrecord_old_version_id_ae92d31b']
+    (new_version_id) [name: 'openedx_content_publishlogrecord_new_version_id_7774a47a']
+    (publish_log_id, entity_id) [unique, name: 'oel_plr_uniq_pl_publishable']
+    (entity_id, publish_log_id) [name: 'oel_plr_idx_entity_rplr', note: 'descending: publish_log_id']
+  }
+
+  Note: '''A record for each publishable entity version changed, for each publish.
+
+To revert a publish, we would make a new publish that swaps
+``old_version`` and ``new_version`` field values.
+
+If the ``old_version`` and ``new_version`` of a
+:class:`PublishLogRecord` match, it means that the definition of the
+entity itself did not change (i.e. no new
+:class:`PublishableEntityVersion` was created), but something else was
+published that had the side-effect of changing the published state of
+this entity. For instance, if a Unit has unpinned references to its
+child Components (which it almost always will), then publishing one
+of those Components will alter the published state of the Unit, even
+if the UnitVersion does not change.'''
+}
+
+Table openedx_content_published {
+  entity_id bigint [pk]
+  version_id bigint [unique]
+  publish_log_record_id bigint [not null]
+
+  indexes {
+    (publish_log_record_id) [name: 'openedx_content_published_publish_log_record_id_2596a751']
+  }
+
+  Note: '''Find the currently published version of an entity.
+
+Notes:
+
+* There is only ever one published :class:`PublishableEntityVersion`
+  per :class:`PublishableEntity` at any given time.
+* It may be possible for a :class:`PublishableEntity` to exist only as
+  a :class:`Draft` (and thus not show up in this table).
+* If a row exists for a :class:`PublishableEntity`, but the
+  ``version`` field is None, it means that the entity was published
+  at some point, but is no longer published now–i.e. it\'s functionally
+  "deleted", even though all the version history is preserved behind
+  the scenes.'''
+}
+
+Table openedx_content_publishsideeffect {
+  id integer [pk, increment]
+  cause_id bigint [not null]
+  effect_id bigint [not null]
+
+  indexes {
+    (cause_id) [name: 'openedx_content_publishsideeffect_cause_id_0525f673']
+    (effect_id) [name: 'openedx_content_publishsideeffect_effect_id_839189d9']
+    (cause_id, effect_id) [unique, name: 'oel_pub_pse_uniq_c_e']
+  }
+
+  Note: '''Model to track when a change in one :class:`Published` entity affects
+others.
+
+Our first use case for this is that changes involving child components
+are thought to affect parent Units, even if the parent\'s version
+doesn\'t change.
+
+Side-effects are recorded in a collapsed form that only captures one
+level. So if Components C1 and C2 are both published and they are
+part of Unit U1, which is in turn a part of Subsection SS1, then the
+:class:`PublishSideEffect` entries are::
+
+  (C1, U1)
+  (C2, U1)
+  (U1, SS1)
+
+We do not keep entries for ``(C1, SS1)`` or ``(C2, SS1)``. This is to
+make the model simpler, so we don\'t have to differentiate between
+direct side-effects and transitive side-effects in the model.
+
+.. no_pii:'''
+}
+
+Table openedx_content_collection {
+  id integer [pk, increment]
+  learning_package_id integer [not null]
+  collection_code varchar(255) [not null]
+  title varchar(500) [not null, note: 'The title of the collection.']
+  description text [default: '', not null, note: 'Provides extra information for the user about this collection.']
+  enabled bool [default: true, not null, note: 'Disabled collections are "soft deleted", and should be re-enabled before use, or be deleted.']
+  created_by_id integer
+  created datetime [not null, note: 'default in Python: now()']
+  modified datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_collection_learning_package_id_3c7da4e7']
+    (created_by_id) [name: 'openedx_content_collection_created_by_id_c2734735']
+    (learning_package_id, collection_code) [unique, name: 'oel_coll_uniq_lp_key']
+    (learning_package_id, title) [name: 'openedx_content_coll_lp_title']
+  }
+
+  checks {
+    `"collection_code" REGEXP '^[a-zA-Z0-9_.-]+\Z'` [name: 'oel_coll_collection_code_regex']
+  }
+
+  Note: '''Represents a collection of library components'''
+}
+
+Table openedx_content_collectionpublishableentity {
+  id integer [pk, increment]
+  collection_id integer [not null]
+  entity_id bigint [not null]
+  created_by_id integer
+  created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (collection_id) [name: 'openedx_content_collectionpublishableentity_collection_id_30209c12']
+    (entity_id) [name: 'openedx_content_collectionpublishableentity_entity_id_67b1c7ec']
+    (created_by_id) [name: 'openedx_content_collectionpublishableentity_created_by_id_0436fdae']
+    (collection_id, entity_id) [unique, name: 'oel_collections_cpe_uniq_col_ent']
+  }
+
+  Note: ''':class:`Collection` → :class:`PublishableEntity` association.'''
+}
+
+Table openedx_content_mediatype {
+  id integer [pk, increment]
+  type varchar(127) [not null]
+  sub_type varchar(127) [not null]
+  suffix varchar(127) [not null]
+
+  indexes {
+    (type, sub_type, suffix) [unique, name: 'oel_contents_uniq_t_st_sfx']
+  }
+
+  Note: '''Stores Media types for use by :class:`Media` models.
+
+This is the same as MIME types (the IANA renamed MIME Types to Media
+Types). We don\'t pre-populate this table, so APIs that add
+:class:`Media` must ensure that the desired Media Type exists.
+
+Media types are written as ``{type}/{sub_type}+{suffix}``, where
+suffixes are seldom used. Examples:
+
+* ``application/json``
+* ``text/css``
+* ``image/svg+xml``
+* ``application/vnd.openedx.xblock.v1.problem+xml``
+
+We have this as a separate model (instead of a field on :class:`Media`)
+because:
+
+1. We can save a lot on storage and indexing for :class:`Media` if
+   we\'re just storing foreign key references there, rather than the
+   entire content string to be indexed. This is especially relevant
+   for our (long) custom types like
+   ``application/vnd.openedx.xblock.v1.problem+xml``.
+2. These values can occasionally change. For instance,
+   ``text/javascript`` vs. ``application/javascript``. Also, we will
+   be using a fair number of ``vnd.`` style of custom content types,
+   and we may want the flexibility of changing that without having to
+   worry about migrating millions of rows of :class:`Media`.
+
+Media types are denoted as ``{type}/{sub_type}+{suffix}``. We currently
+do not support parameters.'''
+}
+
+Table openedx_content_media {
+  id integer [pk, increment]
+  learning_package_id integer [not null]
+  media_type_id integer [not null]
+  size "bigint unsigned" [not null]
+  hash_digest varchar(40) [not null]
+  has_file bool [not null]
+  text text
+  created datetime [not null]
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_media_learning_package_id_5921a122']
+    (media_type_id) [name: 'openedx_content_media_media_type_id_556182c9']
+    (learning_package_id, media_type_id, hash_digest) [unique, name: 'oel_content_uniq_lc_media_type_hash_digest']
+    (learning_package_id, size) [name: 'oel_content_idx_lp_rsize', note: 'descending: size']
+  }
+
+  Note: '''This is the most primitive piece of content.
+
+This model serves to lookup, de-duplicate, and store text and files. A
+piece of :class:`Media` is identified purely by its data, the media
+type, and the :class:`LearningPackage` it is associated with. It has
+no version or file name metadata associated with it. It exists to be a
+dumb blob of data that higher level models like
+:class:`ComponentVersion` objects can assemble together.
+
+In-model Text vs. File
+----------------------
+
+That being said, the :class:`Media` model does have some complexity to
+accomodate different access patterns that we have in our app. In
+particular, it can store data in two ways: the ``text`` field and a
+file (``has_file=True``) A :class:`Media` object must use at least one
+of these methods, but can use both if it\'s appropriate.
+
+Use the ``text`` field when:
+
+* the content is a relatively small (< 50K, usually much less) piece
+  of text
+* you want to do be able to query across many rows at once
+* low, predictable latency is important
+
+Use file storage when:
+
+* the content is large, or not text-based
+* you want to be able to serve the file content directly to the
+  browser
+
+The high level tradeoff is that ``text`` will give you faster access,
+and file storage will give you a much more affordable and scalable
+backend. The backend used for files will also eventually allow direct
+browser download access, whereas the ``text`` field will not. But
+again, you can use both at the same time if needed.
+
+Association with a LearningPackage
+----------------------------------
+
+:class:`Media` is associated with a specific :class:`LearningPackage`.
+Doing so allows us to more easily query for how much storage space a
+specific :class:`LearningPackage` is using, and to clean up unused data.
+
+When we use :class:`Media` across :class:`LearningPackage` objects, we need
+to copy them. That way, even if the originating :class:`LearningPackage` is
+deleted, it won\'t break other :class:`LearningPackage` objects that are
+making use of it.
+
+Media Types, and file duplication
+---------------------------------
+
+:class:`Media` is almost 1:1 with the files that it pushes to a storage
+backend, but not quite. The file locations are generated purely as a
+product of the :class:`LearningPackage` UUID and the :class:`Media`\'s
+``hash_digest``, but :class:`Media` also takes into account the
+``media_type``.
+
+For example, say we had a :class:`Media` with the following data::
+
+    ["hello", "world"]
+
+That is legal syntax for both JSON and YAML. If you want to attach
+some YAML-specific metadata in a new model, you could make it 1:1 with
+the :class:`Media` that matched the ``application/yaml`` media type.
+The YAML and JSON versions of this data would be two separate
+:class:`Media` rows that would share the same ``hash_digest`` value.
+If they both stored a file, they would be pointing to the same file
+location. If they only used the ``text`` field, then that value would
+be duplicated across the two separate :class:`Media` rows.
+
+The alternative would have been to associate media types at the level
+where this data was being added to a :class:`ComponentVersion`, but
+that would have added more complexity. Right now, you could make an
+``ImageMedia`` 1:1 model that analyzed images and created metatdata
+entries for them (dimensions, GPS) without having to understand how
+:class:`ComponentVersion` objects work.
+
+This is definitely an edge case, and it\'s likely the only time
+collisions like this will happen in practice is with blank files. It
+also means that using this table to measure disk usage may be
+slightly inaccurate when used in a :class:`LearningPackage` with
+collisions–though we expect to use numbers like that mostly to get a
+broad sense of usage and look for major outliers, rather than for
+byte-level accuracy (it wouldn\'t account for the non-trivial indexing
+storage costs either).
+
+Immutability
+------------
+
+From the outside, :class:`Media` should appear immutable. Since the
+:class:`Media` is looked up by a hash of its data, a change in the
+data means that we should look up the hash value of that new data and
+create a new :class:`Media` if we don\'t find a match.
+
+That being said, the :class:`Media` model has different ways of
+storing that data, and that is mutable. We could decide that a
+certain type of :class:`Media` should be optimized to store its text
+in the table. Or that a media type that we had previously only stored
+as text now also needs to be stored on in the file storage backend so
+that it can be made available to be downloaded. These operations
+would be done as data migrations.
+
+Extensibility
+-------------
+
+Third-party apps are encouraged to create models that have a
+``OneToOneField`` relationship with :class:`Media`. For instance, an
+``ImageMedia`` model might join 1:1 with all :class:`Media` that has
+``image/*`` media types, and provide additional metadata for that
+data.'''
+}
+
+Table openedx_content_componenttype {
+  id integer [pk, increment]
+  namespace varchar(100) [not null]
+  name varchar(100) [not null]
+
+  indexes {
+    (namespace, name) [unique, name: 'oel_component_type_uniq_ns_n']
+  }
+
+  Note: '''Normalized representation of a type of Component.
+
+The only namespace being used initially will be ``xblock.v1``, but we will
+probably add a few others over time, such as a component type to represent
+packages of files for things like Files and Uploads or ``python_lib.zip``
+files.
+
+Make a foreign key against this table if you have to set policy based on
+the type of Components–e.g. marking certain types of XBlocks as approved
+vs. experimental for use in libraries.'''
+}
+
+Table openedx_content_component {
+  publishable_entity_id bigint [pk]
+  learning_package_id integer [not null]
+  component_type_id integer [not null]
+  component_code varchar(255) [not null]
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_component_learning_package_id_ff2bff8c']
+    (component_type_id) [name: 'openedx_content_component_component_type_id_0d8d0461']
+    (learning_package_id, component_type_id, component_code) [unique, name: 'oel_component_uniq_lc_ct_lk']
+    (component_type_id, component_code) [name: 'oel_component_idx_ct_lk']
+  }
+
+  checks {
+    `"component_code" REGEXP '^[\w.-]+\Z'` [name: 'oel_component_code_regex']
+  }
+
+  Note: '''This represents any Component that has ever existed in a
+:class:`LearningPackage`.
+
+What is a Component
+-------------------
+
+A :class:`Component` is an entity like a Problem or Video. It has enough
+information to identify itself and determine what the handler should be
+(e.g. XBlock Problem), but little beyond that.
+
+A :class:`Component` will have many :class:`ComponentVersion` objects
+over time, and most metadata is associated with the
+:class:`ComponentVersion` model and the :class:`Media` that
+:class:`ComponentVersion` objects are associated with.
+
+A :class:`Component` belongs to exactly one :class:`LearningPackage`.
+
+A :class:`Component` is 1:1 with :class:`PublishableEntity` and has
+matching primary key values. More specifically, :attr:`Component.pk`
+maps to :attr:`Component.publishable_entity_id`, and any place where
+the Publishing API module expects to get a :attr:`PublishableEntity.id`,
+you can use a :attr:`Component.pk` instead.
+
+Identifiers
+-----------
+
+Components have a ``publishable_entity`` ``OneToOneField`` to the
+:mod:`publishing` app\'s :class:`PublishableEntity` field, and it uses
+this as its primary key. Please see :class:`PublishableEntity`\'s
+docstring for how you should use its ``uuid`` and ``key`` fields.
+
+State Consistency
+-----------------
+
+The ``key`` field on Component\'s ``publishable_entity`` is derived from
+the ``component_type`` and ``component_code`` fields in this model. We
+don\'t support changing the keys yet, but if we do, those values need to
+be kept in sync.
+
+How build on this model
+-----------------------
+
+Make a foreign key to the :class:`Component` model when you need a
+stable reference that will exist for as long as the
+:class:`LearningPackage` itself exists.
+
+Columns from PublishableEntityMixin (abstract): publishable_entity_id.'''
+}
+
+Table openedx_content_componentversion {
+  publishable_entity_version_id bigint [pk]
+  component_id bigint [not null]
+
+  indexes {
+    (component_id) [name: 'openedx_content_componentversion_component_id_f7caf6bb']
+  }
+
+  Note: '''A particular version of a :class:`Component`.
+
+This holds the media using a M:M relationship with :class:`Media` via
+:class:`ComponentVersionMedia`.
+
+Columns from PublishableEntityVersionMixin (abstract): publishable_entity_version_id.'''
+}
+
+Table openedx_content_componentversionmedia {
+  id integer [pk, increment]
+  component_version_id bigint [not null]
+  media_id bigint [not null]
+  path varchar(500) [not null]
+
+  indexes {
+    (component_version_id) [name: 'openedx_content_componentversionmedia_component_version_id_555f391c']
+    (media_id) [name: 'openedx_content_componentversionmedia_media_id_17ca62ff']
+    (component_version_id, path) [unique, name: 'oel_cvcontent_uniq_cv_key']
+    (media_id, component_version_id) [name: 'oel_cvmedia_c_cv']
+    (component_version_id, media_id) [name: 'oel_cvmedia_cv_d']
+  }
+
+  Note: '''Determines the :class:`Media` for a given :class:`ComponentVersion`.
+
+An :class:`ComponentVersion` may be associated with multiple pieces of
+binary data. For instance, a Video :class:`ComponentVersion` might be
+associated with multiple transcripts in different languages.
+
+When :class:`Media` is associated with a :class:`ComponentVersion`, it
+has a ``path`` that is unique within the context of that
+:class:`ComponentVersion`. This is used as a local file-path-like
+identifier, e.g. ``static/image.png``.
+
+:class:`Media` is immutable and sharable across multiple
+:class:`ComponentVersion` objects.'''
+}
+
+Table openedx_content_entitylist {
+  id integer [pk, increment]
+
+  Note: ''':class:`EntityList` is a common structure to hold parent-child relations.
+
+:class:`EntityList` objects are not :class:`PublishableEntity` objects in
+and of themselves. That\'s because sometimes we\'ll want the same kind of
+data structure for things that we dynamically generate for individual
+students (e.g. Variants). :class:`EntityList` objects are anonymous in
+a sense–they\'re pointed to by :class:`ContainerVersion` objects and
+other models, rather than being looked up by their own identifiers.'''
+}
+
+Table openedx_content_entitylistrow {
+  id integer [pk, increment]
+  entity_list_id bigint [not null]
+  order_num "integer unsigned" [not null]
+  entity_id bigint [not null]
+  entity_version_id bigint
+
+  indexes {
+    (entity_list_id) [name: 'openedx_content_entitylistrow_entity_list_id_9b735e3c']
+    (entity_id) [name: 'openedx_content_entitylistrow_entity_id_42544f3a']
+    (entity_version_id) [name: 'openedx_content_entitylistrow_entity_version_id_8ffe039e']
+    (entity_list_id, order_num) [unique, name: 'oel_publishing_elist_row_order']
+  }
+
+  Note: '''Each :class:`EntityListRow` points to a :class:`PublishableEntity`,
+optionally at a specific version.
+
+There is a row in this table for each member of an :class:`EntityList`.
+The ``order_num`` field is used to determine the order of the members
+in the list.'''
+}
+
+Table openedx_content_containertype {
+  id integer [pk, increment]
+  type_code varchar(100) [unique, not null]
+
+  checks {
+    `"type_code" REGEXP '^[a-z0-9\-_\.]+$'` [name: 'oex_publishing_containertype_type_code_rx']
+  }
+
+  Note: '''Normalized representation of the type of :class:`Container`.
+
+Typical container types are "unit", "subsection", and "section", but
+there may be others in the future.'''
+}
+
+Table openedx_content_container {
+  publishable_entity_id bigint [pk]
+  learning_package_id integer [not null]
+  container_type_id integer [not null]
+  container_code varchar(255) [not null]
+
+  indexes {
+    (learning_package_id) [name: 'openedx_content_container_learning_package_id_a29c5633']
+    (container_type_id) [name: 'openedx_content_container_container_type_id_f7940858']
+    (learning_package_id, container_code) [unique, name: 'oel_container_uniq_lp_cc']
+  }
+
+  checks {
+    `"container_code" REGEXP '^[\w.-]+\Z'` [name: 'oel_container_code_regex']
+  }
+
+  Note: '''A :class:`Container` is a type of :class:`PublishableEntity` that holds
+other :class:`PublishableEntity` objects. For example, a "Unit"
+:class:`Container` might hold several :class:`Component` objects.
+
+For now, all containers have a static "entity list" that defines which
+containers/components/enities they hold. As we complete the Containers
+API, we will also add support for dynamic containers which may contain
+different entities for different learners or at different times.
+
+Columns from PublishableEntityMixin (abstract): publishable_entity_id.'''
+}
+
+Table openedx_content_containerversion {
+  publishable_entity_version_id bigint [pk]
+  container_id bigint [not null]
+  entity_list_id bigint [not null]
+
+  indexes {
+    (container_id) [name: 'openedx_content_containerversion_container_id_bacdc4e3']
+    (entity_list_id) [name: 'openedx_content_containerversion_entity_list_id_be7df8a7']
+  }
+
+  Note: '''A version of a :class:`Container`.
+
+By convention, we would only want to create new versions when the
+:class:`Container` itself changes, and not when the :class:`Container`\'s
+child elements change. For example:
+
+* Something was added to the :class:`Container`.
+* We re-ordered the rows in the container.
+* Something was removed to the container.
+* The :class:`Container`\'s metadata changed, e.g. the title.
+* We pin to different versions of the :class:`Container`.
+
+The last looks a bit odd, but it\'s because *how we\'ve defined the Unit*
+has changed if we decide to explicitly pin a set of versions for the
+children, and then later change our minds and move to a different set.
+It also just makes things easier to reason about if we say that
+``entity_list`` never changes for a given :class:`ContainerVersion`.
+
+Columns from PublishableEntityVersionMixin (abstract): publishable_entity_version_id.'''
+}
+
+Table openedx_content_unit {
+  container_id bigint [pk, note: 'parent link: a Unit is a openedx_content.Container (multi-table inheritance)']
+
+  Note: '''A Unit is type of :class:`Container` that holds :class:`Component`
+children.
+
+Via :class:`Container` and its :class:`PublishableEntityMixin`, Units are
+also publishable entities and can be added to other containers.'''
+}
+
+Table openedx_content_unitversion {
+  container_version_id bigint [pk, note: 'parent link: a UnitVersion is a ContainerVersion (multi-table inheritance)']
+
+  Note: '''A UnitVersion is a specific version of a :class:`Unit`.
+
+Via :class:`ContainerVersion` and its :class:`EntityList`, it defines the
+list of :class:`Component` children in this version of the :class:`Unit`.'''
+}
+
+Table openedx_content_subsection {
+  container_id bigint [pk, note: 'parent link: a Subsection is a openedx_content.Container (multi-table inheritance)']
+
+  Note: '''A Subsection is type of :class:`Container` that holds :class:`Unit`
+children.
+
+Via :class:`Container` and its :class:`PublishableEntityMixin`,
+Subsections are also publishable entities and can be added to other
+containers.'''
+}
+
+Table openedx_content_subsectionversion {
+  container_version_id bigint [pk, note: 'parent link: a SubsectionVersion is a ContainerVersion (multi-table inheritance)']
+
+  Note: '''A SubsectionVersion is a specific version of a :class:`Subsection`.
+
+Via :class:`ContainerVersion` and its :class:`EntityList`, it defines the
+list of :class:`Unit` children in this version of the
+:class:`Subsection`.'''
+}
+
+Table openedx_content_section {
+  container_id bigint [pk, note: 'parent link: a Section is a openedx_content.Container (multi-table inheritance)']
+
+  Note: '''A Section is type of :class:`Container` that holds :class:`Subsection`
+children.
+
+Via :class:`Container` and its :class:`PublishableEntityMixin`, Sections
+are also publishable entities and can be added to other containers.'''
+}
+
+Table openedx_content_sectionversion {
+  container_version_id bigint [pk, note: 'parent link: a SectionVersion is a ContainerVersion (multi-table inheritance)']
+
+  Note: '''A SectionVersion is a specific version of a :class:`Section`.
+
+Via :class:`ContainerVersion` and its :class:`EntityList`, it defines the
+list of :class:`Subsection` children in this version of the
+:class:`Section`.'''
+}
+
+Table oel_collections_collection {
+  id integer [pk, increment]
+}
+
+Table oel_components_component {
+  publishable_entity_id bigint [pk]
+}
+
+Table oel_publishing_learningpackage {
+  id integer [pk, increment]
+}
+
+Table oel_publishing_publishableentity {
+  id integer [pk, increment]
+}
+
+Table oel_publishing_draftchangelog {
+  id integer [pk, increment]
+}
+
+Table oel_publishing_draftchangelogrecord {
+  id integer [pk, increment]
+}
+
+Table oel_publishing_container {
+  publishable_entity_id bigint [pk]
+}
+
+Table oel_tagging_tag {
+  id integer [pk, increment]
+  taxonomy_id bigint [default: null, note: 'Namespace and rules for using a given set of tags.']
+  parent_id bigint [default: null, note: 'Tag that lives one level up from the current tag, forming a hierarchy.']
+  value varchar(500) [not null, note: 'Content of a given tag, occupying the \'value\' part of the key:value pair.']
+  external_id varchar(255) [not null, note: 'Used to link an Open edX Tag with a tag in an externally-defined taxonomy.']
+  depth integer [default: 0, not null, note: 'Number of ancestors this tag has. Zero for root tags, one for their children, and so on. Set automatically by save(); do not set manually.']
+  lineage varchar(3006) [default: '', not null, note: 'Tab-separated ancestor path including this tag: \'Root\\tParent\\t...\\tThisValue\\t\'. Used for depth-first tree ordering and descendant prefix matching. Set automatically by save(); do not set manually.']
+  archived bool [default: false, not null, note: 'Hides this tag from active use by default, without removing it.']
+
+  indexes {
+    (taxonomy_id) [name: 'oel_tagging_tag_taxonomy_id_5ffdeb8b']
+    (parent_id) [name: 'oel_tagging_tag_parent_id_2d99b9b4']
+    (taxonomy_id, external_id) [unique, name: 'oel_tagging_tag_taxonomy_id_external_id_f308f968_uniq']
+    (taxonomy_id, value) [unique, name: 'oel_tagging_tag_taxonomy_id_value_f0e6dab9_uniq']
+    (taxonomy_id, value) [name: 'oel_tagging_taxonom_89e779_idx']
+    (taxonomy_id, external_id) [name: 'oel_tagging_taxonom_44e355_idx']
+    (lineage) [name: 'oel_tagging_lineage_d65f82_idx']
+  }
+
+  checks {
+    `("parent_id" IS NULL OR "depth" > 0)` [name: 'oel_tagging_tag_depth_parent_check']
+    `"lineage" LIKE '%' || REPLACE(REPLACE(REPLACE((COALESCE("value", '') || COALESCE('	', '')), '\', '\\'), '%', '\%'), '_', '\_') ESCAPE '\'` [name: 'oel_tagging_tag_lineage_ends_with_value']
+    `"depth" = ((LENGTH("lineage") - LENGTH(REPLACE("lineage", '	', ''))) - 1)` [name: 'oel_tagging_tag_lineage_tab_count_check']
+  }
+
+  Note: '''Represents a single value in a list or tree of values which can be applied to a particular Open edX object.
+
+Open edX tags are "name:value" pairs which can be applied to objects like content libraries, units, or people.
+Tag.taxonomy.name provides the "name" and the Tag.value provides the "value".
+(And an ObjectTag links a Tag with an object.)'''
+}
+
+Table oel_tagging_taxonomy {
+  id integer [pk, increment]
+  name varchar(255) [not null, note: 'User-facing label used when applying tags from this taxonomy to Open edX objects.']
+  description text [not null, note: 'Provides extra information for the user when applying tags from this taxonomy to an object.']
+  enabled bool [default: true, not null, note: 'Only enabled taxonomies will be shown to authors.']
+  allow_multiple bool [default: true, not null, note: 'Indicates that multiple tags from this taxonomy may be added to an object.']
+  allow_free_text bool [default: false, not null, note: 'Indicates that tags in this taxonomy need not be predefined; authors may enter their own tag values.']
+  visible_to_authors bool [default: true, not null, note: 'Indicates whether this taxonomy should be visible to object authors.']
+  export_id varchar(255) [unique, not null, note: 'User-facing ID that is used on import/export. Should only contain alphanumeric characters or \'_\' \'-\' \'.\'']
+  read_only bool [default: false, not null, note: 'Indicates that the tags in this taxonomy are maintained by the system or an external integration; taxonomy admins will not be permitted to add, edit, or delete its tags.']
+  archived bool [default: false, not null, note: 'Hides this taxonomy from active use by default, without removing it. Unlike disabling it with \'enabled\', archiving marks the taxonomy as retired.']
+
+  indexes {
+    (name) [name: 'oel_tagging_taxonomy_name_41aebebd']
+  }
+
+  Note: '''Represents a namespace and rules for a group of tags.'''
+}
+
+Table oel_tagging_objecttag {
+  id integer [pk, increment]
+  object_id varchar(255) [not null, note: 'Identifier for the object being tagged']
+  taxonomy_id bigint [default: null, note: 'Taxonomy that this object tag belongs to. Used for validating the tag and provides the tag\'s \'name\' if set.']
+  tag_id bigint [default: null, note: 'Tag associated with this object tag. Provides the tag\'s \'value\' if set.']
+  is_copied bool [default: false, not null, note: 'True if this object tag has been copied from one object to another using \'copy_tags\' api function']
+  _export_id varchar(255) [not null, note: 'User-facing label used for this tag, stored in case taxonomy is (or becomes) null. If the taxonomy field is set, then taxonomy.export_id takes precedence over this field.']
+  _value varchar(500) [not null, note: 'User-facing value used for this tag, stored in case tag is null, e.g if taxonomy is free text, or if it becomes null (e.g. if the Tag is deleted). If the tag field is set, then tag.value takes precedence over this field.']
+  archived bool [default: false, not null, note: 'Hides this association from active use by default, without removing it.']
+  deletion_locked bool [default: false, not null, note: 'Set when something outside the tagging app depends on this association; a delete archives it instead of removing it.']
+
+  indexes {
+    (object_id) [name: 'oel_tagging_objecttag_object_id_c810f770']
+    (taxonomy_id) [name: 'oel_tagging_objecttag_taxonomy_id_48a985b4']
+    (tag_id) [name: 'oel_tagging_objecttag_tag_id_6c23e4f0']
+    (object_id, taxonomy_id, tag_id) [unique, name: 'oel_tagging_objecttag_object_id_taxonomy_id_tag_id_900a25fb_uniq']
+    (object_id, taxonomy_id, _value) [unique, name: 'oel_tagging_objecttag_object_id_taxonomy_id__value_6243e6d6_uniq']
+    (taxonomy_id, object_id) [name: 'oel_tagging_taxonom_aa24e6_idx']
+    (taxonomy_id, _value) [name: 'oel_tagging_taxonom_3668ec_idx']
+  }
+
+  Note: '''Represents the association between a tag and an Open edX object.
+
+Tagging content in Open edX involves linking the object to a particular name:value "tag", where the "name" is the
+tag\'s label, and the value is the content of the tag itself.
+
+Tagging objects can be time-consuming for users, and so we guard against the deletion of Taxonomies and Tags by
+providing fields to cache the name:value stored for an object.
+
+However, sometimes Taxonomy names or Tag values change (e.g if there\'s a typo, or a policy change about how a label
+is used), and so we still store a link to the original Taxonomy and Tag, so that these changes will take precedence
+over the original name:value used.
+
+Also, if an ObjectTag is associated with free-text Taxonomy, then the tag\'s value won\'t be stored as a standalone
+Tag in the database -- it\'ll be stored here.'''
+}
+
+Table oel_tagging_tagimporttask {
+  id integer [pk, increment]
+  taxonomy_id bigint [not null, note: 'Taxonomy associated with this import']
+  log text [default: null, not null, note: 'Action execution logs']
+  status TagImportTaskState [not null, note: 'Task status']
+  creation_date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (taxonomy_id) [name: 'oel_tagging_tagimporttask_taxonomy_id_955bb3a3']
+    (taxonomy_id, creation_date) [name: 'oel_tagging_taxonom_5e948c_idx', note: 'descending: creation_date']
+  }
+
+  Note: '''Stores the state, plan and logs of a tag import task'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref openedx_content_publishableentity_learning_package_id_fk: openedx_content_publishableentity.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_publishableentity_created_by_id_fk: openedx_content_publishableentity.created_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_publishableentityversion_entity_id_fk: openedx_content_publishableentityversion.entity_id > openedx_content_publishableentity.id [delete: cascade]
+
+Ref openedx_content_publishableentityversion_created_by_id_fk: openedx_content_publishableentityversion.created_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_publishableentityversiondependency_referring_version_id_fk: openedx_content_publishableentityversiondependency.referring_version_id > openedx_content_publishableentityversion.id [delete: cascade]
+
+Ref openedx_content_publishableentityversiondependency_referenced_entity_id_fk: openedx_content_publishableentityversiondependency.referenced_entity_id > openedx_content_publishableentity.id [delete: restrict]
+
+Ref openedx_content_draft_entity_id_fk: openedx_content_draft.entity_id - openedx_content_publishableentity.id [delete: cascade]
+
+Ref openedx_content_draft_version_id_fk: openedx_content_draft.version_id - openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_draft_draft_log_record_id_fk: openedx_content_draft.draft_log_record_id > openedx_content_draftchangelogrecord.id [delete: set null]
+
+Ref openedx_content_draftchangelog_learning_package_id_fk: openedx_content_draftchangelog.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_draftchangelog_changed_by_id_fk: openedx_content_draftchangelog.changed_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_draftchangelogrecord_draft_change_log_id_fk: openedx_content_draftchangelogrecord.draft_change_log_id > openedx_content_draftchangelog.id [delete: cascade]
+
+Ref openedx_content_draftchangelogrecord_entity_id_fk: openedx_content_draftchangelogrecord.entity_id > openedx_content_publishableentity.id [delete: restrict]
+
+Ref openedx_content_draftchangelogrecord_old_version_id_fk: openedx_content_draftchangelogrecord.old_version_id > openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_draftchangelogrecord_new_version_id_fk: openedx_content_draftchangelogrecord.new_version_id > openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_draftsideeffect_cause_id_fk: openedx_content_draftsideeffect.cause_id > openedx_content_draftchangelogrecord.id [delete: restrict]
+
+Ref openedx_content_draftsideeffect_effect_id_fk: openedx_content_draftsideeffect.effect_id > openedx_content_draftchangelogrecord.id [delete: restrict]
+
+Ref openedx_content_publishlog_learning_package_id_fk: openedx_content_publishlog.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_publishlog_published_by_id_fk: openedx_content_publishlog.published_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_publishlogrecord_publish_log_id_fk: openedx_content_publishlogrecord.publish_log_id > openedx_content_publishlog.id [delete: cascade]
+
+Ref openedx_content_publishlogrecord_entity_id_fk: openedx_content_publishlogrecord.entity_id > openedx_content_publishableentity.id [delete: restrict]
+
+Ref openedx_content_publishlogrecord_old_version_id_fk: openedx_content_publishlogrecord.old_version_id > openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_publishlogrecord_new_version_id_fk: openedx_content_publishlogrecord.new_version_id > openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_published_entity_id_fk: openedx_content_published.entity_id - openedx_content_publishableentity.id [delete: cascade]
+
+Ref openedx_content_published_version_id_fk: openedx_content_published.version_id - openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_published_publish_log_record_id_fk: openedx_content_published.publish_log_record_id > openedx_content_publishlogrecord.id [delete: restrict]
+
+Ref openedx_content_publishsideeffect_cause_id_fk: openedx_content_publishsideeffect.cause_id > openedx_content_publishlogrecord.id [delete: restrict]
+
+Ref openedx_content_publishsideeffect_effect_id_fk: openedx_content_publishsideeffect.effect_id > openedx_content_publishlogrecord.id [delete: restrict]
+
+Ref openedx_content_collection_learning_package_id_fk: openedx_content_collection.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_collection_created_by_id_fk: openedx_content_collection.created_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_collectionpublishableentity_collection_id_fk: openedx_content_collectionpublishableentity.collection_id > openedx_content_collection.id [delete: cascade]
+
+Ref openedx_content_collectionpublishableentity_entity_id_fk: openedx_content_collectionpublishableentity.entity_id > openedx_content_publishableentity.id [delete: restrict]
+
+Ref openedx_content_collectionpublishableentity_created_by_id_fk: openedx_content_collectionpublishableentity.created_by_id > auth_user.id [delete: set null]
+
+Ref openedx_content_media_learning_package_id_fk: openedx_content_media.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_media_media_type_id_fk: openedx_content_media.media_type_id > openedx_content_mediatype.id [delete: restrict]
+
+Ref openedx_content_component_publishable_entity_id_fk: openedx_content_component.publishable_entity_id - openedx_content_publishableentity.id [delete: cascade]
+
+Ref openedx_content_component_learning_package_id_fk: openedx_content_component.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_component_component_type_id_fk: openedx_content_component.component_type_id > openedx_content_componenttype.id [delete: restrict]
+
+Ref openedx_content_componentversion_publishable_entity_version_id_fk: openedx_content_componentversion.publishable_entity_version_id - openedx_content_publishableentityversion.id [delete: cascade]
+
+Ref openedx_content_componentversion_component_id_fk: openedx_content_componentversion.component_id > openedx_content_component.publishable_entity_id [delete: cascade]
+
+Ref openedx_content_componentversionmedia_component_version_id_fk: openedx_content_componentversionmedia.component_version_id > openedx_content_componentversion.publishable_entity_version_id [delete: cascade]
+
+Ref openedx_content_componentversionmedia_media_id_fk: openedx_content_componentversionmedia.media_id > openedx_content_media.id [delete: restrict]
+
+Ref openedx_content_entitylistrow_entity_list_id_fk: openedx_content_entitylistrow.entity_list_id > openedx_content_entitylist.id [delete: cascade]
+
+Ref openedx_content_entitylistrow_entity_id_fk: openedx_content_entitylistrow.entity_id > openedx_content_publishableentity.id [delete: restrict]
+
+Ref openedx_content_entitylistrow_entity_version_id_fk: openedx_content_entitylistrow.entity_version_id > openedx_content_publishableentityversion.id [delete: restrict]
+
+Ref openedx_content_container_publishable_entity_id_fk: openedx_content_container.publishable_entity_id - openedx_content_publishableentity.id [delete: cascade]
+
+Ref openedx_content_container_learning_package_id_fk: openedx_content_container.learning_package_id > openedx_content_learningpackage.id [delete: cascade]
+
+Ref openedx_content_container_container_type_id_fk: openedx_content_container.container_type_id > openedx_content_containertype.id [delete: restrict]
+
+Ref openedx_content_containerversion_publishable_entity_version_id_fk: openedx_content_containerversion.publishable_entity_version_id - openedx_content_publishableentityversion.id [delete: cascade]
+
+Ref openedx_content_containerversion_container_id_fk: openedx_content_containerversion.container_id > openedx_content_container.publishable_entity_id [delete: cascade]
+
+Ref openedx_content_containerversion_entity_list_id_fk: openedx_content_containerversion.entity_list_id > openedx_content_entitylist.id [delete: restrict]
+
+Ref openedx_content_unit_container_id_fk: openedx_content_unit.container_id - openedx_content_container.publishable_entity_id [delete: cascade]
+
+Ref openedx_content_unitversion_container_version_id_fk: openedx_content_unitversion.container_version_id - openedx_content_containerversion.publishable_entity_version_id [delete: cascade]
+
+Ref openedx_content_subsection_container_id_fk: openedx_content_subsection.container_id - openedx_content_container.publishable_entity_id [delete: cascade]
+
+Ref openedx_content_subsectionversion_container_version_id_fk: openedx_content_subsectionversion.container_version_id - openedx_content_containerversion.publishable_entity_version_id [delete: cascade]
+
+Ref openedx_content_section_container_id_fk: openedx_content_section.container_id - openedx_content_container.publishable_entity_id [delete: cascade]
+
+Ref openedx_content_sectionversion_container_version_id_fk: openedx_content_sectionversion.container_version_id - openedx_content_containerversion.publishable_entity_version_id [delete: cascade]
+
+Ref oel_components_component_publishable_entity_id_fk: oel_components_component.publishable_entity_id - oel_publishing_publishableentity.id [delete: cascade]
+
+Ref oel_publishing_container_publishable_entity_id_fk: oel_publishing_container.publishable_entity_id - oel_publishing_publishableentity.id [delete: cascade]
+
+Ref oel_tagging_tag_taxonomy_id_fk: oel_tagging_tag.taxonomy_id > oel_tagging_taxonomy.id [delete: cascade]
+
+Ref oel_tagging_tag_parent_id_fk: oel_tagging_tag.parent_id > oel_tagging_tag.id [delete: cascade]
+
+Ref oel_tagging_objecttag_taxonomy_id_fk: oel_tagging_objecttag.taxonomy_id > oel_tagging_taxonomy.id [delete: set null]
+
+Ref oel_tagging_objecttag_tag_id_fk: oel_tagging_objecttag.tag_id > oel_tagging_tag.id [delete: set null]
+
+Ref oel_tagging_tagimporttask_taxonomy_id_fk: oel_tagging_tagimporttask.taxonomy_id > oel_tagging_taxonomy.id [delete: cascade]

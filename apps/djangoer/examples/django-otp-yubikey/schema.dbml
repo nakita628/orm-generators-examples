@@ -1,0 +1,385 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ValidationServiceApiVersion {
+  "1.0"
+  "1.1"
+  "2.0"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table otp_static_staticdevice {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'The user that this device belongs to.']
+  name varchar(64) [not null, note: 'The human-readable name of this device.']
+  confirmed bool [default: true, not null, note: 'Is this device ready for use?']
+  throttling_failure_timestamp datetime [default: null, note: 'A timestamp of the last failed verification attempt. Null if last attempt succeeded.']
+  throttling_failure_count "integer unsigned" [default: 0, not null, note: 'Number of successive failed attempts.']
+  created_at datetime [note: 'The date and time when this device was initially created in the system.. default in Python: now()']
+  last_used_at datetime [note: 'The most recent date and time this device was used.']
+
+  indexes {
+    (user_id) [name: 'otp_static_staticdevice_user_id_7f9cff2b']
+  }
+
+  Note: '''A static :class:`~django_otp.models.Device` simply consists of random
+tokens shared by the database and the user.
+
+These are frequently used as emergency tokens in case a user\'s normal
+device is lost or unavailable. They can be consumed in any order; each
+token will be removed from the database as soon as it is used.
+
+This model has no fields of its own, but serves as a container for
+:class:`StaticToken` objects.
+
+.. attribute:: token_set
+
+    The RelatedManager for our tokens.
+
+Columns from TimestampMixin (abstract): created_at, last_used_at.
+
+Columns from ThrottlingMixin (abstract): throttling_failure_timestamp, throttling_failure_count.
+
+Columns from Device (abstract): user_id, name, confirmed.'''
+}
+
+Table otp_static_statictoken {
+  id integer [pk, increment]
+  device_id integer [not null]
+  token varchar(16) [not null]
+
+  indexes {
+    (device_id) [name: 'otp_static_statictoken_device_id_74b7c7d1']
+    (token) [name: 'otp_static_statictoken_token_d0a51866']
+  }
+
+  Note: '''A single token belonging to a :class:`StaticDevice`.
+
+.. attribute:: device
+
+    *ForeignKey*: A foreign key to :class:`StaticDevice`.
+
+.. attribute:: token
+
+    *CharField*: A random string up to 16 characters.'''
+}
+
+Table otp_yubikey_yubikeydevice {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'The user that this device belongs to.']
+  name varchar(64) [not null, note: 'The human-readable name of this device.']
+  confirmed bool [default: true, not null, note: 'Is this device ready for use?']
+  private_id varchar(12) [not null, note: 'The 6-byte private ID (hex-encoded).. default in Python: default_id()']
+  key varchar(32) [not null, note: 'The 16-byte AES key shared with this YubiKey (hex-encoded).. default in Python: default_key()']
+  session "integer unsigned" [default: 0, not null, note: 'The non-volatile session counter most recently used by this device.']
+  counter "integer unsigned" [default: 0, not null, note: 'The volatile session usage counter most recently used by this device.']
+
+  indexes {
+    (user_id) [name: 'otp_yubikey_yubikeydevice_user_id_80a424a7']
+  }
+
+  Note: '''Represents a locally-verified YubiKey OTP
+:class:`~django_otp.models.Device`.
+
+.. attribute:: private_id
+
+    *CharField*: The 6-byte private ID (hex-encoded).
+
+.. attribute:: key
+
+    *CharField*: The 16-byte AES key shared with this YubiKey
+    (hex-encoded).
+
+.. attribute:: session
+
+    *PositiveIntegerField*: The non-volatile session counter most recently
+    used by this device.
+
+.. attribute:: counter
+
+    *PositiveIntegerField*: The volatile session usage counter most
+    recently used by this device.
+
+Columns from Device (abstract): user_id, name, confirmed.'''
+}
+
+Table otp_yubikey_validationservice {
+  id integer [pk, increment]
+  name varchar(32) [not null, note: 'The name of this validation service.']
+  api_id integer [default: 1, not null, note: 'Your API ID.']
+  api_key varchar(64) [default: '', not null, note: 'Your base64-encoded API key.']
+  base_url varchar(200) [default: '', not null, note: 'The base URL of the verification service. Defaults to Yubico\'s hosted API.']
+  api_version ValidationServiceApiVersion [default: '2.0', not null, note: 'The version of the validation api to use.']
+  use_ssl bool [default: true, not null, note: 'Use HTTPS API URLs by default?']
+  param_sl varchar(16) [default: null, not null, note: 'The level of syncing required.']
+  param_timeout varchar(16) [default: null, not null, note: 'The time to allow for syncing.']
+
+  Note: '''Represents a YubiKey validation web service. By default, this will point to
+Yubico\'s official hosted service, which you can customize. You can also
+create instances to point at any other service implementing the same
+protocol.
+
+.. attribute:: name
+
+    *CharField*: The name of this validation service.
+
+.. attribute:: api_id
+
+    *IntegerField*: Your API ID. The server needs this to sign responsees.
+    (Default: 1)
+
+.. attribute:: api_key
+
+    *CharField*: Your base64-encoded API key, used to sign requests. This
+    is optional but strongly recommended. (Default: ``\'\'``)
+
+.. attribute:: base_url
+
+    *URLField*: The base URL of the verification service. Defaults to
+    Yubico\'s hosted API.
+
+.. attribute:: api_version
+
+    *CharField*: The version of the validation API to use: \'1.0\', \'1.1\', or
+    \'2.0\'. (Default: \'2.0\')
+
+.. attribute:: use_ssl
+
+    *BooleanField*: If ``True``, we\'ll use the HTTPS versions of the
+    default URLs. (Default: ``True``).
+
+.. attribute:: param_sl
+
+    *CharField*: The level of syncing required. See
+    :class:`~yubiotp.client.YubiClient20`.
+
+.. attribute:: param_timeout
+
+    *CharField*: The time to allow for syncing. See
+    :class:`~yubiotp.client.YubiClient20`.'''
+}
+
+Table otp_yubikey_remoteyubikeydevice {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'The user that this device belongs to.']
+  name varchar(64) [not null, note: 'The human-readable name of this device.']
+  confirmed bool [default: true, not null, note: 'Is this device ready for use?']
+  service_id integer [not null]
+  public_id varchar(32) [not null, note: 'The public identity of the YubiKey (modhex-encoded).']
+
+  indexes {
+    (user_id) [name: 'otp_yubikey_remoteyubikeydevice_user_id_80de3c1b']
+    (service_id) [name: 'otp_yubikey_remoteyubikeydevice_service_id_63162285']
+  }
+
+  Note: '''Represents a YubiKey device that is to be verified with a remote validation
+service. In order create these devices, you must have at least one
+:class:`~otp_yubikey.models.ValidationService` in the database.
+
+.. attribute:: service
+
+    *ForeignKey*: The validation service to use for this device.
+
+.. attribute:: public_id
+
+    *CharField*: The public identity of the YubiKey (modhex-encoded).
+
+Columns from Device (abstract): user_id, name, confirmed.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref otp_static_staticdevice_user_id_fk: otp_static_staticdevice.user_id > auth_user.id [delete: cascade]
+
+Ref otp_static_statictoken_device_id_fk: otp_static_statictoken.device_id > otp_static_staticdevice.id [delete: cascade]
+
+Ref otp_yubikey_yubikeydevice_user_id_fk: otp_yubikey_yubikeydevice.user_id > auth_user.id [delete: cascade]
+
+Ref otp_yubikey_remoteyubikeydevice_user_id_fk: otp_yubikey_remoteyubikeydevice.user_id > auth_user.id [delete: cascade]
+
+Ref otp_yubikey_remoteyubikeydevice_service_id_fk: otp_yubikey_remoteyubikeydevice.service_id > otp_yubikey_validationservice.id [delete: cascade]

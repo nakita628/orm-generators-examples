@@ -1,0 +1,183 @@
+Table user {
+  id text [pk, not null]
+  last_login_at timestamp
+  flag UserFlag [not null]
+  name text
+  email text [unique]
+  email_verified boolean [not null]
+  image text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'session_user_id_idx']
+  }
+}
+
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'account_user_id_idx']
+  }
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp
+  updated_at timestamp
+  indexes {
+    (identifier) [name: 'verification_identifier_idx']
+  }
+}
+
+Table wallet_address {
+  id text [pk, not null]
+  user_id text [not null]
+  address text [not null]
+  chain_id bigint [not null]
+  is_primary boolean [not null]
+  created_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'wallet_address_user_id_idx']
+    (address, chain_id) [unique, name: 'wallet_address_address_chain_id_unique']
+  }
+  Note: 'Wallet identity model added by the sign-in-with-stacks better-auth plugin.'
+}
+
+Table rate_limiter_flexible {
+  key text [pk, not null]
+  points "double precision" [not null]
+  expire timestamp
+  Note: 'Backing store for the persistent rate limiter (`RateLimiterFlexible` in the legacy Prisma schema).'
+}
+
+Table draft {
+  id text [pk, not null]
+  title text [not null]
+  content text [not null]
+  meta_title text
+  meta_description text
+  cover_image text
+  canonical_uri text
+  arweave_tx_id text
+  tx_status text
+  publish_signature text [note: 'Signature of the signed post metadata the draft is publishing (or last attempted). `arweaveTxId` is a valid checkpoint only while it matches.']
+  upload_claimed_at timestamp [note: 'Lease held by the worker uploading to Arweave, so concurrent workers for the same signature do not upload the same metadata twice.']
+  tags text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'draft_user_id_idx']
+  }
+}
+
+Table profile {
+  address text [pk, not null, note: 'Stacks address that signed the latest profile metadata. A profile belongs to the signing address rather than to an account, so a profile published on Arweave exists even if its signer never signed in.']
+  arweave_tx_id text [not null, unique]
+  arweave_block_height integer [note: 'Null until the profile transaction is included in an Arweave block; set by the profile indexer.']
+  signature text [not null, unique]
+  display_name text
+  description text
+  website text
+  twitter text
+  picture text
+  cover_picture text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table media_image {
+  id text [pk, not null]
+  status MediaImageStatus [not null]
+  mime_type text
+  width integer
+  height integer
+  size integer
+  thumbhash text [note: 'Base64 of the 25-byte ThumbHash placeholder.']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (created_at) [name: 'media_image_pending_idx']
+  }
+  Note: 'Placeholder metadata for an image referenced by a post cover or a profile picture. `id` is the canonical URL stored on `post.cover_image` and `profile.picture`/`cover_picture`; rows are created eagerly as PENDING by the producers and filled in by the thumbhash job (or inline on upload).'
+}
+
+Table post {
+  id text [pk, not null]
+  draft_id text [unique]
+  version text [not null]
+  arweave_tx_id text [not null, unique]
+  arweave_block_height integer [note: 'Null until the bundle is included in an Arweave block; populated by a later queue.']
+  metadata_uri text [not null]
+  title text [not null]
+  content text [not null]
+  excerpt text [not null]
+  meta_title text
+  meta_description text
+  cover_image text
+  tags text
+  canonical_uri text
+  signature text [unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'post_user_id_idx']
+    (created_at) [name: 'post_arweave_pending_idx']
+  }
+}
+
+Table post_ots {
+  post_id text [pk, not null]
+  status PostOtsStatus [not null]
+  content_hash text [not null, note: 'Hex SHA-256 of the exact metadata bytes stored on Arweave.']
+  pending_proof bytea [note: 'Pending `.ots` proof returned by the calendars, kept until it can be upgraded to a Bitcoin-anchored proof.']
+  ots_tx_id text [note: 'Arweave transaction id of the upgraded `.ots` proof.']
+  bitcoin_block_height integer
+  bitcoin_block_hash text
+  bitcoin_timestamp timestamp
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (status) [name: 'post_ots_status_idx']
+  }
+  Note: 'One OpenTimestamps proof per published post. The post metadata JSON uploaded to Arweave is the file being anchored, identified by `contentHash`.'
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref wallet_address_user_id_user_id_fk: wallet_address.user_id > user.id [delete: cascade]
+
+Ref draft_user_id_user_id_fk: draft.user_id > user.id
+
+Ref post_user_id_user_id_fk: post.user_id > user.id
+
+Ref post_ots_post_id_post_id_fk: post_ots.post_id - post.id [delete: cascade]

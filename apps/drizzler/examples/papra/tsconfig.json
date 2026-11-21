@@ -1,0 +1,7 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": { "@papra/webhooks": ["./stubs/papra-webhooks/index.ts"] }
+  },
+  "include": ["src", "stubs", "drizzle.config.ts"]
+}

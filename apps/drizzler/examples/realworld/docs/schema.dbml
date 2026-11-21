@@ -1,0 +1,84 @@
+Table articles {
+  id serial [pk, increment, not null]
+  slug text [not null, unique]
+  title text [not null]
+  description text [not null]
+  body text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  author_id integer [not null]
+}
+
+Table favorite_articles {
+  article_id integer [not null]
+  user_id integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (article_id, user_id) [pk]
+  }
+}
+
+Table comments {
+  id serial [pk, increment, not null]
+  body text [not null]
+  article_id integer [not null]
+  author_id integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table tags {
+  name text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table article_tags {
+  article_id integer [not null]
+  tag_name text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (article_id, tag_name) [pk]
+  }
+}
+
+Table users {
+  id serial [pk, increment, not null]
+  email text [not null, unique]
+  bio text
+  image text
+  password text [not null]
+  username text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table user_follows {
+  followed_id integer [not null]
+  follower_id integer [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (followed_id, follower_id) [pk]
+  }
+}
+
+Ref articles_author_id_users_id_fk: articles.author_id > users.id [delete: cascade]
+
+Ref favorite_articles_article_id_articles_id_fk: favorite_articles.article_id > articles.id [delete: cascade]
+
+Ref favorite_articles_user_id_users_id_fk: favorite_articles.user_id > users.id [delete: cascade]
+
+Ref comments_article_id_articles_id_fk: comments.article_id > articles.id [delete: cascade]
+
+Ref comments_author_id_users_id_fk: comments.author_id > users.id [delete: cascade]
+
+Ref article_tags_article_id_articles_id_fk: article_tags.article_id > articles.id [delete: cascade]
+
+Ref article_tags_tag_name_tags_name_fk: article_tags.tag_name > tags.name [delete: cascade]
+
+Ref user_follows_followed_id_users_id_fk: user_follows.followed_id > users.id [delete: cascade]
+
+Ref user_follows_follower_id_users_id_fk: user_follows.follower_id > users.id [delete: cascade]

@@ -1,0 +1,2077 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum BatchOperationStatus {
+  "unprocessed"
+  "running"
+  "finished"
+}
+
+Enum BatchOperationResult {
+  "not-available"
+  "successful"
+  "failed"
+}
+
+Enum AssignmentAnonymizationmode {
+  "off"
+  "semi_anonymous"
+  "fully_anonymous"
+}
+
+Enum AssignmentDeliveryTypes {
+  "0"
+  "1"
+  "2"
+}
+
+Enum AssignmentDeadlineHandling {
+  "0"
+  "1"
+}
+
+Enum AssignmentPointsToGradeMapper {
+  "passed-failed"
+  "raw-points"
+  "custom-table"
+}
+
+Enum AssignmentGradingSystemPluginId {
+  "devilry_gradingsystemplugin_approved"
+  "devilry_gradingsystemplugin_points"
+}
+
+Enum AssignmentFeedbackWorkflow {
+  // "" (Simple - Examiners write feedback, and publish it whenever they want. Does not handle coordination of multiple examiners at all.): the empty string, which DBML cannot name
+  "trusted-cooperative-feedback-editing"
+}
+
+Enum UserEmailIsPrimary {
+  "None"
+  "True"
+}
+
+Enum UserNameIsPrimary {
+  "None"
+  "True"
+}
+
+Enum PermissionGroupGrouptype {
+  "departmentadmin"
+  "subjectadmin"
+  "periodadmin"
+}
+
+Enum CompressedArchiveMetaCreatedByRole {
+  "student"
+  "examiner"
+  "admin"
+}
+
+Enum FeedbackSetFeedbacksetType {
+  "first_attempt"
+  "new_attempt"
+  "re_edit"
+  "merge_first_attempt"
+  "merge_new_attempt"
+  "merge_re_edit"
+}
+
+Enum FeedbacksetPassedPreviousPeriodPassedPreviousPeriodType {
+  "manual"
+  "auto"
+}
+
+Enum GroupCommentVisibility {
+  "private"
+  "visible-to-examiner-and-admins"
+  "visible-to-everyone"
+}
+
+Enum ImageAnnotationCommentVisibility {
+  "private"
+  "visible-to-examiner-and-admins"
+  "visible-to-everyone"
+}
+
+Enum CommentUserRole {
+  "student"
+  "examiner"
+  "admin"
+}
+
+Enum CommentCommentType {
+  "imageannotationcomment"
+  "groupcomment"
+}
+
+Enum StatusStatus {
+  "ready"
+  "almostready"
+  "notready"
+}
+
+Enum DraftStatusProcessingStatusChoices {
+  "not_started"
+  "in_progress"
+  "completed"
+  "error"
+}
+
+Enum MessageStatus {
+  "draft"
+  "preparing"
+  "sending"
+  "error"
+  "sent"
+}
+
+Enum MessageContextType {
+  "other"
+  "comment_delivery"
+  "deadline_moved"
+  "new_attempt"
+  "feedback"
+  "feedback_updated"
+  "group_invite_invitation"
+  "group_invite_accepted"
+  "group_invite_rejected"
+}
+
+Enum MessageReceiverStatus {
+  "not_sent"
+  "failed"
+  "error"
+  "sent"
+}
+
+Enum DevilryReportStatus {
+  "unprocessed"
+  "generating"
+  "success"
+  "error"
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date "timestamp with time zone" [not null]
+
+  indexes {
+    (session_key) [name: 'django_session_session_key_c0390e0f_like', note: 'varchar_pattern_ops']
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  indexes {
+    (name) [name: 'auth_group_name_a6ea08ec_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time "timestamp with time zone" [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+
+  indexes {
+    (domain) [name: 'django_site_domain_a2e37b91_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table ievv_batchframework_batchoperation {
+  id integer [pk, increment]
+  started_by_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  started_running_datetime "timestamp with time zone"
+  finished_datetime "timestamp with time zone"
+  context_content_type_id integer
+  context_object_id integer [note: 'context_object: with context_content_type_id, a generic foreign key to a row of any model']
+  operationtype varchar(255) [default: '', not null]
+  status BatchOperationStatus [default: 'unprocessed', not null]
+  result BatchOperationResult [default: 'not-available', not null]
+  input_data_json text [default: '', not null]
+  output_data_json text [default: '', not null]
+
+  indexes {
+    (started_by_id) [name: 'ievv_batchframework_batchoperation_started_by_id_b800bd60']
+    (context_content_type_id) [name: 'ievv_batchframework_batcho_context_content_type_id_61d4a4a1']
+    (operationtype) [name: 'ievv_batchframework_batchoperation_operationtype_f0132b14']
+    (operationtype) [name: 'ievv_batchframework_batchoperation_operationtype_f0132b14_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Defines a batch operation.'''
+}
+
+Table ievv_developemail_developemail {
+  id integer [pk, increment]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  subject text [default: '', not null]
+  from_email text [default: '', not null]
+  to_emails text [default: '', not null]
+  raw_message text [default: '', not null]
+
+  indexes {
+    (from_email) [name: 'ievv_developemail_developemail_from_email_981952b3']
+    (from_email) [name: 'ievv_developemail_developemail_from_email_981952b3_like', note: 'text_pattern_ops']
+  }
+}
+
+Table django_rq_dashboard {
+  id integer [pk, increment]
+
+  Note: '''Not managed by Django (managed = False).
+
+Admin-only model for Django-RQ dashboard integration.'''
+}
+
+Table cradmin_temporaryfileuploadstore_temporaryfilecollection {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'The user that owns this temporary file. Users should notbe allowed access to other users temporary files.']
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  minutes_to_live integer [default: 60, not null, note: 'The number of minutes the app requests that this file collection should be kept before automatic removal. This is used by automatic cleanup jobs to determine what to delete. You should not rely on the file beeing automatically deleted after this number of minutes, and you should always delete files explicitly as part of the file upload process.']
+  accept text [default: '', not null, note: 'An html input field accept attribute formatted string. This is validated by the API on upload.']
+  max_filename_length integer [default: null, note: 'If specified, we shorten filenames to maximum the specified length. This is validated by the API on upload.']
+  unique_filenames boolean [default: false, not null, note: 'If this is True, we add random data when we detect duplicate filenames. The duplicate prevention algorithm handles max_filename.This is validated by the API on upload.']
+  max_filesize_bytes integer [default: null]
+  singlemode boolean [default: false, not null, note: 'If this is True, only a single file can be added to the collection. This means that the last file added to the collection will be the only file in the collection.']
+
+  indexes {
+    (user_id) [name: 'cradmin_temporaryfileuploa_user_id_b043f918']
+  }
+
+  Note: '''A collection of temporary files uploaded by a user.
+
+This model is used by apps to store temporary files
+uploaded through the temporary file upload API. The typical
+workflow is:
+
+1. Upload some files (a collection of files) file via the API.
+2. Use the IDs returned by the API to POST a form that uses
+   file uploads.
+3. In the code handling the form POST request, retrieve the temporary
+   file(s), move them into some form of persistent storage (perhaps
+   after manipulating the file in some way).
+4. Delete the collection.
+
+The ``accept``, ``max_filename_length`` and ``prevent_filename_duplicates``
+attributes are set by the client. This means that you can not trust them
+and have to perform error checking when you process temporary files. This
+is not really a problem since:
+
+1. You should have error checking in the views that
+   use TemporaryFileCollection.
+2. If you have error checking in your views, the only thing
+   the user can do by manipulating the API call is to cause
+   themselves a less user-friendly experience - they will typically
+   get an error when they post the form containing the
+   hidden field with the collection-id instead of when they upload
+   a file.'''
+}
+
+Table cradmin_temporaryfileuploadstore_temporaryfile {
+  id integer [pk, increment]
+  collection_id integer [not null]
+  filename text [not null]
+  file varchar(100) [not null]
+  mimetype text [default: '', not null]
+
+  indexes {
+    (collection_id) [name: 'cradmin_temporaryfileuploa_collection_id_130761f4']
+    (filename) [name: 'cradmin_temporaryfileuploa_filename_6fd10273']
+    (filename) [name: 'cradmin_temporaryfileupl_filename_6fd10273_like', note: 'text_pattern_ops']
+  }
+
+  Note: '''A temporary file uploaded by a user.'''
+}
+
+Table cradmin_generic_token_with_metadata_generictokenwithmetadata {
+  id integer [pk, increment]
+  app varchar(255) [not null]
+  token varchar(100) [unique, not null]
+  created_datetime "timestamp with time zone" [not null]
+  expiration_datetime "timestamp with time zone" [default: null]
+  single_use boolean [default: true, not null]
+  metadata_json text [default: '', not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+
+  indexes {
+    (app) [name: 'cradmin_generic_token_with_app_eb8d47f3']
+    (app) [name: 'cradmin_generic_token_wi_app_eb8d47f3_like', note: 'varchar_pattern_ops']
+    (token) [name: 'cradmin_generic_token_wi_token_b381124d_like', note: 'varchar_pattern_ops']
+    (content_type_id) [name: 'cradmin_generic_token_with_content_type_id_6e0a27ae']
+  }
+
+  Note: '''Provides a secure token with attached metadata suitable for
+email and sharing workflows like password reset, public share urls, etc.'''
+}
+
+Table core_subject {
+  id integer [pk, increment]
+  short_name varchar(20) [unique, not null, note: 'Up to 20 letters of lowercase english letters (a-z), numbers, underscore ("_") and hyphen ("-"). Used when the name takes too much space.']
+  long_name varchar(100) [not null]
+  etag "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (short_name) [name: 'core_subject_short_name_7172d8cd_like', note: 'varchar_pattern_ops']
+    (long_name) [name: 'core_subject_long_name_d9b3b016']
+    (long_name) [name: 'core_subject_long_name_d9b3b016_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''.. attribute:: short_name
+
+    A django.db.models.SlugField_ with max 20 characters. Only numbers,
+    letters, \'_\' and \'-\'. Unlike all other children of
+    :class:`BaseNode`, Subject.short_name is **unique**. This is mainly
+    to avoid the overhead of having to recurse all the way to the top of
+    the node hierarchy for every unique path.
+
+.. attribute:: periods
+
+    A set of :class:`periods <devilry.apps.core.models.Period>` for this subject.
+
+.. attribute:: etag
+
+   A DateTimeField containing the etag for this object.'''
+}
+
+Table core_period {
+  id integer [pk, increment]
+  short_name varchar(20) [not null, note: 'Up to 20 letters of lowercase english letters (a-z), numbers, underscore ("_") and hyphen ("-"). Used when the name takes too much space.']
+  long_name varchar(100) [not null]
+  parentnode_id integer [not null]
+  start_time "timestamp with time zone" [not null, note: 'Start time and end time defines when the period is active.']
+  end_time "timestamp with time zone" [not null, note: 'Start time and end time defines when the period is active.']
+  etag "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (short_name) [name: 'core_period_short_name_95d3f6a9']
+    (short_name) [name: 'core_period_short_name_95d3f6a9_like', note: 'varchar_pattern_ops']
+    (long_name) [name: 'core_period_long_name_66f8a24b']
+    (long_name) [name: 'core_period_long_name_66f8a24b_like', note: 'varchar_pattern_ops']
+    (parentnode_id) [name: 'core_period_parentnode_id_fafbee43']
+    (short_name, parentnode_id) [unique, name: 'core_period_short_name_parentnode_id_08ced67b_uniq']
+  }
+
+  Note: '''A Period represents a period of time, for example a half-year term
+at a university.
+
+
+.. attribute:: parentnode
+
+    A django.db.models.ForeignKey_ that points to the parent node,
+    which is always a `Subject`_.
+
+.. attribute:: start_time
+
+    A django.db.models.DateTimeField_ representing the starting time of
+    the period.
+
+.. attribute:: end_time
+
+    A django.db.models.DateTimeField_ representing the ending time of
+    the period.
+
+.. attribute:: admins
+
+    A django.db.models.ManyToManyField_ that holds all the admins of the
+    node.
+
+.. attribute:: assignments
+
+    A Django RelatedManager of :class:`assignments <devilry.apps.core.models.Assignment>` for this period.
+
+.. attribute:: relatedexaminer_set
+
+    A Django RelatedManager of :class:`RelatedExaminers <devilry.apps.core.models.RelatedExaminer>` for this period.
+
+.. attribute:: relatedstudent_set
+
+    A Django RelatedManager of :class:`RelatedStudents <devilry.apps.core.models.RelatedStudent>` for this period.
+
+.. attribute:: etag
+
+   A DateTimeField containing the etag for this object.'''
+}
+
+Table core_periodapplicationkeyvalue {
+  id integer [pk, increment]
+  application varchar(300) [not null, note: 'Application identifier. Max 300 chars.']
+  key varchar(300) [not null, note: 'Key. Max 300 chars.']
+  value text [note: 'Value.']
+  period_id integer [not null, note: 'The period where this metadata belongs.']
+
+  indexes {
+    (application) [name: 'core_periodapplicationkeyvalue_application_1a66ea20']
+    (application) [name: 'core_periodapplicationkeyvalue_application_1a66ea20_like', note: 'varchar_pattern_ops']
+    (key) [name: 'core_periodapplicationkeyvalue_key_2001d526']
+    (key) [name: 'core_periodapplicationkeyvalue_key_2001d526_like', note: 'varchar_pattern_ops']
+    (value) [name: 'core_periodapplicationkeyvalue_value_d280ca28']
+    (value) [name: 'core_periodapplicationkeyvalue_value_d280ca28_like', note: 'text_pattern_ops']
+    (period_id) [name: 'core_periodapplicationkeyvalue_period_id_5004dd70']
+    (period_id, application, key) [unique, name: 'core_periodapplicationke_period_id_application_ke_29a36e16_uniq']
+  }
+
+  Note: '''Key/value pair tied to a specific Period.
+
+Columns from AbstractApplicationKeyValue (abstract): application, key, value.'''
+}
+
+Table core_relatedexaminer {
+  id integer [pk, increment]
+  period_id integer [not null, note: 'The period.']
+  user_id integer [not null, note: 'The related user.']
+  tags text [note: 'Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.']
+  automatic_anonymous_id varchar(255) [default: '', not null]
+  active boolean [default: true, not null]
+
+  indexes {
+    (period_id) [name: 'core_relatedexaminer_period_id_2f042ce2']
+    (user_id) [name: 'core_relatedexaminer_user_id_8bedf468']
+    (period_id, user_id) [unique, name: 'core_relatedexaminer_period_id_user_id_1cfbaad4_uniq']
+  }
+
+  Note: '''Related examiner.
+
+Adds no fields to RelatedUserBase.
+
+Columns from RelatedUserBase (abstract): period_id, user_id, tags, automatic_anonymous_id.'''
+}
+
+Table core_relatedstudent {
+  id integer [pk, increment]
+  period_id integer [not null, note: 'The period.']
+  user_id integer [not null, note: 'The related user.']
+  tags text [note: 'Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.']
+  automatic_anonymous_id varchar(255) [default: '', not null]
+  active boolean [default: true, not null]
+  candidate_id varchar(30)
+
+  indexes {
+    (period_id) [name: 'core_relatedstudent_period_id_9af6a0a9']
+    (user_id) [name: 'core_relatedstudent_user_id_e952c98a']
+    (period_id, user_id) [unique, name: 'core_relatedstudent_period_id_user_id_bb12ecab_uniq']
+  }
+
+  Note: '''Related student.
+
+Columns from RelatedUserBase (abstract): period_id, user_id, tags, automatic_anonymous_id.'''
+}
+
+Table core_relatedstudentkeyvalue {
+  id integer [pk, increment]
+  application varchar(300) [not null, note: 'Application identifier. Max 300 chars.']
+  key varchar(300) [not null, note: 'Key. Max 300 chars.']
+  value text [note: 'Value.']
+  relatedstudent_id integer [not null]
+  student_can_read boolean [default: false, not null, note: 'Specifies if a student can read the value or not.']
+
+  indexes {
+    (application) [name: 'core_relatedstudentkeyvalue_application_95652c6e']
+    (application) [name: 'core_relatedstudentkeyvalue_application_95652c6e_like', note: 'varchar_pattern_ops']
+    (key) [name: 'core_relatedstudentkeyvalue_key_03d759fd']
+    (key) [name: 'core_relatedstudentkeyvalue_key_03d759fd_like', note: 'varchar_pattern_ops']
+    (value) [name: 'core_relatedstudentkeyvalue_value_f2c810af']
+    (value) [name: 'core_relatedstudentkeyvalue_value_f2c810af_like', note: 'text_pattern_ops']
+    (relatedstudent_id) [name: 'core_relatedstudentkeyvalue_relatedstudent_id_49b0ce0d']
+    (relatedstudent_id, application, key) [unique, name: 'core_relatedstudentkeyva_relatedstudent_id_applic_68da6d0f_uniq']
+  }
+
+  Note: '''Key/value pair tied to a specific RelatedStudent.
+
+Columns from AbstractApplicationKeyValue (abstract): application, key, value.'''
+}
+
+Table core_periodtag {
+  id integer [pk, increment]
+  period_id integer [not null]
+  prefix varchar(30) [default: '', not null]
+  tag text [not null]
+  is_hidden boolean [default: false, not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  modified_datetime "timestamp with time zone"
+
+  indexes {
+    (period_id) [name: 'core_periodtag_period_id_d7a1e8c9']
+    (tag) [name: 'core_periodtag_tag_b42bbccb']
+    (tag) [name: 'core_periodtag_tag_b42bbccb_like', note: 'text_pattern_ops']
+    (period_id, prefix, tag) [unique, name: 'core_periodtag_period_id_prefix_tag_85a8db44_uniq']
+  }
+
+  Note: '''A :class:`.PeriodTag` represents a form of grouping on a period for
+:class:`~.devilry.app.core.models.relateduser.RelatedStudent`s and
+:class:`~.devilry.app.core.models.relateduser.RelatedExaminer`s.'''
+}
+
+Table core_assignment {
+  id integer [pk, increment]
+  short_name varchar(20) [not null, note: 'Up to 20 letters of lowercase english letters (a-z), numbers, underscore ("_") and hyphen ("-"). Used when the name takes too much space.']
+  long_name varchar(100) [not null]
+  gradeform_setup_json text
+  parentnode_id integer [not null]
+  publishing_time "timestamp with time zone" [not null, note: 'The time when the assignment is to be published (visible to students and examiners).']
+  deprecated_field_anonymous boolean [default: false, not null, note: 'Deprecated anonymous field. Will be removed in 3.1.']
+  uses_custom_candidate_ids boolean [default: false, not null, note: 'If this is enabled, the assignment does not inherit candidate IDs from the semester, and instead have their own set of candidate IDs only for this assignment.']
+  anonymizationmode AssignmentAnonymizationmode [default: 'off', not null]
+  students_can_see_points boolean [default: false, not null]
+  delivery_types AssignmentDeliveryTypes [default: 0, not null, note: 'This option controls what types of deliveries this assignment accepts. See the Delivery documentation for more info.']
+  deadline_handling AssignmentDeadlineHandling [not null, note: 'With HARD deadlines, students will be unable to make deliveries when a deadline has expired. With SOFT deadlines students will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted. NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both students and examiners.. default in Python: get_deadline_handling_default()']
+  scale_points_percent integer [default: 100, not null, note: 'Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.']
+  first_deadline "timestamp with time zone" [not null]
+  max_points integer [default: 1]
+  passing_grade_min_points integer [default: 1]
+  points_to_grade_mapper AssignmentPointsToGradeMapper [default: 'passed-failed']
+  grading_system_plugin_id AssignmentGradingSystemPluginId [default: 'devilry_gradingsystemplugin_approved']
+  students_can_create_groups boolean [default: false, not null, note: 'Select this if students should be allowed to join/leave groups. Even if this is not selected, you can still organize your students in groups manually.']
+  students_can_not_create_groups_after "timestamp with time zone" [default: null, note: 'Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected.']
+  feedback_workflow AssignmentFeedbackWorkflow [default: '', not null]
+  examiners_can_self_assign boolean [default: false, not null, note: 'Select this if you want examiners to be able to self-assign to the assignment.']
+  examiner_self_assign_limit integer [default: 1, not null, note: 'The max number of examiners that are allowed to self-assign to each project group within the assignment.']
+
+  indexes {
+    (short_name) [name: 'core_assignment_short_name_c4ce3028']
+    (short_name) [name: 'core_assignment_short_name_c4ce3028_like', note: 'varchar_pattern_ops']
+    (long_name) [name: 'core_assignment_long_name_67693a1c']
+    (long_name) [name: 'core_assignment_long_name_67693a1c_like', note: 'varchar_pattern_ops']
+    (parentnode_id) [name: 'core_assignment_parentnode_id_4d94c25f']
+    (anonymizationmode) [name: 'core_assignment_anonymizationmode_1c86bb06']
+    (anonymizationmode) [name: 'core_assignment_anonymizationmode_1c86bb06_like', note: 'varchar_pattern_ops']
+    (short_name, parentnode_id) [unique, name: 'core_assignment_short_name_parentnode_id_41a7b9eb_uniq']
+  }
+
+  Note: '''Data model for an assignment.
+
+.. attribute:: gradeform_setup_json
+
+    A django.db.models.TextField_ for the json representing a blank
+    gradeform used for this \'Assignment_\'
+
+.. attribute:: parentnode
+
+    A django.db.models.ForeignKey_ that points to the parent node,
+    which is always a `Period`_.
+
+.. attribute:: publishing_time
+
+    A django.db.models.DateTimeField_ representing the publishing time of
+    the assignment.
+
+.. attribute:: admins
+
+    A django.db.models.ManyToManyField_ that holds all the admins of the
+    Node.
+
+.. attribute:: assignmentgroups
+
+    A set of :class:`assignmentgroups <devilry.apps.core.models.AssignmentGroup>` for this assignment
+
+.. attribute:: scale_points_percent
+
+    Percent to scale points on this assignment by for period overviews. The default is 100,
+    which means no change to the points.
+
+.. attribute:: delivery_types
+
+    An integer identifying the type of deliveries allowed. Possible values:
+
+        0
+            Electronic deliveries using Devilry
+        1
+            Non-electronic deliveries, or deliveries made through another
+            electronic system.
+        2
+            An alias/link to a delivery made in another Period.
+
+.. attribute:: deadline_handling
+
+    An integer identifying how deadlines are handled.
+
+        0
+            Soft deadlines. Deliveries can be added until groups are closed.
+        1
+            Hard deadlines. Deliveries can not be added after the deadline
+            has expired.
+
+.. attribute:: first_deadline
+
+    A DateTimeField containing an optional first deadline for this
+    assignment. This is metadata that the UI can use where it is
+    natural.
+
+.. attribute:: max_points
+
+    An IntegerField that contains the maximum number of points possible to achieve on
+    this assignment. This field may be ``None``, and it is normally set by the
+    grading system plugin.
+
+    DO NOT UPDATE MANUALLY. You can safely set an initial value for this
+    manually when you create a new assignment, but when you update this
+    field, do so using :meth:`.set_max_points`.
+
+.. attribute:: passing_grade_min_points
+
+    An IntegerField that contains the minimum number of points required to
+    achive a passing grade on this assignment. This means that any feedback
+    with more this number of points or more is considered a passing grade.
+
+    WARNING: Changing this does not have any effect on existing feedback.
+    To actually change existing feedback, you would have to update all
+    feedback on the assignment, effectively creating new StaticFeedbacks
+    from the latest published FeedbackDrafts for each AssignmentGroup.
+
+.. attribute:: grading_system_plugin_id
+
+    A CharField containing the ID of the grading system plugin this
+    assignment uses.
+
+
+.. attribute:: students_can_create_groups
+
+    BooleanField specifying if students can join/leave groups on
+    their own.
+
+    If this is ``True`` students should be allowed to join/leave groups.
+    If :attr:`.students_can_not_create_groups_after` is specified, this
+    students can not create groups after ``students_can_not_create_groups_after``
+    even if this is ``True``.ar 16 2017, 17:45 : This delivery was corrected, and given:
+
+    This does not in any way affect an admins ability to organize students
+    in groups manually.
+
+.. attribute:: students_can_not_create_groups_after
+
+    Students can not create project groups after this time. Ignored if
+    :attr:`.students_can_create_groups` is ``False``.
+
+    DateTimeField that defaults to ``None`` (null).
+
+.. attribute:: feedback_workflow
+
+    The feedback workflow used on the assignment. A feedback workflow
+    defines how examiners and administrators work together to make
+    feedback available to students.
+
+    Introduced in :devilryissue:`765`.'''
+}
+
+Table core_pointtogrademap {
+  id integer [pk, increment]
+  assignment_id integer [unique, not null]
+  invalid boolean [default: true, not null]
+
+  Note: '''Data structure to store the mapping from a point ranges to grades
+when using custom-table.
+
+The basic idea is described in https://github.com/devilry/devilry-django/issues/511,
+but we decided to add this OneToOne table to represent a mapping table
+to avoid adding complexity to Assignment that is only needed when the
+custom-table ``points_to_grade_mapper`` is used.
+
+.. attribute:: assignment
+
+    Foreign Key to the assignment.
+
+.. attribute:: invalid
+
+    This is set to ``True`` when the map has been invalidated because of
+    changes to :attr:`devilry.apps.core.models.Assignment.max_points`,
+    or when the map has been created, but it is empty.'''
+}
+
+Table core_pointrangetograde {
+  id integer [pk, increment]
+  point_to_grade_map_id integer [not null]
+  minimum_points integer [not null]
+  maximum_points integer [not null]
+  grade varchar(12) [not null]
+
+  indexes {
+    (point_to_grade_map_id) [name: 'core_pointrangetograde_point_to_grade_map_id_82a8e56b']
+    (point_to_grade_map_id, grade) [unique, name: 'core_pointrangetograde_point_to_grade_map_id_gr_222e49f3_uniq']
+  }
+
+  Note: '''Data structure to store the mapping from a single point-range to grade
+when using custom-table.
+
+First described in https://github.com/devilry/devilry-django/issues/511.
+
+.. attribute:: point_to_grade_map
+
+    Foreign Key to the PointToGradeMap.
+
+.. attribute:: minimum_points
+
+    Minimum value for points that matches this table entry.
+
+.. attribute:: maximum_points
+    Minimum value for points that matches this table entry.
+
+.. attribute:: grade
+
+    The grade that this entry represents a match for.'''
+}
+
+Table core_assignmentgroup {
+  id integer [pk, increment]
+  parentnode_id integer [not null]
+  name varchar(30) [default: '', not null, note: 'An optional name for the group. Typically used a project name on project assignments.']
+  is_open boolean [default: true, not null, note: 'If this is checked, the group can add deliveries.']
+  etag "timestamp with time zone" [not null, note: 'default in Python: now()']
+  batchoperation_id integer
+  copied_from_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  internal_is_being_deleted boolean [default: false, not null]
+
+  indexes {
+    (parentnode_id) [name: 'core_assignmentgroup_parentnode_id_87cccd37']
+    (batchoperation_id) [name: 'core_assignmentgroup_batchoperation_id_38d6850d']
+    (copied_from_id) [name: 'core_assignmentgroup_copied_from_id_e9b414dc']
+  }
+
+  Note: '''Represents a student or a group of students.
+
+.. attribute:: parentnode
+
+    A django.db.models.ForeignKey_ that points to the parent node,
+    which is always an Assignment.
+
+.. attribute:: name
+
+    An optional name for the group.
+
+.. attribute:: candidates
+
+    A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>`
+    on this group.
+
+.. attribute:: examiners
+
+    A django.db.models.ManyToManyField_ that holds the examiner(s) that are
+    to correct and grade the assignment.
+
+.. attribute:: is_open
+
+    A django.db.models.BooleanField_ that tells you if the group can add
+    deliveries or not.
+
+.. attribute:: tags
+
+    A django ``RelatedManager`` that holds the :class:`tags <devilry.apps.core.models.AssignmentGroupTag>`
+    on this group.
+
+.. attribute:: etag
+
+   A DateTimeField containing the etag for this object.
+
+.. attribute:: cached_data
+
+    A Django RelatedManager of :class:`cached_data <devilry.devilry_dbcache.models.AssignmentGroupCachedData>` for this AssignmentGroup.
+
+.. attribute:: feedbackset
+
+    A Django RelatedManager :class:`devilry.apps.core.models.FeedbackSet` for this AssignmentGroup
+
+Note:
+    Postgres triggers create a :class:`devilry.apps.core.models.FeedbackSet` on INSERT'''
+}
+
+Table core_assignmentgrouptag {
+  id integer [pk, increment]
+  assignment_group_id integer [not null]
+  tag varchar(20) [not null, note: 'A tag can contain a-z, A-Z, 0-9 and "_".']
+
+  indexes {
+    (assignment_group_id) [name: 'core_assignmentgrouptag_assignment_group_id_5d5cd401']
+    (tag) [name: 'core_assignmentgrouptag_tag_d831fb07']
+    (tag) [name: 'core_assignmentgrouptag_tag_d831fb07_like', note: 'varchar_pattern_ops']
+    (assignment_group_id, tag) [unique, name: 'core_assignmentgrouptag_assignment_group_id_tag_550dcdd2_uniq']
+  }
+
+  Note: '''An AssignmentGroup can be tagged with zero or more tags using this class.
+
+.. attribute:: assignment_group
+
+    The `AssignmentGroup`_ where this groups belongs.
+
+.. attribute:: tag
+
+    The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".'''
+}
+
+Table core_assignmentgrouphistory {
+  id integer [pk, increment]
+  assignment_group_id integer [unique, not null]
+  merge_history_json text [default: '{"merge_datetime": null, "state": null, "groups": []}', not null]
+
+  Note: '''This models keeps an audit trail of merges in a Btree structure
+
+Attributes:
+    assignment_group (:class:`core.AssignmentGroup`): One to one field to AssignmentGroup
+    merge_history_json (json): json string with history data'''
+}
+
+Table core_candidate {
+  id integer [pk, increment]
+  old_reference_not_in_use_student_id integer [default: null]
+  relatedstudent_id integer [not null]
+  assignment_group_id integer [not null]
+  candidate_id varchar(30) [note: 'An optional candidate id. This can be anything as long as it is less than 30 characters. Used to show the user on anonymous assignmens.']
+
+  indexes {
+    (old_reference_not_in_use_student_id) [name: 'core_candidate_old_reference_not_in_use_student_id_5c2092f7']
+    (relatedstudent_id) [name: 'core_candidate_relatedstudent_id_1eff0d45']
+    (assignment_group_id) [name: 'core_candidate_assignment_group_id_341f2f7b']
+  }
+
+  Note: '''A student within an AssignmentGroup.
+
+A candidate is a many-to-many between :class:`devilry.apps.core.models.AssignmentGroup`
+and a user.'''
+}
+
+Table core_devilryuserprofile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  full_name varchar(300)
+  languagecode varchar(100)
+
+  Note: '''User profile with a one-to-one relation to ``django.contrib.auth.models.User``.
+
+Ment to be used as a Django *user profile* (AUTH_PROFILE_MODULE).
+
+.. attribute:: full_name
+
+    Django splits names into first_name and last_name. They are only 30 chars each.
+    Read about why this is not a good idea here:
+
+        http://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/
+
+    Since we require support for *any* name, we use our own ``full_name``
+    field, and ignore the one in Django. Max length 300.
+
+.. attribute:: languagecode
+
+    Used to store the preferred language for a user.
+    Not required (The UI defaults to the default language)'''
+}
+
+Table core_assignmentgroup_examiners {
+  id integer [pk, increment]
+  old_reference_not_in_use_user_id integer [default: null]
+  assignmentgroup_id integer [not null]
+  relatedexaminer_id integer [not null]
+
+  indexes {
+    (old_reference_not_in_use_user_id) [name: 'core_assignmentgroup_exami_old_reference_not_in_use_u_931c3632']
+    (assignmentgroup_id) [name: 'core_assignmentgroup_examiners_assignmentgroup_id_ad605fe2']
+    (relatedexaminer_id) [name: 'core_assignmentgroup_examiners_relatedexaminer_id_e6767adb']
+    (relatedexaminer_id, assignmentgroup_id) [unique, name: 'core_assignmentgroup_exa_relatedexaminer_id_assig_5c41f012_uniq']
+  }
+
+  Note: '''.. attribute:: assignmentgroup
+
+    The `AssignmentGroup`_ where this groups belongs.
+
+.. attribute:: user
+
+    A foreign key to a User.'''
+}
+
+Table core_groupinvite {
+  id integer [pk, increment]
+  group_id integer [not null]
+  sent_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  sent_by_id integer [not null]
+  sent_to_id integer [not null]
+  accepted boolean
+  responded_datetime "timestamp with time zone" [default: null]
+
+  indexes {
+    (group_id) [name: 'core_groupinvite_group_id_bbf1239d']
+    (sent_by_id) [name: 'core_groupinvite_sent_by_id_1a813d8a']
+    (sent_to_id) [name: 'core_groupinvite_sent_to_id_e420918d']
+  }
+
+  Note: '''Represents a group invite sent by a student to invite another
+student to join their AssignmentGroup.
+
+Example:
+    invite = GroupInvite(
+        group=myassignmentgroup,
+        sent_by=somestudent, # Typically request.user
+        sent_to=anotherstudent
+    )
+    invite.full_clean() # MUST be called to validate that the invite is allowed
+    invite.save()
+    invite.send_invite_notification()
+
+To accept/reject an invite (sets the appropriate attributes and sends a notification)
+invite.respond(accepted=True)'''
+}
+
+Table core_examinerassignmentgrouphistory {
+  id integer [pk, increment]
+  assignment_group_id integer [not null]
+  user_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  is_add boolean [not null]
+
+  indexes {
+    (assignment_group_id) [name: 'core_examinerassignmentgro_assignment_group_id_eb832a6e']
+    (user_id) [name: 'core_examinerassignmentgrouphistory_user_id_1636fd1b']
+  }
+
+  Note: '''An entry of this is model created if a :class:`devilry.apps.core.models.examiner.Examiner`-entry is inserted or
+deleted.
+
+Columns from AbstractExaminerCandidateAssignmentGroupHistory (abstract): assignment_group_id, user_id, created_datetime, is_add.'''
+}
+
+Table core_candidateassignmentgrouphistory {
+  id integer [pk, increment]
+  assignment_group_id integer [not null]
+  user_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  is_add boolean [not null]
+
+  indexes {
+    (assignment_group_id) [name: 'core_candidateassignmentgr_assignment_group_id_98c373a5']
+    (user_id) [name: 'core_candidateassignmentgrouphistory_user_id_7a3668f9']
+  }
+
+  Note: '''An entry of this is model created if a :class:`devilry.apps.core.models.candidate.Candidate`-entry is inserted or
+deleted.
+
+Columns from AbstractExaminerCandidateAssignmentGroupHistory (abstract): assignment_group_id, user_id, created_datetime, is_add.'''
+}
+
+Table devilry_account_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login "timestamp with time zone"
+  is_superuser boolean [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  shortname varchar(255) [unique, not null, note: 'The short name for the user. This is set automatically to the email or username depending on the method used for authentication.']
+  fullname text [default: '', not null]
+  lastname text [default: '', not null]
+  datetime_joined "timestamp with time zone" [not null, note: 'default in Python: now()']
+  suspended_datetime "timestamp with time zone" [note: 'Time when the account was suspended']
+  suspended_reason text [default: '', not null]
+  languagecode varchar(10) [default: '', not null]
+
+  indexes {
+    (shortname) [name: 'devilry_account_user_shortname_8ef6b1f9_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''User model for Devilry.
+
+Columns from AbstractBaseUser (abstract): password, last_login.'''
+}
+
+Table devilry_account_mergeduser {
+  id integer [pk, increment]
+  source_user_id integer [not null]
+  target_user_id integer [not null]
+  summary_json jsonb [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (source_user_id) [name: 'devilry_account_mergeduser_source_user_id_bd610387']
+    (target_user_id) [name: 'devilry_account_mergeduser_target_user_id_e7ae7791']
+  }
+
+  Note: '''A merge user is created when two users are merged
+by `devilry.devilry_account.user_merger.UserMerger`.'''
+}
+
+Table devilry_account_useremail {
+  id integer [pk, increment]
+  user_id integer [not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  last_updated_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  email varchar(255) [unique, not null]
+  use_for_notifications boolean [default: true, not null]
+  is_primary UserEmailIsPrimary [note: 'Your primary email is the email address used when we need to display a single email address.']
+
+  indexes {
+    (user_id) [name: 'devilry_account_useremail_user_id_396ac919']
+    (email) [name: 'devilry_account_useremail_email_d05b200b_like', note: 'varchar_pattern_ops']
+    (user_id, is_primary) [unique, name: 'devilry_account_useremail_user_id_is_primary_20905615_uniq']
+  }
+
+  Note: '''Stores a single email address for a :class:`.User`.
+
+Columns from AbstractUserIdentity (abstract): user_id, created_datetime, last_updated_datetime.'''
+}
+
+Table devilry_account_username {
+  id integer [pk, increment]
+  user_id integer [not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  last_updated_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  username varchar(255) [unique, not null]
+  is_primary UserNameIsPrimary [note: 'Your primary username is shown alongside your full name to identify you to teachers, examiners and other students.']
+
+  indexes {
+    (user_id) [name: 'devilry_account_username_user_id_01a03912']
+    (username) [name: 'devilry_account_username_username_49a63d54_like', note: 'varchar_pattern_ops']
+    (user_id, is_primary) [unique, name: 'devilry_account_username_user_id_is_primary_1276fc95_uniq']
+  }
+
+  Note: '''Stores a single username for a :class:`.User`.
+
+The username is used for login, and the primary username
+is synced into :obj:`.User.shortname`.
+
+Columns from AbstractUserIdentity (abstract): user_id, created_datetime, last_updated_datetime.'''
+}
+
+Table devilry_account_permissiongroupuser {
+  id integer [pk, increment]
+  permissiongroup_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (permissiongroup_id) [name: 'devilry_account_permissiongroupuser_permissiongroup_id_047b34da']
+    (user_id) [name: 'devilry_account_permissiongroupuser_user_id_08523943']
+    (permissiongroup_id, user_id) [unique, name: 'devilry_account_permissi_permissiongroup_id_user__9a589100_uniq']
+  }
+
+  Note: '''Defines the many-to-many relationship between :class:`.User`
+and :class:`.PermissionGroup`.'''
+}
+
+Table devilry_account_permissiongroup {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null, note: 'A unique name for this group.']
+  created_datetime "timestamp with time zone" [not null, note: 'The time when this group was created.. default in Python: now()']
+  updated_datetime "timestamp with time zone" [not null, note: 'The time when this group last updated.. default in Python: now()']
+  syncsystem_update_datetime "timestamp with time zone" [note: 'The time when this group last updated from a third party sync system.']
+  grouptype PermissionGroupGrouptype [not null, note: 'Course and semester administrator groups can only be assigned to a single course or semester. Department administrator groups can be assigned to multiple courses. You can not change this for existing permission groups.']
+  is_custom_manageable boolean [default: false, not null, note: 'Is this group mageable by non-superusers. Can not be enabled for department administrator groups.']
+
+  indexes {
+    (name) [name: 'devilry_account_permissiongroup_name_1a3f7402_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Permission group data model.
+
+Each group has a :obj:`~.PermissionGroup.grouptype` which determines
+the type of objects it can be added to.'''
+}
+
+Table devilry_account_periodpermissiongroup {
+  id integer [pk, increment]
+  permissiongroup_id integer [not null]
+  period_id integer [not null]
+
+  indexes {
+    (permissiongroup_id) [name: 'devilry_account_periodperm_permissiongroup_id_35ab812e']
+    (period_id) [name: 'devilry_account_periodpermissiongroup_period_id_f0050b74']
+    (permissiongroup_id, period_id) [unique, name: 'devilry_account_periodpe_permissiongroup_id_perio_bf361e64_uniq']
+  }
+
+  Note: '''Defines the many-to-many relationship between
+:class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.'''
+}
+
+Table devilry_account_subjectpermissiongroup {
+  id integer [pk, increment]
+  permissiongroup_id integer [not null]
+  subject_id integer [not null]
+
+  indexes {
+    (permissiongroup_id) [name: 'devilry_account_subjectper_permissiongroup_id_8ebe0b44']
+    (subject_id) [name: 'devilry_account_subjectpermissiongroup_subject_id_e4350b1d']
+    (permissiongroup_id, subject_id) [unique, name: 'devilry_account_subjectp_permissiongroup_id_subje_2da491f6_uniq']
+  }
+
+  Note: '''Defines the many-to-many relationship between
+:class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.'''
+}
+
+Table devilry_account_perioduserguidelineacceptance {
+  id integer [pk, increment]
+  user_id integer [not null]
+  period_id integer [not null]
+  devilryrole varchar(20) [not null]
+  accepted_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  guidelines_version varchar(20) [not null]
+  matched_regex text [not null]
+
+  indexes {
+    (user_id) [name: 'devilry_account_perioduserguidelineacceptance_user_id_0781433e']
+    (period_id) [name: 'devilry_account_perioduser_period_id_632d4688']
+    (devilryrole) [name: 'devilry_account_perioduser_devilryrole_abf92a99']
+    (devilryrole) [name: 'devilry_account_periodus_devilryrole_abf92a99_like', note: 'varchar_pattern_ops']
+    (accepted_datetime) [name: 'devilry_account_perioduser_accepted_datetime_196a1d81']
+    (guidelines_version) [name: 'devilry_account_perioduser_guidelines_version_79e7500c']
+    (guidelines_version) [name: 'devilry_account_periodus_guidelines_version_79e7500c_like', note: 'varchar_pattern_ops']
+    (user_id, period_id, devilryrole, guidelines_version) [unique, name: 'unique_user_period_role_version']
+  }
+}
+
+Table devilry_compressionutil_compressedarchivemeta {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  content_object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  created_by_id integer [default: null]
+  created_by_role CompressedArchiveMetaCreatedByRole [default: '', not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  archive_name varchar(200) [not null]
+  archive_path varchar(200) [not null]
+  archive_size bigint [not null]
+  backend_id varchar(100) [default: '', not null]
+  deleted_datetime "timestamp with time zone" [default: null]
+
+  indexes {
+    (content_type_id) [name: 'devilry_compressionutil_co_content_type_id_dc562e1b']
+    (created_by_id) [name: 'devilry_compressionutil_co_created_by_id_edfcbf68']
+  }
+
+  Note: '''Metadata about a compressed archive. Name of the archive, path to it and it\'s size.
+
+Columns from GenericMeta (abstract): content_type_id, content_object_id.'''
+}
+
+Table devilry_group_feedbackset {
+  id integer [pk, increment]
+  group_id integer [not null]
+  feedbackset_type FeedbackSetFeedbacksetType [default: 'new_attempt', not null]
+  ignored boolean [default: false, not null]
+  ignored_reason text [default: '', not null]
+  ignored_datetime "timestamp with time zone"
+  created_by_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  last_updated_by_id integer
+  deadline_datetime "timestamp with time zone" [not null]
+  grading_published_datetime "timestamp with time zone"
+  grading_published_by_id integer
+  grading_points integer
+  gradeform_data_json text [default: '', not null]
+
+  indexes {
+    (group_id) [name: 'devilry_group_feedbackset_group_id_5987135e']
+    (feedbackset_type) [name: 'devilry_group_feedbackset_feedbackset_type_072ca399']
+    (feedbackset_type) [name: 'devilry_group_feedbackset_feedbackset_type_072ca399_like', note: 'varchar_pattern_ops']
+    (created_by_id) [name: 'devilry_group_feedbackset_created_by_id_650ceed9']
+    (last_updated_by_id) [name: 'devilry_group_feedbackset_last_updated_by_id_960089c6']
+    (grading_published_by_id) [name: 'devilry_group_feedbackset_grading_published_by_id_75176877']
+  }
+
+  Note: '''All comments that are given for a specific deadline (delivery and feedback) are
+linked to a feedback-set.
+
+If the comment has `instant_publish=True` it will be published instantly, otherwise the comments will only be
+visible once the feedbackset is published.
+All student-comments will be `instant_publish=True`, and the same applies to comments made by examiners that
+are not a part of feedback.'''
+}
+
+Table devilry_group_feedbacksetpassedpreviousperiod {
+  id integer [pk, increment]
+  feedbackset_id integer [unique]
+  passed_previous_period_type FeedbacksetPassedPreviousPeriodPassedPreviousPeriodType [not null]
+  assignment_short_name varchar(20) [default: '', not null, note: 'Up to 20 letters of lowercase english letters (a-z), numbers, underscore ("_") and hyphen ("-"). Used when the name takes too much space.']
+  assignment_long_name varchar(100) [default: '', not null]
+  assignment_max_points integer [default: 0]
+  assignment_passing_grade_min_points integer [default: 0]
+  period_short_name varchar(20) [default: '', not null, note: 'Up to 20 letters of lowercase english letters (a-z), numbers, underscore ("_") and hyphen ("-"). Used when the name takes too much space.']
+  period_long_name varchar(100) [default: '', not null]
+  period_start_time "timestamp with time zone" [default: null]
+  period_end_time "timestamp with time zone" [default: null]
+  grading_points integer [default: 0]
+  grading_published_by_id integer
+  grading_published_datetime "timestamp with time zone" [default: null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  created_by_id integer
+
+  indexes {
+    (assignment_short_name) [name: 'devilry_group_feedbacksetp_assignment_short_name_be9f985a']
+    (assignment_short_name) [name: 'devilry_group_feedbackse_assignment_short_name_be9f985a_like', note: 'varchar_pattern_ops']
+    (assignment_long_name) [name: 'devilry_group_feedbacksetp_assignment_long_name_adac6ed1']
+    (assignment_long_name) [name: 'devilry_group_feedbackse_assignment_long_name_adac6ed1_like', note: 'varchar_pattern_ops']
+    (period_short_name) [name: 'devilry_group_feedbacksetp_period_short_name_a541d96e']
+    (period_short_name) [name: 'devilry_group_feedbackse_period_short_name_a541d96e_like', note: 'varchar_pattern_ops']
+    (period_long_name) [name: 'devilry_group_feedbacksetp_period_long_name_c7d4b92b']
+    (period_long_name) [name: 'devilry_group_feedbackse_period_long_name_c7d4b92b_like', note: 'varchar_pattern_ops']
+    (grading_published_by_id) [name: 'devilry_group_feedbacksetp_grading_published_by_id_4090bbe2']
+    (created_by_id) [name: 'devilry_group_feedbacksetp_created_by_id_b8572995']
+  }
+
+  Note: '''This model is used when a student have passed an assignment in previous period.
+Therefore we need to save some old data about the :class:`core.Assignment`, :class:`devilry_group.FeedbackSet`
+and :class:`core.Period` from previous period.'''
+}
+
+Table devilry_group_feedbacksetgradingupdatehistory {
+  id integer [pk, increment]
+  feedback_set_id integer [not null]
+  updated_by_id integer
+  updated_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  old_grading_points integer [not null]
+  old_grading_published_by_id integer
+  old_grading_published_datetime "timestamp with time zone" [not null]
+
+  indexes {
+    (feedback_set_id) [name: 'devilry_group_feedbacksetg_feedback_set_id_24f4c349']
+    (updated_by_id) [name: 'devilry_group_feedbacksetg_updated_by_id_5aa2ab0f']
+    (old_grading_published_by_id) [name: 'devilry_group_feedbacksetg_old_grading_published_by_i_f855818b']
+  }
+
+  Note: '''Logs changes on the grading for a feedbackset.
+
+If we have this history, there will be no problem changing the grades on an already corrected feedback set, as we
+can display the history, just as with FeedbackSetDeadlineHistory.'''
+}
+
+Table devilry_group_feedbacksetdeadlinehistory {
+  id integer [pk, increment]
+  feedback_set_id integer [not null]
+  changed_by_id integer
+  changed_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  deadline_old "timestamp with time zone" [not null]
+  deadline_new "timestamp with time zone" [not null]
+
+  indexes {
+    (feedback_set_id) [name: 'devilry_group_feedbacksetd_feedback_set_id_52741ef3']
+    (changed_by_id) [name: 'devilry_group_feedbacksetdeadlinehistory_changed_by_id_8dd1df9c']
+  }
+
+  Note: '''Logs change in deadline for a FeedbackSet.'''
+}
+
+Table devilry_group_groupcomment {
+  comment_ptr_id integer [pk, note: 'parent link: a GroupComment is a Comment (multi-table inheritance)']
+  feedback_set_id integer [not null]
+  part_of_grading boolean [default: false, not null]
+  visibility GroupCommentVisibility [default: 'visible-to-everyone', not null]
+  v2_id varchar(255) [default: '', not null]
+
+  indexes {
+    (feedback_set_id) [name: 'devilry_group_groupcomment_feedback_set_id_1ee37508']
+    (visibility) [name: 'devilry_group_groupcomment_visibility_6372acca']
+    (visibility) [name: 'devilry_group_groupcomment_visibility_6372acca_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''A comment made to an `AssignmentGroup`.
+
+Columns from AbstractGroupComment (abstract): comment_ptr_id, feedback_set_id, part_of_grading, visibility.'''
+}
+
+Table devilry_group_groupcommentedithistory {
+  commentedithistory_ptr_id integer [pk, note: 'parent link: a GroupCommentEditHistory is a CommentEditHistory (multi-table inheritance)']
+  group_comment_id integer [not null]
+  visibility varchar(50) [not null]
+
+  indexes {
+    (group_comment_id) [name: 'devilry_group_groupcommentedithistory_group_comment_id_123b9b0d']
+    (visibility) [name: 'devilry_group_groupcommentedithistory_visibility_fddebfac']
+    (visibility) [name: 'devilry_group_groupcommentedithistory_visibility_fddebfac_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Model for logging changes in a :class:`.GroupComment`.'''
+}
+
+Table devilry_group_imageannotationcomment {
+  comment_ptr_id integer [pk, note: 'parent link: a ImageAnnotationComment is a Comment (multi-table inheritance)']
+  feedback_set_id integer [not null]
+  part_of_grading boolean [default: false, not null]
+  visibility ImageAnnotationCommentVisibility [default: 'visible-to-everyone', not null]
+  image_id integer [not null]
+  x_coordinate integer [not null]
+  y_coordinate integer [not null]
+
+  indexes {
+    (feedback_set_id) [name: 'devilry_group_imageannotationcomment_feedback_set_id_c8a92a7c']
+    (visibility) [name: 'devilry_group_imageannotationcomment_visibility_1a76f5a8']
+    (visibility) [name: 'devilry_group_imageannotationcomment_visibility_1a76f5a8_like', note: 'varchar_pattern_ops']
+    (image_id) [name: 'devilry_group_imageannotationcomment_image_id_5760aa73']
+  }
+
+  Note: '''A comment made on a file, as an annotation
+
+Columns from AbstractGroupComment (abstract): comment_ptr_id, feedback_set_id, part_of_grading, visibility.'''
+}
+
+Table devilry_comment_comment {
+  id integer [pk, increment]
+  text text [default: '', not null]
+  draft_text text [default: '', not null]
+  user_id integer
+  parent_id integer
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  published_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  user_role CommentUserRole [not null]
+  comment_type CommentCommentType [not null]
+
+  indexes {
+    (user_id) [name: 'devilry_comment_comment_user_id_ddc7b6b0']
+    (parent_id) [name: 'devilry_comment_comment_parent_id_716b1f97']
+  }
+
+  Note: '''Main class for a comment.
+
+A comment made by an user.'''
+}
+
+Table devilry_comment_commentedithistory {
+  id integer [pk, increment]
+  comment_id integer [not null]
+  edited_by_id integer
+  edited_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  post_edit_text text [default: '', not null]
+  pre_edit_text text [default: '', not null]
+
+  indexes {
+    (comment_id) [name: 'devilry_comment_commentedithistory_comment_id_91baeb5a']
+    (edited_by_id) [name: 'devilry_comment_commentedithistory_edited_by_id_2e51be6c']
+  }
+
+  Note: '''Model for logging changes in a :class:`.Comment`.'''
+}
+
+Table devilry_comment_commentfile {
+  id integer [pk, increment]
+  mimetype varchar(255) [not null]
+  file varchar(512) [default: '', not null]
+  filename varchar(255) [not null]
+  filesize integer [not null]
+  comment_id integer [not null]
+  processing_started_datetime "timestamp with time zone"
+  processing_completed_datetime "timestamp with time zone"
+  processing_successful boolean [default: false, not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  v2_id varchar(255) [default: '', not null]
+
+  indexes {
+    (file) [name: 'devilry_comment_commentfile_file_23855966']
+    (file) [name: 'devilry_comment_commentfile_file_23855966_like', note: 'varchar_pattern_ops']
+    (comment_id) [name: 'devilry_comment_commentfile_comment_id_d2e33543']
+  }
+
+  Note: '''Main class for a file uploaded to a :class:`Comment`'''
+}
+
+Table devilry_comment_commentfileimage {
+  id integer [pk, increment]
+  comment_file_id integer [not null]
+  image varchar(512) [default: '', not null]
+  image_width integer [not null]
+  image_height integer [not null]
+  thumbnail varchar(512) [default: '', not null]
+  thumbnail_width integer [not null]
+  thumbnail_height integer [not null]
+
+  indexes {
+    (comment_file_id) [name: 'devilry_comment_commentfileimage_comment_file_id_907bec97']
+    (image) [name: 'devilry_comment_commentfileimage_image_955e2205']
+    (image) [name: 'devilry_comment_commentfileimage_image_955e2205_like', note: 'varchar_pattern_ops']
+    (thumbnail) [name: 'devilry_comment_commentfileimage_thumbnail_dc2a6a88']
+    (thumbnail) [name: 'devilry_comment_commentfileimage_thumbnail_dc2a6a88_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''An image representing a single page of a :class:`CommentFile`.'''
+}
+
+Table devilry_qualifiesforexam_deadlinetag {
+  id integer [pk, increment]
+  timestamp "timestamp with time zone" [not null]
+  tag varchar(30)
+}
+
+Table devilry_qualifiesforexam_periodtag {
+  period_id integer [pk]
+  deadlinetag_id integer [not null]
+
+  indexes {
+    (deadlinetag_id) [name: 'devilry_qualifiesforexam_periodtag_deadlinetag_id_e41288ef']
+  }
+}
+
+Table devilry_qualifiesforexam_status {
+  id integer [pk, increment]
+  status StatusStatus [not null]
+  period_id integer [not null]
+  createtime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  message text [default: '', not null]
+  user_id integer [not null]
+  plugin varchar(500)
+  plugin_data jsonb
+  exported_timestamp "timestamp with time zone"
+
+  indexes {
+    (period_id) [name: 'devilry_qualifiesforexam_status_period_id_0719dddc']
+    (user_id) [name: 'devilry_qualifiesforexam_status_user_id_f3d687ed']
+  }
+}
+
+Table devilry_qualifiesforexam_qualifiesforfinalexam {
+  id integer [pk, increment]
+  relatedstudent_id integer [not null]
+  status_id integer [not null]
+  qualifies boolean
+
+  indexes {
+    (relatedstudent_id) [name: 'devilry_qualifiesforexam_q_relatedstudent_id_a473d52f']
+    (status_id) [name: 'devilry_qualifiesforexam_q_status_id_739aa9de']
+    (relatedstudent_id, status_id) [unique, name: 'devilry_qualifiesforexam_relatedstudent_id_status_8723fdfb_uniq']
+  }
+}
+
+Table devilry_qualifiesforexam_deletedqualifiesforfinalexam {
+  id integer [pk, increment]
+  relatedstudent_id integer [not null]
+  status_id integer [not null]
+  qualifies boolean
+
+  indexes {
+    (relatedstudent_id) [name: 'devilry_qualifiesforexam_d_relatedstudent_id_1e10750d']
+    (status_id) [name: 'devilry_qualifiesforexam_d_status_id_46f01360']
+  }
+}
+
+Table devilry_qualifiesforexam_draftstatus {
+  id integer [pk, increment]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  created_by_id integer [not null]
+  period_id integer [not null]
+  plugin varchar(500)
+  plugin_data jsonb [note: 'default in Python: dict()']
+  processing_started_datetime "timestamp with time zone" [default: null]
+  processing_completed_datetime "timestamp with time zone" [default: null]
+  processing_status DraftStatusProcessingStatusChoices [default: 'not_started', not null]
+  processing_status_data jsonb [note: 'default in Python: dict()']
+
+  indexes {
+    (created_by_id) [name: 'devilry_qualifiesforexam_draftstatus_created_by_id_d1da3e4b']
+    (period_id) [name: 'devilry_qualifiesforexam_draftstatus_period_id_e46db2ea']
+  }
+
+  Note: '''A model used for drafting results.
+
+This is used for storing the results of a plugin before it\'s saved as a :class:`~.Status`. This allows 
+us to run the plugin-processing of students in a background task to scale with large courses and/or demanding 
+result collection.'''
+}
+
+Table devilry_qualifiesforexam_draftqualifiesforfinalexam {
+  id integer [pk, increment]
+  relatedstudent_id integer [not null]
+  draft_status_id integer [not null]
+  qualifies boolean [default: false, not null]
+
+  indexes {
+    (relatedstudent_id) [name: 'devilry_qualifiesforexam_d_relatedstudent_id_3045fe4c']
+    (draft_status_id) [name: 'devilry_qualifiesforexam_d_draft_status_id_88c87770']
+  }
+
+  Note: '''A model used for storing draft-data about a student.'''
+}
+
+Table devilry_dbcache_assignmentgroupcacheddata {
+  id integer [pk, increment]
+  group_id integer [unique, not null]
+  first_feedbackset_id integer
+  last_feedbackset_id integer
+  last_published_feedbackset_id integer
+  new_attempt_count integer [default: 0, not null]
+  public_total_comment_count integer [default: 0, not null]
+  public_student_comment_count integer [default: 0, not null]
+  public_examiner_comment_count integer [default: 0, not null]
+  public_admin_comment_count integer [default: 0, not null]
+  public_student_file_upload_count integer [default: 0, not null]
+  public_student_attempts_with_delivered_files integer [default: 0, not null]
+  last_public_comment_by_student_datetime "timestamp with time zone"
+  last_public_comment_by_examiner_datetime "timestamp with time zone"
+  examiner_count integer [default: 0, not null]
+  candidate_count integer [default: 0, not null]
+
+  indexes {
+    (first_feedbackset_id) [name: 'devilry_dbcache_assignment_first_feedbackset_id_89c38dc7']
+    (last_feedbackset_id) [name: 'devilry_dbcache_assignment_last_feedbackset_id_6961c179']
+    (last_published_feedbackset_id) [name: 'devilry_dbcache_assignment_last_published_feedbackset_453296b2']
+  }
+
+  Note: '''Automatically cached data for an
+:class:`devilry.apps.core.models.assignment_group.AssignmentGroup`.
+
+This model is automatically maintained via postgres triggers, and
+it should never be edited manually.'''
+}
+
+Table devilry_message_message {
+  id integer [pk, increment]
+  created_datetime "timestamp with time zone" [note: 'default in Python: now()']
+  created_by_id integer [default: null]
+  status MessageStatus [default: 'draft', not null]
+  status_data jsonb [not null, note: 'default in Python: dict()']
+  metadata jsonb [not null, note: 'default in Python: dict()']
+  context_type MessageContextType [default: 'other', not null]
+  message_type "varchar(30)[]" [not null]
+  virtual_message_receivers jsonb [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (created_by_id) [name: 'devilry_message_message_created_by_id_a8eedba2']
+    (status) [name: 'devilry_message_message_status_a1e70f20']
+    (status) [name: 'devilry_message_message_status_a1e70f20_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''The `Message`-class handles preparing and sending of different messages in the Devilry-system.
+
+This model contains metadata about a message sent to one or multiple users, what type of message it is, the overall
+status of the message and creates recipients for the email to be sent.
+
+Notes:
+    The actual subject and message-content is stored on each :class:`.MessageReceiver` with a
+    foreignkey to this class. The reason for this being that we want to save the subject and content
+    in the preferred language of the user.'''
+}
+
+Table devilry_message_messagereceiver {
+  id integer [pk, increment]
+  created_datetime "timestamp with time zone" [note: 'default in Python: now()']
+  status MessageReceiverStatus [default: 'not_sent', not null]
+  status_data jsonb [not null, note: 'default in Python: dict()']
+  metadata jsonb [not null, note: 'default in Python: dict()']
+  subject varchar(255) [default: '', not null]
+  message_content_plain text [default: '', not null]
+  message_content_html text [default: '', not null]
+  message_id integer [not null]
+  message_type varchar(30) [not null]
+  send_to varchar(255) [default: '', not null]
+  user_id integer [not null]
+  sent_datetime "timestamp with time zone"
+  sending_failed_count integer [default: 0, not null]
+  sending_success_count integer [default: 0, not null]
+
+  indexes {
+    (message_id) [name: 'devilry_message_messagereceiver_message_id_d1452084']
+    (message_type) [name: 'devilry_message_messagereceiver_message_type_c7e2d924']
+    (message_type) [name: 'devilry_message_messagereceiver_message_type_c7e2d924_like', note: 'varchar_pattern_ops']
+    (user_id) [name: 'devilry_message_messagereceiver_user_id_06b01621']
+  }
+
+  Note: '''This class represents a single message to a single user.
+
+Contains data about the specific message for a user:
+    - ForeignKey to a user.
+    - The status of the sending.
+    - How many time the message has been successfully and unsuccessfully sent to the user.
+    - The subject.
+    - The content as both html and plaintext.
+    - When the message was successfully sent.
+
+The subject and message-content is stored in the users preferred language when the first
+message was created.'''
+}
+
+Table devilry_report_devilryreport {
+  id integer [pk, increment]
+  generated_by_user_id integer [not null]
+  created_datetime "timestamp with time zone" [not null, note: 'default in Python: now()']
+  started_datetime "timestamp with time zone" [default: null]
+  finished_datetime "timestamp with time zone" [default: null]
+  generator_type varchar(255) [not null]
+  generator_options jsonb [not null, note: 'default in Python: dict()']
+  status DevilryReportStatus [default: 'unprocessed', not null]
+  status_data jsonb [not null, note: 'default in Python: dict()']
+  output_filename varchar(255) [default: '']
+  content_type varchar(255) [default: '']
+  result bytea [not null]
+
+  indexes {
+    (generated_by_user_id) [name: 'devilry_report_devilryreport_generated_by_user_id_4120a74b']
+  }
+
+  Note: '''A model representing a report of various data, e.g complete user report.
+
+The model is designed for being updated asynchronously with a continuously
+updated status while generating a report. Of course, the a report can also be generated synchronously,
+but usually the report generators will perform time-consuming tasks.
+
+Report data is stored as binary data, and is always generated for a specific user.'''
+}
+
+Table account_emailaddress {
+  id integer [pk, increment]
+  user_id integer [not null]
+  email varchar(254) [not null]
+  verified boolean [default: false, not null]
+  primary boolean [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'account_emailaddress_user_id_2c513194']
+    (email) [name: 'account_emailaddress_email_03be32b2']
+    (email) [name: 'account_emailaddress_email_03be32b2_like', note: 'varchar_pattern_ops']
+    (user_id, email) [unique, name: 'account_emailaddress_user_id_email_987c8728_uniq']
+    (user_id, primary) [unique, name: 'unique_primary_email', note: 'where "primary"']
+    (email) [unique, name: 'unique_verified_email', note: 'where "verified"']
+  }
+}
+
+Table account_emailconfirmation {
+  id integer [pk, increment]
+  email_address_id integer [not null]
+  created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  sent "timestamp with time zone"
+  key varchar(64) [unique, not null]
+
+  indexes {
+    (email_address_id) [name: 'account_emailconfirmation_email_address_id_5b7f8c58']
+    (key) [name: 'account_emailconfirmation_key_f43612bd_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table socialaccount_socialapp {
+  id integer [pk, increment]
+  provider varchar(30) [not null]
+  provider_id varchar(200) [not null]
+  name varchar(40) [not null]
+  client_id varchar(191) [not null, note: 'App ID, or consumer key']
+  secret varchar(191) [not null, note: 'API secret, client secret, or consumer secret']
+  key varchar(191) [not null, note: 'Key']
+  settings jsonb [not null, note: 'default in Python: dict()']
+}
+
+Table socialaccount_socialaccount {
+  id integer [pk, increment]
+  user_id integer [not null]
+  provider varchar(200) [not null]
+  uid varchar(191) [not null]
+  last_login "timestamp with time zone" [not null, note: 'default in Python: now()']
+  date_joined "timestamp with time zone" [not null, note: 'default in Python: now()']
+  extra_data jsonb [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (user_id) [name: 'socialaccount_socialaccount_user_id_8146e70c']
+    (provider, uid) [unique, name: 'socialaccount_socialaccount_provider_uid_fc810c6e_uniq']
+  }
+}
+
+Table socialaccount_socialtoken {
+  id integer [pk, increment]
+  app_id integer
+  account_id integer [not null]
+  token text [not null, note: '"oauth_token" (OAuth1) or access token (OAuth2)']
+  token_secret text [not null, note: '"oauth_token_secret" (OAuth1) or refresh token (OAuth2)']
+  expires_at "timestamp with time zone"
+
+  indexes {
+    (app_id) [name: 'socialaccount_socialtoken_app_id_636a42d7']
+    (account_id) [name: 'socialaccount_socialtoken_account_id_951f210e']
+    (app_id, account_id) [unique, name: 'socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq']
+  }
+}
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > devilry_account_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref ievv_batchframework_batchoperation_started_by_id_fk: ievv_batchframework_batchoperation.started_by_id > devilry_account_user.id [delete: cascade]
+
+Ref ievv_batchframework_batchoperation_context_content_type_id_fk: ievv_batchframework_batchoperation.context_content_type_id > django_content_type.id [delete: cascade]
+
+Ref cradmin_temporaryfileuploadstore_temporaryfilecollection_user_id_fk: cradmin_temporaryfileuploadstore_temporaryfilecollection.user_id > devilry_account_user.id [delete: cascade]
+
+Ref cradmin_temporaryfileuploadstore_temporaryfile_collection_id_fk: cradmin_temporaryfileuploadstore_temporaryfile.collection_id > cradmin_temporaryfileuploadstore_temporaryfilecollection.id [delete: cascade]
+
+Ref cradmin_generic_token_with_metadata_generictokenwithmetadata_content_type_id_fk: cradmin_generic_token_with_metadata_generictokenwithmetadata.content_type_id > django_content_type.id [delete: cascade]
+
+Table core_subject_admins {
+  id integer [pk, increment]
+  subject_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (subject_id) [name: 'core_subject_admins_subject_id_1eab04df']
+    (user_id) [name: 'core_subject_admins_user_id_5440373d']
+    (subject_id, user_id) [unique, name: 'core_subject_admins_subject_id_user_id_77acf758_uniq']
+  }
+}
+
+Ref core_subject_admins_subject_id_fk: core_subject_admins.subject_id > core_subject.id [delete: cascade]
+
+Ref core_subject_admins_user_id_fk: core_subject_admins.user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_period_parentnode_id_fk: core_period.parentnode_id > core_subject.id [delete: cascade]
+
+Table core_period_admins {
+  id integer [pk, increment]
+  period_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (period_id) [name: 'core_period_admins_period_id_242db1f0']
+    (user_id) [name: 'core_period_admins_user_id_fd36ee29']
+    (period_id, user_id) [unique, name: 'core_period_admins_period_id_user_id_352bd89e_uniq']
+  }
+}
+
+Ref core_period_admins_period_id_fk: core_period_admins.period_id > core_period.id [delete: cascade]
+
+Ref core_period_admins_user_id_fk: core_period_admins.user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_periodapplicationkeyvalue_period_id_fk: core_periodapplicationkeyvalue.period_id > core_period.id [delete: cascade]
+
+Ref core_relatedexaminer_period_id_fk: core_relatedexaminer.period_id > core_period.id [delete: cascade]
+
+Ref core_relatedexaminer_user_id_fk: core_relatedexaminer.user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_relatedstudent_period_id_fk: core_relatedstudent.period_id > core_period.id [delete: cascade]
+
+Ref core_relatedstudent_user_id_fk: core_relatedstudent.user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_relatedstudentkeyvalue_relatedstudent_id_fk: core_relatedstudentkeyvalue.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref core_periodtag_period_id_fk: core_periodtag.period_id > core_period.id [delete: cascade]
+
+Table core_periodtag_relatedexaminers {
+  id integer [pk, increment]
+  periodtag_id integer [not null]
+  relatedexaminer_id integer [not null]
+
+  indexes {
+    (periodtag_id) [name: 'core_periodtag_relatedexaminers_periodtag_id_d532c009']
+    (relatedexaminer_id) [name: 'core_periodtag_relatedexaminers_relatedexaminer_id_faa47fdc']
+    (periodtag_id, relatedexaminer_id) [unique, name: 'core_periodtag_relatedex_periodtag_id_relatedexam_a5a9b5ab_uniq']
+  }
+}
+
+Ref core_periodtag_relatedexaminers_periodtag_id_fk: core_periodtag_relatedexaminers.periodtag_id > core_periodtag.id [delete: cascade]
+
+Ref core_periodtag_relatedexaminers_relatedexaminer_id_fk: core_periodtag_relatedexaminers.relatedexaminer_id > core_relatedexaminer.id [delete: cascade]
+
+Table core_periodtag_relatedstudents {
+  id integer [pk, increment]
+  periodtag_id integer [not null]
+  relatedstudent_id integer [not null]
+
+  indexes {
+    (periodtag_id) [name: 'core_periodtag_relatedstudents_periodtag_id_0aacb973']
+    (relatedstudent_id) [name: 'core_periodtag_relatedstudents_relatedstudent_id_fceab87a']
+    (periodtag_id, relatedstudent_id) [unique, name: 'core_periodtag_relatedst_periodtag_id_relatedstud_91082554_uniq']
+  }
+}
+
+Ref core_periodtag_relatedstudents_periodtag_id_fk: core_periodtag_relatedstudents.periodtag_id > core_periodtag.id [delete: cascade]
+
+Ref core_periodtag_relatedstudents_relatedstudent_id_fk: core_periodtag_relatedstudents.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref core_assignment_parentnode_id_fk: core_assignment.parentnode_id > core_period.id [delete: cascade]
+
+Table core_assignment_admins {
+  id integer [pk, increment]
+  assignment_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (assignment_id) [name: 'core_assignment_admins_assignment_id_59bacced']
+    (user_id) [name: 'core_assignment_admins_user_id_184d9aef']
+    (assignment_id, user_id) [unique, name: 'core_assignment_admins_assignment_id_user_id_35645334_uniq']
+  }
+}
+
+Ref core_assignment_admins_assignment_id_fk: core_assignment_admins.assignment_id > core_assignment.id [delete: cascade]
+
+Ref core_assignment_admins_user_id_fk: core_assignment_admins.user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_pointtogrademap_assignment_id_fk: core_pointtogrademap.assignment_id - core_assignment.id [delete: cascade]
+
+Ref core_pointrangetograde_point_to_grade_map_id_fk: core_pointrangetograde.point_to_grade_map_id > core_pointtogrademap.id [delete: cascade]
+
+Ref core_assignmentgroup_parentnode_id_fk: core_assignmentgroup.parentnode_id > core_assignment.id [delete: cascade]
+
+Ref core_assignmentgroup_batchoperation_id_fk: core_assignmentgroup.batchoperation_id > ievv_batchframework_batchoperation.id [delete: set null]
+
+Ref core_assignmentgroup_copied_from_id_fk: core_assignmentgroup.copied_from_id > core_assignmentgroup.id [delete: set null]
+
+Ref core_assignmentgrouptag_assignment_group_id_fk: core_assignmentgrouptag.assignment_group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_assignmentgrouphistory_assignment_group_id_fk: core_assignmentgrouphistory.assignment_group_id - core_assignmentgroup.id [delete: cascade]
+
+Ref core_candidate_old_reference_not_in_use_student_id_fk: core_candidate.old_reference_not_in_use_student_id > devilry_account_user.id [delete: cascade]
+
+Ref core_candidate_relatedstudent_id_fk: core_candidate.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref core_candidate_assignment_group_id_fk: core_candidate.assignment_group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_devilryuserprofile_user_id_fk: core_devilryuserprofile.user_id - devilry_account_user.id [delete: cascade]
+
+Ref core_assignmentgroup_examiners_old_reference_not_in_use_user_id_fk: core_assignmentgroup_examiners.old_reference_not_in_use_user_id > devilry_account_user.id [delete: cascade]
+
+Ref core_assignmentgroup_examiners_assignmentgroup_id_fk: core_assignmentgroup_examiners.assignmentgroup_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_assignmentgroup_examiners_relatedexaminer_id_fk: core_assignmentgroup_examiners.relatedexaminer_id > core_relatedexaminer.id [delete: cascade]
+
+Ref core_groupinvite_group_id_fk: core_groupinvite.group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_groupinvite_sent_by_id_fk: core_groupinvite.sent_by_id > devilry_account_user.id [delete: cascade]
+
+Ref core_groupinvite_sent_to_id_fk: core_groupinvite.sent_to_id > devilry_account_user.id [delete: cascade]
+
+Ref core_examinerassignmentgrouphistory_assignment_group_id_fk: core_examinerassignmentgrouphistory.assignment_group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_examinerassignmentgrouphistory_user_id_fk: core_examinerassignmentgrouphistory.user_id > devilry_account_user.id [delete: set null]
+
+Ref core_candidateassignmentgrouphistory_assignment_group_id_fk: core_candidateassignmentgrouphistory.assignment_group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref core_candidateassignmentgrouphistory_user_id_fk: core_candidateassignmentgrouphistory.user_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_account_mergeduser_source_user_id_fk: devilry_account_mergeduser.source_user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_mergeduser_target_user_id_fk: devilry_account_mergeduser.target_user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_useremail_user_id_fk: devilry_account_useremail.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_username_user_id_fk: devilry_account_username.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_permissiongroupuser_permissiongroup_id_fk: devilry_account_permissiongroupuser.permissiongroup_id > devilry_account_permissiongroup.id [delete: cascade]
+
+Ref devilry_account_permissiongroupuser_user_id_fk: devilry_account_permissiongroupuser.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_periodpermissiongroup_permissiongroup_id_fk: devilry_account_periodpermissiongroup.permissiongroup_id > devilry_account_permissiongroup.id [delete: cascade]
+
+Ref devilry_account_periodpermissiongroup_period_id_fk: devilry_account_periodpermissiongroup.period_id > core_period.id [delete: cascade]
+
+Ref devilry_account_subjectpermissiongroup_permissiongroup_id_fk: devilry_account_subjectpermissiongroup.permissiongroup_id > devilry_account_permissiongroup.id [delete: cascade]
+
+Ref devilry_account_subjectpermissiongroup_subject_id_fk: devilry_account_subjectpermissiongroup.subject_id > core_subject.id [delete: cascade]
+
+Ref devilry_account_perioduserguidelineacceptance_user_id_fk: devilry_account_perioduserguidelineacceptance.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_account_perioduserguidelineacceptance_period_id_fk: devilry_account_perioduserguidelineacceptance.period_id > core_period.id [delete: cascade]
+
+Ref devilry_compressionutil_compressedarchivemeta_content_type_id_fk: devilry_compressionutil_compressedarchivemeta.content_type_id > django_content_type.id [delete: cascade]
+
+Ref devilry_compressionutil_compressedarchivemeta_created_by_id_fk: devilry_compressionutil_compressedarchivemeta.created_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbackset_group_id_fk: devilry_group_feedbackset.group_id > core_assignmentgroup.id [delete: cascade]
+
+Ref devilry_group_feedbackset_created_by_id_fk: devilry_group_feedbackset.created_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbackset_last_updated_by_id_fk: devilry_group_feedbackset.last_updated_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbackset_grading_published_by_id_fk: devilry_group_feedbackset.grading_published_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbacksetpassedpreviousperiod_feedbackset_id_fk: devilry_group_feedbacksetpassedpreviousperiod.feedbackset_id - devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_group_feedbacksetpassedpreviousperiod_grading_published_by_id_fk: devilry_group_feedbacksetpassedpreviousperiod.grading_published_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbacksetpassedpreviousperiod_created_by_id_fk: devilry_group_feedbacksetpassedpreviousperiod.created_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbacksetgradingupdatehistory_feedback_set_id_fk: devilry_group_feedbacksetgradingupdatehistory.feedback_set_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_group_feedbacksetgradingupdatehistory_updated_by_id_fk: devilry_group_feedbacksetgradingupdatehistory.updated_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbacksetgradingupdatehistory_old_grading_published_by_id_fk: devilry_group_feedbacksetgradingupdatehistory.old_grading_published_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_group_feedbacksetdeadlinehistory_feedback_set_id_fk: devilry_group_feedbacksetdeadlinehistory.feedback_set_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_group_feedbacksetdeadlinehistory_changed_by_id_fk: devilry_group_feedbacksetdeadlinehistory.changed_by_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_group_groupcomment_comment_ptr_id_fk: devilry_group_groupcomment.comment_ptr_id - devilry_comment_comment.id [delete: cascade]
+
+Ref devilry_group_groupcomment_feedback_set_id_fk: devilry_group_groupcomment.feedback_set_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_group_groupcommentedithistory_commentedithistory_ptr_id_fk: devilry_group_groupcommentedithistory.commentedithistory_ptr_id - devilry_comment_commentedithistory.id [delete: cascade]
+
+Ref devilry_group_groupcommentedithistory_group_comment_id_fk: devilry_group_groupcommentedithistory.group_comment_id > devilry_group_groupcomment.comment_ptr_id [delete: cascade]
+
+Ref devilry_group_imageannotationcomment_comment_ptr_id_fk: devilry_group_imageannotationcomment.comment_ptr_id - devilry_comment_comment.id [delete: cascade]
+
+Ref devilry_group_imageannotationcomment_feedback_set_id_fk: devilry_group_imageannotationcomment.feedback_set_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_group_imageannotationcomment_image_id_fk: devilry_group_imageannotationcomment.image_id > devilry_comment_commentfileimage.id [delete: cascade]
+
+Ref devilry_comment_comment_user_id_fk: devilry_comment_comment.user_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_comment_comment_parent_id_fk: devilry_comment_comment.parent_id > devilry_comment_comment.id [delete: cascade]
+
+Ref devilry_comment_commentedithistory_comment_id_fk: devilry_comment_commentedithistory.comment_id > devilry_comment_comment.id [delete: cascade]
+
+Ref devilry_comment_commentedithistory_edited_by_id_fk: devilry_comment_commentedithistory.edited_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_comment_commentfile_comment_id_fk: devilry_comment_commentfile.comment_id > devilry_comment_comment.id [delete: cascade]
+
+Ref devilry_comment_commentfileimage_comment_file_id_fk: devilry_comment_commentfileimage.comment_file_id > devilry_comment_commentfile.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_periodtag_period_id_fk: devilry_qualifiesforexam_periodtag.period_id - core_period.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_periodtag_deadlinetag_id_fk: devilry_qualifiesforexam_periodtag.deadlinetag_id > devilry_qualifiesforexam_deadlinetag.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_status_period_id_fk: devilry_qualifiesforexam_status.period_id > core_period.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_status_user_id_fk: devilry_qualifiesforexam_status.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_qualifiesforfinalexam_relatedstudent_id_fk: devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_qualifiesforfinalexam_status_id_fk: devilry_qualifiesforexam_qualifiesforfinalexam.status_id > devilry_qualifiesforexam_status.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_deletedqualifiesforfinalexam_relatedstudent_id_fk: devilry_qualifiesforexam_deletedqualifiesforfinalexam.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_deletedqualifiesforfinalexam_status_id_fk: devilry_qualifiesforexam_deletedqualifiesforfinalexam.status_id > devilry_qualifiesforexam_status.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_draftstatus_created_by_id_fk: devilry_qualifiesforexam_draftstatus.created_by_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_draftstatus_period_id_fk: devilry_qualifiesforexam_draftstatus.period_id > core_period.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_draftqualifiesforfinalexam_relatedstudent_id_fk: devilry_qualifiesforexam_draftqualifiesforfinalexam.relatedstudent_id > core_relatedstudent.id [delete: cascade]
+
+Ref devilry_qualifiesforexam_draftqualifiesforfinalexam_draft_status_id_fk: devilry_qualifiesforexam_draftqualifiesforfinalexam.draft_status_id > devilry_qualifiesforexam_draftstatus.id [delete: cascade]
+
+Ref devilry_dbcache_assignmentgroupcacheddata_group_id_fk: devilry_dbcache_assignmentgroupcacheddata.group_id - core_assignmentgroup.id [delete: cascade]
+
+Ref devilry_dbcache_assignmentgroupcacheddata_first_feedbackset_id_fk: devilry_dbcache_assignmentgroupcacheddata.first_feedbackset_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_dbcache_assignmentgroupcacheddata_last_feedbackset_id_fk: devilry_dbcache_assignmentgroupcacheddata.last_feedbackset_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_dbcache_assignmentgroupcacheddata_last_published_feedbackset_id_fk: devilry_dbcache_assignmentgroupcacheddata.last_published_feedbackset_id > devilry_group_feedbackset.id [delete: cascade]
+
+Ref devilry_message_message_created_by_id_fk: devilry_message_message.created_by_id > devilry_account_user.id [delete: set null]
+
+Ref devilry_message_messagereceiver_message_id_fk: devilry_message_messagereceiver.message_id > devilry_message_message.id [delete: cascade]
+
+Ref devilry_message_messagereceiver_user_id_fk: devilry_message_messagereceiver.user_id > devilry_account_user.id [delete: cascade]
+
+Ref devilry_report_devilryreport_generated_by_user_id_fk: devilry_report_devilryreport.generated_by_user_id > devilry_account_user.id [delete: cascade]
+
+Ref account_emailaddress_user_id_fk: account_emailaddress.user_id > devilry_account_user.id [delete: cascade]
+
+Ref account_emailconfirmation_email_address_id_fk: account_emailconfirmation.email_address_id > account_emailaddress.id [delete: cascade]
+
+Table socialaccount_socialapp_sites {
+  id integer [pk, increment]
+  socialapp_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (socialapp_id) [name: 'socialaccount_socialapp_sites_socialapp_id_97fb6e7d']
+    (site_id) [name: 'socialaccount_socialapp_sites_site_id_2579dee5']
+    (socialapp_id, site_id) [unique, name: 'socialaccount_socialapp__socialapp_id_site_id_71a9a768_uniq']
+  }
+}
+
+Ref socialaccount_socialapp_sites_socialapp_id_fk: socialaccount_socialapp_sites.socialapp_id > socialaccount_socialapp.id [delete: cascade]
+
+Ref socialaccount_socialapp_sites_site_id_fk: socialaccount_socialapp_sites.site_id > django_site.id [delete: cascade]
+
+Ref socialaccount_socialaccount_user_id_fk: socialaccount_socialaccount.user_id > devilry_account_user.id [delete: cascade]
+
+Ref socialaccount_socialtoken_app_id_fk: socialaccount_socialtoken.app_id > socialaccount_socialapp.id [delete: set null]
+
+Ref socialaccount_socialtoken_account_id_fk: socialaccount_socialtoken.account_id > socialaccount_socialaccount.id [delete: cascade]

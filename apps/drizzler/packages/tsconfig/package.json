@@ -1,0 +1,11 @@
+{
+  "name": "@drizzler-examples/tsconfig",
+  "private": true,
+  "license": "MIT",
+  "files": [
+    "base.json"
+  ],
+  "exports": {
+    "./base.json": "./base.json"
+  }
+}

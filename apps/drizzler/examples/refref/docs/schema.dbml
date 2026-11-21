@@ -1,0 +1,358 @@
+Table user {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  role text
+  banned boolean
+  ban_reason text
+  ban_expires timestamp
+}
+
+Table session {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  active_organization_id text
+  impersonated_by text
+}
+
+Table account {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+}
+
+Table verification {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+}
+
+Table org {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  name text [not null]
+  slug text [unique]
+  logo text
+  metadata text
+}
+
+Table org_user {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  org_id text [not null]
+  user_id text [not null]
+  role text [not null]
+}
+
+Table product {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  org_id text
+  name text [not null]
+  slug text [unique]
+  logo text
+  url text
+  metadata text
+  app_type text
+  use_case text
+  payment_provider text
+  onboarding_completed boolean
+  onboarding_step integer
+}
+
+Table product_user {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  product_id text [not null]
+  user_id text [not null]
+  role text [not null]
+}
+
+Table invitation {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  organization_id text
+  product_id text
+  email text [not null]
+  role text
+  status text [not null]
+  expires_at timestamp [not null]
+  inviter_id text [not null]
+}
+
+Table apikey {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  name text
+  start text
+  prefix text
+  key text [not null]
+  user_id text [not null]
+  refill_interval integer
+  refill_amount integer
+  last_refill_at timestamp
+  enabled boolean
+  rate_limit_enabled boolean
+  rate_limit_time_window integer
+  rate_limit_max integer
+  request_count integer
+  remaining integer
+  last_request timestamp
+  expires_at timestamp
+  permissions text
+  metadata text
+}
+
+Table program {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  product_id text [not null]
+  program_template_id text [not null]
+  name text [not null]
+  status text [not null]
+  start_date timestamp
+  end_date timestamp
+  config jsonb
+}
+
+Table program_user {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  program_id text [not null]
+  user_id text [not null]
+  role text [not null]
+}
+
+Table event_definition {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  name text [not null]
+  type text [not null, unique]
+  description text
+  config jsonb
+}
+
+Table participant {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  name text
+  email text
+  product_id text [not null]
+  external_id text
+  indexes {
+    (product_id, external_id) [unique]
+  }
+}
+
+Table reward_rule {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  program_id text [not null]
+  name text [not null]
+  description text
+  type text [not null]
+  config jsonb [not null]
+  priority integer
+  is_active boolean
+  indexes {
+    (program_id) [name: 'reward_rule_program_id_idx']
+    (type) [name: 'reward_rule_type_idx']
+    (is_active) [name: 'reward_rule_is_active_idx']
+  }
+}
+
+Table reward {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  participant_id text [not null]
+  program_id text [not null]
+  reward_rule_id text
+  event_id text
+  reward_type text [not null]
+  amount decimal
+  currency text
+  status text [not null]
+  disbursed_at timestamp
+  metadata jsonb
+  indexes {
+    (participant_id) [name: 'reward_participant_id_idx']
+    (program_id) [name: 'reward_program_id_idx']
+    (reward_rule_id) [name: 'reward_rule_id_idx']
+    (event_id) [name: 'reward_event_id_idx']
+    (status) [name: 'reward_status_idx']
+    (created_at) [name: 'reward_created_at_idx']
+  }
+}
+
+Table product_secret {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  product_id text [not null]
+  client_id text [not null]
+  client_secret text [not null]
+  Note: 'Product secrets for JWT generation'
+}
+
+Table refcode {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  code text [not null, note: 'Auto-generated 7-character code (e.g., "abc1234")']
+  participant_id text [not null, note: 'Core relationships']
+  program_id text [not null]
+  product_id text [not null]
+  indexes {
+    (code) [unique, name: 'refcode_code_unique_idx']
+    (participant_id) [name: 'refcode_participant_id_idx']
+    (program_id) [name: 'refcode_program_id_idx']
+    (product_id) [name: 'refcode_product_id_idx']
+  }
+}
+
+Table reflink {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  slug text [not null, note: 'Vanity URL slug (e.g., "john-doe", "ceo", "founder-2024")']
+  refcode_id text [not null, note: 'Reference to the underlying refcode']
+  product_id text [not null, note: 'Product scoping for vanity links']
+  indexes {
+    (slug, product_id) [unique, name: 'reflink_slug_product_unique_idx']
+    (slug) [name: 'reflink_slug_idx']
+    (refcode_id) [name: 'reflink_refcode_id_idx']
+    (product_id) [name: 'reflink_product_id_idx']
+  }
+}
+
+Table referral {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  referrer_id text [not null]
+  external_id text [not null]
+  email text
+  name text
+}
+
+Table event {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  product_id text [not null]
+  program_id text
+  participant_id text
+  referral_id text
+  event_definition_id text [not null]
+  status text [not null]
+  metadata jsonb
+  indexes {
+    (product_id) [name: 'event_product_id_idx']
+    (program_id) [name: 'event_program_id_idx']
+    (participant_id) [name: 'event_participant_id_idx']
+    (referral_id) [name: 'event_referral_id_idx']
+    (event_definition_id) [name: 'event_definition_id_idx']
+    (status) [name: 'event_status_idx']
+    (created_at) [name: 'event_created_at_idx']
+  }
+  Note: 'Event table (moved here to fix forward reference to referral table)'
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref org_user_org_id_org_id_fk: org_user.org_id > org.id [delete: cascade]
+
+Ref org_user_user_id_user_id_fk: org_user.user_id > user.id [delete: cascade]
+
+Ref product_org_id_org_id_fk: product.org_id > org.id [delete: cascade]
+
+Ref product_user_product_id_product_id_fk: product_user.product_id > product.id [delete: cascade]
+
+Ref product_user_user_id_user_id_fk: product_user.user_id > user.id [delete: cascade]
+
+Ref invitation_organization_id_org_id_fk: invitation.organization_id > org.id [delete: cascade]
+
+Ref invitation_product_id_product_id_fk: invitation.product_id > product.id [delete: cascade]
+
+Ref invitation_inviter_id_user_id_fk: invitation.inviter_id > user.id [delete: cascade]
+
+Ref apikey_user_id_user_id_fk: apikey.user_id > user.id [delete: cascade]
+
+Ref program_product_id_product_id_fk: program.product_id > product.id [delete: cascade]
+
+Ref program_user_program_id_program_id_fk: program_user.program_id > program.id [delete: cascade]
+
+Ref program_user_user_id_user_id_fk: program_user.user_id > user.id [delete: cascade]
+
+Ref participant_product_id_product_id_fk: participant.product_id > product.id [delete: cascade]
+
+Ref reward_rule_program_id_program_id_fk: reward_rule.program_id > program.id [delete: cascade]
+
+Ref reward_participant_id_participant_id_fk: reward.participant_id > participant.id [delete: cascade]
+
+Ref reward_program_id_program_id_fk: reward.program_id > program.id [delete: cascade]
+
+Ref reward_reward_rule_id_reward_rule_id_fk: reward.reward_rule_id > reward_rule.id
+
+Ref reward_event_id_event_id_fk: reward.event_id > event.id
+
+Ref product_secret_product_id_product_id_fk: product_secret.product_id > product.id [delete: cascade]
+
+Ref refcode_participant_id_participant_id_fk: refcode.participant_id > participant.id [delete: cascade]
+
+Ref refcode_program_id_program_id_fk: refcode.program_id > program.id [delete: cascade]
+
+Ref refcode_product_id_product_id_fk: refcode.product_id > product.id [delete: cascade]
+
+Ref reflink_refcode_id_refcode_id_fk: reflink.refcode_id > refcode.id [delete: cascade]
+
+Ref reflink_product_id_product_id_fk: reflink.product_id > product.id [delete: cascade]
+
+Ref referral_referrer_id_participant_id_fk: referral.referrer_id > participant.id [delete: cascade]
+
+Ref event_product_id_product_id_fk: event.product_id > product.id [delete: cascade]
+
+Ref event_program_id_program_id_fk: event.program_id > program.id [delete: cascade]
+
+Ref event_participant_id_participant_id_fk: event.participant_id > participant.id
+
+Ref event_referral_id_referral_id_fk: event.referral_id > referral.id
+
+Ref event_event_definition_id_event_definition_id_fk: event.event_definition_id > event_definition.id

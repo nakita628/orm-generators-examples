@@ -1,0 +1,27 @@
+Table user {
+  id text [pk, not null]
+  email text [not null]
+  email_verified integer
+}
+
+Table session {
+  id text [pk, not null]
+  user_id text [not null]
+  expires_at integer [not null]
+}
+
+Table email_verification_token {
+  id text [pk, not null]
+  user_id text [not null]
+  email text [not null]
+  expires_at integer [not null]
+}
+
+Table signin {
+  id integer [pk, increment, not null]
+  logged_in_at integer [not null]
+  ip_address text [not null]
+  email text [not null]
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id

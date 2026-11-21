@@ -1,0 +1,455 @@
+Table custom_property_definitions {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  name text [not null]
+  key text [not null]
+  description text
+  type text [not null]
+  config text
+  display_order integer [not null]
+}
+
+Table document_custom_property_values {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  document_id text [not null]
+  property_definition_id text [not null]
+  text_value text
+  number_value real
+  date_value integer
+  boolean_value integer
+  select_option_id text
+  user_id text
+  related_document_id text
+}
+
+Table custom_property_select_options {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  property_definition_id text [not null]
+  name text [not null]
+  key text [not null]
+  display_order integer [not null]
+}
+
+Table document_share_links {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  document_id text [not null]
+  created_by text
+  token text [not null]
+  expires_at integer
+  password_hash text
+  is_enabled integer [not null]
+  last_accessed_at integer
+}
+
+Table document_views {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  name text [not null]
+  query text [not null]
+  description text
+}
+
+Table document_activity_log {
+  id text [pk, not null]
+  created_at integer [not null]
+  document_id text [not null]
+  event text [not null]
+  event_data text
+  user_id text
+  tag_id text
+}
+
+Table documents {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  created_by text
+  original_name text [not null]
+  original_size integer [not null]
+  original_storage_key text [not null]
+  original_sha256_hash text [not null]
+  name text [not null]
+  mime_type text [not null]
+  content text [not null]
+  document_date integer
+  notes text
+  file_encryption_key_wrapped text
+  file_encryption_kek_version text
+  file_encryption_algorithm text
+  deleted_at integer
+  deleted_by text
+  is_deleted integer [not null]
+}
+
+Table kv_store {
+  key text [pk, not null]
+  value text [not null]
+  expires_at integer [note: 'Expiry as epoch milliseconds; null means the entry never expires.']
+}
+
+Table organizations {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  name text [not null]
+  customer_id text
+  deleted_at integer
+  deleted_by text
+  scheduled_purge_at integer [note: 'When the organization is soft-deleted, we schedule a purge date some days in the future for hard deletion']
+}
+
+Table organization_members {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  user_id text [not null]
+  role text [not null]
+}
+
+Table organization_invitations {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  email text [not null]
+  role text [not null]
+  status text [not null]
+  expires_at integer [not null]
+  inviter_id text [not null]
+}
+
+Table user_roles {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  user_id text [not null]
+  role text [not null]
+}
+
+Table tags {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  name text [not null]
+  normalized_name text
+  color text [not null]
+  description text
+}
+
+Table documents_tags {
+  document_id text [not null]
+  tag_id text [not null]
+  indexes {
+    (document_id, tag_id) [pk]
+  }
+}
+
+Table users {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  email text [not null, unique]
+  email_verified integer [not null]
+  name text
+  image text
+  max_organization_count integer
+  two_factor_enabled integer [not null]
+}
+
+Table organization_ai_credits_usage {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  credits_consumed integer [not null]
+  usage text [not null]
+  source text [not null]
+}
+
+Table api_keys {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  name text [not null]
+  key_hash text [not null, unique]
+  prefix text [not null, note: 'the prefix is used to identify the key, it is the']
+  user_id text [not null]
+  last_used_at integer
+  expires_at integer
+  permissions text [not null]
+  all_organizations integer [not null]
+}
+
+Table api_key_organizations {
+  api_key_id text [not null]
+  organization_member_id text [not null]
+  Note: 'We use an intermediate table (instead of a json array) to link API keys to organization members, so the relationship between the api key and the organization is deleted on cascade when the organization is deleted or the member is removed from the organization.'
+}
+
+Table auth_sessions {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  token text [not null]
+  user_id text
+  expires_at integer [not null]
+  ip_address text
+  user_agent text
+  active_organization_id text
+}
+
+Table auth_accounts {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  user_id text
+  account_id text [not null]
+  provider_id text [not null]
+  access_token text
+  refresh_token text
+  access_token_expires_at integer
+  refresh_token_expires_at integer
+  scope text
+  id_token text
+  password text
+}
+
+Table auth_verifications {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at integer [not null]
+}
+
+Table auth_two_factor {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  user_id text
+  secret text
+  backup_codes text
+  verified integer [not null, note: 'Default to true for backfill purposes from better auth : https://github.com/better-auth/better-auth/blob/4cbc823e694c1adb10ef26cf8294263453a156d3/packages/better-auth/src/plugins/two-factor/schema.ts#L42']
+}
+
+Table documents_fts {
+  document_id text [not null]
+  organization_id text [not null]
+  name text [not null]
+  content text [not null]
+}
+
+Table intake_emails {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  email_address text [not null, unique]
+  organization_id text [not null]
+  allowed_origins text [not null]
+  is_enabled integer [not null]
+}
+
+Table organization_settings {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null, unique, note: 'One settings row per organization']
+  ai_auto_tagging_enabled integer [note: 'AI auto-tagging settings']
+  ai_auto_tagging_can_create_new_tags integer
+  ai_auto_tagging_max_tags integer
+  ai_auto_tagging_model_id text
+}
+
+Table user_plan_entitlements {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  granted_at integer [not null]
+  expires_at integer
+  last_verified_at integer
+  user_id text [not null]
+  type text [not null]
+  source text [not null]
+}
+
+Table organization_subscriptions {
+  id text [pk, not null, note: 'stripe subscription id, no auto-generated id']
+  customer_id text [not null]
+  organization_id text [not null]
+  plan_id text [not null]
+  status text [not null]
+  seats_count integer [not null]
+  current_period_end integer [not null]
+  current_period_start integer [not null]
+  cancel_at_period_end integer [not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+}
+
+Table tagging_rules {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  organization_id text [not null]
+  name text [not null]
+  description text
+  enabled integer [not null]
+  condition_match_mode text [not null]
+}
+
+Table tagging_rule_conditions {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  tagging_rule_id text [not null]
+  field text [not null]
+  operator text [not null]
+  value text [not null]
+  is_case_sensitive integer [not null]
+}
+
+Table tagging_rule_actions {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  tagging_rule_id text [not null]
+  tag_id text [not null]
+}
+
+Table webhooks {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  name text [not null]
+  url text [not null]
+  secret text
+  enabled integer [not null]
+  created_by text
+  organization_id text
+}
+
+Table webhook_events {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  webhook_id text [not null]
+  event_name text [not null]
+}
+
+Table webhook_deliveries {
+  id text [pk, not null]
+  created_at integer [not null]
+  updated_at integer [not null]
+  webhook_id text [not null]
+  event_name text [not null]
+  request_payload text [not null]
+  response_payload text [not null]
+  response_status integer [not null]
+}
+
+Ref custom_property_definitions_organization_id_organizations_id_fk: custom_property_definitions.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref document_custom_property_values_document_id_documents_id_fk: document_custom_property_values.document_id > documents.id [delete: cascade, update: cascade]
+
+Ref document_custom_property_values_property_definition_id_custom_property_definitions_id_fk: document_custom_property_values.property_definition_id > custom_property_definitions.id [delete: cascade, update: cascade]
+
+Ref document_custom_property_values_select_option_id_custom_property_select_options_id_fk: document_custom_property_values.select_option_id > custom_property_select_options.id [delete: cascade, update: cascade]
+
+Ref document_custom_property_values_user_id_users_id_fk: document_custom_property_values.user_id > users.id [delete: cascade, update: cascade]
+
+Ref document_custom_property_values_related_document_id_documents_id_fk: document_custom_property_values.related_document_id > documents.id [delete: cascade, update: cascade]
+
+Ref custom_property_select_options_property_definition_id_custom_property_definitions_id_fk: custom_property_select_options.property_definition_id > custom_property_definitions.id [delete: cascade, update: cascade]
+
+Ref document_share_links_organization_id_organizations_id_fk: document_share_links.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref document_share_links_document_id_documents_id_fk: document_share_links.document_id > documents.id [delete: cascade, update: cascade]
+
+Ref document_share_links_created_by_users_id_fk: document_share_links.created_by > users.id [delete: set null, update: cascade]
+
+Ref document_views_organization_id_organizations_id_fk: document_views.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref document_activity_log_document_id_documents_id_fk: document_activity_log.document_id > documents.id [delete: cascade, update: cascade]
+
+Ref document_activity_log_user_id_users_id_fk: document_activity_log.user_id > users.id [delete: set null, update: cascade]
+
+Ref document_activity_log_tag_id_tags_id_fk: document_activity_log.tag_id > tags.id [delete: set null, update: cascade]
+
+Ref documents_organization_id_organizations_id_fk: documents.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref documents_created_by_users_id_fk: documents.created_by > users.id [delete: set null, update: cascade]
+
+Ref documents_deleted_by_users_id_fk: documents.deleted_by > users.id [delete: set null, update: cascade]
+
+Ref organizations_deleted_by_users_id_fk: organizations.deleted_by > users.id [delete: set null, update: cascade]
+
+Ref organization_members_organization_id_organizations_id_fk: organization_members.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref organization_members_user_id_users_id_fk: organization_members.user_id > users.id [delete: cascade, update: cascade]
+
+Ref organization_invitations_organization_id_organizations_id_fk: organization_invitations.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref organization_invitations_inviter_id_users_id_fk: organization_invitations.inviter_id > users.id [delete: cascade, update: cascade]
+
+Ref user_roles_user_id_users_id_fk: user_roles.user_id > users.id [delete: cascade, update: cascade]
+
+Ref tags_organization_id_organizations_id_fk: tags.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref documents_tags_document_id_documents_id_fk: documents_tags.document_id > documents.id [delete: cascade, update: cascade]
+
+Ref documents_tags_tag_id_tags_id_fk: documents_tags.tag_id > tags.id [delete: cascade, update: cascade]
+
+Ref organization_ai_credits_usage_organization_id_organizations_id_fk: organization_ai_credits_usage.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref api_keys_user_id_users_id_fk: api_keys.user_id > users.id [delete: cascade, update: cascade]
+
+Ref api_key_organizations_api_key_id_api_keys_id_fk: api_key_organizations.api_key_id > api_keys.id [delete: cascade, update: cascade]
+
+Ref api_key_organizations_organization_member_id_organization_members_id_fk: api_key_organizations.organization_member_id > organization_members.id [delete: cascade, update: cascade]
+
+Ref auth_sessions_user_id_users_id_fk: auth_sessions.user_id > users.id [delete: cascade, update: cascade]
+
+Ref auth_sessions_active_organization_id_organizations_id_fk: auth_sessions.active_organization_id > organizations.id [delete: set null, update: cascade]
+
+Ref auth_accounts_user_id_users_id_fk: auth_accounts.user_id > users.id [delete: cascade, update: cascade]
+
+Ref auth_two_factor_user_id_users_id_fk: auth_two_factor.user_id > users.id [delete: cascade, update: cascade]
+
+Ref intake_emails_organization_id_organizations_id_fk: intake_emails.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref organization_settings_organization_id_organizations_id_fk: organization_settings.organization_id - organizations.id [delete: cascade, update: cascade]
+
+Ref user_plan_entitlements_user_id_users_id_fk: user_plan_entitlements.user_id > users.id [delete: cascade, update: cascade]
+
+Ref organization_subscriptions_organization_id_organizations_id_fk: organization_subscriptions.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref tagging_rules_organization_id_organizations_id_fk: tagging_rules.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref tagging_rule_conditions_tagging_rule_id_tagging_rules_id_fk: tagging_rule_conditions.tagging_rule_id > tagging_rules.id [delete: cascade, update: cascade]
+
+Ref tagging_rule_actions_tagging_rule_id_tagging_rules_id_fk: tagging_rule_actions.tagging_rule_id > tagging_rules.id [delete: cascade, update: cascade]
+
+Ref tagging_rule_actions_tag_id_tags_id_fk: tagging_rule_actions.tag_id > tags.id [delete: cascade, update: cascade]
+
+Ref webhooks_created_by_users_id_fk: webhooks.created_by > users.id [delete: set null, update: cascade]
+
+Ref webhooks_organization_id_organizations_id_fk: webhooks.organization_id > organizations.id [delete: cascade, update: cascade]
+
+Ref webhook_events_webhook_id_webhooks_id_fk: webhook_events.webhook_id > webhooks.id [delete: cascade, update: cascade]
+
+Ref webhook_deliveries_webhook_id_webhooks_id_fk: webhook_deliveries.webhook_id > webhooks.id [delete: cascade, update: cascade]

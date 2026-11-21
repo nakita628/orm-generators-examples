@@ -1,0 +1,7 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": { "@/*": ["./*"] }
+  },
+  "include": ["lib", "config", "drizzle.config.ts"]
+}

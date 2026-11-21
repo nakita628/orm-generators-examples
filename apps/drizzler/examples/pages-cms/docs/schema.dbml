@@ -1,0 +1,205 @@
+Table user {
+  id text [pk, not null]
+  name text [not null]
+  image text
+  github_username text
+  email text [not null, unique]
+  email_verified boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'idx_session_userId']
+  }
+}
+
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'idx_account_userId']
+    (provider_id) [name: 'idx_account_providerId']
+  }
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (identifier) [name: 'idx_verification_identifier']
+  }
+}
+
+Table github_installation_token {
+  id serial [pk, increment, not null]
+  ciphertext text [not null]
+  iv text [not null]
+  installation_id integer [not null]
+  expires_at timestamp [not null]
+  indexes {
+    (installation_id) [unique, name: 'uq_github_installation_token_installationId']
+  }
+}
+
+Table collaborator {
+  id serial [pk, increment, not null]
+  type text [not null]
+  installation_id integer [not null]
+  owner_id integer [not null]
+  repo_id integer
+  owner text [not null]
+  repo text [not null]
+  branch text
+  email text [not null]
+  user_id text
+  invited_by text
+  indexes {
+    (owner, repo, email) [name: 'idx_collaborator_owner_repo_email']
+    (user_id) [name: 'idx_collaborator_userId']
+  }
+}
+
+Table collaborator_invite {
+  id serial [pk, increment, not null]
+  token text [not null]
+  email text [not null]
+  owner text [not null]
+  repo text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (token) [unique, name: 'uq_collaborator_invite_token']
+    (owner, repo, email) [name: 'idx_collaborator_invite_owner_repo_email']
+  }
+}
+
+Table config {
+  id serial [pk, increment, not null]
+  owner text [not null]
+  repo text [not null]
+  branch text [not null]
+  sha text [not null]
+  version text [not null]
+  object text [not null]
+  last_checked_at timestamp [not null]
+  indexes {
+    (owner, repo, branch) [unique, name: 'idx_config_owner_repo_branch']
+  }
+}
+
+Table cache_file {
+  id serial [pk, increment, not null]
+  context text [not null]
+  owner text [not null]
+  repo text [not null]
+  branch text [not null]
+  parent_path text [not null]
+  name text [not null]
+  path text [not null]
+  type text [not null]
+  content text
+  sha text
+  size integer
+  download_url text
+  commit_sha text
+  commit_timestamp timestamp
+  updated_at timestamp [not null]
+  indexes {
+    (owner, repo, branch, parent_path) [name: 'idx_cache_file_owner_repo_branch_parentPath']
+    (owner, repo, branch, path) [unique, name: 'idx_cache_file_owner_repo_branch_path']
+  }
+}
+
+Table cache_file_meta {
+  id serial [pk, increment, not null]
+  owner text [not null]
+  repo text [not null]
+  branch text [not null]
+  path text [not null]
+  context text [not null]
+  commit_sha text
+  commit_timestamp timestamp
+  status text [not null]
+  error text
+  updated_at timestamp [not null]
+  last_checked_at timestamp [not null]
+  indexes {
+    (owner, repo, branch, path, context) [unique, name: 'idx_cache_file_meta_owner_repo_branch_path_context']
+  }
+}
+
+Table cache_permission {
+  id serial [pk, increment, not null]
+  github_id integer [not null]
+  owner text [not null]
+  repo text [not null]
+  last_updated timestamp [not null]
+  indexes {
+    (github_id, owner, repo) [unique, name: 'idx_cache_permission_githubId_owner_repo']
+  }
+}
+
+Table action_run {
+  id serial [pk, increment, not null]
+  owner text [not null]
+  repo text [not null]
+  ref text [not null]
+  workflow_ref text [not null]
+  sha text [not null]
+  action_name text [not null]
+  context_type text [not null]
+  context_name text
+  context_path text
+  workflow text [not null]
+  workflow_run_id bigint
+  status text [not null]
+  conclusion text
+  html_url text
+  triggered_by jsonb [not null]
+  failure jsonb
+  payload jsonb [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  completed_at timestamp
+  indexes {
+    (owner, repo, created_at) [name: 'idx_action_run_owner_repo_createdAt']
+    (owner, repo, action_name) [name: 'idx_action_run_owner_repo_actionName']
+    (owner, repo, status) [name: 'idx_action_run_owner_repo_status']
+    (owner, repo, context_type, context_name, context_path) [name: 'idx_action_run_context']
+    (workflow_run_id) [unique, name: 'idx_action_run_workflowRunId']
+  }
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref collaborator_user_id_user_id_fk: collaborator.user_id > user.id
+
+Ref collaborator_invited_by_user_id_fk: collaborator.invited_by > user.id

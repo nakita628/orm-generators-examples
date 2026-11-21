@@ -1,0 +1,10 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": {
+    "paths": {
+      "@refref/id": ["./stubs/refref-id/index.ts"],
+      "@refref/types": ["./stubs/refref-types/index.ts"]
+    }
+  },
+  "include": ["src", "stubs", "drizzle.config.ts"]
+}

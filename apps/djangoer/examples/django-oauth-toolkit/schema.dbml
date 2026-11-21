@@ -1,0 +1,389 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ApplicationClientType {
+  "confidential"
+  "public"
+}
+
+Enum ApplicationAuthorizationGrantType {
+  "authorization-code"
+  "urn:ietf:params:oauth:grant-type:device_code"
+  "implicit"
+  "password"
+  "client-credentials"
+  "openid-hybrid"
+}
+
+Enum ApplicationAlgorithm {
+  // "" (No OIDC support): the empty string, which DBML cannot name
+  "RS256"
+  "HS256"
+}
+
+Enum ApplicationRegistrationSource {
+  "manual"
+  "dcr"
+  "cimd"
+}
+
+Enum GrantCodeChallengeMethod {
+  "plain"
+  "S256"
+}
+
+Enum DeviceGrantStatus {
+  "authorized"
+  "authorization-pending"
+  "expired"
+  "denied"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table oauth2_provider_application {
+  id integer [pk, increment]
+  client_id varchar(255) [unique, not null, note: 'default in Python: generate_client_id()']
+  user_id integer
+  redirect_uris text [not null, note: 'Allowed URIs list, space separated']
+  post_logout_redirect_uris text [default: '', not null, note: 'Allowed Post Logout URIs list, space separated']
+  client_type ApplicationClientType [not null]
+  authorization_grant_type ApplicationAuthorizationGrantType [not null]
+  client_secret varchar(255) [not null, note: 'Client secret for authentication. default in Python: generate_client_secret()']
+  hash_client_secret bool [default: true, not null]
+  name varchar(255) [not null]
+  skip_authorization bool [default: false, not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  algorithm ApplicationAlgorithm [default: '', not null]
+  allowed_origins text [default: '', not null, note: 'Allowed origins list to enable CORS, space separated']
+  registration_source ApplicationRegistrationSource [default: 'manual', not null, note: 'How this application was registered (manual, DCR per RFC 7591, or CIMD)']
+  cimd_expires_at datetime [default: null, note: 'When the cached Client ID Metadata Document should be re-fetched']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_application_user_id_79829054']
+    (client_secret) [name: 'oauth2_provider_application_client_secret_53133678']
+  }
+
+  Note: '''Columns from AbstractApplication (abstract): id, client_id, user_id, redirect_uris, post_logout_redirect_uris, client_type, authorization_grant_type, client_secret, hash_client_secret, name, skip_authorization, created, updated, algorithm, allowed_origins, registration_source, cimd_expires_at.'''
+}
+
+Table oauth2_provider_grant {
+  id integer [pk, increment]
+  user_id integer [not null]
+  code varchar(255) [unique, not null]
+  application_id bigint [not null]
+  expires datetime [not null]
+  redirect_uri text [not null]
+  scope text [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  code_challenge varchar(128) [default: '', not null]
+  code_challenge_method GrantCodeChallengeMethod [default: '', not null]
+  nonce varchar(255) [default: '', not null]
+  claims text [not null]
+  resource text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_grant_user_id_e8f62af8']
+    (application_id) [name: 'oauth2_provider_grant_application_id_81923564']
+  }
+
+  Note: '''Columns from AbstractGrant (abstract): id, user_id, code, application_id, expires, redirect_uri, scope, created, updated, code_challenge, code_challenge_method, nonce, claims, resource.'''
+}
+
+Table oauth2_provider_accesstoken {
+  id integer [pk, increment]
+  user_id integer
+  source_refresh_token_id bigint [unique]
+  token text [not null]
+  token_checksum varchar(64) [unique, not null]
+  id_token_id bigint [unique]
+  application_id bigint
+  expires datetime [not null]
+  scope text [not null]
+  resource text [not null, note: 'default in Python: list()']
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_accesstoken_user_id_6e4c9a65']
+    (application_id) [name: 'oauth2_provider_accesstoken_application_id_b22886e1']
+  }
+
+  Note: '''Columns from AbstractAccessToken (abstract): id, user_id, source_refresh_token_id, token, token_checksum, id_token_id, application_id, expires, scope, resource, created, updated.'''
+}
+
+Table oauth2_provider_refreshtoken {
+  id integer [pk, increment]
+  user_id integer [not null]
+  token text [not null]
+  token_checksum varchar(64) [not null]
+  application_id bigint [not null]
+  access_token_id bigint [unique]
+  token_family char(32)
+  resource text [not null, note: 'default in Python: list()']
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  revoked datetime
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_refreshtoken_user_id_da837fce']
+    (application_id) [name: 'oauth2_provider_refreshtoken_application_id_2d1c311b']
+    (token_checksum, revoked) [unique, name: 'oauth2_provider_refreshtoken_token_checksum_revoked_46c81d1d_uniq']
+    (token_family) [name: 'oauth2_prov_token_f_996e8a_idx']
+  }
+
+  Note: '''Columns from AbstractRefreshToken (abstract): id, user_id, token, token_checksum, application_id, access_token_id, token_family, resource, created, updated, revoked.'''
+}
+
+Table oauth2_provider_idtoken {
+  id integer [pk, increment]
+  user_id integer
+  jti char(32) [unique, not null, note: 'default in Python: uuid4()']
+  application_id bigint
+  expires datetime [not null]
+  scope text [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_idtoken_user_id_dd512b59']
+    (application_id) [name: 'oauth2_provider_idtoken_application_id_08c5ff4f']
+  }
+
+  Note: '''Columns from AbstractIDToken (abstract): id, user_id, jti, application_id, expires, scope, created, updated.'''
+}
+
+Table oauth2_provider_devicegrant {
+  id integer [pk, increment]
+  user_id integer
+  device_code varchar(100) [not null]
+  user_code varchar(100) [not null]
+  scope text [not null]
+  interval integer [default: 5, not null]
+  expires datetime [not null]
+  status DeviceGrantStatus [default: 'authorization-pending', not null]
+  client_id varchar(100) [not null]
+  last_checked datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'oauth2_provider_devicegrant_user_id_1cec5156']
+    (client_id) [name: 'oauth2_provider_devicegrant_client_id_229dd06d']
+    (device_code) [unique, name: 'oauth2_provider_devicegrant_unique_device_code']
+  }
+
+  Note: '''Columns from AbstractDeviceGrant (abstract): id, user_id, device_code, user_code, scope, interval, expires, status, client_id, last_checked.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref oauth2_provider_application_user_id_fk: oauth2_provider_application.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_grant_user_id_fk: oauth2_provider_grant.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_grant_application_id_fk: oauth2_provider_grant.application_id > oauth2_provider_application.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_user_id_fk: oauth2_provider_accesstoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_source_refresh_token_id_fk: oauth2_provider_accesstoken.source_refresh_token_id - oauth2_provider_refreshtoken.id [delete: set null]
+
+Ref oauth2_provider_accesstoken_id_token_id_fk: oauth2_provider_accesstoken.id_token_id - oauth2_provider_idtoken.id [delete: cascade]
+
+Ref oauth2_provider_accesstoken_application_id_fk: oauth2_provider_accesstoken.application_id > oauth2_provider_application.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_user_id_fk: oauth2_provider_refreshtoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_application_id_fk: oauth2_provider_refreshtoken.application_id > oauth2_provider_application.id [delete: cascade]
+
+Ref oauth2_provider_refreshtoken_access_token_id_fk: oauth2_provider_refreshtoken.access_token_id - oauth2_provider_accesstoken.id [delete: set null]
+
+Ref oauth2_provider_idtoken_user_id_fk: oauth2_provider_idtoken.user_id > auth_user.id [delete: cascade]
+
+Ref oauth2_provider_idtoken_application_id_fk: oauth2_provider_idtoken.application_id > oauth2_provider_application.id [delete: cascade]
+
+Ref oauth2_provider_devicegrant_user_id_fk: oauth2_provider_devicegrant.user_id > auth_user.id [delete: cascade]

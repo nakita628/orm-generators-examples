@@ -1,0 +1,11 @@
+[project]
+name = "example-drf-api-logger"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "drf-api-logger"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true

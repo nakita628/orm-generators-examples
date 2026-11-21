@@ -1,0 +1,34 @@
+[project]
+name = "djangoer-examples"
+version = "0.0.0"
+description = "ER diagrams and docs of the models of well-known Django projects, written by Djangoer"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[dependency-groups]
+dev = ["ruff>=0.14"]
+
+[tool.uv]
+# This app's own tooling (scripts/, tools/). Nothing to build or install.
+package = false
+# examples/* are not workspace members on purpose: each installs a different project with its own
+# Django and dependencies (and some override them), which cannot share one lockfile. Each example is a
+# standalone uv project with its own pyproject.toml and uv.lock; tools/run.py runs them, through Bazel,
+# with `uv run --project examples/<name>`.
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+# The models copied from each project are kept as they are.
+extend-exclude = ["examples/*/models"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# The lists of projects and some generated commands are long.
+"scripts/*" = ["E501"]
+"tools/*" = ["E501"]
+# Hand-written sample models follow the Django docs they come from.
+"examples/*" = ["E501"]

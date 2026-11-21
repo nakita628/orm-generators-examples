@@ -1,0 +1,1974 @@
+Enum AssetStatus {
+  AVAILABLE
+  IN_CUSTODY
+  CHECKED_OUT
+}
+
+Enum AssetType {
+  INDIVIDUAL
+  QUANTITY_TRACKED
+}
+
+Enum ConsumptionType {
+  ONE_WAY
+  TWO_WAY
+}
+
+Enum ConsumptionCategory {
+  CHECKOUT
+  RETURN
+  RESTOCK
+  ADJUSTMENT
+  LOSS
+  CONSUME
+  DAMAGE
+  MOVE
+  INITIAL
+  OPENING_BALANCE
+}
+
+Enum PdfTemplateKind {
+  BOOKING
+}
+
+Enum AssetIndexMode {
+  SIMPLE
+  ADVANCED
+}
+
+Enum TagUseFor {
+  ASSET
+  BOOKING
+}
+
+Enum NoteType {
+  COMMENT
+  UPDATE
+}
+
+Enum BarcodeType {
+  Code128
+  Code39
+  DataMatrix
+  ExternalQR
+  EAN13
+}
+
+Enum ErrorCorrection {
+  L
+  M
+  Q
+  H
+}
+
+Enum ScanCodeType {
+  QR
+  BARCODE
+  SAM_ID
+}
+
+Enum ScanSource {
+  QR_LINK
+  WEB_SCANNER
+  WEB_DRAWER
+  AUDIT
+  COMPANION
+  GPS_UPDATE
+}
+
+Enum Roles {
+  USER
+  ADMIN
+}
+
+Enum OrganizationType {
+  PERSONAL
+  TEAM
+}
+
+Enum QrIdDisplayPreference {
+  QR_ID
+  SAM_ID
+  Code128
+  Code39
+  DataMatrix
+  ExternalQR
+  EAN13
+}
+
+Enum DateFormatPreference {
+  DD_MM_YYYY
+  MM_DD_YYYY
+  YYYY_MM_DD
+  MMM_DD_YYYY
+  DD_MMM_YYYY
+}
+
+Enum TimeFormatPreference {
+  H12
+  H24
+}
+
+Enum WeekStartPreference {
+  MONDAY
+  SUNDAY
+  SATURDAY
+}
+
+Enum OrganizationRoles {
+  ADMIN
+  BASE
+  OWNER
+  SELF_SERVICE
+  MANAGER
+}
+
+Enum TierId {
+  free
+  tier_1
+  tier_2
+  custom
+}
+
+Enum CustomFieldType {
+  TEXT
+  OPTION
+  BOOLEAN
+  DATE
+  MULTILINE_TEXT
+  AMOUNT
+  NUMBER
+}
+
+Enum CustomFieldFormat {
+  PLAIN
+  LINK
+}
+
+Enum Currency {
+  AED
+  AFN
+  ALL
+  AMD
+  ANG
+  AOA
+  ARS
+  AUD
+  AWG
+  AZN
+  BAM
+  BBD
+  BDT
+  BGN
+  BHD
+  BIF
+  BMD
+  BND
+  BOB
+  BRL
+  BSD
+  BTN
+  BWP
+  BYN
+  BZD
+  CAD
+  CDF
+  CHF
+  CLP
+  CNY
+  COP
+  CRC
+  CUP
+  CVE
+  CZK
+  DJF
+  DKK
+  DOP
+  DZD
+  EGP
+  ERN
+  ETB
+  EUR
+  FJD
+  FKP
+  GBP
+  GEL
+  GHS
+  GIP
+  GMD
+  GNF
+  GTQ
+  GYD
+  HKD
+  HNL
+  HTG
+  HUF
+  IDR
+  ILS
+  INR
+  IQD
+  IRR
+  ISK
+  JMD
+  JOD
+  JPY
+  KES
+  KGS
+  KHR
+  KMF
+  KPW
+  KRW
+  KWD
+  KYD
+  KZT
+  LAK
+  LBP
+  LKR
+  LRD
+  LSL
+  LYD
+  MAD
+  MDL
+  MGA
+  MKD
+  MMK
+  MNT
+  MOP
+  MRU
+  MUR
+  MVR
+  MWK
+  MXN
+  MYR
+  MZN
+  NAD
+  NGN
+  NIO
+  NOK
+  NPR
+  NZD
+  OMR
+  PAB
+  PEN
+  PGK
+  PHP
+  PKR
+  PLN
+  PYG
+  QAR
+  RON
+  RSD
+  RUB
+  RWF
+  SAR
+  SBD
+  SCR
+  SDG
+  SEK
+  SGD
+  SHP
+  SLE
+  SOS
+  SRD
+  SSP
+  STN
+  SVC
+  SYP
+  SZL
+  THB
+  TJS
+  TMT
+  TND
+  TOP
+  TRY
+  TTD
+  TWD
+  TZS
+  UAH
+  UGX
+  USD
+  UYU
+  UZS
+  VES
+  VND
+  VUV
+  WST
+  XAF
+  XCD
+  XOF
+  XPF
+  YER
+  ZAR
+  ZMW
+  ZWL
+}
+
+Enum InviteStatuses {
+  PENDING
+  ACCEPTED
+  REJECTED
+  INVALIDATED
+}
+
+Enum BookingStatus {
+  DRAFT
+  RESERVED
+  ONGOING
+  OVERDUE
+  COMPLETE
+  ARCHIVED
+  CANCELLED
+}
+
+Enum DevicePlatform {
+  IOS
+  ANDROID
+}
+
+Enum KitStatus {
+  AVAILABLE
+  IN_CUSTODY
+  CHECKED_OUT
+}
+
+Enum ReminderRecurrenceUnit {
+  DAY
+  WEEK
+  MONTH
+  YEAR
+}
+
+Enum UpdateStatus {
+  DRAFT
+  PUBLISHED
+}
+
+Enum AuditStatus {
+  PENDING
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ARCHIVED
+}
+
+Enum AuditAssetStatus {
+  PENDING
+  FOUND
+  MISSING
+  UNEXPECTED
+}
+
+Enum AuditAssignmentRole {
+  LEAD
+  PARTICIPANT
+}
+
+Enum AssetImportStatus {
+  DRAFT
+  QUEUED
+  RUNNING
+  COMPLETED
+  FAILED
+}
+
+Enum AssetImportPhase {
+  PREPARE
+  ROWS
+  FINALIZE
+}
+
+Enum LinkPreviewOutcome {
+  TITLE
+  NO_TITLE
+  SIGN_IN
+  BLOCKED
+  UNREACHABLE
+}
+
+Enum AuditImageCaptureSource {
+  CAMERA
+  LIBRARY
+  WEB_UPLOAD
+  PHONE
+}
+
+Enum RoleChangeSource {
+  MANUAL
+  SSO
+}
+
+Enum ActivityEntity {
+  ASSET
+  BOOKING
+  AUDIT
+  KIT
+  LOCATION
+  TEAM_MEMBER
+  CUSTODY
+  USER
+  ORGANIZATION
+}
+
+Enum ActivityAction {
+  ASSET_CREATED
+  ASSET_NAME_CHANGED
+  ASSET_DESCRIPTION_CHANGED
+  ASSET_CATEGORY_CHANGED
+  ASSET_MODEL_CHANGED
+  ASSET_KIT_CHANGED
+  ASSET_LOCATION_CHANGED
+  ASSET_TAGS_CHANGED
+  ASSET_STATUS_CHANGED
+  ASSET_VALUATION_CHANGED
+  ASSET_QUANTITY_CHANGED
+  ASSET_MIN_QUANTITY_CHANGED
+  ASSET_CUSTOM_FIELD_CHANGED
+  ASSET_PREFERRED_BARCODE_CHANGED
+  ASSET_AVAILABLE_TO_BOOK_CHANGED
+  ASSET_ARCHIVED
+  ASSET_UNARCHIVED
+  ASSET_DELETED
+  CUSTODY_ASSIGNED
+  CUSTODY_RELEASED
+  BOOKING_CREATED
+  BOOKING_STATUS_CHANGED
+  BOOKING_DATES_CHANGED
+  BOOKING_ASSETS_ADDED
+  BOOKING_ASSETS_REMOVED
+  BOOKING_CHECKED_OUT
+  BOOKING_CHECKED_IN
+  BOOKING_PARTIAL_CHECKIN
+  BOOKING_PARTIAL_CHECKOUT
+  BOOKING_CANCELLED
+  BOOKING_ARCHIVED
+  BOOKING_MODEL_REQUESTED
+  BOOKING_MODEL_REQUEST_CHANGED
+  BOOKING_MODEL_REQUEST_REMOVED
+  BOOKING_MODEL_REQUEST_FULFILLED
+  AUDIT_CREATED
+  AUDIT_STARTED
+  AUDIT_ASSETS_ADDED
+  AUDIT_ASSETS_REMOVED
+  AUDIT_ASSET_SCANNED
+  AUDIT_ASSET_SCAN_REMOVED
+  AUDIT_DUE_DATE_CHANGED
+  AUDIT_ASSIGNEE_ADDED
+  AUDIT_ASSIGNEE_REMOVED
+  AUDIT_UPDATED
+  AUDIT_COMPLETED
+  AUDIT_CANCELLED
+  AUDIT_ARCHIVED
+  LOCATION_CREATED
+  LOCATION_UPDATED
+  KIT_CREATED
+  KIT_UPDATED
+  ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED
+}
+
+Table Image {
+  id String [pk]
+  contentType String [not null]
+  altText String
+  blob Bytes [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  ownerOrgId String [not null]
+  userId String [not null]
+}
+
+Table User {
+  id String [pk]
+  email String [unique, not null]
+  username String [unique, not null]
+  firstName String
+  lastName String
+  displayName String
+  profilePicture String
+  usedFreeTrial Boolean [default: false, not null]
+  onboarded Boolean [default: false, not null]
+  customerId String [unique]
+  sso Boolean [default: false, not null]
+  createdWithInvite Boolean [default: false, not null]
+  skipSubscriptionCheck Boolean [default: false, not null]
+  hasUnpaidInvoice Boolean [default: false, not null]
+  warnForNoPaymentMethod Boolean [default: false, not null]
+  lastSelectedOrganizationId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+  lastMobileActiveAt DateTime
+  dateFormat DateFormatPreference
+  timeFormat TimeFormatPreference
+  weekStart WeekStartPreference
+  timeZone String
+  tierId TierId [default: 'free', not null]
+  referralSource String
+
+  indexes {
+    (email, username) [unique]
+  }
+}
+
+Table UserContact {
+  id String [pk]
+  phone String
+  street String
+  city String
+  stateProvince String
+  zipPostalCode String
+  countryRegion String
+  userId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table UserBusinessIntel {
+  id String [pk]
+  howDidYouHearAboutUs String
+  jobTitle String
+  teamSize String
+  companyName String
+  primaryUseCase String
+  currentSolution String
+  timeline String
+  signupPlan String
+  signupTrial Boolean
+  utmSource String
+  utmMedium String
+  utmCampaign String
+  utmContent String
+  userId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Asset {
+  id String [pk]
+  title String [not null]
+  description String
+  mainImage String
+  thumbnailImage String
+  mainImageExpiration DateTime
+  status AssetStatus [default: 'AVAILABLE', not null]
+  value Float
+  availableToBook Boolean [default: true, not null]
+  sequentialId String
+  archivedAt DateTime
+  type AssetType [default: 'INDIVIDUAL', not null]
+  assetModelId String
+  quantity Int
+  minQuantity Int
+  consumptionType ConsumptionType
+  unitOfMeasure String
+  lowStockNotifiedAt DateTime
+  stockLedgerStartedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  organizationId String [not null]
+  categoryId String
+  preferredBarcodeId String [unique]
+
+  indexes {
+    (organizationId, sequentialId) [unique]
+  }
+}
+
+Table AssetFilterPreset {
+  id String [pk]
+  organizationId String [not null]
+  ownerId String [not null]
+  name String [not null]
+  query String [not null]
+  starred Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (organizationId, ownerId, name) [unique]
+  }
+}
+
+Table AssetIndexSettings {
+  id String [pk]
+  userId String [not null]
+  organizationId String [not null]
+  mode AssetIndexMode [default: 'SIMPLE', not null]
+  columns Json [default: '[ {"name": "id", "visible": true, "position": 0}, {"name": "status", "visible": true, "position": 1}, {"name": "description", "visible": true, "position": 2}, {"name": "valuation", "visible": true, "position": 3}, {"name": "createdAt", "visible": true, "position": 4}, {"name": "category", "visible": true, "position": 5}, {"name": "tags", "visible": true, "position": 6}, {"name": "location", "visible": true, "position": 7}, {"name": "kit", "visible": true, "position": 8}, {"name": "custody", "visible": true, "position": 9} ]', not null]
+  freezeColumn Boolean [default: true, not null]
+  showAssetImage Boolean [default: true, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (userId, organizationId) [unique]
+  }
+}
+
+Table PdfTemplate {
+  id String [pk]
+  name String [not null]
+  kind PdfTemplateKind [default: 'BOOKING', not null]
+  config Json [default: '{}', not null, note: '''The layout\'s switches. Read through `parseBookingTemplateConfig`,
+which fills any key a stored row lacks from the Checklist template\'s
+values.''']
+  isDefault Boolean [default: false, not null, note: '''The template the PDF dialog offers first. One per workspace and kind,
+enforced by a partial unique index in raw SQL (migration
+20261103120000_add_pdf_templates). Names are also unique per workspace
+and kind ignoring case, through an expression index in the same
+migration.''']
+  organizationId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (organizationId, kind, name) [unique]
+  }
+
+  Note: '''A saved layout for a generated PDF, kept per team workspace under a name:
+which columns, rows and header lines print, and in what order the rows
+come. A row is a layout, not a generated file; the person generating a PDF
+picks a template by name.'''
+}
+
+Table Category {
+  id String [pk]
+  name String [not null]
+  description String
+  color String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  organizationId String [not null]
+}
+
+Table AssetModel {
+  id String [pk]
+  name String [not null]
+  description String
+  image String [note: '''Public URL (bucket `files`) of the model\'s cover image. Rendered by any
+asset of this model that has no image of its own. Public — and therefore
+never-expiring and cacheable — like Location.imageUrl; see
+resolveAssetImage() for the cascade.''']
+  thumbnailImage String [note: '''Public URL of the 108px thumbnail generated alongside `image`. Used at
+list sizes so inheriting assets never render the full-size original.''']
+  defaultCategoryId String
+  defaultValuation Float
+  organizationId String [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  Note: '''*
+* A template/grouping entity for assets.
+* Groups individual assets of the same type (e.g., "Dell Latitude 5550")
+* and provides default field values when creating new assets from the model.'''
+}
+
+Table BookingModelRequest {
+  id String [pk]
+  bookingId String [not null]
+  assetModelId String [not null]
+  quantity Int [not null, note: '''Total units originally reserved. Mutated only by explicit
+operator edits (upsert) — never decremented on materialisation.
+This preserves the audit trail of "how many were planned".''']
+  fulfilledQuantity Int [default: 0, not null, note: '''Units already assigned to concrete `BookingAsset` rows via
+`materializeModelRequestForAsset`. Scans increment it.
+
+It DOES decrease: `removeAssets` (booking service) decrements it by the
+number of removed `BookingAsset` rows whose `bookingModelRequestId`
+points at this request, floored at 0, and clears `fulfilledAt` when the
+result drops below `quantity`.
+
+Counted from that column, never from a shared `assetModelId`: an asset
+added directly alongside a reservation shares the model without having
+discharged anything, so grouping by model re-opened reservations that
+were still correctly satisfied.''']
+  fulfilledAt DateTime [note: '''Timestamp of the moment the reservation became fully fulfilled — set
+when `fulfilledQuantity` catches up to `quantity`, and preserved (not
+re-stamped) if an unchanged quantity is saved again. Cleared back to
+null when outstanding units reappear: the operator edits `quantity`
+upwards, or `removeAssets` drops `fulfilledQuantity` below it.
+
+The invariant that makes this the primary "is this outstanding?" filter:
+non-null IFF `fulfilledQuantity === quantity`, so `fulfilledAt IS NULL`
+means units remain to materialise. `fulfilledQuantity` can never exceed
+`quantity` (the claim in `materializeModelRequestForAsset` is a single
+statement guarded by `WHERE "fulfilledQuantity" < "quantity"`; upsert
+rejects a shrink below it), so any decrement re-opens the row.''']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (bookingId, assetModelId) [unique]
+  }
+
+  Note: '''Book-by-Model: intent row attached to a booking for a quantity of
+assets of a given AssetModel, without yet picking specific assets.
+Concrete `BookingAsset` rows are only created at
+scan-to-assign time; when the last unit is assigned, the request
+row is deleted. `quantity` is the number of units still needing
+assignment (starts at the full requested total, decrements on scan).
+
+Keeping model requests separate from `BookingAsset` means the ~40
+code paths that assume `BookingAsset.assetId` points to a real
+asset stay untouched — model-only bookings become concrete the
+moment they\'re checked out.'''
+}
+
+Table Tag {
+  id String [pk]
+  name String [not null]
+  description String
+  color String
+  useFor TagUseFor[] [not null]
+  userId String [not null]
+  organizationId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Note {
+  id String [pk]
+  content String [not null]
+  type NoteType [default: 'COMMENT', not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  assetId String [not null]
+}
+
+Table BookingNote {
+  id String [pk]
+  content String [not null]
+  type NoteType [default: 'COMMENT', not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  bookingId String [not null]
+}
+
+Table LocationNote {
+  id String [pk]
+  content String [not null]
+  type NoteType [default: 'COMMENT', not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  locationId String [not null]
+}
+
+Table Qr {
+  id String [pk]
+  version Int [default: 0, not null]
+  errorCorrection ErrorCorrection [default: 'L', not null]
+  assetId String
+  kitId String
+  userId String
+  organizationId String
+  batchId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Barcode {
+  id String [pk]
+  value String [not null]
+  type BarcodeType [default: 'Code128', not null]
+  assetId String
+  kitId String
+  organizationId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (organizationId, value) [unique]
+  }
+}
+
+Table PrintBatch {
+  id String [pk]
+  name String [unique, not null]
+  printed Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ReportFound {
+  id String [pk]
+  email String [not null]
+  content String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  assetId String
+  kitId String
+}
+
+Table Scan {
+  id String [pk]
+  latitude String
+  longitude String
+  userAgent String
+  userId String
+  qrId String
+  rawQrId String
+  codeType ScanCodeType [default: 'QR', not null]
+  code String
+  barcodeId String
+  assetId String
+  kitId String
+  organizationId String [not null]
+  source ScanSource
+  manuallyGenerated Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Location {
+  id String [pk]
+  name String [not null]
+  description String
+  address String
+  latitude Float
+  longitude Float
+  imageUrl String
+  thumbnailUrl String
+  imageId String [unique]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  organizationId String [not null]
+  parentId String
+}
+
+Table Role {
+  id String [pk]
+  name Roles [default: 'USER', unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table TeamMember {
+  id String [pk]
+  name String [not null]
+  organizationId String [not null]
+  userId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table Custody {
+  id String [pk]
+  teamMemberId String [not null]
+  assetId String [not null]
+  kitCustodyId String
+  quantity Int [default: 1, not null]
+  locationId String
+  sourceUnknown Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Organization {
+  id String [pk]
+  name String [default: 'Personal', not null]
+  type OrganizationType [default: 'PERSONAL', not null]
+  userId String [not null]
+  currency Currency [default: 'USD', not null]
+  imageId String [unique]
+  enabledSso Boolean [default: false, not null]
+  ssoDetailsId String
+  selfServiceCanSeeCustody Boolean [default: false, not null]
+  selfServiceCanSeeBookings Boolean [default: false, not null]
+  baseUserCanSeeCustody Boolean [default: false, not null]
+  baseUserCanSeeBookings Boolean [default: false, not null]
+  managersCanEditAssets Boolean [default: false, not null]
+  barcodesEnabled Boolean [default: false, not null]
+  barcodesEnabledAt DateTime
+  usedBarcodeTrial Boolean [default: false, not null]
+  auditsEnabled Boolean [default: false, not null]
+  auditsEnabledAt DateTime
+  usedAuditTrial Boolean [default: false, not null]
+  workspaceDisabled Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  hasSequentialIdsMigrated Boolean [default: false, not null]
+  qrIdDisplayPreference QrIdDisplayPreference [default: 'QR_ID', not null]
+  showShelfBranding Boolean [default: true, not null]
+  showQrCodesOnPdfs Boolean [default: true, not null]
+  customEmailFooter String
+}
+
+Table UserOrganization {
+  id String [pk]
+  userId String [not null]
+  organizationId String [not null]
+  roles OrganizationRoles[] [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  calendarTokenId String [unique, note: '''Secret, unguessable token for this member\'s iCal calendar-feed subscription
+in this workspace. Null until the user generates a feed; regenerating it
+rotates the value (invalidating any previously-shared subscription URL).
+`@unique` doubles as the lookup index for the public feed route.''']
+
+  indexes {
+    (userId, organizationId) [unique]
+  }
+}
+
+Table SsoDetails {
+  id String [pk]
+  domain String [not null]
+  baseUserGroupId String
+  selfServiceGroupId String
+  adminGroupId String
+  managerGroupId String
+  requireSsoLogin Boolean [default: true, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ScimToken {
+  id String [pk]
+  tokenHash String [unique, not null]
+  label String [not null]
+  organizationId String [not null]
+  createdById String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  lastUsedAt DateTime
+}
+
+Table UserScimExternalId {
+  id String [pk]
+  userId String [not null]
+  organizationId String [not null]
+  scimExternalId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (userId, organizationId) [unique]
+    (organizationId, scimExternalId) [unique]
+  }
+
+  Note: '''*
+* Org-scoped SCIM external ID linking a Shelf user to an identity-provider
+* object within a specific organization.  A single Shelf user can appear in
+* multiple organizations, each managed by a different identity provider, so the
+* external ID must be scoped to the (user, organization) pair.'''
+}
+
+Table Tier {
+  id TierId [pk]
+  name String [not null]
+  tierLimitId TierId [unique]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table TierLimit {
+  id TierId [pk]
+  canImportAssets Boolean [default: false, not null]
+  canExportAssets Boolean [default: false, not null]
+  canImportNRM Boolean [default: false, not null]
+  canHideShelfBranding Boolean [default: false, not null]
+  canUseReports Boolean [default: false, not null]
+  canUseRecurringReminders Boolean [default: false, not null]
+  canUsePushNotifications Boolean [default: false, not null]
+  maxCustomFields Int [default: 0, not null]
+  maxOrganizations Int [default: 1, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CustomTierLimit {
+  id String [pk]
+  userId String [unique]
+  canImportAssets Boolean [default: true, not null]
+  canExportAssets Boolean [default: true, not null]
+  canImportNRM Boolean [default: true, not null]
+  canHideShelfBranding Boolean [default: true, not null]
+  canUseReports Boolean [default: true, not null]
+  canUseRecurringReminders Boolean [default: true, not null]
+  canUsePushNotifications Boolean [default: true, not null]
+  maxCustomFields Int [default: 1000, not null]
+  maxOrganizations Int [default: 1, not null]
+  isEnterprise Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table CustomField {
+  id String [pk]
+  name String [not null]
+  helpText String
+  required Boolean [default: false, not null]
+  active Boolean [default: true, not null]
+  type CustomFieldType [default: 'TEXT', not null]
+  options String[] [not null]
+  format CustomFieldFormat [default: 'PLAIN', not null, note: '''How a TEXT field\'s values are read. LINK requires a web link in every
+value; any other type stays PLAIN (enforced by a CHECK constraint).''']
+  organizationId String [not null]
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  deletedAt DateTime
+}
+
+Table AssetCustomFieldValue {
+  id String [pk]
+  value Json [not null]
+  assetId String [not null]
+  customFieldId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table AssetModelCustomFieldDefault {
+  id String [pk]
+  value Json [not null]
+  assetModelId String [not null]
+  customFieldId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (assetModelId, customFieldId) [unique]
+  }
+
+  Note: '''A custom field value an AssetModel gives the assets that join it.
+
+`value` has the exact shape of `AssetCustomFieldValue.value`, so filling an
+asset is a plain copy. Rows cascade away with their model or field.'''
+}
+
+Table Invite {
+  id String [pk]
+  inviterId String [not null]
+  organizationId String [not null]
+  inviteeUserId String
+  teamMemberId String [not null]
+  inviteeEmail String [not null]
+  status InviteStatuses [default: 'PENDING', not null]
+  inviteCode String [not null]
+  roles OrganizationRoles[] [not null]
+  inviteMessage String
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Announcement {
+  id String [pk]
+  name String [not null]
+  content String [not null]
+  link String
+  linkText String
+  published Boolean [default: false, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table ConsumptionLog {
+  id String [pk]
+  assetId String [not null]
+  category ConsumptionCategory [not null]
+  quantity Int [not null]
+  note String
+  userId String [not null]
+  bookingId String
+  custodianId String
+  bookingAssetId String
+  locationId String
+  stockChange Int
+  createdAt DateTime [default: `now()`, not null]
+
+  Note: '''*
+* Audit trail for all quantity changes on quantity-tracked assets.
+* Every event records who performed it, who received/returned items,
+* which booking it relates to, and the category of change.
+* Quantity is always positive — direction is determined by category.'''
+}
+
+Table BookingAsset {
+  id String [pk]
+  bookingId String [not null]
+  assetId String [not null]
+  quantity Int [default: 1, not null]
+  bookingModelRequestId String
+  assetKitId String
+  sourceKitId String
+  checkedOutAt DateTime
+  checkedOutById String
+  checkedInAt DateTime
+  checkedInById String
+  checkedOutQuantity Int [default: 0, not null]
+  sourceLocationId String
+
+  Note: '''*
+* Explicit pivot table between Booking and Asset.
+* Replaces the implicit M2M (_AssetToBooking) via a rename migration in Phase 3.'''
+}
+
+Table Booking {
+  id String [pk]
+  name String [not null]
+  status BookingStatus [default: 'DRAFT', not null]
+  description String [default: '']
+  activeSchedulerReference String
+  creatorId String [not null]
+  custodianUserId String
+  custodianTeamMemberId String
+  organizationId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  from DateTime [not null]
+  to DateTime [not null]
+  originalFrom DateTime
+  originalTo DateTime
+  autoArchivedAt DateTime
+  archivedWithoutCheckin Boolean [default: false, not null]
+  cancellationReason String
+}
+
+Table BookingSettings {
+  id String [pk]
+  bufferStartTime Int [default: 0, not null]
+  tagsRequired Boolean [default: false, not null]
+  maxBookingLength Int
+  maxBookingLengthSkipClosedDays Boolean [default: false, not null]
+  autoArchiveBookings Boolean [default: false, not null]
+  autoArchiveDays Int [default: 2, not null]
+  autoArchiveExpiredReservations Boolean [default: false, not null]
+  requireExplicitCheckinForAdmin Boolean [default: false, not null]
+  requireExplicitCheckinForSelfService Boolean [default: false, not null]
+  requireExplicitCheckoutForAdmin Boolean [default: false, not null]
+  requireExplicitCheckoutForSelfService Boolean [default: false, not null]
+  countKitsAsSingleUnit Boolean [default: false, not null]
+  notifyBookingCreator Boolean [default: true, not null]
+  notifyAdminsOnNewBooking Boolean [default: true, not null]
+  organizationId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table PartialBookingCheckin {
+  id String [pk]
+  assetIds String[] [not null]
+  checkinCount Int [not null]
+  checkinTimestamp DateTime [default: `now()`, not null]
+  bookingId String [not null]
+  checkedInById String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  Note: '''A progressive check-in SESSION, mirroring PartialBookingCheckout.
+
+`assetIds` lists only FULLY reconciled assets: INDIVIDUAL always, and
+QUANTITY_TRACKED only once its remaining units hit zero (partial returns
+live in `ConsumptionLog`). Completing a booking outright writes no row here,
+so the same warning applies — absence is not evidence of anything.
+`BookingAsset.checkedInAt` is the per-slice fact.'''
+}
+
+Table PartialBookingCheckout {
+  id String [pk]
+  assetIds String[] [not null]
+  quantities Int[] [not null]
+  bookingAssetIds String[] [not null]
+  checkoutCount Int [not null]
+  checkoutTimestamp DateTime [default: `now()`, not null]
+  bookingId String [not null]
+  checkedOutById String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  Note: '''A progressive checkout SESSION: one scan batch, covering N assets via the
+positional `assetIds` / `quantities` / `bookingAssetIds` arrays.
+
+Records sessions and the units they claimed — NOT whether an asset is out.
+The all-at-once checkout (`checkoutBooking`, the Check out button) flips
+statuses and writes NO row here, so **absence proves nothing** and must never
+be read as "was not checked out". Reading it that way is what let a single
+later scan mark every button-checked-out asset on a booking as
+"never checked out". `BookingAsset.checkedOutAt` answers that question.'''
+}
+
+Table MobileAuthCode {
+  id String [pk]
+  userId String [not null]
+  codeHash String [unique, not null]
+  codeChallenge String
+  sessionCiphertext String
+  consumedAt DateTime
+  expiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+
+  Note: '''Native-app SSO web-delegated login — single-use session-handoff codes.
+@see apps/webapp/app/routes/_auth+/oauth.callback.mobile.tsx'''
+}
+
+Table PushToken {
+  id String [pk]
+  token String [unique, not null]
+  platform DevicePlatform [not null]
+  deviceName String
+  appVersion String
+  lastSeenAt DateTime [not null]
+  disabledAt DateTime
+  userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  Note: '''One Expo push token per installed companion app. A token identifies a
+device, not a person: when someone else signs in on the same phone, the
+row moves to them. Pushes go only to rows where `disabledAt` is null.
+@see apps/webapp/app/modules/push/service.server.ts'''
+}
+
+Table NotificationPreference {
+  userId String [pk]
+  pushEnabled Boolean [default: true, not null]
+  bookings Boolean [default: true, not null]
+  audits Boolean [default: true, not null]
+  stockAndReminders Boolean [default: true, not null]
+  updatedAt DateTime [not null]
+
+  Note: '''A person\'s push notification switches. A missing row means every switch
+is on, so no backfill is needed. The three category columns are named
+after `PushCategory` in apps/webapp/app/modules/push/types.ts.'''
+}
+
+Table Kit {
+  id String [pk]
+  name String [not null]
+  description String
+  status KitStatus [default: 'AVAILABLE', not null]
+  image String
+  imageExpiration DateTime
+  organizationId String [not null]
+  createdById String [not null]
+  categoryId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  locationId String
+}
+
+Table KitCustody {
+  id String [pk]
+  custodianId String [not null]
+  kitId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table AssetKit {
+  id String [pk]
+  assetId String [not null]
+  kitId String [not null]
+  organizationId String [not null]
+  quantity Int [default: 1, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (assetId, kitId) [unique]
+  }
+
+  Note: '''Pivot linking an `Asset` to the `Kit` it belongs to.
+
+`@@unique([assetId])` enforces "at most one kit per asset" today.
+The structure already allows multi-row-per-asset; if multi-kit
+allocation lands later, drop the `assetId` unique constraint and
+add a type-aware single-row trigger + sum-within-total CONSTRAINT
+TRIGGER (parallel to the Custody / BookingAsset pivots).'''
+}
+
+Table AssetLocation {
+  id String [pk]
+  assetId String [not null]
+  locationId String [not null]
+  organizationId String [not null]
+  quantity Int [default: 1, not null]
+  assetKitId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table AssetReminder {
+  id String [pk]
+  name String [not null]
+  message String [not null]
+  alertDateTime DateTime [not null]
+  activeSchedulerReference String
+  recurrenceUnit ReminderRecurrenceUnit
+  recurrenceInterval Int
+  recurrenceTimezone String
+  recurrenceEndsAt DateTime
+  organizationId String [not null]
+  assetId String [not null]
+  createdById String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table WorkingHours {
+  id String [pk]
+  enabled Boolean [default: false, not null]
+  weeklySchedule Json [default: '{"0":{"isOpen":false},"1":{"isOpen":true,"openTime":"09:00","closeTime":"17:00"},"2":{"isOpen":true,"openTime":"09:00","closeTime":"17:00"},"3":{"isOpen":true,"openTime":"09:00","closeTime":"17:00"},"4":{"isOpen":true,"openTime":"09:00","closeTime":"17:00"},"5":{"isOpen":true,"openTime":"09:00","closeTime":"17:00"},"6":{"isOpen":false}}', not null]
+  organizationId String [unique, not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table WorkingHoursOverride {
+  id String [pk]
+  date DateTime [not null]
+  isOpen Boolean [default: false, not null]
+  openTime String
+  closeTime String
+  reason String
+  workingHoursId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (workingHoursId, date) [unique]
+  }
+}
+
+Table Update {
+  id String [pk]
+  title String [not null]
+  content String [not null]
+  url String
+  imageUrl String
+  publishDate DateTime [not null]
+  status UpdateStatus [default: 'DRAFT', not null]
+  targetRoles OrganizationRoles[] [not null]
+  clickCount Int [default: 0, not null]
+  viewCount Int [default: 0, not null]
+  createdById String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table UserUpdateRead {
+  id String [pk]
+  userId String [not null]
+  updateId String [not null]
+  readAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (userId, updateId) [unique]
+  }
+}
+
+Table AuditNote {
+  id String [pk]
+  content String [not null]
+  type NoteType [default: 'COMMENT', not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  auditSessionId String [not null]
+  auditAssetId String
+}
+
+Table TeamMemberNote {
+  id String [pk]
+  content String [not null]
+  type NoteType [default: 'COMMENT', not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String
+  teamMemberId String [not null]
+  organizationId String [not null]
+}
+
+Table AuditSession {
+  id String [pk]
+  name String [not null]
+  description String
+  targetId String
+  status AuditStatus [default: 'PENDING', not null]
+  scopeMeta Json
+  expectedAssetCount Int [default: 0, not null]
+  foundAssetCount Int [default: 0, not null]
+  missingAssetCount Int [default: 0, not null]
+  unexpectedAssetCount Int [default: 0, not null]
+  startedAt DateTime
+  dueDate DateTime
+  completedAt DateTime
+  cancelledAt DateTime
+  activeSchedulerReference String
+  createdById String [not null]
+  organizationId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table AssetImport {
+  id String [pk]
+  status AssetImportStatus [default: 'DRAFT', not null]
+  phase AssetImportPhase [default: 'PREPARE', not null]
+  fileName String
+  totalRows Int [not null]
+  processedRows Int [default: 0, not null, note: 'Rows committed so far. Advanced in the same transaction as each chunk.']
+  rows Json [note: 'Parsed rows (`StoredImportRow[]`). Cleared when the import completes.']
+  resolved Json [note: 'Name to id maps written by the PREPARE step (`ResolvedImportEntities`).']
+  canUseBarcodes Boolean [default: false, not null]
+  errorMessage String [note: 'User-facing reason the import failed. Null unless status is FAILED.']
+  warnings Json [note: 'Rows imported without a conflicting piece (`ImportWarning[]`), capped at 500.']
+  warningCount Int [default: 0, not null, note: 'Exact number of warnings, including any beyond the stored cap.']
+  lockedUntil DateTime [note: 'A step holds the import until this time. Null when no step is running.']
+  confirmedAt DateTime
+  startedAt DateTime
+  completedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  createdById String [not null]
+  organizationId String [not null]
+
+  Note: '''One CSV content import. Holds the parsed rows from preview until the import
+completes, so the job imports exactly the file the user previewed.
+A partial unique index on (organizationId) WHERE status IN (QUEUED, RUNNING) allows one
+active import per workspace. Prisma cannot express it; it lives in migration
+20261015120100_asset_import_one_active_per_workspace.'''
+}
+
+Table LinkPreview {
+  id String [pk]
+  url String [not null, note: '''`LinkKey` from @shelf/links, never a raw field value. At most 2048
+characters (CHECK constraint in the migration).''']
+  pageTitle String
+  outcome LinkPreviewOutcome [note: 'Null until the first fetch finishes.']
+  attempts Int [default: 0, not null]
+  fetchedAt DateTime
+  nextFetchAt DateTime [default: `now()`, note: '''When the link may be fetched next; null means never again. A claim moves
+it a few minutes ahead, which is also the lease on a fetch in flight.''']
+  customTitle String [note: 'The name a person gave the link in this workspace; wins over pageTitle.']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  organizationId String [not null]
+
+  indexes {
+    (organizationId, url) [unique]
+  }
+
+  Note: '''What Shelf knows about one web link used in a workspace\'s custom fields,
+keyed by its `LinkKey` from @shelf/links. Two writers on disjoint columns:
+the link preview job (fetch columns) and people (customTitle).'''
+}
+
+Table AuditAssignment {
+  id String [pk]
+  auditSessionId String [not null]
+  userId String [not null]
+  role AuditAssignmentRole
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (auditSessionId, userId) [unique]
+  }
+}
+
+Table AuditAsset {
+  id String [pk]
+  auditSessionId String [not null]
+  assetId String [not null]
+  expected Boolean [default: true, not null]
+  status AuditAssetStatus [default: 'PENDING', not null]
+  scannedById String
+  scannedAt DateTime
+  metadata Json
+  expectedQuantity Int [note: '''Units the audit expects to find, snapshotted when the row is created: the
+units in the audit\'s scope (placed at its locations, held in its kits, or
+held by its person; at most `Asset.quantity`), or `Asset.quantity` when
+none are in scope or the audit has no scope. Null for INDIVIDUAL assets,
+which count as one.
+
+A snapshot, not a live read: stock that moves during the audit must not
+move the target the auditor is counting against.''']
+  foundQuantity Int [note: '''Units the auditor counted. Null until a quantity-tracked asset is
+counted, and always null for INDIVIDUAL assets. A FOUND row with a count
+below `expectedQuantity` is a shortfall: the status stays FOUND (the pool
+was located), the gap is this number.
+
+Both columns are non-negative, enforced by CHECK constraints in raw SQL
+(migration `20261104120000_add_audit_asset_quantities`).''']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+
+  indexes {
+    (auditSessionId, assetId) [unique]
+  }
+}
+
+Table AuditScan {
+  id String [pk]
+  auditSessionId String [not null]
+  auditAssetId String
+  assetId String
+  scannedById String
+  code String
+  assetTitle String [note: '''What was scanned, recorded BY VALUE at scan time.
+
+`asset` and `auditAsset` are both SetNull/Cascade, so deleting an asset
+leaves this row pointing at nothing: no name, and no way to tell whether
+it had been expected. An audit is a historical record, and a record whose
+entries can silently lose their meaning is not one — so the two
+descriptive facts are snapshotted here rather than only referenced.
+
+Readers prefer the LIVE asset when it still exists (a rename should show
+the current name) and fall back to these.
+
+Null means the snapshot could not be taken: scans whose asset had already
+been deleted before these columns were backfilled. Nothing can recover
+those, and they degrade to the scanned `code`, which also survives. Every
+other row carries a snapshot, so null is never merely "old".''']
+  wasExpected Boolean
+  metadata Json
+  scannedAt DateTime [default: `now()`, not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table AuditImage {
+  id String [pk]
+  imageUrl String [not null]
+  thumbnailUrl String
+  description String
+  auditSessionId String [not null]
+  auditAssetId String
+  uploadedById String
+  organizationId String [not null]
+  capturedAt DateTime [note: '''When the photo was taken, from its EXIF data (or the phone app\'s copy of
+it). Null when the photo carried no usable date. EXIF can be edited, so
+this is the best signal available, not proof.''']
+  captureSource AuditImageCaptureSource [note: '''How the photo reached Shelf. Null only for photos uploaded before this
+field existed; a phone upload with no or an unknown source is PHONE.''']
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table RoleChangeLog {
+  id String [pk]
+  previousRole OrganizationRoles [not null]
+  newRole OrganizationRoles [not null]
+  source RoleChangeSource [default: 'MANUAL', not null, note: 'How the change was made. SSO rows name the member themself as `changedBy`.']
+  createdAt DateTime [default: `now()`, not null]
+  userId String [not null]
+  changedById String [not null]
+  organizationId String [not null]
+}
+
+Table ActivityEvent {
+  id String [pk]
+  organizationId String [not null]
+  occurredAt DateTime [default: `now()`, not null]
+  actorUserId String
+  actorSnapshot Json
+  action ActivityAction [not null]
+  entityType ActivityEntity [not null]
+  entityId String [not null]
+  assetId String
+  bookingId String
+  auditSessionId String
+  auditAssetId String
+  kitId String
+  locationId String
+  teamMemberId String
+  targetUserId String
+  field String
+  fromValue Json
+  toValue Json
+  meta Json
+}
+
+Table _RoleToUser {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _AssetToTag {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _CategoryToCustomField {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _BookingToTag {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _AssetReminderToTeamMember {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _BookingSettingsAlwaysNotify {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Table _BookingNotificationRecipients {
+  A String [not null]
+  B String [not null]
+
+  indexes {
+    (A, B) [unique]
+    B
+  }
+}
+
+Ref Image_ownerOrgId_fk: Image.ownerOrgId > Organization.id [delete: cascade, update: cascade]
+
+Ref Image_userId_fk: Image.userId > User.id [update: cascade]
+
+Ref User_lastSelectedOrganizationId_fk: User.lastSelectedOrganizationId > Organization.id [delete: set null]
+
+Ref User_tierId_fk: User.tierId > Tier.id
+
+Ref UserContact_userId_fk: UserContact.userId - User.id [delete: cascade, update: cascade]
+
+Ref UserBusinessIntel_userId_fk: UserBusinessIntel.userId - User.id [delete: cascade, update: cascade]
+
+Ref Asset_assetModelId_fk: Asset.assetModelId > AssetModel.id
+
+Ref Asset_userId_fk: Asset.userId > User.id [delete: cascade, update: cascade]
+
+Ref Asset_organizationId_fk: Asset.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Asset_categoryId_fk: Asset.categoryId > Category.id
+
+Ref Asset_preferredBarcodeId_fk: Asset.preferredBarcodeId - Barcode.id [delete: set null]
+
+Ref AssetFilterPreset_organizationId_fk: AssetFilterPreset.organizationId > Organization.id [delete: cascade]
+
+Ref AssetFilterPreset_ownerId_fk: AssetFilterPreset.ownerId > User.id [delete: cascade]
+
+Ref AssetIndexSettings_userId_fk: AssetIndexSettings.userId > User.id [delete: cascade, update: cascade]
+
+Ref AssetIndexSettings_organizationId_fk: AssetIndexSettings.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref PdfTemplate_organizationId_fk: PdfTemplate.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Category_userId_fk: Category.userId > User.id [update: cascade]
+
+Ref Category_organizationId_fk: Category.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AssetModel_defaultCategoryId_fk: AssetModel.defaultCategoryId > Category.id
+
+Ref AssetModel_organizationId_fk: AssetModel.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AssetModel_userId_fk: AssetModel.userId > User.id [delete: cascade, update: cascade]
+
+Ref BookingModelRequest_bookingId_fk: BookingModelRequest.bookingId > Booking.id [delete: cascade, update: cascade]
+
+Ref BookingModelRequest_assetModelId_fk: BookingModelRequest.assetModelId > AssetModel.id [delete: cascade, update: cascade]
+
+Ref Tag_userId_fk: Tag.userId > User.id [update: cascade]
+
+Ref Tag_organizationId_fk: Tag.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Note_userId_fk: Note.userId > User.id [delete: set null, update: cascade]
+
+Ref Note_assetId_fk: Note.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref BookingNote_userId_fk: BookingNote.userId > User.id [delete: set null, update: cascade]
+
+Ref BookingNote_bookingId_fk: BookingNote.bookingId > Booking.id [delete: cascade, update: cascade]
+
+Ref LocationNote_userId_fk: LocationNote.userId > User.id [delete: set null, update: cascade]
+
+Ref LocationNote_locationId_fk: LocationNote.locationId > Location.id [delete: cascade, update: cascade]
+
+Ref Qr_assetId_fk: Qr.assetId > Asset.id [delete: set null]
+
+Ref Qr_kitId_fk: Qr.kitId > Kit.id [delete: set null]
+
+Ref Qr_userId_fk: Qr.userId > User.id [delete: set null, update: cascade]
+
+Ref Qr_organizationId_fk: Qr.organizationId > Organization.id [update: cascade]
+
+Ref Qr_batchId_fk: Qr.batchId > PrintBatch.id [delete: set null]
+
+Ref Barcode_assetId_fk: Barcode.assetId > Asset.id [delete: set null]
+
+Ref Barcode_kitId_fk: Barcode.kitId > Kit.id [delete: set null]
+
+Ref Barcode_organizationId_fk: Barcode.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref ReportFound_assetId_fk: ReportFound.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref ReportFound_kitId_fk: ReportFound.kitId > Kit.id [delete: cascade, update: cascade]
+
+Ref Scan_userId_fk: Scan.userId > User.id [delete: set null]
+
+Ref Scan_qrId_fk: Scan.qrId > Qr.id [delete: set null]
+
+Ref Scan_barcodeId_fk: Scan.barcodeId > Barcode.id [delete: set null]
+
+Ref Scan_assetId_fk: Scan.assetId > Asset.id [delete: set null]
+
+Ref Scan_kitId_fk: Scan.kitId > Kit.id [delete: set null]
+
+Ref Scan_organizationId_fk: Scan.organizationId > Organization.id [delete: cascade]
+
+Ref Location_imageId_fk: Location.imageId - Image.id
+
+Ref Location_userId_fk: Location.userId > User.id [delete: cascade, update: cascade]
+
+Ref Location_organizationId_fk: Location.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Location_parentId_fk: Location.parentId > Location.id [delete: set null]
+
+Ref TeamMember_organizationId_fk: TeamMember.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref TeamMember_userId_fk: TeamMember.userId > User.id [delete: set null, update: cascade]
+
+Ref Custody_teamMemberId_fk: Custody.teamMemberId > TeamMember.id
+
+Ref Custody_assetId_fk: Custody.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref Custody_kitCustodyId_fk: Custody.kitCustodyId > KitCustody.id [delete: cascade, update: cascade]
+
+Ref Custody_locationId_fk: Custody.locationId > Location.id [delete: set null, update: cascade]
+
+Ref Organization_userId_fk: Organization.userId > User.id [delete: cascade, update: cascade]
+
+Ref Organization_imageId_fk: Organization.imageId - Image.id
+
+Ref Organization_ssoDetailsId_fk: Organization.ssoDetailsId > SsoDetails.id
+
+Ref UserOrganization_userId_fk: UserOrganization.userId > User.id [delete: cascade, update: cascade]
+
+Ref UserOrganization_organizationId_fk: UserOrganization.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref ScimToken_organizationId_fk: ScimToken.organizationId > Organization.id [delete: cascade]
+
+Ref UserScimExternalId_userId_fk: UserScimExternalId.userId > User.id [delete: cascade, update: cascade]
+
+Ref UserScimExternalId_organizationId_fk: UserScimExternalId.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Tier_tierLimitId_fk: Tier.tierLimitId - TierLimit.id
+
+Ref CustomTierLimit_userId_fk: CustomTierLimit.userId - User.id [delete: set null]
+
+Ref CustomField_organizationId_fk: CustomField.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref CustomField_userId_fk: CustomField.userId > User.id [update: cascade]
+
+Ref AssetCustomFieldValue_assetId_fk: AssetCustomFieldValue.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref AssetCustomFieldValue_customFieldId_fk: AssetCustomFieldValue.customFieldId > CustomField.id [delete: cascade, update: cascade]
+
+Ref AssetModelCustomFieldDefault_assetModelId_fk: AssetModelCustomFieldDefault.assetModelId > AssetModel.id [delete: cascade, update: cascade]
+
+Ref Invite_inviterId_fk: Invite.inviterId > User.id [delete: cascade, update: cascade]
+
+Ref Invite_organizationId_fk: Invite.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Invite_inviteeUserId_fk: Invite.inviteeUserId > User.id [delete: cascade, update: cascade]
+
+Ref Invite_teamMemberId_fk: Invite.teamMemberId > TeamMember.id
+
+Ref ConsumptionLog_assetId_fk: ConsumptionLog.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref ConsumptionLog_userId_fk: ConsumptionLog.userId > User.id
+
+Ref ConsumptionLog_bookingId_fk: ConsumptionLog.bookingId > Booking.id
+
+Ref ConsumptionLog_custodianId_fk: ConsumptionLog.custodianId > TeamMember.id
+
+Ref ConsumptionLog_locationId_fk: ConsumptionLog.locationId > Location.id [delete: set null, update: cascade]
+
+Ref BookingAsset_bookingId_fk: BookingAsset.bookingId > Booking.id [delete: cascade, update: cascade]
+
+Ref BookingAsset_assetId_fk: BookingAsset.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref Booking_creatorId_fk: Booking.creatorId > User.id [delete: cascade, update: cascade]
+
+Ref Booking_custodianUserId_fk: Booking.custodianUserId > User.id [delete: cascade, update: cascade]
+
+Ref Booking_custodianTeamMemberId_fk: Booking.custodianTeamMemberId > TeamMember.id [delete: cascade, update: cascade]
+
+Ref Booking_organizationId_fk: Booking.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref BookingSettings_organizationId_fk: BookingSettings.organizationId - Organization.id [delete: cascade, update: cascade]
+
+Ref PartialBookingCheckin_bookingId_fk: PartialBookingCheckin.bookingId > Booking.id [delete: cascade]
+
+Ref PartialBookingCheckin_checkedInById_fk: PartialBookingCheckin.checkedInById > User.id
+
+Ref PartialBookingCheckout_bookingId_fk: PartialBookingCheckout.bookingId > Booking.id [delete: cascade]
+
+Ref PartialBookingCheckout_checkedOutById_fk: PartialBookingCheckout.checkedOutById > User.id
+
+Ref MobileAuthCode_userId_fk: MobileAuthCode.userId > User.id [delete: cascade, update: cascade]
+
+Ref PushToken_userId_fk: PushToken.userId > User.id [delete: cascade, update: cascade]
+
+Ref NotificationPreference_userId_fk: NotificationPreference.userId - User.id [delete: cascade, update: cascade]
+
+Ref Kit_organizationId_fk: Kit.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Kit_createdById_fk: Kit.createdById > User.id
+
+Ref Kit_categoryId_fk: Kit.categoryId > Category.id
+
+Ref Kit_locationId_fk: Kit.locationId > Location.id
+
+Ref KitCustody_custodianId_fk: KitCustody.custodianId > TeamMember.id
+
+Ref KitCustody_kitId_fk: KitCustody.kitId - Kit.id [delete: cascade, update: cascade]
+
+Ref AssetKit_assetId_fk: AssetKit.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref AssetKit_kitId_fk: AssetKit.kitId > Kit.id [delete: cascade, update: cascade]
+
+Ref AssetKit_organizationId_fk: AssetKit.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AssetLocation_assetId_fk: AssetLocation.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref AssetLocation_locationId_fk: AssetLocation.locationId > Location.id [delete: cascade, update: cascade]
+
+Ref AssetLocation_organizationId_fk: AssetLocation.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AssetLocation_assetKitId_fk: AssetLocation.assetKitId > AssetKit.id [delete: cascade, update: cascade]
+
+Ref AssetReminder_organizationId_fk: AssetReminder.organizationId > Organization.id
+
+Ref AssetReminder_assetId_fk: AssetReminder.assetId > Asset.id [delete: cascade]
+
+Ref AssetReminder_createdById_fk: AssetReminder.createdById > User.id
+
+Ref WorkingHours_organizationId_fk: WorkingHours.organizationId - Organization.id [delete: cascade, update: cascade]
+
+Ref WorkingHoursOverride_workingHoursId_fk: WorkingHoursOverride.workingHoursId > WorkingHours.id [delete: cascade, update: cascade]
+
+Ref Update_createdById_fk: Update.createdById > User.id [delete: cascade, update: cascade]
+
+Ref UserUpdateRead_userId_fk: UserUpdateRead.userId > User.id [delete: cascade, update: cascade]
+
+Ref UserUpdateRead_updateId_fk: UserUpdateRead.updateId > Update.id [delete: cascade, update: cascade]
+
+Ref AuditNote_userId_fk: AuditNote.userId > User.id [delete: set null, update: cascade]
+
+Ref AuditNote_auditSessionId_fk: AuditNote.auditSessionId > AuditSession.id [delete: cascade, update: cascade]
+
+Ref AuditNote_auditAssetId_fk: AuditNote.auditAssetId > AuditAsset.id [delete: set null, update: cascade]
+
+Ref TeamMemberNote_userId_fk: TeamMemberNote.userId > User.id [delete: set null, update: cascade]
+
+Ref TeamMemberNote_teamMemberId_fk: TeamMemberNote.teamMemberId > TeamMember.id [delete: cascade, update: cascade]
+
+Ref TeamMemberNote_organizationId_fk: TeamMemberNote.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AuditSession_createdById_fk: AuditSession.createdById > User.id
+
+Ref AuditSession_organizationId_fk: AuditSession.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AssetImport_createdById_fk: AssetImport.createdById > User.id [delete: cascade, update: cascade]
+
+Ref AssetImport_organizationId_fk: AssetImport.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref LinkPreview_organizationId_fk: LinkPreview.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref AuditAssignment_auditSessionId_fk: AuditAssignment.auditSessionId > AuditSession.id [delete: cascade, update: cascade]
+
+Ref AuditAssignment_userId_fk: AuditAssignment.userId > User.id [delete: cascade, update: cascade]
+
+Ref AuditAsset_auditSessionId_fk: AuditAsset.auditSessionId > AuditSession.id [delete: cascade, update: cascade]
+
+Ref AuditAsset_assetId_fk: AuditAsset.assetId > Asset.id [delete: cascade, update: cascade]
+
+Ref AuditAsset_scannedById_fk: AuditAsset.scannedById > User.id [delete: set null, update: cascade]
+
+Ref AuditScan_auditSessionId_fk: AuditScan.auditSessionId > AuditSession.id [delete: cascade, update: cascade]
+
+Ref AuditScan_auditAssetId_fk: AuditScan.auditAssetId > AuditAsset.id [delete: set null, update: cascade]
+
+Ref AuditScan_assetId_fk: AuditScan.assetId > Asset.id [delete: set null, update: cascade]
+
+Ref AuditScan_scannedById_fk: AuditScan.scannedById > User.id [delete: set null, update: cascade]
+
+Ref AuditImage_auditSessionId_fk: AuditImage.auditSessionId > AuditSession.id [delete: cascade, update: cascade]
+
+Ref AuditImage_auditAssetId_fk: AuditImage.auditAssetId > AuditAsset.id [delete: set null, update: cascade]
+
+Ref AuditImage_uploadedById_fk: AuditImage.uploadedById > User.id [delete: set null, update: cascade]
+
+Ref AuditImage_organizationId_fk: AuditImage.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref RoleChangeLog_userId_fk: RoleChangeLog.userId > User.id
+
+Ref RoleChangeLog_changedById_fk: RoleChangeLog.changedById > User.id
+
+Ref RoleChangeLog_organizationId_fk: RoleChangeLog.organizationId > Organization.id
+
+Ref ActivityEvent_organizationId_fk: ActivityEvent.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref _RoleToUser_A_fk: _RoleToUser.A > Role.id [delete: cascade, update: cascade]
+
+Ref _RoleToUser_B_fk: _RoleToUser.B > User.id [delete: cascade, update: cascade]
+
+Ref _AssetToTag_A_fk: _AssetToTag.A > Asset.id [delete: cascade, update: cascade]
+
+Ref _AssetToTag_B_fk: _AssetToTag.B > Tag.id [delete: cascade, update: cascade]
+
+Ref _CategoryToCustomField_A_fk: _CategoryToCustomField.A > Category.id [delete: cascade, update: cascade]
+
+Ref _CategoryToCustomField_B_fk: _CategoryToCustomField.B > CustomField.id [delete: cascade, update: cascade]
+
+Ref _BookingToTag_A_fk: _BookingToTag.A > Booking.id [delete: cascade, update: cascade]
+
+Ref _BookingToTag_B_fk: _BookingToTag.B > Tag.id [delete: cascade, update: cascade]
+
+Ref _AssetReminderToTeamMember_A_fk: _AssetReminderToTeamMember.A > AssetReminder.id [delete: cascade, update: cascade]
+
+Ref _AssetReminderToTeamMember_B_fk: _AssetReminderToTeamMember.B > TeamMember.id [delete: cascade, update: cascade]
+
+Ref _BookingSettingsAlwaysNotify_A_fk: _BookingSettingsAlwaysNotify.A > BookingSettings.id [delete: cascade, update: cascade]
+
+Ref _BookingSettingsAlwaysNotify_B_fk: _BookingSettingsAlwaysNotify.B > TeamMember.id [delete: cascade, update: cascade]
+
+Ref _BookingNotificationRecipients_A_fk: _BookingNotificationRecipients.A > Booking.id [delete: cascade, update: cascade]
+
+Ref _BookingNotificationRecipients_B_fk: _BookingNotificationRecipients.B > TeamMember.id [delete: cascade, update: cascade]

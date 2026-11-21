@@ -1,0 +1,93 @@
+Enum Status {
+  "draft"
+  "in_review"
+  "published"
+}
+
+Enum Priority {
+  "1"
+  "2"
+  "3"
+}
+
+Enum EverythingGrouped {
+  "vinyl" [note: 'group: Audio']
+  "cd" [note: 'group: Audio']
+  "vhs" [note: 'group: Video']
+  "dvd" [note: 'group: Video']
+  "unknown"
+}
+
+Table fields_everything {
+  id integer [pk, increment]
+  small smallint [not null]
+  integer integer [not null]
+  big bigint [not null]
+  positive_small "smallint unsigned" [not null]
+  positive "integer unsigned" [not null]
+  positive_big "bigint unsigned" [not null]
+  floating real [not null]
+  price decimal [not null, note: 'default in Python: Decimal(\'0.00\'). declared max_digits=10, decimal_places=2, which the database does not enforce']
+  char varchar(100) [not null, note: 'Up to 100 characters']
+  text text [not null]
+  slug varchar(50) [unique, not null]
+  email varchar(254) [not null]
+  url varchar(500) [not null]
+  ip char(39) [not null]
+  path varchar(100) [not null]
+  date date [not null]
+  time time
+  datetime datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  duration bigint
+  flag bool [default: false, not null]
+  maybe bool
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  data text [not null, note: 'default in Python: dict()']
+  blob BLOB
+  file varchar(255) [not null]
+  image varchar(100) [not null]
+  image_height "integer unsigned"
+  image_width "integer unsigned"
+  status Status [default: 'draft', not null]
+  priority Priority [default: 2, not null]
+  grouped EverythingGrouped [not null]
+  full varchar(201) [note: 'generated (stored): (COALESCE("char", \'\') || COALESCE((COALESCE(\' \', \'\') || COALESCE("slug", \'\')), \'\'))']
+  lower_email varchar(254) [note: 'generated (virtual): LOWER("email")']
+  created_in_db datetime [default: `(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))`, not null]
+  counter integer [default: 0, not null, note: 'How many times the row was seen']
+  collated varchar(50) [not null, note: 'collation NOCASE']
+  RenamedColumn varchar(10) [not null]
+  indexed varchar(10) [not null]
+
+  indexes {
+    (indexed) [name: 'fields_everything_indexed_6710899d']
+  }
+
+  Note: '''One column of every kind — A row with one column of each kind.'''
+}
+
+Table fields_autokeys {
+  id integer [pk, increment]
+  name varchar(10) [not null]
+}
+
+Table fields_bigkeys {
+  id integer [pk, increment]
+}
+
+Table fields_naturalkey {
+  code varchar(3) [pk]
+  name varchar(50) [not null]
+}
+
+Table fields_uuidkey {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  natural_id varchar(3) [not null]
+
+  indexes {
+    (natural_id) [name: 'fields_uuidkey_natural_id_419581fe']
+  }
+}
+
+Ref fields_uuidkey_natural_id_fk: fields_uuidkey.natural_id > fields_naturalkey.code [delete: restrict]

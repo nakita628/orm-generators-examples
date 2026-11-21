@@ -1,0 +1,16 @@
+Table users {
+  id integer [pk, increment, not null]
+  email text [not null, unique]
+  name text [not null]
+  created_at integer [not null]
+}
+
+Table posts {
+  id integer [pk, increment, not null]
+  user_id integer [not null]
+  title text [not null]
+  body text [not null]
+  created_at integer [not null]
+}
+
+Ref posts_user_id_users_id_fk: posts.user_id > users.id [delete: cascade]

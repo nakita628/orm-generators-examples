@@ -1,0 +1,111 @@
+Enum MusiciansPersonShirtSize {
+  "S"
+  "M"
+  "L"
+}
+
+Enum MedalType {
+  "GOLD"
+  "SILVER"
+  "BRONZE"
+}
+
+Table musicians_musician {
+  id integer [pk, increment]
+  first_name varchar(50) [not null]
+  last_name varchar(50) [not null]
+  instrument varchar(100) [not null]
+}
+
+Table musicians_album {
+  id integer [pk, increment]
+  artist_id bigint [not null]
+  name varchar(100) [not null]
+  release_date date [not null]
+  num_stars integer [not null]
+
+  indexes {
+    (artist_id) [name: 'musicians_album_artist_id_2c564cf3']
+  }
+}
+
+Table musicians_person {
+  id integer [pk, increment]
+  name varchar(60) [not null]
+  shirt_size MusiciansPersonShirtSize [not null]
+}
+
+Table musicians_runner {
+  id integer [pk, increment]
+  name varchar(60) [not null]
+  medal MedalType [not null]
+}
+
+Table musicians_fruit {
+  name varchar(100) [pk]
+}
+
+Table musicians_ox {
+  id integer [pk, increment]
+  horn_length integer [not null]
+}
+
+Table memberships_person {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+}
+
+Table memberships_group {
+  id integer [pk, increment]
+  name varchar(128) [not null]
+}
+
+Table memberships_membership {
+  id integer [pk, increment]
+  person_id bigint [not null]
+  group_id bigint [not null]
+  date_joined date [not null]
+  invite_reason varchar(64) [not null]
+
+  indexes {
+    (person_id) [name: 'memberships_membership_person_id_88a4ec61']
+    (group_id) [name: 'memberships_membership_group_id_8fc7e0f8']
+  }
+}
+
+Table memberships_student {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  age "integer unsigned" [not null]
+  home_group varchar(5) [not null]
+
+  Note: '''Columns from CommonInfo (abstract): name, age.'''
+}
+
+Table memberships_place {
+  id integer [pk, increment]
+  name varchar(50) [not null]
+  address varchar(80) [not null]
+}
+
+Table memberships_restaurant {
+  place_ptr_id bigint [pk, note: 'parent link: a Restaurant is a Place (multi-table inheritance)']
+  serves_hot_dogs bool [default: false, not null]
+  serves_pizza bool [default: false, not null]
+}
+
+Table memberships_contact {
+  id integer [pk, increment]
+  first_name varchar(30) [not null]
+  last_name varchar(30) [not null]
+
+  Note: '''Proxy models: OrderedContact.'''
+}
+
+Ref musicians_album_artist_id_fk: musicians_album.artist_id > musicians_musician.id [delete: cascade]
+
+Ref memberships_membership_person_id_fk: memberships_membership.person_id > memberships_person.id [delete: cascade]
+
+Ref memberships_membership_group_id_fk: memberships_membership.group_id > memberships_group.id [delete: cascade]
+
+Ref memberships_restaurant_place_ptr_id_fk: memberships_restaurant.place_ptr_id - memberships_place.id [delete: cascade]

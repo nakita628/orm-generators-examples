@@ -1,0 +1,748 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum PageStatus {
+  "1"
+  "2"
+}
+
+Enum PageInMenus {
+  "1"
+  "2"
+  "3"
+}
+
+Enum BlogPostStatus {
+  "1"
+  "2"
+}
+
+Enum FieldFieldType {
+  "1"
+  "2"
+  "3"
+  "13"
+  "14"
+  "4"
+  "5"
+  "6"
+  "7"
+  "8"
+  "9"
+  "10"
+  "11"
+  "15"
+  "12"
+}
+
+Enum QueryType {
+  "user"
+  "list"
+  "search"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_redirect {
+  id integer [pk, increment]
+  site_id integer [not null]
+  old_path varchar(200) [not null, note: 'This should be an absolute path, excluding the domain name. Example: “/events/search/”.']
+  new_path varchar(200) [not null, note: 'This can be either an absolute path (as above) or a full URL starting with a scheme such as “https://”.']
+
+  indexes {
+    (site_id) [name: 'django_redirect_site_id_c3e37341']
+    (old_path) [name: 'django_redirect_old_path_c6cc94d3']
+    (site_id, old_path) [unique, name: 'django_redirect_site_id_old_path_ac5dd16b_uniq']
+  }
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table conf_setting {
+  id integer [pk, increment]
+  site_id integer [not null]
+  name varchar(50) [not null]
+  value varchar(2000) [not null]
+
+  indexes {
+    (site_id) [name: 'conf_setting_site_id_b235f7ed']
+  }
+
+  Note: '''Stores values for ``mezzanine.conf`` that can be edited via the admin.
+
+Columns from SiteRelated (abstract): site_id.'''
+}
+
+Table core_sitepermission {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+
+  Note: '''Permission relationship between a user and a site that\'s
+used instead of ``User.is_staff``, for admin and inline-editing
+access.'''
+}
+
+Table django_comments {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_pk varchar(64) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  site_id integer [not null]
+  user_id integer
+  user_name varchar(50) [not null]
+  user_email varchar(254) [not null]
+  user_url varchar(200) [not null]
+  comment text [not null]
+  submit_date datetime [default: null, not null]
+  ip_address char(39)
+  is_public bool [default: true, not null, note: 'Uncheck this box to make the comment effectively disappear from the site.']
+  is_removed bool [default: false, not null, note: 'Check this box if the comment is inappropriate. A "This comment has been removed" message will be displayed instead.']
+
+  indexes {
+    (content_type_id) [name: 'django_comments_content_type_id_c4afe962']
+    (object_pk) [name: 'django_comments_object_pk_7fc98e83']
+    (site_id) [name: 'django_comments_site_id_9dcf666e']
+    (user_id) [name: 'django_comments_user_id_a0a440a1']
+    (submit_date) [name: 'django_comments_submit_date_514ed2d9']
+    (is_removed) [name: 'django_comments_is_removed_52a03ae3']
+  }
+
+  Note: '''Columns from CommentAbstractModel (abstract): user_id, user_name, user_email, user_url, comment, submit_date, ip_address, is_public, is_removed.
+
+Columns from BaseCommentAbstractModel (abstract): content_type_id, object_pk, site_id.'''
+}
+
+Table django_comment_flags {
+  id integer [pk, increment]
+  user_id integer [not null]
+  comment_id integer [not null]
+  flag varchar(30) [not null]
+  flag_date datetime [default: null, not null]
+
+  indexes {
+    (user_id) [name: 'django_comment_flags_user_id_f3f81f0a']
+    (comment_id) [name: 'django_comment_flags_comment_id_d8054933']
+    (flag) [name: 'django_comment_flags_flag_8b141fcb']
+    (user_id, comment_id, flag) [unique, name: 'django_comment_flags_user_id_comment_id_flag_537f77a7_uniq']
+  }
+
+  Note: '''Records a flag on a comment. This is intentionally flexible; right now, a
+flag could be:
+
+    * A "removal suggestion" -- where a user suggests a comment for (potential) removal.
+
+    * A "moderator deletion" -- used when a moderator deletes a comment.
+
+You can (ab)use this model to add other flags, if needed. However, by
+design users are only allowed to flag a comment with a given flag once;
+if you want rating look elsewhere.'''
+}
+
+Table generic_threadedcomment {
+  comment_ptr_id integer [pk, note: 'parent link: a ThreadedComment is a Comment (multi-table inheritance)']
+  rating_count integer [default: 0, not null]
+  rating_sum integer [default: 0, not null]
+  rating_average real [default: 0, not null]
+  by_author bool [default: false, not null]
+  replied_to_id integer
+
+  indexes {
+    (replied_to_id) [name: 'generic_threadedcomment_replied_to_id_d0a08d73']
+  }
+
+  Note: '''Extend the ``Comment`` model from ``django_comments`` to
+add comment threading. ``Comment`` provides its own site foreign key,
+so we can\'t inherit from ``SiteRelated`` in ``mezzanine.core``, and
+therefore need to set the site on ``save``. ``CommentManager``
+inherits from Mezzanine\'s ``CurrentSiteManager``, so everything else
+site related is already provided.'''
+}
+
+Table generic_keyword {
+  id integer [pk, increment]
+  site_id integer [not null]
+  title varchar(500) [not null]
+  slug varchar(2000) [not null, note: 'Leave blank to have the URL auto-generated from the title.']
+
+  indexes {
+    (site_id) [name: 'generic_keyword_site_id_c5be0acc']
+  }
+
+  Note: '''Keywords/tags which are managed via a custom JavaScript based
+widget in the admin.
+
+Columns from Slugged (abstract): title, slug.
+
+Columns from SiteRelated (abstract): site_id.'''
+}
+
+Table generic_assignedkeyword {
+  id integer [pk, increment]
+  _order integer
+  keyword_id bigint [not null]
+  content_type_id integer [not null]
+  object_pk integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Page.keywords, RichTextPage.keywords, Link.keywords, BlogPost.keywords, Form.keywords, Gallery.keywords)']
+
+  indexes {
+    (keyword_id) [name: 'generic_assignedkeyword_keyword_id_44c17f9d']
+    (content_type_id) [name: 'generic_assignedkeyword_content_type_id_3dd89a7f']
+  }
+
+  Note: '''A ``Keyword`` assigned to a model instance.
+
+Columns from Orderable (abstract): _order.'''
+}
+
+Table generic_rating {
+  id integer [pk, increment]
+  value integer [not null]
+  rating_date datetime [note: 'default in Python: now()']
+  content_type_id integer [not null]
+  object_pk integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from ThreadedComment.rating, BlogPost.rating)']
+  user_id integer
+
+  indexes {
+    (content_type_id) [name: 'generic_rating_content_type_id_eaf475fa']
+    (user_id) [name: 'generic_rating_user_id_60020469']
+  }
+
+  Note: '''A rating that can be given to a piece of content.'''
+}
+
+Table pages_page {
+  id integer [pk, increment]
+  keywords_string varchar(500) [not null]
+  site_id integer [not null]
+  title varchar(500) [not null]
+  slug varchar(2000) [not null, note: 'Leave blank to have the URL auto-generated from the title.']
+  _meta_title varchar(500) [note: 'Optional title to be used in the HTML title tag. If left blank, the main title field will be used.']
+  description text [not null]
+  gen_description bool [default: true, not null, note: 'If checked, the description will be automatically generated from content. Uncheck if you want to manually set a custom description.']
+  created datetime
+  updated datetime
+  status PageStatus [default: 2, not null, note: 'With Draft chosen, will only be shown for admin users on the site.']
+  publish_date datetime [note: 'With Published chosen, won\'t be shown until this time']
+  expiry_date datetime [note: 'With Published chosen, won\'t be shown after this time']
+  short_url varchar(200)
+  in_sitemap bool [default: true, not null]
+  _order integer
+  content_model varchar(50)
+  parent_id bigint
+  in_menus PageInMenus
+  titles varchar(1000)
+  login_required bool [default: false, not null, note: 'If checked, only logged in users can view this page']
+
+  indexes {
+    (site_id) [name: 'pages_page_site_id_47a43e5b']
+    (publish_date) [name: 'pages_page_publish_date_eb7c8d46']
+    (parent_id) [name: 'pages_page_parent_id_133fa4d3']
+  }
+
+  Note: '''A page in the page tree. This is the base class that custom content types
+need to subclass.
+
+Columns from Orderable (abstract): _order.
+
+Columns from Displayable (abstract): status, publish_date, expiry_date, short_url, in_sitemap.
+
+Columns from Slugged (abstract): title, slug.
+
+Columns from SiteRelated (abstract): site_id.
+
+Columns from MetaData (abstract): _meta_title, description, gen_description.
+
+Columns from TimeStamped (abstract): created, updated.
+
+Columns from ContentTyped (abstract): content_model.'''
+}
+
+Table pages_richtextpage {
+  page_ptr_id bigint [pk, note: 'parent link: a RichTextPage is a Page (multi-table inheritance)']
+  content text [not null]
+
+  Note: '''Implements the default type of page with a single Rich Text
+content field.
+
+Columns from RichText (abstract): content.'''
+}
+
+Table pages_link {
+  page_ptr_id bigint [pk, note: 'parent link: a Link is a Page (multi-table inheritance)']
+
+  Note: '''A general content type for creating external links in the page
+menu.'''
+}
+
+Table blog_blogpost {
+  id integer [pk, increment]
+  comments_count integer [default: 0, not null]
+  keywords_string varchar(500) [not null]
+  rating_count integer [default: 0, not null]
+  rating_sum integer [default: 0, not null]
+  rating_average real [default: 0, not null]
+  site_id integer [not null]
+  title varchar(500) [not null]
+  slug varchar(2000) [not null, note: 'Leave blank to have the URL auto-generated from the title.']
+  _meta_title varchar(500) [note: 'Optional title to be used in the HTML title tag. If left blank, the main title field will be used.']
+  description text [not null]
+  gen_description bool [default: true, not null, note: 'If checked, the description will be automatically generated from content. Uncheck if you want to manually set a custom description.']
+  created datetime
+  updated datetime
+  status BlogPostStatus [default: 2, not null, note: 'With Draft chosen, will only be shown for admin users on the site.']
+  publish_date datetime [note: 'With Published chosen, won\'t be shown until this time']
+  expiry_date datetime [note: 'With Published chosen, won\'t be shown after this time']
+  short_url varchar(200)
+  in_sitemap bool [default: true, not null]
+  content text [not null]
+  user_id integer [not null]
+  allow_comments bool [default: true, not null]
+  featured_image varchar(255)
+
+  indexes {
+    (site_id) [name: 'blog_blogpost_site_id_7995688f']
+    (publish_date) [name: 'blog_blogpost_publish_date_703abc16']
+    (user_id) [name: 'blog_blogpost_user_id_12ed6b16']
+  }
+
+  Note: '''A blog post.
+
+Columns from Displayable (abstract): status, publish_date, expiry_date, short_url, in_sitemap.
+
+Columns from Slugged (abstract): title, slug.
+
+Columns from SiteRelated (abstract): site_id.
+
+Columns from MetaData (abstract): _meta_title, description, gen_description.
+
+Columns from TimeStamped (abstract): created, updated.
+
+Columns from Ownable (abstract): user_id.
+
+Columns from RichText (abstract): content.'''
+}
+
+Table blog_blogcategory {
+  id integer [pk, increment]
+  site_id integer [not null]
+  title varchar(500) [not null]
+  slug varchar(2000) [not null, note: 'Leave blank to have the URL auto-generated from the title.']
+
+  indexes {
+    (site_id) [name: 'blog_blogcategory_site_id_42b9c96d']
+  }
+
+  Note: '''A category for grouping blog posts into a series.
+
+Columns from Slugged (abstract): title, slug.
+
+Columns from SiteRelated (abstract): site_id.'''
+}
+
+Table forms_form {
+  page_ptr_id bigint [pk, note: 'parent link: a Form is a Page (multi-table inheritance)']
+  content text [not null]
+  button_text varchar(50) [not null]
+  response text [not null]
+  send_email bool [default: true, not null, note: 'To send an email to the email address supplied in the form upon submission, check this box.']
+  email_from varchar(254) [not null, note: 'The address the email will be sent from']
+  email_copies varchar(200) [not null, note: 'Provide a comma separated list of email addresses to be notified upon form submission. Leave blank to disable notifications.']
+  email_subject varchar(200) [not null]
+  email_message text [not null, note: 'Emails sent based on the above options will contain each of the form fields entered. You can also enter a message here that will be included in the email.']
+
+  Note: '''A user-built form.
+
+Columns from RichText (abstract): content.'''
+}
+
+Table forms_field {
+  id integer [pk, increment]
+  _order integer
+  label text [not null]
+  field_type FieldFieldType [not null]
+  required bool [default: true, not null]
+  visible bool [default: true, not null]
+  choices varchar(1000) [not null, note: 'Comma separated options where applicable. If an option itself contains commas, surround the option with `backticks`.']
+  default varchar(2000) [not null]
+  placeholder_text varchar(100) [not null]
+  help_text text [not null]
+  form_id bigint [not null]
+
+  indexes {
+    (form_id) [name: 'forms_field_form_id_9ca5dc7e']
+  }
+
+  Note: '''Columns from AbstractBaseField (abstract): label, field_type, required, visible, choices, default, placeholder_text, help_text.
+
+Columns from Orderable (abstract): _order.'''
+}
+
+Table forms_formentry {
+  id integer [pk, increment]
+  form_id bigint [not null]
+  entry_time datetime [not null]
+
+  indexes {
+    (form_id) [name: 'forms_formentry_form_id_d0f23912']
+  }
+
+  Note: '''An entry submitted via a user-built form.'''
+}
+
+Table forms_fieldentry {
+  id integer [pk, increment]
+  entry_id bigint [not null]
+  field_id integer [not null]
+  value varchar(2000)
+
+  indexes {
+    (entry_id) [name: 'forms_fieldentry_entry_id_c4fdc570']
+  }
+
+  Note: '''A single field value for a form entry submitted via a user-built form.'''
+}
+
+Table galleries_gallery {
+  page_ptr_id bigint [pk, note: 'parent link: a Gallery is a Page (multi-table inheritance)']
+  content text [not null]
+  zip_import varchar(100) [not null, note: 'Upload a zip file containing images, and they\'ll be imported into this gallery.']
+
+  Note: '''Page bucket for gallery photos.
+
+Columns from RichText (abstract): content.
+
+Columns from BaseGallery (abstract): zip_import.'''
+}
+
+Table galleries_galleryimage {
+  id integer [pk, increment]
+  _order integer
+  gallery_id bigint [not null]
+  file varchar(200) [not null]
+  description varchar(1000) [not null]
+
+  indexes {
+    (gallery_id) [name: 'galleries_galleryimage_gallery_id_af12d3f5']
+  }
+
+  Note: '''Columns from Orderable (abstract): _order.'''
+}
+
+Table twitter_query {
+  id integer [pk, increment]
+  type QueryType [not null]
+  value varchar(140) [not null]
+  interested bool [default: true, not null]
+}
+
+Table twitter_tweet {
+  id integer [pk, increment]
+  remote_id varchar(50) [not null]
+  created_at datetime
+  text text
+  profile_image_url varchar(200)
+  user_name varchar(100)
+  full_name varchar(100)
+  retweeter_profile_image_url varchar(200)
+  retweeter_user_name varchar(100)
+  retweeter_full_name varchar(100)
+  query_id bigint [not null]
+
+  indexes {
+    (query_id) [name: 'twitter_tweet_query_id_bd42b699']
+  }
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref django_redirect_site_id_fk: django_redirect.site_id > django_site.id [delete: cascade]
+
+Ref conf_setting_site_id_fk: conf_setting.site_id > django_site.id [delete: cascade]
+
+Ref core_sitepermission_user_id_fk: core_sitepermission.user_id - auth_user.id [delete: cascade]
+
+Table core_sitepermission_sites {
+  id integer [pk, increment]
+  sitepermission_id bigint [not null]
+  site_id integer [not null]
+
+  indexes {
+    (sitepermission_id) [name: 'core_sitepermission_sites_sitepermission_id_d33bc79e']
+    (site_id) [name: 'core_sitepermission_sites_site_id_38038b76']
+    (sitepermission_id, site_id) [unique, name: 'core_sitepermission_sites_sitepermission_id_site_id_e3e7353a_uniq']
+  }
+}
+
+Ref core_sitepermission_sites_sitepermission_id_fk: core_sitepermission_sites.sitepermission_id > core_sitepermission.id [delete: cascade]
+
+Ref core_sitepermission_sites_site_id_fk: core_sitepermission_sites.site_id > django_site.id [delete: cascade]
+
+Ref django_comments_content_type_id_fk: django_comments.content_type_id > django_content_type.id [delete: cascade]
+
+Ref django_comments_site_id_fk: django_comments.site_id > django_site.id [delete: cascade]
+
+Ref django_comments_user_id_fk: django_comments.user_id > auth_user.id [delete: set null]
+
+Ref django_comment_flags_user_id_fk: django_comment_flags.user_id > auth_user.id [delete: cascade]
+
+Ref django_comment_flags_comment_id_fk: django_comment_flags.comment_id > django_comments.id [delete: cascade]
+
+Ref generic_threadedcomment_comment_ptr_id_fk: generic_threadedcomment.comment_ptr_id - django_comments.id [delete: cascade]
+
+Ref generic_threadedcomment_replied_to_id_fk: generic_threadedcomment.replied_to_id > generic_threadedcomment.comment_ptr_id [delete: cascade]
+
+Ref generic_keyword_site_id_fk: generic_keyword.site_id > django_site.id [delete: cascade]
+
+Ref generic_assignedkeyword_keyword_id_fk: generic_assignedkeyword.keyword_id > generic_keyword.id [delete: cascade]
+
+Ref generic_assignedkeyword_content_type_id_fk: generic_assignedkeyword.content_type_id > django_content_type.id [delete: cascade]
+
+Ref generic_rating_content_type_id_fk: generic_rating.content_type_id > django_content_type.id [delete: cascade]
+
+Ref generic_rating_user_id_fk: generic_rating.user_id > auth_user.id [delete: cascade]
+
+Ref pages_page_site_id_fk: pages_page.site_id > django_site.id [delete: cascade]
+
+Ref pages_page_parent_id_fk: pages_page.parent_id > pages_page.id [delete: cascade]
+
+Ref pages_richtextpage_page_ptr_id_fk: pages_richtextpage.page_ptr_id - pages_page.id [delete: cascade]
+
+Ref pages_link_page_ptr_id_fk: pages_link.page_ptr_id - pages_page.id [delete: cascade]
+
+Ref blog_blogpost_site_id_fk: blog_blogpost.site_id > django_site.id [delete: cascade]
+
+Ref blog_blogpost_user_id_fk: blog_blogpost.user_id > auth_user.id [delete: cascade]
+
+Table blog_blogpost_categories {
+  id integer [pk, increment]
+  blogpost_id bigint [not null]
+  blogcategory_id bigint [not null]
+
+  indexes {
+    (blogpost_id) [name: 'blog_blogpost_categories_blogpost_id_daeea608']
+    (blogcategory_id) [name: 'blog_blogpost_categories_blogcategory_id_f6695246']
+    (blogpost_id, blogcategory_id) [unique, name: 'blog_blogpost_categories_blogpost_id_blogcategory_id_a64d32c5_uniq']
+  }
+}
+
+Ref blog_blogpost_categories_blogpost_id_fk: blog_blogpost_categories.blogpost_id > blog_blogpost.id [delete: cascade]
+
+Ref blog_blogpost_categories_blogcategory_id_fk: blog_blogpost_categories.blogcategory_id > blog_blogcategory.id [delete: cascade]
+
+Table blog_blogpost_related_posts {
+  id integer [pk, increment]
+  from_blogpost_id bigint [not null]
+  to_blogpost_id bigint [not null]
+
+  indexes {
+    (from_blogpost_id) [name: 'blog_blogpost_related_posts_from_blogpost_id_27ea4c18']
+    (to_blogpost_id) [name: 'blog_blogpost_related_posts_to_blogpost_id_35f7acdd']
+    (from_blogpost_id, to_blogpost_id) [unique, name: 'blog_blogpost_related_posts_from_blogpost_id_to_blogpost_id_3bd0f49f_uniq']
+  }
+}
+
+Ref blog_blogpost_related_posts_from_blogpost_id_fk: blog_blogpost_related_posts.from_blogpost_id > blog_blogpost.id [delete: cascade]
+
+Ref blog_blogpost_related_posts_to_blogpost_id_fk: blog_blogpost_related_posts.to_blogpost_id > blog_blogpost.id [delete: cascade]
+
+Ref blog_blogcategory_site_id_fk: blog_blogcategory.site_id > django_site.id [delete: cascade]
+
+Ref forms_form_page_ptr_id_fk: forms_form.page_ptr_id - pages_page.id [delete: cascade]
+
+Ref forms_field_form_id_fk: forms_field.form_id > forms_form.page_ptr_id [delete: cascade]
+
+Ref forms_formentry_form_id_fk: forms_formentry.form_id > forms_form.page_ptr_id [delete: cascade]
+
+Ref forms_fieldentry_entry_id_fk: forms_fieldentry.entry_id > forms_formentry.id [delete: cascade]
+
+Ref galleries_gallery_page_ptr_id_fk: galleries_gallery.page_ptr_id - pages_page.id [delete: cascade]
+
+Ref galleries_galleryimage_gallery_id_fk: galleries_galleryimage.gallery_id > galleries_gallery.page_ptr_id [delete: cascade]
+
+Ref twitter_tweet_query_id_fk: twitter_tweet.query_id > twitter_query.id [delete: cascade]

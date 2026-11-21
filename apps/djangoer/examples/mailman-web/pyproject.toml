@@ -1,0 +1,11 @@
+[project]
+name = "example-mailman-web"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "mailman-web"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true

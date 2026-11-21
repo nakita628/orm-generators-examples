@@ -1,0 +1,17 @@
+{
+  "name": "@drizzler-examples/hyprnote",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "drizzler src/schema.ts -o docs && drizzler src/schema.ts -o docs/er.png && drizzler src/schema.ts -o docs/er-dark.png --theme dark && drizzler src/schema.ts -o docs/schema.dbml && drizzler src/schema.ts -o docs/er.md",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@drizzler-examples/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzler": "catalog:",
+    "typescript": "catalog:"
+  }
+}

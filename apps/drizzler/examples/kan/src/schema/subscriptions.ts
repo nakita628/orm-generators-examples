@@ -1,0 +1,46 @@
+import { relations } from "drizzle-orm/_relations";
+import {
+  bigserial,
+  boolean,
+  integer,
+  pgTable,
+  timestamp,
+  varchar,
+} from "drizzle-orm/pg-core";
+
+import { workspaces } from "./workspaces";
+
+export const subscription = pgTable("subscription", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  plan: varchar("plan", { length: 255 }).notNull(),
+  referenceId: varchar("referenceId", { length: 12 }).references(
+    () => workspaces.publicId,
+    { onDelete: "set null" },
+  ),
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  status: varchar("status", { length: 255 }).notNull(),
+  periodStart: timestamp("periodStart"),
+  periodEnd: timestamp("periodEnd"),
+  cancelAtPeriodEnd: boolean("cancelAtPeriodEnd"),
+  cancelAt: timestamp("cancelAt"),
+  canceledAt: timestamp("canceledAt"),
+  endedAt: timestamp("endedAt"),
+  billingInterval: varchar("billingInterval", { length: 255 }),
+  stripeScheduleId: varchar("stripeScheduleId", { length: 255 }),
+  seats: integer("seats"),
+  unlimitedSeats: boolean("unlimitedSeats").default(false).notNull(),
+  trialStart: timestamp("trialStart"),
+  trialEnd: timestamp("trialEnd"),
+  partnerLicenseKey: varchar("partnerLicenseKey", { length: 255 }),
+  partnerTier: integer("partnerTier"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
+}).enableRLS();
+
+export const subscriptionsRelations = relations(subscription, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [subscription.referenceId],
+    references: [workspaces.publicId],
+  }),
+}));

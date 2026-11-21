@@ -1,0 +1,4 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# Links @dbml/core (for //apps/drizzler/tools:check_dbml) under //apps/drizzler:node_modules.
+npm_link_all_packages(name = "node_modules")

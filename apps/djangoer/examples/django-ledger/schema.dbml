@@ -1,0 +1,1551 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum BankAccountModelAccountType {
+  "checking"
+  "savings"
+  "money_market"
+  "cert_deposit"
+  "credit_card"
+  "st_loan"
+  "lt_loan"
+  "mortgage"
+  "other"
+}
+
+Enum AccountModelRole {
+  "asset_ca_cash" [note: 'group: Assets']
+  "asset_ca_mkt_sec" [note: 'group: Assets']
+  "asset_ca_recv" [note: 'group: Assets']
+  "asset_ca_inv" [note: 'group: Assets']
+  "asset_ca_uncoll" [note: 'group: Assets']
+  "asset_ca_prepaid" [note: 'group: Assets']
+  "asset_ca_other" [note: 'group: Assets']
+  "asset_lti_notes" [note: 'group: Assets']
+  "asset_lti_land" [note: 'group: Assets']
+  "asset_lti_sec" [note: 'group: Assets']
+  "asset_ppe_build" [note: 'group: Assets']
+  "asset_ppe_build_accum_depr" [note: 'group: Assets']
+  "asset_ppe_plant" [note: 'group: Assets']
+  "asset_ppe_plant_depr" [note: 'group: Assets']
+  "asset_ppe_equip" [note: 'group: Assets']
+  "asset_ppe_equip_accum_depr" [note: 'group: Assets']
+  "asset_ia" [note: 'group: Assets']
+  "asset_ia_accum_amort" [note: 'group: Assets']
+  "asset_adjustment" [note: 'group: Assets']
+  "lia_cl_acc_payable" [note: 'group: Liabilities']
+  "lia_cl_credit_line" [note: 'group: Liabilities']
+  "lia_cl_wages_payable" [note: 'group: Liabilities']
+  "lia_cl_int_payable" [note: 'group: Liabilities']
+  "lia_cl_taxes_payable" [note: 'group: Liabilities']
+  "lia_cl_st_notes_payable" [note: 'group: Liabilities']
+  "lia_cl_ltd_mat" [note: 'group: Liabilities']
+  "lia_cl_def_rev" [note: 'group: Liabilities']
+  "lia_cl_other" [note: 'group: Liabilities']
+  "lia_ltl_notes" [note: 'group: Liabilities']
+  "lia_ltl_bonds" [note: 'group: Liabilities']
+  "lia_ltl_mortgage" [note: 'group: Liabilities']
+  "eq_capital" [note: 'group: Equity']
+  "eq_stock_common" [note: 'group: Equity']
+  "eq_stock_preferred" [note: 'group: Equity']
+  "eq_adjustment" [note: 'group: Equity']
+  "eq_dividends" [note: 'group: Equity']
+  "in_operational" [note: 'group: Equity']
+  "in_passive" [note: 'group: Equity']
+  "in_interest" [note: 'group: Equity']
+  "in_gain_loss" [note: 'group: Equity']
+  "in_other" [note: 'group: Equity']
+  "cogs_regular" [note: 'group: Equity']
+  "cogs_subcontract" [note: 'group: Equity']
+  "cogs_labor" [note: 'group: Equity']
+  "cogs_materials" [note: 'group: Equity']
+  "cogs_equipment" [note: 'group: Equity']
+  "cogs_other" [note: 'group: Equity']
+  "ex_regular" [note: 'group: Equity']
+  "ex_interest_st" [note: 'group: Equity']
+  "ex_interest" [note: 'group: Equity']
+  "ex_taxes" [note: 'group: Equity']
+  "ex_capital" [note: 'group: Equity']
+  "ex_depreciation" [note: 'group: Equity']
+  "ex_amortization" [note: 'group: Equity']
+  "ex_other" [note: 'group: Equity']
+  "root_coa" [note: 'group: Root']
+  "root_assets" [note: 'group: Root']
+  "root_liabilities" [note: 'group: Root']
+  "root_capital" [note: 'group: Root']
+  "root_income" [note: 'group: Root']
+  "root_cogs" [note: 'group: Root']
+  "root_expenses" [note: 'group: Root']
+}
+
+Enum AccountModelBalanceType {
+  "credit"
+  "debit"
+}
+
+Enum ItemTransactionModelPoItemStatus {
+  "not_ordered"
+  "ordered"
+  "in_transit"
+  "received"
+  "cancelled"
+}
+
+Enum ItemModelItemRole {
+  "expense"
+  "inventory"
+  "service"
+  "product"
+}
+
+Enum ItemModelItemType {
+  "L"
+  "M"
+  "E"
+  "S"
+  "O"
+}
+
+Enum VendorModelAccountType {
+  "checking"
+  "savings"
+  "money_market"
+  "cert_deposit"
+  "credit_card"
+  "st_loan"
+  "lt_loan"
+  "mortgage"
+  "other"
+}
+
+Enum EntityModelFyStartMonth {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+  "6"
+  "7"
+  "8"
+  "9"
+  "10"
+  "11"
+  "12"
+}
+
+Enum EntityStateModelKey {
+  "je"
+  "po"
+  "bill"
+  "invoice"
+  "estimate"
+}
+
+Enum EntityManagementModelPermissionLevel {
+  "read"
+  "write"
+  "suspended"
+}
+
+Enum BillModelTerms {
+  "on_receipt"
+  "net_30"
+  "net_60"
+  "net_90"
+}
+
+Enum BillModelBillStatus {
+  "draft"
+  "in_review"
+  "approved"
+  "paid"
+  "canceled"
+  "void"
+}
+
+Enum InvoiceModelTerms {
+  "on_receipt"
+  "net_30"
+  "net_60"
+  "net_90"
+}
+
+Enum InvoiceModelInvoiceStatus {
+  "draft"
+  "in_review"
+  "approved"
+  "paid"
+  "void"
+  "canceled"
+}
+
+Enum TransactionModelTxType {
+  "credit"
+  "debit"
+}
+
+Enum JournalEntryModelActivity {
+  "op" [note: 'group: Operating']
+  "inv_ppe" [note: 'group: Investing']
+  "inv_securities" [note: 'group: Investing']
+  "inv" [note: 'group: Investing']
+  "fin_std" [note: 'group: Financing']
+  "fin_ltd" [note: 'group: Financing']
+  "fin_equity" [note: 'group: Financing']
+  "fin_dividends" [note: 'group: Financing']
+  "fin" [note: 'group: Financing']
+}
+
+Enum PurchaseOrderModelPoStatus {
+  "draft"
+  "in_review"
+  "approved"
+  "fulfilled"
+  "canceled"
+  "void"
+}
+
+Enum EstimateModelTerms {
+  "fixed"
+  "target"
+  "t&m"
+  "other"
+}
+
+Enum EstimateModelStatus {
+  "draft"
+  "in_review"
+  "approved"
+  "completed"
+  "void"
+  "canceled"
+}
+
+Enum ClosingEntryTransactionModelActivity {
+  "op" [note: 'group: Operating']
+  "inv_ppe" [note: 'group: Investing']
+  "inv_securities" [note: 'group: Investing']
+  "inv" [note: 'group: Investing']
+  "fin_std" [note: 'group: Financing']
+  "fin_ltd" [note: 'group: Financing']
+  "fin_equity" [note: 'group: Financing']
+  "fin_dividends" [note: 'group: Financing']
+  "fin" [note: 'group: Financing']
+}
+
+Enum ClosingEntryTransactionModelTxType {
+  "credit"
+  "debit"
+}
+
+Enum ReceiptModelReceiptType {
+  "sales"
+  "customer_refund"
+  "expense"
+  "expense_refund"
+  "transfer"
+  "debt_paydown"
+}
+
+Enum StagedTransactionModelActivity {
+  "op" [note: 'group: Operating']
+  "inv_ppe" [note: 'group: Investing']
+  "inv_securities" [note: 'group: Investing']
+  "inv" [note: 'group: Investing']
+  "fin_std" [note: 'group: Financing']
+  "fin_ltd" [note: 'group: Financing']
+  "fin_equity" [note: 'group: Financing']
+  "fin_dividends" [note: 'group: Financing']
+  "fin" [note: 'group: Financing']
+}
+
+Enum StagedTransactionModelReceiptType {
+  "sales"
+  "customer_refund"
+  "expense"
+  "expense_refund"
+  "transfer"
+  "debt_paydown"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_ledger_bankaccountmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  financial_institution varchar(100) [note: 'Name of the financial institution (i.e. Bank Name).']
+  account_number varchar(30)
+  routing_number varchar(30)
+  aba_number varchar(30)
+  swift_number varchar(30)
+  account_type BankAccountModelAccountType [default: 'checking', not null]
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  name varchar(150)
+  entity_model_id char(32) [not null]
+  account_model_id char(32) [not null, note: 'Account model be used to map transactions from financial institution']
+  active bool [default: false, not null]
+  hidden bool [default: false, not null]
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_bankaccountmodel_entity_model_id_5f781f21']
+    (account_model_id) [name: 'django_ledger_bankaccountmodel_account_model_id_b386bdb4']
+    (entity_model_id, account_number) [unique, name: 'django_ledger_bankaccountmodel_entity_model_id_account_number_e070d39f_uniq']
+    (entity_model_id, account_model_id, account_number, routing_number) [unique, name: 'django_ledger_bankaccountmodel_entity_model_id_account_model_id_account_number_routing_number_1be39084_uniq']
+    (account_type) [name: 'django_ledg_account_009a4a_idx']
+    (account_model_id) [name: 'django_ledg_account_ed900d_idx']
+    (entity_model_id) [name: 'django_ledg_entity__6ad006_idx']
+  }
+
+  Note: '''Base Bank Account Model Implementation
+
+Columns from BankAccountModelAbstract (abstract): uuid, name, entity_model_id, account_model_id, active, hidden.
+
+Columns from FinancialAccountInfoMixin (abstract): financial_institution, account_number, routing_number, aba_number, swift_number, account_type.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_accountmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  role AccountModelRole [not null]
+  role_default bool
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  code varchar(10) [not null]
+  name varchar(100) [not null]
+  balance_type AccountModelBalanceType [not null]
+  locked bool [default: false, not null]
+  active bool [default: false, not null]
+  coa_model_id char(32) [not null]
+
+  indexes {
+    (coa_model_id) [name: 'django_ledger_accountmodel_coa_model_id_4526e35f']
+    (coa_model_id, code) [unique, name: 'unique_code_for_coa_model']
+    (coa_model_id, role, role_default) [unique, name: 'only_one_account_assigned_as_default_for_role']
+    (role) [name: 'django_ledg_role_812d08_idx']
+    (balance_type) [name: 'django_ledg_balance_daddac_idx']
+    (active) [name: 'django_ledg_active_f8adc2_idx']
+    (locked) [name: 'django_ledg_locked_c02b15_idx']
+    (coa_model_id, code) [name: 'django_ledg_coa_mod_e073bc_idx']
+    (code) [name: 'django_ledg_code_081adc_idx']
+  }
+
+  Note: '''Base Account Model from Account Model Abstract Class
+
+Columns from AccountModelAbstract (abstract): uuid, code, name, balance_type, locked, active, coa_model_id.
+
+Columns from MP_Node (abstract): path, depth, numchild.
+
+Columns from AccountModelRoleMixIn (abstract): role, role_default.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_chartofaccountmodel {
+  slug varchar(50) [unique, not null]
+  name varchar(150)
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_id char(32) [not null]
+  active bool [default: true, not null]
+  description text
+
+  indexes {
+    (entity_id) [name: 'django_ledger_chartofaccountmodel_entity_id_3c492d5a']
+    (entity_id) [name: 'django_ledg_entity__48d6e0_idx']
+  }
+
+  Note: '''Base ChartOfAccounts Model
+
+Columns from ChartOfAccountModelAbstract (abstract): uuid, entity_id, active, description.
+
+Columns from SlugNameMixIn (abstract): slug, name.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_customermodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  address_1 varchar(70)
+  address_2 varchar(70)
+  city varchar(70)
+  state varchar(70)
+  zip_code varchar(20)
+  country varchar(70)
+  email varchar(254)
+  website varchar(200)
+  phone varchar(30)
+  sales_tax_rate real [default: 0.0]
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  customer_code varchar(50) [unique]
+  customer_name varchar(100) [not null]
+  customer_number varchar(30) [not null, note: 'System generated customer number.']
+  entity_model_id char(32) [not null]
+  description text [not null]
+  active bool [default: true, not null]
+  hidden bool [default: false, not null]
+  picture varchar(100)
+  additional_info text [note: 'default in Python: dict()']
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_customermodel_entity_model_id_df76cc84']
+    (entity_model_id, customer_number) [unique, name: 'django_ledger_customermodel_entity_model_id_customer_number_86da2bf5_uniq']
+    (entity_model_id, customer_number) [name: 'django_ledg_entity__7b3ad8_idx']
+    (created) [name: 'django_ledg_created_ba7f4c_idx']
+    (updated) [name: 'django_ledg_updated_f9ac90_idx']
+    (active) [name: 'django_ledg_active_967a81_idx']
+    (hidden) [name: 'django_ledg_hidden_dda722_idx']
+  }
+
+  Note: '''Base Customer Model Implementation
+
+Columns from CustomerModelAbstract (abstract): uuid, customer_code, customer_name, customer_number, entity_model_id, description, active, hidden, picture, additional_info.
+
+Columns from ContactInfoMixIn (abstract): address_1, address_2, city, state, zip_code, country, email, website, phone.
+
+Columns from TaxCollectionMixIn (abstract): sales_tax_rate.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_unitofmeasuremodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  name varchar(50) [not null]
+  unit_abbr varchar(10) [not null]
+  is_active bool [default: true, not null]
+  entity_id char(32) [not null]
+
+  indexes {
+    (unit_abbr) [name: 'django_ledger_unitofmeasuremodel_unit_abbr_ed8b6776']
+    (entity_id) [name: 'django_ledger_unitofmeasuremodel_entity_id_e7217da1']
+    (entity_id, unit_abbr) [unique, name: 'django_ledger_unitofmeasuremodel_entity_id_unit_abbr_e3bc96ca_uniq']
+    (entity_id) [name: 'django_ledg_entity__1c8986_idx']
+  }
+
+  Note: '''Base UnitOfMeasureModel from Abstract.
+
+Columns from UnitOfMeasureModelAbstract (abstract): uuid, name, unit_abbr, is_active, entity_id.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_itemtransactionmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_unit_id char(32)
+  item_model_id char(32) [not null]
+  bill_model_id char(32)
+  invoice_model_id char(32)
+  quantity real
+  unit_cost real
+  total_amount decimal [note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  po_model_id char(32)
+  po_quantity real [note: 'Authorized item quantity for purchasing.']
+  po_unit_cost real [note: 'Purchase Order unit cost.']
+  po_total_amount decimal [note: 'Maximum authorized cost per Purchase Order.. declared max_digits=20, decimal_places=2, which the database does not enforce']
+  po_item_status ItemTransactionModelPoItemStatus
+  ce_model_id char(32)
+  ce_quantity real
+  ce_unit_cost_estimate real
+  ce_cost_estimate decimal [note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  ce_unit_revenue_estimate real
+  ce_revenue_estimate decimal [note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  item_notes varchar(400)
+
+  indexes {
+    (entity_unit_id) [name: 'django_ledger_itemtransactionmodel_entity_unit_id_c0d5d408']
+    (item_model_id) [name: 'django_ledger_itemtransactionmodel_item_model_id_daf3c4c9']
+    (bill_model_id) [name: 'django_ledger_itemtransactionmodel_bill_model_id_84bda6ad']
+    (invoice_model_id) [name: 'django_ledger_itemtransactionmodel_invoice_model_id_d8bc02a5']
+    (po_model_id) [name: 'django_ledger_itemtransactionmodel_po_model_id_6079da59']
+    (ce_model_id) [name: 'django_ledger_itemtransactionmodel_ce_model_id_0beeb6ec']
+    (bill_model_id, item_model_id) [name: 'django_ledg_bill_mo_479f1f_idx']
+    (invoice_model_id, item_model_id) [name: 'django_ledg_invoice_13ac3b_idx']
+    (po_model_id, item_model_id) [name: 'django_ledg_po_mode_2675c9_idx']
+    (ce_model_id, item_model_id) [name: 'django_ledg_ce_mode_ae4efd_idx']
+    (po_item_status) [name: 'django_ledg_po_item_ac9475_idx']
+  }
+
+  Note: '''Base ItemTransactionModel from Abstract.
+
+Columns from ItemTransactionModelAbstract (abstract): uuid, entity_unit_id, item_model_id, bill_model_id, invoice_model_id, quantity, unit_cost, total_amount, po_model_id, po_quantity, po_unit_cost, po_total_amount, po_item_status, ce_model_id, ce_quantity, ce_unit_cost_estimate, ce_cost_estimate, ce_unit_revenue_estimate, ce_revenue_estimate, item_notes.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_itemmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  name varchar(100) [not null]
+  item_id varchar(50)
+  item_number varchar(30) [not null]
+  item_role ItemModelItemRole
+  item_type ItemModelItemType
+  uom_id char(32) [not null]
+  sku varchar(50)
+  upc varchar(50)
+  is_active bool [default: true, not null]
+  default_amount decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  for_inventory bool [not null, note: 'It is an item you require for your inventory.']
+  is_product_or_service bool [not null, note: 'Is a product or service you sell or provide to customers.']
+  sold_as_unit bool [default: false, not null]
+  inventory_account_id char(32) [note: 'Inventory account where cost will be capitalized.']
+  inventory_received decimal [note: 'declared max_digits=20, decimal_places=3, which the database does not enforce']
+  inventory_received_value decimal [note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  cogs_account_id char(32) [note: 'COGS account where cost will be recognized on Income Statement.']
+  earnings_account_id char(32) [note: 'Earnings account where revenue will be recognized on Income Statement.']
+  expense_account_id char(32) [note: 'Expense account where cost will be recognized on Income Statement.']
+  additional_info text [note: 'default in Python: dict()']
+  entity_id char(32) [not null]
+
+  indexes {
+    (uom_id) [name: 'django_ledger_itemmodel_uom_id_781d53d4']
+    (inventory_account_id) [name: 'django_ledger_itemmodel_inventory_account_id_5df4ed3e']
+    (cogs_account_id) [name: 'django_ledger_itemmodel_cogs_account_id_4d75186f']
+    (earnings_account_id) [name: 'django_ledger_itemmodel_earnings_account_id_e52437bb']
+    (expense_account_id) [name: 'django_ledger_itemmodel_expense_account_id_b7ce040e']
+    (entity_id) [name: 'django_ledger_itemmodel_entity_id_12366151']
+    (entity_id, item_number) [unique, name: 'django_ledger_itemmodel_entity_id_item_number_0e3c0673_uniq']
+    (item_number) [name: 'django_ledg_item_nu_1e3c20_idx']
+    (item_type) [name: 'django_ledg_item_ty_0cef58_idx']
+    (item_role) [name: 'django_ledg_item_ro_6040aa_idx']
+    (upc) [name: 'django_ledg_upc_c19d0a_idx']
+    (sku) [name: 'django_ledg_sku_02b4d8_idx']
+    (for_inventory) [name: 'django_ledg_for_inv_c93303_idx']
+    (is_product_or_service) [name: 'django_ledg_is_prod_4b9941_idx']
+    (is_active) [name: 'django_ledg_is_acti_ffc9c6_idx']
+  }
+
+  Note: '''Base ItemModel from Abstract.
+
+Columns from ItemModelAbstract (abstract): uuid, name, item_id, item_number, item_role, item_type, uom_id, sku, upc, is_active, default_amount, for_inventory, is_product_or_service, sold_as_unit, inventory_account_id, inventory_received, inventory_received_value, cogs_account_id, earnings_account_id, expense_account_id, additional_info, entity_id.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_ledgermodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  ledger_xid varchar(150) [note: 'User Defined Ledger ID']
+  name varchar(150)
+  entity_id char(32) [not null]
+  posted bool [default: false, not null]
+  locked bool [default: false, not null]
+  hidden bool [default: false, not null]
+  additional_info text [note: 'default in Python: dict()']
+
+  indexes {
+    (ledger_xid) [name: 'django_ledger_ledgermodel_ledger_xid_9ba04482']
+    (entity_id) [name: 'django_ledger_ledgermodel_entity_id_33b0bea3']
+    (entity_id, ledger_xid) [unique, name: 'django_ledger_ledgermodel_entity_id_ledger_xid_e2c3b406_uniq']
+    (entity_id) [name: 'django_ledg_entity__e21c5d_idx']
+    (entity_id, posted) [name: 'django_ledg_entity__040422_idx']
+    (entity_id, locked) [name: 'django_ledg_entity__cde962_idx']
+    (entity_id, ledger_xid) [name: 'django_ledg_entity__7be095_idx']
+    (ledger_xid) [name: 'django_ledg_ledger__05f099_idx']
+  }
+
+  Note: '''Base LedgerModel from Abstract.
+
+Columns from LedgerModelAbstract (abstract): uuid, ledger_xid, name, entity_id, posted, locked, hidden, additional_info.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_entityunitmodel {
+  name varchar(150)
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  slug varchar(50) [not null]
+  entity_id char(32) [not null]
+  document_prefix varchar(3) [not null]
+  active bool [default: true, not null]
+  hidden bool [default: false, not null]
+
+  indexes {
+    (slug) [name: 'django_ledger_entityunitmodel_slug_0d4dbf86']
+    (entity_id) [name: 'django_ledger_entityunitmodel_entity_id_439c908e']
+    (entity_id, slug) [unique, name: 'django_ledger_entityunitmodel_entity_id_slug_be1e98cd_uniq']
+    (entity_id, document_prefix) [unique, name: 'django_ledger_entityunitmodel_entity_id_document_prefix_34312c29_uniq']
+    (active) [name: 'django_ledg_active_2c2caa_idx']
+    (hidden) [name: 'django_ledg_hidden_a01d42_idx']
+    (entity_id) [name: 'django_ledg_entity__0bdfdc_idx']
+  }
+
+  Note: '''Base Model Class for EntityUnitModel
+
+Columns from EntityUnitModelAbstract (abstract): uuid, entity_id, document_prefix, active, hidden.
+
+Columns from MP_Node (abstract): path, depth, numchild.
+
+Columns from SlugNameMixIn (abstract): slug, name.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_vendormodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  address_1 varchar(70)
+  address_2 varchar(70)
+  city varchar(70)
+  state varchar(70)
+  zip_code varchar(20)
+  country varchar(70)
+  email varchar(254)
+  website varchar(200)
+  phone varchar(30)
+  financial_institution varchar(100) [note: 'Name of the financial institution (i.e. Bank Name).']
+  account_number varchar(30)
+  routing_number varchar(30)
+  aba_number varchar(30)
+  swift_number varchar(30)
+  account_type VendorModelAccountType [default: 'checking', not null]
+  tax_id_number varchar(30)
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  vendor_code varchar(50)
+  vendor_number varchar(30) [note: 'System generated vendor number.']
+  vendor_name varchar(100) [not null]
+  entity_model_id char(32) [not null]
+  description text [not null]
+  active bool [default: true, not null]
+  hidden bool [default: false, not null]
+  picture varchar(100)
+  additional_info text [note: 'default in Python: dict()']
+
+  indexes {
+    (vendor_code) [name: 'django_ledger_vendormodel_vendor_code_fbc2029b']
+    (entity_model_id) [name: 'django_ledger_vendormodel_entity_model_id_395c8bba']
+    (entity_model_id, vendor_number) [unique, name: 'django_ledger_vendormodel_entity_model_id_vendor_number_dc954f88_uniq']
+    (entity_model_id, vendor_number) [name: 'django_ledg_entity__266aa0_idx']
+    (vendor_number) [name: 'django_ledg_vendor__5f9f46_idx']
+    (created) [name: 'django_ledg_created_6a5d9d_idx']
+    (updated) [name: 'django_ledg_updated_736f82_idx']
+    (active) [name: 'django_ledg_active_25e3b1_idx']
+    (hidden) [name: 'django_ledg_hidden_379b0a_idx']
+  }
+
+  Note: '''Base Vendor Model Implementation
+
+Columns from VendorModelAbstract (abstract): uuid, vendor_code, vendor_number, vendor_name, entity_model_id, description, active, hidden, picture, additional_info.
+
+Columns from ContactInfoMixIn (abstract): address_1, address_2, city, state, zip_code, country, email, website, phone.
+
+Columns from FinancialAccountInfoMixin (abstract): financial_institution, account_number, routing_number, aba_number, swift_number, account_type.
+
+Columns from TaxInfoMixIn (abstract): tax_id_number.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_entitymodel {
+  slug varchar(50) [unique, not null]
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  address_1 varchar(70)
+  address_2 varchar(70)
+  city varchar(70)
+  state varchar(70)
+  zip_code varchar(20)
+  country varchar(70)
+  email varchar(254)
+  website varchar(200)
+  phone varchar(30)
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  name varchar(150) [not null]
+  default_coa_id char(32) [unique]
+  admin_id integer [not null]
+  hidden bool [default: false, not null]
+  accrual_method bool [default: false, not null]
+  fy_start_month EntityModelFyStartMonth [default: 1, not null]
+  last_closing_date date
+  picture varchar(100)
+  meta text [note: 'default in Python: dict()']
+
+  indexes {
+    (admin_id) [name: 'django_ledger_entitymodel_admin_id_b0859ebd']
+    (admin_id) [name: 'django_ledg_admin_i_09f5c9_idx']
+  }
+
+  Note: '''Entity Model Base Class From Abstract
+
+Columns from EntityModelAbstract (abstract): uuid, default_coa_id, admin_id, hidden, accrual_method, fy_start_month, last_closing_date, picture, meta.
+
+Columns from MP_Node (abstract): path, depth, numchild.
+
+Columns from SlugNameMixIn (abstract): slug, name.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.
+
+Columns from ContactInfoMixIn (abstract): address_1, address_2, city, state, zip_code, country, email, website, phone.'''
+}
+
+Table django_ledger_entitystatemodel {
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_model_id char(32) [not null]
+  entity_unit_id char(32)
+  fiscal_year smallint
+  key EntityStateModelKey [not null]
+  sequence bigint [default: 0, not null]
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_entitystatemodel_entity_model_id_5e238c40']
+    (entity_unit_id) [name: 'django_ledger_entitystatemodel_entity_unit_id_d2cd3715']
+    (entity_model_id, entity_unit_id, fiscal_year, key) [unique, name: 'django_ledger_entitystatemodel_entity_model_id_entity_unit_id_fiscal_year_key_8fda0b72_uniq']
+    (key) [name: 'django_ledg_key_ac156a_idx']
+    (entity_model_id, fiscal_year, entity_unit_id, key) [name: 'django_ledg_entity__eeae49_idx']
+  }
+
+  Note: '''Entity State Model Base Class from Abstract.
+
+Columns from EntityStateModelAbstract (abstract): uuid, entity_model_id, entity_unit_id, fiscal_year, key, sequence.'''
+}
+
+Table django_ledger_entitymanagementmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_id char(32) [not null]
+  user_id integer [not null]
+  permission_level EntityManagementModelPermissionLevel [default: 'read', not null]
+
+  indexes {
+    (entity_id) [name: 'django_ledger_entitymanagementmodel_entity_id_a2fc9d9a']
+    (user_id) [name: 'django_ledger_entitymanagementmodel_user_id_555d3f47']
+    (entity_id, user_id) [name: 'django_ledg_entity__9541e6_idx']
+    (user_id, entity_id) [name: 'django_ledg_user_id_b7497b_idx']
+  }
+
+  Note: '''EntityManagement Model Base Class From Abstract
+
+Columns from EntityManagementModelAbstract (abstract): uuid, entity_id, user_id, permission_level.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_billmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  amount_due decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_paid decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_receivable decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_unearned decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_earned decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  accrue bool [default: false, not null]
+  progress decimal [default: 0, not null, note: 'declared max_digits=3, decimal_places=2, which the database does not enforce']
+  ledger_id char(32) [unique, not null]
+  terms BillModelTerms [default: 'on_receipt', not null]
+  date_due date
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_model_id char(32)
+  bill_number varchar(20) [not null]
+  bill_status BillModelBillStatus [default: 'draft', not null]
+  xref varchar(50)
+  vendor_id char(32) [not null]
+  cash_account_id char(32)
+  prepaid_account_id char(32)
+  unearned_account_id char(32)
+  additional_info text [note: 'default in Python: dict()']
+  ce_model_id char(32)
+  date_draft date
+  date_in_review date
+  date_approved date
+  date_paid date
+  date_void date
+  date_canceled date
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_billmodel_entity_model_id_aa9ebcda']
+    (bill_number) [name: 'django_ledger_billmodel_bill_number_ed7beea9']
+    (xref) [name: 'django_ledger_billmodel_xref_abb65387']
+    (vendor_id) [name: 'django_ledger_billmodel_vendor_id_f64038f2']
+    (cash_account_id) [name: 'django_ledger_billmodel_cash_account_id_e7b4b6a5']
+    (prepaid_account_id) [name: 'django_ledger_billmodel_prepaid_account_id_c344ee16']
+    (unearned_account_id) [name: 'django_ledger_billmodel_unearned_account_id_c3d1d5cc']
+    (ce_model_id) [name: 'django_ledger_billmodel_ce_model_id_2a45669e']
+    (bill_status) [name: 'django_ledg_bill_st_9e158c_idx']
+    (terms) [name: 'django_ledg_terms_752251_idx']
+    (cash_account_id) [name: 'django_ledg_cash_ac_82021a_idx']
+    (prepaid_account_id) [name: 'django_ledg_prepaid_5230e5_idx']
+    (unearned_account_id) [name: 'django_ledg_unearne_806444_idx']
+    (date_due) [name: 'django_ledg_date_du_a8c481_idx']
+    (date_draft) [name: 'django_ledg_date_dr_7a448e_idx']
+    (date_in_review) [name: 'django_ledg_date_in_8887cb_idx']
+    (date_approved) [name: 'django_ledg_date_ap_3208a1_idx']
+    (date_paid) [name: 'django_ledg_date_pa_daf06c_idx']
+    (date_canceled) [name: 'django_ledg_date_ca_e43055_idx']
+    (date_void) [name: 'django_ledg_date_vo_14c747_idx']
+    (vendor_id) [name: 'django_ledg_vendor__28be85_idx']
+    (bill_number) [name: 'django_ledg_bill_nu_6b97b4_idx']
+  }
+
+  Note: '''Base BillModel from Abstract.
+
+Columns from BillModelAbstract (abstract): uuid, entity_model_id, bill_number, bill_status, xref, vendor_id, additional_info, ce_model_id, date_draft, date_in_review, date_approved, date_paid, date_void, date_canceled.
+
+Columns from AccrualMixIn (abstract): amount_due, amount_paid, amount_receivable, amount_unearned, amount_earned, accrue, progress, ledger_id, cash_account_id, prepaid_account_id, unearned_account_id.
+
+Columns from PaymentTermsMixIn (abstract): terms, date_due.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_invoicemodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  amount_due decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_paid decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_receivable decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_unearned decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  amount_earned decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  accrue bool [default: false, not null]
+  progress decimal [default: 0, not null, note: 'declared max_digits=3, decimal_places=2, which the database does not enforce']
+  ledger_id char(32) [unique, not null]
+  terms InvoiceModelTerms [default: 'on_receipt', not null]
+  date_due date
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_model_id char(32)
+  invoice_number varchar(20) [not null]
+  invoice_status InvoiceModelInvoiceStatus [default: 'draft', not null]
+  customer_id char(32) [not null]
+  cash_account_id char(32)
+  prepaid_account_id char(32)
+  unearned_account_id char(32)
+  additional_info text [note: 'default in Python: dict()']
+  ce_model_id char(32)
+  date_draft date
+  date_in_review date
+  date_approved date
+  date_paid date
+  date_void date
+  date_canceled date
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_invoicemodel_entity_model_id_acae4e36']
+    (invoice_number) [name: 'django_ledger_invoicemodel_invoice_number_5cc1d746']
+    (customer_id) [name: 'django_ledger_invoicemodel_customer_id_73221370']
+    (cash_account_id) [name: 'django_ledger_invoicemodel_cash_account_id_4a5c9037']
+    (prepaid_account_id) [name: 'django_ledger_invoicemodel_prepaid_account_id_c05cefd7']
+    (unearned_account_id) [name: 'django_ledger_invoicemodel_unearned_account_id_7359e113']
+    (ce_model_id) [name: 'django_ledger_invoicemodel_ce_model_id_e101bd5a']
+    (invoice_status) [name: 'django_ledg_invoice_e349d0_idx']
+    (terms) [name: 'django_ledg_terms_3b6577_idx']
+    (cash_account_id) [name: 'django_ledg_cash_ac_00d697_idx']
+    (prepaid_account_id) [name: 'django_ledg_prepaid_470f67_idx']
+    (unearned_account_id) [name: 'django_ledg_unearne_bc18fd_idx']
+    (date_due) [name: 'django_ledg_date_du_c72892_idx']
+    (date_draft) [name: 'django_ledg_date_dr_ad2569_idx']
+    (date_in_review) [name: 'django_ledg_date_in_e738b8_idx']
+    (date_approved) [name: 'django_ledg_date_ap_ae90e1_idx']
+    (date_paid) [name: 'django_ledg_date_pa_34b872_idx']
+    (date_canceled) [name: 'django_ledg_date_ca_0f65e8_idx']
+    (date_void) [name: 'django_ledg_date_vo_57c444_idx']
+    (customer_id) [name: 'django_ledg_custome_34c881_idx']
+    (invoice_number) [name: 'django_ledg_invoice_d0881e_idx']
+  }
+
+  Note: '''Base Invoice Model from Abstract.
+
+Columns from InvoiceModelAbstract (abstract): uuid, entity_model_id, invoice_number, invoice_status, customer_id, additional_info, ce_model_id, date_draft, date_in_review, date_approved, date_paid, date_void, date_canceled.
+
+Columns from AccrualMixIn (abstract): amount_due, amount_paid, amount_receivable, amount_unearned, amount_earned, accrue, progress, ledger_id, cash_account_id, prepaid_account_id, unearned_account_id.
+
+Columns from PaymentTermsMixIn (abstract): terms, date_due.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_transactionmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  tx_type TransactionModelTxType [not null]
+  journal_entry_id char(32) [not null, note: 'Journal Entry to be associated with this transaction.']
+  account_id char(32) [not null, note: 'Account from Chart of Accounts to be associated with this transaction.']
+  amount decimal [default: 0.0, not null, note: 'Amount of the transaction.. declared max_digits=20, decimal_places=2, which the database does not enforce']
+  description varchar(100) [note: 'A description to be included with this individual transaction.']
+  cleared bool [default: false, not null]
+  reconciled bool [default: false, not null]
+
+  indexes {
+    (journal_entry_id) [name: 'django_ledger_transactionmodel_journal_entry_id_1739fd60']
+    (account_id) [name: 'django_ledger_transactionmodel_account_id_7d3310be']
+    (tx_type) [name: 'django_ledg_tx_type_da7ba9_idx']
+    (account_id) [name: 'django_ledg_account_c4bb7e_idx']
+    (journal_entry_id) [name: 'django_ledg_journal_46c77f_idx']
+    (created) [name: 'django_ledg_created_b74538_idx']
+    (updated) [name: 'django_ledg_updated_494252_idx']
+    (cleared) [name: 'django_ledg_cleared_335c0b_idx']
+    (reconciled) [name: 'django_ledg_reconci_75dbc7_idx']
+  }
+
+  Note: '''Base Transaction Model From Abstract.
+
+Columns from TransactionModelAbstract (abstract): uuid, tx_type, journal_entry_id, account_id, amount, description, cleared, reconciled.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_journalentrymodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  je_number varchar(25) [not null]
+  timestamp datetime [not null, note: 'default in Python: localtime()']
+  description varchar(120)
+  entity_unit_id char(32)
+  activity JournalEntryModelActivity
+  origin varchar(30)
+  posted bool [default: false, not null]
+  locked bool [default: false, not null]
+  is_closing_entry bool [default: false, not null]
+  ledger_id char(32) [not null]
+
+  indexes {
+    (je_number) [name: 'django_ledger_journalentrymodel_je_number_a73f42ee']
+    (entity_unit_id) [name: 'django_ledger_journalentrymodel_entity_unit_id_1e0fbf04']
+    (ledger_id) [name: 'django_ledger_journalentrymodel_ledger_id_c470426c']
+    (ledger_id) [name: 'django_ledg_ledger__ecaa89_idx']
+    (timestamp) [name: 'django_ledg_timesta_ab91e8_idx']
+    (activity) [name: 'django_ledg_activit_bae3bb_idx']
+    (entity_unit_id) [name: 'django_ledg_entity__557f42_idx']
+    (locked) [name: 'django_ledg_locked_5cc524_idx']
+    (posted) [name: 'django_ledg_posted_097e54_idx']
+    (je_number) [name: 'django_ledg_je_numb_987c8b_idx']
+    (is_closing_entry) [name: 'django_ledg_is_clos_0ef09e_idx']
+  }
+
+  Note: '''Journal Entry Model Base Class From Abstract
+
+Columns from JournalEntryModelAbstract (abstract): uuid, je_number, timestamp, description, entity_unit_id, activity, origin, posted, locked, is_closing_entry, ledger_id.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_purchaseordermodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  po_number varchar(20) [not null]
+  po_title varchar(250) [not null]
+  po_status PurchaseOrderModelPoStatus [default: 'draft', not null]
+  po_amount decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  po_amount_received decimal [default: 0, not null, note: 'declared max_digits=20, decimal_places=2, which the database does not enforce']
+  entity_id char(32) [not null]
+  date_draft date
+  date_in_review date
+  date_approved date
+  date_void date
+  date_fulfilled date
+  date_canceled date
+  ce_model_id char(32)
+
+  indexes {
+    (po_number) [name: 'django_ledger_purchaseordermodel_po_number_aeb0d16d']
+    (entity_id) [name: 'django_ledger_purchaseordermodel_entity_id_d60fdbe3']
+    (ce_model_id) [name: 'django_ledger_purchaseordermodel_ce_model_id_7df49c41']
+    (entity_id, po_number) [unique, name: 'django_ledger_purchaseordermodel_entity_id_po_number_35f42db0_uniq']
+    (entity_id) [name: 'django_ledg_entity__9ab6ba_idx']
+    (po_number) [name: 'django_ledg_po_numb_20b7d1_idx']
+    (po_status) [name: 'django_ledg_po_stat_ab8d41_idx']
+    (ce_model_id) [name: 'django_ledg_ce_mode_66c2cc_idx']
+    (date_draft) [name: 'django_ledg_date_dr_6fd15b_idx']
+    (date_in_review) [name: 'django_ledg_date_in_b6a1f3_idx']
+    (date_approved) [name: 'django_ledg_date_ap_4667c6_idx']
+    (date_fulfilled) [name: 'django_ledg_date_fu_b29b08_idx']
+    (date_canceled) [name: 'django_ledg_date_ca_3edc4b_idx']
+    (date_void) [name: 'django_ledg_date_vo_56612f_idx']
+  }
+
+  Note: '''Purchase Order Base Model
+
+Columns from PurchaseOrderModelAbstract (abstract): uuid, po_number, po_title, po_status, po_amount, po_amount_received, entity_id, date_draft, date_in_review, date_approved, date_void, date_fulfilled, date_canceled, ce_model_id.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.'''
+}
+
+Table django_ledger_estimatemodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  estimate_number varchar(20) [not null]
+  entity_id char(32) [not null]
+  customer_id char(32) [not null]
+  terms EstimateModelTerms [not null]
+  title varchar(250) [not null]
+  status EstimateModelStatus [default: 'draft', not null]
+  date_draft date
+  date_in_review date
+  date_approved date
+  date_completed date
+  date_canceled date
+  date_void date
+  revenue_estimate decimal [not null, note: 'Estimated cost to complete the quoted work.. default in Python: Decimal(\'0.00\'). declared max_digits=20, decimal_places=2, which the database does not enforce']
+  labor_estimate decimal [not null, note: 'Estimated labor cost to complete the quoted work.. default in Python: Decimal(\'0.00\'). declared max_digits=20, decimal_places=2, which the database does not enforce']
+  material_estimate decimal [default: 0.0, not null, note: 'Estimated material cost to complete the quoted work.. declared max_digits=20, decimal_places=2, which the database does not enforce']
+  equipment_estimate decimal [not null, note: 'Estimated equipment cost to complete the quoted work.. default in Python: Decimal(\'0.00\'). declared max_digits=20, decimal_places=2, which the database does not enforce']
+  other_estimate decimal [not null, note: 'Estimated equipment cost to complete the quoted work.. default in Python: Decimal(\'0.00\'). declared max_digits=20, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (estimate_number) [name: 'django_ledger_estimatemodel_estimate_number_df7a8e98']
+    (entity_id) [name: 'django_ledger_estimatemodel_entity_id_07051ffe']
+    (customer_id) [name: 'django_ledger_estimatemodel_customer_id_07671bdc']
+    (entity_id, estimate_number) [unique, name: 'django_ledger_estimatemodel_entity_id_estimate_number_47e317cd_uniq']
+    (status) [name: 'django_ledg_status_6aa955_idx']
+    (customer_id) [name: 'django_ledg_custome_a2793e_idx']
+    (terms) [name: 'django_ledg_terms_9507f6_idx']
+    (entity_id) [name: 'django_ledg_entity__e2e967_idx']
+    (date_draft) [name: 'django_ledg_date_dr_502e29_idx']
+    (date_in_review) [name: 'django_ledg_date_in_b24ddd_idx']
+    (date_approved) [name: 'django_ledg_date_ap_a754e5_idx']
+    (date_canceled) [name: 'django_ledg_date_ca_9af3db_idx']
+    (date_void) [name: 'django_ledg_date_vo_74c7c8_idx']
+    (estimate_number) [name: 'django_ledg_estimat_9ff8a5_idx']
+  }
+
+  Note: '''Base EstimateModel Class.
+
+Columns from EstimateModelAbstract (abstract): uuid, estimate_number, entity_id, customer_id, terms, title, status, date_draft, date_in_review, date_approved, date_completed, date_canceled, date_void, revenue_estimate, labor_estimate, material_estimate, equipment_estimate, other_estimate.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.'''
+}
+
+Table django_ledger_closingentrymodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  entity_model_id char(32) [not null]
+  ledger_model_id char(32) [unique, not null]
+  closing_date date [not null]
+  posted bool [default: false, not null]
+
+  indexes {
+    (entity_model_id) [name: 'django_ledger_closingentrymodel_entity_model_id_644d71b4']
+    (entity_model_id, closing_date) [unique, name: 'unique_entity_closing_date']
+    (entity_model_id) [name: 'django_ledg_entity__4a55a2_idx']
+    (closing_date) [name: 'django_ledg_closing_28e3bb_idx']
+    (posted) [name: 'django_ledg_posted_8db18b_idx']
+    (entity_model_id, posted, closing_date) [name: 'django_ledg_entity__9ee361_idx']
+  }
+
+  Note: '''Columns from ClosingEntryModelAbstract (abstract): uuid, entity_model_id, ledger_model_id, closing_date, posted.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.'''
+}
+
+Table django_ledger_closingentrytransactionmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  closing_entry_model_id char(32) [not null]
+  account_model_id char(32) [not null]
+  unit_model_id char(32)
+  activity ClosingEntryTransactionModelActivity
+  tx_type ClosingEntryTransactionModelTxType [not null]
+  balance decimal [not null, note: 'declared max_digits=20, decimal_places=6, which the database does not enforce']
+
+  indexes {
+    (closing_entry_model_id) [name: 'django_ledger_closingentrytransactionmodel_closing_entry_model_id_fa0cd7b8']
+    (account_model_id) [name: 'django_ledger_closingentrytransactionmodel_account_model_id_905a9019']
+    (unit_model_id) [name: 'django_ledger_closingentrytransactionmodel_unit_model_id_14836d31']
+    (closing_entry_model_id, account_model_id, unit_model_id, activity) [unique, name: 'unique_closing_entry']
+    (closing_entry_model_id, account_model_id, unit_model_id) [unique, name: 'unique_ce_opt_1', note: 'where "activity" IS NULL']
+    (closing_entry_model_id, account_model_id, activity) [unique, name: 'unique_ce_opt_2', note: 'where "unit_model_id" IS NULL']
+    (closing_entry_model_id, account_model_id) [unique, name: 'unique_ce_opt_3', note: 'where ("unit_model_id" IS NULL AND "activity" IS NULL)']
+    (closing_entry_model_id) [name: 'django_ledg_closing_a7a576_idx']
+    (account_model_id) [name: 'django_ledg_account_5d90df_idx']
+  }
+
+  Note: '''Base ClosingEntryModel Class
+
+Columns from ClosingEntryTransactionModelAbstract (abstract): uuid, closing_entry_model_id, account_model_id, unit_model_id, activity, tx_type, balance.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_receiptmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  markdown_notes text
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  receipt_number varchar(255) [not null]
+  receipt_date date [not null]
+  receipt_type ReceiptModelReceiptType [not null]
+  ledger_model_id char(32) [not null]
+  unit_model_id char(32) [note: 'Helps segregate receipts and transactions into different classes or departments.']
+  customer_model_id char(32)
+  vendor_model_id char(32)
+  charge_account_id char(32) [not null, note: 'The financial account (cash or credit) where this transaction was made.']
+  receipt_account_id char(32) [note: 'The income or expense account where this transaction will be reflected']
+  amount decimal [not null, note: 'Amount of the receipt.. declared max_digits=20, decimal_places=2, which the database does not enforce']
+  staged_transaction_model_id char(32) [unique, note: 'The staged transaction associated with the receipt from bank feeds.']
+
+  indexes {
+    (ledger_model_id) [name: 'django_ledger_receiptmodel_ledger_model_id_589128fd']
+    (unit_model_id) [name: 'django_ledger_receiptmodel_unit_model_id_c534ceaf']
+    (customer_model_id) [name: 'django_ledger_receiptmodel_customer_model_id_8c5be53c']
+    (vendor_model_id) [name: 'django_ledger_receiptmodel_vendor_model_id_76856011']
+    (charge_account_id) [name: 'django_ledger_receiptmodel_charge_account_id_55b15eac']
+    (receipt_account_id) [name: 'django_ledger_receiptmodel_receipt_account_id_f00a04d3']
+  }
+
+  Note: '''Concrete receipt model ready for migration and admin usage.
+
+Inherits all behavior from ReceiptModelAbstract and is used as the concrete
+Django model for persistence.
+
+Columns from ReceiptModelAbstract (abstract): uuid, receipt_number, receipt_date, receipt_type, ledger_model_id, unit_model_id, customer_model_id, vendor_model_id, charge_account_id, receipt_account_id, amount, staged_transaction_model_id.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.
+
+Columns from MarkdownNotesMixIn (abstract): markdown_notes.'''
+}
+
+Table django_ledger_importjobmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  description varchar(200) [not null]
+  bank_account_model_id char(32) [not null]
+  ledger_model_id char(32) [unique]
+  completed bool [default: false, not null]
+
+  indexes {
+    (bank_account_model_id) [name: 'django_ledger_importjobmodel_bank_account_model_id_144cc40d']
+    (bank_account_model_id) [name: 'django_ledg_bank_ac_0bad20_idx']
+    (ledger_model_id) [name: 'django_ledg_ledger__d9e03f_idx']
+    (completed) [name: 'django_ledg_complet_42632b_idx']
+  }
+
+  Note: '''Represents the ImportJobModel class.
+
+This class inherits from ImportJobModelAbstract and is specifically designed
+to provide implementations and metadata for import job entries. It defines the
+Meta subclass, which overrides the abstract attribute indicating whether this
+model is abstract or not.
+
+Attributes
+----------
+None
+
+Columns from ImportJobModelAbstract (abstract): uuid, description, bank_account_model_id, ledger_model_id, completed.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Table django_ledger_stagedtransactionmodel {
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [note: 'default in Python: now()']
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  parent_id char(32)
+  import_job_id char(32) [not null]
+  fit_id varchar(100) [not null]
+  date_posted date [not null]
+  bundle_split bool [default: true, not null]
+  activity StagedTransactionModelActivity
+  amount decimal [note: 'declared max_digits=15, decimal_places=2, which the database does not enforce']
+  amount_split decimal [note: 'declared max_digits=15, decimal_places=2, which the database does not enforce']
+  name varchar(200)
+  memo varchar(200)
+  account_model_id char(32)
+  unit_model_id char(32)
+  transaction_model_id char(32) [unique]
+  matched_transaction_model_id char(32) [unique]
+  matched_transaction bool [default: false, not null, note: 'Indicates whether this transaction is matched to another.']
+  receipt_type StagedTransactionModelReceiptType [note: 'The receipt type of the transaction.']
+  vendor_model_id char(32) [note: 'The Vendor associated with the transaction.']
+  customer_model_id char(32) [note: 'The Customer associated with the transaction.']
+  notes text
+
+  indexes {
+    (parent_id) [name: 'django_ledger_stagedtransactionmodel_parent_id_c3d93181']
+    (import_job_id) [name: 'django_ledger_stagedtransactionmodel_import_job_id_f8703f44']
+    (account_model_id) [name: 'django_ledger_stagedtransactionmodel_account_model_id_64ffac7d']
+    (unit_model_id) [name: 'django_ledger_stagedtransactionmodel_unit_model_id_7f161b1d']
+    (vendor_model_id) [name: 'django_ledger_stagedtransactionmodel_vendor_model_id_71f9067c']
+    (customer_model_id) [name: 'django_ledger_stagedtransactionmodel_customer_model_id_5461cdb8']
+    (import_job_id) [name: 'django_ledg_import__8e6511_idx']
+    (date_posted) [name: 'django_ledg_date_po_cbcc8c_idx']
+    (account_model_id) [name: 'django_ledg_account_53aea9_idx']
+    (transaction_model_id) [name: 'django_ledg_transac_51a6b9_idx']
+    (matched_transaction_model_id) [name: 'django_ledg_matched_dde2a7_idx']
+  }
+
+  Note: '''Represents a concrete implementation of a staged transaction model.
+
+This class is derived from `StagedTransactionModelAbstract` and provides
+a concrete implementation by overriding its meta-configuration. It is
+used to define the structure and behavior of the staged transaction
+records in the system.
+
+Attributes
+----------
+Meta : class
+    A nested class that extends the meta-configuration of
+    the `StagedTransactionModelAbstract.Meta` class, specifying
+    that the model is not abstract.
+
+Columns from StagedTransactionModelAbstract (abstract): uuid, parent_id, import_job_id, fit_id, date_posted, bundle_split, activity, amount, amount_split, name, memo, account_model_id, unit_model_id, transaction_model_id, matched_transaction_model_id, matched_transaction, receipt_type, vendor_model_id, customer_model_id, notes.
+
+Columns from CreateUpdateMixIn (abstract): created, updated.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref django_ledger_bankaccountmodel_entity_model_id_fk: django_ledger_bankaccountmodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_bankaccountmodel_account_model_id_fk: django_ledger_bankaccountmodel.account_model_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_accountmodel_coa_model_id_fk: django_ledger_accountmodel.coa_model_id > django_ledger_chartofaccountmodel.uuid [delete: cascade]
+
+Ref django_ledger_chartofaccountmodel_entity_id_fk: django_ledger_chartofaccountmodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_customermodel_entity_model_id_fk: django_ledger_customermodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_unitofmeasuremodel_entity_id_fk: django_ledger_unitofmeasuremodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_itemtransactionmodel_entity_unit_id_fk: django_ledger_itemtransactionmodel.entity_unit_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemtransactionmodel_item_model_id_fk: django_ledger_itemtransactionmodel.item_model_id > django_ledger_itemmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemtransactionmodel_bill_model_id_fk: django_ledger_itemtransactionmodel.bill_model_id > django_ledger_billmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemtransactionmodel_invoice_model_id_fk: django_ledger_itemtransactionmodel.invoice_model_id > django_ledger_invoicemodel.uuid [delete: restrict]
+
+Ref django_ledger_itemtransactionmodel_po_model_id_fk: django_ledger_itemtransactionmodel.po_model_id > django_ledger_purchaseordermodel.uuid [delete: restrict]
+
+Ref django_ledger_itemtransactionmodel_ce_model_id_fk: django_ledger_itemtransactionmodel.ce_model_id > django_ledger_estimatemodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_uom_id_fk: django_ledger_itemmodel.uom_id > django_ledger_unitofmeasuremodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_inventory_account_id_fk: django_ledger_itemmodel.inventory_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_cogs_account_id_fk: django_ledger_itemmodel.cogs_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_earnings_account_id_fk: django_ledger_itemmodel.earnings_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_expense_account_id_fk: django_ledger_itemmodel.expense_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_itemmodel_entity_id_fk: django_ledger_itemmodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_ledgermodel_entity_id_fk: django_ledger_ledgermodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_entityunitmodel_entity_id_fk: django_ledger_entityunitmodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_vendormodel_entity_model_id_fk: django_ledger_vendormodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_entitymodel_default_coa_id_fk: django_ledger_entitymodel.default_coa_id - django_ledger_chartofaccountmodel.uuid [delete: restrict]
+
+Ref django_ledger_entitymodel_admin_id_fk: django_ledger_entitymodel.admin_id > auth_user.id [delete: cascade]
+
+Ref django_ledger_entitystatemodel_entity_model_id_fk: django_ledger_entitystatemodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_entitystatemodel_entity_unit_id_fk: django_ledger_entitystatemodel.entity_unit_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_entitymanagementmodel_entity_id_fk: django_ledger_entitymanagementmodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_entitymanagementmodel_user_id_fk: django_ledger_entitymanagementmodel.user_id > auth_user.id [delete: cascade]
+
+Ref django_ledger_billmodel_ledger_id_fk: django_ledger_billmodel.ledger_id - django_ledger_ledgermodel.uuid [delete: cascade]
+
+Ref django_ledger_billmodel_entity_model_id_fk: django_ledger_billmodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_billmodel_vendor_id_fk: django_ledger_billmodel.vendor_id > django_ledger_vendormodel.uuid [delete: cascade]
+
+Ref django_ledger_billmodel_cash_account_id_fk: django_ledger_billmodel.cash_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_billmodel_prepaid_account_id_fk: django_ledger_billmodel.prepaid_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_billmodel_unearned_account_id_fk: django_ledger_billmodel.unearned_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_billmodel_ce_model_id_fk: django_ledger_billmodel.ce_model_id > django_ledger_estimatemodel.uuid [delete: restrict]
+
+Ref django_ledger_invoicemodel_ledger_id_fk: django_ledger_invoicemodel.ledger_id - django_ledger_ledgermodel.uuid [delete: cascade]
+
+Ref django_ledger_invoicemodel_entity_model_id_fk: django_ledger_invoicemodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_invoicemodel_customer_id_fk: django_ledger_invoicemodel.customer_id > django_ledger_customermodel.uuid [delete: restrict]
+
+Ref django_ledger_invoicemodel_cash_account_id_fk: django_ledger_invoicemodel.cash_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_invoicemodel_prepaid_account_id_fk: django_ledger_invoicemodel.prepaid_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_invoicemodel_unearned_account_id_fk: django_ledger_invoicemodel.unearned_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_invoicemodel_ce_model_id_fk: django_ledger_invoicemodel.ce_model_id > django_ledger_estimatemodel.uuid [delete: restrict]
+
+Ref django_ledger_transactionmodel_journal_entry_id_fk: django_ledger_transactionmodel.journal_entry_id > django_ledger_journalentrymodel.uuid [delete: cascade]
+
+Ref django_ledger_transactionmodel_account_id_fk: django_ledger_transactionmodel.account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_journalentrymodel_entity_unit_id_fk: django_ledger_journalentrymodel.entity_unit_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_journalentrymodel_ledger_id_fk: django_ledger_journalentrymodel.ledger_id > django_ledger_ledgermodel.uuid [delete: cascade]
+
+Ref django_ledger_purchaseordermodel_entity_id_fk: django_ledger_purchaseordermodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_purchaseordermodel_ce_model_id_fk: django_ledger_purchaseordermodel.ce_model_id > django_ledger_estimatemodel.uuid [delete: restrict]
+
+Ref django_ledger_estimatemodel_entity_id_fk: django_ledger_estimatemodel.entity_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_estimatemodel_customer_id_fk: django_ledger_estimatemodel.customer_id > django_ledger_customermodel.uuid [delete: restrict]
+
+Ref django_ledger_closingentrymodel_entity_model_id_fk: django_ledger_closingentrymodel.entity_model_id > django_ledger_entitymodel.uuid [delete: cascade]
+
+Ref django_ledger_closingentrymodel_ledger_model_id_fk: django_ledger_closingentrymodel.ledger_model_id - django_ledger_ledgermodel.uuid [delete: cascade]
+
+Ref django_ledger_closingentrytransactionmodel_closing_entry_model_id_fk: django_ledger_closingentrytransactionmodel.closing_entry_model_id > django_ledger_closingentrymodel.uuid [delete: cascade]
+
+Ref django_ledger_closingentrytransactionmodel_account_model_id_fk: django_ledger_closingentrytransactionmodel.account_model_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_closingentrytransactionmodel_unit_model_id_fk: django_ledger_closingentrytransactionmodel.unit_model_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_ledger_model_id_fk: django_ledger_receiptmodel.ledger_model_id > django_ledger_ledgermodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_unit_model_id_fk: django_ledger_receiptmodel.unit_model_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_customer_model_id_fk: django_ledger_receiptmodel.customer_model_id > django_ledger_customermodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_vendor_model_id_fk: django_ledger_receiptmodel.vendor_model_id > django_ledger_vendormodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_charge_account_id_fk: django_ledger_receiptmodel.charge_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_receipt_account_id_fk: django_ledger_receiptmodel.receipt_account_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_receiptmodel_staged_transaction_model_id_fk: django_ledger_receiptmodel.staged_transaction_model_id - django_ledger_stagedtransactionmodel.uuid [delete: restrict]
+
+Ref django_ledger_importjobmodel_bank_account_model_id_fk: django_ledger_importjobmodel.bank_account_model_id > django_ledger_bankaccountmodel.uuid [delete: cascade]
+
+Ref django_ledger_importjobmodel_ledger_model_id_fk: django_ledger_importjobmodel.ledger_model_id - django_ledger_ledgermodel.uuid [delete: cascade]
+
+Ref django_ledger_stagedtransactionmodel_parent_id_fk: django_ledger_stagedtransactionmodel.parent_id > django_ledger_stagedtransactionmodel.uuid [delete: cascade]
+
+Ref django_ledger_stagedtransactionmodel_import_job_id_fk: django_ledger_stagedtransactionmodel.import_job_id > django_ledger_importjobmodel.uuid [delete: cascade]
+
+Ref django_ledger_stagedtransactionmodel_account_model_id_fk: django_ledger_stagedtransactionmodel.account_model_id > django_ledger_accountmodel.uuid [delete: restrict]
+
+Ref django_ledger_stagedtransactionmodel_unit_model_id_fk: django_ledger_stagedtransactionmodel.unit_model_id > django_ledger_entityunitmodel.uuid [delete: restrict]
+
+Ref django_ledger_stagedtransactionmodel_transaction_model_id_fk: django_ledger_stagedtransactionmodel.transaction_model_id - django_ledger_transactionmodel.uuid [delete: set null]
+
+Ref django_ledger_stagedtransactionmodel_matched_transaction_model_id_fk: django_ledger_stagedtransactionmodel.matched_transaction_model_id - django_ledger_transactionmodel.uuid [delete: set null]
+
+Ref django_ledger_stagedtransactionmodel_vendor_model_id_fk: django_ledger_stagedtransactionmodel.vendor_model_id > django_ledger_vendormodel.uuid [delete: restrict]
+
+Ref django_ledger_stagedtransactionmodel_customer_model_id_fk: django_ledger_stagedtransactionmodel.customer_model_id > django_ledger_customermodel.uuid [delete: restrict]

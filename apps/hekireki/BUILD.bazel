@@ -1,0 +1,5 @@
+load("@npm//:defs.bzl", "npm_link_all_packages")
+
+# Links the packages of apps/hekireki/package.json (hekireki, prisma, the ORMs tsc checks against)
+# under //apps/hekireki:node_modules/<name>.
+npm_link_all_packages(name = "node_modules")

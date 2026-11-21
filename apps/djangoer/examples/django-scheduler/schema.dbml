@@ -1,0 +1,405 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum RuleFrequency {
+  "YEARLY"
+  "MONTHLY"
+  "WEEKLY"
+  "DAILY"
+  "HOURLY"
+  "MINUTELY"
+  "SECONDLY"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table schedule_calendar {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  slug varchar(200) [unique, not null]
+
+  Note: '''This is for grouping events so that batch relations can be made to all
+events.  An example would be a project calendar.
+
+name: the name of the calendar
+events: all the events contained within the calendar.
+>>> calendar = Calendar(name = \'Test Calendar\')
+>>> calendar.save()
+>>> data = {
+...         \'title\': \'Recent Event\',
+...         \'start\': datetime.datetime(2008, 1, 5, 0, 0),
+...         \'end\': datetime.datetime(2008, 1, 10, 0, 0)
+...        }
+>>> event = Event(**data)
+>>> event.save()
+>>> calendar.events.add(event)
+>>> data = {
+...         \'title\': \'Upcoming Event\',
+...         \'start\': datetime.datetime(2008, 1, 1, 0, 0),
+...         \'end\': datetime.datetime(2008, 1, 4, 0, 0)
+...        }
+>>> event = Event(**data)
+>>> event.save()
+>>> calendar.events.add(event)
+>>> data = {
+...         \'title\': \'Current Event\',
+...         \'start\': datetime.datetime(2008, 1, 3),
+...         \'end\': datetime.datetime(2008, 1, 6)
+...        }
+>>> event = Event(**data)
+>>> event.save()
+>>> calendar.events.add(event)'''
+}
+
+Table schedule_calendarrelation {
+  id integer [pk, increment]
+  calendar_id integer [not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  distinction varchar(20) [not null]
+  inheritable bool [default: true, not null]
+
+  indexes {
+    (calendar_id) [name: 'schedule_calendarrelation_calendar_id_0a50be2e']
+    (content_type_id) [name: 'schedule_calendarrelation_content_type_id_f2a42f5b']
+    (object_id) [name: 'schedule_calendarrelation_object_id_1743bce6']
+    (content_type_id, object_id) [name: 'schedule_ca_content_cddadb_idx']
+  }
+
+  Note: '''This is for relating data to a Calendar, and possible all of the events for
+that calendar, there is also a distinction, so that the same type or kind of
+data can be related in different ways.  A good example would be, if you have
+calendars that are only visible by certain users, you could create a
+relation between calendars and users, with the distinction of \'visibility\',
+or \'ownership\'.  If inheritable is set to true, all the events for this
+calendar will inherit this relation.
+
+calendar: a foreign key relation to a Calendar object.
+content_type: a foreign key relation to ContentType of the generic object
+object_id: the id of the generic object
+content_object: the generic foreign key to the generic object
+distinction: a string representing a distinction of the relation, User could
+have a \'veiwer\' relation and an \'owner\' relation for example.
+inheritable: a boolean that decides if events of the calendar should also
+inherit this relation
+
+DISCLAIMER: while this model is a nice out of the box feature to have, it
+may not scale well.  If you use this, keep that in mind.'''
+}
+
+Table schedule_rule {
+  id integer [pk, increment]
+  name varchar(32) [not null]
+  description text [not null]
+  frequency RuleFrequency [not null]
+  params text [not null]
+
+  Note: '''This defines a rule by which an event will recur.  This is defined by the
+rrule in the dateutil documentation.
+
+* name - the human friendly name of this kind of recursion.
+* description - a short description describing this type of recursion.
+* frequency - the base recurrence period
+* param - extra params required to define this type of recursion. The params
+  should follow this format:
+
+    param = [rruleparam:value;]*
+    rruleparam = see list below
+    value = int[,int]*
+
+  The options are: (documentation for these can be found at
+  https://dateutil.readthedocs.io/en/stable/rrule.html#module-dateutil.rrule
+    ** count
+    ** bysetpos
+    ** bymonth
+    ** bymonthday
+    ** byyearday
+    ** byweekno
+    ** byweekday
+    ** byhour
+    ** byminute
+    ** bysecond
+    ** byeaster'''
+}
+
+Table schedule_event {
+  id integer [pk, increment]
+  start datetime [not null]
+  end datetime [not null, note: 'The end time must be later than the start time.']
+  title varchar(255) [not null]
+  description text [not null]
+  creator_id integer
+  created_on datetime [not null, note: 'default in Python: now()']
+  updated_on datetime [not null, note: 'default in Python: now()']
+  rule_id integer [note: 'Select \'----\' for a one time only event.']
+  end_recurring_period datetime [note: 'This date is ignored for one time only events.']
+  calendar_id integer [not null]
+  color_event varchar(10) [not null]
+
+  indexes {
+    (start) [name: 'schedule_event_start_a11492a7']
+    (end) [name: 'schedule_event_end_674c5848']
+    (creator_id) [name: 'schedule_event_creator_id_d2ffab6e']
+    (rule_id) [name: 'schedule_event_rule_id_90b83d31']
+    (end_recurring_period) [name: 'schedule_event_end_recurring_period_672addcf']
+    (calendar_id) [name: 'schedule_event_calendar_id_eb1c700f']
+    (start, end) [name: 'schedule_ev_start_a258cb_idx']
+  }
+
+  Note: '''This model stores meta data for a date.  You can relate this data to many
+other models.'''
+}
+
+Table schedule_eventrelation {
+  id integer [pk, increment]
+  event_id integer [not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  distinction varchar(20) [not null]
+
+  indexes {
+    (event_id) [name: 'schedule_eventrelation_event_id_8c57a7b4']
+    (content_type_id) [name: 'schedule_eventrelation_content_type_id_d4187723']
+    (object_id) [name: 'schedule_eventrelation_object_id_e22334a2']
+    (content_type_id, object_id) [name: 'schedule_ev_content_6ceecb_idx']
+  }
+
+  Note: '''This is for relating data to an Event, there is also a distinction, so that
+data can be related in different ways.  A good example would be, if you have
+events that are only visible by certain users, you could create a relation
+between events and users, with the distinction of \'visibility\', or
+\'ownership\'.
+
+event: a foreign key relation to an Event model.
+content_type: a foreign key relation to ContentType of the generic object
+object_id: the id of the generic object
+content_object: the generic foreign key to the generic object
+distinction: a string representing a distinction of the relation, User could
+have a \'viewer\' relation and an \'owner\' relation for example.
+
+DISCLAIMER: while this model is a nice out of the box feature to have, it
+may not scale well.  If you use this keep that in mind.'''
+}
+
+Table schedule_occurrence {
+  id integer [pk, increment]
+  event_id integer [not null]
+  title varchar(255) [not null]
+  description text [not null]
+  start datetime [not null]
+  end datetime [not null]
+  cancelled bool [default: false, not null]
+  original_start datetime [not null]
+  original_end datetime [not null]
+  created_on datetime [not null, note: 'default in Python: now()']
+  updated_on datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (event_id) [name: 'schedule_occurrence_event_id_ade47cd8']
+    (start) [name: 'schedule_occurrence_start_b28eeb2f']
+    (end) [name: 'schedule_occurrence_end_ae255624']
+    (start, end) [name: 'schedule_oc_start_76a2f8_idx']
+  }
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref schedule_calendarrelation_calendar_id_fk: schedule_calendarrelation.calendar_id > schedule_calendar.id [delete: cascade]
+
+Ref schedule_calendarrelation_content_type_id_fk: schedule_calendarrelation.content_type_id > django_content_type.id [delete: cascade]
+
+Ref schedule_event_creator_id_fk: schedule_event.creator_id > auth_user.id [delete: set null]
+
+Ref schedule_event_rule_id_fk: schedule_event.rule_id > schedule_rule.id [delete: set null]
+
+Ref schedule_event_calendar_id_fk: schedule_event.calendar_id > schedule_calendar.id [delete: cascade]
+
+Ref schedule_eventrelation_event_id_fk: schedule_eventrelation.event_id > schedule_event.id [delete: cascade]
+
+Ref schedule_eventrelation_content_type_id_fk: schedule_eventrelation.content_type_id > django_content_type.id [delete: cascade]
+
+Ref schedule_occurrence_event_id_fk: schedule_occurrence.event_id > schedule_event.id [delete: cascade]

@@ -1,0 +1,11 @@
+package(default_visibility = ["//visibility:public"])
+
+exports_files([
+    "run.py",
+    "run.sh",
+])
+
+filegroup(
+    name = "py",
+    srcs = glob(["*.py"]),
+)

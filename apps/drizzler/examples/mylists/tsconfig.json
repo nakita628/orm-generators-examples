@@ -1,0 +1,9 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  // Upstream imports types such as SQLiteColumn and TaskResult without `type`.
+  "compilerOptions": {
+    "verbatimModuleSyntax": false,
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": ["src", "drizzle.config.ts"]
+}

@@ -1,0 +1,6 @@
+Table app.todos {
+  id uuid [pk, not null]
+  text text [not null]
+  done boolean [not null]
+  created_at timestamptz [not null]
+}

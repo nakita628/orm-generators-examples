@@ -1,0 +1,28 @@
+# The uv binary pinned in MODULE.bazel, for the host platform.
+package(default_visibility = ["//visibility:public"])
+
+[
+    config_setting(
+        name = platform,
+        constraint_values = [
+            "@platforms//os:" + os,
+            "@platforms//cpu:" + cpu,
+        ],
+    )
+    for platform, os, cpu in [
+        ("linux_aarch64", "linux", "aarch64"),
+        ("linux_x86_64", "linux", "x86_64"),
+        ("macos_aarch64", "macos", "aarch64"),
+        ("macos_x86_64", "macos", "x86_64"),
+    ]
+]
+
+alias(
+    name = "uv",
+    actual = select({
+        ":linux_aarch64": "@uv_aarch64_unknown_linux_gnu//:uv",
+        ":linux_x86_64": "@uv_x86_64_unknown_linux_gnu//:uv",
+        ":macos_aarch64": "@uv_aarch64_apple_darwin//:uv",
+        ":macos_x86_64": "@uv_x86_64_apple_darwin//:uv",
+    }),
+)

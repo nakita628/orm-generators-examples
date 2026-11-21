@@ -1,0 +1,297 @@
+Enum StateCategory {
+  "todo"
+  "in_progress"
+  "done"
+}
+
+Enum IssueType {
+  "bug"
+  "task"
+  "story"
+  "epic"
+}
+
+Enum IssuePriority {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum IssueLinkKind {
+  "blocks"
+  "duplicates"
+  "relates"
+}
+
+Table tracker_project {
+  id integer [pk, increment]
+  key varchar(10) [unique, not null, note: 'Prefix of issue keys, e.g. WEB']
+  name varchar(100) [not null]
+  lead_id integer
+  next_number "integer unsigned" [default: 1, not null]
+  archived bool [default: false, not null]
+
+  indexes {
+    (lead_id) [name: 'tracker_project_lead_id_76fcd210']
+  }
+}
+
+Table tracker_state {
+  id integer [pk, increment]
+  project_id bigint [not null]
+  name varchar(30) [not null]
+  category StateCategory [not null]
+  position "smallint unsigned" [not null]
+
+  indexes {
+    (project_id) [name: 'tracker_state_project_id_09387f3a']
+    (project_id, name) [unique, name: 'tracker_state_project_id_name_e4195aed_uniq']
+  }
+}
+
+Table tracker_label {
+  id integer [pk, increment]
+  project_id bigint [not null]
+  name varchar(30) [not null]
+  color varchar(7) [default: '#888888', not null]
+
+  indexes {
+    (project_id) [name: 'tracker_label_project_id_7e334efc']
+    (project_id, name) [unique, name: 'tracker_label_project_id_name_c3354c61_uniq']
+  }
+}
+
+Table tracker_sprint {
+  id integer [pk, increment]
+  project_id bigint [not null]
+  name varchar(50) [not null]
+  goal text [not null]
+  starts_on date [not null]
+  ends_on date [not null]
+
+  indexes {
+    (project_id) [name: 'tracker_sprint_project_id_8e58867b']
+  }
+
+  checks {
+    `"ends_on" > ("starts_on")` [name: 'sprint_ends_after_start']
+  }
+}
+
+Table tracker_issue {
+  id integer [pk, increment]
+  project_id bigint [not null]
+  number "integer unsigned" [not null]
+  type IssueType [default: 'task', not null]
+  title varchar(255) [not null]
+  description text [not null]
+  state_id bigint [not null]
+  priority IssuePriority [default: 3, not null]
+  reporter_id integer [not null]
+  assignee_id integer
+  epic_id bigint
+  sprint_id bigint
+  story_points "smallint unsigned"
+  due_on date
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (project_id) [name: 'tracker_issue_project_id_9b6cd5f2']
+    (state_id) [name: 'tracker_issue_state_id_d16a18ef']
+    (reporter_id) [name: 'tracker_issue_reporter_id_14400ee5']
+    (assignee_id) [name: 'tracker_issue_assignee_id_938e4010']
+    (epic_id) [name: 'tracker_issue_epic_id_d0bdf040']
+    (sprint_id) [name: 'tracker_issue_sprint_id_b1259353']
+    (project_id, number) [unique, name: 'issue_key_unique']
+    (assignee_id, state_id) [name: 'issue_assignee_state']
+    (project_id, updated_at) [name: 'issue_recent', note: 'descending: updated_at']
+  }
+}
+
+Table tracker_issuelink {
+  id integer [pk, increment]
+  source_id bigint [not null]
+  target_id bigint [not null]
+  kind IssueLinkKind [not null]
+
+  indexes {
+    (source_id) [name: 'tracker_issuelink_source_id_c7571d8e']
+    (target_id) [name: 'tracker_issuelink_target_id_e26da2f2']
+    (source_id, target_id, kind) [unique, name: 'tracker_issuelink_source_id_target_id_kind_9c006157_uniq']
+  }
+}
+
+Table tracker_comment {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  author_id integer [not null]
+  body text [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  edited_at datetime
+
+  indexes {
+    (issue_id) [name: 'tracker_comment_issue_id_1406012c']
+    (author_id) [name: 'tracker_comment_author_id_4dd64fe0']
+  }
+}
+
+Table tracker_attachment {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  comment_id bigint
+  file varchar(100) [not null]
+  size "bigint unsigned" [not null]
+  uploaded_by_id integer
+
+  indexes {
+    (issue_id) [name: 'tracker_attachment_issue_id_d077b81c']
+    (comment_id) [name: 'tracker_attachment_comment_id_6bb44455']
+    (uploaded_by_id) [name: 'tracker_attachment_uploaded_by_id_122a8f1b']
+  }
+}
+
+Table tracker_worklog {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  user_id integer [not null]
+  spent bigint [not null]
+  started_at datetime [not null]
+  note varchar(200) [not null]
+
+  indexes {
+    (issue_id) [name: 'tracker_worklog_issue_id_cda398b1']
+    (user_id) [name: 'tracker_worklog_user_id_bfff3b43']
+  }
+}
+
+Table tracker_change {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  user_id integer
+  field varchar(50) [not null]
+  old_value text [not null]
+  new_value text [not null]
+  at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (issue_id) [name: 'tracker_change_issue_id_d651f814']
+    (user_id) [name: 'tracker_change_user_id_773a3168']
+  }
+
+  Note: '''One field of an issue changed, for its history.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref tracker_project_lead_id_fk: tracker_project.lead_id > auth_user.id [delete: set null]
+
+Table tracker_project_members {
+  id integer [pk, increment]
+  project_id bigint [not null]
+  user_id integer [not null]
+
+  indexes {
+    (project_id) [name: 'tracker_project_members_project_id_c8fb1d03']
+    (user_id) [name: 'tracker_project_members_user_id_cb20f532']
+    (project_id, user_id) [unique, name: 'tracker_project_members_project_id_user_id_62cc35a2_uniq']
+  }
+}
+
+Ref tracker_project_members_project_id_fk: tracker_project_members.project_id > tracker_project.id [delete: cascade]
+
+Ref tracker_project_members_user_id_fk: tracker_project_members.user_id > auth_user.id [delete: cascade]
+
+Ref tracker_state_project_id_fk: tracker_state.project_id > tracker_project.id [delete: cascade]
+
+Table tracker_state_transitions {
+  id integer [pk, increment]
+  from_state_id bigint [not null]
+  to_state_id bigint [not null]
+
+  indexes {
+    (from_state_id) [name: 'tracker_state_transitions_from_state_id_1297df33']
+    (to_state_id) [name: 'tracker_state_transitions_to_state_id_ff99f968']
+    (from_state_id, to_state_id) [unique, name: 'tracker_state_transitions_from_state_id_to_state_id_6ffbdb08_uniq']
+  }
+}
+
+Ref tracker_state_transitions_from_state_id_fk: tracker_state_transitions.from_state_id > tracker_state.id [delete: cascade]
+
+Ref tracker_state_transitions_to_state_id_fk: tracker_state_transitions.to_state_id > tracker_state.id [delete: cascade]
+
+Ref tracker_label_project_id_fk: tracker_label.project_id > tracker_project.id [delete: cascade]
+
+Ref tracker_sprint_project_id_fk: tracker_sprint.project_id > tracker_project.id [delete: cascade]
+
+Ref tracker_issue_project_id_fk: tracker_issue.project_id > tracker_project.id [delete: cascade]
+
+Ref tracker_issue_state_id_fk: tracker_issue.state_id > tracker_state.id [delete: restrict]
+
+Ref tracker_issue_reporter_id_fk: tracker_issue.reporter_id > auth_user.id [delete: restrict]
+
+Ref tracker_issue_assignee_id_fk: tracker_issue.assignee_id > auth_user.id [delete: set null]
+
+Ref tracker_issue_epic_id_fk: tracker_issue.epic_id > tracker_issue.id [delete: set null]
+
+Ref tracker_issue_sprint_id_fk: tracker_issue.sprint_id > tracker_sprint.id [delete: set null]
+
+Table tracker_issue_watchers {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  user_id integer [not null]
+
+  indexes {
+    (issue_id) [name: 'tracker_issue_watchers_issue_id_a1e248f8']
+    (user_id) [name: 'tracker_issue_watchers_user_id_f11a50f3']
+    (issue_id, user_id) [unique, name: 'tracker_issue_watchers_issue_id_user_id_d51aa75a_uniq']
+  }
+}
+
+Ref tracker_issue_watchers_issue_id_fk: tracker_issue_watchers.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_issue_watchers_user_id_fk: tracker_issue_watchers.user_id > auth_user.id [delete: cascade]
+
+Table tracker_issue_labels {
+  id integer [pk, increment]
+  issue_id bigint [not null]
+  label_id bigint [not null]
+
+  indexes {
+    (issue_id) [name: 'tracker_issue_labels_issue_id_7f24b2ef']
+    (label_id) [name: 'tracker_issue_labels_label_id_69bbbdbe']
+    (issue_id, label_id) [unique, name: 'tracker_issue_labels_issue_id_label_id_4677982a_uniq']
+  }
+}
+
+Ref tracker_issue_labels_issue_id_fk: tracker_issue_labels.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_issue_labels_label_id_fk: tracker_issue_labels.label_id > tracker_label.id [delete: cascade]
+
+Ref tracker_issuelink_source_id_fk: tracker_issuelink.source_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_issuelink_target_id_fk: tracker_issuelink.target_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_comment_issue_id_fk: tracker_comment.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_comment_author_id_fk: tracker_comment.author_id > auth_user.id [delete: cascade]
+
+Ref tracker_attachment_issue_id_fk: tracker_attachment.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_attachment_comment_id_fk: tracker_attachment.comment_id > tracker_comment.id [delete: set null]
+
+Ref tracker_attachment_uploaded_by_id_fk: tracker_attachment.uploaded_by_id > auth_user.id [delete: set null]
+
+Ref tracker_worklog_issue_id_fk: tracker_worklog.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_worklog_user_id_fk: tracker_worklog.user_id > auth_user.id [delete: cascade]
+
+Ref tracker_change_issue_id_fk: tracker_change.issue_id > tracker_issue.id [delete: cascade]
+
+Ref tracker_change_user_id_fk: tracker_change.user_id > auth_user.id [delete: set null]

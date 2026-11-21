@@ -1,0 +1,21 @@
+# Track individual run creation failures in batch processing (Run Engine v2)
+#
+# index:: Which item in the batch (0-based index)
+# taskIdentifier:: The task identifier that was being triggered
+# payload:: The payload that failed (JSON, may be truncated)
+# options:: The options that were used
+# error:: Error message
+# errorCode:: Error code if available
+class BatchTaskRunError < ApplicationRecord
+  self.table_name = "BatchTaskRunError"
+  self.implicit_order_column = "createdAt"
+
+  attribute :id, default: -> { Cuid.generate }
+  alias_attribute :created_at, :createdAt
+
+  validates :index, presence: true, uniqueness: { scope: :batchTaskRunId }
+  validates :taskIdentifier, presence: true
+  validates :error, presence: true
+
+  belongs_to :batch_task_run, foreign_key: "batchTaskRunId", inverse_of: :batch_task_run_errors
+end

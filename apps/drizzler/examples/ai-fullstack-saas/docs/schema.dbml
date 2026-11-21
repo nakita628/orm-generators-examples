@@ -1,0 +1,74 @@
+Table user {
+  id uuid [pk, not null]
+  name text [not null]
+  age integer
+  image text
+  email text [not null, unique]
+  email_verified boolean [not null]
+  banned boolean [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  role roles
+  indexes {
+    (email) [unique, name: 'email_idx']
+  }
+}
+
+Table session {
+  id uuid [pk, not null]
+  user_id uuid [not null]
+  token text [not null]
+  expires_at timestamp [not null]
+  ip_address text
+  user_agent text
+  impersonated_by uuid
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table account {
+  id uuid [pk, not null]
+  user_id uuid [not null]
+  account_id text [not null]
+  provider_id text [not null]
+  access_token text
+  refresh_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  id_token text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table verification {
+  id uuid [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table example {
+  id uuid [pk, not null]
+  name text [not null]
+  description text
+  created_at timestamp [not null]
+}
+
+Table message {
+  id uuid [pk, not null]
+  message text [not null]
+  sender_id uuid
+  created_at timestamp [not null]
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id
+
+Ref session_impersonated_by_user_id_fk: session.impersonated_by > user.id
+
+Ref account_user_id_user_id_fk: account.user_id > user.id
+
+Ref message_sender_id_user_id_fk: message.sender_id > user.id

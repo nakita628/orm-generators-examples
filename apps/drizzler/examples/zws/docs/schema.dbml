@@ -1,0 +1,22 @@
+Table blocked_hostnames {
+  hostname text [pk, not null]
+  created_at timestamptz [not null]
+}
+
+Table urls {
+  blocked boolean [not null]
+  created_at timestamptz [not null]
+  short_base64 text [pk, not null]
+  url text [not null]
+}
+
+Table visits {
+  id serial [pk, increment, not null]
+  timestamp timestamptz [not null]
+  url_short_base64 text [not null]
+  indexes {
+    (url_short_base64, timestamp)
+  }
+}
+
+Ref visits_url_short_base64_urls_short_base64_fk: visits.url_short_base64 > urls.short_base64 [delete: cascade, update: cascade]

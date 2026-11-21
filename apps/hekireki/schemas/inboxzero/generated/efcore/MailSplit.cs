@@ -1,0 +1,38 @@
+#nullable enable
+
+using System;
+using System.Collections.Generic;
+
+namespace InboxZero.Models;
+
+public partial class MailSplit
+{
+    public string Id { get; set; } = null!;
+
+    public DateTime CreatedAt { get; set; }
+
+    public DateTime UpdatedAt { get; set; }
+
+    public string Name { get; set; } = null!;
+
+    public int Order { get; set; }
+
+    /// <summary>
+    /// Whether every filter must match, or any one of them ("Show mail matching
+    /// all/any of these conditions"). A split with no filters is the plain inbox.
+    /// </summary>
+    public bool MatchAll { get; set; } = true;
+
+    /// <summary>
+    /// Shown as one collapsed row in the inbox when the account bundles its inbox.
+    /// </summary>
+    public bool BundleInInbox { get; set; } = false;
+
+    public bool HideFromAll { get; set; } = false;
+
+    public string EmailAccountId { get; set; } = null!;
+
+    public virtual EmailAccount EmailAccount { get; set; } = null!;
+
+    public virtual ICollection<MailSplitFilter> Filters { get; set; } = new List<MailSplitFilter>();
+}

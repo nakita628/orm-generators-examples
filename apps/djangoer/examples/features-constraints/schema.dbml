@@ -1,0 +1,50 @@
+Table catalog_products {
+  id integer [pk, increment]
+  sku varchar(20) [not null]
+  name varchar(100) [not null]
+  price decimal [not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  discounted decimal [note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  stock integer [default: 0, not null]
+  active bool [default: true, not null]
+  category varchar(30) [not null]
+
+  indexes {
+    (category, name) [unique, name: 'catalog_products_category_name_b76394ac_uniq']
+    (`LOWER("sku")`) [unique, name: 'sku_unique_case_insensitive']
+    (name) [unique, name: 'one_active_name', note: 'where "active" = 1']
+    (category, price) [name: 'category_price', note: 'descending: price']
+    (`UPPER("name")`) [name: 'name_upper']
+    (stock) [name: 'low_stock', note: 'where "stock" <= 5']
+  }
+
+  checks {
+    `"price" >= '0'` [name: 'price_not_negative']
+    `("discounted" IS NULL OR "discounted" < ("price"))` [name: 'discount_below_price']
+  }
+}
+
+Table legacy_codes {
+  code varchar(10) [pk]
+  label varchar(50) [not null]
+
+  Note: '''Not managed by Django (managed = False).
+
+A table another system owns.'''
+}
+
+Table v_totals {
+  id integer [pk, increment]
+  total integer [not null]
+
+  Note: '''Not managed by Django (managed = False).'''
+}
+
+Table constraints_booking {
+  room varchar(10) [not null]
+  day date [not null]
+  guest varchar(50) [not null]
+
+  indexes {
+    (room, day) [pk]
+  }
+}

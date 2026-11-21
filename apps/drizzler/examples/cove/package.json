@@ -1,0 +1,17 @@
+{
+  "name": "@drizzler-examples/cove",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate": "drizzler -o docs && drizzler -o docs/er.png && drizzler -o docs/er-dark.png --theme dark && drizzler -o docs/schema.dbml && drizzler -o docs/er.md",
+    "typecheck": "tsc"
+  },
+  "devDependencies": {
+    "@drizzler-examples/tsconfig": "workspace:*",
+    "@types/node": "catalog:",
+    "drizzle-kit": "catalog:",
+    "drizzle-orm": "catalog:",
+    "drizzler": "catalog:",
+    "typescript": "catalog:"
+  }
+}

@@ -1,0 +1,13 @@
+[project]
+name = "example-mayan-edms"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "mayan-edms"]
+
+[tool.uv]
+package = false
+# Dependencies that need system libraries to build, and that the models do not import.
+override-dependencies = ["python-ldap; sys_platform == 'never'", "uwsgi; sys_platform == 'never'"]
+
+[tool.example]
+all = true

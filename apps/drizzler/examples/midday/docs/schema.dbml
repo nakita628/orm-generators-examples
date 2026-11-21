@@ -1,0 +1,1367 @@
+Table document_tag_embeddings {
+  slug text [pk, not null]
+  embedding vector
+  name text [not null]
+  model text [not null]
+}
+
+Table transaction_category_embeddings {
+  name text [pk, not null]
+  embedding vector
+  model text [not null]
+  system boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (system) [type: btree, name: 'transaction_category_embeddings_system_idx']
+  }
+}
+
+Table transactions {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  date date [not null]
+  name text [not null]
+  method transactionMethods [not null]
+  amount numeric(10,2) [not null]
+  currency text [not null]
+  team_id uuid [not null]
+  assigned_id uuid
+  note varchar
+  bank_account_id uuid
+  internal_id text [not null]
+  status transactionStatus
+  balance numeric(10,2)
+  manual boolean
+  notified boolean
+  internal boolean
+  description text
+  category_slug text
+  baseAmount numeric(10,2)
+  counterparty_name text
+  base_currency text
+  tax_amount numeric(10,2)
+  tax_rate numeric(10,2)
+  tax_type text
+  recurring boolean
+  frequency transaction_frequency
+  merchant_name text
+  enrichment_completed boolean
+  fts_vector tsvector [not null]
+  indexes {
+    (date) [type: btree, name: 'idx_transactions_date']
+    (fts_vector) [type: gin, name: 'idx_transactions_fts']
+    (fts_vector) [type: gin, name: 'idx_transactions_fts_vector']
+    (id) [type: btree, name: 'idx_transactions_id']
+    (name) [type: btree, name: 'idx_transactions_name']
+    (merchant_name) [type: gin, name: 'idx_transactions_merchant_name_trgm']
+    (team_id, date, name) [type: btree, name: 'idx_transactions_team_id_date_name']
+    (team_id, name) [type: btree, name: 'idx_transactions_team_id_name']
+    (name) [type: gist, name: 'idx_trgm_name']
+    (assigned_id) [type: btree, name: 'transactions_assigned_id_idx']
+    (bank_account_id) [type: btree, name: 'transactions_bank_account_id_idx']
+    (category_slug) [type: btree, name: 'transactions_category_slug_idx']
+    (team_id, date, currency, bank_account_id) [type: btree, name: 'transactions_team_id_date_currency_bank_account_id_category_idx']
+    (team_id) [type: btree, name: 'transactions_team_id_idx']
+    (team_id, date, category_slug) [type: btree, name: 'idx_transactions_reports']
+    (internal_id) [unique, name: 'transactions_internal_id_key']
+  }
+}
+
+Table tracker_entries {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  duration bigint [note: 'You can use { mode: "bigint" } if numbers are exceeding js number limitations']
+  project_id uuid
+  start timestamptz
+  stop timestamptz
+  assigned_id uuid
+  team_id uuid
+  description text
+  rate numeric(10,2)
+  currency text
+  billed boolean
+  date date
+  indexes {
+    (team_id) [type: btree, name: 'tracker_entries_team_id_idx']
+    (team_id, date) [name: 'tracker_entries_team_date_idx']
+  }
+}
+
+Table customer_tags {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  customer_id uuid [not null]
+  team_id uuid [not null]
+  tag_id uuid [not null]
+  indexes {
+    (customer_id, tag_id) [unique, name: 'unique_customer_tag']
+  }
+}
+
+Table inbox_accounts {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  email text [not null]
+  access_token text [not null]
+  refresh_token text [not null]
+  team_id uuid [not null]
+  last_accessed timestamptz [not null]
+  provider inbox_account_providers [not null]
+  external_id text [not null]
+  expiry_date timestamptz [not null]
+  schedule_id text
+  status inbox_account_status [not null]
+  error_message text
+  indexes {
+    (email) [unique, name: 'inbox_accounts_email_key']
+    (external_id) [unique, name: 'inbox_accounts_external_id_key']
+  }
+}
+
+Table bank_accounts {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  created_by uuid [not null]
+  team_id uuid [not null]
+  name text
+  currency text
+  bank_connection_id uuid
+  enabled boolean [not null]
+  account_id text [not null]
+  balance numeric(10,2)
+  manual boolean
+  type account_type
+  base_currency text
+  baseBalance numeric(10,2)
+  error_details text
+  error_retries smallint
+  account_reference text
+  iban text [note: 'Additional account data for reconnect matching and user display']
+  subtype text
+  bic text
+  routing_number text [note: 'US bank account details (Teller, Plaid)']
+  wire_routing_number text
+  account_number text
+  sort_code text
+  availableBalance numeric(10,2) [note: 'Credit account balances']
+  creditLimit numeric(10,2)
+  indexes {
+    (bank_connection_id) [type: btree, name: 'bank_accounts_bank_connection_id_idx']
+    (created_by) [type: btree, name: 'bank_accounts_created_by_idx']
+    (team_id) [type: btree, name: 'bank_accounts_team_id_idx']
+  }
+}
+
+Table invoice_recurring {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz
+  team_id uuid [not null]
+  user_id uuid [not null]
+  customer_id uuid
+  frequency invoice_recurring_frequency [not null, note: 'Frequency settings']
+  frequency_day integer
+  frequency_week integer
+  frequency_interval integer
+  end_type invoice_recurring_end_type [not null, note: 'End conditions']
+  end_date timestamptz
+  end_count integer
+  status invoice_recurring_status [not null, note: 'Status tracking']
+  invoices_generated integer [not null]
+  consecutive_failures integer [not null]
+  next_scheduled_at timestamptz
+  last_generated_at timestamptz
+  timezone text [not null]
+  due_date_offset integer [not null, note: 'Invoice template data']
+  amount numeric(10,2)
+  currency text
+  line_items jsonb
+  template jsonb
+  payment_details jsonb
+  from_details jsonb
+  note_details jsonb
+  customer_name text
+  vat numeric(10,2)
+  tax numeric(10,2)
+  discount numeric(10,2)
+  subtotal numeric(10,2)
+  top_block jsonb
+  bottom_block jsonb
+  template_id uuid
+  upcoming_notification_sent_at timestamptz [note: 'Notification tracking']
+  indexes {
+    (team_id) [type: btree, name: 'invoice_recurring_team_id_idx']
+    (next_scheduled_at) [type: btree, name: 'invoice_recurring_next_scheduled_at_idx']
+    (status) [type: btree, name: 'invoice_recurring_status_idx']
+    (next_scheduled_at) [type: btree, name: 'invoice_recurring_active_scheduled_idx']
+  }
+}
+
+Table invoices {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz
+  due_date timestamptz
+  invoice_number text
+  customer_id uuid
+  amount numeric(10,2)
+  currency text
+  line_items jsonb
+  payment_details jsonb
+  customer_details jsonb
+  company_datails jsonb
+  note text
+  internal_note text
+  team_id uuid [not null]
+  paid_at timestamptz
+  fts tsvector [not null]
+  vat numeric(10,2)
+  tax numeric(10,2)
+  url text
+  file_path text
+  status invoice_status [not null]
+  viewed_at timestamptz
+  from_details jsonb
+  issue_date timestamptz
+  template jsonb
+  note_details jsonb
+  customer_name text
+  token text [not null]
+  sent_to text
+  reminder_sent_at timestamptz
+  discount numeric(10,2)
+  file_size bigint
+  user_id uuid
+  subtotal numeric(10,2)
+  top_block jsonb
+  bottom_block jsonb
+  sent_at timestamptz
+  scheduled_at timestamptz
+  scheduled_job_id text
+  template_id uuid
+  payment_intent_id text
+  refunded_at timestamptz
+  invoice_recurring_id uuid [note: 'Recurring invoice fields']
+  recurring_sequence integer
+  indexes {
+    (created_at) [type: btree, name: 'invoices_created_at_idx']
+    (fts) [type: gin, name: 'invoices_fts']
+    (team_id) [type: btree, name: 'invoices_team_id_idx']
+    (template_id) [type: btree, name: 'invoices_template_id_idx']
+    (team_id, sent_at) [name: 'invoices_team_sent_at_idx']
+    (team_id, status, paid_at) [name: 'invoices_team_status_paid_at_idx']
+    (invoice_recurring_id) [type: btree, name: 'invoices_invoice_recurring_id_idx']
+    (invoice_recurring_id, recurring_sequence) [unique, name: 'invoices_recurring_sequence_unique_idx']
+    (scheduled_job_id) [unique, name: 'invoices_scheduled_job_id_key']
+    (team_id, due_date) [name: 'invoices_team_due_date_idx']
+    (team_id, status, due_date) [name: 'invoices_team_status_due_date_idx']
+    (team_id, customer_id) [name: 'invoices_team_customer_id_idx']
+    (customer_id) [name: 'invoices_customer_id_idx']
+    (team_id, created_at) [name: 'invoices_team_created_at_idx']
+  }
+}
+
+Table customers {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  name text [not null]
+  email text [not null]
+  billingEmail text
+  country text
+  address_line_1 text
+  address_line_2 text
+  city text
+  state text
+  zip text
+  note text
+  team_id uuid [not null]
+  website text
+  phone text
+  vat_number text
+  country_code text
+  token text [not null]
+  contact text
+  status text [note: 'Customer relationship fields']
+  preferred_currency text
+  default_payment_terms integer
+  is_archived boolean
+  source text
+  external_id text
+  logo_url text [note: 'Enrichment fields (from Gemini + Google Search grounding)']
+  description text
+  industry text
+  company_type text
+  employee_count text
+  founded_year integer
+  estimated_revenue text
+  funding_stage text
+  total_funding text
+  headquarters_location text
+  timezone text
+  linkedin_url text
+  twitter_url text
+  instagram_url text
+  facebook_url text
+  ceo_name text
+  finance_contact text
+  finance_contact_email text
+  primary_language text
+  fiscal_year_end text
+  enrichment_status text [note: 'Enrichment metadata']
+  enriched_at timestamptz
+  portal_enabled boolean [note: 'Portal fields']
+  portal_id text
+  fts tsvector [not null]
+  indexes {
+    (fts) [type: gin, name: 'customers_fts']
+    (status) [name: 'idx_customers_status']
+    (is_archived) [name: 'idx_customers_is_archived']
+    (enrichment_status) [name: 'idx_customers_enrichment_status']
+    (website) [name: 'idx_customers_website']
+    (industry) [name: 'idx_customers_industry']
+    (team_id) [name: 'customers_team_id_idx']
+    (team_id, created_at) [name: 'customers_team_created_at_idx']
+  }
+}
+
+Table exchange_rates {
+  id uuid [pk, not null]
+  base text
+  rate numeric(10,2)
+  target text
+  updated_at timestamptz
+  indexes {
+    (base, target) [type: btree, name: 'exchange_rates_base_target_idx']
+    (base, target) [unique, name: 'unique_rate']
+  }
+}
+
+Table tags {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid [not null]
+  name text [not null]
+  indexes {
+    (team_id) [type: btree, name: 'tags_team_id_idx']
+    (team_id, name) [unique, name: 'unique_tag_name']
+  }
+}
+
+Table tracker_reports {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  link_id text
+  short_link text
+  team_id uuid
+  project_id uuid
+  created_by uuid
+  indexes {
+    (team_id) [type: btree, name: 'tracker_reports_team_id_idx']
+  }
+}
+
+Table invoice_comments {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+}
+
+Table tracker_project_tags {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  tracker_project_id uuid [not null]
+  tag_id uuid [not null]
+  team_id uuid [not null]
+  indexes {
+    (team_id) [type: btree, name: 'tracker_project_tags_team_id_idx']
+    (tracker_project_id, tag_id, team_id) [type: btree, name: 'tracker_project_tags_tracker_project_id_tag_id_team_id_idx']
+    (tracker_project_id, tag_id) [unique, name: 'unique_project_tag']
+  }
+}
+
+Table reports {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  link_id text
+  team_id uuid
+  short_link text
+  from timestamptz
+  to timestamptz
+  type reportTypes
+  expire_at timestamptz
+  currency text
+  created_by uuid
+  indexes {
+    (team_id) [type: btree, name: 'reports_team_id_idx']
+  }
+}
+
+Table institutions {
+  id text [pk, not null]
+  name text [not null]
+  logo text
+  provider bank_providers [not null]
+  countries text [not null]
+  available_history integer
+  maximum_consent_validity integer
+  popularity integer [not null]
+  type text
+  status institution_status [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (countries) [type: gin, name: 'institutions_country_idx']
+    `name gin_trgm_ops` [type: gin, name: 'institutions_name_trgm_idx']
+    (status) [name: 'institutions_status_idx']
+  }
+}
+
+Table bank_connections {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  institution_id text [not null]
+  expires_at timestamptz
+  team_id uuid [not null]
+  name text [not null]
+  logo_url text
+  access_token text
+  enrollment_id text
+  provider bank_providers [not null]
+  last_accessed timestamptz
+  reference_id text
+  status connection_status
+  error_details text
+  error_retries smallint
+  indexes {
+    (team_id) [type: btree, name: 'bank_connections_team_id_idx']
+    (institution_id, team_id) [unique, name: 'unique_bank_connections']
+  }
+}
+
+Table user_invites {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid
+  email text
+  role teamRoles
+  code text
+  invited_by uuid
+  indexes {
+    (team_id) [type: btree, name: 'user_invites_team_id_idx']
+    (team_id, email) [unique, name: 'unique_team_invite']
+    (code) [unique, name: 'user_invites_code_key']
+  }
+}
+
+Table document_tags {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  name text [not null]
+  slug text [not null]
+  team_id uuid [not null]
+  indexes {
+    (slug, team_id) [unique, name: 'unique_slug_per_team']
+  }
+}
+
+Table transaction_tags {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid [not null]
+  tag_id uuid [not null]
+  transaction_id uuid [not null]
+  indexes {
+    (tag_id) [type: btree, name: 'transaction_tags_tag_id_idx']
+    (team_id) [type: btree, name: 'transaction_tags_team_id_idx']
+    (transaction_id, tag_id, team_id) [type: btree, name: 'transaction_tags_transaction_id_tag_id_team_id_idx']
+    (tag_id, transaction_id) [unique, name: 'unique_tag']
+  }
+}
+
+Table transaction_attachments {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  type text
+  transaction_id uuid
+  team_id uuid
+  size bigint [note: 'You can use { mode: "bigint" } if numbers are exceeding js number limitations']
+  name text
+  path text
+  indexes {
+    (team_id) [type: btree, name: 'transaction_attachments_team_id_idx']
+    (transaction_id) [type: btree, name: 'transaction_attachments_transaction_id_idx']
+  }
+}
+
+Table teams {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  name text
+  logo_url text
+  inbox_id text
+  email text
+  inbox_email text
+  inbox_forwarding boolean
+  base_currency text
+  country_code text
+  fiscal_year_start_month smallint
+  document_classification boolean
+  flags text
+  canceled_at timestamptz
+  plan plans [not null]
+  subscription_status subscription_status
+  export_settings jsonb
+  stripe_account_id text
+  stripe_connect_status text
+  company_type text
+  heard_about text
+  indexes {
+    (inbox_id) [unique, name: 'teams_inbox_id_key']
+  }
+}
+
+Table documents {
+  id uuid [pk, not null]
+  name text
+  created_at timestamptz
+  metadata jsonb
+  path_tokens text
+  team_id uuid
+  parent_id text
+  object_id uuid
+  owner_id uuid
+  tag text
+  title text
+  body text
+  fts tsvector [not null]
+  summary text
+  content text
+  date date
+  language text
+  processing_status document_processing_status
+  fts_simple tsvector
+  fts_english tsvector
+  fts_language tsvector
+  indexes {
+    (name) [type: btree, name: 'documents_name_idx']
+    (team_id) [type: btree, name: 'documents_team_id_idx']
+    (team_id, parent_id) [type: btree, name: 'documents_team_id_parent_id_idx']
+    (team_id, created_at) [type: btree, name: 'documents_team_id_created_at_idx']
+    (team_id, date) [type: btree, name: 'documents_team_id_date_idx']
+    (team_id, name) [type: btree, name: 'documents_team_id_name_idx']
+    (fts_english) [type: gin, name: 'idx_documents_fts_english']
+    (fts_language) [type: gin, name: 'idx_documents_fts_language']
+    (fts_simple) [type: gin, name: 'idx_documents_fts_simple']
+    (title) [type: gin, name: 'idx_gin_documents_title']
+    (name) [type: gin, name: 'idx_gin_documents_name']
+  }
+}
+
+Table apps {
+  id uuid [pk, not null]
+  team_id uuid
+  config jsonb
+  created_at timestamptz
+  app_id text [not null]
+  created_by uuid
+  settings jsonb
+  indexes {
+    (team_id, app_id) [unique, name: 'unique_app_id_team_id']
+  }
+}
+
+Table platform_identities {
+  id uuid [pk, not null]
+  provider platform_provider [not null]
+  team_id uuid [not null]
+  user_id uuid [not null]
+  external_user_id text [not null]
+  external_team_id text [not null]
+  external_channel_id text
+  metadata jsonb
+  created_at timestamptz
+  updated_at timestamptz
+  indexes {
+    (provider, external_team_id, external_user_id) [name: 'platform_identities_provider_external_idx']
+    (team_id) [name: 'platform_identities_team_id_idx']
+    (user_id) [name: 'platform_identities_user_id_idx']
+    (provider, external_team_id, external_user_id) [unique, name: 'platform_identities_provider_external_unique']
+  }
+}
+
+Table platform_link_tokens {
+  id uuid [pk, not null]
+  code text [not null]
+  provider platform_provider [not null]
+  team_id uuid [not null]
+  user_id uuid [not null]
+  expires_at timestamptz [not null]
+  used_at timestamptz
+  metadata jsonb
+  created_at timestamptz
+  indexes {
+    (code) [name: 'platform_link_tokens_code_idx']
+    (team_id) [name: 'platform_link_tokens_team_id_idx']
+    (user_id) [name: 'platform_link_tokens_user_id_idx']
+    (code) [unique, name: 'platform_link_tokens_code_unique']
+  }
+}
+
+Table provider_notification_batches {
+  id uuid [pk, not null]
+  batch_key text [not null]
+  platform_identity_id uuid [not null]
+  team_id uuid [not null]
+  user_id uuid [not null]
+  provider platform_provider [not null]
+  event_family text [not null]
+  payload jsonb [not null]
+  notification_context jsonb
+  window_ends_at timestamptz [not null]
+  sent_at timestamptz
+  created_at timestamptz
+  updated_at timestamptz
+  indexes {
+    (sent_at, window_ends_at) [name: 'provider_notification_batches_due_idx']
+    (platform_identity_id) [name: 'provider_notification_batches_identity_idx']
+    (team_id) [name: 'provider_notification_batches_team_id_idx']
+    (batch_key) [unique, name: 'provider_notification_batches_batch_key_unique']
+  }
+}
+
+Table invoice_templates {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid [not null]
+  name text [not null]
+  is_default boolean
+  customer_label text
+  from_label text
+  invoice_no_label text
+  issue_date_label text
+  due_date_label text
+  description_label text
+  price_label text
+  quantity_label text
+  total_label text
+  vat_label text
+  tax_label text
+  payment_label text
+  note_label text
+  logo_url text
+  currency text
+  payment_details jsonb
+  from_details jsonb
+  note_details jsonb
+  size invoice_size
+  date_format text
+  include_vat boolean
+  include_tax boolean
+  tax_rate numeric(10,2)
+  delivery_type invoice_delivery_type [not null]
+  discount_label text
+  include_discount boolean
+  include_decimals boolean
+  include_qr boolean
+  total_summary_label text
+  title text
+  vat_rate numeric(10,2)
+  include_units boolean
+  subtotal_label text
+  include_pdf boolean
+  send_copy boolean
+  include_line_item_tax boolean
+  line_item_tax_label text
+  payment_enabled boolean
+  payment_terms_days integer
+  email_subject text
+  email_heading text
+  email_body text
+  email_button_text text
+  indexes {
+    (team_id) [name: 'idx_invoice_templates_team_id']
+  }
+}
+
+Table invoice_products {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz
+  team_id uuid [not null]
+  created_by uuid
+  name text [not null]
+  description text
+  price numeric(10,2)
+  currency text
+  unit text
+  tax_rate numeric(10,2)
+  isActive boolean [not null]
+  usage_count integer [not null]
+  last_used_at timestamptz
+  fts tsvector [not null, note: 'Full-text search for product names and descriptions']
+  indexes {
+    (team_id) [name: 'invoice_products_team_id_idx']
+    (created_by) [name: 'invoice_products_created_by_idx']
+    (fts) [type: gin, name: 'invoice_products_fts_idx']
+    (name) [name: 'invoice_products_name_idx']
+    (usage_count) [name: 'invoice_products_usage_count_idx']
+    (last_used_at) [name: 'invoice_products_last_used_at_idx']
+    (team_id, isActive) [name: 'invoice_products_team_active_idx']
+    (team_id, name, currency, price) [unique, name: 'invoice_products_team_name_currency_price_unique']
+  }
+}
+
+Table transaction_enrichments {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  name text
+  team_id uuid
+  category_slug text
+  system boolean
+  indexes {
+    (category_slug, team_id) [type: btree, name: 'transaction_enrichments_category_slug_team_id_idx']
+    (name, team_id) [unique, name: 'unique_team_name']
+  }
+}
+
+Table users {
+  id uuid [pk, not null]
+  full_name text
+  avatar_url text
+  email text
+  team_id uuid
+  created_at timestamptz
+  locale text
+  week_starts_on_monday boolean
+  timezone text
+  timezone_auto_sync boolean
+  time_format numeric
+  date_format text
+  indexes {
+    (team_id) [type: btree, name: 'users_team_id_idx']
+  }
+}
+
+Table tracker_projects {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid
+  rate numeric(10,2)
+  currency text
+  status trackerStatus [not null]
+  description text
+  name text [not null]
+  billable boolean
+  estimate bigint [note: 'You can use { mode: "bigint" } if numbers are exceeding js number limitations']
+  customer_id uuid
+  fts tsvector [not null]
+  indexes {
+    (fts) [type: gin, name: 'tracker_projects_fts']
+    (team_id) [type: btree, name: 'tracker_projects_team_id_idx']
+  }
+}
+
+Table inbox {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid
+  file_path text
+  file_name text
+  transaction_id uuid
+  amount numeric(10,2)
+  currency text
+  content_type text
+  size bigint [note: 'You can use { mode: "bigint" } if numbers are exceeding js number limitations']
+  attachment_id uuid
+  date date
+  forwarded_to text
+  reference_id text
+  meta json
+  status inbox_status
+  website text
+  sender_email text
+  display_name text
+  fts tsvector [not null]
+  type inbox_type
+  description text
+  base_amount numeric(10,2)
+  base_currency text
+  tax_amount numeric(10,2)
+  tax_rate numeric(10,2)
+  tax_type text
+  inbox_account_id uuid
+  invoice_number text
+  grouped_inbox_id uuid
+  indexes {
+    (attachment_id) [type: btree, name: 'inbox_attachment_id_idx']
+    (created_at) [type: btree, name: 'inbox_created_at_idx']
+    (team_id) [type: btree, name: 'inbox_team_id_idx']
+    (transaction_id) [type: btree, name: 'inbox_transaction_id_idx']
+    (inbox_account_id) [type: btree, name: 'inbox_inbox_account_id_idx']
+    (invoice_number) [type: btree, name: 'inbox_invoice_number_idx']
+    (grouped_inbox_id) [type: btree, name: 'inbox_grouped_inbox_id_idx']
+    (display_name) [type: gin, name: 'idx_inbox_display_name_trgm']
+    (team_id, status, created_at) [name: 'inbox_team_status_created_at_idx']
+    (reference_id) [unique, name: 'inbox_reference_id_key']
+  }
+}
+
+Table inbox_blocklist {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid [not null]
+  type inbox_blocklist_type [not null]
+  value text [not null]
+  indexes {
+    (team_id, type, value) [unique, name: 'inbox_blocklist_team_id_type_value_key']
+  }
+}
+
+Table transaction_match_suggestions {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  team_id uuid [not null, note: 'Core relationship']
+  inbox_id uuid [not null]
+  transaction_id uuid [not null]
+  confidence_score numeric(4,3) [not null, note: 'Match scores for transparency']
+  amount_score numeric(4,3)
+  currency_score numeric(4,3)
+  date_score numeric(4,3)
+  name_score numeric(4,3)
+  match_type text [not null, note: 'Match context']
+  match_details jsonb
+  status text [not null, note: 'User interaction tracking']
+  user_action_at timestamptz
+  user_id uuid
+  indexes {
+    (inbox_id) [type: btree, name: 'transaction_match_suggestions_inbox_id_idx']
+    (transaction_id) [type: btree, name: 'transaction_match_suggestions_transaction_id_idx']
+    (team_id) [type: btree, name: 'transaction_match_suggestions_team_id_idx']
+    (status) [type: btree, name: 'transaction_match_suggestions_status_idx']
+    (confidence_score) [type: btree, name: 'transaction_match_suggestions_confidence_idx']
+    (transaction_id, team_id, status) [type: btree, name: 'transaction_match_suggestions_lookup_idx']
+    (team_id, status, created_at) [type: btree, name: 'transaction_match_suggestions_team_status_created_idx']
+    (inbox_id, transaction_id) [unique, name: 'transaction_match_suggestions_unique']
+  }
+}
+
+Table document_tag_assignments {
+  document_id uuid [not null]
+  tag_id uuid [not null]
+  team_id uuid [not null]
+  indexes {
+    (document_id, tag_id) [pk]
+    (document_id) [type: btree, name: 'idx_document_tag_assignments_document_id']
+    (tag_id) [type: btree, name: 'idx_document_tag_assignments_tag_id']
+    (document_id, tag_id) [unique, name: 'document_tag_assignments_unique']
+  }
+}
+
+Table users_on_team {
+  user_id uuid [not null]
+  team_id uuid [not null]
+  id uuid [not null]
+  role teamRoles
+  created_at timestamptz
+  indexes {
+    (user_id, team_id, id) [pk]
+    (team_id) [type: btree, name: 'users_on_team_team_id_idx']
+    (user_id) [type: btree, name: 'users_on_team_user_id_idx']
+  }
+}
+
+Table transaction_categories {
+  id uuid [not null, unique]
+  name text [not null]
+  team_id uuid [not null]
+  color text
+  created_at timestamptz
+  system boolean
+  slug text [not null]
+  tax_rate numeric(10,2)
+  tax_type text
+  tax_reporting_code text
+  excluded boolean
+  description text
+  parent_id uuid
+  indexes {
+    (team_id, slug) [pk]
+    (team_id) [type: btree, name: 'transaction_categories_team_id_idx']
+    (parent_id) [type: btree, name: 'transaction_categories_parent_id_idx']
+    (team_id, slug) [unique, name: 'unique_team_slug']
+  }
+}
+
+Table "auth.users" {
+  instance_id uuid
+  id uuid [not null]
+  aud varchar
+  role varchar
+  email varchar
+  encrypted_password varchar
+  email_confirmed_at timestamptz
+  invited_at timestamptz
+  confirmation_token varchar
+  confirmation_sent_at timestamptz
+  recovery_token varchar
+  recovery_sent_at timestamptz
+  email_change_token_new varchar
+  email_change varchar
+  email_change_sent_at timestamptz
+  last_sign_in_at timestamptz
+  raw_app_meta_data jsonb
+  raw_user_meta_data jsonb
+  is_super_admin boolean
+  created_at timestamptz
+  updated_at timestamptz
+  phone text
+  phone_confirmed_at timestamptz
+  phone_change text
+  phone_change_token varchar
+  phone_change_sent_at timestamptz
+  confirmed_at timestamptz [note: 'Drizzle ORM does not support .stored() for generated columns, so we omit it']
+  email_change_token_current varchar
+  email_change_confirm_status smallint
+  banned_until timestamptz
+  reauthentication_token varchar
+  reauthentication_sent_at timestamptz
+  is_sso_user boolean [not null]
+  deleted_at timestamptz
+  is_anonymous boolean [not null]
+  indexes {
+    (id) [pk]
+    (phone) [unique, name: 'users_phone_key']
+    (confirmation_token) [unique, name: 'confirmation_token_idx']
+    (email_change_token_current) [unique, name: 'email_change_token_current_idx']
+    (email_change_token_new) [unique, name: 'email_change_token_new_idx']
+    (reauthentication_token) [unique, name: 'reauthentication_token_idx']
+    (recovery_token) [unique, name: 'recovery_token_idx']
+    (email) [unique, name: 'users_email_partial_key']
+    (instance_id) [name: 'users_instance_id_email_idx']
+    (instance_id) [name: 'users_instance_id_idx']
+    (is_anonymous) [name: 'users_is_anonymous_idx']
+  }
+}
+
+Table short_links {
+  id uuid [pk, not null]
+  short_id text [not null]
+  url text [not null]
+  type text
+  size numeric(10,2)
+  mime_type text
+  file_name text
+  team_id uuid [not null]
+  user_id uuid [not null]
+  expires_at timestamptz
+  created_at timestamptz [not null]
+  indexes {
+    (short_id) [type: btree, name: 'short_links_short_id_idx']
+    (team_id) [type: btree, name: 'short_links_team_id_idx']
+    (user_id) [type: btree, name: 'short_links_user_id_idx']
+    (short_id) [unique, name: 'short_links_short_id_unique']
+  }
+}
+
+Table api_keys {
+  id uuid [pk, not null]
+  key_encrypted text [not null]
+  name text [not null]
+  created_at timestamptz [not null]
+  user_id uuid [not null]
+  team_id uuid [not null]
+  key_hash text
+  scopes text [not null]
+  last_used_at timestamptz
+  indexes {
+    (key_hash) [type: btree, name: 'api_keys_key_idx']
+    (user_id) [type: btree, name: 'api_keys_user_id_idx']
+    (team_id) [type: btree, name: 'api_keys_team_id_idx']
+    (key_hash) [unique, name: 'api_keys_key_unique']
+  }
+}
+
+Table oauth_applications {
+  id uuid [pk, not null]
+  name text [not null]
+  slug text [not null, unique]
+  description text
+  overview text
+  developer_name text
+  logo_url text
+  website text
+  install_url text
+  screenshots text
+  redirect_uris text [not null]
+  client_id text [not null, unique]
+  client_secret text
+  scopes text [not null]
+  team_id uuid
+  created_by uuid
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  is_public boolean
+  active boolean
+  status text
+  indexes {
+    (team_id) [type: btree, name: 'oauth_applications_team_id_idx']
+    (client_id) [type: btree, name: 'oauth_applications_client_id_idx']
+    (slug) [type: btree, name: 'oauth_applications_slug_idx']
+  }
+  Note: 'Relations OAuth Applications'
+}
+
+Table oauth_authorization_codes {
+  id uuid [pk, not null]
+  code text [not null, unique]
+  application_id uuid [not null]
+  user_id uuid [not null]
+  team_id uuid [not null]
+  scopes text [not null]
+  redirect_uri text [not null]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null]
+  used boolean
+  code_challenge text
+  code_challenge_method text
+  indexes {
+    (code) [type: btree, name: 'oauth_authorization_codes_code_idx']
+    (application_id) [type: btree, name: 'oauth_authorization_codes_application_id_idx']
+    (user_id) [type: btree, name: 'oauth_authorization_codes_user_id_idx']
+  }
+  Note: 'OAuth Authorization Codes'
+}
+
+Table oauth_access_tokens {
+  id uuid [pk, not null]
+  token text [not null, unique]
+  refresh_token text [unique]
+  application_id uuid [not null]
+  user_id uuid [not null]
+  team_id uuid [not null]
+  scopes text [not null]
+  expires_at timestamptz [not null]
+  refresh_token_expires_at timestamptz
+  created_at timestamptz [not null]
+  last_used_at timestamptz
+  revoked boolean
+  revoked_at timestamptz
+  indexes {
+    (token) [type: btree, name: 'oauth_access_tokens_token_idx']
+    (refresh_token) [type: btree, name: 'oauth_access_tokens_refresh_token_idx']
+    (application_id) [type: btree, name: 'oauth_access_tokens_application_id_idx']
+    (user_id) [type: btree, name: 'oauth_access_tokens_user_id_idx']
+  }
+  Note: 'OAuth Access Tokens'
+}
+
+Table activities {
+  id uuid [pk, not null]
+  created_at timestamptz [not null]
+  team_id uuid [not null, note: 'Core fields']
+  user_id uuid
+  type activity_type [not null]
+  priority smallint
+  group_id uuid [note: 'Group related activities together (e.g., same business event across multiple users)']
+  source activity_source [not null, note: 'Source of the activity']
+  metadata jsonb [not null, note: 'All the data']
+  status activity_status [not null, note: 'Simple lifecycle (only for notifications)']
+  last_used_at timestamptz [note: 'Timestamp of last system use (e.g. insight generation, digest inclusion)']
+  indexes {
+    (team_id, priority, status, created_at) [type: btree, name: 'activities_notifications_idx']
+    (team_id, type, source, created_at) [type: btree, name: 'activities_insights_idx']
+    (metadata) [type: gin, name: 'activities_metadata_gin_idx']
+    (group_id) [name: 'activities_group_id_idx']
+    (team_id, group_id, type, created_at) [type: btree, name: 'activities_insights_group_idx']
+  }
+}
+
+Table notification_settings {
+  id uuid [pk, not null]
+  user_id uuid [not null]
+  team_id uuid [not null]
+  notification_type text [not null]
+  channel text [not null]
+  enabled boolean [not null]
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (user_id, team_id, notification_type, channel) [unique, name: 'notification_settings_user_team_type_channel_key']
+    (user_id, team_id) [name: 'notification_settings_user_team_idx']
+    (notification_type, channel) [name: 'notification_settings_type_channel_idx']
+  }
+}
+
+Table accounting_sync_records {
+  id uuid [pk, not null]
+  transaction_id uuid [not null]
+  team_id uuid [not null]
+  provider accounting_provider [not null]
+  provider_tenant_id text [not null]
+  provider_transaction_id text
+  synced_attachment_mapping jsonb [not null, note: 'Maps Midday attachment IDs to provider attachment IDs for sync tracking Format: { "midday-attachment-id": "provider-attachment-id" }']
+  synced_at timestamptz [not null]
+  sync_type accounting_sync_type
+  status accounting_sync_status [not null]
+  error_message text
+  error_code text [note: 'Standardized error code for frontend handling (e.g., "ATTACHMENT_UNSUPPORTED_TYPE", "AUTH_EXPIRED")']
+  provider_entity_type text [note: 'Provider-specific entity type (e.g., "Purchase", "SalesReceipt", "Voucher", "BankTransaction")']
+  created_at timestamptz [not null, note: 'When the record was first created (synced_at gets updated on every sync)']
+  indexes {
+    (transaction_id) [name: 'idx_accounting_sync_transaction']
+    (team_id, provider) [name: 'idx_accounting_sync_team_provider']
+    (team_id, status) [name: 'idx_accounting_sync_status']
+    (transaction_id, provider) [unique, name: 'accounting_sync_records_transaction_provider_key']
+  }
+  Note: 'Accounting Sync Records Tracks which transactions have been synced to which accounting providers Supports multiple providers per transaction (Xero AND QuickBooks, etc.)'
+}
+
+Table insights {
+  id uuid [pk, not null]
+  team_id uuid [not null]
+  period_type insight_period_type [not null, note: 'Flexible period definition']
+  period_start timestamptz [not null]
+  period_end timestamptz [not null]
+  period_year smallint [not null]
+  period_number smallint [not null]
+  status insight_status [not null]
+  selected_metrics jsonb [note: 'Selected 4 key metrics (dynamically chosen)']
+  all_metrics jsonb [note: 'Full metrics snapshot (for drill-down)']
+  anomalies jsonb [note: 'Detected anomalies and patterns']
+  expense_anomalies jsonb [note: 'Expense category anomalies (spikes, new categories, etc.)']
+  milestones jsonb [note: 'Streaks and milestones']
+  activity jsonb [note: 'Activity context']
+  currency varchar [not null]
+  title text [note: 'AI-generated title (for card headers and email subjects)']
+  content jsonb [note: 'AI-generated content (relief-first structure)']
+  predictions jsonb [note: 'Forward-looking predictions for follow-through tracking']
+  audio_path text [note: 'Audio narration storage path: {teamId}/insights/{insightId}.mp3']
+  generated_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (team_id, period_type, period_year, period_number) [unique, name: 'insights_team_period_unique']
+    (team_id) [name: 'insights_team_id_idx']
+    (team_id, period_type, generated_at) [name: 'insights_team_period_type_idx']
+  }
+}
+
+Table insight_user_status {
+  insight_id uuid [not null]
+  user_id uuid [not null]
+  read_at timestamptz
+  dismissed_at timestamptz
+  created_at timestamptz [not null]
+  updated_at timestamptz [not null]
+  indexes {
+    (insight_id, user_id) [pk]
+    (user_id) [name: 'insight_user_status_user_idx']
+    (insight_id) [name: 'insight_user_status_insight_idx']
+  }
+  Note: 'Per-user insight interaction tracking (read/dismiss state)'
+}
+
+Ref transactions_assigned_id_users_id_fk: transactions.assigned_id > users.id [delete: set null]
+
+Ref transactions_team_id_teams_id_fk: transactions.team_id > teams.id
+
+Ref transactions_bank_account_id_bank_accounts_id_fk: transactions.bank_account_id > bank_accounts.id [delete: cascade]
+
+Ref transactions_team_id_category_slug_transaction_categories_team_id_slug_fk: transactions.(team_id, category_slug) > transaction_categories.(team_id, slug)
+
+Ref tracker_entries_assigned_id_users_id_fk: tracker_entries.assigned_id > users.id [delete: set null]
+
+Ref tracker_entries_project_id_tracker_projects_id_fk: tracker_entries.project_id > tracker_projects.id [delete: cascade]
+
+Ref tracker_entries_team_id_teams_id_fk: tracker_entries.team_id > teams.id [delete: cascade]
+
+Ref customer_tags_customer_id_customers_id_fk: customer_tags.customer_id > customers.id [delete: cascade]
+
+Ref customer_tags_tag_id_tags_id_fk: customer_tags.tag_id > tags.id [delete: cascade]
+
+Ref customer_tags_team_id_teams_id_fk: customer_tags.team_id > teams.id [delete: cascade]
+
+Ref inbox_accounts_team_id_teams_id_fk: inbox_accounts.team_id > teams.id [delete: cascade]
+
+Ref bank_accounts_bank_connection_id_bank_connections_id_fk: bank_accounts.bank_connection_id > bank_connections.id [delete: cascade]
+
+Ref bank_accounts_created_by_users_id_fk: bank_accounts.created_by > users.id [delete: cascade]
+
+Ref bank_accounts_team_id_teams_id_fk: bank_accounts.team_id > teams.id [delete: cascade]
+
+Ref invoice_recurring_team_id_teams_id_fk: invoice_recurring.team_id > teams.id [delete: cascade]
+
+Ref invoice_recurring_user_id_users_id_fk: invoice_recurring.user_id > users.id [delete: cascade]
+
+Ref invoice_recurring_customer_id_customers_id_fk: invoice_recurring.customer_id > customers.id [delete: set null]
+
+Ref invoice_recurring_template_id_invoice_templates_id_fk: invoice_recurring.template_id > invoice_templates.id [delete: set null]
+
+Ref invoices_user_id_users_id_fk: invoices.user_id > users.id [delete: cascade]
+
+Ref invoices_customer_id_customers_id_fk: invoices.customer_id > customers.id [delete: set null]
+
+Ref invoices_team_id_teams_id_fk: invoices.team_id > teams.id [delete: cascade]
+
+Ref invoices_template_id_invoice_templates_id_fk: invoices.template_id > invoice_templates.id [delete: set null]
+
+Ref invoices_invoice_recurring_id_invoice_recurring_id_fk: invoices.invoice_recurring_id > invoice_recurring.id [delete: set null]
+
+Ref customers_team_id_teams_id_fk: customers.team_id > teams.id [delete: cascade]
+
+Ref tags_team_id_teams_id_fk: tags.team_id > teams.id [delete: cascade]
+
+Ref tracker_reports_created_by_users_id_fk: tracker_reports.created_by > users.id [delete: cascade]
+
+Ref tracker_reports_project_id_tracker_projects_id_fk: tracker_reports.project_id > tracker_projects.id [delete: cascade, update: cascade]
+
+Ref tracker_reports_team_id_teams_id_fk: tracker_reports.team_id > teams.id [delete: cascade, update: cascade]
+
+Ref tracker_project_tags_tag_id_tags_id_fk: tracker_project_tags.tag_id > tags.id [delete: cascade]
+
+Ref tracker_project_tags_tracker_project_id_tracker_projects_id_fk: tracker_project_tags.tracker_project_id > tracker_projects.id [delete: cascade]
+
+Ref tracker_project_tags_team_id_teams_id_fk: tracker_project_tags.team_id > teams.id [delete: cascade]
+
+Ref reports_created_by_users_id_fk: reports.created_by > users.id [delete: cascade]
+
+Ref reports_team_id_teams_id_fk: reports.team_id > teams.id [delete: cascade]
+
+Ref bank_connections_team_id_teams_id_fk: bank_connections.team_id > teams.id [delete: cascade]
+
+Ref user_invites_team_id_teams_id_fk: user_invites.team_id > teams.id [delete: cascade]
+
+Ref user_invites_invited_by_users_id_fk: user_invites.invited_by > users.id [delete: cascade]
+
+Ref document_tags_team_id_teams_id_fk: document_tags.team_id > teams.id [delete: cascade]
+
+Ref transaction_tags_tag_id_tags_id_fk: transaction_tags.tag_id > tags.id [delete: cascade]
+
+Ref transaction_tags_team_id_teams_id_fk: transaction_tags.team_id > teams.id [delete: cascade]
+
+Ref transaction_tags_transaction_id_transactions_id_fk: transaction_tags.transaction_id > transactions.id [delete: cascade]
+
+Ref transaction_attachments_team_id_teams_id_fk: transaction_attachments.team_id > teams.id [delete: cascade]
+
+Ref transaction_attachments_transaction_id_transactions_id_fk: transaction_attachments.transaction_id > transactions.id [delete: set null]
+
+Ref documents_owner_id_users_id_fk: documents.owner_id > users.id [delete: set null]
+
+Ref documents_team_id_teams_id_fk: documents.team_id > teams.id [delete: cascade]
+
+Ref apps_created_by_users_id_fk: apps.created_by > users.id [delete: cascade]
+
+Ref apps_team_id_teams_id_fk: apps.team_id > teams.id [delete: cascade]
+
+Ref platform_identities_team_id_teams_id_fk: platform_identities.team_id > teams.id [delete: cascade]
+
+Ref platform_identities_user_id_users_id_fk: platform_identities.user_id > users.id [delete: cascade]
+
+Ref platform_link_tokens_team_id_teams_id_fk: platform_link_tokens.team_id > teams.id [delete: cascade]
+
+Ref platform_link_tokens_user_id_users_id_fk: platform_link_tokens.user_id > users.id [delete: cascade]
+
+Ref provider_notification_batches_platform_identity_id_platform_identities_id_fk: provider_notification_batches.platform_identity_id > platform_identities.id [delete: cascade]
+
+Ref provider_notification_batches_team_id_teams_id_fk: provider_notification_batches.team_id > teams.id [delete: cascade]
+
+Ref provider_notification_batches_user_id_users_id_fk: provider_notification_batches.user_id > users.id [delete: cascade]
+
+Ref invoice_templates_team_id_teams_id_fk: invoice_templates.team_id > teams.id [delete: cascade]
+
+Ref invoice_products_team_id_teams_id_fk: invoice_products.team_id > teams.id [delete: cascade]
+
+Ref invoice_products_created_by_users_id_fk: invoice_products.created_by > users.id [delete: set null]
+
+Ref transaction_enrichments_team_id_category_slug_transaction_categories_team_id_slug_fk: transaction_enrichments.(team_id, category_slug) > transaction_categories.(team_id, slug) [delete: cascade]
+
+Ref transaction_enrichments_team_id_teams_id_fk: transaction_enrichments.team_id > teams.id [delete: cascade]
+
+// Ref users_id_users_id_fk: users.id - users.id [delete: cascade] (a key from a column to itself, which DBML cannot express)
+
+Ref users_team_id_teams_id_fk: users.team_id > teams.id [delete: set null]
+
+Ref tracker_projects_customer_id_customers_id_fk: tracker_projects.customer_id > customers.id [delete: cascade]
+
+Ref tracker_projects_team_id_teams_id_fk: tracker_projects.team_id > teams.id [delete: cascade]
+
+Ref inbox_attachment_id_transaction_attachments_id_fk: inbox.attachment_id > transaction_attachments.id [delete: set null]
+
+Ref inbox_team_id_teams_id_fk: inbox.team_id > teams.id [delete: cascade]
+
+Ref inbox_transaction_id_transactions_id_fk: inbox.transaction_id > transactions.id [delete: set null]
+
+Ref inbox_inbox_account_id_inbox_accounts_id_fk: inbox.inbox_account_id > inbox_accounts.id [delete: set null]
+
+Ref inbox_blocklist_team_id_teams_id_fk: inbox_blocklist.team_id > teams.id [delete: cascade]
+
+Ref transaction_match_suggestions_inbox_id_inbox_id_fk: transaction_match_suggestions.inbox_id > inbox.id [delete: cascade]
+
+Ref transaction_match_suggestions_transaction_id_transactions_id_fk: transaction_match_suggestions.transaction_id > transactions.id [delete: cascade]
+
+Ref transaction_match_suggestions_team_id_teams_id_fk: transaction_match_suggestions.team_id > teams.id [delete: cascade]
+
+Ref transaction_match_suggestions_user_id_users_id_fk: transaction_match_suggestions.user_id > users.id [delete: set null]
+
+Ref document_tag_assignments_document_id_documents_id_fk: document_tag_assignments.document_id > documents.id [delete: cascade]
+
+Ref document_tag_assignments_tag_id_document_tags_id_fk: document_tag_assignments.tag_id > document_tags.id [delete: cascade]
+
+Ref document_tag_assignments_team_id_teams_id_fk: document_tag_assignments.team_id > teams.id [delete: cascade]
+
+Ref users_on_team_team_id_teams_id_fk: users_on_team.team_id > teams.id [delete: cascade, update: cascade]
+
+Ref users_on_team_user_id_users_id_fk: users_on_team.user_id > users.id [delete: cascade]
+
+Ref transaction_categories_team_id_teams_id_fk: transaction_categories.team_id > teams.id [delete: cascade]
+
+Ref transaction_categories_parent_id_transaction_categories_id_fk: transaction_categories.parent_id > transaction_categories.id [delete: set null]
+
+Ref short_links_user_id_users_id_fk: short_links.user_id > users.id [delete: cascade]
+
+Ref short_links_team_id_teams_id_fk: short_links.team_id > teams.id [delete: cascade]
+
+Ref api_keys_user_id_users_id_fk: api_keys.user_id > users.id [delete: cascade]
+
+Ref api_keys_team_id_teams_id_fk: api_keys.team_id > teams.id [delete: cascade]
+
+Ref oauth_applications_team_id_teams_id_fk: oauth_applications.team_id > teams.id [delete: cascade]
+
+Ref oauth_applications_created_by_users_id_fk: oauth_applications.created_by > users.id [delete: cascade]
+
+Ref oauth_authorization_codes_application_id_oauth_applications_id_fk: oauth_authorization_codes.application_id > oauth_applications.id [delete: cascade]
+
+Ref oauth_authorization_codes_user_id_users_id_fk: oauth_authorization_codes.user_id > users.id [delete: cascade]
+
+Ref oauth_authorization_codes_team_id_teams_id_fk: oauth_authorization_codes.team_id > teams.id [delete: cascade]
+
+Ref oauth_access_tokens_application_id_oauth_applications_id_fk: oauth_access_tokens.application_id > oauth_applications.id [delete: cascade]
+
+Ref oauth_access_tokens_user_id_users_id_fk: oauth_access_tokens.user_id > users.id [delete: cascade]
+
+Ref oauth_access_tokens_team_id_teams_id_fk: oauth_access_tokens.team_id > teams.id [delete: cascade]
+
+Ref activities_team_id_teams_id_fk: activities.team_id > teams.id [delete: cascade]
+
+Ref activities_user_id_users_id_fk: activities.user_id > users.id [delete: set null]
+
+Ref notification_settings_user_id_users_id_fk: notification_settings.user_id > users.id [delete: cascade]
+
+Ref notification_settings_team_id_teams_id_fk: notification_settings.team_id > teams.id [delete: cascade]
+
+Ref accounting_sync_records_transaction_id_transactions_id_fk: accounting_sync_records.transaction_id > transactions.id [delete: cascade]
+
+Ref accounting_sync_records_team_id_teams_id_fk: accounting_sync_records.team_id > teams.id [delete: cascade]
+
+Ref insights_team_id_teams_id_fk: insights.team_id > teams.id [delete: cascade]
+
+Ref insight_user_status_insight_id_insights_id_fk: insight_user_status.insight_id > insights.id [delete: cascade]
+
+Ref insight_user_status_user_id_users_id_fk: insight_user_status.user_id > users.id [delete: cascade]
+
+Ref transactions_team_id_transaction_categories_team_id: transactions.team_id > transaction_categories.team_id
+
+Ref "users_id_auth.users_id": users.id - "auth.users".id [delete: cascade]
+
+Ref transaction_enrichments_team_id_transaction_categories_team_id: transaction_enrichments.team_id > transaction_categories.team_id [delete: cascade]

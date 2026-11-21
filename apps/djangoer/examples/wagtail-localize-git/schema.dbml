@@ -1,0 +1,1609 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum EmbedType {
+  "video"
+  "photo"
+  "link"
+  "rich"
+}
+
+Enum UserProfileAdminColorThemes {
+  "system"
+  "light"
+  "dark"
+}
+
+Enum UserProfileAdminContrastThemes {
+  "system"
+  "more_contrast"
+}
+
+Enum UserProfileAdminDensityThemes {
+  "default"
+  "snug"
+}
+
+Enum CollectionViewRestrictionRestrictionType {
+  "none"
+  "password"
+  "login"
+  "groups"
+}
+
+Enum WorkflowStateStatus {
+  "in_progress"
+  "approved"
+  "needs_changes"
+  "cancelled"
+}
+
+Enum TaskStateStatus {
+  "in_progress"
+  "approved"
+  "rejected"
+  "skipped"
+  "cancelled"
+}
+
+Enum PageViewRestrictionRestrictionType {
+  "none"
+  "password"
+  "login"
+  "groups"
+}
+
+Enum StringTranslationTranslationType {
+  "manual"
+  "machine"
+}
+
+Enum SyncLogAction {
+  "1"
+  "2"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table wagtailforms_formsubmission {
+  id integer [pk, increment]
+  form_data text [not null]
+  page_id integer [not null]
+  submit_time datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (page_id) [name: 'wagtailforms_formsubmission_page_id_e48e93e7']
+  }
+
+  Note: '''Data for a Form submission.
+
+Columns from AbstractFormSubmission (abstract): form_data, page_id, submit_time.'''
+}
+
+Table wagtailredirects_redirect {
+  id integer [pk, increment]
+  old_path varchar(255) [not null]
+  site_id integer
+  is_permanent bool [default: true, not null, note: 'Recommended. Permanent redirects ensure search engines forget the old page (the \'Redirect from\') and index the new page instead.']
+  redirect_page_id integer
+  redirect_page_route_path varchar(255) [not null, note: 'Optionally specify a route on the target page to redirect to. Leave blank to redirect to the default page route.']
+  redirect_link varchar(255) [not null]
+  automatically_created bool [default: false, not null]
+  created_at datetime [note: 'default in Python: now()']
+
+  indexes {
+    (old_path) [name: 'wagtailredirects_redirect_old_path_bb35247b']
+    (site_id) [name: 'wagtailredirects_redirect_site_id_780a0e1e']
+    (redirect_page_id) [name: 'wagtailredirects_redirect_redirect_page_id_b5728a8f']
+    (old_path, site_id) [unique, name: 'wagtailredirects_redirect_old_path_site_id_783622d7_uniq']
+  }
+}
+
+Table wagtailembeds_embed {
+  id integer [pk, increment]
+  url text [not null]
+  max_width smallint
+  hash varchar(32) [unique, not null]
+  type EmbedType [not null]
+  html text [not null]
+  title text [not null]
+  author_name text [not null]
+  provider_name text [not null]
+  thumbnail_url text [not null]
+  width integer
+  height integer
+  last_updated datetime [not null, note: 'default in Python: now()']
+  cache_until datetime
+
+  indexes {
+    (cache_until) [name: 'wagtailembeds_embed_cache_until_26c94bb0']
+  }
+
+  Note: '''When embed code is fetched from a provider (eg, youtube) we cache that code
+in the database so we don\'t need to ask for it again.
+
+This model is used for caching the embed html code. It also stores some
+metadata which gets displayed in the editor.
+
+If an instance of this model is deleted, it will be automatically refetched
+next time the embed code is needed.'''
+}
+
+Table wagtailusers_userprofile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  submitted_notifications bool [default: true, not null, note: 'Receive notification when a page is submitted for moderation']
+  approved_notifications bool [default: true, not null, note: 'Receive notification when your page edit is approved']
+  rejected_notifications bool [default: true, not null, note: 'Receive notification when your page edit is rejected']
+  updated_comments_notifications bool [default: true, not null, note: 'Receive notification when comments have been created, resolved, or deleted on a page that you have subscribed to receive comment notifications on']
+  preferred_language varchar(10) [default: '', not null, note: 'Select language for the admin']
+  current_time_zone varchar(40) [default: '', not null, note: 'Select your current time zone']
+  avatar varchar(100) [not null]
+  dismissibles text [not null, note: 'default in Python: dict()']
+  theme UserProfileAdminColorThemes [default: 'system', not null]
+  contrast UserProfileAdminContrastThemes [default: 'system', not null]
+  density UserProfileAdminDensityThemes [default: 'default', not null]
+  keyboard_shortcuts bool [default: true, not null, note: 'Enable custom keyboard shortcuts specific to Wagtail.']
+}
+
+Table wagtaildocs_document {
+  id integer [pk, increment]
+  collection_id integer [not null, note: 'default in Python: get_root_collection_id()']
+  title varchar(255) [not null]
+  file varchar(100) [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  uploaded_by_user_id integer
+  file_size "bigint unsigned"
+  file_hash varchar(40) [not null]
+
+  indexes {
+    (collection_id) [name: 'wagtaildocs_document_collection_id_23881625']
+    (uploaded_by_user_id) [name: 'wagtaildocs_document_uploaded_by_user_id_17258b41']
+  }
+
+  Note: '''Columns from AbstractDocument (abstract): title, file, created_at, uploaded_by_user_id, file_size, file_hash.
+
+Columns from CollectionMember (abstract): collection_id.'''
+}
+
+Table wagtailimages_image {
+  id integer [pk, increment]
+  collection_id integer [not null, note: 'default in Python: get_root_collection_id()']
+  title varchar(255) [not null]
+  file varchar(100) [not null]
+  description varchar(255) [default: '', not null]
+  width integer [not null]
+  height integer [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  uploaded_by_user_id integer
+  focal_point_x "integer unsigned"
+  focal_point_y "integer unsigned"
+  focal_point_width "integer unsigned"
+  focal_point_height "integer unsigned"
+  file_size "integer unsigned"
+  file_hash varchar(40) [not null]
+
+  indexes {
+    (collection_id) [name: 'wagtailimages_image_collection_id_c2f8af7e']
+    (created_at) [name: 'wagtailimages_image_created_at_86fa6cd4']
+    (uploaded_by_user_id) [name: 'wagtailimages_image_uploaded_by_user_id_5d73dc75']
+    (file_hash) [name: 'wagtailimages_image_file_hash_fb5bbb23']
+  }
+
+  Note: '''Columns from AbstractImage (abstract): title, file, description, width, height, created_at, uploaded_by_user_id, focal_point_x, focal_point_y, focal_point_width, focal_point_height, file_size, file_hash.
+
+Columns from CollectionMember (abstract): collection_id.'''
+}
+
+Table wagtailimages_rendition {
+  id integer [pk, increment]
+  filter_spec varchar(255) [not null]
+  file varchar(100) [not null]
+  width integer [not null]
+  height integer [not null]
+  focal_point_key varchar(16) [default: '', not null]
+  image_id integer [not null]
+
+  indexes {
+    (filter_spec) [name: 'wagtailimages_rendition_filter_spec_1cba3201']
+    (image_id) [name: 'wagtailimages_rendition_image_id_3e1fd774']
+    (image_id, filter_spec, focal_point_key) [unique, name: 'wagtailimages_rendition_image_id_filter_spec_focal_point_key_323c8fe0_uniq']
+  }
+
+  Note: '''Columns from AbstractRendition (abstract): filter_spec, file, width, height, focal_point_key.'''
+}
+
+Table wagtailsearch_indexentry {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  object_id varchar(50) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Document.index_entries, Image.index_entries, Page.index_entries)']
+  title_norm real [default: 1.0, not null]
+  autocomplete text
+  title text [not null]
+  body text
+
+  indexes {
+    (content_type_id) [name: 'wagtailsearch_indexentry_content_type_id_62ed694f']
+    (content_type_id, object_id) [unique, name: 'wagtailsearch_indexentry_content_type_id_object_id_bcd7ba73_uniq']
+  }
+
+  Note: '''The IndexEntry model that will get created in the database.
+
+Columns from AbstractSQLiteIndexEntry (abstract): autocomplete, title, body.
+
+Columns from BaseIndexEntry (abstract): content_type_id, object_id, title_norm.'''
+}
+
+Table wagtailsearch_indexentry_fts {
+  autocomplete text
+  title text [not null]
+  body text
+  rowid integer [pk]
+
+  Note: '''The SQLite FTS IndexEntry model that will get created in the database if using SQLite with FTS5 support.
+
+Columns from AbstractSQLiteFTSIndexEntry (abstract): autocomplete, title, body.'''
+}
+
+Table wagtailadmin_admin {
+  id integer [pk, increment]
+}
+
+Table wagtailadmin_editingsession {
+  id integer [pk, increment]
+  user_id integer [not null]
+  content_type_id integer [not null]
+  object_id varchar(255) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+  last_seen_at datetime [not null]
+  is_editing bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'wagtailadmin_editingsession_user_id_6e1a9b70']
+    (content_type_id) [name: 'wagtailadmin_editingsession_content_type_id_4df7730e']
+    (content_type_id, object_id) [name: 'wagtailadmi_content_717955_idx']
+  }
+}
+
+Table wagtailcore_locale {
+  id integer [pk, increment]
+  language_code varchar(100) [unique, not null]
+}
+
+Table wagtailcore_site {
+  id integer [pk, increment]
+  hostname varchar(255) [not null]
+  port integer [default: 80, not null, note: 'Set this to something other than 80 if you need a specific port number to appear in URLs (e.g. development on port 8000). Does not affect request handling (so port forwarding still works).']
+  site_name varchar(255) [not null, note: 'Human-readable name for the site.']
+  root_page_id integer [not null]
+  is_default_site bool [default: false, not null, note: 'If true, this site will handle requests for all other hostnames that do not have a site entry of their own']
+
+  indexes {
+    (hostname) [name: 'wagtailcore_site_hostname_96b20b46']
+    (root_page_id) [name: 'wagtailcore_site_root_page_id_e02fb95c']
+    (hostname, port) [unique, name: 'wagtailcore_site_hostname_port_2c626d70_uniq']
+  }
+}
+
+Table wagtailcore_groupsitepermission {
+  id integer [pk, increment]
+  group_id integer [not null]
+  site_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'wagtailcore_groupsitepermission_group_id_e5cdbee4']
+    (site_id) [name: 'wagtailcore_groupsitepermission_site_id_245de488']
+    (permission_id) [name: 'wagtailcore_groupsitepermission_permission_id_459b1f38']
+    (group_id, site_id, permission_id) [unique, name: 'wagtailcore_groupsitepermission_group_id_site_id_permission_id_a58ee30d_uniq']
+  }
+
+  Note: '''A rule indicating that a group has permission for some action (e.g. "edit social media settings")
+within a specified site.'''
+}
+
+Table wagtailcore_modellogentry {
+  id integer [pk, increment]
+  content_type_id integer
+  label text [not null]
+  action varchar(255) [not null]
+  data text [not null, note: 'default in Python: dict()']
+  timestamp datetime [not null]
+  uuid char(32) [note: 'Log entries that happened as part of the same user action are assigned the same UUID']
+  user_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  revision_id integer [note: 'refers to wagtailcore_revision.id, with no foreign key in the database']
+  content_changed bool [default: false, not null]
+  deleted bool [default: false, not null]
+  object_id varchar(255) [not null]
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_modellogentry_content_type_id_68849e77']
+    (action) [name: 'wagtailcore_modellogentry_action_d2d856ee']
+    (timestamp) [name: 'wagtailcore_modellogentry_timestamp_9694521b']
+    (user_id) [name: 'wagtailcore_modellogentry_user_id_0278d1bf']
+    (revision_id) [name: 'wagtailcore_modellogentry_revision_id_df6ca33a']
+    (content_changed) [name: 'wagtailcore_modellogentry_content_changed_8bc39742']
+    (object_id) [name: 'wagtailcore_modellogentry_object_id_e0e7d4ef']
+    (uuid, action, timestamp) [name: 'wagtailcore_uuid_d6363b_idx', note: 'descending: timestamp']
+  }
+
+  Note: '''Simple logger for generic Django models
+
+Columns from BaseLogEntry (abstract): content_type_id, label, action, data, timestamp, uuid, user_id, revision_id, content_changed, deleted.'''
+}
+
+Table wagtailcore_revision {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  base_content_type_id integer [not null]
+  object_id varchar(255) [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Page._revisions)']
+  created_at datetime [not null]
+  user_id integer
+  object_str text [default: '', not null]
+  content text [not null]
+  approved_go_live_at datetime
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_revision_content_type_id_c8cb69c0']
+    (base_content_type_id) [name: 'wagtailcore_revision_base_content_type_id_5b4ef7bd']
+    (created_at) [name: 'wagtailcore_revision_created_at_81450aa6']
+    (user_id) [name: 'wagtailcore_revision_user_id_03df83b0']
+    (approved_go_live_at) [name: 'wagtailcore_revision_approved_go_live_at_88d3dee5']
+    (content_type_id, object_id) [name: 'content_object_idx']
+    (base_content_type_id, object_id) [name: 'base_content_object_idx']
+  }
+}
+
+Table wagtailcore_collectionviewrestriction {
+  id integer [pk, increment]
+  restriction_type CollectionViewRestrictionRestrictionType [not null]
+  password varchar(255) [not null, note: 'Shared passwords should not be used to protect sensitive content. Anyone who has this password will be able to view the content.']
+  collection_id integer [not null]
+
+  indexes {
+    (collection_id) [name: 'wagtailcore_collectionviewrestriction_collection_id_761908ec']
+  }
+
+  Note: '''Columns from BaseViewRestriction (abstract): restriction_type, password.'''
+}
+
+Table wagtailcore_collection {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  name varchar(255) [not null]
+
+  Note: '''A location in which resources such as images and documents can be grouped
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table wagtailcore_groupcollectionpermission {
+  id integer [pk, increment]
+  group_id integer [not null]
+  collection_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'wagtailcore_groupcollectionpermission_group_id_05d61460']
+    (collection_id) [name: 'wagtailcore_groupcollectionpermission_collection_id_5423575a']
+    (permission_id) [name: 'wagtailcore_groupcollectionpermission_permission_id_1b626275']
+    (group_id, collection_id, permission_id) [unique, name: 'wagtailcore_groupcollectionpermission_group_id_collection_id_permission_id_a21cefe9_uniq']
+  }
+
+  Note: '''A rule indicating that a group has permission for some action (e.g. "create document")
+within a specified collection.'''
+}
+
+Table wagtailcore_uploadedfile {
+  id integer [pk, increment]
+  for_content_type_id integer
+  file varchar(200) [not null]
+  uploaded_by_user_id integer
+
+  indexes {
+    (for_content_type_id) [name: 'wagtailcore_uploadedfile_for_content_type_id_b0fc87b2']
+    (uploaded_by_user_id) [name: 'wagtailcore_uploadedfile_uploaded_by_user_id_c7580fe8']
+  }
+
+  Note: '''Temporary storage for media fields uploaded through the multiple image/document uploader.
+When validation rules (e.g. required metadata fields) prevent creating an Image/Document object from the file alone.
+In this case, the file is stored against this model, to be turned into an Image/Document object once the full form
+has been filled in.'''
+}
+
+Table wagtailcore_workflowcontenttype {
+  content_type_id integer [pk]
+  workflow_id integer [not null]
+
+  indexes {
+    (workflow_id) [name: 'wagtailcore_workflowcontenttype_workflow_id_9aad7cd2']
+  }
+}
+
+Table wagtailcore_workflowstate {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  base_content_type_id integer [not null]
+  object_id varchar(255) [not null, note: 'content_object: with base_content_type_id, a generic foreign key to a row of any model (from Page._workflow_states, Page._specific_workflow_states)']
+  workflow_id integer [not null]
+  status WorkflowStateStatus [default: 'in_progress', not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  requested_by_id integer
+  current_task_state_id integer [unique]
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_workflowstate_content_type_id_2bb78ce1']
+    (base_content_type_id) [name: 'wagtailcore_workflowstate_base_content_type_id_a30dc576']
+    (workflow_id) [name: 'wagtailcore_workflowstate_workflow_id_1f18378f']
+    (requested_by_id) [name: 'wagtailcore_workflowstate_requested_by_id_4090bca3']
+    (base_content_type_id, object_id) [unique, name: 'unique_in_progress_workflow', note: 'where "status" IN (\'in_progress\', \'needs_changes\')']
+    (content_type_id, object_id) [name: 'workflowstate_ct_id_idx']
+    (base_content_type_id, object_id) [name: 'workflowstate_base_ct_id_idx']
+  }
+
+  Note: '''Tracks the status of a started Workflow on an object.'''
+}
+
+Table wagtailcore_workflow {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  active bool [default: true, not null, note: 'Active workflows can be added to pages/snippets. Deactivating a workflow does not remove it from existing pages/snippets.']
+
+  Note: '''Columns from AbstractWorkflow (abstract): name, active.'''
+}
+
+Table wagtailcore_workflowtask {
+  id integer [pk, increment]
+  sort_order integer
+  workflow_id integer [not null]
+  task_id integer [not null]
+
+  indexes {
+    (workflow_id) [name: 'wagtailcore_workflowtask_workflow_id_b9717175']
+    (task_id) [name: 'wagtailcore_workflowtask_task_id_ce7716fe']
+    (workflow_id, task_id) [unique, name: 'wagtailcore_workflowtask_workflow_id_task_id_4ec7a62b_uniq']
+  }
+
+  Note: '''Columns from Orderable (abstract): sort_order.'''
+}
+
+Table wagtailcore_task {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  active bool [default: true, not null, note: 'Active tasks can be added to workflows. Deactivating a task does not remove it from existing workflows.']
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_task_content_type_id_249ab8ba']
+  }
+}
+
+Table wagtailcore_groupapprovaltask {
+  task_ptr_id integer [pk, note: 'parent link: a GroupApprovalTask is a Task (multi-table inheritance)']
+
+  Note: '''Columns from AbstractGroupApprovalTask (abstract): task_ptr_id.'''
+}
+
+Table wagtailcore_taskstate {
+  id integer [pk, increment]
+  workflow_state_id integer [not null]
+  revision_id integer [not null]
+  task_id integer [not null]
+  status TaskStateStatus [default: 'in_progress', not null]
+  started_at datetime [not null, note: 'default in Python: now()']
+  finished_at datetime
+  finished_by_id integer
+  comment text [not null]
+  content_type_id integer [not null]
+
+  indexes {
+    (workflow_state_id) [name: 'wagtailcore_taskstate_workflow_state_id_9239a775']
+    (revision_id) [name: 'wagtailcore_taskstate_revision_id_df25a499']
+    (task_id) [name: 'wagtailcore_taskstate_task_id_c3677c34']
+    (finished_by_id) [name: 'wagtailcore_taskstate_finished_by_id_13f98229']
+    (content_type_id) [name: 'wagtailcore_taskstate_content_type_id_0a758fdc']
+  }
+
+  Note: '''Tracks the status of a given Task for a particular revision.'''
+}
+
+Table wagtailcore_page {
+  id integer [pk, increment]
+  path varchar(255) [unique, not null]
+  depth "integer unsigned" [not null]
+  numchild "integer unsigned" [default: 0, not null]
+  translation_key char(32) [not null, note: 'default in Python: uuid4()']
+  locale_id integer [not null]
+  latest_revision_id integer
+  live bool [default: true, not null]
+  has_unpublished_changes bool [default: false, not null]
+  first_published_at datetime
+  last_published_at datetime
+  live_revision_id integer
+  go_live_at datetime
+  expire_at datetime
+  expired bool [default: false, not null]
+  locked bool [default: false, not null]
+  locked_at datetime
+  locked_by_id integer
+  title varchar(255) [not null, note: 'The page title as you\'d like it to be seen by the public']
+  draft_title varchar(255) [not null]
+  slug varchar(255) [not null, note: 'The name of the page as it will appear in URLs e.g http://domain.com/blog/[my-slug]/']
+  content_type_id integer [not null]
+  url_path text [not null]
+  owner_id integer
+  seo_title varchar(255) [not null, note: 'The name of the page displayed on search engine results as the clickable headline.']
+  show_in_menus bool [default: false, not null, note: 'Whether a link to this page will appear in automatically generated menus']
+  search_description text [not null, note: 'The descriptive text displayed underneath a headline in search engine results.']
+  latest_revision_created_at datetime
+  alias_of_id integer
+
+  indexes {
+    (locale_id) [name: 'wagtailcore_page_locale_id_3c7e30a6']
+    (latest_revision_id) [name: 'wagtailcore_page_latest_revision_id_e60fef51']
+    (first_published_at) [name: 'wagtailcore_page_first_published_at_2b5dd637']
+    (live_revision_id) [name: 'wagtailcore_page_live_revision_id_930bd822']
+    (locked_by_id) [name: 'wagtailcore_page_locked_by_id_bcb86245']
+    (slug) [name: 'wagtailcore_page_slug_e7c11b8f']
+    (content_type_id) [name: 'wagtailcore_page_content_type_id_c28424df']
+    (owner_id) [name: 'wagtailcore_page_owner_id_fbf7c332']
+    (alias_of_id) [name: 'wagtailcore_page_alias_of_id_12945502']
+    (translation_key, locale_id) [unique, name: 'wagtailcore_page_translation_key_locale_id_9b041bad_uniq']
+  }
+
+  Note: '''Columns from DraftStateMixin (abstract): live, has_unpublished_changes, first_published_at, last_published_at, live_revision_id, go_live_at, expire_at, expired.
+
+Columns from LockableMixin (abstract): locked, locked_at, locked_by_id.
+
+Columns from RevisionMixin (abstract): latest_revision_id.
+
+Columns from TranslatableMixin (abstract): translation_key, locale_id.
+
+Columns from MP_Node (abstract): path, depth, numchild.'''
+}
+
+Table wagtailcore_grouppagepermission {
+  id integer [pk, increment]
+  group_id integer [not null]
+  page_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'wagtailcore_grouppagepermission_group_id_fc07e671']
+    (page_id) [name: 'wagtailcore_grouppagepermission_page_id_710b114a']
+    (permission_id) [name: 'wagtailcore_grouppagepermission_permission_id_05acb22e']
+    (group_id, page_id, permission_id) [unique, name: 'unique_permission']
+  }
+}
+
+Table wagtailcore_pageviewrestriction {
+  id integer [pk, increment]
+  restriction_type PageViewRestrictionRestrictionType [not null]
+  password varchar(255) [not null, note: 'Shared passwords should not be used to protect sensitive content. Anyone who has this password will be able to view the content.']
+  page_id integer [not null]
+
+  indexes {
+    (page_id) [name: 'wagtailcore_pageviewrestriction_page_id_15a8bea6']
+  }
+
+  Note: '''Columns from BaseViewRestriction (abstract): restriction_type, password.'''
+}
+
+Table wagtailcore_workflowpage {
+  page_id integer [pk]
+  workflow_id integer [not null]
+
+  indexes {
+    (workflow_id) [name: 'wagtailcore_workflowpage_workflow_id_56f56ff6']
+  }
+}
+
+Table wagtailcore_pagelogentry {
+  id integer [pk, increment]
+  content_type_id integer
+  label text [not null]
+  action varchar(255) [not null]
+  data text [not null, note: 'default in Python: dict()']
+  timestamp datetime [not null]
+  uuid char(32) [note: 'Log entries that happened as part of the same user action are assigned the same UUID']
+  user_id integer [note: 'refers to auth_user.id, with no foreign key in the database']
+  revision_id integer [note: 'refers to wagtailcore_revision.id, with no foreign key in the database']
+  content_changed bool [default: false, not null]
+  deleted bool [default: false, not null]
+  page_id integer [not null, note: 'refers to wagtailcore_page.id, with no foreign key in the database']
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_pagelogentry_content_type_id_74e7708a']
+    (action) [name: 'wagtailcore_pagelogentry_action_c2408198']
+    (timestamp) [name: 'wagtailcore_pagelogentry_timestamp_deb774c4']
+    (user_id) [name: 'wagtailcore_pagelogentry_user_id_604ccfd8']
+    (revision_id) [name: 'wagtailcore_pagelogentry_revision_id_8043d103']
+    (content_changed) [name: 'wagtailcore_pagelogentry_content_changed_99f27ade']
+    (page_id) [name: 'wagtailcore_pagelogentry_page_id_8464e327']
+    (uuid, action, timestamp) [name: 'wagtailcore_uuid_06a44d_idx', note: 'descending: timestamp']
+  }
+
+  Note: '''Columns from BaseLogEntry (abstract): content_type_id, label, action, data, timestamp, uuid, user_id, revision_id, content_changed, deleted.'''
+}
+
+Table wagtailcore_comment {
+  id integer [pk, increment]
+  page_id integer [not null]
+  user_id integer [not null]
+  text text [not null]
+  contentpath text [not null]
+  position text [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  revision_created_id integer
+  resolved_at datetime
+  resolved_by_id integer
+
+  indexes {
+    (page_id) [name: 'wagtailcore_comment_page_id_108444b5']
+    (user_id) [name: 'wagtailcore_comment_user_id_0c577ca6']
+    (revision_created_id) [name: 'wagtailcore_comment_revision_created_id_1d058279']
+    (resolved_by_id) [name: 'wagtailcore_comment_resolved_by_id_a282aa0e']
+  }
+
+  Note: '''A comment on a field, or a field within a streamfield block'''
+}
+
+Table wagtailcore_commentreply {
+  id integer [pk, increment]
+  comment_id integer [not null]
+  user_id integer [not null]
+  text text [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (comment_id) [name: 'wagtailcore_commentreply_comment_id_afc7e027']
+    (user_id) [name: 'wagtailcore_commentreply_user_id_d0b3b9c3']
+  }
+}
+
+Table wagtailcore_pagesubscription {
+  id integer [pk, increment]
+  user_id integer [not null]
+  page_id integer [not null]
+  comment_notifications bool [not null]
+
+  indexes {
+    (user_id) [name: 'wagtailcore_pagesubscription_user_id_89d7def9']
+    (page_id) [name: 'wagtailcore_pagesubscription_page_id_a085e7a6']
+    (page_id, user_id) [unique, name: 'wagtailcore_pagesubscription_page_id_user_id_0cef73ed_uniq']
+  }
+}
+
+Table wagtailcore_referenceindex {
+  id integer [pk, increment]
+  content_type_id integer [not null]
+  base_content_type_id integer [not null]
+  object_id varchar(255) [not null]
+  to_content_type_id integer [not null]
+  to_object_id varchar(255) [not null]
+  model_path text [not null]
+  content_path text [not null]
+  content_path_hash char(32) [not null]
+
+  indexes {
+    (content_type_id) [name: 'wagtailcore_referenceindex_content_type_id_766e0336']
+    (base_content_type_id) [name: 'wagtailcore_referenceindex_base_content_type_id_313cf40f']
+    (to_content_type_id) [name: 'wagtailcore_referenceindex_to_content_type_id_93690bbd']
+    (base_content_type_id, object_id, to_content_type_id, to_object_id, content_path_hash) [unique, name: 'wagtailcore_referenceindex_base_content_type_id_object_id_to_content_type_id_to_object_id_content_path_hash_9e6ccd6a_uniq']
+    (base_content_type_id, object_id) [name: 'referenceindex_source_object']
+    (to_content_type_id, to_object_id) [name: 'referenceindex_target_object']
+  }
+
+  Note: '''Records references between objects for quick retrieval of object usage.
+
+References are extracted from Foreign Keys, Chooser Blocks in StreamFields, and links in Rich Text Fields.
+This index allows us to efficiently find all of the references to a particular object from all of these sources.'''
+}
+
+Table taggit_tag {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null]
+  slug varchar(100) [unique, not null]
+
+  Note: '''Columns from TagBase (abstract): name, slug.'''
+}
+
+Table taggit_taggeditem {
+  id integer [pk, increment]
+  tag_id integer [not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model (from Document.tagged_items, Image.tagged_items)']
+
+  indexes {
+    (tag_id) [name: 'taggit_taggeditem_tag_id_f4f5b767']
+    (content_type_id) [name: 'taggit_taggeditem_content_type_id_9957a03c']
+    (object_id) [name: 'taggit_taggeditem_object_id_e2d7d1df']
+    (content_type_id, object_id, tag_id) [unique, name: 'taggit_taggeditem_content_type_id_object_id_tag_id_4bb97a8e_uniq']
+    (content_type_id, object_id) [name: 'taggit_tagg_content_8fc721_idx']
+  }
+
+  Note: '''Columns from GenericTaggedItemBase (abstract): object_id.
+
+Columns from CommonGenericTaggedItemBase (abstract): content_type_id.
+
+Columns from TaggedItemBase (abstract): tag_id.'''
+}
+
+Table wagtail_localize_translatableobject {
+  translation_key char(32) [pk]
+  content_type_id integer [not null]
+
+  indexes {
+    (content_type_id) [name: 'wagtail_localize_translatableobject_content_type_id_0d6c5139']
+    (content_type_id, translation_key) [unique, name: 'wagtail_localize_translatableobject_content_type_id_translation_key_de875339_uniq']
+  }
+
+  Note: '''A TranslatableObject represents a set of instances of a translatable model
+that are all translations of each another.
+
+In Wagtail, objects are considered translations of each other when they are
+of the same content type and have the same `translation_key` value.
+
+Attributes:
+    translation_key (UUIDField): The translation_key that value that is used by the instances.
+    content_type (ForeignKey to ContentType): Link to the base Django content type representing the model that the
+        instances use. Note that this field refers to the model that has the ``locale`` and ``translation_key``
+        fields and not the specific type.'''
+}
+
+Table wagtail_localize_translationsource {
+  id integer [pk, increment]
+  object_id char(32) [not null]
+  specific_content_type_id integer [not null]
+  locale_id integer [not null]
+  object_repr text [not null]
+  content_json text [not null]
+  schema_version varchar(255) [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  last_updated_at datetime [not null]
+
+  indexes {
+    (object_id) [name: 'wagtail_localize_translationsource_object_id_6a078fd2']
+    (specific_content_type_id) [name: 'wagtail_localize_translationsource_specific_content_type_id_3095eb76']
+    (locale_id) [name: 'wagtail_localize_translationsource_locale_id_0ac264c0']
+    (object_id, locale_id) [unique, name: 'wagtail_localize_translationsource_object_id_locale_id_fb6a8d8e_uniq']
+  }
+
+  Note: '''Frozen source content that is to be translated.
+
+This is like a page revision, except it can be created for any model and it\'s only created/updated when a user
+submits something for translation.
+
+Attributes:
+    object (ForeignKey to TranslatableObject): The object that this is a source for
+    specific_content_type (ForeignKey to ContentType): The specific content type that this was extracted from.
+        Note that `TranslatableObject.content_type` doesn\'t store the most specific content type, but this
+        does.
+    locale (ForeignKey to Locale): The Locale of the instance that this source content was extracted from.
+    object_repr (TextField): A string representing the name of the source object. Used in the UI.
+    content_json (TextField with JSON contents): The serialized source content. Note that this is serialzed in the
+        same way that Wagtail serializes page revisions.
+    created_at (DateTimeField): The date/time at which the content was first extracted from this source.
+    last_updated_at (DateTimeField): The date/time at which the content was last extracted from this source.'''
+}
+
+Table wagtail_localize_translation {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null, note: 'default in Python: uuid4()']
+  source_id integer [not null]
+  target_locale_id integer [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  translations_last_updated_at datetime
+  destination_last_updated_at datetime
+  enabled bool [default: true, not null]
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_translation_source_id_e326e1e3']
+    (target_locale_id) [name: 'wagtail_localize_translation_target_locale_id_8c524f73']
+    (source_id, target_locale_id) [unique, name: 'wagtail_localize_translation_source_id_target_locale_id_7e943cf8_uniq']
+  }
+
+  Note: '''Manages the translation of an object into a locale.
+
+An instance of this model is created whenever an object is submitted for translation into a new language.
+
+They can be disabled at any time, and are deleted or disabled automatically if either the source or
+destination object is deleted.
+
+If the translation of a page is disabled, the page editor of the translation would return to the normal Wagtail
+editor.
+
+Attributes:
+    uuid (UUIDField): A unique ID for this translation used for referencing it from external systems.
+    source (ForeignKey to TranslationSource): The source that is being translated.
+    target_locale (ForeignKey to Locale): The Locale that the source is being translated into.
+    created_at (DateTimeField): The date/time the translation was started.
+    translations_last_updated_at (DateTimeField): The date/time of when a translated string was last updated.
+    destination_last_updated_at (DateTimeField): The date/time of when the destination object was last updated.
+    enabled (boolean): Whether this translation is enabled or not.'''
+}
+
+Table wagtail_localize_translationlog {
+  id integer [pk, increment]
+  source_id integer [not null]
+  locale_id integer [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  revision_id integer
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_translationlog_source_id_7228923e']
+    (locale_id) [name: 'wagtail_localize_translationlog_locale_id_37619cb4']
+    (revision_id) [name: 'wagtail_localize_translationlog_revision_id_e3b62278']
+  }
+
+  Note: '''Keeps Track of when translations are created/updated.
+
+Attributes:
+    source (ForeignKey to TranslationSource): The source that was used for translation.
+    locale (ForeignKey to Locale): The Locale that the source was translated into.
+    created_at (DateTimeField): The date/time the translation was done.
+    revision (ForeignKey to Revision): If the translation was of a page, this links to the Revision that was created'''
+}
+
+Table wagtail_localize_string {
+  id integer [pk, increment]
+  locale_id integer [not null]
+  data_hash char(32) [not null]
+  data text [not null]
+
+  indexes {
+    (locale_id) [name: 'wagtail_localize_string_locale_id_2cded126']
+    (locale_id, data_hash) [unique, name: 'wagtail_localize_string_locale_id_data_hash_bae71852_uniq']
+  }
+
+  Note: '''Represents a unique string of translatable text.
+
+Attributes:
+    locale (ForeignKey to Locale): The locale of the string.
+    data (TextField): The string.
+    data_hash (UUIDField): A hash of the string, for more efficient indexing of long strings.'''
+}
+
+Table wagtail_localize_translationcontext {
+  id integer [pk, increment]
+  object_id char(32) [not null]
+  path_id char(32) [not null]
+  path text [not null]
+  field_path text [not null]
+
+  indexes {
+    (object_id) [name: 'wagtail_localize_translationcontext_object_id_86263ce7']
+    (object_id, path_id) [unique, name: 'wagtail_localize_translationcontext_object_id_path_id_c7f5d707_uniq']
+  }
+
+  Note: '''Represents a context that a string may be translated in.
+
+Strings can be translated differently in different contexts. A context is a combination of an object and content
+path.
+
+Attributes:
+    object (ForeignKey to TranslatableObject): The object.
+    path (TextField): The content path.
+    field_path (TextField): the field path.
+    path_id (UUIDField): A hash of the path for efficient indexing of long content paths.'''
+}
+
+Table wagtail_localize_stringtranslation {
+  id integer [pk, increment]
+  translation_of_id integer [not null]
+  locale_id integer [not null]
+  context_id integer
+  data text [not null]
+  translation_type StringTranslationTranslationType [not null]
+  tool_name varchar(255) [not null]
+  last_translated_by_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  has_error bool [default: false, not null]
+  field_error text [not null]
+
+  indexes {
+    (translation_of_id) [name: 'wagtail_localize_stringtranslation_translation_of_id_8eef01d0']
+    (locale_id) [name: 'wagtail_localize_stringtranslation_locale_id_b9e3730d']
+    (context_id) [name: 'wagtail_localize_stringtranslation_context_id_3cc13049']
+    (last_translated_by_id) [name: 'wagtail_localize_stringtranslation_last_translated_by_id_764c7a3f']
+    (locale_id, translation_of_id, context_id) [unique, name: 'wagtail_localize_stringtranslation_locale_id_translation_of_id_context_id_d2d59359_uniq']
+  }
+
+  Note: '''Represents a translation of a string.
+
+Attributes:
+    translation_of (ForeignKey to String): The String that this is a translation of.
+    locale (ForeignKey to Locale): The Locale of this translation.
+    context (ForeignKey to TranslationContext): The context that this translation was made in. This allows different
+        fields/pages to have different translations of the same source string.
+    data (TextField): The translation.
+    translation_type (CharField with choices \'manual\' or \'machine\'): Whether the translationw as performed by a human or machine.
+    tool_name (CharField): The name of the tool that was used to make this translation.
+    last_translated_by (ForeignKey to User): The user who last updated this translation.
+    created_at (DateTimeField): The date/time that this translation was first created.
+    updated_at (DateFimeField): The date/time that this translation was last updated.
+    has_error (BooleanField): Set to True if the value of this translation has an error. We store translations with
+        errors in case they were edited from an external system. This allows us to display the error in Wagtail.
+    field_error (TextField): If there was a database-level validation error while saving the translated object, that
+        error is tored here. Note that this only makes sense if the context is not null.'''
+}
+
+Table wagtail_localize_template {
+  id integer [pk, increment]
+  uuid char(32) [unique, not null]
+  template text [not null]
+  template_format varchar(100) [not null]
+  string_count "integer unsigned" [not null]
+
+  Note: '''A Template stores the structure of a RichTextField or RichTextBlock.
+
+When a RichTextField/RichTextBlock is converted into segments, all translatable segments are stripped out of the
+block and stored as String instances. The remaining HTML is saved as a Template and is used for recombining the
+translated strings back into a rich text value.
+
+Attributes:
+    template (TextField): The template value
+    uuid (UUIDField): A hash of the template contents for efficient indexing.
+    template_format (CharField): The format of the template (currently, only \'html\' is supported).
+    string_count (PositiveIntegerField): The number of translatable stirngs that were extracted from the template.'''
+}
+
+Table wagtail_localize_segmentoverride {
+  id integer [pk, increment]
+  locale_id integer [not null]
+  context_id integer
+  last_translated_by_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  data_json text [not null]
+  has_error bool [default: false, not null]
+  field_error text [not null]
+
+  indexes {
+    (locale_id) [name: 'wagtail_localize_segmentoverride_locale_id_b1673d41']
+    (context_id) [name: 'wagtail_localize_segmentoverride_context_id_f827efe0']
+    (last_translated_by_id) [name: 'wagtail_localize_segmentoverride_last_translated_by_id_a86448fc']
+  }
+
+  Note: '''Stores the overridden value of an OverridableSegment.
+
+Some segments are not translatable, but can be optionally overridden in translations. For example, images.
+
+If an overridable segment is overridden by a user for a locale, the value to override the segment with is stored
+in this model.
+
+Attributes:
+    locale (ForeignKey to Locale): The Locale to override.
+    context (ForeignKey to TranslationContext): The context to override. With the Locale, this tells us specifically
+        which object/content path to override.
+    last_translated_by (User): The user who last updated this override.
+    created_at (DateTimeField): The date/time when the override was first created.
+    updated_at (DateTimeField): The date/time when the override was last updated.
+    data_json (TextField with JSON contents): The value to override the field with.
+    has_error (BooleanField): Set to True if the value of this overtride has an error. We store overrides with
+        errors in case they were edited from an external system. This allows us to display the error in Wagtail.
+    field_error (TextField): if there was a database-level validation error while saving the translated object, that
+        error is tored here.'''
+}
+
+Table wagtail_localize_stringsegment {
+  id integer [pk, increment]
+  source_id integer [not null]
+  context_id integer [not null]
+  order "integer unsigned" [not null]
+  string_id integer [not null]
+  attrs text [not null]
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_stringsegment_source_id_5804129f']
+    (context_id) [name: 'wagtail_localize_stringsegment_context_id_63235539']
+    (string_id) [name: 'wagtail_localize_stringsegment_string_id_6356d5ec']
+  }
+
+  Note: '''Represents a translatable string that was extracted from a TranslationSource.
+
+Attributes:
+    string (ForeignKey to String): The string that was extracted.
+    attrs (TextField with JSON contents): The HTML attributes that were extracted from the string.
+
+        When we extract the segment, we replace HTML attributes with ``id`` attributes and the attributes that were
+        removed are stored in this field. When the translated strings come back, we replace the ``id`` attributes
+        with the original HTML attributes.
+
+        For example, for this segment:
+
+        ``<a href="https://www.example.com">Link to example.com</a>``
+
+        We will remove the ``href`` tag from it and replace it with an ``id``:
+
+        ``<a id="a1">Link to example.com</a>``
+
+        And then this field will be populated with the following JSON:
+
+        ``` json
+        {
+            "a#a1": {
+                "href": "https://www.example.com"
+            }
+        }
+        ```
+
+    source (ForiegnKey[TranslationSource]): The source content that the string was extracted from.
+    context (ForeignKey to TranslationContext): The context, which contains the position of the string in the source content.
+    order (PositiveIntegerField): The index that this segment appears on the page.
+
+Columns from BaseSegment (abstract): source_id, context_id, order.'''
+}
+
+Table wagtail_localize_templatesegment {
+  id integer [pk, increment]
+  source_id integer [not null]
+  context_id integer [not null]
+  order "integer unsigned" [not null]
+  template_id integer [not null]
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_templatesegment_source_id_26b89dc6']
+    (context_id) [name: 'wagtail_localize_templatesegment_context_id_81456b25']
+    (template_id) [name: 'wagtail_localize_templatesegment_template_id_c370b3c8']
+  }
+
+  Note: '''Represents a template segment that was extracted from a TranslationSource.
+
+Attributes:
+    template (ForeignKey to Template): The template that was extracted.
+    source (ForeignKey[TranslationSource]): The source content that the string was extracted from.
+    context (ForeignKey to TranslationContext): The context, which contains the position of the string in the source content.
+    order (PositiveIntegerField): The index that this segment appears on the page.
+
+Columns from BaseSegment (abstract): source_id, context_id, order.'''
+}
+
+Table wagtail_localize_relatedobjectsegment {
+  id integer [pk, increment]
+  source_id integer [not null]
+  context_id integer [not null]
+  order "integer unsigned" [not null]
+  object_id char(32) [not null]
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_relatedobjectsegment_source_id_9a3b1373']
+    (context_id) [name: 'wagtail_localize_relatedobjectsegment_context_id_c0a725be']
+    (object_id) [name: 'wagtail_localize_relatedobjectsegment_object_id_6c7b58df']
+  }
+
+  Note: '''Represents a related object segment that was extracted from a TranslationSource.
+
+Attributes:
+    object (ForeignKey to TranslatableObject): The TranslatableObject instance that represents the related object.
+    source (ForeignKey to TranslationSource): The source content that the string was extracted from.
+    context (ForeignKey to TranslationContext): The context, which contains the position of the string in the source content.
+    order (PositiveIntegerField): The index that this segment appears on the page.
+
+Columns from BaseSegment (abstract): source_id, context_id, order.'''
+}
+
+Table wagtail_localize_overridablesegment {
+  id integer [pk, increment]
+  source_id integer [not null]
+  context_id integer [not null]
+  order "integer unsigned" [not null]
+  data_json text [not null]
+
+  indexes {
+    (source_id) [name: 'wagtail_localize_overridablesegment_source_id_5720ac20']
+    (context_id) [name: 'wagtail_localize_overridablesegment_context_id_eed8c388']
+  }
+
+  Note: '''Represents an overridable segment that was extracted from a TranslationSource.
+
+Attributes:
+    data_json (TextField with JSON content): The value of the overridable segment as it is in the source.
+    source (ForeignKey to TranslationSource): The source content that the string was extracted from.
+    context (ForeignKey to TranslationContext): The context, which contains the position of the string in the source content.
+    order (PositiveIntegerField): The index that this segment appears on the page.
+
+Columns from BaseSegment (abstract): source_id, context_id, order.'''
+}
+
+Table wagtail_localize_localesynchronization {
+  id integer [pk, increment]
+  locale_id integer [unique, not null]
+  sync_from_id integer [not null]
+
+  indexes {
+    (sync_from_id) [name: 'wagtail_localize_localesynchronization_sync_from_id_1bc4c2eb']
+  }
+
+  Note: '''Stores the "Sync from" setting that users can add to Locales.
+
+This tells Wagtail Localize to synchronise the contents of the \'sync_from\' Locale to the \'locale\' Locale.
+
+Attributes:
+    locale (ForeignKey to Locale): The destination Locale of the synchronisation
+    sync_from (ForeignKey to Locale): The source Locale of the synchronisation'''
+}
+
+Table wagtail_localize_git_resource {
+  id integer [pk, increment]
+  object_id char(32) [unique, not null]
+  path text [unique, not null]
+
+  Note: '''An object that is pushed to the git repo.'''
+}
+
+Table wagtail_localize_git_synclog {
+  id integer [pk, increment]
+  action SyncLogAction [not null]
+  time datetime [not null, note: 'default in Python: now()']
+  commit_id varchar(40) [not null]
+
+  Note: '''Logs whenever we push or pull.'''
+}
+
+Table wagtail_localize_git_synclogresource {
+  id integer [pk, increment]
+  log_id integer [not null]
+  resource_id integer [not null]
+  locale_id integer
+  source_id integer
+
+  indexes {
+    (log_id) [name: 'wagtail_localize_git_synclogresource_log_id_a35dc3a8']
+    (resource_id) [name: 'wagtail_localize_git_synclogresource_resource_id_4e664a27']
+    (locale_id) [name: 'wagtail_localize_git_synclogresource_locale_id_887cb1c6']
+    (source_id) [name: 'wagtail_localize_git_synclogresource_source_id_6068d057']
+  }
+
+  Note: '''Logs each resource that was transferred in a push/pull'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref wagtailforms_formsubmission_page_id_fk: wagtailforms_formsubmission.page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailredirects_redirect_site_id_fk: wagtailredirects_redirect.site_id > wagtailcore_site.id [delete: cascade]
+
+Ref wagtailredirects_redirect_redirect_page_id_fk: wagtailredirects_redirect.redirect_page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailusers_userprofile_user_id_fk: wagtailusers_userprofile.user_id - auth_user.id [delete: cascade]
+
+Ref wagtaildocs_document_collection_id_fk: wagtaildocs_document.collection_id > wagtailcore_collection.id [delete: cascade]
+
+Ref wagtaildocs_document_uploaded_by_user_id_fk: wagtaildocs_document.uploaded_by_user_id > auth_user.id [delete: set null]
+
+Ref wagtailimages_image_collection_id_fk: wagtailimages_image.collection_id > wagtailcore_collection.id [delete: cascade]
+
+Ref wagtailimages_image_uploaded_by_user_id_fk: wagtailimages_image.uploaded_by_user_id > auth_user.id [delete: set null]
+
+Ref wagtailimages_rendition_image_id_fk: wagtailimages_rendition.image_id > wagtailimages_image.id [delete: cascade]
+
+Ref wagtailsearch_indexentry_content_type_id_fk: wagtailsearch_indexentry.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailsearch_indexentry_fts_rowid_fk: wagtailsearch_indexentry_fts.rowid - wagtailsearch_indexentry.id [delete: cascade]
+
+Ref wagtailadmin_editingsession_user_id_fk: wagtailadmin_editingsession.user_id > auth_user.id [delete: cascade]
+
+Ref wagtailadmin_editingsession_content_type_id_fk: wagtailadmin_editingsession.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_site_root_page_id_fk: wagtailcore_site.root_page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailcore_groupsitepermission_group_id_fk: wagtailcore_groupsitepermission.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_groupsitepermission_site_id_fk: wagtailcore_groupsitepermission.site_id > wagtailcore_site.id [delete: cascade]
+
+Ref wagtailcore_groupsitepermission_permission_id_fk: wagtailcore_groupsitepermission.permission_id > auth_permission.id [delete: cascade]
+
+Ref wagtailcore_modellogentry_content_type_id_fk: wagtailcore_modellogentry.content_type_id > django_content_type.id [delete: set null]
+
+Ref wagtailcore_revision_content_type_id_fk: wagtailcore_revision.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_revision_base_content_type_id_fk: wagtailcore_revision.base_content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_revision_user_id_fk: wagtailcore_revision.user_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_collectionviewrestriction_collection_id_fk: wagtailcore_collectionviewrestriction.collection_id > wagtailcore_collection.id [delete: cascade]
+
+Table wagtailcore_collectionviewrestriction_groups {
+  id integer [pk, increment]
+  collectionviewrestriction_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (collectionviewrestriction_id) [name: 'wagtailcore_collectionviewrestriction_groups_collectionviewrestriction_id_47320efd']
+    (group_id) [name: 'wagtailcore_collectionviewrestriction_groups_group_id_1823f2a3']
+    (collectionviewrestriction_id, group_id) [unique, name: 'wagtailcore_collectionviewrestriction_groups_collectionviewrestriction_id_group_id_988995ae_uniq']
+  }
+}
+
+Ref wagtailcore_collectionviewrestriction_groups_collectionviewrestriction_id_fk: wagtailcore_collectionviewrestriction_groups.collectionviewrestriction_id > wagtailcore_collectionviewrestriction.id [delete: cascade]
+
+Ref wagtailcore_collectionviewrestriction_groups_group_id_fk: wagtailcore_collectionviewrestriction_groups.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_groupcollectionpermission_group_id_fk: wagtailcore_groupcollectionpermission.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_groupcollectionpermission_collection_id_fk: wagtailcore_groupcollectionpermission.collection_id > wagtailcore_collection.id [delete: cascade]
+
+Ref wagtailcore_groupcollectionpermission_permission_id_fk: wagtailcore_groupcollectionpermission.permission_id > auth_permission.id [delete: cascade]
+
+Ref wagtailcore_uploadedfile_for_content_type_id_fk: wagtailcore_uploadedfile.for_content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_uploadedfile_uploaded_by_user_id_fk: wagtailcore_uploadedfile.uploaded_by_user_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_workflowcontenttype_content_type_id_fk: wagtailcore_workflowcontenttype.content_type_id - django_content_type.id [delete: cascade]
+
+Ref wagtailcore_workflowcontenttype_workflow_id_fk: wagtailcore_workflowcontenttype.workflow_id > wagtailcore_workflow.id [delete: cascade]
+
+Ref wagtailcore_workflowstate_content_type_id_fk: wagtailcore_workflowstate.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_workflowstate_base_content_type_id_fk: wagtailcore_workflowstate.base_content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_workflowstate_workflow_id_fk: wagtailcore_workflowstate.workflow_id > wagtailcore_workflow.id [delete: cascade]
+
+Ref wagtailcore_workflowstate_requested_by_id_fk: wagtailcore_workflowstate.requested_by_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_workflowstate_current_task_state_id_fk: wagtailcore_workflowstate.current_task_state_id - wagtailcore_taskstate.id [delete: set null]
+
+Ref wagtailcore_workflowtask_workflow_id_fk: wagtailcore_workflowtask.workflow_id > wagtailcore_workflow.id [delete: cascade]
+
+Ref wagtailcore_workflowtask_task_id_fk: wagtailcore_workflowtask.task_id > wagtailcore_task.id [delete: cascade]
+
+Ref wagtailcore_task_content_type_id_fk: wagtailcore_task.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_groupapprovaltask_task_ptr_id_fk: wagtailcore_groupapprovaltask.task_ptr_id - wagtailcore_task.id [delete: cascade]
+
+Table wagtailcore_groupapprovaltask_groups {
+  id integer [pk, increment]
+  groupapprovaltask_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (groupapprovaltask_id) [name: 'wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_9a9255ea']
+    (group_id) [name: 'wagtailcore_groupapprovaltask_groups_group_id_2e64b61f']
+    (groupapprovaltask_id, group_id) [unique, name: 'wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_group_id_bb5ee7eb_uniq']
+  }
+}
+
+Ref wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_fk: wagtailcore_groupapprovaltask_groups.groupapprovaltask_id > wagtailcore_groupapprovaltask.task_ptr_id [delete: cascade]
+
+Ref wagtailcore_groupapprovaltask_groups_group_id_fk: wagtailcore_groupapprovaltask_groups.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_taskstate_workflow_state_id_fk: wagtailcore_taskstate.workflow_state_id > wagtailcore_workflowstate.id [delete: cascade]
+
+Ref wagtailcore_taskstate_revision_id_fk: wagtailcore_taskstate.revision_id > wagtailcore_revision.id [delete: cascade]
+
+Ref wagtailcore_taskstate_task_id_fk: wagtailcore_taskstate.task_id > wagtailcore_task.id [delete: cascade]
+
+Ref wagtailcore_taskstate_finished_by_id_fk: wagtailcore_taskstate.finished_by_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_taskstate_content_type_id_fk: wagtailcore_taskstate.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_page_locale_id_fk: wagtailcore_page.locale_id > wagtailcore_locale.id [delete: restrict]
+
+Ref wagtailcore_page_latest_revision_id_fk: wagtailcore_page.latest_revision_id > wagtailcore_revision.id [delete: set null]
+
+Ref wagtailcore_page_live_revision_id_fk: wagtailcore_page.live_revision_id > wagtailcore_revision.id [delete: set null]
+
+Ref wagtailcore_page_locked_by_id_fk: wagtailcore_page.locked_by_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_page_content_type_id_fk: wagtailcore_page.content_type_id > django_content_type.id
+
+Ref wagtailcore_page_owner_id_fk: wagtailcore_page.owner_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_page_alias_of_id_fk: wagtailcore_page.alias_of_id > wagtailcore_page.id [delete: set null]
+
+Ref wagtailcore_grouppagepermission_group_id_fk: wagtailcore_grouppagepermission.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_grouppagepermission_page_id_fk: wagtailcore_grouppagepermission.page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailcore_grouppagepermission_permission_id_fk: wagtailcore_grouppagepermission.permission_id > auth_permission.id [delete: cascade]
+
+Ref wagtailcore_pageviewrestriction_page_id_fk: wagtailcore_pageviewrestriction.page_id > wagtailcore_page.id [delete: cascade]
+
+Table wagtailcore_pageviewrestriction_groups {
+  id integer [pk, increment]
+  pageviewrestriction_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (pageviewrestriction_id) [name: 'wagtailcore_pageviewrestriction_groups_pageviewrestriction_id_f147a99a']
+    (group_id) [name: 'wagtailcore_pageviewrestriction_groups_group_id_6460f223']
+    (pageviewrestriction_id, group_id) [unique, name: 'wagtailcore_pageviewrestriction_groups_pageviewrestriction_id_group_id_d23f80bb_uniq']
+  }
+}
+
+Ref wagtailcore_pageviewrestriction_groups_pageviewrestriction_id_fk: wagtailcore_pageviewrestriction_groups.pageviewrestriction_id > wagtailcore_pageviewrestriction.id [delete: cascade]
+
+Ref wagtailcore_pageviewrestriction_groups_group_id_fk: wagtailcore_pageviewrestriction_groups.group_id > auth_group.id [delete: cascade]
+
+Ref wagtailcore_workflowpage_page_id_fk: wagtailcore_workflowpage.page_id - wagtailcore_page.id [delete: cascade]
+
+Ref wagtailcore_workflowpage_workflow_id_fk: wagtailcore_workflowpage.workflow_id > wagtailcore_workflow.id [delete: cascade]
+
+Ref wagtailcore_pagelogentry_content_type_id_fk: wagtailcore_pagelogentry.content_type_id > django_content_type.id [delete: set null]
+
+Ref wagtailcore_comment_page_id_fk: wagtailcore_comment.page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailcore_comment_user_id_fk: wagtailcore_comment.user_id > auth_user.id [delete: cascade]
+
+Ref wagtailcore_comment_revision_created_id_fk: wagtailcore_comment.revision_created_id > wagtailcore_revision.id [delete: cascade]
+
+Ref wagtailcore_comment_resolved_by_id_fk: wagtailcore_comment.resolved_by_id > auth_user.id [delete: set null]
+
+Ref wagtailcore_commentreply_comment_id_fk: wagtailcore_commentreply.comment_id > wagtailcore_comment.id [delete: cascade]
+
+Ref wagtailcore_commentreply_user_id_fk: wagtailcore_commentreply.user_id > auth_user.id [delete: cascade]
+
+Ref wagtailcore_pagesubscription_user_id_fk: wagtailcore_pagesubscription.user_id > auth_user.id [delete: cascade]
+
+Ref wagtailcore_pagesubscription_page_id_fk: wagtailcore_pagesubscription.page_id > wagtailcore_page.id [delete: cascade]
+
+Ref wagtailcore_referenceindex_content_type_id_fk: wagtailcore_referenceindex.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_referenceindex_base_content_type_id_fk: wagtailcore_referenceindex.base_content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtailcore_referenceindex_to_content_type_id_fk: wagtailcore_referenceindex.to_content_type_id > django_content_type.id [delete: cascade]
+
+Ref taggit_taggeditem_tag_id_fk: taggit_taggeditem.tag_id > taggit_tag.id [delete: cascade]
+
+Ref taggit_taggeditem_content_type_id_fk: taggit_taggeditem.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtail_localize_translatableobject_content_type_id_fk: wagtail_localize_translatableobject.content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtail_localize_translationsource_object_id_fk: wagtail_localize_translationsource.object_id > wagtail_localize_translatableobject.translation_key [delete: cascade]
+
+Ref wagtail_localize_translationsource_specific_content_type_id_fk: wagtail_localize_translationsource.specific_content_type_id > django_content_type.id [delete: cascade]
+
+Ref wagtail_localize_translationsource_locale_id_fk: wagtail_localize_translationsource.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_translation_source_id_fk: wagtail_localize_translation.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_translation_target_locale_id_fk: wagtail_localize_translation.target_locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_translationlog_source_id_fk: wagtail_localize_translationlog.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_translationlog_locale_id_fk: wagtail_localize_translationlog.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_translationlog_revision_id_fk: wagtail_localize_translationlog.revision_id > wagtailcore_revision.id [delete: set null]
+
+Ref wagtail_localize_string_locale_id_fk: wagtail_localize_string.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_translationcontext_object_id_fk: wagtail_localize_translationcontext.object_id > wagtail_localize_translatableobject.translation_key [delete: cascade]
+
+Ref wagtail_localize_stringtranslation_translation_of_id_fk: wagtail_localize_stringtranslation.translation_of_id > wagtail_localize_string.id [delete: cascade]
+
+Ref wagtail_localize_stringtranslation_locale_id_fk: wagtail_localize_stringtranslation.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_stringtranslation_context_id_fk: wagtail_localize_stringtranslation.context_id > wagtail_localize_translationcontext.id [delete: set null]
+
+Ref wagtail_localize_stringtranslation_last_translated_by_id_fk: wagtail_localize_stringtranslation.last_translated_by_id > auth_user.id [delete: set null]
+
+Ref wagtail_localize_segmentoverride_locale_id_fk: wagtail_localize_segmentoverride.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_segmentoverride_context_id_fk: wagtail_localize_segmentoverride.context_id > wagtail_localize_translationcontext.id [delete: set null]
+
+Ref wagtail_localize_segmentoverride_last_translated_by_id_fk: wagtail_localize_segmentoverride.last_translated_by_id > auth_user.id [delete: set null]
+
+Ref wagtail_localize_stringsegment_source_id_fk: wagtail_localize_stringsegment.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_stringsegment_context_id_fk: wagtail_localize_stringsegment.context_id > wagtail_localize_translationcontext.id [delete: restrict]
+
+Ref wagtail_localize_stringsegment_string_id_fk: wagtail_localize_stringsegment.string_id > wagtail_localize_string.id [delete: cascade]
+
+Ref wagtail_localize_templatesegment_source_id_fk: wagtail_localize_templatesegment.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_templatesegment_context_id_fk: wagtail_localize_templatesegment.context_id > wagtail_localize_translationcontext.id [delete: restrict]
+
+Ref wagtail_localize_templatesegment_template_id_fk: wagtail_localize_templatesegment.template_id > wagtail_localize_template.id [delete: cascade]
+
+Ref wagtail_localize_relatedobjectsegment_source_id_fk: wagtail_localize_relatedobjectsegment.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_relatedobjectsegment_context_id_fk: wagtail_localize_relatedobjectsegment.context_id > wagtail_localize_translationcontext.id [delete: restrict]
+
+Ref wagtail_localize_relatedobjectsegment_object_id_fk: wagtail_localize_relatedobjectsegment.object_id > wagtail_localize_translatableobject.translation_key [delete: cascade]
+
+Ref wagtail_localize_overridablesegment_source_id_fk: wagtail_localize_overridablesegment.source_id > wagtail_localize_translationsource.id [delete: cascade]
+
+Ref wagtail_localize_overridablesegment_context_id_fk: wagtail_localize_overridablesegment.context_id > wagtail_localize_translationcontext.id [delete: restrict]
+
+Ref wagtail_localize_localesynchronization_locale_id_fk: wagtail_localize_localesynchronization.locale_id - wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_localesynchronization_sync_from_id_fk: wagtail_localize_localesynchronization.sync_from_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_git_resource_object_id_fk: wagtail_localize_git_resource.object_id - wagtail_localize_translatableobject.translation_key [delete: cascade]
+
+Ref wagtail_localize_git_synclogresource_log_id_fk: wagtail_localize_git_synclogresource.log_id > wagtail_localize_git_synclog.id [delete: cascade]
+
+Ref wagtail_localize_git_synclogresource_resource_id_fk: wagtail_localize_git_synclogresource.resource_id > wagtail_localize_git_resource.id [delete: cascade]
+
+Ref wagtail_localize_git_synclogresource_locale_id_fk: wagtail_localize_git_synclogresource.locale_id > wagtailcore_locale.id [delete: cascade]
+
+Ref wagtail_localize_git_synclogresource_source_id_fk: wagtail_localize_git_synclogresource.source_id > wagtail_localize_translationsource.id [delete: set null]

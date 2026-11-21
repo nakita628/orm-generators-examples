@@ -1,0 +1,116 @@
+Table user {
+  id uuid [pk, not null]
+  email text [not null, unique]
+  image text
+  name text [note: 'Shared with Lipi, which mirrors the display name and credential hash here']
+  password text
+  betterAuthName text [not null, note: 'Better Auth core compatibility fields']
+  emailVerifiedBoolean boolean [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table better_auth_account {
+  id uuid [pk, not null]
+  userId uuid [not null]
+  accountId text [not null]
+  providerId text [not null]
+  accessToken text
+  refreshToken text
+  accessTokenExpiresAt timestamp
+  refreshTokenExpiresAt timestamp
+  scope text
+  idToken text
+  password text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+  indexes {
+    (providerId, accountId) [unique, name: 'better_auth_account_provider_account_unique']
+  }
+}
+
+Table better_auth_session {
+  id uuid [pk, not null]
+  userId uuid [not null]
+  token text [not null, unique]
+  expiresAt timestamp [not null]
+  ipAddress text
+  userAgent text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table better_auth_verification {
+  id uuid [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expiresAt timestamp [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table infinitunes_rate_limit {
+  id uuid [pk, not null]
+  key text [not null, unique]
+  count integer [not null]
+  lastRequest bigint [not null]
+}
+
+Table infinitunes_passkey {
+  id uuid [pk, not null]
+  name text
+  publicKey text [not null]
+  userId uuid [not null]
+  credentialID text [not null, unique]
+  counter integer [not null]
+  deviceType text [not null]
+  backedUp boolean [not null]
+  transports text
+  aaguid text
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Table infinitunes_playlist {
+  id uuid [pk, not null]
+  name text [not null]
+  description text
+  userId uuid [not null]
+  songs text [not null]
+  createdAt timestamp [not null]
+}
+
+Table infinitunes_favorite {
+  id uuid [pk, not null]
+  userId uuid [not null, unique]
+  songs text [not null]
+  albums text [not null]
+  playlists text [not null]
+  artists text [not null]
+  podcasts text [not null]
+}
+
+Table infinitunes_recently_played {
+  id uuid [pk, not null]
+  userId uuid [not null]
+  itemId text [not null]
+  itemType text [not null]
+  playedAt timestamp [not null]
+  indexes {
+    (userId, itemType, itemId) [unique, name: 'infinitunes_recently_played_user_item_unique']
+    (userId, playedAt) [name: 'infinitunes_recently_played_user_played_at_idx']
+  }
+  Note: 'One row per user and played item; replaying bumps `playedAt`.'
+}
+
+Ref better_auth_account_userId_user_id_fk: better_auth_account.userId > user.id [delete: cascade]
+
+Ref better_auth_session_userId_user_id_fk: better_auth_session.userId > user.id [delete: cascade]
+
+Ref infinitunes_passkey_userId_user_id_fk: infinitunes_passkey.userId > user.id [delete: cascade]
+
+Ref infinitunes_playlist_userId_user_id_fk: infinitunes_playlist.userId > user.id [delete: cascade]
+
+Ref infinitunes_favorite_userId_user_id_fk: infinitunes_favorite.userId - user.id [delete: cascade]
+
+Ref infinitunes_recently_played_userId_user_id_fk: infinitunes_recently_played.userId > user.id [delete: cascade]

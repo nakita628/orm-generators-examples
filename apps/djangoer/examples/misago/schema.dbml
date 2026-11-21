@@ -1,0 +1,1375 @@
+Enum UserLimitsPrivateThreadInvitesTo {
+  "0"
+  "1"
+  "2"
+}
+
+Enum UserSubscribeToStartedThreads {
+  "0"
+  "1"
+  "2"
+}
+
+Enum UserSubscribeToRepliedThreads {
+  "0"
+  "1"
+  "2"
+}
+
+Enum ThreadNotifications {
+  "0"
+  "1"
+  "2"
+}
+
+Enum BanCheckType {
+  "0"
+  "1"
+  "2"
+}
+
+Enum DataDownloadStatus {
+  "0"
+  "1"
+  "2"
+  "3"
+}
+
+Enum DeletedUserDeletedBy {
+  "1"
+  "2"
+  "3"
+}
+
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum AgreementType {
+  "terms_of_service"
+  "privacy_policy"
+}
+
+Enum AttachmentTypeStatus {
+  "0"
+  "1"
+  "2"
+}
+
+Enum MenuItemMenu {
+  "both"
+  "navbar"
+  "footer"
+}
+
+Table misago_users_rank {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  slug varchar(255) [unique, not null]
+  description text
+  title varchar(255)
+  css_class varchar(255)
+  is_default boolean [default: false, not null]
+  is_tab boolean [default: false, not null]
+  order integer [default: 0, not null]
+
+  indexes {
+    (slug) [name: 'misago_users_rank_slug_80e8f022_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table misago_users_online {
+  user_id integer [pk]
+  last_click "timestamp with time zone" [not null, note: 'default in Python: now()']
+}
+
+Table misago_users_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login "timestamp with time zone"
+  is_superuser boolean [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  username varchar(30) [not null]
+  slug varchar(30) [unique, not null]
+  email varchar(255) [not null]
+  email_hash varchar(32) [unique, not null]
+  joined_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  joined_from_ip inet
+  is_hiding_presence boolean [default: false, not null]
+  rank_id integer
+  title varchar(255)
+  requires_activation integer [default: 0, not null]
+  is_staff boolean [default: false, not null, note: 'Designates whether the user can log into admin sites.']
+  acl_key varchar(12)
+  is_active boolean [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  is_active_staff_message text
+  is_deleting_account boolean [default: false, not null]
+  avatar_tmp varchar(255)
+  avatar_src varchar(255)
+  avatar_crop varchar(255)
+  avatars jsonb
+  is_avatar_locked boolean [default: false, not null]
+  avatar_lock_user_message text
+  avatar_lock_staff_message text
+  signature text
+  signature_parsed text
+  signature_checksum varchar(64)
+  is_signature_locked boolean [default: false, not null]
+  signature_lock_user_message text
+  signature_lock_staff_message text
+  followers integer [default: 0, not null]
+  following integer [default: 0, not null]
+  limits_private_thread_invites_to UserLimitsPrivateThreadInvitesTo [default: 0, not null]
+  unread_private_threads integer [default: 0, not null]
+  sync_unread_private_threads boolean [default: false, not null]
+  subscribe_to_started_threads UserSubscribeToStartedThreads [default: 0, not null]
+  subscribe_to_replied_threads UserSubscribeToRepliedThreads [default: 0, not null]
+  unread_notifications integer [default: 0, not null]
+  watch_started_threads ThreadNotifications [default: 2, not null]
+  watch_replied_threads ThreadNotifications [default: 2, not null]
+  watch_new_private_threads_by_followed ThreadNotifications [default: 2, not null]
+  watch_new_private_threads_by_other_users ThreadNotifications [default: 2, not null]
+  notify_new_private_threads_by_followed ThreadNotifications [default: 2, not null]
+  notify_new_private_threads_by_other_users ThreadNotifications [default: 2, not null]
+  threads integer [default: 0, not null]
+  posts integer [default: 0, not null]
+  last_posted_on "timestamp with time zone"
+  profile_fields hstore [not null, note: 'default in Python: dict()']
+  agreements integer[] [not null, note: 'default in Python: list()']
+
+  indexes {
+    (slug) [name: 'misago_users_user_slug_87d70f62_like', note: 'varchar_pattern_ops']
+    (email) [name: 'misago_users_user_email_1cdb37a6']
+    (email) [name: 'misago_users_user_email_1cdb37a6_like', note: 'varchar_pattern_ops']
+    (email_hash) [name: 'misago_users_user_email_hash_55ddd5b1_like', note: 'varchar_pattern_ops']
+    (joined_on) [name: 'misago_users_user_joined_on_2171a24f']
+    (rank_id) [name: 'misago_users_user_rank_id_25883ca9']
+    (is_active) [name: 'misago_users_user_is_active_fc628eb4']
+    (posts) [name: 'misago_users_user_posts_79cba5f0']
+    (plugin_data) [name: 'misago_user_plugin__c45a32_gin', note: 'using gin']
+    (is_staff) [name: 'misago_user_is_staff_part', note: 'where "is_staff"']
+    (requires_activation) [name: 'misago_user_requires_acti_part', note: 'where "requires_activation" > 0']
+    (is_deleting_account) [name: 'misago_user_is_deleting_a_part', note: 'where "is_deleting_account"']
+  }
+
+  Note: '''Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PluginDataModel (abstract): plugin_data.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table misago_users_usernamechange {
+  id integer [pk, increment]
+  user_id integer [not null]
+  changed_by_id integer
+  changed_by_username varchar(30) [not null]
+  changed_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  new_username varchar(255) [not null]
+  old_username varchar(255) [not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_usernamechange_user_id_ef2d9164']
+    (changed_by_id) [name: 'misago_users_usernamechange_changed_by_id_bd7f6309']
+  }
+}
+
+Table misago_users_activityranking {
+  id integer [pk, increment]
+  user_id integer [not null]
+  score integer [default: 0, not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_activityranking_user_id_a962add9']
+    (score) [name: 'misago_users_activityranking_score_3e0a18df']
+  }
+}
+
+Table misago_users_avatar {
+  id integer [pk, increment]
+  user_id integer [not null]
+  size integer [default: 0, not null]
+  image varchar(255) [not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_avatar_user_id_c3763aa1']
+  }
+}
+
+Table misago_users_audittrail {
+  id integer [pk, increment]
+  user_id integer [not null]
+  created_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  ip_address inet [not null]
+  content_type_id integer [not null]
+  object_id integer [not null, note: 'content_object: with content_type_id, a generic foreign key to a row of any model']
+
+  indexes {
+    (user_id) [name: 'misago_users_audittrail_user_id_237c9b7f']
+    (created_on) [name: 'misago_users_audittrail_created_on_70cfb6cf']
+    (content_type_id) [name: 'misago_users_audittrail_content_type_id_23bfb917']
+  }
+}
+
+Table misago_users_avatargallery {
+  id integer [pk, increment]
+  gallery varchar(255) [not null]
+  image varchar(255) [not null]
+}
+
+Table misago_users_ban {
+  id integer [pk, increment]
+  check_type BanCheckType [default: 0, not null]
+  registration_only boolean [default: false, not null]
+  banned_value varchar(255) [not null]
+  user_message text
+  staff_message text
+  expires_on "timestamp with time zone"
+  is_checked boolean [default: true, not null]
+
+  indexes {
+    (check_type) [name: 'misago_users_ban_check_type_06e115d1']
+    (registration_only) [name: 'misago_users_ban_registration_only_867b54d4']
+    (banned_value) [name: 'misago_users_ban_banned_value_bd43b7e9']
+    (banned_value) [name: 'misago_users_ban_banned_value_bd43b7e9_like', note: 'varchar_pattern_ops']
+    (expires_on) [name: 'misago_users_ban_expires_on_62433cd5']
+    (is_checked) [name: 'misago_users_ban_is_checked_e23bc0a6']
+  }
+}
+
+Table misago_users_bancache {
+  user_id integer [pk]
+  ban_id integer
+  cache_version varchar(8) [not null]
+  user_message text
+  staff_message text
+  expires_on "timestamp with time zone"
+
+  indexes {
+    (ban_id) [name: 'misago_users_bancache_ban_id_2766ed56']
+  }
+}
+
+Table misago_users_datadownload {
+  id integer [pk, increment]
+  user_id integer [not null]
+  status DataDownloadStatus [default: 0, not null]
+  requester_id integer
+  requester_name varchar(255) [not null]
+  requested_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  expires_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  file varchar(255)
+
+  indexes {
+    (user_id) [name: 'misago_users_datadownload_user_id_f234398b']
+    (status) [name: 'misago_users_datadownload_status_3bb15bd8']
+    (requester_id) [name: 'misago_users_datadownload_requester_id_5c85eef3']
+    (requested_on) [name: 'misago_users_datadownload_requested_on_c594e8c1']
+  }
+}
+
+Table misago_users_deleteduser {
+  id integer [pk, increment]
+  deleted_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  deleted_by DeletedUserDeletedBy [not null]
+
+  indexes {
+    (deleted_on) [name: 'misago_users_deleteduser_deleted_on_c5363ce6']
+    (deleted_by) [name: 'misago_users_deleteduser_deleted_by_c29f7874']
+  }
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time "timestamp with time zone" [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  indexes {
+    (name) [name: 'auth_group_name_a6ea08ec_like', note: 'varchar_pattern_ops']
+  }
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date "timestamp with time zone" [not null]
+
+  indexes {
+    (session_key) [name: 'django_session_session_key_c0390e0f_like', note: 'varchar_pattern_ops']
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table social_auth_usersocialauth {
+  id bigint [pk, increment]
+  user_id integer [not null]
+  provider varchar(32) [not null]
+  uid varchar(255) [not null]
+  extra_data jsonb [not null, note: 'default in Python: dict()']
+  created "timestamp with time zone" [not null, note: 'default in Python: now()']
+  modified "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'social_auth_usersocialauth_user_id_17d28448']
+    (uid) [name: 'social_auth_usersocialauth_uid_796e51dc']
+    (uid) [name: 'social_auth_usersocialauth_uid_796e51dc_like', note: 'varchar_pattern_ops']
+    (provider, uid) [unique, name: 'social_auth_usersocialauth_provider_uid_e6b5e668_uniq']
+  }
+
+  Note: '''Social Auth association model
+
+Columns from AbstractUserSocialAuth (abstract): user_id, provider, uid, extra_data, created, modified.'''
+}
+
+Table social_auth_nonce {
+  id bigint [pk, increment]
+  server_url varchar(255) [not null]
+  timestamp integer [not null]
+  salt varchar(65) [not null]
+
+  indexes {
+    (server_url, timestamp, salt) [unique, name: 'social_auth_nonce_server_url_timestamp_salt_f6284463_uniq']
+  }
+
+  Note: '''One use numbers'''
+}
+
+Table social_auth_association {
+  id bigint [pk, increment]
+  server_url varchar(255) [not null]
+  handle varchar(255) [not null]
+  secret varchar(255) [not null]
+  issued integer [not null]
+  lifetime integer [not null]
+  assoc_type varchar(64) [not null]
+
+  indexes {
+    (server_url, handle) [unique, name: 'social_auth_association_server_url_handle_078befa2_uniq']
+  }
+
+  Note: '''OpenId account association'''
+}
+
+Table social_auth_code {
+  id bigint [pk, increment]
+  email varchar(254) [not null]
+  code varchar(32) [not null]
+  verified boolean [default: false, not null]
+  timestamp "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (code) [name: 'social_auth_code_code_a2393167']
+    (code) [name: 'social_auth_code_code_a2393167_like', note: 'varchar_pattern_ops']
+    (timestamp) [name: 'social_auth_code_timestamp_176b341f']
+    (email, code) [unique, name: 'social_auth_code_email_code_801b2d02_uniq']
+  }
+}
+
+Table social_auth_partial {
+  id bigint [pk, increment]
+  token varchar(32) [not null]
+  next_step smallint [default: 0, not null]
+  backend varchar(32) [not null]
+  data jsonb [not null, note: 'default in Python: dict()']
+  timestamp "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (token) [name: 'social_auth_partial_token_3017fea3']
+    (token) [name: 'social_auth_partial_token_3017fea3_like', note: 'varchar_pattern_ops']
+    (timestamp) [name: 'social_auth_partial_timestamp_50f2119f']
+  }
+}
+
+Table misago_acl_role {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  special_role varchar(255)
+  permissions jsonb [not null, note: 'default in Python: permissions_default()']
+
+  Note: '''Columns from BaseRole (abstract): name, special_role, permissions.'''
+}
+
+Table misago_cache_cacheversion {
+  cache varchar(128) [pk]
+  version varchar(8) [not null, note: 'default in Python: generate_version_string()']
+
+  indexes {
+    (cache) [name: 'misago_cache_cacheversion_cache_568b3f84_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table misago_conf_setting {
+  id integer [pk, increment]
+  setting varchar(255) [unique, not null]
+  python_type varchar(255) [default: 'string', not null]
+  dry_value text
+  image varchar(100)
+  image_size integer
+  image_width integer
+  image_height integer
+  is_public boolean [default: false, not null]
+  is_lazy boolean [default: false, not null]
+
+  indexes {
+    (setting) [name: 'misago_conf_setting_setting_d5ff9d28_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table misago_icons_icon {
+  id integer [pk, increment]
+  type varchar(255) [not null]
+  image varchar(100) [not null]
+  size integer [default: 0, not null]
+  width integer [default: 0, not null]
+  height integer [default: 0, not null]
+}
+
+Table misago_themes_theme {
+  id integer [pk, increment]
+  parent_id integer
+  name varchar(255) [not null]
+  dirname varchar(8) [not null, note: 'default in Python: generate_theme_dirname()']
+  is_default boolean [default: false, not null]
+  is_active boolean [default: false, not null]
+  version varchar(255)
+  author varchar(255)
+  url varchar(255)
+  lft integer [not null]
+  rght integer [not null]
+  tree_id integer [not null]
+  level integer [not null]
+
+  indexes {
+    (parent_id) [name: 'misago_themes_theme_parent_id_c4ef9886']
+    (tree_id) [name: 'misago_themes_theme_tree_id_1c41cf31']
+  }
+}
+
+Table misago_themes_css {
+  id integer [pk, increment]
+  theme_id integer [not null]
+  name varchar(255) [not null]
+  url varchar(255)
+  source_file varchar(255)
+  source_hash varchar(8)
+  source_needs_building boolean [default: false, not null]
+  build_file varchar(255)
+  build_hash varchar(8)
+  size integer [default: 0, not null]
+  order integer [default: 0, not null]
+  modified_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (theme_id) [name: 'misago_themes_css_theme_id_2b465b12']
+  }
+}
+
+Table misago_themes_media {
+  id integer [pk, increment]
+  theme_id integer [not null]
+  name varchar(255) [not null]
+  file varchar(255) [not null]
+  hash varchar(8) [not null]
+  type varchar(255) [not null]
+  width integer [default: 0, not null]
+  height integer [default: 0, not null]
+  size integer [not null]
+  thumbnail varchar(255)
+  modified_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (theme_id) [name: 'misago_themes_media_theme_id_e8a06c10']
+  }
+}
+
+Table misago_legal_agreement {
+  id integer [pk, increment]
+  type AgreementType [default: 'terms_of_service', not null]
+  title varchar(255)
+  link varchar(255)
+  text text
+  is_active boolean [default: false, not null]
+  created_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  created_by_id integer
+  created_by_name varchar(255)
+  last_modified_on "timestamp with time zone"
+  last_modified_by_id integer
+  last_modified_by_name varchar(255)
+
+  indexes {
+    (type) [name: 'misago_legal_agreement_type_e9552242']
+    (type) [name: 'misago_legal_agreement_type_e9552242_like', note: 'varchar_pattern_ops']
+    (created_by_id) [name: 'misago_legal_agreement_created_by_id_0c1cd0f5']
+    (last_modified_by_id) [name: 'misago_legal_agreement_last_modified_by_id_a300296b']
+  }
+}
+
+Table misago_legal_useragreement {
+  id integer [pk, increment]
+  user_id integer [not null]
+  agreement_id integer [not null]
+  accepted_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'misago_legal_useragreement_user_id_89d96747']
+    (agreement_id) [name: 'misago_legal_useragreement_agreement_id_654abb8d']
+  }
+}
+
+Table misago_notifications_notification {
+  id bigint [pk, increment]
+  user_id integer [not null]
+  verb varchar(32) [not null]
+  is_read boolean [default: false, not null]
+  actor_id integer
+  actor_name varchar(255)
+  category_id integer
+  thread_id integer
+  thread_title varchar(255)
+  post_id integer
+  created_at "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'misago_notifications_notification_user_id_6cfe613d']
+    (actor_id) [name: 'misago_notifications_notification_actor_id_3cf6f64f']
+    (category_id) [name: 'misago_notifications_notification_category_id_a925de97']
+    (thread_id) [name: 'misago_notifications_notification_thread_id_4c9beb15']
+    (post_id) [name: 'misago_notifications_notification_post_id_6e79511b']
+    (created_at) [name: 'misago_notifications_notification_created_at_5c473587']
+    (id, user_id) [name: 'misago_noti_id_5a01fa_idx', note: 'descending: id']
+    (id, user_id, is_read) [name: 'misago_noti_id_7b4a20_idx', note: 'descending: id']
+    (user_id, is_read) [name: 'misago_noti_user_unread', note: 'where NOT "is_read"']
+    (user_id, post_id, is_read) [name: 'misago_noti_user_id_9b98fb_idx']
+  }
+}
+
+Table misago_notifications_watchedthread {
+  id bigint [pk, increment]
+  user_id integer [not null]
+  category_id integer [not null]
+  thread_id integer [not null]
+  send_emails boolean [default: true, not null]
+  secret varchar(32) [not null, note: 'default in Python: get_watched_thread_secret()']
+  created_at "timestamp with time zone" [not null, note: 'default in Python: now()']
+  read_at "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'misago_notifications_watchedthread_user_id_9f3b65ea']
+    (category_id) [name: 'misago_notifications_watchedthread_category_id_fb4801f2']
+    (thread_id) [name: 'misago_notifications_watchedthread_thread_id_1b969b89']
+    (user_id, thread_id) [name: 'misago_noti_user_id_9cde34_idx', note: 'descending: thread_id']
+  }
+}
+
+Table misago_categories_category {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  parent_id integer
+  special_role varchar(255)
+  name varchar(255) [not null]
+  slug varchar(255) [not null]
+  short_name varchar(255)
+  color varchar(7)
+  description text
+  is_closed boolean [default: false, not null]
+  threads integer [default: 0, not null]
+  posts integer [default: 0, not null]
+  last_post_on "timestamp with time zone"
+  last_thread_id integer
+  last_thread_title varchar(255)
+  last_thread_slug varchar(255)
+  last_poster_id integer
+  last_poster_name varchar(255)
+  last_poster_slug varchar(255)
+  require_threads_approval boolean [default: false, not null]
+  require_replies_approval boolean [default: false, not null]
+  require_edits_approval boolean [default: false, not null]
+  prune_started_after integer [default: 0, not null]
+  prune_replied_after integer [default: 0, not null]
+  archive_pruned_in_id integer
+  css_class varchar(255)
+  lft integer [not null]
+  rght integer [not null]
+  tree_id integer [not null]
+  level integer [not null]
+
+  indexes {
+    (parent_id) [name: 'misago_categories_category_parent_id_1d85cfdc']
+    (last_thread_id) [name: 'misago_categories_category_last_thread_id_44625647']
+    (last_poster_id) [name: 'misago_categories_category_last_poster_id_96db3f03']
+    (archive_pruned_in_id) [name: 'misago_categories_category_archive_pruned_in_id_e8c49844']
+    (tree_id) [name: 'misago_categories_category_tree_id_69f3b1ee']
+    (plugin_data) [name: 'misago_cate_plugin__15709c_gin', note: 'using gin']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_categories_categoryrole {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  special_role varchar(255)
+  permissions jsonb [not null, note: 'default in Python: permissions_default()']
+
+  Note: '''Columns from BaseRole (abstract): name, special_role, permissions.'''
+}
+
+Table misago_categories_rolecategoryacl {
+  id integer [pk, increment]
+  role_id integer [not null]
+  category_id integer [not null]
+  category_role_id integer [not null]
+
+  indexes {
+    (role_id) [name: 'misago_categories_rolecategoryacl_role_id_9e172a55']
+    (category_id) [name: 'misago_categories_rolecategoryacl_category_id_99c2a9bb']
+    (category_role_id) [name: 'misago_categories_rolecategoryacl_category_role_id_d3558bd9']
+  }
+}
+
+Table misago_threads_post {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  category_id integer [not null]
+  thread_id integer [not null]
+  poster_id integer
+  poster_name varchar(255) [not null]
+  original text [not null]
+  parsed text [not null]
+  checksum varchar(64) [default: '-', not null]
+  attachments_cache jsonb
+  posted_on "timestamp with time zone" [not null]
+  updated_on "timestamp with time zone" [not null]
+  hidden_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  edits integer [default: 0, not null]
+  last_editor_id integer
+  last_editor_name varchar(255)
+  last_editor_slug varchar(255)
+  hidden_by_id integer
+  hidden_by_name varchar(255)
+  hidden_by_slug varchar(255)
+  has_reports boolean [default: false, not null]
+  has_open_reports boolean [default: false, not null]
+  is_unapproved boolean [default: false, not null]
+  is_hidden boolean [default: false, not null]
+  is_protected boolean [default: false, not null]
+  is_event boolean [default: false, not null]
+  event_type varchar(255)
+  event_context jsonb
+  likes integer [default: 0, not null]
+  last_likes jsonb
+  search_document text
+  search_vector tsvector [not null]
+
+  indexes {
+    (category_id) [name: 'misago_threads_post_category_id_79f7f0ef']
+    (thread_id) [name: 'misago_threads_post_thread_id_8083899e']
+    (poster_id) [name: 'misago_threads_post_poster_id_b3163b03']
+    (posted_on) [name: 'misago_threads_post_posted_on_00c20f4c']
+    (last_editor_id) [name: 'misago_threads_post_last_editor_id_56e47ea4']
+    (last_editor_slug) [name: 'misago_threads_post_last_editor_slug_a28b663a']
+    (last_editor_slug) [name: 'misago_threads_post_last_editor_slug_a28b663a_like', note: 'varchar_pattern_ops']
+    (hidden_by_id) [name: 'misago_threads_post_hidden_by_id_452f0812']
+    (hidden_by_slug) [name: 'misago_threads_post_hidden_by_slug_df670716']
+    (hidden_by_slug) [name: 'misago_threads_post_hidden_by_slug_df670716_like', note: 'varchar_pattern_ops']
+    (is_unapproved) [name: 'misago_threads_post_is_unapproved_9240a4cc']
+    (is_event) [name: 'misago_threads_post_is_event_ba70bc13']
+    (plugin_data) [name: 'misago_thre_plugin__91da06_gin', note: 'using gin']
+    (has_open_reports) [name: 'misago_post_has_open_repo_part', note: 'where "has_open_reports"']
+    (is_hidden) [name: 'misago_post_is_hidden_part', note: 'where NOT "is_hidden"']
+    (is_event, event_type) [name: 'misago_post_is_event_part', note: 'where "is_event"']
+    (search_vector) [name: 'misago_thre_search__b472a2_gin', note: 'using gin']
+    (thread_id, id) [name: 'misago_thre_thread__4e5114_idx']
+    (is_event, is_hidden) [name: 'misago_thre_is_even_d29c90_idx']
+    (poster_id, posted_on) [name: 'misago_thre_poster__eefeb2_idx']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_threads_postedit {
+  id integer [pk, increment]
+  category_id integer [not null]
+  thread_id integer [not null]
+  post_id integer [not null]
+  edited_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  editor_id integer
+  editor_name varchar(255) [not null]
+  editor_slug varchar(255) [not null]
+  edited_from text [not null]
+  edited_to text [not null]
+
+  indexes {
+    (category_id) [name: 'misago_threads_postedit_category_id_14762498']
+    (thread_id) [name: 'misago_threads_postedit_thread_id_a71149fd']
+    (post_id) [name: 'misago_threads_postedit_post_id_831e29bb']
+    (editor_id) [name: 'misago_threads_postedit_editor_id_3c099285']
+  }
+}
+
+Table misago_threads_postlike {
+  id integer [pk, increment]
+  category_id integer [not null]
+  thread_id integer [not null]
+  post_id integer [not null]
+  liker_id integer
+  liker_name varchar(255) [not null]
+  liker_slug varchar(255) [not null]
+  liked_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (category_id) [name: 'misago_threads_postlike_category_id_21e0c8ce']
+    (thread_id) [name: 'misago_threads_postlike_thread_id_38e33d41']
+    (post_id) [name: 'misago_threads_postlike_post_id_7ec34c1c']
+    (liker_id) [name: 'misago_threads_postlike_liker_id_e9fbb1c9']
+    (liker_name) [name: 'misago_threads_postlike_liker_name_1ead3b48']
+    (liker_name) [name: 'misago_threads_postlike_liker_name_1ead3b48_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table misago_threads_thread {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  category_id integer [not null]
+  title varchar(255) [not null]
+  slug varchar(255) [not null]
+  replies integer [default: 0, not null]
+  has_events boolean [default: false, not null]
+  has_poll boolean [default: false, not null]
+  has_reported_posts boolean [default: false, not null]
+  has_open_reports boolean [default: false, not null]
+  has_unapproved_posts boolean [default: false, not null]
+  has_hidden_posts boolean [default: false, not null]
+  started_on "timestamp with time zone" [not null]
+  last_post_on "timestamp with time zone" [not null]
+  first_post_id integer
+  starter_id integer
+  starter_name varchar(255) [not null]
+  starter_slug varchar(255) [not null]
+  last_post_id integer
+  last_post_is_event boolean [default: false, not null]
+  last_poster_id integer
+  last_poster_name varchar(255)
+  last_poster_slug varchar(255)
+  weight integer [default: 0, not null]
+  is_unapproved boolean [default: false, not null]
+  is_hidden boolean [default: false, not null]
+  is_closed boolean [default: false, not null]
+  best_answer_id integer
+  best_answer_is_protected boolean [default: false, not null]
+  best_answer_marked_on "timestamp with time zone"
+  best_answer_marked_by_id integer
+  best_answer_marked_by_name varchar(255)
+  best_answer_marked_by_slug varchar(255)
+
+  indexes {
+    (category_id) [name: 'misago_threads_thread_category_id_e3266490']
+    (replies) [name: 'misago_threads_thread_replies_1617266c']
+    (started_on) [name: 'misago_threads_thread_started_on_10445c64']
+    (last_post_on) [name: 'misago_threads_thread_last_post_on_10841b1c']
+    (first_post_id) [name: 'misago_threads_thread_first_post_id_b8139d81']
+    (starter_id) [name: 'misago_threads_thread_starter_id_7974db8c']
+    (last_post_id) [name: 'misago_threads_thread_last_post_id_c638dfb4']
+    (last_poster_id) [name: 'misago_threads_thread_last_poster_id_4fa32da6']
+    (is_unapproved) [name: 'misago_threads_thread_is_unapproved_a55fb408']
+    (best_answer_id) [name: 'misago_threads_thread_best_answer_id_1d0866b5']
+    (best_answer_marked_by_id) [name: 'misago_threads_thread_best_answer_marked_by_id_68c446a1']
+    (plugin_data) [name: 'misago_thre_plugin__e6e836_gin', note: 'using gin']
+    (weight) [name: 'misago_thread_pinned_glob_part', note: 'where "weight" = 2']
+    (weight) [name: 'misago_thread_pinned_loca_part', note: 'where "weight" = 1']
+    (weight) [name: 'misago_thread_not_pinned_part', note: 'where "weight" = 0']
+    (weight) [name: 'misago_thread_not_global_part', note: 'where "weight" < 2']
+    (has_reported_posts) [name: 'misago_thread_has_reporte_part', note: 'where "has_reported_posts"']
+    (has_unapproved_posts) [name: 'misago_thread_has_unappro_part', note: 'where "has_unapproved_posts"']
+    (is_hidden) [name: 'misago_thread_is_visible_part', note: 'where NOT "is_hidden"']
+    (category_id, id) [name: 'misago_thre_categor_6cb52c_idx']
+    (category_id, last_post_on) [name: 'misago_thre_categor_7ec8b0_idx']
+    (category_id, replies) [name: 'misago_thre_categor_c5eaf1_idx']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_threads_threadparticipant {
+  id integer [pk, increment]
+  thread_id integer [not null]
+  user_id integer [not null]
+  is_owner boolean [default: false, not null]
+
+  indexes {
+    (thread_id) [name: 'misago_threads_threadparticipant_thread_id_d468a2cb']
+    (user_id) [name: 'misago_threads_threadparticipant_user_id_efbeaf80']
+  }
+}
+
+Table misago_threads_subscription {
+  id integer [pk, increment]
+  user_id integer [not null]
+  thread_id integer [not null]
+  category_id integer [not null]
+  last_read_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  send_email boolean [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'misago_threads_subscription_user_id_daf28105']
+    (thread_id) [name: 'misago_threads_subscription_thread_id_f97c9a3b']
+    (category_id) [name: 'misago_threads_subscription_category_id_f5854673']
+    (send_email, last_read_on) [name: 'misago_thre_send_em_da8b99_idx']
+  }
+}
+
+Table misago_threads_attachmenttype {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  name varchar(255) [not null]
+  extensions varchar(255) [not null]
+  mimetypes varchar(255)
+  size_limit integer [default: 1024, not null]
+  status AttachmentTypeStatus [default: 0, not null]
+
+  indexes {
+    (plugin_data) [name: 'misago_thre_plugin__236db5_gin', note: 'using gin']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_threads_attachment {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  secret varchar(64) [not null]
+  filetype_id integer [not null]
+  post_id integer
+  uploaded_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  uploader_id integer
+  uploader_name varchar(255) [not null]
+  uploader_slug varchar(255) [not null]
+  filename varchar(255) [not null]
+  size integer [default: 0, not null]
+  thumbnail varchar(255)
+  image varchar(255)
+  file varchar(255)
+
+  indexes {
+    (filetype_id) [name: 'misago_threads_attachment_filetype_id_d1e5d86e']
+    (post_id) [name: 'misago_threads_attachment_post_id_68447b47']
+    (uploaded_on) [name: 'misago_threads_attachment_uploaded_on_08369cf7']
+    (uploader_id) [name: 'misago_threads_attachment_uploader_id_9f21e391']
+    (uploader_slug) [name: 'misago_threads_attachment_uploader_slug_383b098d']
+    (uploader_slug) [name: 'misago_threads_attachment_uploader_slug_383b098d_like', note: 'varchar_pattern_ops']
+    (filename) [name: 'misago_threads_attachment_filename_4160d232']
+    (filename) [name: 'misago_threads_attachment_filename_4160d232_like', note: 'varchar_pattern_ops']
+    (size) [name: 'misago_threads_attachment_size_b8dd6dfd']
+    (plugin_data) [name: 'misago_thre_plugin__46d25a_gin', note: 'using gin']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_threads_poll {
+  id integer [pk, increment]
+  plugin_data jsonb [not null, note: 'default in Python: dict()']
+  category_id integer [not null]
+  thread_id integer [unique, not null]
+  poster_id integer
+  poster_name varchar(255) [not null]
+  poster_slug varchar(255) [not null]
+  posted_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  length integer [default: 0, not null]
+  question varchar(255) [not null]
+  choices jsonb [not null]
+  allowed_choices integer [default: 1, not null]
+  allow_revotes boolean [default: false, not null]
+  votes integer [default: 0, not null]
+  is_public boolean [default: false, not null]
+
+  indexes {
+    (category_id) [name: 'misago_threads_poll_category_id_29fa5f5d']
+    (poster_id) [name: 'misago_threads_poll_poster_id_49715f68']
+    (plugin_data) [name: 'misago_thre_plugin__5e1be7_gin', note: 'using gin']
+  }
+
+  Note: '''Columns from PluginDataModel (abstract): plugin_data.'''
+}
+
+Table misago_threads_pollvote {
+  id integer [pk, increment]
+  category_id integer [not null]
+  thread_id integer [not null]
+  poll_id integer [not null]
+  voter_id integer
+  voter_name varchar(255) [not null]
+  voter_slug varchar(255) [not null]
+  voted_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  choice_hash varchar(12) [not null]
+
+  indexes {
+    (category_id) [name: 'misago_threads_pollvote_category_id_92abdceb']
+    (thread_id) [name: 'misago_threads_pollvote_thread_id_ef78c2ad']
+    (poll_id) [name: 'misago_threads_pollvote_poll_id_d3fbfddf']
+    (voter_id) [name: 'misago_threads_pollvote_voter_id_979ff29f']
+    (choice_hash) [name: 'misago_threads_pollvote_choice_hash_98c31747']
+    (choice_hash) [name: 'misago_threads_pollvote_choice_hash_98c31747_like', note: 'varchar_pattern_ops']
+    (poll_id, voter_name) [name: 'misago_thre_poll_id_c3e8fe_idx']
+  }
+}
+
+Table misago_readtracker_postread {
+  id integer [pk, increment]
+  user_id integer [not null]
+  category_id integer [not null]
+  thread_id integer [not null]
+  post_id integer [not null]
+  last_read_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'misago_readtracker_postread_user_id_4a764d0f']
+    (category_id) [name: 'misago_readtracker_postread_category_id_bb74f821']
+    (thread_id) [name: 'misago_readtracker_postread_thread_id_7121201f']
+    (post_id) [name: 'misago_readtracker_postread_post_id_2be75383']
+  }
+}
+
+Table misago_oauth2_subject {
+  sub varchar(36) [pk]
+  user_id integer [not null]
+  created_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+  last_used_on "timestamp with time zone" [not null, note: 'default in Python: now()']
+
+  indexes {
+    (sub) [name: 'misago_oauth2_subject_sub_2d35d38c_like', note: 'varchar_pattern_ops']
+    (user_id) [name: 'misago_oauth2_subject_user_id_a623087c']
+  }
+}
+
+Table misago_socialauth_socialauthprovider {
+  provider varchar(30) [pk]
+  button_text varchar(255)
+  button_color varchar(7)
+  settings jsonb [not null, note: 'default in Python: dict()']
+  is_active boolean [default: false, not null]
+  order integer [default: 0, not null]
+
+  indexes {
+    (provider) [name: 'misago_socialauth_socialauthprovider_provider_dccd89f3_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table misago_menus_menuitem {
+  id integer [pk, increment]
+  menu MenuItemMenu [not null]
+  title varchar(255) [not null]
+  url varchar(200) [not null]
+  order integer [default: 0, not null]
+  css_class varchar(255)
+  target_blank boolean [default: false, not null]
+  rel varchar(255)
+}
+
+Table misago_users_rank_roles {
+  id integer [pk, increment]
+  rank_id integer [not null]
+  role_id integer [not null]
+
+  indexes {
+    (rank_id) [name: 'misago_users_rank_roles_rank_id_662c3ee7']
+    (role_id) [name: 'misago_users_rank_roles_role_id_e0236d53']
+    (rank_id, role_id) [unique, name: 'misago_users_rank_roles_rank_id_role_id_81914683_uniq']
+  }
+}
+
+Ref misago_users_rank_roles_rank_id_fk: misago_users_rank_roles.rank_id > misago_users_rank.id [delete: cascade]
+
+Ref misago_users_rank_roles_role_id_fk: misago_users_rank_roles.role_id > misago_acl_role.id [delete: cascade]
+
+Ref misago_users_online_user_id_fk: misago_users_online.user_id - misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_rank_id_fk: misago_users_user.rank_id > misago_users_rank.id [delete: restrict]
+
+Table misago_users_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_user_groups_user_id_ddeac4e6']
+    (group_id) [name: 'misago_users_user_groups_group_id_0b7c0680']
+    (user_id, group_id) [unique, name: 'misago_users_user_groups_user_id_group_id_12611fe8_uniq']
+  }
+}
+
+Ref misago_users_user_groups_user_id_fk: misago_users_user_groups.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_groups_group_id_fk: misago_users_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table misago_users_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_user_user_permissions_user_id_264f5b9d']
+    (permission_id) [name: 'misago_users_user_user_permissions_permission_id_bd44102a']
+    (user_id, permission_id) [unique, name: 'misago_users_user_user_p_user_id_permission_id_dc758b0b_uniq']
+  }
+}
+
+Ref misago_users_user_user_permissions_user_id_fk: misago_users_user_user_permissions.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_user_permissions_permission_id_fk: misago_users_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table misago_users_user_roles {
+  id integer [pk, increment]
+  user_id integer [not null]
+  role_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'misago_users_user_roles_user_id_af2be819']
+    (role_id) [name: 'misago_users_user_roles_role_id_58d36725']
+    (user_id, role_id) [unique, name: 'misago_users_user_roles_user_id_role_id_1cbe8d01_uniq']
+  }
+}
+
+Ref misago_users_user_roles_user_id_fk: misago_users_user_roles.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_roles_role_id_fk: misago_users_user_roles.role_id > misago_acl_role.id [delete: cascade]
+
+Table misago_users_user_follows {
+  id integer [pk, increment]
+  from_user_id integer [not null]
+  to_user_id integer [not null]
+
+  indexes {
+    (from_user_id) [name: 'misago_users_user_follows_from_user_id_9575602d']
+    (to_user_id) [name: 'misago_users_user_follows_to_user_id_8cc8eb10']
+    (from_user_id, to_user_id) [unique, name: 'misago_users_user_follows_from_user_id_to_user_id_92296f5c_uniq']
+  }
+}
+
+Ref misago_users_user_follows_from_user_id_fk: misago_users_user_follows.from_user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_follows_to_user_id_fk: misago_users_user_follows.to_user_id > misago_users_user.id [delete: cascade]
+
+Table misago_users_user_blocks {
+  id integer [pk, increment]
+  from_user_id integer [not null]
+  to_user_id integer [not null]
+
+  indexes {
+    (from_user_id) [name: 'misago_users_user_blocks_from_user_id_a1352891']
+    (to_user_id) [name: 'misago_users_user_blocks_to_user_id_b919ce82']
+    (from_user_id, to_user_id) [unique, name: 'misago_users_user_blocks_from_user_id_to_user_id_cc1691d3_uniq']
+  }
+}
+
+Ref misago_users_user_blocks_from_user_id_fk: misago_users_user_blocks.from_user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_user_blocks_to_user_id_fk: misago_users_user_blocks.to_user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_usernamechange_user_id_fk: misago_users_usernamechange.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_usernamechange_changed_by_id_fk: misago_users_usernamechange.changed_by_id > misago_users_user.id [delete: set null]
+
+Ref misago_users_activityranking_user_id_fk: misago_users_activityranking.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_avatar_user_id_fk: misago_users_avatar.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_audittrail_user_id_fk: misago_users_audittrail.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_users_audittrail_content_type_id_fk: misago_users_audittrail.content_type_id > django_content_type.id [delete: cascade]
+
+Ref misago_users_bancache_user_id_fk: misago_users_bancache.user_id - misago_users_user.id [delete: cascade]
+
+Ref misago_users_bancache_ban_id_fk: misago_users_bancache.ban_id > misago_users_ban.id [delete: set null]
+
+Ref misago_users_datadownload_user_id_fk: misago_users_datadownload.user_id > misago_users_user.id [delete: restrict]
+
+Ref misago_users_datadownload_requester_id_fk: misago_users_datadownload.requester_id > misago_users_user.id [delete: set null]
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > misago_users_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref social_auth_usersocialauth_user_id_fk: social_auth_usersocialauth.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_themes_theme_parent_id_fk: misago_themes_theme.parent_id > misago_themes_theme.id [delete: restrict]
+
+Ref misago_themes_css_theme_id_fk: misago_themes_css.theme_id > misago_themes_theme.id [delete: restrict]
+
+Ref misago_themes_media_theme_id_fk: misago_themes_media.theme_id > misago_themes_theme.id [delete: restrict]
+
+Ref misago_legal_agreement_created_by_id_fk: misago_legal_agreement.created_by_id > misago_users_user.id [delete: set null]
+
+Ref misago_legal_agreement_last_modified_by_id_fk: misago_legal_agreement.last_modified_by_id > misago_users_user.id [delete: set null]
+
+Ref misago_legal_useragreement_user_id_fk: misago_legal_useragreement.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_legal_useragreement_agreement_id_fk: misago_legal_useragreement.agreement_id > misago_legal_agreement.id [delete: cascade]
+
+Ref misago_notifications_notification_user_id_fk: misago_notifications_notification.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_notifications_notification_actor_id_fk: misago_notifications_notification.actor_id > misago_users_user.id [delete: set null]
+
+Ref misago_notifications_notification_category_id_fk: misago_notifications_notification.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_notifications_notification_thread_id_fk: misago_notifications_notification.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_notifications_notification_post_id_fk: misago_notifications_notification.post_id > misago_threads_post.id [delete: cascade]
+
+Ref misago_notifications_watchedthread_user_id_fk: misago_notifications_watchedthread.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_notifications_watchedthread_category_id_fk: misago_notifications_watchedthread.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_notifications_watchedthread_thread_id_fk: misago_notifications_watchedthread.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_categories_category_parent_id_fk: misago_categories_category.parent_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_categories_category_last_thread_id_fk: misago_categories_category.last_thread_id > misago_threads_thread.id [delete: set null]
+
+Ref misago_categories_category_last_poster_id_fk: misago_categories_category.last_poster_id > misago_users_user.id [delete: set null]
+
+Ref misago_categories_category_archive_pruned_in_id_fk: misago_categories_category.archive_pruned_in_id > misago_categories_category.id [delete: set null]
+
+Ref misago_categories_rolecategoryacl_role_id_fk: misago_categories_rolecategoryacl.role_id > misago_acl_role.id [delete: cascade]
+
+Ref misago_categories_rolecategoryacl_category_id_fk: misago_categories_rolecategoryacl.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_categories_rolecategoryacl_category_role_id_fk: misago_categories_rolecategoryacl.category_role_id > misago_categories_categoryrole.id [delete: cascade]
+
+Ref misago_threads_post_category_id_fk: misago_threads_post.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_post_thread_id_fk: misago_threads_post.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_post_poster_id_fk: misago_threads_post.poster_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_post_last_editor_id_fk: misago_threads_post.last_editor_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_post_hidden_by_id_fk: misago_threads_post.hidden_by_id > misago_users_user.id [delete: set null]
+
+Table misago_threads_post_mentions {
+  id integer [pk, increment]
+  post_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (post_id) [name: 'misago_threads_post_mentions_post_id_8d3c8c76']
+    (user_id) [name: 'misago_threads_post_mentions_user_id_515d18c5']
+    (post_id, user_id) [unique, name: 'misago_threads_post_mentions_post_id_user_id_f96b558b_uniq']
+  }
+}
+
+Ref misago_threads_post_mentions_post_id_fk: misago_threads_post_mentions.post_id > misago_threads_post.id [delete: cascade]
+
+Ref misago_threads_post_mentions_user_id_fk: misago_threads_post_mentions.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_threads_postedit_category_id_fk: misago_threads_postedit.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_postedit_thread_id_fk: misago_threads_postedit.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_postedit_post_id_fk: misago_threads_postedit.post_id > misago_threads_post.id [delete: cascade]
+
+Ref misago_threads_postedit_editor_id_fk: misago_threads_postedit.editor_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_postlike_category_id_fk: misago_threads_postlike.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_postlike_thread_id_fk: misago_threads_postlike.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_postlike_post_id_fk: misago_threads_postlike.post_id > misago_threads_post.id [delete: cascade]
+
+Ref misago_threads_postlike_liker_id_fk: misago_threads_postlike.liker_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_thread_category_id_fk: misago_threads_thread.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_thread_first_post_id_fk: misago_threads_thread.first_post_id > misago_threads_post.id [delete: set null]
+
+Ref misago_threads_thread_starter_id_fk: misago_threads_thread.starter_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_thread_last_post_id_fk: misago_threads_thread.last_post_id > misago_threads_post.id [delete: set null]
+
+Ref misago_threads_thread_last_poster_id_fk: misago_threads_thread.last_poster_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_thread_best_answer_id_fk: misago_threads_thread.best_answer_id > misago_threads_post.id [delete: set null]
+
+Ref misago_threads_thread_best_answer_marked_by_id_fk: misago_threads_thread.best_answer_marked_by_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_threadparticipant_thread_id_fk: misago_threads_threadparticipant.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_threadparticipant_user_id_fk: misago_threads_threadparticipant.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_threads_subscription_user_id_fk: misago_threads_subscription.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_threads_subscription_thread_id_fk: misago_threads_subscription.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_subscription_category_id_fk: misago_threads_subscription.category_id > misago_categories_category.id [delete: cascade]
+
+Table misago_threads_attachmenttype_limit_uploads_to {
+  id integer [pk, increment]
+  attachmenttype_id integer [not null]
+  role_id integer [not null]
+
+  indexes {
+    (attachmenttype_id) [name: 'misago_threads_attachmentt_attachmenttype_id_6996d5c4']
+    (role_id) [name: 'misago_threads_attachmenttype_limit_uploads_to_role_id_65cc8efd']
+    (attachmenttype_id, role_id) [unique, name: 'misago_threads_attachmen_attachmenttype_id_role_i_b9d45256_uniq']
+  }
+}
+
+Ref misago_threads_attachmenttype_limit_uploads_to_attachmenttype_id_fk: misago_threads_attachmenttype_limit_uploads_to.attachmenttype_id > misago_threads_attachmenttype.id [delete: cascade]
+
+Ref misago_threads_attachmenttype_limit_uploads_to_role_id_fk: misago_threads_attachmenttype_limit_uploads_to.role_id > misago_acl_role.id [delete: cascade]
+
+Table misago_threads_attachmenttype_limit_downloads_to {
+  id integer [pk, increment]
+  attachmenttype_id integer [not null]
+  role_id integer [not null]
+
+  indexes {
+    (attachmenttype_id) [name: 'misago_threads_attachmentt_attachmenttype_id_7e25aa42']
+    (role_id) [name: 'misago_threads_attachmentt_role_id_cc342315']
+    (attachmenttype_id, role_id) [unique, name: 'misago_threads_attachmen_attachmenttype_id_role_i_d18213ae_uniq']
+  }
+}
+
+Ref misago_threads_attachmenttype_limit_downloads_to_attachmenttype_id_fk: misago_threads_attachmenttype_limit_downloads_to.attachmenttype_id > misago_threads_attachmenttype.id [delete: cascade]
+
+Ref misago_threads_attachmenttype_limit_downloads_to_role_id_fk: misago_threads_attachmenttype_limit_downloads_to.role_id > misago_acl_role.id [delete: cascade]
+
+Ref misago_threads_attachment_filetype_id_fk: misago_threads_attachment.filetype_id > misago_threads_attachmenttype.id [delete: cascade]
+
+Ref misago_threads_attachment_post_id_fk: misago_threads_attachment.post_id > misago_threads_post.id [delete: set null]
+
+Ref misago_threads_attachment_uploader_id_fk: misago_threads_attachment.uploader_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_poll_category_id_fk: misago_threads_poll.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_poll_thread_id_fk: misago_threads_poll.thread_id - misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_poll_poster_id_fk: misago_threads_poll.poster_id > misago_users_user.id [delete: set null]
+
+Ref misago_threads_pollvote_category_id_fk: misago_threads_pollvote.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_threads_pollvote_thread_id_fk: misago_threads_pollvote.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_threads_pollvote_poll_id_fk: misago_threads_pollvote.poll_id > misago_threads_poll.id [delete: cascade]
+
+Ref misago_threads_pollvote_voter_id_fk: misago_threads_pollvote.voter_id > misago_users_user.id [delete: set null]
+
+Ref misago_readtracker_postread_user_id_fk: misago_readtracker_postread.user_id > misago_users_user.id [delete: cascade]
+
+Ref misago_readtracker_postread_category_id_fk: misago_readtracker_postread.category_id > misago_categories_category.id [delete: cascade]
+
+Ref misago_readtracker_postread_thread_id_fk: misago_readtracker_postread.thread_id > misago_threads_thread.id [delete: cascade]
+
+Ref misago_readtracker_postread_post_id_fk: misago_readtracker_postread.post_id > misago_threads_post.id [delete: cascade]
+
+Ref misago_oauth2_subject_user_id_fk: misago_oauth2_subject.user_id > misago_users_user.id [delete: cascade]

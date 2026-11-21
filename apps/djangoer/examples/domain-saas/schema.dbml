@@ -1,0 +1,327 @@
+Enum MembershipRole {
+  "owner"
+  "admin"
+  "member"
+  "viewer"
+}
+
+Enum InvitationRole {
+  "owner"
+  "admin"
+  "member"
+  "viewer"
+}
+
+Enum PlanInterval {
+  "month"
+  "year"
+}
+
+Enum SubscriptionStatus {
+  "trialing"
+  "active"
+  "past_due"
+  "canceled"
+}
+
+Enum InvoiceStatus {
+  "draft"
+  "open"
+  "paid"
+  "void"
+}
+
+Table accounts_user {
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  email varchar(254) [unique, not null]
+  full_name varchar(150) [not null]
+  is_staff bool [default: false, not null]
+  is_active bool [default: true, not null]
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (`LOWER("email")`) [unique, name: 'user_email_ci_unique']
+  }
+
+  Note: '''Signs in with an e-mail address, not a username.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table accounts_organization {
+  id char(32) [pk, note: 'default in Python: uuid4()']
+  name varchar(100) [not null]
+  slug varchar(50) [unique, not null]
+  owner_id char(32) [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (owner_id) [name: 'accounts_organization_owner_id_55bbcc9e']
+  }
+}
+
+Table accounts_membership {
+  id integer [pk, increment]
+  organization_id char(32) [not null]
+  user_id char(32) [not null]
+  role MembershipRole [default: 'member', not null]
+  joined_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (organization_id) [name: 'accounts_membership_organization_id_936776de']
+    (user_id) [name: 'accounts_membership_user_id_487fb39e']
+    (organization_id, user_id) [unique, name: 'membership_unique']
+  }
+}
+
+Table accounts_team {
+  id integer [pk, increment]
+  organization_id char(32) [not null]
+  name varchar(100) [not null]
+
+  indexes {
+    (organization_id) [name: 'accounts_team_organization_id_bf0a6adc']
+    (organization_id, name) [unique, name: 'accounts_team_organization_id_name_4d3668c9_uniq']
+  }
+}
+
+Table accounts_invitation {
+  id integer [pk, increment]
+  organization_id char(32) [not null]
+  email varchar(254) [not null]
+  role InvitationRole [default: 'member', not null]
+  token varchar(64) [unique, not null]
+  invited_by_id char(32)
+  expires_at datetime [not null]
+  accepted_at datetime
+
+  indexes {
+    (organization_id) [name: 'accounts_invitation_organization_id_2be75950']
+    (invited_by_id) [name: 'accounts_invitation_invited_by_id_94a21efc']
+  }
+}
+
+Table accounts_apikey {
+  id integer [pk, increment]
+  organization_id char(32) [not null]
+  name varchar(50) [not null]
+  prefix varchar(8) [unique, not null]
+  hashed_key varchar(128) [not null]
+  scopes text [not null, note: 'default in Python: list()']
+  created_by_id char(32)
+  last_used_at datetime
+  revoked bool [default: false, not null]
+
+  indexes {
+    (organization_id) [name: 'accounts_apikey_organization_id_79d80250']
+    (created_by_id) [name: 'accounts_apikey_created_by_id_1b5317c8']
+  }
+}
+
+Table accounts_auditevent {
+  id integer [pk, increment]
+  organization_id char(32) [not null]
+  actor_id char(32) [note: 'refers to accounts_user.id, with no foreign key in the database']
+  action varchar(50) [not null]
+  target varchar(200) [not null]
+  ip_address char(39)
+  data text [not null, note: 'default in Python: dict()']
+  at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (organization_id) [name: 'accounts_auditevent_organization_id_5fa8aa26']
+    (actor_id) [name: 'accounts_auditevent_actor_id_179eee89']
+    (at) [name: 'accounts_auditevent_at_9771b2fb']
+  }
+}
+
+Table billing_plan {
+  id integer [pk, increment]
+  code varchar(50) [unique, not null]
+  name varchar(50) [not null]
+  price decimal [not null, note: 'declared max_digits=8, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [default: 'USD', not null]
+  interval PlanInterval [default: 'month', not null]
+  seats_included "integer unsigned" [default: 1, not null]
+  is_public bool [default: true, not null]
+}
+
+Table billing_feature {
+  id integer [pk, increment]
+  code varchar(50) [unique, not null]
+  description varchar(200) [not null]
+}
+
+Table billing_planfeature {
+  id integer [pk, increment]
+  plan_id bigint [not null]
+  feature_id bigint [not null]
+  limit "integer unsigned" [note: 'Empty for no limit']
+
+  indexes {
+    (plan_id) [name: 'billing_planfeature_plan_id_1c0e5b6d']
+    (feature_id) [name: 'billing_planfeature_feature_id_2f53e972']
+    (plan_id, feature_id) [unique, name: 'billing_planfeature_plan_id_feature_id_9ab2dca2_uniq']
+  }
+}
+
+Table billing_subscription {
+  id integer [pk, increment]
+  organization_id char(32) [unique, not null]
+  plan_id bigint [not null]
+  status SubscriptionStatus [default: 'trialing', not null]
+  seats "integer unsigned" [default: 1, not null]
+  current_period_start datetime [not null]
+  current_period_end datetime [not null]
+  cancel_at_period_end bool [default: false, not null]
+  provider_id varchar(100) [unique]
+
+  indexes {
+    (plan_id) [name: 'billing_subscription_plan_id_4e20d4ad']
+  }
+}
+
+Table billing_usagerecord {
+  id integer [pk, increment]
+  subscription_id bigint [not null]
+  feature_id bigint [not null]
+  quantity "bigint unsigned" [not null]
+  period date [not null]
+
+  indexes {
+    (subscription_id) [name: 'billing_usagerecord_subscription_id_66d9b5d7']
+    (feature_id) [name: 'billing_usagerecord_feature_id_c15622a1']
+    (subscription_id, feature_id, period) [unique, name: 'usage_once_per_period']
+  }
+}
+
+Table billing_invoice {
+  id integer [pk, increment]
+  subscription_id bigint [not null]
+  number varchar(20) [unique, not null]
+  status InvoiceStatus [default: 'draft', not null]
+  issued_on date [not null]
+  due_on date [not null]
+  paid_at datetime
+  pdf varchar(100) [not null]
+
+  indexes {
+    (subscription_id) [name: 'billing_invoice_subscription_id_b7df633b']
+  }
+
+  checks {
+    `"due_on" >= ("issued_on")` [name: 'invoice_due_after_issue']
+  }
+}
+
+Table billing_invoiceline {
+  id integer [pk, increment]
+  invoice_id bigint [not null]
+  description varchar(200) [not null]
+  quantity "integer unsigned" [default: 1, not null]
+  unit_amount decimal [not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  amount decimal [note: 'generated (stored): (CAST(("quantity" * "unit_amount") AS NUMERIC)). declared max_digits=12, decimal_places=2, which the database does not enforce']
+
+  indexes {
+    (invoice_id) [name: 'billing_invoiceline_invoice_id_ff507e12']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Table accounts_user_groups {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'accounts_user_groups_user_id_52b62117']
+    (group_id) [name: 'accounts_user_groups_group_id_bd11a704']
+    (user_id, group_id) [unique, name: 'accounts_user_groups_user_id_group_id_59c0b32f_uniq']
+  }
+}
+
+Ref accounts_user_groups_user_id_fk: accounts_user_groups.user_id > accounts_user.id [delete: cascade]
+
+Ref accounts_user_groups_group_id_fk: accounts_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table accounts_user_user_permissions {
+  id integer [pk, increment]
+  user_id char(32) [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'accounts_user_user_permissions_user_id_e4f0a161']
+    (permission_id) [name: 'accounts_user_user_permissions_permission_id_113bb443']
+    (user_id, permission_id) [unique, name: 'accounts_user_user_permissions_user_id_permission_id_2ab516c2_uniq']
+  }
+}
+
+Ref accounts_user_user_permissions_user_id_fk: accounts_user_user_permissions.user_id > accounts_user.id [delete: cascade]
+
+Ref accounts_user_user_permissions_permission_id_fk: accounts_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref accounts_organization_owner_id_fk: accounts_organization.owner_id > accounts_user.id [delete: restrict]
+
+Ref accounts_membership_organization_id_fk: accounts_membership.organization_id > accounts_organization.id [delete: cascade]
+
+Ref accounts_membership_user_id_fk: accounts_membership.user_id > accounts_user.id [delete: cascade]
+
+Ref accounts_team_organization_id_fk: accounts_team.organization_id > accounts_organization.id [delete: cascade]
+
+Table accounts_team_members {
+  id integer [pk, increment]
+  team_id bigint [not null]
+  membership_id bigint [not null]
+
+  indexes {
+    (team_id) [name: 'accounts_team_members_team_id_4443c9b3']
+    (membership_id) [name: 'accounts_team_members_membership_id_efa1764a']
+    (team_id, membership_id) [unique, name: 'accounts_team_members_team_id_membership_id_134ca2d0_uniq']
+  }
+}
+
+Ref accounts_team_members_team_id_fk: accounts_team_members.team_id > accounts_team.id [delete: cascade]
+
+Ref accounts_team_members_membership_id_fk: accounts_team_members.membership_id > accounts_membership.id [delete: cascade]
+
+Ref accounts_invitation_organization_id_fk: accounts_invitation.organization_id > accounts_organization.id [delete: cascade]
+
+Ref accounts_invitation_invited_by_id_fk: accounts_invitation.invited_by_id > accounts_user.id [delete: set null]
+
+Ref accounts_apikey_organization_id_fk: accounts_apikey.organization_id > accounts_organization.id [delete: cascade]
+
+Ref accounts_apikey_created_by_id_fk: accounts_apikey.created_by_id > accounts_user.id [delete: set null]
+
+Ref accounts_auditevent_organization_id_fk: accounts_auditevent.organization_id > accounts_organization.id [delete: cascade]
+
+Ref billing_planfeature_plan_id_fk: billing_planfeature.plan_id > billing_plan.id [delete: cascade]
+
+Ref billing_planfeature_feature_id_fk: billing_planfeature.feature_id > billing_feature.id [delete: cascade]
+
+Ref billing_subscription_organization_id_fk: billing_subscription.organization_id - accounts_organization.id [delete: cascade]
+
+Ref billing_subscription_plan_id_fk: billing_subscription.plan_id > billing_plan.id [delete: restrict]
+
+Ref billing_usagerecord_subscription_id_fk: billing_usagerecord.subscription_id > billing_subscription.id [delete: cascade]
+
+Ref billing_usagerecord_feature_id_fk: billing_usagerecord.feature_id > billing_feature.id [delete: cascade]
+
+Ref billing_invoice_subscription_id_fk: billing_invoice.subscription_id > billing_subscription.id [delete: restrict]
+
+Ref billing_invoiceline_invoice_id_fk: billing_invoiceline.invoice_id > billing_invoice.id [delete: cascade]

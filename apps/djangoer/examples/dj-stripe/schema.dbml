@@ -1,0 +1,2337 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum APIKeyType {
+  "publishable"
+  "restricted"
+  "secret"
+}
+
+Enum SubscriptionScheduleEndBehavior {
+  "cancel"
+  "release"
+}
+
+Enum SubscriptionScheduleStatus {
+  "active"
+  "canceled"
+  "completed"
+  "not_started"
+  "released"
+}
+
+Enum BalanceTransactionType {
+  "adjustment"
+  "advance"
+  "advance_funding"
+  "anticipation_repayment"
+  "application_fee"
+  "application_fee_refund"
+  "balance_transfer_inbound"
+  "balance_transfer_outbound"
+  "charge"
+  "connect_collection_transfer"
+  "contribution"
+  "issuing_authorization_hold"
+  "issuing_authorization_release"
+  "issuing_dispute"
+  "issuing_transaction"
+  "network_cost"
+  "payment"
+  "payment_failure_refund"
+  "payment_refund"
+  "payout"
+  "payout_cancel"
+  "payout_failure"
+  "refund"
+  "refund_failure"
+  "reserve_transaction"
+  "reserved_funds"
+  "stripe_fee"
+  "stripe_fx_fee"
+  "tax_fee"
+  "topup"
+  "topup_reversal"
+  "transfer"
+  "transfer_cancel"
+  "transfer_failure"
+  "transfer_refund"
+  "validation"
+}
+
+Enum ChargeStatus {
+  "failed"
+  "pending"
+  "succeeded"
+}
+
+Enum VerificationSessionStatus {
+  "canceled"
+  "processing"
+  "requires_input"
+  "verified"
+}
+
+Enum VerificationSessionType {
+  "document"
+  "id_number"
+}
+
+Enum VerificationReportType {
+  "document"
+  "id_number"
+}
+
+Enum SourceTransactionStatus {
+  "chargeable"
+  "failed"
+  "pending"
+  "succeeded"
+}
+
+Enum ScheduledQueryRunStatus {
+  "canceled"
+  "failed"
+  "timed_out"
+}
+
+Enum WebhookEndpointStatus {
+  "disabled"
+  "enabled"
+}
+
+Enum WebhookEndpointDjstripeValidationMethod {
+  "none"
+  "retrieve_event"
+  "verify_signature"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table djstripe_idempotencykey {
+  uuid char(32) [pk, note: 'default in Python: uuid4()']
+  action varchar(100) [not null]
+  livemode bool [not null, note: 'Whether the key was used in live or test mode.']
+  created datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (action, livemode) [unique, name: 'djstripe_idempotencykey_action_livemode_5003eb11_uniq']
+  }
+}
+
+Table djstripe_apikey {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  id varchar(255) [not null, note: 'default in Python: generate_api_key_id()']
+  type APIKeyType [not null]
+  name varchar(100) [not null, note: 'An optional name to identify the key.']
+  secret varchar(128) [unique, not null, note: 'The value of the key.']
+  livemode bool [not null, note: 'Whether the key is valid for live or test mode.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_apikey_djstripe_owner_account_id_037f32cb']
+  }
+
+  Note: '''Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_account {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_account_djstripe_owner_account_id_64558c8f']
+  }
+
+  Note: '''This is an object representing a Stripe account.
+
+You can retrieve it to see properties on the account like its
+current e-mail address or if the account is enabled yet to make live charges.
+
+Stripe documentation: https://stripe.com/docs/api/accounts?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_accountv2 {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_accountv2_djstripe_owner_account_id_d9b27175']
+  }
+
+  Note: '''An Account v2 object, from the Stripe Accounts v2 / Organizations API.
+
+Unlike the v1 :class:`Account`, this object is served by Stripe\'s v2 Core
+API (``/v2/core/accounts``), which is service-based rather than
+resource-class based. It represents a company, individual or other entity,
+and can hold one or more configurations (customer, merchant, recipient).
+
+Because the v2 API differs from v1 in several ways — it is reached through
+``StripeClient(...).v2.core.accounts``, retrieval uses ``include`` rather
+than ``expand``, deletion is replaced by ``close``, and ``created`` is an
+RFC 3339 string rather than a unix timestamp — the relevant ``api_*``
+methods are overridden below. The base sync machinery (which operates on the
+JSON-coerced ``stripe_data`` dict) is otherwise reused unchanged.
+
+Stripe documentation: https://docs.stripe.com/api/v2/core/accounts
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_coupon {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  id varchar(500) [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_coupon_djstripe_owner_account_id_ea85f74e']
+    (id, livemode) [unique, name: 'djstripe_coupon_id_livemode_c4511f5e_uniq']
+  }
+
+  Note: '''A coupon contains information about a percent-off or amount-off discount you might want to apply to a customer.
+Coupons may be applied to invoices or orders.
+Coupons do not work with conventional one-off charges.
+
+Stripe documentation: https://stripe.com/docs/api/coupons?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_promotioncode {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_promotioncode_djstripe_owner_account_id_7997d59a']
+  }
+
+  Note: '''This is an object representing a Promotion Code.
+
+A Promotion Code represents a customer-redeemable code for a coupon.
+It can be used to create multiple codes for a single coupon.
+
+Stripe documentation: https://stripe.com/docs/api/promotion_codes?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_discount {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [note: 'The ID of the customer associated with this discount.']
+  invoice_id varchar(255) [note: 'The invoice that the discount’s coupon was applied to, if it was applied directly to a particular invoice.']
+  promotion_code varchar(255) [not null, note: 'The promotion code applied to create this discount.']
+  subscription_id varchar(255) [note: 'The subscription that this coupon is applied to, if it is applied to a particular subscription.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_discount_djstripe_owner_account_id_76f33de0']
+    (customer_id) [name: 'djstripe_discount_customer_id_eaab7ecc']
+    (invoice_id) [name: 'djstripe_discount_invoice_id_4acd89bf']
+    (subscription_id) [name: 'djstripe_discount_subscription_id_c9b8f55a']
+  }
+
+  Note: '''A discount represents the actual application of a coupon or promotion code.
+It contains information about when the discount began,
+when it will end, and what it is applied to.
+
+Stripe documentation: https://stripe.com/docs/api/discounts
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_invoice {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  charge_id bigint [unique, note: 'The latest charge generated for this invoice, if any.']
+  customer_id varchar(255) [not null, note: 'The customer associated with this invoice.']
+  default_payment_method_id varchar(255) [note: 'Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription\'s default payment method, if any, or to the default payment method in the customer\'s invoice settings.']
+  payment_intent_id bigint [unique, note: 'The PaymentIntent associated with this invoice. The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.Note that voiding an invoice will cancel the PaymentIntent']
+  subscription_id varchar(255) [note: 'The subscription that this invoice was prepared for, if any.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_invoice_djstripe_owner_account_id_cc0c7f79']
+    (customer_id) [name: 'djstripe_invoice_customer_id_c0cd871c']
+    (default_payment_method_id) [name: 'djstripe_invoice_default_payment_method_id_670990d5']
+    (subscription_id) [name: 'djstripe_invoice_subscription_id_2dbc2461']
+  }
+
+  Note: '''Invoices are statements of what a customer owes for a particular billing
+period, including subscriptions, invoice items, and any automatic proration
+adjustments if necessary.
+
+Once an invoice is created, payment is automatically attempted. Note that
+the payment, while automatic, does not happen exactly at the time of invoice
+creation. If you have configured webhooks, the invoice will wait until one
+hour after the last webhook is successfully sent (or the last webhook times
+out after failing).
+
+Any customer credit on the account is applied before determining how much is
+due for that invoice (the amount that will be actually charged).
+If the amount due for the invoice is less than 50 cents (the minimum for a
+charge), we add the amount to the customer\'s running account balance to be
+added to the next invoice. If this amount is negative, it will act as a
+credit to offset the next invoice. Note that the customer account balance
+does not include unpaid invoices; it only includes balances that need to be
+taken into account when calculating the amount due for the next invoice.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#invoices
+
+Columns from BaseInvoice (abstract): charge_id, customer_id, default_payment_method_id, payment_intent_id, subscription_id.
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_upcominginvoice {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  charge_id bigint [unique, note: 'The latest charge generated for this invoice, if any.']
+  customer_id varchar(255) [not null, note: 'The customer associated with this invoice.']
+  default_payment_method_id varchar(255) [note: 'Default payment method for the invoice. It must belong to the customer associated with the invoice. If not set, defaults to the subscription\'s default payment method, if any, or to the default payment method in the customer\'s invoice settings.']
+  payment_intent_id bigint [unique, note: 'The PaymentIntent associated with this invoice. The PaymentIntent is generated when the invoice is finalized, and can then be used to pay the invoice.Note that voiding an invoice will cancel the PaymentIntent']
+  subscription_id varchar(255) [note: 'The subscription that this invoice was prepared for, if any.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_upcominginvoice_djstripe_owner_account_id_fac79479']
+    (customer_id) [name: 'djstripe_upcominginvoice_customer_id_c94e7284']
+    (default_payment_method_id) [name: 'djstripe_upcominginvoice_default_payment_method_id_31da058e']
+    (subscription_id) [name: 'djstripe_upcominginvoice_subscription_id_72fb41e3']
+  }
+
+  Note: '''The preview of an upcoming invoice - does not exist in the Django database.
+
+See BaseInvoice.upcoming()
+
+Logically it should be set abstract, but that doesn\'t quite work since we
+do actually want to instantiate the model and use relations.
+
+Columns from BaseInvoice (abstract): charge_id, customer_id, default_payment_method_id, payment_intent_id, subscription_id.
+
+Columns from StripeModel (abstract): djstripe_id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_invoiceitem {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [not null, note: 'The customer associated with this invoiceitem.']
+  invoice_id varchar(255) [note: 'The invoice to which this invoiceitem is attached.']
+  price_id bigint [note: 'If the invoice item is a proration, the price of the subscription for which the proration was computed.']
+  subscription_id varchar(255) [note: 'The subscription that this invoice item has been created for, if any.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_invoiceitem_djstripe_owner_account_id_9afac289']
+    (customer_id) [name: 'djstripe_invoiceitem_customer_id_259466b8']
+    (invoice_id) [name: 'djstripe_invoiceitem_invoice_id_d302912e']
+    (price_id) [name: 'djstripe_invoiceitem_price_id_24d80db8']
+    (subscription_id) [name: 'djstripe_invoiceitem_subscription_id_a7760178']
+  }
+
+  Note: '''Sometimes you want to add a charge or credit to a customer but only actually
+charge the customer\'s card at the end of a regular billing cycle.
+This is useful for combining several charges to minimize per-transaction fees
+or having Stripe tabulate your usage-based billing totals.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#invoiceitems
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_lineitem {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  invoice_item_id varchar(255) [note: 'The ID of the invoice item associated with this line item if any.']
+  subscription_id varchar(255) [note: 'The subscription that the invoice item pertains to, if any.']
+  subscription_item_id varchar(255) [note: 'The subscription item that generated this invoice item. Left empty if the line item is not an explicit result of a subscription.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_lineitem_djstripe_owner_account_id_94fe816a']
+    (invoice_item_id) [name: 'djstripe_lineitem_invoice_item_id_673833e2']
+    (subscription_id) [name: 'djstripe_lineitem_subscription_id_7d83979b']
+    (subscription_item_id) [name: 'djstripe_lineitem_subscription_item_id_6e53d0a7']
+  }
+
+  Note: '''The individual line items that make up the invoice.
+
+Stripe documentation: https://stripe.com/docs/api/invoices/line_item
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_subscription {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [not null, note: 'The customer associated with this subscription.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_subscription_djstripe_owner_account_id_9d333296']
+    (customer_id) [name: 'djstripe_subscription_customer_id_aff64ee5']
+  }
+
+  Note: '''Subscriptions allow you to charge a customer\'s card on a recurring basis.
+A subscription ties a customer to a particular plan you\'ve created.
+
+A subscription still in its trial period is ``trialing`` and moves to ``active``
+when the trial period is over.
+
+When payment to renew the subscription fails, the subscription becomes ``past_due``.
+After Stripe has exhausted all payment retry attempts, the subscription ends up
+with a status of either ``canceled`` or ``unpaid`` depending on your retry settings.
+
+Note that when a subscription has a status of ``unpaid``, no subsequent invoices
+will be attempted (invoices will be created, but then immediately
+automatically closed.
+
+Additionally, updating customer card details will not lead to Stripe retrying the
+latest invoice.).
+After receiving updated card details from a customer, you may choose to reopen and
+pay their closed invoices.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#subscriptions
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_subscriptionitem {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  price_id bigint [note: 'The price the customer is subscribed to.']
+  subscription_id varchar(255) [not null, note: 'The subscription this subscription item belongs to.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_subscriptionitem_djstripe_owner_account_id_aafd9387']
+    (price_id) [name: 'djstripe_subscriptionitem_price_id_c7f55fc3']
+    (subscription_id) [name: 'djstripe_subscriptionitem_subscription_id_992d9919']
+  }
+
+  Note: '''Subscription items allow you to create customer subscriptions
+with more than one plan, making it easy to represent complex billing relationships.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#subscription_items
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_subscriptionschedule {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  canceled_at datetime [note: 'Time at which the subscription schedule was canceled.']
+  completed_at datetime [note: 'Time at which the subscription schedule was completed.']
+  current_phase text [note: 'Object representing the start and end dates for the current phase of the subscription schedule, if it is `active`.']
+  customer_id bigint [not null, note: 'The customer who owns the subscription schedule.']
+  default_settings text [note: 'Object representing the subscription schedule\'s default settings.']
+  end_behavior SubscriptionScheduleEndBehavior [not null, note: 'Behavior of the subscription schedule and underlying subscription when it ends.']
+  phases text [note: 'Configuration for the subscription schedule\'s phases.']
+  released_at datetime [note: 'Time at which the subscription schedule was released.']
+  released_subscription_id bigint [note: 'The subscription once managed by this subscription schedule (if it is released).']
+  status SubscriptionScheduleStatus [not null, note: 'The present status of the subscription schedule. Possible values are `not_started`, `active`, `completed`, `released`, and `canceled`.']
+  subscription_id bigint [note: 'ID of the subscription managed by the subscription schedule.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_subscriptionschedule_djstripe_owner_account_id_c7d8d9c4']
+    (customer_id) [name: 'djstripe_subscriptionschedule_customer_id_b124e27d']
+    (released_subscription_id) [name: 'djstripe_subscriptionschedule_released_subscription_id_3de9daa1']
+    (subscription_id) [name: 'djstripe_subscriptionschedule_subscription_id_d12d014b']
+  }
+
+  Note: '''Subscription schedules allow you to create and manage the lifecycle
+of a subscription by predefining expected changes.
+
+Stripe documentation: https://stripe.com/docs/api/subscription_schedules?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_shippingrate {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  tax_code_id varchar(255) [note: 'The shipping tax code']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_shippingrate_djstripe_owner_account_id_4f8a0f20']
+    (tax_code_id) [name: 'djstripe_shippingrate_tax_code_id_8affacec']
+  }
+
+  Note: '''Shipping rates describe the price of shipping presented
+to your customers and can be applied to Checkout Sessions
+to collect shipping costs.
+
+Stripe documentation: https://stripe.com/docs/api/shipping_rates
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_taxcode {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_taxcode_djstripe_owner_account_id_1f7fc204']
+  }
+
+  Note: '''Tax codes classify goods and services for tax purposes.
+
+Stripe documentation: https://stripe.com/docs/api/tax_codes
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_taxid {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  customer_id varchar(255)
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_taxid_djstripe_owner_account_id_acff63ae']
+    (customer_id) [name: 'djstripe_taxid_customer_id_e973248d']
+  }
+
+  Note: '''Add one or multiple tax IDs to a customer.
+A customer\'s tax IDs are displayed on invoices and
+credit notes issued for the customer.
+
+Stripe documentation: https://stripe.com/docs/api/customer_tax_ids?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_taxrate {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_taxrate_djstripe_owner_account_id_d6421376']
+  }
+
+  Note: '''Tax rates can be applied to invoices and subscriptions to collect tax.
+
+Stripe documentation: https://stripe.com/docs/api/tax_rates?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_session {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [note: 'Customer this Checkout is for if one exists.']
+  payment_intent_id varchar(255) [note: 'PaymentIntent created if SKUs or line items were provided.']
+  setup_intent_id varchar(255) [note: 'The ID of the SetupIntent for Checkout Sessions in setup mode.']
+  subscription_id varchar(255) [note: 'Subscription created if one or more plans were provided.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_session_djstripe_owner_account_id_8bbc07af']
+    (customer_id) [name: 'djstripe_session_customer_id_b4510dc3']
+    (payment_intent_id) [name: 'djstripe_session_payment_intent_id_cae83ebf']
+    (setup_intent_id) [name: 'djstripe_session_setup_intent_id_c884fe95']
+    (subscription_id) [name: 'djstripe_session_subscription_id_29499760']
+  }
+
+  Note: '''A Checkout Session represents your customer\'s session as they pay
+for one-time purchases or subscriptions through Checkout.
+
+Stripe documentation: https://stripe.com/docs/api/checkout/sessions?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_applicationfee {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  account_id varchar(255) [not null, note: 'ID of the Stripe account this fee was taken from.']
+  balance_transaction_id varchar(255) [not null, note: 'Balance transaction that describes the impact on your account balance.']
+  charge_id varchar(255) [not null, note: 'The charge that the application fee was taken from.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_applicationfee_djstripe_owner_account_id_07bb6a78']
+    (account_id) [name: 'djstripe_applicationfee_account_id_f50a2a15']
+    (balance_transaction_id) [name: 'djstripe_applicationfee_balance_transaction_id_ff735754']
+    (charge_id) [name: 'djstripe_applicationfee_charge_id_8ba8ce37']
+  }
+
+  Note: '''When you collect a transaction fee on top of a charge made for your
+user (using Connect), an ApplicationFee is created in your account.
+
+Please note the model field charge exists on the Stripe Connected Account
+while the application_fee modelfield on Charge model exists on the Platform Account!
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#application_fees
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_applicationfeerefund {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  balance_transaction_id varchar(255) [not null, note: 'Balance transaction that describes the impact on your account balance.']
+  fee_id varchar(255) [not null, note: 'The application fee that was refunded']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_applicationfeerefund_djstripe_owner_account_id_7418f0b2']
+    (balance_transaction_id) [name: 'djstripe_applicationfeerefund_balance_transaction_id_bc35b031']
+    (fee_id) [name: 'djstripe_applicationfeerefund_fee_id_8fabef2d']
+  }
+
+  Note: '''ApplicationFeeRefund objects allow you to refund an ApplicationFee that
+has previously been created but not yet refunded.
+Funds will be refunded to the Stripe account from which the fee was
+originally collected.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#fee_refunds
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_countryspec {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  id varchar(2) [pk]
+  default_currency varchar(3) [not null, note: 'The default currency for this country. This applies to both payment methods and bank accounts.']
+  supported_bank_account_currencies text [not null, note: 'Currencies that can be accepted in the specific country (for transfers).']
+  supported_payment_currencies text [not null, note: 'Currencies that can be accepted in the specified country (for payments).']
+  supported_payment_methods text [not null, note: 'Payment methods available in the specified country.']
+  supported_transfer_countries text [not null, note: 'Countries that can accept transfers from the specified country.']
+  verification_fields text [not null, note: 'Lists the types of verification data needed to keep an account open.']
+
+  Note: '''Stripe documentation: https://stripe.com/docs/api?lang=python#country_specs
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_transfer {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  balance_transaction_id varchar(255) [note: 'Balance transaction that describes the impact on your account balance.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_transfer_djstripe_owner_account_id_78ad63fe']
+    (balance_transaction_id) [name: 'djstripe_transfer_balance_transaction_id_b5b00270']
+  }
+
+  Note: '''When Stripe sends you money or you initiate a transfer to a bank account,
+debit card, or connected Stripe account, a transfer object will be created.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#transfers
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_transferreversal {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  balance_transaction_id varchar(255) [note: 'Balance transaction that describes the impact on your account balance.']
+  transfer_id varchar(255) [not null, note: 'The transfer that was reversed.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_transferreversal_djstripe_owner_account_id_2e3051e1']
+    (balance_transaction_id) [name: 'djstripe_transferreversal_balance_transaction_id_5044f084']
+    (transfer_id) [name: 'djstripe_transferreversal_transfer_id_8f250dd3']
+  }
+
+  Note: '''Stripe documentation: https://stripe.com/docs/api?lang=python#transfer_reversals
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_balancetransaction {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  amount bigint [not null, note: 'Gross amount of the transaction, in cents.']
+  currency varchar(3) [not null, note: 'Three-letter ISO currency code']
+  source varchar(255) [not null]
+  type BalanceTransactionType [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_balancetransaction_djstripe_owner_account_id_868dfd07']
+  }
+
+  Note: '''A single transaction that updates the Stripe balance.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#balance_transaction_object
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_charge {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  amount decimal [not null, note: 'Amount charged (as decimal).. declared max_digits=14, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [not null, note: 'The currency in which the charge was made.']
+  balance_transaction_id varchar(255) [note: 'The balance transaction that describes the impact of this charge on your account balance (not including refunds or disputes).']
+  customer_id varchar(255) [note: 'The customer associated with this charge.']
+  invoice_id varchar(255) [note: 'The invoice this charge is for if one exists.']
+  payment_intent_id varchar(255) [note: 'PaymentIntent associated with this charge, if one exists.']
+  payment_method_id varchar(255) [note: 'PaymentMethod used in this charge.']
+  source_id varchar(255) [note: 'The source used for this charge.']
+  status ChargeStatus [not null, note: 'The status of the payment.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_charge_djstripe_owner_account_id_5664eb74']
+    (balance_transaction_id) [name: 'djstripe_charge_balance_transaction_id_2eac625e']
+    (customer_id) [name: 'djstripe_charge_customer_id_fb15eb2b']
+    (invoice_id) [name: 'djstripe_charge_invoice_id_bb36cca4']
+    (payment_intent_id) [name: 'djstripe_charge_payment_intent_id_e2c03053']
+    (payment_method_id) [name: 'djstripe_charge_payment_method_id_061d5812']
+    (source_id) [name: 'djstripe_charge_source_id_2502db60']
+  }
+
+  Note: '''To charge a credit or a debit card, you create a charge object. You can
+retrieve and refund individual charges as well as list all charges. Charges
+are identified by a unique random ID.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#charges
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_mandate {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  payment_method_id varchar(255) [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_mandate_djstripe_owner_account_id_63974808']
+    (payment_method_id) [name: 'djstripe_mandate_payment_method_id_43a90a75']
+  }
+
+  Note: '''A Mandate is a record of the permission a customer has given you to debit their payment method.
+
+https://stripe.com/docs/api/mandates
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_product {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  name text [not null, note: 'The product\'s name, meant to be displayable to the customer. Applicable to both `service` and `good` types.']
+  active bool [note: 'Whether the product is currently available for purchase. Only applicable to products of `type=good`.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_product_djstripe_owner_account_id_6c90c2b6']
+  }
+
+  Note: '''Products describe the specific goods or services you offer to your customers.
+For example, you might offer a Standard and Premium version of your goods or service;
+each version would be a separate Product. They can be used in conjunction with
+Prices to configure pricing in Payment Links, Checkout, and Subscriptions.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#products
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_customer {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  email text [default: '', not null]
+  default_payment_method_id varchar(255) [note: 'default payment method used for subscriptions and invoices for the customer.']
+  subscriber_id integer
+  date_purged datetime
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_customer_djstripe_owner_account_id_2c5ac18d']
+    (default_payment_method_id) [name: 'djstripe_customer_default_payment_method_id_00268b63']
+    (subscriber_id) [name: 'djstripe_customer_subscriber_id_60f5c7bc']
+  }
+
+  Note: '''Customer objects allow you to perform recurring charges and track multiple
+charges that are associated with the same customer.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#customers
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_dispute {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  balance_transaction_id varchar(255) [note: 'Balance transaction that describes the impact on your account balance.']
+  charge_id varchar(255) [note: 'The charge that was disputed']
+  payment_intent_id varchar(255) [note: 'The PaymentIntent that was disputed']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_dispute_djstripe_owner_account_id_8010e2d7']
+    (balance_transaction_id) [name: 'djstripe_dispute_balance_transaction_id_aa7cb920']
+    (charge_id) [name: 'djstripe_dispute_charge_id_ba680941']
+    (payment_intent_id) [name: 'djstripe_dispute_payment_intent_id_dc834ee4']
+  }
+
+  Note: '''A dispute occurs when a customer questions your charge with their
+card issuer. When this happens, you\'re given the opportunity to
+respond to the dispute with evidence that shows that the charge is legitimate
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#disputes
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_event {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  api_version varchar(64) [not null, note: 'the API version at which the event data was rendered. Blank for old entries only, all new entries will have this value']
+  data text [not null, note: 'data received at webhook. data should be considered to be garbage until validity check is run and valid flag is set']
+  request_id varchar(50) [default: '', not null, note: 'Information about the request that triggered this event, for traceability purposes. If empty string then this is an old entry without that data. If Null then this is not an old entry, but a Stripe \'automated\' event with no associated request.']
+  idempotency_key text [default: '', not null]
+  type varchar(250) [not null, note: 'Stripe\'s event description code']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_event_djstripe_owner_account_id_622cdfe3']
+  }
+
+  Note: '''Events are Stripe\'s way of letting you know when something interesting
+happens in your account.
+When an interesting event occurs, a new Event object is created and POSTed
+to the configured webhook URL if the Event type matches.
+
+Stripe documentation: https://stripe.com/docs/api/events?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_file {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_file_djstripe_owner_account_id_4919c058']
+  }
+
+  Note: '''This is an object representing a file hosted on Stripe\'s servers.
+The file may have been uploaded by yourself using the create file request
+(for example, when uploading dispute evidence) or it may have been created by
+Stripe (for example, the results of a Sigma scheduled query).
+
+Stripe documentation: https://stripe.com/docs/api/files?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_filelink {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  file_id varchar(255) [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_filelink_djstripe_owner_account_id_bb039aa3']
+    (file_id) [name: 'djstripe_filelink_file_id_5241d36f']
+  }
+
+  Note: '''To share the contents of a File object with non-Stripe users,
+you can create a FileLink. FileLinks contain a URL that can be used
+to retrieve the contents of the file without authentication.
+
+Stripe documentation: https://stripe.com/docs/api/file_links?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_paymentintent {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [note: 'Customer this PaymentIntent is for if one exists.']
+  on_behalf_of_id varchar(255) [note: 'The account (if any) for which the funds of the PaymentIntent are intended.']
+  payment_method_id varchar(255) [note: 'Payment method used in this PaymentIntent.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_paymentintent_djstripe_owner_account_id_3433b556']
+    (customer_id) [name: 'djstripe_paymentintent_customer_id_93ee54a2']
+    (on_behalf_of_id) [name: 'djstripe_paymentintent_on_behalf_of_id_4db305db']
+    (payment_method_id) [name: 'djstripe_paymentintent_payment_method_id_814dd02d']
+  }
+
+  Note: '''A PaymentIntent guides you through the process of collecting a payment
+from your customer. We recommend that you create exactly one PaymentIntent for each order
+or customer session in your system. You can reference the PaymentIntent later to
+see the history of payment attempts for a particular session.
+
+A PaymentIntent transitions through multiple statuses throughout its lifetime as
+it interfaces with Stripe.js to perform authentication flows and ultimately
+creates at most one successful charge.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#payment_intents
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_setupintent {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [note: 'Customer this SetupIntent belongs to, if one exists.']
+  on_behalf_of_id varchar(255) [note: 'The account (if any) for which the setup is intended.']
+  payment_method_id varchar(255) [note: 'Payment method used in this PaymentIntent.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_setupintent_djstripe_owner_account_id_046c1671']
+    (customer_id) [name: 'djstripe_setupintent_customer_id_6ff5bbcc']
+    (on_behalf_of_id) [name: 'djstripe_setupintent_on_behalf_of_id_1ea4d941']
+    (payment_method_id) [name: 'djstripe_setupintent_payment_method_id_0ca17b5e']
+  }
+
+  Note: '''A SetupIntent guides you through the process of setting up a customer\'s
+payment credentials for future payments. For example, you could use a SetupIntent
+to set up your customer\'s card without immediately collecting a payment.
+Later, you can use PaymentIntents to drive the payment flow.
+
+NOTE: You should not maintain long-lived, unconfirmed SetupIntents.
+For security purposes, SetupIntents older than 24 hours may no longer be valid.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#setup_intents
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_payout {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  balance_transaction_id varchar(255) [note: 'Balance transaction that describes the impact on your account balance.']
+  currency varchar(3) [not null, note: 'Three-letter ISO currency code']
+  destination_id varchar(255) [note: 'Bank account or card the payout was sent to.']
+  failure_balance_transaction_id varchar(255) [note: 'If the payout failed or was canceled, this will be the balance transaction that reversed the initial balance transaction, and puts the funds from the failed payout back in your balance.']
+  original_payout_id bigint [unique, note: 'If this payout reverses another, this is the ID of the original payout.']
+  reversed_by_id bigint [unique, note: 'If this payout was reversed, this is the ID of the payout that reverses this payout.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_payout_djstripe_owner_account_id_8aac4e8e']
+    (balance_transaction_id) [name: 'djstripe_payout_balance_transaction_id_a9393fb6']
+    (destination_id) [name: 'djstripe_payout_destination_id_a5fa55c2']
+    (failure_balance_transaction_id) [name: 'djstripe_payout_failure_balance_transaction_id_77d442db']
+  }
+
+  Note: '''A Payout object is created when you receive funds from Stripe, or when you initiate
+a payout to either a bank account or debit card of a connected Stripe account.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#payouts
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_price {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  active bool [not null, note: 'Whether the price can be used for new purchases.']
+  currency varchar(3) [not null, note: 'Three-letter ISO currency code']
+  nickname varchar(250) [not null, note: 'A brief description of the plan, hidden from customers.']
+  product_id varchar(255) [not null, note: 'The product this price is associated with.']
+  lookup_key varchar(250) [note: 'A lookup key used to retrieve prices dynamically from a static string.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_price_djstripe_owner_account_id_01c819f7']
+    (product_id) [name: 'djstripe_price_product_id_9f3d37eb']
+  }
+
+  Note: '''Prices define the unit cost, currency, and (optional) billing cycle for
+both recurring and one-time purchases of products.
+
+Prices replace the legacy Plans API, which was removed in dj-stripe 2.11.
+
+Stripe documentation:
+- https://stripe.com/docs/api/prices
+- https://stripe.com/docs/billing/prices-guide
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_refund {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  amount bigint [not null, note: 'Amount, in cents.']
+  balance_transaction_id varchar(255) [note: 'Balance transaction that describes the impact on your account balance.']
+  charge_id varchar(255) [not null, note: 'The charge that was refunded']
+  currency varchar(3) [not null, note: 'Three-letter ISO currency code']
+  failure_balance_transaction_id varchar(255) [note: 'If the refund failed, this balance transaction describes the adjustment made on your account balance that reverses the initial balance transaction.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_refund_djstripe_owner_account_id_ece3ea81']
+    (balance_transaction_id) [name: 'djstripe_refund_balance_transaction_id_dec480cf']
+    (charge_id) [name: 'djstripe_refund_charge_id_e7efd717']
+    (failure_balance_transaction_id) [name: 'djstripe_refund_failure_balance_transaction_id_817ae640']
+  }
+
+  Note: '''Refund objects allow you to refund a charge that has previously been created
+but not yet refunded. Funds will be refunded to the credit or debit card
+that was originally charged.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#refund_object
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_feature {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_feature_djstripe_owner_account_id_c571a7da']
+  }
+
+  Note: '''A feature represents a monetizable ability or functionality in your system.
+Features can be assigned to products, and when those products are purchased,
+Stripe will create an entitlement to the feature for the purchasing customer.
+
+Stirpe Documentation: https://stripe.com/docs/api/entitlements/feature
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_productfeature {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  product_id varchar(255) [not null, note: 'The product this feature is attached to.']
+  entitlement_feature_id varchar(255) [not null, note: 'The feature that this product feature references.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_productfeature_djstripe_owner_account_id_d507d3d1']
+    (product_id) [name: 'djstripe_productfeature_product_id_b01ed73e']
+    (entitlement_feature_id) [name: 'djstripe_productfeature_entitlement_feature_id_6880bac7']
+  }
+
+  Note: '''A product_feature represents a feature attached to a product.
+When a product is purchased that has a feature, Stripe will create
+an entitlement to that feature for the purchasing customer.
+
+Stripe Documentation: https://stripe.com/docs/api/product-feature
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_activeentitlement {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_activeentitlement_djstripe_owner_account_id_d4f2dd53']
+  }
+
+  Note: '''An active entitlement describes access to a feature for a customer.
+
+Stirpe Documentation: https://stripe.com/docs/api/entitlements/active_entitlement
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_verificationsession {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  last_error text
+  last_verification_report_id varchar(255)
+  redaction text
+  verified_outputs text
+  status VerificationSessionStatus [not null]
+  type VerificationSessionType [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_verificationsession_djstripe_owner_account_id_11bac9bf']
+    (last_verification_report_id) [name: 'djstripe_verificationsession_last_verification_report_id_192f6b6d']
+  }
+
+  Note: '''Stripe documentation: https://stripe.com/docs/api/identity/verification_sessions
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_verificationreport {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  document text
+  id_number text
+  options text
+  selfie text
+  type VerificationReportType [not null]
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_verificationreport_djstripe_owner_account_id_7a5869e4']
+  }
+
+  Note: '''Stripe documentation: https://stripe.com/docs/api/identity/verification_reports
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_issuing_authorization {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_issuing_authorization_djstripe_owner_account_id_a5d3464b']
+  }
+
+  Note: '''When an issued card is used to make a purchase, an Issuing Authorization object is created.
+Authorizations must be approved for the purchase to be completed successfully.
+
+Stripe documentation: https://docs.stripe.com/api/issuing/authorizations?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_issuing_card {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_issuing_card_djstripe_owner_account_id_0bdfc97c']
+  }
+
+  Note: '''You can create physical or virtual cards that are issued to cardholders.
+
+Stripe documentation: https://stripe.com/docs/api/issuing/cards?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_issuing_cardholder {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_issuing_cardholder_djstripe_owner_account_id_fa7389b4']
+  }
+
+  Note: '''An Issuing Cardholder object represents an individual or business entity who is issued cards.
+
+Stripe documentation: https://stripe.com/docs/api/issuing/cardholders?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_issuing_dispute {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_issuing_dispute_djstripe_owner_account_id_388b366f']
+  }
+
+  Note: '''As a card issuer, you can dispute transactions that the cardholder does not recognize, suspects to be fraudulent, or has other issues with.
+
+Stripe documentation: https://stripe.com/docs/api/issuing/disputes?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_issuing_transaction {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_issuing_transaction_djstripe_owner_account_id_dfdd0ee5']
+  }
+
+  Note: '''Any use of an issued card that results in funds entering or leaving your Stripe account, such as a completed purchase or refund, is represented by an Issuing Transaction object.
+
+Stripe documentation: https://stripe.com/docs/api/issuing/transactions?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_djstripepaymentmethod {
+  id varchar(255) [pk]
+  type varchar(50) [not null]
+
+  indexes {
+    (type) [name: 'djstripe_djstripepaymentmethod_type_a56a0cac']
+  }
+
+  Note: '''An internal model that abstracts the legacy Card and BankAccount
+objects with Source objects.
+
+Contains two fields: `id` and `type`:
+- `id` is the id of the Stripe object.
+- `type` can be `card`, `bank_account` `account` or `source`.'''
+}
+
+Table djstripe_bankaccount {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  account_id varchar(255) [note: 'The external account the charge was made on behalf of. Null here indicates that this value was never set.']
+  fingerprint varchar(16) [not null, note: 'Uniquely identifies this particular bank account. You can use this attribute to check whether two bank accounts are the same.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_bankaccount_djstripe_owner_account_id_7c978af8']
+    (account_id) [name: 'djstripe_bankaccount_account_id_5434506d']
+  }
+
+  Note: '''External Accounts are transfer destinations on Account objects for Custom
+accounts. They can be bank accounts or debit cards.
+
+Stripe documentation: https://stripe.com/docs/api/external_account_bank_accounts
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_card {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  account_id varchar(255) [note: 'The external account the charge was made on behalf of. Null here indicates that this value was never set.']
+  fingerprint varchar(16) [default: '', not null, note: 'Uniquely identifies this particular card number.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_card_djstripe_owner_account_id_1a2f42f2']
+    (account_id) [name: 'djstripe_card_account_id_ef99457f']
+  }
+
+  Note: '''Cards are external accounts (debit cards) on Stripe Custom Connected
+Accounts, used as "Payout Sources".
+
+Stripe documentation: https://stripe.com/docs/api/external_account_cards
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_source {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255)
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_source_djstripe_owner_account_id_f99f1fe6']
+    (customer_id) [name: 'djstripe_source_customer_id_4d678557']
+  }
+
+  Note: '''Source objects allow you to accept a variety of payment methods.
+They represent a customer\'s payment instrument, and can be used with
+the Stripe API just like a Card object: once chargeable,
+they can be charged, or can be attached to customers.
+
+.. deprecated:: 2.11.0
+    The Stripe Sources API has been deprecated in favour of the
+    PaymentMethods API. Use the `PaymentMethod` model instead. The `Source`
+    model will be removed in a future release.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#sources
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_sourcetransaction {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  ach_credit_transfer text [not null, note: 'The data corresponding to the ach_credit_transfer type.']
+  amount decimal [note: 'Amount (as decimal) associated with the ACH Credit Transfer. This is the amount your customer has sent for which the source will be chargeable once ready.. declared max_digits=14, decimal_places=2, which the database does not enforce']
+  currency varchar(3) [not null, note: 'Three-letter ISO currency code']
+  customer_data text [note: 'Customer defined string used to initiate the ACH Credit Transfer.']
+  source_id varchar(255)
+  status SourceTransactionStatus [not null, note: 'The status of the ACH Credit Transfer. Only `chargeable` sources can be used to create a charge.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_sourcetransaction_djstripe_owner_account_id_a8c9bdee']
+    (source_id) [name: 'djstripe_sourcetransaction_source_id_3c972638']
+  }
+
+  Note: '''Stripe documentation: https://stripe.com/docs/sources/ach-credit-transfer#source-transactions
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_paymentmethod {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  customer_id varchar(255) [note: 'Customer to which this PaymentMethod is saved. This will not be set when the PaymentMethod has not been saved to a Customer.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_paymentmethod_djstripe_owner_account_id_12af66c9']
+    (customer_id) [name: 'djstripe_paymentmethod_customer_id_c482a8b6']
+  }
+
+  Note: '''PaymentMethod objects represent your customer\'s payment instruments.
+You can use them with PaymentIntents to collect payments or save them
+to Customer objects to store instrument details for future payments.
+
+Stripe documentation: https://stripe.com/docs/api?lang=python#payment_methods
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_earlyfraudwarning {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_earlyfraudwarning_djstripe_owner_account_id_83708c78']
+  }
+
+  Note: '''An early fraud warning indicates that the card issuer has notified us that a charge may be fraudulent.
+
+Stripe documentation: https://docs.stripe.com/api/radar/early_fraud_warnings?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_review {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_review_djstripe_owner_account_id_543dfbd7']
+  }
+
+  Note: '''Reviews can be used to supplement automated fraud detection with human expertise.
+Learn more about Radar and reviewing payments here
+https://docs.stripe.com/radar/reviews.
+
+Stripe documentation: https://docs.stripe.com/api/radar/reviews?lang=python
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_scheduledqueryrun {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  data_load_time datetime [not null, note: 'When the query was run, Sigma contained a snapshot of your Stripe data at this time.']
+  error text [note: 'If the query run was not succeesful, contains information about the failure.']
+  file_id varchar(255) [note: 'The file object representing the results of the query.']
+  result_available_until datetime [not null, note: 'Time at which the result expires and is no longer available for download.']
+  sql text [not null, note: 'SQL for the query.']
+  status ScheduledQueryRunStatus [not null, note: 'The query\'s execution status.']
+  title text [not null, note: 'Title of the query.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_scheduledqueryrun_djstripe_owner_account_id_b5cc7091']
+    (file_id) [name: 'djstripe_scheduledqueryrun_file_id_707bbc03']
+  }
+
+  Note: '''Stripe documentation: https://stripe.com/docs/api?lang=python#scheduled_queries
+
+Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_webhookendpoint {
+  djstripe_created datetime [not null, note: 'default in Python: now()']
+  djstripe_updated datetime [not null, note: 'default in Python: now()']
+  stripe_data text [not null, note: 'default in Python: dict()']
+  djstripe_id integer [pk, increment]
+  id varchar(255) [unique, not null]
+  djstripe_owner_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  livemode bool [default: null, note: 'Null here indicates that the livemode status is unknown or was previously unrecorded. Otherwise, this field indicates whether this record comes from Stripe test mode or live mode operation.']
+  created datetime [note: 'The datetime this object was created in stripe.']
+  metadata text [note: 'A set of key/value pairs that you can attach to an object. It can be useful for storing additional information about an object in a structured format.']
+  api_version varchar(64) [not null, note: 'The API version events are rendered as for this webhook endpoint. Defaults to the configured Stripe API Version.']
+  enabled_events text [not null, note: 'The list of events to enable for this endpoint. [\'*\'] indicates that all events are enabled, except those that require explicit selection.']
+  secret varchar(256) [not null, note: 'The endpoint\'s secret, used to generate webhook signatures.']
+  status WebhookEndpointStatus [not null, note: 'The status of the webhook. It can be enabled or disabled.']
+  url varchar(2048) [not null, note: 'The URL of the webhook endpoint.']
+  application varchar(255) [not null, note: 'The ID of the associated Connect application.']
+  djstripe_uuid char(32) [unique, not null, note: 'A UUID specific to dj-stripe generated for the endpoint. default in Python: uuid4()']
+  djstripe_tolerance "smallint unsigned" [default: 300, not null, note: 'Controls the milliseconds tolerance which wards against replay attacks. Leave this to its default value unless you know what you\'re doing.']
+  djstripe_validation_method WebhookEndpointDjstripeValidationMethod [default: 'verify_signature', not null, note: 'Controls the webhook validation method.']
+
+  indexes {
+    (djstripe_owner_account_id) [name: 'djstripe_webhookendpoint_djstripe_owner_account_id_f1ac5c9d']
+  }
+
+  Note: '''Columns from StripeModel (abstract): djstripe_id, id, djstripe_owner_account_id, livemode, created, metadata.
+
+Columns from StripeBaseModel (abstract): djstripe_created, djstripe_updated, stripe_data.'''
+}
+
+Table djstripe_webhookeventtrigger {
+  id integer [pk, increment]
+  remote_ip char(39) [not null, note: 'IP address of the request client.']
+  headers text [not null]
+  body text [not null]
+  valid bool [default: false, not null, note: 'Whether or not the webhook event has passed validation']
+  processed bool [default: false, not null, note: 'Whether or not the webhook event has been successfully processed']
+  exception varchar(128) [not null]
+  traceback text [not null, note: 'Traceback if an exception was thrown during processing']
+  event_id varchar(255) [note: 'Event object contained in the (valid) Webhook']
+  djstripe_version varchar(32) [not null, note: 'The version of dj-stripe when the webhook was received. default in Python: _get_version()']
+  created datetime [not null, note: 'default in Python: now()']
+  updated datetime [not null, note: 'default in Python: now()']
+  stripe_trigger_account_id varchar(255) [note: 'The Stripe Account this object belongs to.']
+  webhook_endpoint_id varchar(255) [note: 'The endpoint this webhook was received on']
+
+  indexes {
+    (event_id) [name: 'djstripe_webhookeventtrigger_event_id_b2e08de6']
+    (stripe_trigger_account_id) [name: 'djstripe_webhookeventtrigger_stripe_trigger_account_id_06d35fda']
+    (webhook_endpoint_id) [name: 'djstripe_webhookeventtrigger_webhook_endpoint_id_6e762b2f']
+  }
+
+  Note: '''An instance of a request that reached the server endpoint for Stripe webhooks.
+
+Webhook Events are initially **UNTRUSTED**, as it is possible for any web entity to
+post any data to our webhook url. Data posted may be valid Stripe information,
+garbage, or even malicious.
+The \'valid\' flag in this model monitors this.'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref djstripe_apikey_djstripe_owner_account_id_fk: djstripe_apikey.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_account_djstripe_owner_account_id_fk: djstripe_account.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_accountv2_djstripe_owner_account_id_fk: djstripe_accountv2.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_coupon_djstripe_owner_account_id_fk: djstripe_coupon.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_promotioncode_djstripe_owner_account_id_fk: djstripe_promotioncode.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_discount_djstripe_owner_account_id_fk: djstripe_discount.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_discount_customer_id_fk: djstripe_discount.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_discount_invoice_id_fk: djstripe_discount.invoice_id > djstripe_invoice.id [delete: cascade]
+
+Ref djstripe_discount_subscription_id_fk: djstripe_discount.subscription_id > djstripe_subscription.id [delete: cascade]
+
+Ref djstripe_invoice_djstripe_owner_account_id_fk: djstripe_invoice.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_invoice_charge_id_fk: djstripe_invoice.charge_id - djstripe_charge.djstripe_id [delete: cascade]
+
+Ref djstripe_invoice_customer_id_fk: djstripe_invoice.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_invoice_default_payment_method_id_fk: djstripe_invoice.default_payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_invoice_payment_intent_id_fk: djstripe_invoice.payment_intent_id - djstripe_paymentintent.djstripe_id [delete: cascade]
+
+Ref djstripe_invoice_subscription_id_fk: djstripe_invoice.subscription_id > djstripe_subscription.id [delete: set null]
+
+Table djstripe_djstripeinvoicedefaulttaxrate {
+  id integer [pk, increment]
+  invoice_id bigint [not null]
+  taxrate_id bigint [not null]
+
+  indexes {
+    (invoice_id) [name: 'djstripe_djstripeinvoicedefaulttaxrate_invoice_id_541494fb']
+    (taxrate_id) [name: 'djstripe_djstripeinvoicedefaulttaxrate_taxrate_id_fd618ddd']
+    (invoice_id, taxrate_id) [unique, name: 'djstripe_djstripeinvoicedefaulttaxrate_invoice_id_taxrate_id_bfb12c22_uniq']
+  }
+}
+
+Ref djstripe_djstripeinvoicedefaulttaxrate_invoice_id_fk: djstripe_djstripeinvoicedefaulttaxrate.invoice_id > djstripe_invoice.djstripe_id [delete: cascade]
+
+Ref djstripe_djstripeinvoicedefaulttaxrate_taxrate_id_fk: djstripe_djstripeinvoicedefaulttaxrate.taxrate_id > djstripe_taxrate.djstripe_id [delete: cascade]
+
+Ref djstripe_upcominginvoice_djstripe_owner_account_id_fk: djstripe_upcominginvoice.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_upcominginvoice_charge_id_fk: djstripe_upcominginvoice.charge_id - djstripe_charge.djstripe_id [delete: cascade]
+
+Ref djstripe_upcominginvoice_customer_id_fk: djstripe_upcominginvoice.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_upcominginvoice_default_payment_method_id_fk: djstripe_upcominginvoice.default_payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_upcominginvoice_payment_intent_id_fk: djstripe_upcominginvoice.payment_intent_id - djstripe_paymentintent.djstripe_id [delete: cascade]
+
+Ref djstripe_upcominginvoice_subscription_id_fk: djstripe_upcominginvoice.subscription_id > djstripe_subscription.id [delete: set null]
+
+Ref djstripe_invoiceitem_djstripe_owner_account_id_fk: djstripe_invoiceitem.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_invoiceitem_customer_id_fk: djstripe_invoiceitem.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_invoiceitem_invoice_id_fk: djstripe_invoiceitem.invoice_id > djstripe_invoice.id [delete: cascade]
+
+Ref djstripe_invoiceitem_price_id_fk: djstripe_invoiceitem.price_id > djstripe_price.djstripe_id [delete: set null]
+
+Ref djstripe_invoiceitem_subscription_id_fk: djstripe_invoiceitem.subscription_id > djstripe_subscription.id [delete: set null]
+
+Table djstripe_djstripeinvoiceitemtaxrate {
+  id integer [pk, increment]
+  invoiceitem_id bigint [not null]
+  taxrate_id bigint [not null]
+
+  indexes {
+    (invoiceitem_id) [name: 'djstripe_djstripeinvoiceitemtaxrate_invoiceitem_id_ddc00567']
+    (taxrate_id) [name: 'djstripe_djstripeinvoiceitemtaxrate_taxrate_id_bd22e20a']
+    (invoiceitem_id, taxrate_id) [unique, name: 'djstripe_djstripeinvoiceitemtaxrate_invoiceitem_id_taxrate_id_f226923e_uniq']
+  }
+}
+
+Ref djstripe_djstripeinvoiceitemtaxrate_invoiceitem_id_fk: djstripe_djstripeinvoiceitemtaxrate.invoiceitem_id > djstripe_invoiceitem.djstripe_id [delete: cascade]
+
+Ref djstripe_djstripeinvoiceitemtaxrate_taxrate_id_fk: djstripe_djstripeinvoiceitemtaxrate.taxrate_id > djstripe_taxrate.djstripe_id [delete: cascade]
+
+Ref djstripe_lineitem_djstripe_owner_account_id_fk: djstripe_lineitem.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_lineitem_invoice_item_id_fk: djstripe_lineitem.invoice_item_id > djstripe_invoiceitem.id [delete: cascade]
+
+Ref djstripe_lineitem_subscription_id_fk: djstripe_lineitem.subscription_id > djstripe_subscription.id [delete: cascade]
+
+Ref djstripe_lineitem_subscription_item_id_fk: djstripe_lineitem.subscription_item_id > djstripe_subscriptionitem.id [delete: cascade]
+
+Ref djstripe_subscription_djstripe_owner_account_id_fk: djstripe_subscription.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_subscription_customer_id_fk: djstripe_subscription.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_subscriptionitem_djstripe_owner_account_id_fk: djstripe_subscriptionitem.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_subscriptionitem_price_id_fk: djstripe_subscriptionitem.price_id > djstripe_price.djstripe_id [delete: cascade]
+
+Ref djstripe_subscriptionitem_subscription_id_fk: djstripe_subscriptionitem.subscription_id > djstripe_subscription.id [delete: cascade]
+
+Table djstripe_djstripesubscriptionitemtaxrate {
+  id integer [pk, increment]
+  subscriptionitem_id bigint [not null]
+  taxrate_id bigint [not null]
+
+  indexes {
+    (subscriptionitem_id) [name: 'djstripe_djstripesubscriptionitemtaxrate_subscriptionitem_id_04bcb65f']
+    (taxrate_id) [name: 'djstripe_djstripesubscriptionitemtaxrate_taxrate_id_01b3bd7f']
+    (subscriptionitem_id, taxrate_id) [unique, name: 'djstripe_djstripesubscriptionitemtaxrate_subscriptionitem_id_taxrate_id_7562ac42_uniq']
+  }
+}
+
+Ref djstripe_djstripesubscriptionitemtaxrate_subscriptionitem_id_fk: djstripe_djstripesubscriptionitemtaxrate.subscriptionitem_id > djstripe_subscriptionitem.djstripe_id [delete: cascade]
+
+Ref djstripe_djstripesubscriptionitemtaxrate_taxrate_id_fk: djstripe_djstripesubscriptionitemtaxrate.taxrate_id > djstripe_taxrate.djstripe_id [delete: cascade]
+
+Ref djstripe_subscriptionschedule_djstripe_owner_account_id_fk: djstripe_subscriptionschedule.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_subscriptionschedule_customer_id_fk: djstripe_subscriptionschedule.customer_id > djstripe_customer.djstripe_id [delete: cascade]
+
+Ref djstripe_subscriptionschedule_released_subscription_id_fk: djstripe_subscriptionschedule.released_subscription_id > djstripe_subscription.djstripe_id [delete: set null]
+
+Ref djstripe_subscriptionschedule_subscription_id_fk: djstripe_subscriptionschedule.subscription_id > djstripe_subscription.djstripe_id [delete: set null]
+
+Ref djstripe_shippingrate_djstripe_owner_account_id_fk: djstripe_shippingrate.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_shippingrate_tax_code_id_fk: djstripe_shippingrate.tax_code_id > djstripe_taxcode.id [delete: cascade]
+
+Ref djstripe_taxcode_djstripe_owner_account_id_fk: djstripe_taxcode.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_taxid_djstripe_owner_account_id_fk: djstripe_taxid.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_taxid_customer_id_fk: djstripe_taxid.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_taxrate_djstripe_owner_account_id_fk: djstripe_taxrate.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_session_djstripe_owner_account_id_fk: djstripe_session.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_session_customer_id_fk: djstripe_session.customer_id > djstripe_customer.id [delete: set null]
+
+Ref djstripe_session_payment_intent_id_fk: djstripe_session.payment_intent_id > djstripe_paymentintent.id [delete: set null]
+
+Ref djstripe_session_setup_intent_id_fk: djstripe_session.setup_intent_id > djstripe_setupintent.id [delete: set null]
+
+Ref djstripe_session_subscription_id_fk: djstripe_session.subscription_id > djstripe_subscription.id [delete: set null]
+
+Ref djstripe_applicationfee_djstripe_owner_account_id_fk: djstripe_applicationfee.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_applicationfee_account_id_fk: djstripe_applicationfee.account_id > djstripe_account.id [delete: restrict]
+
+Ref djstripe_applicationfee_balance_transaction_id_fk: djstripe_applicationfee.balance_transaction_id > djstripe_balancetransaction.id [delete: cascade]
+
+Ref djstripe_applicationfee_charge_id_fk: djstripe_applicationfee.charge_id > djstripe_charge.id [delete: cascade]
+
+Ref djstripe_applicationfeerefund_djstripe_owner_account_id_fk: djstripe_applicationfeerefund.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_applicationfeerefund_balance_transaction_id_fk: djstripe_applicationfeerefund.balance_transaction_id > djstripe_balancetransaction.id [delete: cascade]
+
+Ref djstripe_applicationfeerefund_fee_id_fk: djstripe_applicationfeerefund.fee_id > djstripe_applicationfee.id [delete: cascade]
+
+Ref djstripe_transfer_djstripe_owner_account_id_fk: djstripe_transfer.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_transfer_balance_transaction_id_fk: djstripe_transfer.balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_transferreversal_djstripe_owner_account_id_fk: djstripe_transferreversal.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_transferreversal_balance_transaction_id_fk: djstripe_transferreversal.balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_transferreversal_transfer_id_fk: djstripe_transferreversal.transfer_id > djstripe_transfer.id [delete: cascade]
+
+Ref djstripe_balancetransaction_djstripe_owner_account_id_fk: djstripe_balancetransaction.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_charge_djstripe_owner_account_id_fk: djstripe_charge.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_charge_balance_transaction_id_fk: djstripe_charge.balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_charge_customer_id_fk: djstripe_charge.customer_id > djstripe_customer.id [delete: set null]
+
+Ref djstripe_charge_invoice_id_fk: djstripe_charge.invoice_id > djstripe_invoice.id [delete: cascade]
+
+Ref djstripe_charge_payment_intent_id_fk: djstripe_charge.payment_intent_id > djstripe_paymentintent.id [delete: set null]
+
+Ref djstripe_charge_payment_method_id_fk: djstripe_charge.payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_charge_source_id_fk: djstripe_charge.source_id > djstripe_djstripepaymentmethod.id [delete: set null]
+
+Ref djstripe_mandate_djstripe_owner_account_id_fk: djstripe_mandate.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_mandate_payment_method_id_fk: djstripe_mandate.payment_method_id > djstripe_paymentmethod.id [delete: cascade]
+
+Ref djstripe_product_djstripe_owner_account_id_fk: djstripe_product.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_customer_djstripe_owner_account_id_fk: djstripe_customer.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_customer_default_payment_method_id_fk: djstripe_customer.default_payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_customer_subscriber_id_fk: djstripe_customer.subscriber_id > auth_user.id [delete: set null]
+
+Ref djstripe_dispute_djstripe_owner_account_id_fk: djstripe_dispute.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_dispute_balance_transaction_id_fk: djstripe_dispute.balance_transaction_id > djstripe_balancetransaction.id [delete: cascade]
+
+Ref djstripe_dispute_charge_id_fk: djstripe_dispute.charge_id > djstripe_charge.id [delete: cascade]
+
+Ref djstripe_dispute_payment_intent_id_fk: djstripe_dispute.payment_intent_id > djstripe_paymentintent.id [delete: cascade]
+
+Ref djstripe_event_djstripe_owner_account_id_fk: djstripe_event.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_file_djstripe_owner_account_id_fk: djstripe_file.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_filelink_djstripe_owner_account_id_fk: djstripe_filelink.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_filelink_file_id_fk: djstripe_filelink.file_id > djstripe_file.id [delete: cascade]
+
+Ref djstripe_paymentintent_djstripe_owner_account_id_fk: djstripe_paymentintent.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_paymentintent_customer_id_fk: djstripe_paymentintent.customer_id > djstripe_customer.id [delete: cascade]
+
+Ref djstripe_paymentintent_on_behalf_of_id_fk: djstripe_paymentintent.on_behalf_of_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_paymentintent_payment_method_id_fk: djstripe_paymentintent.payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_setupintent_djstripe_owner_account_id_fk: djstripe_setupintent.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_setupintent_customer_id_fk: djstripe_setupintent.customer_id > djstripe_customer.id [delete: set null]
+
+Ref djstripe_setupintent_on_behalf_of_id_fk: djstripe_setupintent.on_behalf_of_id > djstripe_account.id [delete: set null]
+
+Ref djstripe_setupintent_payment_method_id_fk: djstripe_setupintent.payment_method_id > djstripe_paymentmethod.id [delete: set null]
+
+Ref djstripe_payout_djstripe_owner_account_id_fk: djstripe_payout.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_payout_balance_transaction_id_fk: djstripe_payout.balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_payout_destination_id_fk: djstripe_payout.destination_id > djstripe_bankaccount.id [delete: restrict]
+
+Ref djstripe_payout_failure_balance_transaction_id_fk: djstripe_payout.failure_balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_payout_original_payout_id_fk: djstripe_payout.original_payout_id - djstripe_payout.djstripe_id [delete: set null]
+
+Ref djstripe_payout_reversed_by_id_fk: djstripe_payout.reversed_by_id - djstripe_payout.djstripe_id [delete: set null]
+
+Ref djstripe_price_djstripe_owner_account_id_fk: djstripe_price.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_price_product_id_fk: djstripe_price.product_id > djstripe_product.id [delete: cascade]
+
+Ref djstripe_refund_djstripe_owner_account_id_fk: djstripe_refund.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_refund_balance_transaction_id_fk: djstripe_refund.balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_refund_charge_id_fk: djstripe_refund.charge_id > djstripe_charge.id [delete: cascade]
+
+Ref djstripe_refund_failure_balance_transaction_id_fk: djstripe_refund.failure_balance_transaction_id > djstripe_balancetransaction.id [delete: set null]
+
+Ref djstripe_feature_djstripe_owner_account_id_fk: djstripe_feature.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_productfeature_djstripe_owner_account_id_fk: djstripe_productfeature.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_productfeature_product_id_fk: djstripe_productfeature.product_id > djstripe_product.id [delete: cascade]
+
+Ref djstripe_productfeature_entitlement_feature_id_fk: djstripe_productfeature.entitlement_feature_id > djstripe_feature.id [delete: cascade]
+
+Ref djstripe_activeentitlement_djstripe_owner_account_id_fk: djstripe_activeentitlement.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_verificationsession_djstripe_owner_account_id_fk: djstripe_verificationsession.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_verificationsession_last_verification_report_id_fk: djstripe_verificationsession.last_verification_report_id > djstripe_verificationreport.id [delete: set null]
+
+Ref djstripe_verificationreport_djstripe_owner_account_id_fk: djstripe_verificationreport.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_issuing_authorization_djstripe_owner_account_id_fk: djstripe_issuing_authorization.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_issuing_card_djstripe_owner_account_id_fk: djstripe_issuing_card.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_issuing_cardholder_djstripe_owner_account_id_fk: djstripe_issuing_cardholder.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_issuing_dispute_djstripe_owner_account_id_fk: djstripe_issuing_dispute.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_issuing_transaction_djstripe_owner_account_id_fk: djstripe_issuing_transaction.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_bankaccount_djstripe_owner_account_id_fk: djstripe_bankaccount.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_bankaccount_account_id_fk: djstripe_bankaccount.account_id > djstripe_account.id [delete: restrict]
+
+Ref djstripe_card_djstripe_owner_account_id_fk: djstripe_card.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_card_account_id_fk: djstripe_card.account_id > djstripe_account.id [delete: restrict]
+
+Ref djstripe_source_djstripe_owner_account_id_fk: djstripe_source.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_source_customer_id_fk: djstripe_source.customer_id > djstripe_customer.id [delete: set null]
+
+Ref djstripe_sourcetransaction_djstripe_owner_account_id_fk: djstripe_sourcetransaction.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_sourcetransaction_source_id_fk: djstripe_sourcetransaction.source_id > djstripe_source.id [delete: set null]
+
+Ref djstripe_paymentmethod_djstripe_owner_account_id_fk: djstripe_paymentmethod.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_paymentmethod_customer_id_fk: djstripe_paymentmethod.customer_id > djstripe_customer.id [delete: set null]
+
+Ref djstripe_earlyfraudwarning_djstripe_owner_account_id_fk: djstripe_earlyfraudwarning.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_review_djstripe_owner_account_id_fk: djstripe_review.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_scheduledqueryrun_djstripe_owner_account_id_fk: djstripe_scheduledqueryrun.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_scheduledqueryrun_file_id_fk: djstripe_scheduledqueryrun.file_id > djstripe_file.id [delete: set null]
+
+Ref djstripe_webhookendpoint_djstripe_owner_account_id_fk: djstripe_webhookendpoint.djstripe_owner_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_webhookeventtrigger_event_id_fk: djstripe_webhookeventtrigger.event_id > djstripe_event.id [delete: set null]
+
+Ref djstripe_webhookeventtrigger_stripe_trigger_account_id_fk: djstripe_webhookeventtrigger.stripe_trigger_account_id > djstripe_account.id [delete: cascade]
+
+Ref djstripe_webhookeventtrigger_webhook_endpoint_id_fk: djstripe_webhookeventtrigger.webhook_endpoint_id > djstripe_webhookendpoint.id [delete: set null]

@@ -1,0 +1,538 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum TopicNotificationAction {
+  "0"
+  "1"
+  "2"
+}
+
+Enum CommentAction {
+  "0"
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Enum FlagReason {
+  "0"
+  "1"
+}
+
+Enum CommentPollMode {
+  "0"
+  "1"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table spirit_user_userprofile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  slug varchar(50) [not null]
+  nickname varchar(255) [not null]
+  location varchar(75) [not null]
+  last_seen datetime [not null, note: 'default in Python: now()']
+  last_ip char(39)
+  timezone varchar(32) [default: 'UTC', not null]
+  avatar varchar(255) [not null]
+  notify "integer unsigned" [default: 25, not null]
+  is_administrator bool [default: false, not null]
+  is_moderator bool [default: false, not null]
+  is_verified bool [default: false, not null, note: 'Designates whether the user has verified his account by email or by other means. Un-select this to let the user activate his account.']
+  topic_count "integer unsigned" [default: 0, not null]
+  comment_count "integer unsigned" [default: 0, not null]
+  last_post_hash varchar(32) [not null]
+  last_post_on datetime
+}
+
+Table spirit_category_category {
+  id integer [pk, increment]
+  parent_id bigint
+  title varchar(75) [not null]
+  slug varchar(50) [not null]
+  description varchar(255) [not null]
+  color varchar(7) [not null, note: 'Title color in hex format (i.e: #1aafd0).']
+  sort "integer unsigned" [default: 0, not null]
+  reindex_at datetime [not null, note: 'default in Python: now()']
+  is_global bool [default: true, not null, note: 'Designates whether the topics will bedisplayed in the all-categories list.']
+  is_closed bool [default: false, not null]
+  is_removed bool [default: false, not null]
+  is_private bool [default: false, not null]
+
+  indexes {
+    (parent_id) [name: 'spirit_category_category_parent_id_e59f3015']
+  }
+
+  Note: '''Category model
+
+:ivar reindex_at: Last time this model was marked    for reindex. It makes the search re-index the topic,    it must be set explicitly
+:vartype reindex_at: `:py:class:models.DateTimeField`'''
+}
+
+Table spirit_topic_topic {
+  id integer [pk, increment]
+  user_id integer [not null]
+  category_id bigint [not null]
+  title varchar(255) [not null]
+  slug varchar(50) [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  last_active datetime [not null, note: 'default in Python: now()']
+  reindex_at datetime [not null, note: 'default in Python: now()']
+  is_pinned bool [default: false, not null]
+  is_globally_pinned bool [default: false, not null]
+  is_closed bool [default: false, not null]
+  is_removed bool [default: false, not null]
+  view_count "integer unsigned" [default: 0, not null]
+  comment_count "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (user_id) [name: 'spirit_topic_topic_user_id_5d0151a9']
+    (category_id) [name: 'spirit_topic_topic_category_id_824dc7e8']
+  }
+
+  Note: '''Topic model
+
+:ivar last_active: Last time a comment was added/removed,    it makes the search re-index the topic
+:vartype last_active: `:py:class:models.DateTimeField`
+:ivar reindex_at: Last time this model was marked    for reindex. It makes the search re-index the topic,    it must be set explicitly
+:vartype reindex_at: `:py:class:models.DateTimeField`'''
+}
+
+Table spirit_topic_favorite_topicfavorite {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'spirit_topic_favorite_topicfavorite_user_id_e406cc12']
+    (topic_id) [name: 'spirit_topic_favorite_topicfavorite_topic_id_7a363899']
+    (user_id, topic_id) [unique, name: 'spirit_topic_favorite_topicfavorite_user_id_topic_id_167416f4_uniq']
+  }
+}
+
+Table spirit_topic_notification_topicnotification {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  comment_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  action TopicNotificationAction [default: 0, not null]
+  is_read bool [default: false, not null]
+  is_active bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'spirit_topic_notification_topicnotification_user_id_a9d2003a']
+    (topic_id) [name: 'spirit_topic_notification_topicnotification_topic_id_449cdcfe']
+    (comment_id) [name: 'spirit_topic_notification_topicnotification_comment_id_703f40ab']
+    (user_id, topic_id) [unique, name: 'spirit_topic_notification_topicnotification_user_id_topic_id_1f927541_uniq']
+  }
+}
+
+Table spirit_topic_private_topicprivate {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'spirit_topic_private_topicprivate_user_id_682c6ef5']
+    (topic_id) [name: 'spirit_topic_private_topicprivate_topic_id_47c6f3fd']
+    (user_id, topic_id) [unique, name: 'spirit_topic_private_topicprivate_user_id_topic_id_8c297113_uniq']
+  }
+}
+
+Table spirit_topic_unread_topicunread {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  is_read bool [default: true, not null]
+
+  indexes {
+    (user_id) [name: 'spirit_topic_unread_topicunread_user_id_f5a459f5']
+    (topic_id) [name: 'spirit_topic_unread_topicunread_topic_id_04fc7131']
+    (user_id, topic_id) [unique, name: 'spirit_topic_unread_topicunread_user_id_topic_id_8f3c8a54_uniq']
+  }
+}
+
+Table spirit_comment_comment {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  comment text [not null]
+  comment_html text [not null]
+  action CommentAction [default: 0, not null]
+  date datetime [not null, note: 'default in Python: now()']
+  is_removed bool [default: false, not null]
+  is_modified bool [default: false, not null]
+  ip_address char(39)
+  modified_count "integer unsigned" [default: 0, not null]
+  likes_count "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (user_id) [name: 'spirit_comment_comment_user_id_0f9dbd41']
+    (topic_id) [name: 'spirit_comment_comment_topic_id_4f5636aa']
+  }
+}
+
+Table spirit_comment_bookmark_commentbookmark {
+  id integer [pk, increment]
+  user_id integer [not null]
+  topic_id bigint [not null]
+  comment_number "integer unsigned" [default: 0, not null]
+
+  indexes {
+    (user_id) [name: 'spirit_comment_bookmark_commentbookmark_user_id_b31a0d88']
+    (topic_id) [name: 'spirit_comment_bookmark_commentbookmark_topic_id_cd606f44']
+    (user_id, topic_id) [unique, name: 'spirit_comment_bookmark_commentbookmark_user_id_topic_id_5ad0da74_uniq']
+  }
+}
+
+Table spirit_comment_flag_commentflag {
+  id integer [pk, increment]
+  moderator_id integer
+  comment_id bigint [unique, not null]
+  date datetime [not null, note: 'default in Python: now()']
+  is_closed bool [default: false, not null]
+
+  indexes {
+    (moderator_id) [name: 'spirit_comment_flag_commentflag_moderator_id_1eb69535']
+  }
+}
+
+Table spirit_comment_flag_flag {
+  id integer [pk, increment]
+  user_id integer [not null]
+  comment_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+  reason FlagReason [not null]
+  body text [not null]
+
+  indexes {
+    (user_id) [name: 'spirit_comment_flag_flag_user_id_ffbf846e']
+    (comment_id) [name: 'spirit_comment_flag_flag_comment_id_1223e22e']
+    (user_id, comment_id) [unique, name: 'spirit_comment_flag_flag_user_id_comment_id_900c59f8_uniq']
+  }
+}
+
+Table spirit_comment_history_commenthistory {
+  id integer [pk, increment]
+  comment_fk_id bigint [not null]
+  comment_html text [not null]
+  date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (comment_fk_id) [name: 'spirit_comment_history_commenthistory_comment_fk_id_48f6b502']
+  }
+}
+
+Table spirit_comment_like_commentlike {
+  id integer [pk, increment]
+  user_id integer [not null]
+  comment_id bigint [not null]
+  date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'spirit_comment_like_commentlike_user_id_85e21014']
+    (comment_id) [name: 'spirit_comment_like_commentlike_comment_id_a81f0f4f']
+    (user_id, comment_id) [unique, name: 'spirit_comment_like_commentlike_user_id_comment_id_32b1f85f_uniq']
+  }
+}
+
+Table spirit_comment_poll_commentpoll {
+  id integer [pk, increment]
+  comment_id bigint [not null]
+  name varchar(255) [not null]
+  title varchar(255) [not null]
+  choice_min "integer unsigned" [default: 1, not null]
+  choice_max "integer unsigned" [default: 1, not null]
+  mode CommentPollMode [default: 0, not null]
+  close_at datetime
+  is_removed bool [default: false, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (comment_id) [name: 'spirit_comment_poll_commentpoll_comment_id_453c04b5']
+    (comment_id, name) [unique, name: 'spirit_comment_poll_commentpoll_comment_id_name_b54ee48a_uniq']
+  }
+}
+
+Table spirit_comment_poll_commentpollchoice {
+  id integer [pk, increment]
+  poll_id bigint [not null]
+  number "integer unsigned" [not null]
+  description varchar(255) [not null]
+  vote_count "integer unsigned" [default: 0, not null]
+  is_removed bool [default: false, not null]
+
+  indexes {
+    (poll_id) [name: 'spirit_comment_poll_commentpollchoice_poll_id_01dd8cb4']
+    (poll_id, number) [unique, name: 'spirit_comment_poll_commentpollchoice_poll_id_number_36ccebb7_uniq']
+  }
+}
+
+Table spirit_comment_poll_commentpollvote {
+  id integer [pk, increment]
+  voter_id integer [not null]
+  choice_id bigint [not null]
+  is_removed bool [default: false, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (voter_id) [name: 'spirit_comment_poll_commentpollvote_voter_id_7fd9a8eb']
+    (choice_id) [name: 'spirit_comment_poll_commentpollvote_choice_id_1ecb02ca']
+    (voter_id, choice_id) [unique, name: 'spirit_comment_poll_commentpollvote_voter_id_choice_id_b2b15b1f_uniq']
+  }
+}
+
+Table djconfig_config {
+  id integer [pk, increment]
+  key varchar(75) [unique, not null]
+  value text
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref spirit_user_userprofile_user_id_fk: spirit_user_userprofile.user_id - auth_user.id [delete: cascade]
+
+Ref spirit_category_category_parent_id_fk: spirit_category_category.parent_id > spirit_category_category.id [delete: cascade]
+
+Ref spirit_topic_topic_user_id_fk: spirit_topic_topic.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_topic_topic_category_id_fk: spirit_topic_topic.category_id > spirit_category_category.id [delete: cascade]
+
+Ref spirit_topic_favorite_topicfavorite_user_id_fk: spirit_topic_favorite_topicfavorite.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_topic_favorite_topicfavorite_topic_id_fk: spirit_topic_favorite_topicfavorite.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_topic_notification_topicnotification_user_id_fk: spirit_topic_notification_topicnotification.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_topic_notification_topicnotification_topic_id_fk: spirit_topic_notification_topicnotification.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_topic_notification_topicnotification_comment_id_fk: spirit_topic_notification_topicnotification.comment_id > spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_topic_private_topicprivate_user_id_fk: spirit_topic_private_topicprivate.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_topic_private_topicprivate_topic_id_fk: spirit_topic_private_topicprivate.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_topic_unread_topicunread_user_id_fk: spirit_topic_unread_topicunread.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_topic_unread_topicunread_topic_id_fk: spirit_topic_unread_topicunread.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_comment_comment_user_id_fk: spirit_comment_comment.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_comment_topic_id_fk: spirit_comment_comment.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_comment_bookmark_commentbookmark_user_id_fk: spirit_comment_bookmark_commentbookmark.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_bookmark_commentbookmark_topic_id_fk: spirit_comment_bookmark_commentbookmark.topic_id > spirit_topic_topic.id [delete: cascade]
+
+Ref spirit_comment_flag_commentflag_moderator_id_fk: spirit_comment_flag_commentflag.moderator_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_flag_commentflag_comment_id_fk: spirit_comment_flag_commentflag.comment_id - spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_comment_flag_flag_user_id_fk: spirit_comment_flag_flag.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_flag_flag_comment_id_fk: spirit_comment_flag_flag.comment_id > spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_comment_history_commenthistory_comment_fk_id_fk: spirit_comment_history_commenthistory.comment_fk_id > spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_comment_like_commentlike_user_id_fk: spirit_comment_like_commentlike.user_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_like_commentlike_comment_id_fk: spirit_comment_like_commentlike.comment_id > spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_comment_poll_commentpoll_comment_id_fk: spirit_comment_poll_commentpoll.comment_id > spirit_comment_comment.id [delete: cascade]
+
+Ref spirit_comment_poll_commentpollchoice_poll_id_fk: spirit_comment_poll_commentpollchoice.poll_id > spirit_comment_poll_commentpoll.id [delete: cascade]
+
+Ref spirit_comment_poll_commentpollvote_voter_id_fk: spirit_comment_poll_commentpollvote.voter_id > auth_user.id [delete: cascade]
+
+Ref spirit_comment_poll_commentpollvote_choice_id_fk: spirit_comment_poll_commentpollvote.choice_id > spirit_comment_poll_commentpollchoice.id [delete: cascade]

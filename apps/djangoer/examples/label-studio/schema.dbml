@@ -1,0 +1,1999 @@
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ProjectStateChoices {
+  "CREATED"
+  "IN_PROGRESS"
+  "COMPLETED"
+}
+
+Enum AnnotationStateChoices {
+  "CREATED"
+}
+
+Enum AsyncMigrationStatusStatus {
+  "SCHEDULED"
+  "STARTED"
+  "IN PROGRESS"
+  "FINISHED"
+  "ERROR"
+}
+
+Enum ExportStatus {
+  "created"
+  "in_progress"
+  "failed"
+  "completed"
+}
+
+Enum ConvertedFormatStatus {
+  "created"
+  "in_progress"
+  "failed"
+  "completed"
+}
+
+Enum ProjectSampling {
+  "Sequential sampling"
+  "Uniform sampling"
+  "Uncertainty sampling"
+}
+
+Enum ProjectSkipQueue {
+  "REQUEUE_FOR_ME"
+  "REQUEUE_FOR_OTHERS"
+  "IGNORE_SKIPPED"
+}
+
+Enum ProjectOnboardingStepsCode {
+  "DU"
+  "CF"
+  "PB"
+  "IE"
+}
+
+Enum ProjectImportStatus {
+  "created"
+  "in_progress"
+  "failed"
+  "completed"
+}
+
+Enum ProjectReimportStatus {
+  "created"
+  "in_progress"
+  "failed"
+  "completed"
+}
+
+Enum ActionType {
+  "prediction"
+  "propagated_annotation"
+  "imported"
+  "submitted"
+  "updated"
+  "skipped"
+  "accepted"
+  "rejected"
+  "fixed_and_accepted"
+  "deleted_review"
+}
+
+Enum AzureBlobImportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum AzureBlobExportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum S3ImportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum S3ExportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum GCSImportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum GCSExportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum RedisImportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum RedisExportStorageStatus {
+  "initialized"
+  "queued"
+  "in_progress"
+  "failed"
+  "completed"
+  "completed_with_errors"
+}
+
+Enum MLBackendState {
+  "CO"
+  "DI"
+  "ER"
+  "TR"
+  "PR"
+}
+
+Enum MLBackendAuth {
+  "NONE"
+  "BASIC_AUTH"
+}
+
+Enum WebhookActionAction {
+  "PROJECT_CREATED"
+  "PROJECT_UPDATED"
+  "PROJECT_DELETED"
+  "TASKS_CREATED"
+  "TASKS_DELETED"
+  "ANNOTATION_CREATED"
+  "ANNOTATIONS_CREATED"
+  "ANNOTATION_UPDATED"
+  "ANNOTATIONS_DELETED"
+  "LABEL_LINK_CREATED"
+  "LABEL_LINK_UPDATED"
+  "LABEL_LINK_DELETED"
+}
+
+Enum SkillNames {
+  "TextClassification"
+  "NamedEntityRecognition"
+}
+
+Enum ModelProviders {
+  "OpenAI"
+  "AzureOpenAI"
+  "AzureAIFoundry"
+  "VertexAI"
+  "Gemini"
+  "Anthropic"
+  "Custom"
+}
+
+Enum ModelRunProjectSubset {
+  "All"
+  "HasGT"
+  "Sample"
+}
+
+Enum ModelRunModelRunStatus {
+  "Pending"
+  "InProgress"
+  "Completed"
+  "Failed"
+  "Canceled"
+}
+
+Enum ModelProviderConnectionScopes {
+  "Organization"
+  "User"
+  "Model"
+}
+
+Enum ModelProviderConnectionBudgetResetPeriod {
+  "Monthly"
+  "Yearly"
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_rq_queue {
+  id integer [pk, increment]
+
+  Note: '''Not managed by Django (managed = False).
+
+Placeholder model with no database table, but with django admin page
+and contenttype permission'''
+}
+
+Table authtoken_token {
+  key varchar(40) [pk]
+  user_id integer [unique, not null]
+  created datetime [not null, note: 'default in Python: now()']
+
+  Note: '''The default authorization token model.
+
+Proxy models: TokenProxy.'''
+}
+
+Table token_blacklist_outstandingtoken {
+  id integer [pk, increment]
+  user_id integer
+  jti varchar(255) [unique, not null]
+  token text [not null]
+  created_at datetime
+  expires_at datetime [not null]
+
+  indexes {
+    (user_id) [name: 'token_blacklist_outstandingtoken_user_id_83bc629a']
+  }
+}
+
+Table token_blacklist_blacklistedtoken {
+  id integer [pk, increment]
+  token_id bigint [unique, not null]
+  blacklisted_at datetime [not null, note: 'default in Python: now()']
+}
+
+Table fsm_taskstate {
+  id char(32) [pk, note: 'UUID7 provides natural time ordering and global uniqueness. default in Python: generate_uuid7()']
+  organization_id "integer unsigned" [note: 'Organization ID that owns this state record (for multi-tenant applications)']
+  previous_state varchar(50) [note: 'Previous state before this transition']
+  transition_name varchar(100) [note: 'Name of the transition method that triggered this state change']
+  triggered_by_id integer [note: 'User who triggered this state transition']
+  context_data text [not null, note: 'Additional context data for this transition (e.g., validation results, external IDs). default in Python: dict()']
+  reason text [not null, note: 'Human-readable reason for this state transition']
+  created_at datetime [not null, note: 'Human-readable timestamp for debugging (UUID7 id contains precise timestamp). default in Python: now()']
+  task_id integer [not null]
+  state ProjectStateChoices [not null]
+  project_id "integer unsigned" [not null, note: 'From task.project_id - denormalized for performance']
+
+  indexes {
+    (organization_id) [name: 'fsm_taskstate_organization_id_192d4ce3']
+    (triggered_by_id) [name: 'fsm_taskstate_triggered_by_id_1f1dfd8f']
+    (task_id) [name: 'fsm_taskstate_task_id_94042c41']
+    (state) [name: 'fsm_taskstate_state_d158253a']
+    (project_id) [name: 'fsm_taskstate_project_id_4e135c45']
+    (task_id, id) [name: 'task_current_state_idx', note: 'descending: id']
+    (project_id, state, id) [name: 'task_project_state_idx', note: 'descending: id']
+    (organization_id, state, id) [name: 'task_org_reporting_idx', note: 'descending: id']
+    (task_id, id) [name: 'task_history_idx']
+  }
+
+  Note: '''Core task state tracking for Label Studio.
+Provides basic task state management with:
+- Simple 3-state workflow (CREATED → IN_PROGRESS → COMPLETED)
+- High-performance queries with UUID7 ordering
+
+Columns from BaseState (abstract): id, organization_id, state, previous_state, transition_name, triggered_by_id, context_data, reason, created_at.'''
+}
+
+Table fsm_annotationstate {
+  id char(32) [pk, note: 'UUID7 provides natural time ordering and global uniqueness. default in Python: generate_uuid7()']
+  organization_id "integer unsigned" [note: 'Organization ID that owns this state record (for multi-tenant applications)']
+  previous_state varchar(50) [note: 'Previous state before this transition']
+  transition_name varchar(100) [note: 'Name of the transition method that triggered this state change']
+  triggered_by_id integer [note: 'User who triggered this state transition']
+  context_data text [not null, note: 'Additional context data for this transition (e.g., validation results, external IDs). default in Python: dict()']
+  reason text [not null, note: 'Human-readable reason for this state transition']
+  created_at datetime [not null, note: 'Human-readable timestamp for debugging (UUID7 id contains precise timestamp). default in Python: now()']
+  annotation_id integer [not null]
+  state AnnotationStateChoices [not null]
+  task_id "integer unsigned" [not null, note: 'From annotation.task_id - denormalized for performance']
+  project_id "integer unsigned" [not null, note: 'From annotation.task.project_id - denormalized for performance']
+  completed_by_id "integer unsigned" [note: 'From annotation.completed_by_id - denormalized for performance']
+
+  indexes {
+    (organization_id) [name: 'fsm_annotationstate_organization_id_a5163275']
+    (triggered_by_id) [name: 'fsm_annotationstate_triggered_by_id_1e47eb15']
+    (annotation_id) [name: 'fsm_annotationstate_annotation_id_a73ea2ec']
+    (state) [name: 'fsm_annotationstate_state_84d28d51']
+    (task_id) [name: 'fsm_annotationstate_task_id_e50e54d5']
+    (project_id) [name: 'fsm_annotationstate_project_id_bf5279de']
+    (completed_by_id) [name: 'fsm_annotationstate_completed_by_id_3f46eae0']
+    (annotation_id, id) [name: 'anno_current_state_idx', note: 'descending: id']
+    (task_id, state, id) [name: 'anno_task_state_idx', note: 'descending: id']
+    (completed_by_id, state, id) [name: 'anno_user_report_idx', note: 'descending: id']
+    (project_id, state, id) [name: 'anno_project_report_idx', note: 'descending: id']
+  }
+
+  Note: '''Core annotation state tracking for Label Studio.
+Provides basic annotation state management with:
+- Simple 2-state workflow (CREATED → COMPLETED)
+
+Columns from BaseState (abstract): id, organization_id, state, previous_state, transition_name, triggered_by_id, context_data, reason, created_at.'''
+}
+
+Table fsm_projectstate {
+  id char(32) [pk, note: 'UUID7 provides natural time ordering and global uniqueness. default in Python: generate_uuid7()']
+  organization_id "integer unsigned" [note: 'Organization ID that owns this state record (for multi-tenant applications)']
+  previous_state varchar(50) [note: 'Previous state before this transition']
+  transition_name varchar(100) [note: 'Name of the transition method that triggered this state change']
+  triggered_by_id integer [note: 'User who triggered this state transition']
+  context_data text [not null, note: 'Additional context data for this transition (e.g., validation results, external IDs). default in Python: dict()']
+  reason text [not null, note: 'Human-readable reason for this state transition']
+  created_at datetime [not null, note: 'Human-readable timestamp for debugging (UUID7 id contains precise timestamp). default in Python: now()']
+  project_id integer [not null]
+  state ProjectStateChoices [not null]
+  created_by_id "integer unsigned" [note: 'From project.created_by_id - denormalized for performance']
+
+  indexes {
+    (organization_id) [name: 'fsm_projectstate_organization_id_3889ce76']
+    (triggered_by_id) [name: 'fsm_projectstate_triggered_by_id_345c19fc']
+    (project_id) [name: 'fsm_projectstate_project_id_590cf19b']
+    (state) [name: 'fsm_projectstate_state_4ee8839f']
+    (created_by_id) [name: 'fsm_projectstate_created_by_id_4d716749']
+    (project_id, id) [name: 'project_current_state_idx', note: 'descending: id']
+    (organization_id, state, id) [name: 'project_org_state_idx', note: 'descending: id']
+    (organization_id, id) [name: 'project_org_reporting_idx', note: 'descending: id']
+  }
+
+  Note: '''Core project state tracking for Label Studio.
+Provides basic project state management with:
+- Simple 3-state workflow (CREATED → IN_PROGRESS → COMPLETED)
+- Project lifecycle tracking
+
+Columns from BaseState (abstract): id, organization_id, state, previous_state, transition_name, triggered_by_id, context_data, reason, created_at.'''
+}
+
+Table core_asyncmigrationstatus {
+  id integer [pk, increment]
+  meta text [note: 'Meta is for any params for migrations, e.g.: project, filter or error message.. default in Python: dict()']
+  project_id integer [note: 'Project ID for this migration']
+  name text [not null, note: 'Migration name']
+  status AsyncMigrationStatusStatus [default: null]
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Last updated time. default in Python: now()']
+
+  indexes {
+    (project_id) [name: 'core_asyncmigrationstatus_project_id_c78fbf75']
+  }
+}
+
+Table core_deletedrow {
+  id integer [pk, increment]
+  model varchar(1024) [not null]
+  row_id integer
+  data text
+  reason text
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  organization_id integer
+  project_id integer
+  user_id integer
+
+  Note: '''Model to store deleted rows of other models.
+Useful for using as backup for deleted rows, in case we need to restore them.'''
+}
+
+Table htx_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  last_activity datetime [not null, note: 'default in Python: now()']
+  username varchar(256) [not null]
+  email varchar(254) [unique, not null]
+  first_name varchar(256) [not null]
+  last_name varchar(256) [not null]
+  phone varchar(256) [not null]
+  avatar varchar(100) [not null]
+  custom_hotkeys text [note: 'Custom keyboard shortcuts configuration for the user interface. default in Python: dict()']
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether to treat this user as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+  activity_at datetime [not null, note: 'default in Python: now()']
+  active_organization_id integer
+  allow_newsletters bool [default: null, note: 'Allow sending newsletters to user']
+
+  indexes {
+    (active_organization_id) [name: 'htx_user_active_organization_id_2e1bb565']
+    (username) [name: 'htx_user_usernam_a41619_idx']
+    (email) [name: 'htx_user_email_051c68_idx']
+    (first_name) [name: 'htx_user_first_n_93c5de_idx']
+    (last_name) [name: 'htx_user_last_na_2ace53_idx']
+    (date_joined) [name: 'htx_user_date_jo_3bd95e_idx']
+  }
+
+  Note: '''An abstract base class implementing a fully featured User model with
+admin-compliant permissions.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.
+
+Columns from UserLastActivityMixin (abstract): last_activity.'''
+}
+
+Table organizations_organizationmember {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'User ID']
+  organization_id integer [not null, note: 'Organization ID']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  deleted_at datetime [default: null, note: 'Timestamp indicating when the organization member was marked as deleted.  If NULL, the member is not considered deleted.']
+
+  indexes {
+    (user_id) [name: 'organizations_organizationmember_user_id_f3845ee5']
+    (organization_id) [name: 'organizations_organizationmember_organization_id_f26cf71b']
+    (deleted_at) [name: 'organizations_organizationmember_deleted_at_af2d5523']
+  }
+}
+
+Table organization {
+  id integer [pk, increment]
+  title varchar(1000) [not null]
+  token varchar(256) [unique, note: 'default in Python: create_hash()']
+  created_by_id integer [unique]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  contact_info varchar(254)
+}
+
+Table data_import_fileupload {
+  id integer [pk, increment]
+  user_id integer [not null]
+  project_id integer [not null]
+  file varchar(100) [not null]
+
+  indexes {
+    (user_id) [name: 'data_import_fileupload_user_id_a3e1f065']
+    (project_id) [name: 'data_import_fileupload_project_id_1f511810']
+  }
+}
+
+Table data_export_export {
+  id integer [pk, increment]
+  title varchar(2048) [default: '', not null]
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  file varchar(100)
+  md5 varchar(128) [default: '', not null]
+  finished_at datetime [default: null, note: 'Complete or fail time']
+  status ExportStatus [default: 'created', not null]
+  counters text [not null, note: 'default in Python: dict()']
+  project_id integer [not null]
+  created_by_id integer
+
+  indexes {
+    (project_id) [name: 'data_export_export_project_id_dc05487f']
+    (created_by_id) [name: 'data_export_export_created_by_id_ae0b7af3']
+  }
+}
+
+Table data_export_convertedformat {
+  id integer [pk, increment]
+  project_id integer
+  organization_id integer
+  export_id integer [not null, note: 'Export snapshot for this converted file']
+  file varchar(100)
+  status ConvertedFormatStatus [default: 'created', not null]
+  traceback text [note: 'Traceback report in case of errors']
+  export_type varchar(64) [not null]
+  created_at datetime [note: 'Creation time. default in Python: now()']
+  updated_at datetime [note: 'Updated time. default in Python: now()']
+  finished_at datetime [default: null, note: 'Complete or fail time']
+  created_by_id integer
+
+  indexes {
+    (project_id) [name: 'data_export_convertedformat_project_id_3cda1a1c']
+    (organization_id) [name: 'data_export_convertedformat_organization_id_d0e9d7c8']
+    (export_id) [name: 'data_export_convertedformat_export_id_3305f028']
+    (created_by_id) [name: 'data_export_convertedformat_created_by_id_a765f2cd']
+  }
+}
+
+Table project {
+  id integer [pk, increment]
+  title varchar(50) [default: '', note: 'Project name. Must be between 3 and 50 characters long.']
+  description text [default: '', note: 'Project description']
+  organization_id integer
+  label_config text [default: '<View></View>', note: 'Label config in XML format. See more about it in documentation']
+  parsed_label_config text [default: null, note: 'Parsed label config in JSON format. See more about it in documentation']
+  label_config_hash bigint [default: null]
+  expert_instruction text [default: '', note: 'Labeling instructions in HTML format']
+  show_instruction bool [default: false, not null, note: 'Show instructions to the annotator before they start']
+  show_skip_button bool [default: true, not null, note: 'Show a skip button in interface and allow annotators to skip the task']
+  enable_empty_annotation bool [default: true, not null, note: 'Allow annotators to submit empty annotations']
+  reveal_preannotations_interactively bool [default: false, not null, note: 'Reveal pre-annotations interactively']
+  show_annotation_history bool [default: false, not null, note: 'Show annotation history to annotator']
+  show_collab_predictions bool [default: true, not null, note: 'If set, the annotator can view model predictions']
+  evaluate_predictions_automatically bool [default: false, not null, note: 'Retrieve and display predictions when loading a task']
+  token varchar(256) [note: 'default in Python: create_hash()']
+  result_count integer [default: 0, not null, note: 'Total results inside of annotations counter']
+  color varchar(16) [default: '#FFFFFF']
+  created_by_id integer
+  maximum_annotations integer [default: 1, not null, note: 'Maximum number of annotations for one task. If the number of annotations per task is equal or greater to this value, the task is completed (is_labeled=True)']
+  min_annotations_to_start_training integer [default: 0, not null, note: 'Minimum number of completed tasks after which model training is started']
+  control_weights text [note: 'Dict of weights for each control tag in metric calculation. Each control tag (e.g. label or choice) will have it\'s own key in control weight dict with weight for each label and overall weight.For example, if bounding box annotation with control tag named my_bbox should be included with 0.33 weight in agreement calculation, and the first label Car should be twice more important than Airplaine, then you have to need the specify: {\'my_bbox\': {\'type\': \'RectangleLabels\', \'labels\': {\'Car\': 1.0, \'Airplaine\': 0.5}, \'overall\': 0.33}. default in Python: dict()']
+  model_version text [default: '', note: 'Machine learning model version']
+  data_types text [note: 'default in Python: dict()']
+  is_draft bool [default: false, not null, note: 'Whether or not the project is in the middle of being created']
+  is_published bool [default: false, not null, note: 'Whether or not the project is published to annotators']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  sampling ProjectSampling [default: 'Sequential sampling']
+  skip_queue ProjectSkipQueue [default: 'REQUEUE_FOR_OTHERS']
+  show_ground_truth_first bool [default: false, not null, note: 'Onboarding mode (true): show ground truth tasks first in the labeling stream']
+  annotator_evaluation_enabled bool [default: 0, not null, note: 'Enable annotator evaluation for the project']
+  show_overlap_first bool [default: false, not null]
+  overlap_cohort_percentage integer [default: 100, not null]
+  task_data_login varchar(256) [note: 'Task data credentials: login']
+  task_data_password varchar(256) [note: 'Task data credentials: password']
+  pinned_at datetime [default: null, note: 'Pinned date and time']
+  custom_task_lock_ttl integer [default: null, note: 'Custom task lock TTL in seconds. If not set, the default value is used']
+  deleted_at datetime
+  deleted_by_id integer
+  purge_at datetime
+  search_vector text
+
+  indexes {
+    (organization_id) [name: 'project_organization_id_3c9f74fb']
+    (created_by_id) [name: 'project_created_by_id_6cc13408']
+    (pinned_at, created_at) [name: 'project_pinned__a39ccb_idx']
+  }
+}
+
+Table projects_projectonboardingsteps {
+  id integer [pk, increment]
+  code ProjectOnboardingStepsCode
+  title varchar(1000) [not null]
+  description text [not null]
+  order integer [default: 0, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+}
+
+Table projects_projectonboarding {
+  id integer [pk, increment]
+  step_id integer [not null]
+  project_id integer [not null]
+  finished bool [default: false, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (step_id) [name: 'projects_projectonboarding_step_id_c232d94b']
+    (project_id) [name: 'projects_projectonboarding_project_id_120e4f53']
+  }
+}
+
+Table projects_labelstreamhistory {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'User ID']
+  project_id integer [not null, note: 'Project ID']
+  data text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (user_id) [name: 'projects_labelstreamhistory_user_id_1b571ab9']
+    (project_id) [name: 'projects_labelstreamhistory_project_id_906c91dd']
+    (user_id, project_id) [unique, name: 'unique_history']
+  }
+}
+
+Table projects_projectmember {
+  id integer [pk, increment]
+  user_id integer [not null, note: 'User ID']
+  project_id integer [not null, note: 'Project ID']
+  enabled bool [default: true, not null, note: 'Project member is enabled']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (user_id) [name: 'projects_projectmember_user_id_a475bbd8']
+    (project_id) [name: 'projects_projectmember_project_id_e589ddea']
+  }
+}
+
+Table projects_projectsummary {
+  project_id integer [pk]
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  all_data_columns text [note: 'All data columns found in imported tasks. default in Python: dict()']
+  common_data_columns text [note: 'Common data columns found across imported tasks. default in Python: list()']
+  created_annotations text [note: 'Unique annotation types identified by tuple (from_name, to_name, type). default in Python: dict()']
+  created_labels text [note: 'Unique labels. default in Python: dict()']
+  created_labels_drafts text [note: 'Unique drafts labels. default in Python: dict()']
+}
+
+Table projects_projectimport {
+  id integer [pk, increment]
+  project_id integer
+  preannotated_from_fields text
+  commit_to_project bool [default: false, not null]
+  return_task_ids bool [default: false, not null]
+  status ProjectImportStatus [default: 'created', not null]
+  url varchar(2048)
+  traceback text
+  error text
+  created_at datetime [note: 'Creation time. default in Python: now()']
+  updated_at datetime [note: 'Updated time. default in Python: now()']
+  finished_at datetime [default: null, note: 'Complete or fail time']
+  task_count integer [default: 0, not null]
+  annotation_count integer [default: 0, not null]
+  prediction_count integer [default: 0, not null]
+  duration integer [default: 0, not null]
+  file_upload_ids text [not null, note: 'default in Python: list()']
+  could_be_tasks_list bool [default: false, not null]
+  found_formats text [not null, note: 'default in Python: list()']
+  data_columns text [not null, note: 'default in Python: list()']
+  tasks text
+  task_ids text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (project_id) [name: 'projects_projectimport_project_id_619e3461']
+  }
+}
+
+Table projects_projectreimport {
+  id integer [pk, increment]
+  project_id integer
+  status ProjectReimportStatus [default: 'created', not null]
+  error text
+  task_count integer [default: 0, not null]
+  annotation_count integer [default: 0, not null]
+  prediction_count integer [default: 0, not null]
+  duration integer [default: 0, not null]
+  file_upload_ids text [not null, note: 'default in Python: list()']
+  files_as_tasks_list bool [default: false, not null]
+  found_formats text [not null, note: 'default in Python: list()']
+  data_columns text [not null, note: 'default in Python: list()']
+  traceback text
+
+  indexes {
+    (project_id) [name: 'projects_projectreimport_project_id_6bcffbed']
+  }
+}
+
+Table task {
+  id integer [pk, increment]
+  data text [not null, note: 'User imported or uploaded data for a task. Data is formatted according to the project label config. You can find examples of data for your project on the Import page in the Label Studio Data Manager UI.']
+  meta text [note: 'Meta is user imported (uploaded) data and can be useful as input for an ML Backend for embeddings, advanced vectors, and other info. It is passed to ML during training/predicting steps.. default in Python: dict()']
+  project_id integer [note: 'Project ID for this task']
+  created_at datetime [not null, note: 'Time a task was created. default in Python: now()']
+  updated_at datetime [not null, note: 'Last time a task was updated. default in Python: now()']
+  updated_by_id integer [note: 'Last annotator or reviewer who updated this task']
+  is_labeled bool [default: false, not null, note: 'True if the number of annotations for this task is greater than or equal to the number of maximum_completions for the project']
+  allow_skip bool [default: true, note: 'Whether this task can be skipped. Set to False to make task unskippable.']
+  overlap integer [default: 1, not null, note: 'Number of distinct annotators that processed the current task']
+  file_upload_id integer [note: 'Uploaded file used as data source for this task']
+  inner_id bigint [default: 0, note: 'Internal task ID in the project, starts with 1']
+  total_annotations integer [default: 0, not null, note: 'Number of total annotations for the current task except cancelled annotations']
+  cancelled_annotations integer [default: 0, not null, note: 'Number of total cancelled annotations for the current task']
+  total_predictions integer [default: 0, not null, note: 'Number of total predictions for the current task']
+  precomputed_agreement real [note: 'Average agreement score for the task']
+  comment_count integer [default: 0, not null, note: 'Number of comments in the task including all annotations']
+  unresolved_comment_count integer [default: 0, not null, note: 'Number of unresolved comments in the task including all annotations']
+  last_comment_updated_at datetime [default: null, note: 'When the last comment was updated']
+
+  indexes {
+    (project_id) [name: 'task_project_id_963d6354']
+    (updated_by_id) [name: 'task_updated_by_id_c9d9ddfb']
+    (overlap) [name: 'task_overlap_455a13f0']
+    (file_upload_id) [name: 'task_file_upload_id_549188ed']
+    (total_annotations) [name: 'task_total_annotations_e77e347b']
+    (cancelled_annotations) [name: 'task_cancelled_annotations_60dfe3b9']
+    (total_predictions) [name: 'task_total_predictions_f1a6b218']
+    (comment_count) [name: 'task_comment_count_049355cc']
+    (unresolved_comment_count) [name: 'task_unresolved_comment_count_8707d0c7']
+    (last_comment_updated_at) [name: 'task_last_comment_updated_at_d1bc3403']
+    (project_id, is_labeled) [name: 'task_project_6acf5f_idx']
+    (project_id, inner_id) [name: 'task_project_499b59_idx']
+    (id, project_id) [name: 'task_id_aef988_idx']
+    (id, overlap) [name: 'task_id_7a9aca_idx']
+    (overlap) [name: 'task_overlap_6a196e_idx']
+    (project_id, id) [name: 'task_project_7b1c80_idx']
+  }
+
+  Note: '''Business tasks from project'''
+}
+
+Table task_completion {
+  id integer [pk, increment]
+  result text [default: null, note: 'The main value of annotator work - labeling result in JSON format']
+  task_id integer [note: 'Corresponding task for this annotation']
+  project_id integer [note: 'Project ID for this annotation']
+  completed_by_id integer [note: 'User ID of the person who created this annotation']
+  updated_by_id integer [note: 'Last user who updated this annotation']
+  was_cancelled bool [default: false, not null, note: 'User skipped the task']
+  ground_truth bool [default: false, not null, note: 'This annotation is a Ground Truth (ground_truth)']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Last updated time. default in Python: now()']
+  draft_created_at datetime [default: null, note: 'Draft creation time']
+  lead_time real [default: null, note: 'How much time it took to annotate the task']
+  prediction text [note: 'Prediction viewed at the time of annotation. default in Python: dict()']
+  result_count integer [default: 0, not null, note: 'Results inside of annotation counter']
+  parent_prediction_id integer [note: 'Points to the prediction from which this annotation was created']
+  parent_annotation_id integer [note: 'Points to the parent annotation from which this annotation was created']
+  unique_id char(32) [unique, note: 'default in Python: uuid4()']
+  import_id bigint [default: null, note: 'Original annotation ID that was at the import step or NULL if this annotation wasn\'t imported']
+  last_action ActionType [default: null, note: 'Action which was performed in the last annotation history item']
+  last_created_by_id integer [default: null, note: 'User who created the last annotation history item']
+  bulk_created bool [default: 0, note: 'Annotation was created in bulk mode']
+
+  indexes {
+    (task_id) [name: 'task_completion_task_id_b9049fbc']
+    (project_id) [name: 'task_completion_project_id_94072c87']
+    (completed_by_id) [name: 'task_completion_completed_by_id_3f3206b1']
+    (updated_by_id) [name: 'task_completion_updated_by_id_1164a739']
+    (parent_prediction_id) [name: 'task_completion_parent_prediction_id_053d00d9']
+    (parent_annotation_id) [name: 'task_completion_parent_annotation_id_58398c37']
+    (import_id) [name: 'task_completion_import_id_e434c5af']
+    (last_created_by_id) [name: 'task_completion_last_created_by_id_a04457d1']
+    (created_at) [name: 'task_comple_created_f55e6f_idx']
+    (ground_truth) [name: 'task_comple_ground__088a1b_idx']
+    (id, task_id) [name: 'task_comple_id_653858_idx']
+    (last_action) [name: 'task_comple_last_ac_777e69_idx']
+    (project_id, ground_truth) [name: 'task_comple_project_2cbbfc_idx']
+    (project_id, id) [name: 'task_comple_project_c7e507_idx']
+    (project_id, was_cancelled) [name: 'task_comple_project_5c60f3_idx']
+    (task_id, completed_by_id) [name: 'task_comple_task_id_d49cd7_idx']
+    (task_id, ground_truth) [name: 'task_comple_task_id_e82920_idx']
+    (task_id, was_cancelled) [name: 'task_comple_task_id_8072c3_idx']
+    (was_cancelled) [name: 'task_comple_was_can_f87d4e_idx']
+  }
+
+  Note: '''Annotations & Labeling results'''
+}
+
+Table tasks_tasklock {
+  id integer [pk, increment]
+  task_id integer [not null, note: 'Locked task']
+  expire_at datetime [not null]
+  unique_id char(32) [unique, note: 'default in Python: uuid4()']
+  user_id integer [not null, note: 'User who locked this task']
+  created_at datetime [note: 'Creation time. default in Python: now()']
+
+  indexes {
+    (task_id) [name: 'tasks_tasklock_task_id_6531a5ed']
+    (user_id) [name: 'tasks_tasklock_user_id_748ae86f']
+  }
+}
+
+Table tasks_annotationdraft {
+  id integer [pk, increment]
+  result text [not null, note: 'Draft result in JSON format']
+  lead_time real [note: 'How much time it took to annotate the task']
+  task_id integer [note: 'Corresponding task for this draft']
+  annotation_id integer [note: 'Corresponding annotation for this draft']
+  user_id integer [not null, note: 'User who created this draft']
+  was_postponed bool [default: false, not null, note: 'User postponed this draft (clicked a forward button) in the label stream']
+  import_id bigint [default: null, note: 'Original draft ID that was at the import step or NULL if this draft wasn\'t imported']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Last update time. default in Python: now()']
+
+  indexes {
+    (task_id) [name: 'tasks_annotationdraft_task_id_c1bf62e3']
+    (annotation_id) [name: 'tasks_annotationdraft_annotation_id_86db74e5']
+    (user_id) [name: 'tasks_annotationdraft_user_id_e92f09dc']
+    (was_postponed) [name: 'tasks_annotationdraft_was_postponed_6a1ee000']
+    (import_id) [name: 'tasks_annotationdraft_import_id_29542ca8']
+  }
+}
+
+Table prediction {
+  id integer [pk, increment]
+  result text [note: 'Prediction result. default in Python: dict()']
+  score real [default: null, note: 'Prediction score']
+  model_version text [default: '', note: 'A string value that for model version that produced the prediction. Used in both live models and when uploading offline predictions.']
+  model_id integer [note: 'An ML Backend instance that created the prediction.']
+  model_run_id integer [note: 'A run of a ModelVersion that created the prediction.']
+  cluster integer [default: null, note: 'Cluster for the current prediction']
+  neighbors text [note: 'Array of task IDs of the closest neighbors']
+  mislabeling real [default: 0.0, not null, note: 'Related task mislabeling score']
+  task_id integer [not null]
+  project_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (model_id) [name: 'prediction_model_id_f9d54ad0']
+    (model_run_id) [name: 'prediction_model_run_id_9d95621b']
+    (task_id) [name: 'prediction_task_id_4e4fb4d3']
+    (project_id) [name: 'prediction_project_id_ec1ad819']
+  }
+
+  Note: '''ML backend / Prompts predictions'''
+}
+
+Table tasks_failedprediction {
+  id integer [pk, increment]
+  message text [default: null, note: 'The message explaining why generating this prediction failed']
+  error_type varchar(512) [default: null, note: 'The type of error that caused prediction to fail']
+  ml_backend_model_id integer [note: 'An ML Backend instance that created the failed prediction.']
+  model_version text [default: null, note: 'A string value that for model version that produced the failed prediction. Used in both live models and when uploading offline predictions.']
+  model_run_id integer [note: 'A run of a ModelVersion that created the failed prediction.']
+  project_id integer
+  task_id integer [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (ml_backend_model_id) [name: 'tasks_failedprediction_ml_backend_model_id_5813a377']
+    (model_run_id) [name: 'tasks_failedprediction_model_run_id_eec73944']
+    (project_id) [name: 'tasks_failedprediction_project_id_6b803bbe']
+    (task_id) [name: 'tasks_failedprediction_task_id_ed2f3848']
+  }
+
+  Note: '''Class for storing failed prediction(s) for a task'''
+}
+
+Table prediction_meta {
+  id integer [pk, increment]
+  prediction_id integer [unique, note: 'Reference to the associated prediction']
+  failed_prediction_id integer [unique, note: 'Reference to the associated failed prediction']
+  inference_time real [note: 'Time taken for inference in seconds']
+  prompt_tokens_count integer [note: 'Number of tokens in the prompt']
+  completion_tokens_count integer [note: 'Number of tokens in the completion']
+  total_tokens_count integer [note: 'Total number of tokens']
+  prompt_cost real [note: 'Cost of the prompt']
+  completion_cost real [note: 'Cost of the completion']
+  total_cost real [note: 'Total cost']
+  extra text [note: 'Additional metadata in JSON format']
+
+  checks {
+    `(("prediction_id" IS NOT NULL AND "failed_prediction_id" IS NULL) OR ("prediction_id" IS NULL AND "failed_prediction_id" IS NOT NULL))` [name: 'prediction_or_failed_prediction_not_null']
+  }
+}
+
+Table data_manager_view {
+  id integer [pk, increment]
+  data text [note: 'Custom view data. default in Python: dict()']
+  ordering text [note: 'Ordering parameters. default in Python: dict()']
+  order integer [default: 0, note: 'Position of the tab, starting at the left in data manager and increasing as the tabs go left to right']
+  selected_items text [note: 'Selected items. default in Python: dict()']
+  filter_group_id integer [note: 'Groups of filters']
+  user_id integer [note: 'User who made this view']
+  project_id integer [not null, note: 'Project ID']
+
+  indexes {
+    (filter_group_id) [name: 'data_manager_view_filter_group_id_39a9ec2b']
+    (user_id) [name: 'data_manager_view_user_id_e71e14cd']
+    (project_id) [name: 'data_manager_view_project_id_59f5a002']
+    (project_id, order) [name: 'data_manage_project_69b96e_idx']
+  }
+
+  Note: '''Columns from ViewBaseModel (abstract): data, ordering, order, selected_items, filter_group_id, user_id.
+
+Columns from ProjectViewMixin (abstract): project_id.'''
+}
+
+Table data_manager_filtergroup {
+  id integer [pk, increment]
+  conjunction varchar(1024) [not null, note: 'Type of conjunction']
+}
+
+Table data_manager_filter {
+  id integer [pk, increment]
+  parent_id integer [note: 'Optional parent filter to create one-level hierarchy (child filters are AND-merged with parent)']
+  index integer [default: null, note: 'Display order among root filters only']
+  column varchar(1024) [not null, note: 'Field name']
+  type varchar(1024) [not null, note: 'Field type']
+  operator varchar(1024) [not null, note: 'Filter operator']
+  value text [note: 'Filter value. default in Python: dict()']
+
+  indexes {
+    (parent_id) [name: 'data_manager_filter_parent_id_b5dd2a37']
+  }
+}
+
+Table io_storages_azureblobstoragemixin {
+  id integer [pk, increment]
+  container text [note: 'Azure blob container']
+  prefix text [note: 'Azure blob prefix name']
+  regex_filter text [note: 'Cloud storage regex for filtering objects']
+  use_blob_urls bool [default: false, not null, note: 'Interpret objects as BLOBs and generate URLs']
+  account_name text [note: 'Azure Blob account name']
+  account_key text [note: 'Azure Blob account key']
+}
+
+Table io_storages_azureblobimportstorage {
+  azureblobstoragemixin_ptr_id integer [pk, note: 'parent link: a AzureBlobImportStorage is a AzureBlobStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status AzureBlobImportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  presign bool [default: true, not null, note: 'Generate presigned URLs']
+  presign_ttl "smallint unsigned" [default: 1, not null, note: 'Presigned URLs TTL (in minutes)']
+  recursive_scan bool [default: 0, note: 'Perform recursive scan over the container content']
+
+  indexes {
+    (project_id) [name: 'io_storages_azureblobimportstorage_project_id_67a67313']
+  }
+
+  Note: '''Columns from ProjectStorageMixin (abstract): project_id.
+
+Columns from AzureBlobImportStorageBase (abstract): azureblobstoragemixin_ptr_id, presign, presign_ttl, recursive_scan.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.'''
+}
+
+Table io_storages_azureblobexportstorage {
+  azureblobstoragemixin_ptr_id integer [pk, note: 'parent link: a AzureBlobExportStorage is a AzureBlobStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status AzureBlobExportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  can_delete_objects bool [note: 'Deletion from storage enabled']
+
+  indexes {
+    (project_id) [name: 'io_storages_azureblobexportstorage_project_id_43222df5']
+  }
+
+  Note: '''Columns from ExportStorage (abstract): can_delete_objects.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.
+
+Columns from ProjectStorageMixin (abstract): project_id.'''
+}
+
+Table io_storages_azureblobimportstoragelink {
+  id integer [pk, increment]
+  task_id integer [unique, not null]
+  key text [not null, note: 'External link key']
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  row_group integer [note: 'Parquet row group']
+  row_index integer [note: 'Parquet row index, or JSON[L] object index']
+  storage_id integer [not null]
+
+  indexes {
+    (storage_id) [name: 'io_storages_azureblobimportstoragelink_storage_id_a08c3173']
+  }
+
+  Note: '''Columns from ImportStorageLink (abstract): task_id, key, object_exists, created_at, row_group, row_index.'''
+}
+
+Table io_storages_azureblobexportstoragelink {
+  id integer [pk, increment]
+  annotation_id integer [not null]
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Update time. default in Python: now()']
+  storage_id integer [not null]
+
+  indexes {
+    (annotation_id) [name: 'io_storages_azureblobexportstoragelink_annotation_id_6cc15c83']
+    (storage_id) [name: 'io_storages_azureblobexportstoragelink_storage_id_1b260b1e']
+  }
+
+  Note: '''Columns from ExportStorageLink (abstract): annotation_id, object_exists, created_at, updated_at.'''
+}
+
+Table io_storages_s3importstorage {
+  id integer [pk, increment]
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status S3ImportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  bucket text [note: 'S3 bucket name']
+  prefix text [note: 'S3 bucket prefix']
+  regex_filter text [note: 'Cloud storage regex for filtering objects']
+  use_blob_urls bool [default: false, not null, note: 'Interpret objects as BLOBs and generate URLs']
+  aws_access_key_id text [note: 'AWS_ACCESS_KEY_ID']
+  aws_secret_access_key text [note: 'AWS_SECRET_ACCESS_KEY']
+  aws_session_token text [note: 'AWS_SESSION_TOKEN']
+  aws_sse_kms_key_id text [note: 'AWS SSE KMS Key ID']
+  region_name text [note: 'AWS Region']
+  s3_endpoint text [note: 'S3 Endpoint']
+  presign bool [default: true, not null, note: 'Generate presigned URLs']
+  presign_ttl "smallint unsigned" [default: 1, not null, note: 'Presigned URLs TTL (in minutes)']
+  recursive_scan bool [default: false, not null, note: 'Perform recursive scan over the bucket content']
+
+  indexes {
+    (project_id) [name: 'io_storages_s3importstorage_project_id_dee63a8d']
+  }
+
+  Note: '''Columns from ProjectStorageMixin (abstract): project_id.
+
+Columns from S3ImportStorageBase (abstract): presign, presign_ttl, recursive_scan.
+
+Columns from S3StorageMixin (abstract): bucket, prefix, regex_filter, use_blob_urls, aws_access_key_id, aws_secret_access_key, aws_session_token, aws_sse_kms_key_id, region_name, s3_endpoint.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.'''
+}
+
+Table io_storages_s3exportstorage {
+  id integer [pk, increment]
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status S3ExportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  can_delete_objects bool [note: 'Deletion from storage enabled']
+  bucket text [note: 'S3 bucket name']
+  prefix text [note: 'S3 bucket prefix']
+  regex_filter text [note: 'Cloud storage regex for filtering objects']
+  use_blob_urls bool [default: false, not null, note: 'Interpret objects as BLOBs and generate URLs']
+  aws_access_key_id text [note: 'AWS_ACCESS_KEY_ID']
+  aws_secret_access_key text [note: 'AWS_SECRET_ACCESS_KEY']
+  aws_session_token text [note: 'AWS_SESSION_TOKEN']
+  aws_sse_kms_key_id text [note: 'AWS SSE KMS Key ID']
+  region_name text [note: 'AWS Region']
+  s3_endpoint text [note: 'S3 Endpoint']
+
+  indexes {
+    (project_id) [name: 'io_storages_s3exportstorage_project_id_5e76add6']
+  }
+
+  Note: '''Columns from S3StorageMixin (abstract): bucket, prefix, regex_filter, use_blob_urls, aws_access_key_id, aws_secret_access_key, aws_session_token, aws_sse_kms_key_id, region_name, s3_endpoint.
+
+Columns from ExportStorage (abstract): can_delete_objects.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.
+
+Columns from ProjectStorageMixin (abstract): project_id.'''
+}
+
+Table io_storages_s3importstoragelink {
+  id integer [pk, increment]
+  task_id integer [unique, not null]
+  key text [not null, note: 'External link key']
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  row_group integer [note: 'Parquet row group']
+  row_index integer [note: 'Parquet row index, or JSON[L] object index']
+  storage_id integer [not null]
+
+  indexes {
+    (storage_id) [name: 'io_storages_s3importstoragelink_storage_id_50ca5bd8']
+  }
+
+  Note: '''Columns from ImportStorageLink (abstract): task_id, key, object_exists, created_at, row_group, row_index.'''
+}
+
+Table io_storages_s3exportstoragelink {
+  id integer [pk, increment]
+  annotation_id integer [not null]
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Update time. default in Python: now()']
+  storage_id integer [not null]
+
+  indexes {
+    (annotation_id) [name: 'io_storages_s3exportstoragelink_annotation_id_729994fe']
+    (storage_id) [name: 'io_storages_s3exportstoragelink_storage_id_a4563d13']
+  }
+
+  Note: '''Columns from ExportStorageLink (abstract): annotation_id, object_exists, created_at, updated_at.'''
+}
+
+Table io_storages_gcsstoragemixin {
+  id integer [pk, increment]
+  bucket text [note: 'GCS bucket name']
+  prefix text [note: 'GCS bucket prefix']
+  regex_filter text [note: 'Cloud storage regex for filtering objects']
+  use_blob_urls bool [default: false, not null, note: 'Interpret objects as BLOBs and generate URLs']
+  google_application_credentials text [note: 'The content of GOOGLE_APPLICATION_CREDENTIALS json file']
+  google_project_id text [note: 'Google project ID']
+}
+
+Table io_storages_gcsimportstorage {
+  gcsstoragemixin_ptr_id integer [pk, note: 'parent link: a GCSImportStorage is a GCSStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status GCSImportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  presign bool [default: true, not null, note: 'Generate presigned URLs']
+  presign_ttl "smallint unsigned" [default: 1, not null, note: 'Presigned URLs TTL (in minutes)']
+  recursive_scan bool [default: 0, note: 'Perform recursive scan over the bucket content']
+
+  indexes {
+    (project_id) [name: 'io_storages_gcsimportstorage_project_id_dfb68296']
+  }
+
+  Note: '''Columns from ProjectStorageMixin (abstract): project_id.
+
+Columns from GCSImportStorageBase (abstract): gcsstoragemixin_ptr_id, presign, presign_ttl, recursive_scan.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.'''
+}
+
+Table io_storages_gcsexportstorage {
+  gcsstoragemixin_ptr_id integer [pk, note: 'parent link: a GCSExportStorage is a GCSStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status GCSExportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  can_delete_objects bool [note: 'Deletion from storage enabled']
+
+  indexes {
+    (project_id) [name: 'io_storages_gcsexportstorage_project_id_c3141a14']
+  }
+
+  Note: '''Columns from ExportStorage (abstract): can_delete_objects.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.
+
+Columns from ProjectStorageMixin (abstract): project_id.'''
+}
+
+Table io_storages_gcsimportstoragelink {
+  id integer [pk, increment]
+  task_id integer [unique, not null]
+  key text [not null, note: 'External link key']
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  row_group integer [note: 'Parquet row group']
+  row_index integer [note: 'Parquet row index, or JSON[L] object index']
+  storage_id integer [not null]
+
+  indexes {
+    (storage_id) [name: 'io_storages_gcsimportstoragelink_storage_id_f3037a96']
+  }
+
+  Note: '''Columns from ImportStorageLink (abstract): task_id, key, object_exists, created_at, row_group, row_index.'''
+}
+
+Table io_storages_gcsexportstoragelink {
+  id integer [pk, increment]
+  annotation_id integer [not null]
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Update time. default in Python: now()']
+  storage_id integer [not null]
+
+  indexes {
+    (annotation_id) [name: 'io_storages_gcsexportstoragelink_annotation_id_2df715a6']
+    (storage_id) [name: 'io_storages_gcsexportstoragelink_storage_id_e940a32d']
+  }
+
+  Note: '''Columns from ExportStorageLink (abstract): annotation_id, object_exists, created_at, updated_at.'''
+}
+
+Table io_storages_redisstoragemixin {
+  id integer [pk, increment]
+  path text [note: 'Storage prefix (optional)']
+  host text [note: 'Server Host IP (optional)']
+  port text [note: 'Server Port (optional)']
+  password text [note: 'Server Password (optional)']
+  regex_filter text [note: 'Cloud storage regex for filtering objects']
+  use_blob_urls bool [default: false, not null, note: 'Interpret objects as BLOBs and generate URLs']
+}
+
+Table io_storages_redisimportstorage {
+  redisstoragemixin_ptr_id integer [pk, note: 'parent link: a RedisImportStorage is a RedisStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status RedisImportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  db "smallint unsigned" [default: 1, not null, note: 'Server Database']
+
+  indexes {
+    (project_id) [name: 'io_storages_redisimportstorage_project_id_c7b9adc0']
+  }
+
+  Note: '''Columns from ProjectStorageMixin (abstract): project_id.
+
+Columns from RedisImportStorageBase (abstract): redisstoragemixin_ptr_id, db.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.'''
+}
+
+Table io_storages_redisexportstorage {
+  redisstoragemixin_ptr_id integer [pk, note: 'parent link: a RedisExportStorage is a RedisStorageMixin (multi-table inheritance)']
+  last_sync datetime [note: 'Last sync finished time']
+  last_sync_count "integer unsigned" [note: 'Count of tasks synced last time']
+  last_sync_job varchar(256) [note: 'Last sync job ID']
+  status RedisExportStorageStatus [default: 'initialized', not null]
+  traceback text [note: 'Traceback report for the last failed sync']
+  meta text [note: 'Meta and debug information about storage processes. default in Python: dict()']
+  title varchar(256) [note: 'Cloud storage title']
+  description text [note: 'Cloud storage description']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  synchronizable bool [default: true, not null, note: 'If storage can be synced']
+  project_id integer [not null, note: 'A unique integer value identifying this project.']
+  can_delete_objects bool [note: 'Deletion from storage enabled']
+  db "smallint unsigned" [default: 2, not null, note: 'Server Database']
+
+  indexes {
+    (project_id) [name: 'io_storages_redisexportstorage_project_id_12a2546c']
+  }
+
+  Note: '''Columns from ExportStorage (abstract): can_delete_objects.
+
+Columns from Storage (abstract): title, description, created_at, synchronizable.
+
+Columns from StorageInfo (abstract): last_sync, last_sync_count, last_sync_job, status, traceback, meta.
+
+Columns from ProjectStorageMixin (abstract): project_id.'''
+}
+
+Table io_storages_redisimportstoragelink {
+  id integer [pk, increment]
+  task_id integer [unique, not null]
+  key text [not null, note: 'External link key']
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  row_group integer [note: 'Parquet row group']
+  row_index integer [note: 'Parquet row index, or JSON[L] object index']
+  storage_id integer [not null]
+
+  indexes {
+    (storage_id) [name: 'io_storages_redisimportstoragelink_storage_id_17124de8']
+  }
+
+  Note: '''Columns from ImportStorageLink (abstract): task_id, key, object_exists, created_at, row_group, row_index.'''
+}
+
+Table io_storages_redisexportstoragelink {
+  id integer [pk, increment]
+  annotation_id integer [not null]
+  object_exists bool [default: true, not null, note: 'Whether object under external link still exists']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Update time. default in Python: now()']
+  storage_id integer [not null]
+
+  indexes {
+    (annotation_id) [name: 'io_storages_redisexportstoragelink_annotation_id_8547e508']
+    (storage_id) [name: 'io_storages_redisexportstoragelink_storage_id_807898d8']
+  }
+
+  Note: '''Columns from ExportStorageLink (abstract): annotation_id, object_exists, created_at, updated_at.'''
+}
+
+Table ml_mlbackend {
+  id integer [pk, increment]
+  state MLBackendState [default: 'DI', not null]
+  is_interactive bool [default: false, not null, note: 'Used to interactively annotate tasks. If true, model returns one list with results']
+  url text [not null, note: 'URL for the machine learning model server']
+  error_message text [note: 'Error message in error state']
+  title text [default: 'default', note: 'Name of the machine learning backend']
+  auth_method MLBackendAuth [default: 'NONE', not null]
+  basic_auth_user text [default: '', note: 'HTTP Basic Auth user']
+  basic_auth_pass text [default: '', note: 'HTTP Basic Auth password']
+  description text [default: '', note: 'Description for the machine learning backend']
+  extra_params text [note: 'Any extra parameters passed to the ML Backend during the setup']
+  model_version text [default: '', note: 'Current model version associated with this machine learning backend']
+  timeout real [default: 100.0, not null, note: 'Response model timeout']
+  project_id integer [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  auto_update bool [default: true, not null, note: 'If false, model version is set by the user, if true - getting latest version from backend.']
+
+  indexes {
+    (project_id) [name: 'ml_mlbackend_project_id_ca08142d']
+  }
+}
+
+Table ml_mlbackendpredictionjob {
+  id integer [pk, increment]
+  job_id varchar(128) [not null]
+  ml_backend_id integer [not null]
+  model_version text [note: 'Model version this job is associated with']
+  batch_size "smallint unsigned" [default: 100, not null, note: 'Number of tasks processed per batch']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (ml_backend_id) [name: 'ml_mlbackendpredictionjob_ml_backend_id_c1aea4f1']
+  }
+}
+
+Table ml_mlbackendtrainjob {
+  id integer [pk, increment]
+  job_id varchar(128) [not null]
+  ml_backend_id integer [not null]
+  model_version text [note: 'Model version this job is associated with']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (ml_backend_id) [name: 'ml_mlbackendtrainjob_ml_backend_id_3d40686e']
+  }
+}
+
+Table webhook {
+  id integer [pk, increment]
+  organization_id integer [not null]
+  project_id integer [default: null]
+  url varchar(2048) [not null, note: 'URL of webhook']
+  send_payload bool [default: true, not null, note: 'If value is False send only action']
+  send_for_all_actions bool [default: true, not null, note: 'If value is False - used only for actions from WebhookAction']
+  headers text [not null, note: 'Key Value Json of headers. default in Python: dict()']
+  is_active bool [default: true, not null, note: 'If value is False the webhook is disabled']
+  created_at datetime [not null, note: 'Creation time. default in Python: now()']
+  updated_at datetime [not null, note: 'Last update time. default in Python: now()']
+
+  indexes {
+    (organization_id) [name: 'webhook_organization_id_b5440e9a']
+    (project_id) [name: 'webhook_project_id_e686d00c']
+    (created_at) [name: 'webhook_created_at_b2a71ea5']
+    (updated_at) [name: 'webhook_updated_at_695b4e7f']
+  }
+
+  Note: '''Model of webhooks.
+
+If webhook has not null project field -- it\'s project webhook'''
+}
+
+Table webhook_action {
+  id integer [pk, increment]
+  webhook_id integer [not null]
+  action WebhookActionAction [not null, note: 'Action value']
+
+  indexes {
+    (webhook_id) [name: 'webhook_action_webhook_id_4eb6213f']
+    (action) [name: 'webhook_action_action_4398909e']
+    (webhook_id, action) [unique, name: 'webhook_action_webhook_id_action_11842b15_uniq']
+  }
+}
+
+Table labels_manager_label {
+  id integer [pk, increment]
+  created_at datetime [not null, note: 'Time of label creation. default in Python: now()']
+  updated_at datetime [not null, note: 'Time of label modification. default in Python: now()']
+  created_by_id integer [not null, note: 'User who made this label']
+  value text [not null, note: 'Label value']
+  title varchar(2048) [not null, note: 'Label title']
+  description text [note: 'Label description']
+  approved_by_id integer [note: 'User who approved this label']
+  approved bool [default: false, not null, note: 'Status of label']
+  organization_id integer [not null]
+
+  indexes {
+    (created_by_id) [name: 'labels_manager_label_created_by_id_e3b3e785']
+    (approved_by_id) [name: 'labels_manager_label_approved_by_id_4b6a871f']
+    (organization_id) [name: 'labels_manager_label_organization_id_5f714874']
+    (title, organization_id) [unique, name: 'unique_title']
+  }
+}
+
+Table labels_manager_labellink {
+  id integer [pk, increment]
+  project_id integer [not null]
+  label_id integer [not null]
+  from_name varchar(2048) [not null, note: 'Tag name']
+
+  indexes {
+    (project_id) [name: 'labels_manager_labellink_project_id_e3d33738']
+    (label_id) [name: 'labels_manager_labellink_label_id_c8afbfa4']
+    (project_id, label_id) [unique, name: 'unique_label_project']
+  }
+}
+
+Table ml_models_modelinterface {
+  id integer [pk, increment]
+  title varchar(500) [not null, note: 'Model name']
+  description text [note: 'Model description']
+  created_by_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  organization_id integer
+  skill_name SkillNames
+  input_fields text [not null, note: 'default in Python: list()']
+  output_classes text [not null, note: 'default in Python: list()']
+
+  indexes {
+    (created_by_id) [name: 'ml_models_modelinterface_created_by_id_8ba717c0']
+    (organization_id) [name: 'ml_models_modelinterface_organization_id_d5688149']
+  }
+}
+
+Table ml_models_thirdpartymodelversion {
+  id integer [pk, increment]
+  title varchar(500) [not null, note: 'Model name']
+  parent_model_id integer [not null]
+  prompt text [not null, note: 'Prompt to execute']
+  model_provider_connection_id integer
+  provider ModelProviders [default: 'OpenAI', not null, note: 'The model provider to use e.g. OpenAI']
+  provider_model_id varchar(255) [not null, note: 'The model ID to use within the given provider, e.g. gpt-3.5']
+  created_by_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  organization_id integer
+
+  indexes {
+    (parent_model_id) [name: 'ml_models_thirdpartymodelversion_parent_model_id_599e1869']
+    (model_provider_connection_id) [name: 'ml_models_thirdpartymodelversion_model_provider_connection_id_b98c173f']
+    (created_by_id) [name: 'ml_models_thirdpartymodelversion_created_by_id_b1fb2c2f']
+    (organization_id) [name: 'ml_models_thirdpartymodelversion_organization_id_a4a5df4d']
+  }
+
+  Note: '''Columns from ModelVersion (abstract): title, parent_model_id, prompt, model_provider_connection_id.'''
+}
+
+Table ml_models_modelrun {
+  id integer [pk, increment]
+  organization_id integer
+  project_id integer [not null]
+  model_version_id integer [not null]
+  created_by_id integer
+  project_subset ModelRunProjectSubset [default: 'HasGT', not null]
+  status ModelRunModelRunStatus [default: 'Pending', not null]
+  job_id varchar(255) [default: null, note: 'Job ID for inference job for a ModelRun e.g. Adala job ID']
+  total_predictions integer [default: 0, not null]
+  total_correct_predictions integer [default: 0, not null]
+  total_tasks integer [default: 0, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  triggered_at datetime [default: null]
+  predictions_updated_at datetime [default: null]
+  completed_at datetime [default: null]
+
+  indexes {
+    (organization_id) [name: 'ml_models_modelrun_organization_id_1f7f8243']
+    (project_id) [name: 'ml_models_modelrun_project_id_1b76ea76']
+    (model_version_id) [name: 'ml_models_modelrun_model_version_id_e15572eb']
+    (created_by_id) [name: 'ml_models_modelrun_created_by_id_1a302218']
+  }
+}
+
+Table ml_model_providers_modelproviderconnection {
+  id integer [pk, increment]
+  provider ModelProviders [default: 'OpenAI', not null]
+  api_key text [note: 'Model provider API key']
+  auth_token text [note: 'Model provider Auth token']
+  deployment_name varchar(512) [note: 'Azure OpenAI deployment name']
+  endpoint varchar(512) [note: 'Azure OpenAI endpoint']
+  google_application_credentials text [note: 'The content of GOOGLE_APPLICATION_CREDENTIALS json file']
+  google_project_id varchar(255) [note: 'Google project ID']
+  google_location varchar(255) [note: 'Google project location']
+  cached_available_models varchar(4096) [note: 'List of available models from the provider']
+  scope ModelProviderConnectionScopes [default: 'Organization', not null]
+  organization_id integer
+  created_by_id integer
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+  is_internal bool [default: false, note: 'Whether the model provider connection is internal, not visible to the user']
+  budget_limit real [default: null, note: 'Budget limit for the model provider connection (null if unlimited)']
+  budget_last_reset_date datetime [default: null, note: 'Date and time the budget was last reset']
+  budget_reset_period ModelProviderConnectionBudgetResetPeriod [default: null, note: 'Budget reset period for the model provider connection (null if not reset)']
+  budget_total_spent real [default: null, note: 'Tracked total budget spent for the given provider connection within the current budget period']
+  budget_alert_threshold real [default: null, note: 'Budget alert threshold for the given provider connection']
+
+  indexes {
+    (organization_id) [name: 'ml_model_providers_modelproviderconnection_organization_id_ef7f6136']
+    (created_by_id) [name: 'ml_model_providers_modelproviderconnection_created_by_id_2e24aab7']
+  }
+}
+
+Table jwt_auth_jwtsettings {
+  organization_id integer [pk]
+  api_tokens_enabled bool [default: true, not null, note: 'Enable JWT API token authentication for this organization']
+  api_token_ttl_days integer [default: 73000, not null, note: 'Number of days before JWT API tokens expire']
+  legacy_api_tokens_enabled bool [default: false, not null, note: 'Enable legacy API token authentication for this organization']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Organization-specific JWT settings for authentication'''
+}
+
+Table session_policy_sessiontimeoutpolicy {
+  organization_id integer [pk]
+  max_session_age integer [default: 11520, not null, note: 'Number of minutes that a session can be active before needing to re-login']
+  max_time_between_activity integer [default: 4320, not null, note: 'Number of minutes that a session stays active without any activity']
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Organization-specific session timeout policy configuration'''
+}
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > htx_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref authtoken_token_user_id_fk: authtoken_token.user_id - htx_user.id [delete: cascade]
+
+Ref token_blacklist_outstandingtoken_user_id_fk: token_blacklist_outstandingtoken.user_id > htx_user.id [delete: set null]
+
+Ref token_blacklist_blacklistedtoken_token_id_fk: token_blacklist_blacklistedtoken.token_id - token_blacklist_outstandingtoken.id [delete: cascade]
+
+Ref fsm_taskstate_triggered_by_id_fk: fsm_taskstate.triggered_by_id > htx_user.id [delete: set null]
+
+Ref fsm_taskstate_task_id_fk: fsm_taskstate.task_id > task.id [delete: cascade]
+
+Ref fsm_annotationstate_triggered_by_id_fk: fsm_annotationstate.triggered_by_id > htx_user.id [delete: set null]
+
+Ref fsm_annotationstate_annotation_id_fk: fsm_annotationstate.annotation_id > task_completion.id [delete: cascade]
+
+Ref fsm_projectstate_triggered_by_id_fk: fsm_projectstate.triggered_by_id > htx_user.id [delete: set null]
+
+Ref fsm_projectstate_project_id_fk: fsm_projectstate.project_id > project.id [delete: cascade]
+
+Ref core_asyncmigrationstatus_project_id_fk: core_asyncmigrationstatus.project_id > project.id [delete: cascade]
+
+Ref htx_user_active_organization_id_fk: htx_user.active_organization_id > organization.id [delete: set null]
+
+Table htx_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'htx_user_groups_user_id_620c9163']
+    (group_id) [name: 'htx_user_groups_group_id_d0fee99a']
+    (user_id, group_id) [unique, name: 'htx_user_groups_user_id_group_id_34da071d_uniq']
+  }
+}
+
+Ref htx_user_groups_user_id_fk: htx_user_groups.user_id > htx_user.id [delete: cascade]
+
+Ref htx_user_groups_group_id_fk: htx_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table htx_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'htx_user_user_permissions_user_id_a71f59ac']
+    (permission_id) [name: 'htx_user_user_permissions_permission_id_edaf5db1']
+    (user_id, permission_id) [unique, name: 'htx_user_user_permissions_user_id_permission_id_12eb87f0_uniq']
+  }
+}
+
+Ref htx_user_user_permissions_user_id_fk: htx_user_user_permissions.user_id > htx_user.id [delete: cascade]
+
+Ref htx_user_user_permissions_permission_id_fk: htx_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref organizations_organizationmember_user_id_fk: organizations_organizationmember.user_id > htx_user.id [delete: cascade]
+
+Ref organizations_organizationmember_organization_id_fk: organizations_organizationmember.organization_id > organization.id [delete: cascade]
+
+Ref organization_created_by_id_fk: organization.created_by_id - htx_user.id [delete: set null]
+
+Ref data_import_fileupload_user_id_fk: data_import_fileupload.user_id > htx_user.id [delete: cascade]
+
+Ref data_import_fileupload_project_id_fk: data_import_fileupload.project_id > project.id [delete: cascade]
+
+Ref data_export_export_project_id_fk: data_export_export.project_id > project.id [delete: cascade]
+
+Ref data_export_export_created_by_id_fk: data_export_export.created_by_id > htx_user.id [delete: set null]
+
+Ref data_export_convertedformat_project_id_fk: data_export_convertedformat.project_id > project.id [delete: cascade]
+
+Ref data_export_convertedformat_organization_id_fk: data_export_convertedformat.organization_id > organization.id [delete: cascade]
+
+Ref data_export_convertedformat_export_id_fk: data_export_convertedformat.export_id > data_export_export.id [delete: cascade]
+
+Ref data_export_convertedformat_created_by_id_fk: data_export_convertedformat.created_by_id > htx_user.id [delete: set null]
+
+Ref project_organization_id_fk: project.organization_id > organization.id [delete: cascade]
+
+Ref project_created_by_id_fk: project.created_by_id > htx_user.id [delete: set null]
+
+Ref project_deleted_by_id_fk: project.deleted_by_id > htx_user.id [delete: set null]
+
+Ref projects_projectonboarding_step_id_fk: projects_projectonboarding.step_id > projects_projectonboardingsteps.id [delete: cascade]
+
+Ref projects_projectonboarding_project_id_fk: projects_projectonboarding.project_id > project.id [delete: cascade]
+
+Ref projects_labelstreamhistory_user_id_fk: projects_labelstreamhistory.user_id > htx_user.id [delete: cascade]
+
+Ref projects_labelstreamhistory_project_id_fk: projects_labelstreamhistory.project_id > project.id [delete: cascade]
+
+Ref projects_projectmember_user_id_fk: projects_projectmember.user_id > htx_user.id [delete: cascade]
+
+Ref projects_projectmember_project_id_fk: projects_projectmember.project_id > project.id [delete: cascade]
+
+Ref projects_projectsummary_project_id_fk: projects_projectsummary.project_id - project.id [delete: cascade]
+
+Ref projects_projectimport_project_id_fk: projects_projectimport.project_id > project.id [delete: cascade]
+
+Ref projects_projectreimport_project_id_fk: projects_projectreimport.project_id > project.id [delete: cascade]
+
+Ref task_project_id_fk: task.project_id > project.id [delete: cascade]
+
+Ref task_updated_by_id_fk: task.updated_by_id > htx_user.id [delete: set null]
+
+Ref task_file_upload_id_fk: task.file_upload_id > data_import_fileupload.id [delete: set null]
+
+Table task_comment_authors {
+  id integer [pk, increment]
+  task_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (task_id) [name: 'task_comment_authors_task_id_80618a4a']
+    (user_id) [name: 'task_comment_authors_user_id_ff0b1cf0']
+    (task_id, user_id) [unique, name: 'task_comment_authors_task_id_user_id_f6f772c9_uniq']
+  }
+}
+
+Ref task_comment_authors_task_id_fk: task_comment_authors.task_id > task.id [delete: cascade]
+
+Ref task_comment_authors_user_id_fk: task_comment_authors.user_id > htx_user.id [delete: cascade]
+
+Ref task_completion_task_id_fk: task_completion.task_id > task.id [delete: cascade]
+
+Ref task_completion_project_id_fk: task_completion.project_id > project.id [delete: cascade]
+
+Ref task_completion_completed_by_id_fk: task_completion.completed_by_id > htx_user.id [delete: set null]
+
+Ref task_completion_updated_by_id_fk: task_completion.updated_by_id > htx_user.id [delete: set null]
+
+Ref task_completion_parent_prediction_id_fk: task_completion.parent_prediction_id > prediction.id [delete: set null]
+
+Ref task_completion_parent_annotation_id_fk: task_completion.parent_annotation_id > task_completion.id [delete: set null]
+
+Ref task_completion_last_created_by_id_fk: task_completion.last_created_by_id > htx_user.id [delete: set null]
+
+Ref tasks_tasklock_task_id_fk: tasks_tasklock.task_id > task.id [delete: cascade]
+
+Ref tasks_tasklock_user_id_fk: tasks_tasklock.user_id > htx_user.id [delete: cascade]
+
+Ref tasks_annotationdraft_task_id_fk: tasks_annotationdraft.task_id > task.id [delete: cascade]
+
+Ref tasks_annotationdraft_annotation_id_fk: tasks_annotationdraft.annotation_id > task_completion.id [delete: cascade]
+
+Ref tasks_annotationdraft_user_id_fk: tasks_annotationdraft.user_id > htx_user.id [delete: cascade]
+
+Ref prediction_model_id_fk: prediction.model_id > ml_mlbackend.id [delete: cascade]
+
+Ref prediction_model_run_id_fk: prediction.model_run_id > ml_models_modelrun.id [delete: cascade]
+
+Ref prediction_task_id_fk: prediction.task_id > task.id [delete: cascade]
+
+Ref prediction_project_id_fk: prediction.project_id > project.id [delete: cascade]
+
+Ref tasks_failedprediction_ml_backend_model_id_fk: tasks_failedprediction.ml_backend_model_id > ml_mlbackend.id [delete: set null]
+
+Ref tasks_failedprediction_model_run_id_fk: tasks_failedprediction.model_run_id > ml_models_modelrun.id [delete: cascade]
+
+Ref tasks_failedprediction_project_id_fk: tasks_failedprediction.project_id > project.id [delete: cascade]
+
+Ref tasks_failedprediction_task_id_fk: tasks_failedprediction.task_id > task.id [delete: cascade]
+
+Ref prediction_meta_prediction_id_fk: prediction_meta.prediction_id - prediction.id [delete: cascade]
+
+Ref prediction_meta_failed_prediction_id_fk: prediction_meta.failed_prediction_id - tasks_failedprediction.id [delete: cascade]
+
+Ref data_manager_view_filter_group_id_fk: data_manager_view.filter_group_id > data_manager_filtergroup.id [delete: set null]
+
+Ref data_manager_view_user_id_fk: data_manager_view.user_id > htx_user.id [delete: cascade]
+
+Ref data_manager_view_project_id_fk: data_manager_view.project_id > project.id [delete: cascade]
+
+Table data_manager_filtergroup_filters {
+  id integer [pk, increment]
+  filtergroup_id integer [not null]
+  filter_id integer [not null]
+
+  indexes {
+    (filtergroup_id) [name: 'data_manager_filtergroup_filters_filtergroup_id_85d9bb16']
+    (filter_id) [name: 'data_manager_filtergroup_filters_filter_id_954bc394']
+    (filtergroup_id, filter_id) [unique, name: 'data_manager_filtergroup_filters_filtergroup_id_filter_id_196c3e22_uniq']
+  }
+}
+
+Ref data_manager_filtergroup_filters_filtergroup_id_fk: data_manager_filtergroup_filters.filtergroup_id > data_manager_filtergroup.id [delete: cascade]
+
+Ref data_manager_filtergroup_filters_filter_id_fk: data_manager_filtergroup_filters.filter_id > data_manager_filter.id [delete: cascade]
+
+Ref data_manager_filter_parent_id_fk: data_manager_filter.parent_id > data_manager_filter.id [delete: cascade]
+
+Ref io_storages_azureblobimportstorage_azureblobstoragemixin_ptr_id_fk: io_storages_azureblobimportstorage.azureblobstoragemixin_ptr_id - io_storages_azureblobstoragemixin.id [delete: cascade]
+
+Ref io_storages_azureblobimportstorage_project_id_fk: io_storages_azureblobimportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_azureblobexportstorage_azureblobstoragemixin_ptr_id_fk: io_storages_azureblobexportstorage.azureblobstoragemixin_ptr_id - io_storages_azureblobstoragemixin.id [delete: cascade]
+
+Ref io_storages_azureblobexportstorage_project_id_fk: io_storages_azureblobexportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_azureblobimportstoragelink_task_id_fk: io_storages_azureblobimportstoragelink.task_id - task.id [delete: cascade]
+
+Ref io_storages_azureblobimportstoragelink_storage_id_fk: io_storages_azureblobimportstoragelink.storage_id > io_storages_azureblobimportstorage.azureblobstoragemixin_ptr_id [delete: cascade]
+
+Ref io_storages_azureblobexportstoragelink_annotation_id_fk: io_storages_azureblobexportstoragelink.annotation_id > task_completion.id [delete: cascade]
+
+Ref io_storages_azureblobexportstoragelink_storage_id_fk: io_storages_azureblobexportstoragelink.storage_id > io_storages_azureblobexportstorage.azureblobstoragemixin_ptr_id [delete: cascade]
+
+Ref io_storages_s3importstorage_project_id_fk: io_storages_s3importstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_s3exportstorage_project_id_fk: io_storages_s3exportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_s3importstoragelink_task_id_fk: io_storages_s3importstoragelink.task_id - task.id [delete: cascade]
+
+Ref io_storages_s3importstoragelink_storage_id_fk: io_storages_s3importstoragelink.storage_id > io_storages_s3importstorage.id [delete: cascade]
+
+Ref io_storages_s3exportstoragelink_annotation_id_fk: io_storages_s3exportstoragelink.annotation_id > task_completion.id [delete: cascade]
+
+Ref io_storages_s3exportstoragelink_storage_id_fk: io_storages_s3exportstoragelink.storage_id > io_storages_s3exportstorage.id [delete: cascade]
+
+Ref io_storages_gcsimportstorage_gcsstoragemixin_ptr_id_fk: io_storages_gcsimportstorage.gcsstoragemixin_ptr_id - io_storages_gcsstoragemixin.id [delete: cascade]
+
+Ref io_storages_gcsimportstorage_project_id_fk: io_storages_gcsimportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_gcsexportstorage_gcsstoragemixin_ptr_id_fk: io_storages_gcsexportstorage.gcsstoragemixin_ptr_id - io_storages_gcsstoragemixin.id [delete: cascade]
+
+Ref io_storages_gcsexportstorage_project_id_fk: io_storages_gcsexportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_gcsimportstoragelink_task_id_fk: io_storages_gcsimportstoragelink.task_id - task.id [delete: cascade]
+
+Ref io_storages_gcsimportstoragelink_storage_id_fk: io_storages_gcsimportstoragelink.storage_id > io_storages_gcsimportstorage.gcsstoragemixin_ptr_id [delete: cascade]
+
+Ref io_storages_gcsexportstoragelink_annotation_id_fk: io_storages_gcsexportstoragelink.annotation_id > task_completion.id [delete: cascade]
+
+Ref io_storages_gcsexportstoragelink_storage_id_fk: io_storages_gcsexportstoragelink.storage_id > io_storages_gcsexportstorage.gcsstoragemixin_ptr_id [delete: cascade]
+
+Ref io_storages_redisimportstorage_redisstoragemixin_ptr_id_fk: io_storages_redisimportstorage.redisstoragemixin_ptr_id - io_storages_redisstoragemixin.id [delete: cascade]
+
+Ref io_storages_redisimportstorage_project_id_fk: io_storages_redisimportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_redisexportstorage_redisstoragemixin_ptr_id_fk: io_storages_redisexportstorage.redisstoragemixin_ptr_id - io_storages_redisstoragemixin.id [delete: cascade]
+
+Ref io_storages_redisexportstorage_project_id_fk: io_storages_redisexportstorage.project_id > project.id [delete: cascade]
+
+Ref io_storages_redisimportstoragelink_task_id_fk: io_storages_redisimportstoragelink.task_id - task.id [delete: cascade]
+
+Ref io_storages_redisimportstoragelink_storage_id_fk: io_storages_redisimportstoragelink.storage_id > io_storages_redisimportstorage.redisstoragemixin_ptr_id [delete: cascade]
+
+Ref io_storages_redisexportstoragelink_annotation_id_fk: io_storages_redisexportstoragelink.annotation_id > task_completion.id [delete: cascade]
+
+Ref io_storages_redisexportstoragelink_storage_id_fk: io_storages_redisexportstoragelink.storage_id > io_storages_redisexportstorage.redisstoragemixin_ptr_id [delete: cascade]
+
+Ref ml_mlbackend_project_id_fk: ml_mlbackend.project_id > project.id [delete: cascade]
+
+Ref ml_mlbackendpredictionjob_ml_backend_id_fk: ml_mlbackendpredictionjob.ml_backend_id > ml_mlbackend.id [delete: cascade]
+
+Ref ml_mlbackendtrainjob_ml_backend_id_fk: ml_mlbackendtrainjob.ml_backend_id > ml_mlbackend.id [delete: cascade]
+
+Ref webhook_organization_id_fk: webhook.organization_id > organization.id [delete: cascade]
+
+Ref webhook_project_id_fk: webhook.project_id > project.id [delete: cascade]
+
+Ref webhook_action_webhook_id_fk: webhook_action.webhook_id > webhook.id [delete: cascade]
+
+Ref labels_manager_label_created_by_id_fk: labels_manager_label.created_by_id > htx_user.id [delete: cascade]
+
+Ref labels_manager_label_approved_by_id_fk: labels_manager_label.approved_by_id > htx_user.id [delete: cascade]
+
+Ref labels_manager_label_organization_id_fk: labels_manager_label.organization_id > organization.id [delete: cascade]
+
+Ref labels_manager_labellink_project_id_fk: labels_manager_labellink.project_id > project.id [delete: cascade]
+
+Ref labels_manager_labellink_label_id_fk: labels_manager_labellink.label_id > labels_manager_label.id [delete: cascade]
+
+Ref ml_models_modelinterface_created_by_id_fk: ml_models_modelinterface.created_by_id > htx_user.id [delete: set null]
+
+Ref ml_models_modelinterface_organization_id_fk: ml_models_modelinterface.organization_id > organization.id [delete: cascade]
+
+Table ml_models_modelinterface_associated_projects {
+  id integer [pk, increment]
+  modelinterface_id integer [not null]
+  project_id integer [not null]
+
+  indexes {
+    (modelinterface_id) [name: 'ml_models_modelinterface_associated_projects_modelinterface_id_035df3df']
+    (project_id) [name: 'ml_models_modelinterface_associated_projects_project_id_76a17855']
+    (modelinterface_id, project_id) [unique, name: 'ml_models_modelinterface_associated_projects_modelinterface_id_project_id_4278f3da_uniq']
+  }
+}
+
+Ref ml_models_modelinterface_associated_projects_modelinterface_id_fk: ml_models_modelinterface_associated_projects.modelinterface_id > ml_models_modelinterface.id [delete: cascade]
+
+Ref ml_models_modelinterface_associated_projects_project_id_fk: ml_models_modelinterface_associated_projects.project_id > project.id [delete: cascade]
+
+Ref ml_models_thirdpartymodelversion_parent_model_id_fk: ml_models_thirdpartymodelversion.parent_model_id > ml_models_modelinterface.id [delete: cascade]
+
+Ref ml_models_thirdpartymodelversion_model_provider_connection_id_fk: ml_models_thirdpartymodelversion.model_provider_connection_id > ml_model_providers_modelproviderconnection.id [delete: set null]
+
+Ref ml_models_thirdpartymodelversion_created_by_id_fk: ml_models_thirdpartymodelversion.created_by_id > htx_user.id [delete: set null]
+
+Ref ml_models_thirdpartymodelversion_organization_id_fk: ml_models_thirdpartymodelversion.organization_id > organization.id [delete: cascade]
+
+Ref ml_models_modelrun_organization_id_fk: ml_models_modelrun.organization_id > organization.id [delete: cascade]
+
+Ref ml_models_modelrun_project_id_fk: ml_models_modelrun.project_id > project.id [delete: cascade]
+
+Ref ml_models_modelrun_model_version_id_fk: ml_models_modelrun.model_version_id > ml_models_thirdpartymodelversion.id [delete: cascade]
+
+Ref ml_models_modelrun_created_by_id_fk: ml_models_modelrun.created_by_id > htx_user.id [delete: set null]
+
+Ref ml_model_providers_modelproviderconnection_organization_id_fk: ml_model_providers_modelproviderconnection.organization_id > organization.id [delete: cascade]
+
+Ref ml_model_providers_modelproviderconnection_created_by_id_fk: ml_model_providers_modelproviderconnection.created_by_id > htx_user.id [delete: set null]
+
+Ref jwt_auth_jwtsettings_organization_id_fk: jwt_auth_jwtsettings.organization_id - organization.id [delete: no action]
+
+Ref session_policy_sessiontimeoutpolicy_organization_id_fk: session_policy_sessiontimeoutpolicy.organization_id - organization.id [delete: no action]

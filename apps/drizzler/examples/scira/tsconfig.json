@@ -1,0 +1,6 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  // Upstream imports types such as InferSelectModel without `type`.
+  "compilerOptions": { "verbatimModuleSyntax": false },
+  "include": ["lib", "drizzle.config.ts"]
+}

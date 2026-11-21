@@ -1,0 +1,37 @@
+defmodule Formbricks.Contact do
+  @moduledoc """
+  Represents a person or user who can receive and respond to surveys.
+  Contacts are workspace-specific and can have multiple attributes and responses.
+
+  @property id - Unique identifier for the contact
+  @property workspace - The workspace this contact belongs to
+  @property responses - Survey responses from this contact
+  @property attributes - Custom attributes associated with this contact
+  @property displays - Record of surveys shown to this contact
+  """
+
+  use Ecto.Schema
+
+  @primary_key false
+  @timestamps_opts [type: Formbricks.PrismaDateTime, autogenerate: {Formbricks.PrismaDateTime, :autogenerate, []}]
+
+  @type t :: %__MODULE__{
+          id: String.t(),
+          inserted_at: DateTime.t(),
+          updated_at: DateTime.t(),
+          workspace: Formbricks.Workspace.t() | nil,
+          responses: [Formbricks.Response.t()],
+          attributes: [Formbricks.ContactAttribute.t()],
+          displays: [Formbricks.Display.t()]
+        }
+
+  schema "Contact" do
+    field(:id, :string, primary_key: true)
+    field(:workspace_id, :string, source: :workspaceId)
+    belongs_to(:workspace, Formbricks.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
+    has_many(:responses, Formbricks.Response, foreign_key: :contact_id, references: :id)
+    has_many(:attributes, Formbricks.ContactAttribute, foreign_key: :contact_id, references: :id)
+    has_many(:displays, Formbricks.Display, foreign_key: :contact_id, references: :id)
+    timestamps(inserted_at_source: :created_at)
+  end
+end

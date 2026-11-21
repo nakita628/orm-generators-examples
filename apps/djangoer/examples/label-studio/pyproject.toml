@@ -1,0 +1,15 @@
+[project]
+name = "example-label-studio"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["djangoer>=0.5.0", "label-studio"]
+
+[tool.uv]
+package = false
+
+[tool.example]
+all = true
+settings = "core.settings.label_studio"
+package_paths = ["label_studio"]
+# No error reports to Label Studio's Sentry from a docs build.
+env = { SENTRY_DSN = "", FRONTEND_SENTRY_DSN = "" }

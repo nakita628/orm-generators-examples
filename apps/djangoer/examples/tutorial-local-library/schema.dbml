@@ -1,0 +1,100 @@
+Enum BookInstanceStatus {
+  "m"
+  "o"
+  "a"
+  "r"
+}
+
+Table catalog_genre {
+  id integer [pk, increment]
+  name varchar(200) [unique, not null, note: 'Enter a book genre (e.g. Science Fiction, French Poetry etc.)']
+
+  indexes {
+    (`LOWER("name")`) [unique, name: 'genre_name_case_insensitive_unique']
+  }
+
+  Note: '''Model representing a book genre.'''
+}
+
+Table catalog_language {
+  id integer [pk, increment]
+  name varchar(200) [unique, not null, note: 'Enter the book\'s natural language (e.g. English, French, Japanese etc.)']
+
+  indexes {
+    (`LOWER("name")`) [unique, name: 'language_name_case_insensitive_unique']
+  }
+
+  Note: '''Model representing a Language (e.g. English, French, Japanese, etc.)'''
+}
+
+Table catalog_book {
+  id integer [pk, increment]
+  title varchar(200) [not null]
+  author_id bigint
+  summary text [not null, note: 'Enter a brief description of the book']
+  isbn varchar(13) [unique, not null, note: '13 Character <a href="https://www.isbn-international.org/content/what-isbn">ISBN number</a>']
+  language_id bigint
+
+  indexes {
+    (author_id) [name: 'catalog_book_author_id_b0849980']
+    (language_id) [name: 'catalog_book_language_id_447f859e']
+  }
+
+  Note: '''Model representing a book (but not a specific copy of a book).'''
+}
+
+Table catalog_bookinstance {
+  id char(32) [pk, note: 'Unique ID for this particular book across whole library. default in Python: uuid4()']
+  book_id bigint
+  imprint varchar(200) [not null]
+  due_back date
+  borrower_id integer
+  status BookInstanceStatus [default: 'm', not null, note: 'Book availability']
+
+  indexes {
+    (book_id) [name: 'catalog_bookinstance_book_id_69f93415']
+    (borrower_id) [name: 'catalog_bookinstance_borrower_id_0d71c37c']
+  }
+
+  Note: '''Model representing a specific copy of a book (i.e. that can be borrowed from the library).'''
+}
+
+Table catalog_author {
+  id integer [pk, increment]
+  first_name varchar(100) [not null]
+  last_name varchar(100) [not null]
+  date_of_birth date
+  date_of_death date
+
+  Note: '''Model representing an author.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref catalog_book_author_id_fk: catalog_book.author_id > catalog_author.id [delete: restrict]
+
+Ref catalog_book_language_id_fk: catalog_book.language_id > catalog_language.id [delete: set null]
+
+Table catalog_book_genre {
+  id integer [pk, increment]
+  book_id bigint [not null]
+  genre_id bigint [not null]
+
+  indexes {
+    (book_id) [name: 'catalog_book_genre_book_id_e5a77c43']
+    (genre_id) [name: 'catalog_book_genre_genre_id_77d7ffde']
+    (book_id, genre_id) [unique, name: 'catalog_book_genre_book_id_genre_id_d15f6922_uniq']
+  }
+}
+
+Ref catalog_book_genre_book_id_fk: catalog_book_genre.book_id > catalog_book.id [delete: cascade]
+
+Ref catalog_book_genre_genre_id_fk: catalog_book_genre.genre_id > catalog_genre.id [delete: cascade]
+
+Ref catalog_bookinstance_book_id_fk: catalog_bookinstance.book_id > catalog_book.id [delete: restrict]
+
+Ref catalog_bookinstance_borrower_id_fk: catalog_bookinstance.borrower_id > auth_user.id [delete: set null]

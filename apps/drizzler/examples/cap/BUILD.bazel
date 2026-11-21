@@ -1,0 +1,9 @@
+load("//apps/drizzler/tools:defs.bzl", "drizzler_example")
+
+# `bazel build :docs` runs drizzler; `bazel run :docs.write` writes docs/; `bazel test :all`
+# holds docs/ to a fresh generation, type-checks the schema and parses the DBML.
+drizzler_example(
+    # The v1 `one()` relations declared from the referenced side are written as a second ref
+    # next to their foreign key, and @dbml/core refuses the DBML (see README.md).
+    dbml_known_issue = "https://github.com/nakita628/drizzler/issues/60",
+)

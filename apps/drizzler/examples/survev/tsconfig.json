@@ -1,0 +1,5 @@
+{
+  "extends": "@drizzler-examples/tsconfig/base.json",
+  "compilerOptions": { "lib": ["ESNext", "DOM"], "allowJs": true },
+  "include": ["server", "drizzle.config.ts"]
+}

@@ -1,0 +1,61 @@
+Table users {
+  id serial [pk, increment, not null]
+  name varchar
+  email varchar [not null, unique]
+  password_hash text [not null]
+  role varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  deleted_at timestamp
+}
+
+Table teams {
+  id serial [pk, increment, not null]
+  name varchar [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  stripe_customer_id text [unique]
+  stripe_subscription_id text [unique]
+  stripe_product_id text
+  plan_name varchar
+  subscription_status varchar
+}
+
+Table team_members {
+  id serial [pk, increment, not null]
+  user_id integer [not null]
+  team_id integer [not null]
+  role varchar [not null]
+  joined_at timestamp [not null]
+}
+
+Table activity_logs {
+  id serial [pk, increment, not null]
+  team_id integer [not null]
+  user_id integer
+  action text [not null]
+  timestamp timestamp [not null]
+  ip_address varchar
+}
+
+Table invitations {
+  id serial [pk, increment, not null]
+  team_id integer [not null]
+  email varchar [not null]
+  role varchar [not null]
+  invited_by integer [not null]
+  invited_at timestamp [not null]
+  status varchar [not null]
+}
+
+Ref team_members_user_id_users_id_fk: team_members.user_id > users.id
+
+Ref team_members_team_id_teams_id_fk: team_members.team_id > teams.id
+
+Ref activity_logs_team_id_teams_id_fk: activity_logs.team_id > teams.id
+
+Ref activity_logs_user_id_users_id_fk: activity_logs.user_id > users.id
+
+Ref invitations_team_id_teams_id_fk: invitations.team_id > teams.id
+
+Ref invitations_invited_by_users_id_fk: invitations.invited_by > users.id

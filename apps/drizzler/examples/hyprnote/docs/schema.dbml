@@ -1,0 +1,617 @@
+Table local_library_connections {
+  account_user_id text [pk, not null]
+  library_workspace_id text [not null]
+  active integer [not null]
+  recovery_settings text [not null]
+  created_at text [not null]
+  indexes {
+    (library_workspace_id) [name: 'idx_local_library_connections_library']
+    (active) [unique, name: 'idx_local_library_connections_active']
+  }
+}
+
+Table local_library_attachment_state {
+  account_user_id text [not null]
+  attachment_id text [not null]
+  cloud_object_key text [not null]
+  cloud_sync_enabled integer [not null]
+  indexes {
+    (account_user_id, attachment_id) [pk]
+  }
+}
+
+Table templates {
+  id text [pk, not null]
+  title text [not null]
+  description text [not null]
+  pinned integer [not null]
+  pin_order integer
+  category text
+  icon_json text [not null]
+  targets_json text
+  sections_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+}
+
+Table calendars {
+  id text [pk, not null]
+  tracking_id_calendar text [not null]
+  name text [not null]
+  enabled integer [not null]
+  provider text [not null]
+  source text [not null]
+  color text [not null]
+  connection_id text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (provider) [name: 'idx_calendars_provider']
+  }
+}
+
+Table events {
+  id text [pk, not null]
+  tracking_id_event text [not null]
+  calendar_id text [not null]
+  title text [not null]
+  started_at text [not null]
+  ended_at text [not null]
+  location text [not null]
+  meeting_link text [not null]
+  description text [not null]
+  note text [not null]
+  recurrence_series_id text [not null]
+  has_recurrence_rules integer [not null]
+  is_all_day integer [not null]
+  provider text [not null]
+  participants_json text
+  attendance_json text
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (calendar_id) [name: 'idx_events_calendar_id']
+    (started_at) [name: 'idx_events_started_at']
+  }
+}
+
+Table workspaces {
+  id text [pk, not null]
+  owner_user_id text [not null]
+  kind text [not null]
+  name text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (owner_user_id) [name: 'idx_workspaces_owner_user_id']
+  }
+}
+
+Table workspace_memberships {
+  id text [pk, not null]
+  workspace_id text [not null]
+  user_id text [not null]
+  role text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (user_id) [name: 'idx_workspace_memberships_user_id']
+  }
+}
+
+Table organizations {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  name text [not null]
+  memo text [not null]
+  pinned integer [not null]
+  pin_order integer
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+}
+
+Table humans {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  organization_id text [not null]
+  name text [not null]
+  email text [not null]
+  phone text [not null]
+  job_title text [not null]
+  linkedin_username text [not null]
+  memo text [not null]
+  pinned integer [not null]
+  pin_order integer
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (organization_id) [name: 'idx_humans_organization_id']
+    (email) [name: 'idx_humans_email']
+  }
+}
+
+Table sessions {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  title text [not null]
+  kind text [not null]
+  status text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  started_at text [not null]
+  ended_at text [not null]
+  timezone text [not null]
+  language text [not null]
+  event_id text [not null]
+  external_event_id text [not null]
+  external_provider text [not null]
+  series_id text [not null]
+  source_apps_json text [not null]
+  event_json text [not null]
+  folder_path text [not null]
+  slug text [not null]
+  metadata_json text [not null]
+  share_activation_json text [not null]
+  deletion_context text [not null]
+  deleted_at text
+  indexes {
+    (created_at) [name: 'idx_sessions_created_at']
+    (folder_path) [name: 'idx_sessions_folder_path']
+    (event_id) [name: 'idx_sessions_event_id']
+  }
+}
+
+Table session_documents {
+  id text [pk, not null]
+  workspace_id text [not null]
+  session_id text [not null]
+  kind text [not null]
+  template_id text [not null]
+  title text [not null]
+  body_format text [not null]
+  body text [not null]
+  source_hash text [not null]
+  generation_metadata_json text [not null]
+  sort_order integer [not null]
+  created_by text [not null]
+  updated_by text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  content_version text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_session_documents_session_id']
+    (kind) [name: 'idx_session_documents_kind']
+  }
+}
+
+Table shared_session_cache {
+  share_id text [not null]
+  viewer_user_id text [not null]
+  workspace_id text [not null]
+  session_id text [not null]
+  schema_version integer [not null]
+  content_revision integer [not null]
+  title text [not null]
+  body_json text [not null]
+  attachments_json text [not null]
+  capability text [not null]
+  manage_access integer [not null]
+  access_version integer [not null]
+  web_editable integer [not null]
+  web_edit_base_content_revision integer
+  web_edit_base_title text
+  web_edit_base_body_json text
+  published_at text [not null]
+  cached_at text [not null]
+  indexes {
+    (viewer_user_id, share_id) [pk]
+    (viewer_user_id, workspace_id) [name: 'idx_shared_session_cache_viewer_workspace']
+  }
+}
+
+Table session_share_sync_state {
+  viewer_user_id text [not null]
+  share_id text [not null]
+  session_id text [not null]
+  acknowledged_content_revision integer [not null]
+  baseline_source_hash text [not null]
+  status text [not null]
+  updated_at text [not null]
+  indexes {
+    (viewer_user_id, share_id) [pk]
+    (viewer_user_id, session_id) [name: 'idx_session_share_sync_state_session']
+  }
+}
+
+Table session_share_activation {
+  viewer_user_id text [not null]
+  share_id text [not null]
+  session_id text [not null]
+  activated_at text [not null]
+  indexes {
+    (viewer_user_id, share_id) [pk]
+    (viewer_user_id, session_id) [unique, name: 'session_share_activation_viewer_session_unique']
+  }
+}
+
+Table transcripts {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  session_id text [not null]
+  source text [not null]
+  provider text [not null]
+  model text [not null]
+  language text [not null]
+  started_at_ms integer [not null]
+  ended_at_ms integer
+  audio_attachment_id text [not null]
+  memo text [not null]
+  words_json text [not null]
+  speaker_hints_json text [not null]
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  content_version text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_transcripts_session_id']
+  }
+}
+
+Table session_participants {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  session_id text [not null]
+  human_id text [not null]
+  display_name text [not null]
+  email text [not null]
+  role text [not null]
+  source text [not null]
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_session_participants_session_id']
+    (human_id) [name: 'idx_session_participants_human_id']
+  }
+}
+
+Table action_items {
+  id text [pk, not null]
+  workspace_id text [not null]
+  session_id text [not null]
+  source_type text [not null]
+  source_id text [not null]
+  source_order integer [not null]
+  assignee_human_id text [not null]
+  status text [not null]
+  text text [not null]
+  body_json text [not null]
+  due_at text [not null]
+  completed_at text
+  created_by text [not null]
+  updated_by text [not null]
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_action_items_session_id']
+    (source_type, source_id) [name: 'idx_action_items_source']
+  }
+}
+
+Table session_attachments {
+  id text [pk, not null]
+  workspace_id text [not null]
+  session_id text [not null]
+  filename text [not null]
+  relative_path text [not null]
+  content_type text [not null]
+  size_bytes integer [not null]
+  sha256 text [not null]
+  storage_kind text [not null]
+  cloud_object_key text [not null]
+  cloud_sync_enabled integer [not null]
+  source_type text [not null]
+  source_id text [not null]
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_session_attachments_session_id']
+  }
+}
+
+Table folders {
+  id text [pk, not null]
+  workspace_id text [not null]
+  path text [not null]
+  instructions text [not null]
+  icon_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (path) [name: 'idx_folders_path']
+  }
+}
+
+Table folder_attachments {
+  id text [pk, not null]
+  workspace_id text [not null]
+  folder_path text [not null]
+  filename text [not null]
+  relative_path text [not null]
+  content_type text [not null]
+  size_bytes integer [not null]
+  sha256 text [not null]
+  storage_kind text [not null]
+  cloud_object_key text [not null]
+  source_type text [not null]
+  source_id text [not null]
+  metadata_json text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (folder_path) [name: 'idx_folder_attachments_folder_path']
+  }
+}
+
+Table attachment_local_state {
+  attachment_id text [pk, not null]
+  session_id text [not null]
+  relative_path text [not null]
+  availability text [not null]
+  updated_at text [not null]
+  indexes {
+    (session_id) [name: 'idx_attachment_local_state_session_id']
+  }
+}
+
+Table attachment_transfer_jobs {
+  id text [pk, not null]
+  attachment_id text [not null]
+  session_id text [not null]
+  workspace_id text [not null]
+  direction text [not null]
+  expected_sha256 text [not null]
+  expected_size_bytes integer [not null]
+  ciphertext_sha256 text [not null]
+  ciphertext_size_bytes integer [not null]
+  remote_object_id text [not null]
+  object_key text [not null]
+  cache_id text [not null]
+  phase text [not null]
+  attempt_count integer [not null]
+  next_attempt_at text [not null]
+  last_attempt_at text
+  last_error text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  completed_at text
+  indexes {
+    (attachment_id, expected_sha256, expected_size_bytes) [unique, name: 'idx_attachment_transfer_jobs_live_version']
+    (object_key) [unique, name: 'idx_attachment_transfer_jobs_delete_object']
+    (remote_object_id) [unique, name: 'idx_attachment_transfer_jobs_upload_object_id']
+    (remote_object_id) [unique, name: 'idx_attachment_transfer_jobs_delete_object_id']
+    (cache_id) [unique, name: 'idx_attachment_transfer_jobs_cache_id']
+    (phase, next_attempt_at, created_at) [name: 'idx_attachment_transfer_jobs_due']
+    (attachment_id) [name: 'idx_attachment_transfer_jobs_attachment_id']
+    (session_id) [name: 'idx_attachment_transfer_jobs_session_id']
+  }
+}
+
+Table shared_session_attachment_cache {
+  viewer_user_id text [not null]
+  share_id text [not null]
+  attachment_id text [not null]
+  filename text [not null]
+  content_type text [not null]
+  size_bytes integer [not null]
+  sha256 text [not null]
+  cache_id text [not null]
+  claim_token text [not null]
+  cache_generation integer [not null]
+  availability text [not null]
+  access_version integer [not null]
+  attempt_count integer [not null]
+  next_attempt_at text [not null]
+  last_attempt_at text
+  last_error text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  indexes {
+    (viewer_user_id, share_id, attachment_id) [pk]
+    (cache_id) [unique, name: 'idx_shared_session_attachment_cache_cache_id']
+    (availability, updated_at) [name: 'idx_shared_session_attachment_cache_cleanup']
+    (availability, next_attempt_at, updated_at) [name: 'idx_shared_session_attachment_cache_due']
+    (viewer_user_id, share_id) [name: 'idx_shared_session_attachment_cache_share']
+  }
+}
+
+Table tags {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  name text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (name) [name: 'idx_tags_name']
+  }
+}
+
+Table session_tags {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  session_id text [not null]
+  tag_id text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (session_id) [name: 'idx_session_tags_session_id']
+    (tag_id) [name: 'idx_session_tags_tag_id']
+  }
+}
+
+Table entity_mentions {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  source_type text [not null]
+  source_id text [not null]
+  target_type text [not null]
+  target_id text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (source_type, source_id) [name: 'idx_entity_mentions_source']
+    (target_type, target_id) [name: 'idx_entity_mentions_target']
+  }
+}
+
+Table chat_groups {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  title text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+}
+
+Table chat_messages {
+  id text [pk, not null]
+  workspace_id text [not null]
+  chat_group_id text [not null]
+  owner_user_id text [not null]
+  role text [not null]
+  content text [not null]
+  metadata_json text [not null]
+  parts_json text [not null]
+  status text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (chat_group_id, created_at) [name: 'idx_chat_messages_group_id']
+  }
+}
+
+Table daily_notes {
+  id text [pk, not null]
+  workspace_id text [not null]
+  owner_user_id text [not null]
+  note_date text [not null]
+  body_format text [not null]
+  body text [not null]
+  created_at text [not null]
+  updated_at text [not null]
+  deleted_at text
+  indexes {
+    (note_date) [name: 'idx_daily_notes_note_date']
+  }
+}
+
+Table app_settings {
+  id text [pk, not null]
+  value_json text [not null]
+  updated_at text [not null]
+}
+
+Table synced_preferences {
+  id text [pk, not null]
+  workspace_id text [not null]
+  value_json text [not null]
+  updated_at text [not null]
+}
+
+Table migration_import_runs {
+  id text [pk, not null]
+  importer_version integer [not null]
+  source_root text [not null]
+  dry_run integer [not null]
+  status text [not null]
+  discovered_count integer [not null]
+  imported_count integer [not null]
+  matched_count integer [not null]
+  skipped_count integer [not null]
+  conflict_count integer [not null]
+  error_count integer [not null]
+  started_at text [not null]
+  completed_at text
+  error text [not null]
+}
+
+Table migration_import_items {
+  id text [pk, not null]
+  run_id text [not null]
+  source_path text [not null]
+  source_kind text [not null]
+  source_sha256 text [not null]
+  status text [not null]
+  discovered_count integer [not null]
+  imported_count integer [not null]
+  matched_count integer [not null]
+  skipped_count integer [not null]
+  conflict_count integer [not null]
+  error text [not null]
+  created_at text [not null]
+  completed_at text
+  indexes {
+    (run_id) [name: 'idx_migration_import_items_run_id']
+    (source_path, source_sha256) [name: 'idx_migration_import_items_source']
+  }
+}
+
+Table migration_import_targets {
+  id text [pk, not null]
+  run_id text [not null]
+  item_id text [not null]
+  source_path text [not null]
+  source_kind text [not null]
+  table_name text [not null]
+  target_id text [not null]
+  status text [not null]
+  error text [not null]
+  created_at text [not null]
+  indexes {
+    (run_id) [name: 'idx_migration_import_targets_run_id']
+    (run_id, table_name, status) [name: 'idx_migration_import_targets_table']
+    (source_path, target_id) [name: 'idx_migration_import_targets_source']
+  }
+}
+
+Table storage_migration_state {
+  id text [pk, not null]
+  importer_version integer [not null]
+  phase text [not null]
+  latest_run_id text [not null]
+  parity_verified integer [not null]
+  cutover_at text
+  rollback_until text
+  last_error text [not null]
+  updated_at text [not null]
+}

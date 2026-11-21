@@ -1,0 +1,347 @@
+Enum ProductStatus {
+  "draft"
+  "active"
+  "archived"
+}
+
+Enum OrderStatus {
+  "pending"
+  "paid"
+  "shipped"
+  "delivered"
+  "cancelled"
+  "refunded"
+}
+
+Enum PaymentMethod {
+  "card"
+  "bank"
+  "wallet"
+}
+
+Enum ReviewRating {
+  "1"
+  "2"
+  "3"
+  "4"
+  "5"
+}
+
+Table catalog_category {
+  id integer [pk, increment]
+  parent_id bigint
+  name varchar(100) [not null]
+  slug varchar(100) [not null]
+  position "smallint unsigned" [default: 0, not null]
+
+  indexes {
+    (parent_id) [name: 'catalog_category_parent_id_f61bd017']
+    (slug) [name: 'catalog_category_slug_dbf63ad0']
+    (parent_id, slug) [unique, name: 'category_slug_unique_in_parent']
+  }
+}
+
+Table catalog_brand {
+  id integer [pk, increment]
+  name varchar(100) [unique, not null]
+  logo varchar(100) [not null]
+}
+
+Table catalog_product {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  slug varchar(200) [unique, not null]
+  description text [not null]
+  brand_id bigint
+  status ProductStatus [default: 'draft', not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  updated_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (brand_id) [name: 'catalog_product_brand_id_bb0c7890']
+    (status) [name: 'catalog_product_status_0fdef323']
+  }
+}
+
+Table catalog_option {
+  id integer [pk, increment]
+  name varchar(50) [unique, not null]
+
+  Note: '''A way variants differ: size, colour.'''
+}
+
+Table catalog_optionvalue {
+  id integer [pk, increment]
+  option_id bigint [not null]
+  value varchar(50) [not null]
+
+  indexes {
+    (option_id) [name: 'catalog_optionvalue_option_id_412a2011']
+    (option_id, value) [unique, name: 'catalog_optionvalue_option_id_value_2127280a_uniq']
+  }
+}
+
+Table catalog_variant {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  sku varchar(40) [unique, not null]
+  price decimal [not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  compare_at_price decimal [note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  weight_grams "integer unsigned"
+  stock integer [default: 0, not null]
+
+  indexes {
+    (product_id) [name: 'catalog_variant_product_id_8a21d193']
+  }
+
+  checks {
+    `"price" >= '0'` [name: 'variant_price_not_negative']
+    `("compare_at_price" IS NULL OR "compare_at_price" > ("price"))` [name: 'variant_compare_at_above_price']
+  }
+}
+
+Table catalog_productimage {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  variant_id bigint
+  image varchar(100) [not null]
+  alt_text varchar(200) [not null]
+  _order integer [not null]
+
+  indexes {
+    (product_id) [name: 'catalog_productimage_product_id_1f42dd8c']
+    (variant_id) [name: 'catalog_productimage_variant_id_a898ff0d']
+  }
+}
+
+Table orders_address {
+  id integer [pk, increment]
+  customer_id integer [not null]
+  full_name varchar(100) [not null]
+  line1 varchar(200) [not null]
+  line2 varchar(200) [not null]
+  city varchar(100) [not null]
+  postal_code varchar(20) [not null]
+  country varchar(2) [not null]
+  is_default bool [default: false, not null]
+
+  indexes {
+    (customer_id) [name: 'orders_address_customer_id_b8a7cdae']
+    (customer_id) [unique, name: 'one_default_address_per_customer', note: 'where "is_default" = 1']
+  }
+}
+
+Table orders_cart {
+  id integer [pk, increment]
+  customer_id integer [unique]
+  session_key varchar(40) [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (session_key) [name: 'orders_cart_session_key_fec96a01']
+  }
+}
+
+Table orders_cartitem {
+  id integer [pk, increment]
+  cart_id bigint [not null]
+  variant_id bigint [not null]
+  quantity "smallint unsigned" [default: 1, not null]
+
+  indexes {
+    (cart_id) [name: 'orders_cartitem_cart_id_529df5fa']
+    (variant_id) [name: 'orders_cartitem_variant_id_a3661000']
+    (cart_id, variant_id) [unique, name: 'orders_cartitem_cart_id_variant_id_3af2015d_uniq']
+  }
+}
+
+Table orders_coupon {
+  id integer [pk, increment]
+  code varchar(30) [unique, not null]
+  percent_off "smallint unsigned"
+  amount_off decimal [note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  valid_from datetime [not null]
+  valid_until datetime
+  max_uses "integer unsigned"
+
+  checks {
+    `(("percent_off" IS NULL OR "amount_off" IS NULL) AND 1 = (CASE WHEN "percent_off" IS NULL THEN 1 ELSE 0 END + CASE WHEN "amount_off" IS NULL THEN 1 ELSE 0 END))` [name: 'coupon_percent_xor_amount']
+    `"percent_off" <= 100` [name: 'coupon_percent_at_most_100']
+  }
+}
+
+Table orders_order {
+  id integer [pk, increment]
+  number char(32) [unique, not null, note: 'default in Python: uuid4()']
+  customer_id integer [not null]
+  status OrderStatus [default: 'pending', not null]
+  shipping_address_id bigint [not null]
+  billing_address_id bigint [not null]
+  coupon_id bigint
+  subtotal decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  discount decimal [default: 0, not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  shipping_cost decimal [default: 0, not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  total decimal [note: 'generated (stored): (CAST(((CAST(("subtotal" - "discount") AS NUMERIC)) + "shipping_cost") AS NUMERIC)). declared max_digits=12, decimal_places=2, which the database does not enforce']
+  placed_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (customer_id) [name: 'orders_order_customer_id_0b76f6a4']
+    (shipping_address_id) [name: 'orders_order_shipping_address_id_c4f8227a']
+    (billing_address_id) [name: 'orders_order_billing_address_id_deb02e83']
+    (coupon_id) [name: 'orders_order_coupon_id_5bddb887']
+    (customer_id, placed_at) [name: 'order_customer_recent', note: 'descending: placed_at']
+  }
+}
+
+Table orders_orderline {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  variant_id bigint
+  product_name varchar(200) [not null]
+  sku varchar(40) [not null]
+  unit_price decimal [not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  quantity "smallint unsigned" [not null]
+
+  indexes {
+    (order_id) [name: 'orders_orderline_order_id_17f8f3ef']
+    (variant_id) [name: 'orders_orderline_variant_id_0aa9a0d5']
+  }
+}
+
+Table orders_payment {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  method PaymentMethod [not null]
+  amount decimal [not null, note: 'declared max_digits=12, decimal_places=2, which the database does not enforce']
+  provider_reference varchar(100) [unique, not null]
+  succeeded bool [default: false, not null]
+  raw_response text [not null, note: 'default in Python: dict()']
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (order_id) [name: 'orders_payment_order_id_bdccf250']
+  }
+}
+
+Table orders_shipment {
+  id integer [pk, increment]
+  order_id bigint [not null]
+  carrier varchar(50) [not null]
+  tracking_number varchar(100) [not null]
+  shipped_at datetime
+  delivered_at datetime
+
+  indexes {
+    (order_id) [name: 'orders_shipment_order_id_661ed8ed']
+  }
+}
+
+Table orders_review {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  customer_id integer [not null]
+  rating ReviewRating [not null]
+  title varchar(100) [not null]
+  body text [not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (product_id) [name: 'orders_review_product_id_fcb3225d']
+    (customer_id) [name: 'orders_review_customer_id_bf5f8e94']
+    (product_id, customer_id) [unique, name: 'one_review_per_customer']
+  }
+}
+
+Table auth_user {
+  id integer [pk, increment]
+
+  Note: '''Not in these docs: a model of the auth app, shown as far as it is referred to.'''
+}
+
+Ref catalog_category_parent_id_fk: catalog_category.parent_id > catalog_category.id [delete: cascade]
+
+Ref catalog_product_brand_id_fk: catalog_product.brand_id > catalog_brand.id [delete: set null]
+
+Table catalog_product_categories {
+  id integer [pk, increment]
+  product_id bigint [not null]
+  category_id bigint [not null]
+
+  indexes {
+    (product_id) [name: 'catalog_product_categories_product_id_be67c3f5']
+    (category_id) [name: 'catalog_product_categories_category_id_f9457ae1']
+    (product_id, category_id) [unique, name: 'catalog_product_categories_product_id_category_id_9802d7aa_uniq']
+  }
+}
+
+Ref catalog_product_categories_product_id_fk: catalog_product_categories.product_id > catalog_product.id [delete: cascade]
+
+Ref catalog_product_categories_category_id_fk: catalog_product_categories.category_id > catalog_category.id [delete: cascade]
+
+Ref catalog_optionvalue_option_id_fk: catalog_optionvalue.option_id > catalog_option.id [delete: cascade]
+
+Ref catalog_variant_product_id_fk: catalog_variant.product_id > catalog_product.id [delete: cascade]
+
+Table catalog_variant_values {
+  id integer [pk, increment]
+  variant_id bigint [not null]
+  optionvalue_id bigint [not null]
+
+  indexes {
+    (variant_id) [name: 'catalog_variant_values_variant_id_8dba3976']
+    (optionvalue_id) [name: 'catalog_variant_values_optionvalue_id_006ad784']
+    (variant_id, optionvalue_id) [unique, name: 'catalog_variant_values_variant_id_optionvalue_id_dcaf4625_uniq']
+  }
+}
+
+Ref catalog_variant_values_variant_id_fk: catalog_variant_values.variant_id > catalog_variant.id [delete: cascade]
+
+Ref catalog_variant_values_optionvalue_id_fk: catalog_variant_values.optionvalue_id > catalog_optionvalue.id [delete: cascade]
+
+Ref catalog_productimage_product_id_fk: catalog_productimage.product_id > catalog_product.id [delete: cascade]
+
+Ref catalog_productimage_variant_id_fk: catalog_productimage.variant_id > catalog_variant.id [delete: set null]
+
+Ref orders_address_customer_id_fk: orders_address.customer_id > auth_user.id [delete: cascade]
+
+Ref orders_cart_customer_id_fk: orders_cart.customer_id - auth_user.id [delete: cascade]
+
+Ref orders_cartitem_cart_id_fk: orders_cartitem.cart_id > orders_cart.id [delete: cascade]
+
+Ref orders_cartitem_variant_id_fk: orders_cartitem.variant_id > catalog_variant.id [delete: cascade]
+
+Ref orders_order_customer_id_fk: orders_order.customer_id > auth_user.id [delete: restrict]
+
+Ref orders_order_shipping_address_id_fk: orders_order.shipping_address_id > orders_address.id [delete: restrict]
+
+Ref orders_order_billing_address_id_fk: orders_order.billing_address_id > orders_address.id [delete: restrict]
+
+Ref orders_order_coupon_id_fk: orders_order.coupon_id > orders_coupon.id [delete: set null]
+
+Ref orders_orderline_order_id_fk: orders_orderline.order_id > orders_order.id [delete: cascade]
+
+Ref orders_orderline_variant_id_fk: orders_orderline.variant_id > catalog_variant.id [delete: set null]
+
+Ref orders_payment_order_id_fk: orders_payment.order_id > orders_order.id [delete: cascade]
+
+Ref orders_shipment_order_id_fk: orders_shipment.order_id > orders_order.id [delete: cascade]
+
+Table orders_shipment_lines {
+  id integer [pk, increment]
+  shipment_id bigint [not null]
+  orderline_id bigint [not null]
+
+  indexes {
+    (shipment_id) [name: 'orders_shipment_lines_shipment_id_8cb4bc33']
+    (orderline_id) [name: 'orders_shipment_lines_orderline_id_5fc93f2e']
+    (shipment_id, orderline_id) [unique, name: 'orders_shipment_lines_shipment_id_orderline_id_5131a05e_uniq']
+  }
+}
+
+Ref orders_shipment_lines_shipment_id_fk: orders_shipment_lines.shipment_id > orders_shipment.id [delete: cascade]
+
+Ref orders_shipment_lines_orderline_id_fk: orders_shipment_lines.orderline_id > orders_orderline.id [delete: cascade]
+
+Ref orders_review_product_id_fk: orders_review.product_id > catalog_product.id [delete: cascade]
+
+Ref orders_review_customer_id_fk: orders_review.customer_id > auth_user.id [delete: cascade]

@@ -1,0 +1,13 @@
+[project]
+name = "example-kiwitcms"
+version = "0.0.0"
+requires-python = ">=3.10"
+dependencies = ["djangoer>=0.5.0", "kiwitcms", "setuptools<81"]
+
+[tool.uv]
+package = false
+# Dependencies that need system libraries to build, and that the models do not import.
+override-dependencies = ["python-ldap; sys_platform == 'never'", "uwsgi; sys_platform == 'never'"]
+
+[tool.example]
+all = true

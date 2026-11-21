@@ -1,0 +1,66 @@
+Table user {
+  id text [pk, not null]
+  name text
+  email text [not null]
+  emailVerified timestamp
+  image text
+  apiKey text
+  apiKeySalt text
+  createdAt timestamp
+  updatedAt timestamp
+}
+
+Table account {
+  userId text [not null]
+  type text [not null]
+  provider text [not null]
+  providerAccountId text [not null]
+  refresh_token text
+  access_token text
+  expires_at integer
+  token_type text
+  scope text
+  id_token text
+  session_state text
+  indexes {
+    (provider, providerAccountId) [pk]
+  }
+}
+
+Table session {
+  sessionToken text [pk, not null]
+  userId text [not null]
+  expires timestamp [not null]
+}
+
+Table verificationToken {
+  identifier text [not null]
+  token text [not null]
+  expires timestamp [not null]
+  indexes {
+    (identifier, token) [pk]
+  }
+}
+
+Table shortUrls {
+  userId text
+  id text [pk, not null]
+  url text [not null]
+  title text
+  enabled boolean
+  clickLimit integer
+  password text
+  visits json
+  lastVisit timestamp
+  validFrom timestamp
+  expiresAt timestamp
+  timeOffset integer [not null]
+  createdAt timestamp [not null]
+  updatedAt timestamp [not null]
+}
+
+Ref account_userId_user_id_fk: account.userId > user.id [delete: cascade]
+
+Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
+
+Ref shortUrls_userId_user_id_fk: shortUrls.userId > user.id [delete: cascade]

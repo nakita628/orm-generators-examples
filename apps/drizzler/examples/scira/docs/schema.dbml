@@ -1,0 +1,413 @@
+Table user {
+  id text [pk, not null]
+  name text [not null]
+  email text [not null, unique]
+  email_verified boolean [not null]
+  image text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+}
+
+Table session {
+  id text [pk, not null]
+  expires_at timestamp [not null]
+  token text [not null, unique]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  ip_address text
+  user_agent text
+  user_id text [not null]
+  indexes {
+    (user_id) [name: 'session_userId_idx']
+  }
+}
+
+Table account {
+  id text [pk, not null]
+  account_id text [not null]
+  provider_id text [not null]
+  user_id text [not null]
+  access_token text
+  refresh_token text
+  id_token text
+  access_token_expires_at timestamp
+  refresh_token_expires_at timestamp
+  scope text
+  password text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'account_userId_idx']
+  }
+}
+
+Table verification {
+  id text [pk, not null]
+  identifier text [not null]
+  value text [not null]
+  expires_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (identifier) [name: 'verification_identifier_idx']
+  }
+}
+
+Table chat {
+  id text [pk, not null]
+  userId text [not null]
+  title text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  is_pinned boolean [not null]
+  visibility varchar [not null]
+  indexes {
+    (userId) [name: 'chat_userId_idx']
+    (userId, created_at) [name: 'chat_userId_createdAt_idx']
+    (userId, is_pinned, updated_at) [name: 'chat_userId_isPinned_updatedAt_idx']
+  }
+}
+
+Table message {
+  id text [pk, not null]
+  chat_id text [not null]
+  role text [not null]
+  parts json [not null]
+  attachments json [not null]
+  created_at timestamp [not null]
+  model text
+  input_tokens integer
+  output_tokens integer
+  total_tokens integer
+  completion_time real
+  indexes {
+    (chat_id) [name: 'message_chatId_idx']
+    (chat_id, created_at) [name: 'message_chatId_createdAt_idx']
+  }
+}
+
+Table stream {
+  id text [pk, not null]
+  chatId text [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (chatId) [name: 'stream_chatId_idx']
+  }
+}
+
+Table subscription {
+  id text [pk, not null]
+  createdAt timestamp [not null]
+  modifiedAt timestamp
+  amount integer [not null]
+  currency text [not null]
+  recurringInterval text [not null]
+  status text [not null]
+  currentPeriodStart timestamp [not null]
+  currentPeriodEnd timestamp [not null]
+  cancelAtPeriodEnd boolean [not null]
+  canceledAt timestamp
+  startedAt timestamp [not null]
+  endsAt timestamp
+  endedAt timestamp
+  customerId text [not null]
+  productId text [not null]
+  discountId text
+  checkoutId text [not null]
+  customerCancellationReason text
+  customerCancellationComment text
+  metadata text
+  customFieldData text
+  userId text
+  indexes {
+    (userId) [name: 'subscription_userId_idx']
+    (userId, status) [name: 'subscription_userId_status_idx']
+  }
+  Note: 'Subscription table for Polar webhook data'
+}
+
+Table extreme_search_usage {
+  id text [pk, not null]
+  user_id text [not null]
+  search_count integer [not null]
+  date timestamp [not null]
+  reset_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'extremeSearchUsage_userId_idx']
+    (user_id, date) [name: 'extremeSearchUsage_userId_date_idx']
+    (user_id, date) [unique, name: 'extremeSearchUsage_userId_date_unique']
+  }
+  Note: 'Extreme search usage tracking table'
+}
+
+Table message_usage {
+  id text [pk, not null]
+  user_id text [not null]
+  message_count integer [not null]
+  date timestamp [not null]
+  reset_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'messageUsage_userId_idx']
+    (user_id, date) [name: 'messageUsage_userId_date_idx']
+    (user_id, date) [unique, name: 'messageUsage_userId_date_unique']
+  }
+  Note: 'Message usage tracking table'
+}
+
+Table anthropic_usage {
+  id text [pk, not null]
+  user_id text [not null]
+  usage_count integer [not null]
+  date timestamp [not null]
+  reset_at timestamp [not null]
+  metadata jsonb
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'anthropicUsage_userId_idx']
+    (user_id, date) [name: 'anthropicUsage_userId_date_idx']
+    (user_id, date) [unique, name: 'anthropicUsage_userId_date_unique']
+  }
+  Note: 'Anthropic daily usage tracking table'
+}
+
+Table google_usage {
+  id text [pk, not null]
+  user_id text [not null]
+  usage_count integer [not null]
+  date timestamp [not null]
+  reset_at timestamp [not null]
+  metadata jsonb
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'googleUsage_userId_idx']
+    (user_id, date) [name: 'googleUsage_userId_date_idx']
+    (user_id, date) [unique, name: 'googleUsage_userId_date_unique']
+  }
+  Note: 'Google (Gemini Max) monthly usage tracking table'
+}
+
+Table agent_mode_usage_events {
+  id text [pk, not null]
+  user_id text [not null]
+  message_id text [not null, note: 'The agent request\'s latest user message id (idempotency key).']
+  date timestamp [not null]
+  reset_at timestamp [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'agentModeUsageEvents_userId_idx']
+    (user_id, date) [name: 'agentModeUsageEvents_userId_date_idx']
+    (message_id) [unique, name: 'agentModeUsageEvents_messageId_unique']
+    (user_id, date, message_id) [unique, name: 'agentModeUsageEvents_userId_date_messageId_unique']
+  }
+  Note: 'Agent mode monthly usage tracking (append-only events keyed by user message id) This prevents usage from being bypassed by deleting sessions/chats.'
+}
+
+Table custom_instructions {
+  id text [pk, not null]
+  user_id text [not null]
+  content text [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'customInstructions_userId_idx']
+  }
+  Note: 'Custom instructions table'
+}
+
+Table user_preferences {
+  id text [pk, not null]
+  user_id text [not null, unique]
+  preferences json [not null]
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  Note: 'User preferences table'
+}
+
+Table payment {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  brand_id text
+  business_id text
+  card_issuing_country text
+  card_last_four text
+  card_network text
+  card_type text
+  currency text [not null]
+  digital_products_delivered boolean
+  discount_id text
+  error_code text
+  error_message text
+  payment_link text
+  payment_method text
+  payment_method_type text
+  settlement_amount integer
+  settlement_currency text
+  settlement_tax integer
+  status text
+  subscription_id text
+  tax integer
+  total_amount integer [not null]
+  billing json [note: 'JSON fields for complex objects']
+  customer json
+  disputes json
+  metadata json
+  product_cart json
+  refunds json
+  user_id text [note: 'Foreign key to user']
+  Note: 'Payment table for Dodo Payments webhook data'
+}
+
+Table dodosubscription {
+  id text [pk, not null]
+  created_at timestamp [not null]
+  updated_at timestamp
+  status text [not null]
+  product_id text [not null]
+  customer_id text [not null]
+  business_id text
+  brand_id text
+  currency text [not null]
+  amount integer [not null]
+  interval text
+  interval_count integer
+  trial_period_days integer
+  current_period_start timestamp
+  current_period_end timestamp
+  cancelled_at timestamp
+  cancel_at_period_end boolean
+  ended_at timestamp
+  discount_id text
+  customer json [note: 'JSON fields for complex objects']
+  metadata json
+  product_cart json
+  user_id text [note: 'Foreign key to user']
+  indexes {
+    (user_id) [name: 'dodosubscription_userId_idx']
+    (user_id, status) [name: 'dodosubscription_userId_status_idx']
+    (customer_id) [name: 'dodosubscription_customerId_idx']
+  }
+  Note: 'Dodo Subscription table for Dodo Payments subscription webhook data'
+}
+
+Table lookout {
+  id text [pk, not null]
+  user_id text [not null]
+  title text [not null]
+  prompt text [not null]
+  frequency text [not null]
+  cron_schedule text [not null]
+  timezone text [not null]
+  next_run_at timestamp [not null]
+  qstash_schedule_id text
+  status text [not null]
+  search_mode text [not null]
+  last_run_at timestamp
+  last_run_chat_id text
+  run_history json [note: 'Store all run history as JSON']
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'lookout_userId_idx']
+    (user_id, status) [name: 'lookout_userId_status_idx']
+  }
+  Note: 'Lookout table for scheduled searches'
+}
+
+Table user_mcp_server {
+  id text [pk, not null]
+  user_id text [not null]
+  name text [not null]
+  transport_type varchar [not null]
+  url text [not null]
+  auth_type varchar [not null]
+  encrypted_credentials text
+  oauth_issuer_url text
+  oauth_authorization_url text
+  oauth_token_url text
+  oauth_scopes text
+  oauth_client_id text
+  oauth_client_secret_encrypted text
+  oauth_access_token_encrypted text
+  oauth_refresh_token_encrypted text
+  oauth_access_token_expires_at timestamp
+  oauth_connected_at timestamp
+  oauth_error text
+  is_enabled boolean [not null]
+  disabled_tools json
+  last_tested_at timestamp
+  last_error text
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  indexes {
+    (user_id) [name: 'userMcpServer_userId_idx']
+    (user_id, is_enabled) [name: 'userMcpServer_userId_enabled_idx']
+  }
+}
+
+Table build_session {
+  id text [pk, not null]
+  chat_id text [not null]
+  user_id text [not null]
+  box_id text
+  runtime text [not null]
+  status text [not null]
+  snapshot_id text
+  total_cost_usd real
+  total_compute_ms integer
+  total_input_tokens integer
+  total_output_tokens integer
+  created_at timestamp [not null]
+  updated_at timestamp [not null]
+  completed_at timestamp
+  indexes {
+    (chat_id) [name: 'build_session_chatId_idx']
+    (user_id) [name: 'build_session_userId_idx']
+    (user_id, status) [name: 'build_session_userId_status_idx']
+  }
+}
+
+Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
+
+Ref account_user_id_user_id_fk: account.user_id > user.id [delete: cascade]
+
+Ref chat_userId_user_id_fk: chat.userId > user.id
+
+Ref message_chat_id_chat_id_fk: message.chat_id > chat.id [delete: cascade]
+
+Ref stream_chatId_chat_id_fk: stream.chatId > chat.id [delete: cascade]
+
+Ref subscription_userId_user_id_fk: subscription.userId > user.id
+
+Ref extreme_search_usage_user_id_user_id_fk: extreme_search_usage.user_id > user.id [delete: cascade]
+
+Ref message_usage_user_id_user_id_fk: message_usage.user_id > user.id [delete: cascade]
+
+Ref anthropic_usage_user_id_user_id_fk: anthropic_usage.user_id > user.id [delete: cascade]
+
+Ref google_usage_user_id_user_id_fk: google_usage.user_id > user.id [delete: cascade]
+
+Ref agent_mode_usage_events_user_id_user_id_fk: agent_mode_usage_events.user_id > user.id [delete: cascade]
+
+Ref custom_instructions_user_id_user_id_fk: custom_instructions.user_id > user.id [delete: cascade]
+
+Ref user_preferences_user_id_user_id_fk: user_preferences.user_id - user.id [delete: cascade]
+
+Ref payment_user_id_user_id_fk: payment.user_id > user.id
+
+Ref dodosubscription_user_id_user_id_fk: dodosubscription.user_id > user.id
+
+Ref lookout_user_id_user_id_fk: lookout.user_id > user.id [delete: cascade]
+
+Ref user_mcp_server_user_id_user_id_fk: user_mcp_server.user_id > user.id [delete: cascade]
+
+Ref build_session_chat_id_chat_id_fk: build_session.chat_id > chat.id [delete: cascade]
+
+Ref build_session_user_id_user_id_fk: build_session.user_id > user.id [delete: cascade]

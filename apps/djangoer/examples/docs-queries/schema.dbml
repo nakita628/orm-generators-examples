@@ -1,0 +1,109 @@
+Table queries_blog {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  tagline text [not null]
+}
+
+Table queries_author {
+  id integer [pk, increment]
+  name varchar(200) [not null]
+  email varchar(254) [not null]
+}
+
+Table queries_entry {
+  id integer [pk, increment]
+  blog_id bigint [not null]
+  headline varchar(255) [not null]
+  body_text text [not null]
+  pub_date date [not null]
+  mod_date date [not null, note: 'default in Python: date.today()']
+  number_of_comments integer [default: 0, not null]
+  number_of_pingbacks integer [default: 0, not null]
+  rating integer [default: 5, not null]
+
+  indexes {
+    (blog_id) [name: 'queries_entry_blog_id_d507d586']
+  }
+}
+
+Table aggregation_author {
+  id integer [pk, increment]
+  name varchar(100) [not null]
+  age integer [not null]
+}
+
+Table aggregation_publisher {
+  id integer [pk, increment]
+  name varchar(300) [not null]
+}
+
+Table aggregation_book {
+  id integer [pk, increment]
+  name varchar(300) [not null]
+  pages integer [not null]
+  price decimal [not null, note: 'declared max_digits=10, decimal_places=2, which the database does not enforce']
+  rating real [not null]
+  publisher_id bigint [not null]
+  pubdate date [not null]
+
+  indexes {
+    (publisher_id) [name: 'aggregation_book_publisher_id_26a75dda']
+  }
+}
+
+Table aggregation_store {
+  id integer [pk, increment]
+  name varchar(300) [not null]
+}
+
+Ref queries_entry_blog_id_fk: queries_entry.blog_id > queries_blog.id [delete: cascade]
+
+Table queries_entry_authors {
+  id integer [pk, increment]
+  entry_id bigint [not null]
+  author_id bigint [not null]
+
+  indexes {
+    (entry_id) [name: 'queries_entry_authors_entry_id_d78bc98a']
+    (author_id) [name: 'queries_entry_authors_author_id_5ab55b77']
+    (entry_id, author_id) [unique, name: 'queries_entry_authors_entry_id_author_id_0fe8d60f_uniq']
+  }
+}
+
+Ref queries_entry_authors_entry_id_fk: queries_entry_authors.entry_id > queries_entry.id [delete: cascade]
+
+Ref queries_entry_authors_author_id_fk: queries_entry_authors.author_id > queries_author.id [delete: cascade]
+
+Ref aggregation_book_publisher_id_fk: aggregation_book.publisher_id > aggregation_publisher.id [delete: cascade]
+
+Table aggregation_book_authors {
+  id integer [pk, increment]
+  book_id bigint [not null]
+  author_id bigint [not null]
+
+  indexes {
+    (book_id) [name: 'aggregation_book_authors_book_id_e6809ff9']
+    (author_id) [name: 'aggregation_book_authors_author_id_d8daf31c']
+    (book_id, author_id) [unique, name: 'aggregation_book_authors_book_id_author_id_8d496b9c_uniq']
+  }
+}
+
+Ref aggregation_book_authors_book_id_fk: aggregation_book_authors.book_id > aggregation_book.id [delete: cascade]
+
+Ref aggregation_book_authors_author_id_fk: aggregation_book_authors.author_id > aggregation_author.id [delete: cascade]
+
+Table aggregation_store_books {
+  id integer [pk, increment]
+  store_id bigint [not null]
+  book_id bigint [not null]
+
+  indexes {
+    (store_id) [name: 'aggregation_store_books_store_id_6ac4a228']
+    (book_id) [name: 'aggregation_store_books_book_id_c39ee38c']
+    (store_id, book_id) [unique, name: 'aggregation_store_books_store_id_book_id_890672f6_uniq']
+  }
+}
+
+Ref aggregation_store_books_store_id_fk: aggregation_store_books.store_id > aggregation_store.id [delete: cascade]
+
+Ref aggregation_store_books_book_id_fk: aggregation_store_books.book_id > aggregation_book.id [delete: cascade]

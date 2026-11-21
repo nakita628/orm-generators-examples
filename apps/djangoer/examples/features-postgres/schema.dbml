@@ -1,0 +1,69 @@
+Table pg_document {
+  id bigint [pk, increment]
+  title varchar(200) [not null, note: 'collation und-x-icu']
+  tags "varchar(30)[]" [not null, note: 'default in Python: list()']
+  matrix "integer[3][3]"
+  attributes hstore [not null, note: 'default in Python: dict()']
+  search tsvector
+  data jsonb [not null, note: 'default in Python: dict()']
+  body text [not null]
+
+  indexes {
+    (search) [name: 'document_search', note: 'using gin']
+    (tags) [name: 'document_tags', note: 'using gin']
+    (data) [name: 'document_data', note: 'using gin; jsonb_path_ops']
+    (`LOWER("title") gin_trgm_ops`) [name: 'document_title_trgm', note: 'using gin']
+    (body) [type: hash, name: 'document_body_hash']
+    (title) [type: btree, name: 'document_title', note: 'with (fillfactor = 70)']
+    (title, body) [name: 'document_bloom', note: 'using bloom; with (length = 80)']
+  }
+}
+
+Table pg_reading {
+  id bigint [pk, increment]
+  sensor varchar(20) [not null]
+  taken "timestamp with time zone" [not null]
+  value "double precision" [not null]
+
+  indexes {
+    (taken) [name: 'reading_taken', note: 'using brin; with (autosummarize = on, pages_per_range = 16)']
+    (sensor) [name: 'reading_sensor_covering', note: 'include (value)']
+  }
+}
+
+Table pg_room {
+  id bigint [pk, increment]
+  number varchar(10) [unique, not null]
+
+  indexes {
+    (number) [name: 'pg_room_number_bc696db1_like', note: 'varchar_pattern_ops']
+  }
+}
+
+Table pg_reservation {
+  id bigint [pk, increment]
+  room_id bigint [not null]
+  during tstzrange [not null]
+  nights daterange [not null]
+  guests int4range [not null]
+  budget numrange
+  ids int8range
+  cancelled boolean [default: false, not null]
+  code varchar(10) [not null]
+  parent_id bigint
+
+  indexes {
+    (room_id) [name: 'pg_reservation_room_id_eb95f46a']
+    (parent_id) [name: 'pg_reservation_parent_id_e31561e2']
+    (`during WITH &&`, `room_id WITH =`) [name: 'exclude_overlapping_reservations', note: 'exclusion constraint; using gist; where NOT "cancelled"']
+    (code) [unique, name: 'code_unique_deferred', note: 'deferrable, initially deferred']
+    (code, room_id) [unique, name: 'code_room_covering', note: 'include (guests)']
+    (room_id, parent_id) [unique, name: 'room_parent_unique', note: 'nulls not distinct']
+    (during) [name: 'reservation_during', note: 'using gist']
+    (nights) [name: 'reservation_nights', note: 'using spgist']
+  }
+}
+
+Ref pg_reservation_room_id_fk: pg_reservation.room_id > pg_room.id [delete: cascade]
+
+Ref pg_reservation_parent_id_fk: pg_reservation.parent_id > pg_reservation.id [delete: cascade]

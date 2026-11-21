@@ -1,0 +1,1320 @@
+Enum MailingListArchivePolicy {
+  "0"
+  "1"
+  "2"
+}
+
+Enum EmailTemplateName {
+  "list:admin:action:post"
+  "list:admin:action:subscribe"
+  "list:admin:action:unsubscribe"
+  "list:admin:notice:subscribe"
+  "list:admin:notice:unrecognized"
+  "list:admin:notice:pending"
+  "list:admin:notice:increment"
+  "list:admin:notice:disable"
+  "list:admin:notice:unsubscribe"
+  "list:member:digest:footer"
+  "list:member:digest:header"
+  "list:member:digest:masthead"
+  "list:member:regular:footer"
+  "list:member:regular:header"
+  "list:user:action:subscribe"
+  "list:user:action:unsubscribe"
+  "list:user:action:invite"
+  "list:user:notice:goodbye"
+  "list:user:notice:hold"
+  "list:user:notice:no-more-today"
+  "list:user:notice:post"
+  "list:user:notice:probe"
+  "list:user:notice:refuse"
+  "list:user:notice:rejected"
+  "list:user:notice:welcome"
+  "list:user:notice:warning"
+}
+
+Enum EmailTemplateLanguage {
+  "ar"
+  "ast"
+  "bg"
+  "ca"
+  "zh_CN"
+  "zh_TW"
+  "hr"
+  "cs"
+  "da"
+  "nl"
+  "en"
+  "et"
+  "eu"
+  "fi"
+  "fr"
+  "gl"
+  "de"
+  "el"
+  "he"
+  "hu"
+  "ia"
+  "it"
+  "ja"
+  "ko"
+  "lt"
+  "no"
+  "pl"
+  "pt"
+  "pt_BR"
+  "ro"
+  "ru"
+  "sr"
+  "sk"
+  "sl"
+  "es"
+  "sv"
+  "tr"
+  "uk"
+  "vi"
+}
+
+Enum EmailTemplateContext {
+  "site"
+  "domain"
+  "list"
+}
+
+Enum DjangoMailman3ProfileTimezone {
+  "Africa/Abidjan"
+  "Africa/Accra"
+  "Africa/Addis_Ababa"
+  "Africa/Algiers"
+  "Africa/Asmara"
+  "Africa/Asmera"
+  "Africa/Bamako"
+  "Africa/Bangui"
+  "Africa/Banjul"
+  "Africa/Bissau"
+  "Africa/Blantyre"
+  "Africa/Brazzaville"
+  "Africa/Bujumbura"
+  "Africa/Cairo"
+  "Africa/Casablanca"
+  "Africa/Ceuta"
+  "Africa/Conakry"
+  "Africa/Dakar"
+  "Africa/Dar_es_Salaam"
+  "Africa/Djibouti"
+  "Africa/Douala"
+  "Africa/El_Aaiun"
+  "Africa/Freetown"
+  "Africa/Gaborone"
+  "Africa/Harare"
+  "Africa/Johannesburg"
+  "Africa/Juba"
+  "Africa/Kampala"
+  "Africa/Khartoum"
+  "Africa/Kigali"
+  "Africa/Kinshasa"
+  "Africa/Lagos"
+  "Africa/Libreville"
+  "Africa/Lome"
+  "Africa/Luanda"
+  "Africa/Lubumbashi"
+  "Africa/Lusaka"
+  "Africa/Malabo"
+  "Africa/Maputo"
+  "Africa/Maseru"
+  "Africa/Mbabane"
+  "Africa/Mogadishu"
+  "Africa/Monrovia"
+  "Africa/Nairobi"
+  "Africa/Ndjamena"
+  "Africa/Niamey"
+  "Africa/Nouakchott"
+  "Africa/Ouagadougou"
+  "Africa/Porto-Novo"
+  "Africa/Sao_Tome"
+  "Africa/Timbuktu"
+  "Africa/Tripoli"
+  "Africa/Tunis"
+  "Africa/Windhoek"
+  "America/Adak"
+  "America/Anchorage"
+  "America/Anguilla"
+  "America/Antigua"
+  "America/Araguaina"
+  "America/Argentina/Buenos_Aires"
+  "America/Argentina/Catamarca"
+  "America/Argentina/ComodRivadavia"
+  "America/Argentina/Cordoba"
+  "America/Argentina/Jujuy"
+  "America/Argentina/La_Rioja"
+  "America/Argentina/Mendoza"
+  "America/Argentina/Rio_Gallegos"
+  "America/Argentina/Salta"
+  "America/Argentina/San_Juan"
+  "America/Argentina/San_Luis"
+  "America/Argentina/Tucuman"
+  "America/Argentina/Ushuaia"
+  "America/Aruba"
+  "America/Asuncion"
+  "America/Atikokan"
+  "America/Atka"
+  "America/Bahia"
+  "America/Bahia_Banderas"
+  "America/Barbados"
+  "America/Belem"
+  "America/Belize"
+  "America/Blanc-Sablon"
+  "America/Boa_Vista"
+  "America/Bogota"
+  "America/Boise"
+  "America/Buenos_Aires"
+  "America/Cambridge_Bay"
+  "America/Campo_Grande"
+  "America/Cancun"
+  "America/Caracas"
+  "America/Catamarca"
+  "America/Cayenne"
+  "America/Cayman"
+  "America/Chicago"
+  "America/Chihuahua"
+  "America/Ciudad_Juarez"
+  "America/Coral_Harbour"
+  "America/Cordoba"
+  "America/Costa_Rica"
+  "America/Coyhaique"
+  "America/Creston"
+  "America/Cuiaba"
+  "America/Curacao"
+  "America/Danmarkshavn"
+  "America/Dawson"
+  "America/Dawson_Creek"
+  "America/Denver"
+  "America/Detroit"
+  "America/Dominica"
+  "America/Edmonton"
+  "America/Eirunepe"
+  "America/El_Salvador"
+  "America/Ensenada"
+  "America/Fort_Nelson"
+  "America/Fort_Wayne"
+  "America/Fortaleza"
+  "America/Glace_Bay"
+  "America/Godthab"
+  "America/Goose_Bay"
+  "America/Grand_Turk"
+  "America/Grenada"
+  "America/Guadeloupe"
+  "America/Guatemala"
+  "America/Guayaquil"
+  "America/Guyana"
+  "America/Halifax"
+  "America/Havana"
+  "America/Hermosillo"
+  "America/Indiana/Indianapolis"
+  "America/Indiana/Knox"
+  "America/Indiana/Marengo"
+  "America/Indiana/Petersburg"
+  "America/Indiana/Tell_City"
+  "America/Indiana/Vevay"
+  "America/Indiana/Vincennes"
+  "America/Indiana/Winamac"
+  "America/Indianapolis"
+  "America/Inuvik"
+  "America/Iqaluit"
+  "America/Jamaica"
+  "America/Jujuy"
+  "America/Juneau"
+  "America/Kentucky/Louisville"
+  "America/Kentucky/Monticello"
+  "America/Knox_IN"
+  "America/Kralendijk"
+  "America/La_Paz"
+  "America/Lima"
+  "America/Los_Angeles"
+  "America/Louisville"
+  "America/Lower_Princes"
+  "America/Maceio"
+  "America/Managua"
+  "America/Manaus"
+  "America/Marigot"
+  "America/Martinique"
+  "America/Matamoros"
+  "America/Mazatlan"
+  "America/Mendoza"
+  "America/Menominee"
+  "America/Merida"
+  "America/Metlakatla"
+  "America/Mexico_City"
+  "America/Miquelon"
+  "America/Moncton"
+  "America/Monterrey"
+  "America/Montevideo"
+  "America/Montreal"
+  "America/Montserrat"
+  "America/Nassau"
+  "America/New_York"
+  "America/Nipigon"
+  "America/Nome"
+  "America/Noronha"
+  "America/North_Dakota/Beulah"
+  "America/North_Dakota/Center"
+  "America/North_Dakota/New_Salem"
+  "America/Nuuk"
+  "America/Ojinaga"
+  "America/Panama"
+  "America/Pangnirtung"
+  "America/Paramaribo"
+  "America/Phoenix"
+  "America/Port-au-Prince"
+  "America/Port_of_Spain"
+  "America/Porto_Acre"
+  "America/Porto_Velho"
+  "America/Puerto_Rico"
+  "America/Punta_Arenas"
+  "America/Rainy_River"
+  "America/Rankin_Inlet"
+  "America/Recife"
+  "America/Regina"
+  "America/Resolute"
+  "America/Rio_Branco"
+  "America/Rosario"
+  "America/Santa_Isabel"
+  "America/Santarem"
+  "America/Santiago"
+  "America/Santo_Domingo"
+  "America/Sao_Paulo"
+  "America/Scoresbysund"
+  "America/Shiprock"
+  "America/Sitka"
+  "America/St_Barthelemy"
+  "America/St_Johns"
+  "America/St_Kitts"
+  "America/St_Lucia"
+  "America/St_Thomas"
+  "America/St_Vincent"
+  "America/Swift_Current"
+  "America/Tegucigalpa"
+  "America/Thule"
+  "America/Thunder_Bay"
+  "America/Tijuana"
+  "America/Toronto"
+  "America/Tortola"
+  "America/Vancouver"
+  "America/Virgin"
+  "America/Whitehorse"
+  "America/Winnipeg"
+  "America/Yakutat"
+  "America/Yellowknife"
+  "Antarctica/Casey"
+  "Antarctica/Davis"
+  "Antarctica/DumontDUrville"
+  "Antarctica/Macquarie"
+  "Antarctica/Mawson"
+  "Antarctica/McMurdo"
+  "Antarctica/Palmer"
+  "Antarctica/Rothera"
+  "Antarctica/South_Pole"
+  "Antarctica/Syowa"
+  "Antarctica/Troll"
+  "Antarctica/Vostok"
+  "Arctic/Longyearbyen"
+  "Asia/Aden"
+  "Asia/Almaty"
+  "Asia/Amman"
+  "Asia/Anadyr"
+  "Asia/Aqtau"
+  "Asia/Aqtobe"
+  "Asia/Ashgabat"
+  "Asia/Ashkhabad"
+  "Asia/Atyrau"
+  "Asia/Baghdad"
+  "Asia/Bahrain"
+  "Asia/Baku"
+  "Asia/Bangkok"
+  "Asia/Barnaul"
+  "Asia/Beirut"
+  "Asia/Bishkek"
+  "Asia/Brunei"
+  "Asia/Calcutta"
+  "Asia/Chita"
+  "Asia/Choibalsan"
+  "Asia/Chongqing"
+  "Asia/Chungking"
+  "Asia/Colombo"
+  "Asia/Dacca"
+  "Asia/Damascus"
+  "Asia/Dhaka"
+  "Asia/Dili"
+  "Asia/Dubai"
+  "Asia/Dushanbe"
+  "Asia/Famagusta"
+  "Asia/Gaza"
+  "Asia/Harbin"
+  "Asia/Hebron"
+  "Asia/Ho_Chi_Minh"
+  "Asia/Hong_Kong"
+  "Asia/Hovd"
+  "Asia/Irkutsk"
+  "Asia/Istanbul"
+  "Asia/Jakarta"
+  "Asia/Jayapura"
+  "Asia/Jerusalem"
+  "Asia/Kabul"
+  "Asia/Kamchatka"
+  "Asia/Karachi"
+  "Asia/Kashgar"
+  "Asia/Kathmandu"
+  "Asia/Katmandu"
+  "Asia/Khandyga"
+  "Asia/Kolkata"
+  "Asia/Krasnoyarsk"
+  "Asia/Kuala_Lumpur"
+  "Asia/Kuching"
+  "Asia/Kuwait"
+  "Asia/Macao"
+  "Asia/Macau"
+  "Asia/Magadan"
+  "Asia/Makassar"
+  "Asia/Manila"
+  "Asia/Muscat"
+  "Asia/Nicosia"
+  "Asia/Novokuznetsk"
+  "Asia/Novosibirsk"
+  "Asia/Omsk"
+  "Asia/Oral"
+  "Asia/Phnom_Penh"
+  "Asia/Pontianak"
+  "Asia/Pyongyang"
+  "Asia/Qatar"
+  "Asia/Qostanay"
+  "Asia/Qyzylorda"
+  "Asia/Rangoon"
+  "Asia/Riyadh"
+  "Asia/Saigon"
+  "Asia/Sakhalin"
+  "Asia/Samarkand"
+  "Asia/Seoul"
+  "Asia/Shanghai"
+  "Asia/Singapore"
+  "Asia/Srednekolymsk"
+  "Asia/Taipei"
+  "Asia/Tashkent"
+  "Asia/Tbilisi"
+  "Asia/Tehran"
+  "Asia/Tel_Aviv"
+  "Asia/Thimbu"
+  "Asia/Thimphu"
+  "Asia/Tokyo"
+  "Asia/Tomsk"
+  "Asia/Ujung_Pandang"
+  "Asia/Ulaanbaatar"
+  "Asia/Ulan_Bator"
+  "Asia/Urumqi"
+  "Asia/Ust-Nera"
+  "Asia/Vientiane"
+  "Asia/Vladivostok"
+  "Asia/Yakutsk"
+  "Asia/Yangon"
+  "Asia/Yekaterinburg"
+  "Asia/Yerevan"
+  "Atlantic/Azores"
+  "Atlantic/Bermuda"
+  "Atlantic/Canary"
+  "Atlantic/Cape_Verde"
+  "Atlantic/Faeroe"
+  "Atlantic/Faroe"
+  "Atlantic/Jan_Mayen"
+  "Atlantic/Madeira"
+  "Atlantic/Reykjavik"
+  "Atlantic/South_Georgia"
+  "Atlantic/St_Helena"
+  "Atlantic/Stanley"
+  "Australia/ACT"
+  "Australia/Adelaide"
+  "Australia/Brisbane"
+  "Australia/Broken_Hill"
+  "Australia/Canberra"
+  "Australia/Currie"
+  "Australia/Darwin"
+  "Australia/Eucla"
+  "Australia/Hobart"
+  "Australia/LHI"
+  "Australia/Lindeman"
+  "Australia/Lord_Howe"
+  "Australia/Melbourne"
+  "Australia/NSW"
+  "Australia/North"
+  "Australia/Perth"
+  "Australia/Queensland"
+  "Australia/South"
+  "Australia/Sydney"
+  "Australia/Tasmania"
+  "Australia/Victoria"
+  "Australia/West"
+  "Australia/Yancowinna"
+  "Brazil/Acre"
+  "Brazil/DeNoronha"
+  "Brazil/East"
+  "Brazil/West"
+  "CET"
+  "CST6CDT"
+  "Canada/Atlantic"
+  "Canada/Central"
+  "Canada/Eastern"
+  "Canada/Mountain"
+  "Canada/Newfoundland"
+  "Canada/Pacific"
+  "Canada/Saskatchewan"
+  "Canada/Yukon"
+  "Chile/Continental"
+  "Chile/EasterIsland"
+  "Cuba"
+  "EET"
+  "EST"
+  "EST5EDT"
+  "Egypt"
+  "Eire"
+  "Etc/GMT"
+  "Etc/GMT+0"
+  "Etc/GMT+1"
+  "Etc/GMT+10"
+  "Etc/GMT+11"
+  "Etc/GMT+12"
+  "Etc/GMT+2"
+  "Etc/GMT+3"
+  "Etc/GMT+4"
+  "Etc/GMT+5"
+  "Etc/GMT+6"
+  "Etc/GMT+7"
+  "Etc/GMT+8"
+  "Etc/GMT+9"
+  "Etc/GMT-0"
+  "Etc/GMT-1"
+  "Etc/GMT-10"
+  "Etc/GMT-11"
+  "Etc/GMT-12"
+  "Etc/GMT-13"
+  "Etc/GMT-14"
+  "Etc/GMT-2"
+  "Etc/GMT-3"
+  "Etc/GMT-4"
+  "Etc/GMT-5"
+  "Etc/GMT-6"
+  "Etc/GMT-7"
+  "Etc/GMT-8"
+  "Etc/GMT-9"
+  "Etc/GMT0"
+  "Etc/Greenwich"
+  "Etc/UCT"
+  "Etc/UTC"
+  "Etc/Universal"
+  "Etc/Zulu"
+  "Europe/Amsterdam"
+  "Europe/Andorra"
+  "Europe/Astrakhan"
+  "Europe/Athens"
+  "Europe/Belfast"
+  "Europe/Belgrade"
+  "Europe/Berlin"
+  "Europe/Bratislava"
+  "Europe/Brussels"
+  "Europe/Bucharest"
+  "Europe/Budapest"
+  "Europe/Busingen"
+  "Europe/Chisinau"
+  "Europe/Copenhagen"
+  "Europe/Dublin"
+  "Europe/Gibraltar"
+  "Europe/Guernsey"
+  "Europe/Helsinki"
+  "Europe/Isle_of_Man"
+  "Europe/Istanbul"
+  "Europe/Jersey"
+  "Europe/Kaliningrad"
+  "Europe/Kiev"
+  "Europe/Kirov"
+  "Europe/Kyiv"
+  "Europe/Lisbon"
+  "Europe/Ljubljana"
+  "Europe/London"
+  "Europe/Luxembourg"
+  "Europe/Madrid"
+  "Europe/Malta"
+  "Europe/Mariehamn"
+  "Europe/Minsk"
+  "Europe/Monaco"
+  "Europe/Moscow"
+  "Europe/Nicosia"
+  "Europe/Oslo"
+  "Europe/Paris"
+  "Europe/Podgorica"
+  "Europe/Prague"
+  "Europe/Riga"
+  "Europe/Rome"
+  "Europe/Samara"
+  "Europe/San_Marino"
+  "Europe/Sarajevo"
+  "Europe/Saratov"
+  "Europe/Simferopol"
+  "Europe/Skopje"
+  "Europe/Sofia"
+  "Europe/Stockholm"
+  "Europe/Tallinn"
+  "Europe/Tirane"
+  "Europe/Tiraspol"
+  "Europe/Ulyanovsk"
+  "Europe/Uzhgorod"
+  "Europe/Vaduz"
+  "Europe/Vatican"
+  "Europe/Vienna"
+  "Europe/Vilnius"
+  "Europe/Volgograd"
+  "Europe/Warsaw"
+  "Europe/Zagreb"
+  "Europe/Zaporozhye"
+  "Europe/Zurich"
+  "Factory"
+  "GB"
+  "GB-Eire"
+  "GMT"
+  "GMT+0"
+  "GMT-0"
+  "GMT0"
+  "Greenwich"
+  "HST"
+  "Hongkong"
+  "Iceland"
+  "Indian/Antananarivo"
+  "Indian/Chagos"
+  "Indian/Christmas"
+  "Indian/Cocos"
+  "Indian/Comoro"
+  "Indian/Kerguelen"
+  "Indian/Mahe"
+  "Indian/Maldives"
+  "Indian/Mauritius"
+  "Indian/Mayotte"
+  "Indian/Reunion"
+  "Iran"
+  "Israel"
+  "Jamaica"
+  "Japan"
+  "Kwajalein"
+  "Libya"
+  "MET"
+  "MST"
+  "MST7MDT"
+  "Mexico/BajaNorte"
+  "Mexico/BajaSur"
+  "Mexico/General"
+  "NZ"
+  "NZ-CHAT"
+  "Navajo"
+  "PRC"
+  "PST8PDT"
+  "Pacific/Apia"
+  "Pacific/Auckland"
+  "Pacific/Bougainville"
+  "Pacific/Chatham"
+  "Pacific/Chuuk"
+  "Pacific/Easter"
+  "Pacific/Efate"
+  "Pacific/Enderbury"
+  "Pacific/Fakaofo"
+  "Pacific/Fiji"
+  "Pacific/Funafuti"
+  "Pacific/Galapagos"
+  "Pacific/Gambier"
+  "Pacific/Guadalcanal"
+  "Pacific/Guam"
+  "Pacific/Honolulu"
+  "Pacific/Johnston"
+  "Pacific/Kanton"
+  "Pacific/Kiritimati"
+  "Pacific/Kosrae"
+  "Pacific/Kwajalein"
+  "Pacific/Majuro"
+  "Pacific/Marquesas"
+  "Pacific/Midway"
+  "Pacific/Nauru"
+  "Pacific/Niue"
+  "Pacific/Norfolk"
+  "Pacific/Noumea"
+  "Pacific/Pago_Pago"
+  "Pacific/Palau"
+  "Pacific/Pitcairn"
+  "Pacific/Pohnpei"
+  "Pacific/Ponape"
+  "Pacific/Port_Moresby"
+  "Pacific/Rarotonga"
+  "Pacific/Saipan"
+  "Pacific/Samoa"
+  "Pacific/Tahiti"
+  "Pacific/Tarawa"
+  "Pacific/Tongatapu"
+  "Pacific/Truk"
+  "Pacific/Wake"
+  "Pacific/Wallis"
+  "Pacific/Yap"
+  "Poland"
+  "Portugal"
+  "ROC"
+  "ROK"
+  "Singapore"
+  "Turkey"
+  "UCT"
+  "US/Alaska"
+  "US/Aleutian"
+  "US/Arizona"
+  "US/Central"
+  "US/East-Indiana"
+  "US/Eastern"
+  "US/Hawaii"
+  "US/Indiana-Starke"
+  "US/Michigan"
+  "US/Mountain"
+  "US/Pacific"
+  "US/Samoa"
+  "UTC"
+  "Universal"
+  "W-SU"
+  "WET"
+  "Zulu"
+  "localtime"
+}
+
+Enum LogEntryActionFlag {
+  "1"
+  "2"
+  "3"
+}
+
+Enum ScheduleScheduleType {
+  "O"
+  "I"
+  "H"
+  "D"
+  "W"
+  "BW"
+  "M"
+  "BM"
+  "Q"
+  "Y"
+  "C"
+}
+
+Table hyperkitty_threadcategory {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+  color varchar(7) [not null]
+}
+
+Table hyperkitty_thread {
+  id integer [pk, increment]
+  mailinglist_id integer [not null]
+  thread_id varchar(255) [not null]
+  date_active datetime [not null, note: 'default in Python: now()']
+  category_id integer
+  starting_email_id integer [unique]
+
+  indexes {
+    (mailinglist_id) [name: 'hyperkitty_thread_mailinglist_id_ff80772b']
+    (thread_id) [name: 'hyperkitty_thread_thread_id_1eb0910a']
+    (date_active) [name: 'hyperkitty_thread_date_active_34994eb8']
+    (category_id) [name: 'hyperkitty_thread_category_id_0d7a8102']
+    (mailinglist_id, thread_id) [unique, name: 'hyperkitty_thread_mailinglist_id_thread_id_d832e465_uniq']
+  }
+
+  Note: '''A thread of archived email, from a mailing-list. It is identified by both
+the list name and the thread id.'''
+}
+
+Table hyperkitty_lastview {
+  id integer [pk, increment]
+  thread_id integer [not null]
+  user_id integer [not null]
+  view_date datetime [not null, note: 'default in Python: now()']
+
+  indexes {
+    (thread_id) [name: 'hyperkitty_lastview_thread_id_5bd4f0ad']
+    (user_id) [name: 'hyperkitty_lastview_user_id_5586ea1f']
+  }
+}
+
+Table hyperkitty_mailinglist {
+  id integer [pk, increment]
+  name varchar(254) [unique, not null]
+  list_id varchar(254) [unique]
+  display_name varchar(255) [not null]
+  description text
+  subject_prefix varchar(255) [not null]
+  archive_policy MailingListArchivePolicy [default: 2, not null]
+  created_at datetime [not null, note: 'default in Python: now()']
+  archive_rendering_mode varchar(255)
+
+  Note: '''An archived mailing-list.'''
+}
+
+Table hyperkitty_vote {
+  id integer [pk, increment]
+  email_id integer [not null]
+  user_id integer [not null]
+  value smallint [not null]
+
+  indexes {
+    (email_id) [name: 'hyperkitty_vote_email_id_73a50f4d']
+    (user_id) [name: 'hyperkitty_vote_user_id_30d9d03b']
+    (value) [name: 'hyperkitty_vote_value_8b62f468']
+    (email_id, user_id) [unique, name: 'hyperkitty_vote_email_id_user_id_61fb1880_uniq']
+  }
+
+  Note: '''A User\'s vote on a message'''
+}
+
+Table hyperkitty_email {
+  id integer [pk, increment]
+  mailinglist_id integer [not null]
+  message_id varchar(255) [not null]
+  message_id_hash varchar(255) [not null]
+  sender_id varchar(255) [not null]
+  sender_name varchar(255)
+  subject varchar(512) [not null]
+  content text [not null]
+  date datetime [not null]
+  timezone smallint [not null]
+  in_reply_to varchar(255)
+  parent_id integer [note: 'refers to hyperkitty_email.id, with no foreign key in the database']
+  thread_id integer [not null]
+  archived_date datetime [not null, note: 'default in Python: now()']
+  thread_depth integer [default: 0, not null]
+  thread_order integer
+
+  indexes {
+    (mailinglist_id) [name: 'hyperkitty_email_mailinglist_id_2c2b6f03']
+    (message_id) [name: 'hyperkitty_email_message_id_584fd58b']
+    (message_id_hash) [name: 'hyperkitty_email_message_id_hash_8a4a6406']
+    (sender_id) [name: 'hyperkitty_email_sender_id_218742c7']
+    (subject) [name: 'hyperkitty_email_subject_7ae9de90']
+    (date) [name: 'hyperkitty_email_date_5a028303']
+    (in_reply_to) [name: 'hyperkitty_email_in_reply_to_19db9b71']
+    (parent_id) [name: 'hyperkitty_email_parent_id_c0b40ef8']
+    (thread_id) [name: 'hyperkitty_email_thread_id_038c9aee']
+    (archived_date) [name: 'hyperkitty_email_archived_date_2cfdd7a1']
+    (thread_order) [name: 'hyperkitty_email_thread_order_610e7931']
+    (mailinglist_id, message_id) [unique, name: 'hyperkitty_email_mailinglist_id_message_id_355216d0_uniq']
+  }
+
+  Note: '''An archived email, from a mailing-list. It is identified by both the list
+name and the message id.'''
+}
+
+Table hyperkitty_attachment {
+  id integer [pk, increment]
+  email_id integer [not null]
+  counter smallint [not null]
+  name varchar(255) [not null]
+  content_type varchar(255) [not null]
+  encoding varchar(255)
+  size integer
+  content BLOB
+
+  indexes {
+    (email_id) [name: 'hyperkitty_attachment_email_id_37b08338']
+    (email_id, counter) [unique, name: 'hyperkitty_attachment_email_id_counter_fd863122_uniq']
+  }
+}
+
+Table hyperkitty_favorite {
+  id integer [pk, increment]
+  thread_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (thread_id) [name: 'hyperkitty_favorite_thread_id_312a9c52']
+    (user_id) [name: 'hyperkitty_favorite_user_id_ae8c1115']
+  }
+}
+
+Table hyperkitty_profile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  karma integer [default: 1, not null]
+}
+
+Table hyperkitty_sender {
+  address varchar(255) [pk]
+  mailman_id varchar(255)
+
+  indexes {
+    (mailman_id) [name: 'hyperkitty_sender_mailman_id_beeb6ae1']
+  }
+}
+
+Table hyperkitty_tagging {
+  id integer [pk, increment]
+  thread_id integer [not null]
+  user_id integer [not null]
+  tag_id integer [not null]
+
+  indexes {
+    (thread_id) [name: 'hyperkitty_tagging_thread_id_ab30508b']
+    (user_id) [name: 'hyperkitty_tagging_user_id_9af832e2']
+    (tag_id) [name: 'hyperkitty_tagging_tag_id_e26757dd']
+  }
+}
+
+Table hyperkitty_tag {
+  id integer [pk, increment]
+  name varchar(255) [unique, not null]
+}
+
+Table postorius_emailtemplate {
+  id integer [pk, increment]
+  name EmailTemplateName [not null, note: 'Choose the template you want to customize.']
+  data text [not null, note: '''Note: Do not add any secret content in templates as they are publicly accessible.
+You can use these variables in the templates. 
+$hyperkitty_url: Permalink to archived message in Hyperkitty  - only in list:member:regular:footer and list:member:regular:header
+$listname: Name of the Mailing List e.g. ant@example.com 
+$list_id: The List-ID header e.g. ant.example.com 
+$display_name: Display name of the mailing list e.g. Ant 
+$short_listname: Local part of the listname e.g. ant 
+$domain: The domain part of the listname e.g. example.com 
+$description: The mailing list\'s short description text 
+$info: The mailing list\'s longer descriptive text 
+$request_email: The email address for -request address 
+$owner_email: The email address for -owner address 
+$site_email: The email address to reach the owners of the site 
+$language: The two letter language code for list\'s preferred language e.g. fr, en, de 
+Some templates accept additional variables. See <a href="https://docs.mailman3.org/projects/mailman/en/latest/src/mailman/rest/docs/templates.html#templated-texts">this doc</a>''']
+  language EmailTemplateLanguage [not null, note: 'Language for the template, this should be the list\'s preferred language.']
+  created_at datetime [not null, note: 'default in Python: now()']
+  modified_at datetime [not null, note: 'default in Python: now()']
+  context EmailTemplateContext [not null]
+  identifier varchar(100) [not null]
+
+  indexes {
+    (name, identifier, language) [unique, name: 'postorius_emailtemplate_name_identifier_language_052d72ee_uniq']
+  }
+
+  Note: '''A Template represents contents of partial or complete emails sent out by
+Mailman Core on various events or when an action is required. Headers and
+Footers on emails for decorations are also repsented as templates.'''
+}
+
+Table django_mailman3_profile {
+  id integer [pk, increment]
+  user_id integer [unique, not null]
+  timezone DjangoMailman3ProfileTimezone [default: '', not null]
+}
+
+Table django_mailman3_maildomain {
+  id integer [pk, increment]
+  site_id integer [not null]
+  mail_domain varchar(255) [unique, not null]
+
+  indexes {
+    (site_id) [name: 'django_mailman3_maildomain_site_id_54206c14']
+  }
+}
+
+Table django_admin_log {
+  id integer [pk, increment]
+  action_time datetime [not null, note: 'default in Python: now()']
+  user_id integer [not null]
+  content_type_id integer
+  object_id text
+  object_repr varchar(200) [not null]
+  action_flag LogEntryActionFlag [not null]
+  change_message text [not null]
+
+  indexes {
+    (user_id) [name: 'django_admin_log_user_id_c564eba6']
+    (content_type_id) [name: 'django_admin_log_content_type_id_c4bce8eb']
+  }
+}
+
+Table auth_permission {
+  id integer [pk, increment]
+  name varchar(255) [not null]
+  content_type_id integer [not null]
+  codename varchar(100) [not null]
+
+  indexes {
+    (content_type_id) [name: 'auth_permission_content_type_id_2f476e4b']
+    (content_type_id, codename) [unique, name: 'auth_permission_content_type_id_codename_01ab375a_uniq']
+  }
+
+  Note: '''The permissions system provides a way to assign permissions to specific
+users and groups of users.
+
+The permission system is used by the Django admin site, but may also be
+useful in your own code. The Django admin site uses permissions as follows:
+
+    - The "add" permission limits the user\'s ability to view the "add" form
+      and add an object.
+    - The "change" permission limits a user\'s ability to view the change
+      list, view the "change" form and change an object.
+    - The "delete" permission limits the ability to delete an object.
+    - The "view" permission limits the ability to view an object.
+
+Permissions are set globally per type of object, not per specific object
+instance. It is possible to say "Mary may change news stories," but it\'s
+not currently possible to say "Mary may change news stories, but only the
+ones she created herself" or "Mary may only change news stories that have a
+certain status or publication date."
+
+The permissions listed above are automatically created for each model.'''
+}
+
+Table auth_group {
+  id integer [pk, increment]
+  name varchar(150) [unique, not null]
+
+  Note: '''Groups are a generic way of categorizing users to apply permissions, or
+some other label, to those users. A user can belong to any number of
+groups.
+
+A user in a group automatically has all the permissions granted to that
+group. For example, if the group \'Site editors\' has the permission
+can_edit_home_page, any user in that group will have that permission.
+
+Beyond permissions, groups are a convenient way to categorize users to
+apply some label, or extended functionality, to them. For example, you
+could create a group \'Special users\', and you could write code that would
+do special things to those users -- such as giving them access to a
+members-only portion of your site, or sending them members-only email
+messages.'''
+}
+
+Table auth_user {
+  id integer [pk, increment]
+  password varchar(128) [not null]
+  last_login datetime
+  is_superuser bool [default: false, not null, note: 'Designates that this user has all permissions without explicitly assigning them.']
+  username varchar(150) [unique, not null, note: 'Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.']
+  first_name varchar(150) [not null]
+  last_name varchar(150) [not null]
+  email varchar(254) [not null]
+  is_staff bool [default: false, not null, note: 'Designates whether the user can log into this admin site.']
+  is_active bool [default: true, not null, note: 'Designates whether this user should be treated as active. Unselect this instead of deleting accounts.']
+  date_joined datetime [not null, note: 'default in Python: now()']
+
+  Note: '''Users within the Django authentication system are represented by this
+model.
+
+Username and password are required. Other fields are optional.
+
+Columns from AbstractUser (abstract): username, first_name, last_name, email, is_staff, is_active, date_joined.
+
+Columns from AbstractBaseUser (abstract): password, last_login.
+
+Columns from PermissionsMixin (abstract): is_superuser.'''
+}
+
+Table django_content_type {
+  id integer [pk, increment]
+  app_label varchar(100) [not null]
+  model varchar(100) [not null]
+
+  indexes {
+    (app_label, model) [unique, name: 'django_content_type_app_label_model_76bd3d3b_uniq']
+  }
+}
+
+Table django_session {
+  session_key varchar(40) [pk]
+  session_data text [not null]
+  expire_date datetime [not null]
+
+  indexes {
+    (expire_date) [name: 'django_session_expire_date_a5c62663']
+  }
+
+  Note: '''Django provides full support for anonymous sessions. The session
+framework lets you store and retrieve arbitrary data on a
+per-site-visitor basis. It stores data on the server side and
+abstracts the sending and receiving of cookies. Cookies contain a
+session ID -- not the data itself.
+
+The Django sessions framework is entirely cookie-based. It does
+not fall back to putting session IDs in URLs. This is an intentional
+design decision. Not only does that behavior make URLs ugly, it makes
+your site vulnerable to session-ID theft via the "Referer" header.
+
+For complete documentation on using Sessions in your code, consult
+the sessions documentation that is shipped with Django (also available
+on the Django web site).
+
+Columns from AbstractBaseSession (abstract): session_key, session_data, expire_date.'''
+}
+
+Table django_site {
+  id integer [pk, increment]
+  domain varchar(100) [unique, not null]
+  name varchar(50) [not null]
+}
+
+Table django_q_task {
+  id varchar(32) [pk, note: '32-character task identifier.']
+  name varchar(100) [not null, note: 'Optional human-readable name for lookup and display.']
+  func varchar(256) [not null, note: 'Dotted import path to the callable, e.g. myapp.tasks.job.']
+  hook varchar(256) [note: 'Optional dotted path to a callback that receives the task result.']
+  args text [note: 'Pickled positional arguments (tuple).']
+  kwargs text [note: 'Pickled keyword arguments (dict).']
+  result text [note: 'Pickled return value or error payload.']
+  group varchar(100) [note: 'Optional group id to aggregate related tasks.']
+  cluster varchar(100) [default: null, note: 'Name of the cluster that executed this task.']
+  started datetime [not null, note: 'When the worker started executing the task.']
+  stopped datetime [not null, note: 'When the worker finished (success or failure).']
+  success bool [default: true, not null, note: 'False if the task raised an exception or timed out.']
+  attempt_count integer [default: 0, not null, note: 'How many times execution was attempted.']
+
+  indexes {
+    (group, name, func) [name: 'success_index', note: 'where "success"']
+  }
+
+  Note: '''Proxy models: Success, Failure.'''
+}
+
+Table django_q_schedule {
+  id integer [pk, increment]
+  name varchar(100) [note: 'Optional label to identify this schedule in the admin.']
+  func varchar(256) [not null, note: 'e.g. module.tasks.function']
+  hook varchar(256) [note: 'e.g. module.tasks.result_function']
+  args text [note: 'e.g. 1, 2, \'John\'']
+  kwargs text [note: 'e.g. x=1, y=2, name=\'John\'']
+  schedule_type ScheduleScheduleType [default: 'O', not null, note: 'How often this task should be enqueued.']
+  minutes "smallint unsigned" [note: 'Number of minutes for the Minutes type']
+  repeats integer [default: -1, not null, note: 'n = n times, -1 = forever']
+  next_run datetime [note: 'When this schedule runs next (stored in UTC).. default in Python: now()']
+  cron varchar(100) [note: 'Cron expression']
+  task varchar(100) [note: 'Id of the last task spawned from this schedule (read-only).']
+  cluster varchar(100) [default: null, note: 'Name of the target cluster']
+  intended_date_kwarg varchar(100) [note: 'Name of kwarg to pass intended schedule date']
+}
+
+Table django_q_ormq {
+  id integer [pk, increment]
+  key varchar(100) [not null, note: 'Name of the target cluster']
+  payload text [not null, note: 'Signed serialized task package (do not edit manually).']
+  lock datetime [note: 'Prevent any cluster from pulling until']
+}
+
+Table account_emailaddress {
+  id integer [pk, increment]
+  user_id integer [not null]
+  email varchar(254) [not null]
+  verified bool [default: false, not null]
+  primary bool [default: false, not null]
+
+  indexes {
+    (user_id) [name: 'account_emailaddress_user_id_2c513194']
+    (email) [name: 'account_emailaddress_email_03be32b2']
+    (user_id, email) [unique, name: 'account_emailaddress_user_id_email_987c8728_uniq']
+    (user_id, primary) [unique, name: 'unique_primary_email', note: 'where "primary"']
+    (email) [unique, name: 'unique_verified_email', note: 'where "verified"']
+  }
+}
+
+Table account_emailconfirmation {
+  id integer [pk, increment]
+  email_address_id integer [not null]
+  created datetime [not null, note: 'default in Python: now()']
+  sent datetime
+  key varchar(64) [unique, not null]
+
+  indexes {
+    (email_address_id) [name: 'account_emailconfirmation_email_address_id_5b7f8c58']
+  }
+}
+
+Table socialaccount_socialapp {
+  id integer [pk, increment]
+  provider varchar(30) [not null]
+  provider_id varchar(200) [not null]
+  name varchar(40) [not null]
+  client_id varchar(191) [not null, note: 'App ID, or consumer key']
+  secret varchar(191) [not null, note: 'API secret, client secret, or consumer secret']
+  key varchar(191) [not null, note: 'Key']
+  settings text [not null, note: 'default in Python: dict()']
+}
+
+Table socialaccount_socialaccount {
+  id integer [pk, increment]
+  user_id integer [not null]
+  provider varchar(200) [not null]
+  uid varchar(191) [not null]
+  last_login datetime [not null, note: 'default in Python: now()']
+  date_joined datetime [not null, note: 'default in Python: now()']
+  extra_data text [not null, note: 'default in Python: dict()']
+
+  indexes {
+    (user_id) [name: 'socialaccount_socialaccount_user_id_8146e70c']
+    (provider, uid) [unique, name: 'socialaccount_socialaccount_provider_uid_fc810c6e_uniq']
+  }
+}
+
+Table socialaccount_socialtoken {
+  id integer [pk, increment]
+  app_id integer
+  account_id integer [not null]
+  token text [not null, note: '"oauth_token" (OAuth1) or access token (OAuth2)']
+  token_secret text [not null, note: '"oauth_token_secret" (OAuth1) or refresh token (OAuth2)']
+  expires_at datetime
+
+  indexes {
+    (app_id) [name: 'socialaccount_socialtoken_app_id_636a42d7']
+    (account_id) [name: 'socialaccount_socialtoken_account_id_951f210e']
+    (app_id, account_id) [unique, name: 'socialaccount_socialtoken_app_id_account_id_fca4e0ac_uniq']
+  }
+}
+
+Ref hyperkitty_thread_mailinglist_id_fk: hyperkitty_thread.mailinglist_id > hyperkitty_mailinglist.id [delete: cascade]
+
+Ref hyperkitty_thread_category_id_fk: hyperkitty_thread.category_id > hyperkitty_threadcategory.id [delete: set null]
+
+Ref hyperkitty_thread_starting_email_id_fk: hyperkitty_thread.starting_email_id - hyperkitty_email.id [delete: set null]
+
+Ref hyperkitty_lastview_thread_id_fk: hyperkitty_lastview.thread_id > hyperkitty_thread.id [delete: cascade]
+
+Ref hyperkitty_lastview_user_id_fk: hyperkitty_lastview.user_id > auth_user.id [delete: cascade]
+
+Table hyperkitty_mailinglist_owners {
+  id integer [pk, increment]
+  mailinglist_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (mailinglist_id) [name: 'hyperkitty_mailinglist_owners_mailinglist_id_a47e04ec']
+    (user_id) [name: 'hyperkitty_mailinglist_owners_user_id_1404d888']
+    (mailinglist_id, user_id) [unique, name: 'hyperkitty_mailinglist_owners_mailinglist_id_user_id_c977af32_uniq']
+  }
+}
+
+Ref hyperkitty_mailinglist_owners_mailinglist_id_fk: hyperkitty_mailinglist_owners.mailinglist_id > hyperkitty_mailinglist.id [delete: cascade]
+
+Ref hyperkitty_mailinglist_owners_user_id_fk: hyperkitty_mailinglist_owners.user_id > auth_user.id [delete: cascade]
+
+Table hyperkitty_mailinglist_moderators {
+  id integer [pk, increment]
+  mailinglist_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    (mailinglist_id) [name: 'hyperkitty_mailinglist_moderators_mailinglist_id_e58fb301']
+    (user_id) [name: 'hyperkitty_mailinglist_moderators_user_id_f7d14f18']
+    (mailinglist_id, user_id) [unique, name: 'hyperkitty_mailinglist_moderators_mailinglist_id_user_id_f08637ac_uniq']
+  }
+}
+
+Ref hyperkitty_mailinglist_moderators_mailinglist_id_fk: hyperkitty_mailinglist_moderators.mailinglist_id > hyperkitty_mailinglist.id [delete: cascade]
+
+Ref hyperkitty_mailinglist_moderators_user_id_fk: hyperkitty_mailinglist_moderators.user_id > auth_user.id [delete: cascade]
+
+Ref hyperkitty_vote_email_id_fk: hyperkitty_vote.email_id > hyperkitty_email.id [delete: cascade]
+
+Ref hyperkitty_vote_user_id_fk: hyperkitty_vote.user_id > auth_user.id [delete: cascade]
+
+Ref hyperkitty_email_mailinglist_id_fk: hyperkitty_email.mailinglist_id > hyperkitty_mailinglist.id [delete: cascade]
+
+Ref hyperkitty_email_sender_id_fk: hyperkitty_email.sender_id > hyperkitty_sender.address [delete: cascade]
+
+Ref hyperkitty_email_thread_id_fk: hyperkitty_email.thread_id > hyperkitty_thread.id [delete: cascade]
+
+Ref hyperkitty_attachment_email_id_fk: hyperkitty_attachment.email_id > hyperkitty_email.id [delete: cascade]
+
+Ref hyperkitty_favorite_thread_id_fk: hyperkitty_favorite.thread_id > hyperkitty_thread.id [delete: cascade]
+
+Ref hyperkitty_favorite_user_id_fk: hyperkitty_favorite.user_id > auth_user.id [delete: cascade]
+
+Ref hyperkitty_profile_user_id_fk: hyperkitty_profile.user_id - auth_user.id [delete: cascade]
+
+Ref hyperkitty_tagging_thread_id_fk: hyperkitty_tagging.thread_id > hyperkitty_thread.id [delete: cascade]
+
+Ref hyperkitty_tagging_user_id_fk: hyperkitty_tagging.user_id > auth_user.id [delete: cascade]
+
+Ref hyperkitty_tagging_tag_id_fk: hyperkitty_tagging.tag_id > hyperkitty_tag.id [delete: cascade]
+
+Ref django_mailman3_profile_user_id_fk: django_mailman3_profile.user_id - auth_user.id [delete: cascade]
+
+Ref django_mailman3_maildomain_site_id_fk: django_mailman3_maildomain.site_id > django_site.id [delete: cascade]
+
+Ref django_admin_log_user_id_fk: django_admin_log.user_id > auth_user.id [delete: cascade]
+
+Ref django_admin_log_content_type_id_fk: django_admin_log.content_type_id > django_content_type.id [delete: set null]
+
+Ref auth_permission_content_type_id_fk: auth_permission.content_type_id > django_content_type.id [delete: cascade]
+
+Table auth_group_permissions {
+  id integer [pk, increment]
+  group_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (group_id) [name: 'auth_group_permissions_group_id_b120cbf9']
+    (permission_id) [name: 'auth_group_permissions_permission_id_84c5c92e']
+    (group_id, permission_id) [unique, name: 'auth_group_permissions_group_id_permission_id_0cd325b0_uniq']
+  }
+}
+
+Ref auth_group_permissions_group_id_fk: auth_group_permissions.group_id > auth_group.id [delete: cascade]
+
+Ref auth_group_permissions_permission_id_fk: auth_group_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Table auth_user_groups {
+  id integer [pk, increment]
+  user_id integer [not null]
+  group_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_groups_user_id_6a12ed8b']
+    (group_id) [name: 'auth_user_groups_group_id_97559544']
+    (user_id, group_id) [unique, name: 'auth_user_groups_user_id_group_id_94350c0c_uniq']
+  }
+}
+
+Ref auth_user_groups_user_id_fk: auth_user_groups.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_groups_group_id_fk: auth_user_groups.group_id > auth_group.id [delete: cascade]
+
+Table auth_user_user_permissions {
+  id integer [pk, increment]
+  user_id integer [not null]
+  permission_id integer [not null]
+
+  indexes {
+    (user_id) [name: 'auth_user_user_permissions_user_id_a95ead1b']
+    (permission_id) [name: 'auth_user_user_permissions_permission_id_1fbb5f2c']
+    (user_id, permission_id) [unique, name: 'auth_user_user_permissions_user_id_permission_id_14a6b632_uniq']
+  }
+}
+
+Ref auth_user_user_permissions_user_id_fk: auth_user_user_permissions.user_id > auth_user.id [delete: cascade]
+
+Ref auth_user_user_permissions_permission_id_fk: auth_user_user_permissions.permission_id > auth_permission.id [delete: cascade]
+
+Ref account_emailaddress_user_id_fk: account_emailaddress.user_id > auth_user.id [delete: cascade]
+
+Ref account_emailconfirmation_email_address_id_fk: account_emailconfirmation.email_address_id > account_emailaddress.id [delete: cascade]
+
+Table socialaccount_socialapp_sites {
+  id integer [pk, increment]
+  socialapp_id integer [not null]
+  site_id integer [not null]
+
+  indexes {
+    (socialapp_id) [name: 'socialaccount_socialapp_sites_socialapp_id_97fb6e7d']
+    (site_id) [name: 'socialaccount_socialapp_sites_site_id_2579dee5']
+    (socialapp_id, site_id) [unique, name: 'socialaccount_socialapp_sites_socialapp_id_site_id_71a9a768_uniq']
+  }
+}
+
+Ref socialaccount_socialapp_sites_socialapp_id_fk: socialaccount_socialapp_sites.socialapp_id > socialaccount_socialapp.id [delete: cascade]
+
+Ref socialaccount_socialapp_sites_site_id_fk: socialaccount_socialapp_sites.site_id > django_site.id [delete: cascade]
+
+Ref socialaccount_socialaccount_user_id_fk: socialaccount_socialaccount.user_id > auth_user.id [delete: cascade]
+
+Ref socialaccount_socialtoken_app_id_fk: socialaccount_socialtoken.app_id > socialaccount_socialapp.id [delete: set null]
+
+Ref socialaccount_socialtoken_account_id_fk: socialaccount_socialtoken.account_id > socialaccount_socialaccount.id [delete: cascade]
