@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 78,
+          "total": 78
+        },
+        "insert": {
+          "ok": 5,
+          "total": 77
+        },
+        "read": {
+          "ok": 5,
+          "total": 5
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 5,
+          "total": 5
+        }
+      },
+      "findings": 73,
       "ddl": "error"
     },
     {
@@ -1618,9 +1643,412 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/papermark; fi; exec /cache/bin/papermark crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 78,
+            "total": 78
+          },
+          "insert": {
+            "ok": 5,
+            "total": 77
+          },
+          "read": {
+            "ok": 5,
+            "total": 5
+          },
+          "update": {
+            "ok": 3,
+            "total": 3
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 5,
+            "total": 5
+          }
+        },
+        "findings": [
+          {
+            "model": "Brand",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Team\" violates not-null constraint"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"User\" violates not-null constraint"
+          },
+          {
+            "model": "Folder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Document",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "DocumentAnnotation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Document`) did not go in"
+          },
+          {
+            "model": "AnnotationImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentAnnotation`) did not go in"
+          },
+          {
+            "model": "Dataroom",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "DataroomFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "DataroomDocument",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "Domain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Agreement",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "ViewerGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "PermissionGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Link\" violates not-null constraint"
+          },
+          {
+            "model": "DataroomQuestion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "Viewer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "Conversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "DataroomQuestionAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DataroomQuestion`) did not go in"
+          },
+          {
+            "model": "ConversationParticipant",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "Message",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "ConversationView",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Conversation`) did not go in"
+          },
+          {
+            "model": "DataroomFaqItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "TaskList",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskList`) did not go in"
+          },
+          {
+            "model": "TaskAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskActivity",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "DataroomBrand",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Dataroom`) did not go in"
+          },
+          {
+            "model": "ViewerGroupMembership",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Viewer`) did not go in"
+          },
+          {
+            "model": "ViewerGroupAccessControls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ViewerGroup`) did not go in"
+          },
+          {
+            "model": "PermissionGroupAccessControls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PermissionGroup`) did not go in"
+          },
+          {
+            "model": "DocumentVersion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Document`) did not go in"
+          },
+          {
+            "model": "DocumentPage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentVersion`) did not go in"
+          },
+          {
+            "model": "DocumentUpload",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Document`) did not go in"
+          },
+          {
+            "model": "PendingDocumentUpload",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"PendingDocumentUpload\" violates not-null constraint"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Integration\" violates not-null constraint"
+          },
+          {
+            "model": "InstalledIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "LinkPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "VisitorGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "LinkVisitorGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "CustomFieldResponse",
+            "check": "insert",
+            "text": "not inserted: the parent row (`View`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "OAuthClient",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OAuthClient\" violates not-null constraint"
+          },
+          {
+            "model": "OAuthClientApproval",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OAuthClientApproval\" violates not-null constraint"
+          },
+          {
+            "model": "OAuthGrantTeam",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OAuthGrantTeam\" violates not-null constraint"
+          },
+          {
+            "model": "DocumentRedactionJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Document`) did not go in"
+          },
+          {
+            "model": "DocumentRedaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`DocumentRedactionJob`) did not go in"
+          },
+          {
+            "model": "ReferralInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Reaction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`View`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "SentEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Chat",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "ChatMessage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Chat`) did not go in"
+          },
+          {
+            "model": "Feedback",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "FeedbackResponse",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Feedback`) did not go in"
+          },
+          {
+            "model": "AgreementResponse",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Agreement`) did not go in"
+          },
+          {
+            "model": "IncomingWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "RestrictedToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "YearInReview",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"YearInReview\" violates not-null constraint"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "TagItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Tag`) did not go in"
+          },
+          {
+            "model": "ViewerInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Viewer`) did not go in"
+          },
+          {
+            "model": "UserDataroom",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserTeam",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workflow",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "WorkflowStep",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowExecution",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workflow`) did not go in"
+          },
+          {
+            "model": "WorkflowStepLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkflowExecution`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/papermark; fi; exec /cache/bin/papermark ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"Brand\": Execution Error: error returned from database: relation \"Team\" does not exist"
       }
     },
     {

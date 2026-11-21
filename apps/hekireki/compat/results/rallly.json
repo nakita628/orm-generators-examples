@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 2,
+          "total": 36
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 36,
       "ddl": "error"
     },
     {
@@ -973,9 +998,228 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/rallly; fi; exec /cache/bin/rallly crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 2,
+            "total": 36
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "Credential",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "CalendarConnection",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "ProviderCalendar",
+            "check": "insert",
+            "text": "not inserted: the parent row (`CalendarConnection`) did not go in"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"users\" violates not-null constraint"
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiUsage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PaymentMethod",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NonprofitApplication",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "QueuedEmail",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "EventType",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Sheet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SheetSlot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Sheet`) did not go in"
+          },
+          {
+            "model": "ScheduledEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RescheduledEventDate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScheduledEvent`) did not go in"
+          },
+          {
+            "model": "ScheduledEventInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ScheduledEvent`) did not go in"
+          },
+          {
+            "model": "InstanceSettings",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"instance_id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "ConferencingConnection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "License",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"licenses\" violates not-null constraint"
+          },
+          {
+            "model": "LicenseValidation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`License`) did not go in"
+          },
+          {
+            "model": "InstanceLicense",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"instance_licenses\" violates not-null constraint"
+          },
+          {
+            "model": "UserNotificationPreferences",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Participant",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"participants\" violates not-null constraint"
+          },
+          {
+            "model": "PollInvite",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"poll_invites\" violates not-null constraint"
+          },
+          {
+            "model": "PollActivity",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"poll_activities\" violates not-null constraint"
+          },
+          {
+            "model": "Option",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"options\" violates not-null constraint"
+          },
+          {
+            "model": "Vote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Participant`) did not go in"
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"comments\" violates not-null constraint"
+          },
+          {
+            "model": "RegisteredInstance",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"registered_instances\" violates not-null constraint"
+          },
+          {
+            "model": "SpaceMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceMemberInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceWebhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "WebhookDelivery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`SpaceWebhook`) did not go in"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/rallly; fi; exec /cache/bin/rallly ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"credentials\": Execution Error: error returned from database: type \"credentialtype\" does not exist"
       }
     },
     {

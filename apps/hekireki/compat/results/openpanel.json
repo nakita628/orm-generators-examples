@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 38,
+          "total": 38
+        },
+        "insert": {
+          "ok": 19,
+          "total": 38
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 14,
+          "total": 14
+        },
+        "relations": {
+          "ok": 48,
+          "total": 48
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 19,
       "ddl": "error"
     },
     {
@@ -733,9 +758,147 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/openpanel; fi; exec /cache/bin/openpanel crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 38,
+            "total": 38
+          },
+          "insert": {
+            "ok": 19,
+            "total": 38
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 14,
+            "total": 14
+          },
+          "relations": {
+            "ok": 48,
+            "total": 48
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": [
+          {
+            "model": "Member",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "MemberProject",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Member`) did not go in"
+          },
+          {
+            "model": "Cohort",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "Client",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "ReportLayout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "ShareReport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Report`) did not go in"
+          },
+          {
+            "model": "EventMeta",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "CustomEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "NotificationRule",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"integrationId\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "ExportWatermark",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Integration`) did not go in"
+          },
+          {
+            "model": "Import",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "ProjectInsight",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "InsightEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProjectInsight`) did not go in"
+          },
+          {
+            "model": "GscConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "EmailUnsubscribe",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/openpanel; fi; exec /cache/bin/openpanel ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"projects\": Execution Error: error returned from database: type \"projecttype[]\" does not exist"
       }
     },
     {

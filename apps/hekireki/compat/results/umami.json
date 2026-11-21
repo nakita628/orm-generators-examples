@@ -167,11 +167,36 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
-      "ddl": "error"
+      "checks": {
+        "model": {
+          "ok": 29,
+          "total": 29
+        },
+        "insert": {
+          "ok": 1,
+          "total": 29
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 28,
+      "ddl": "differs"
     },
     {
       "orm": "ecto",
@@ -579,9 +604,190 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/umami; fi; exec /cache/bin/umami crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 29,
+            "total": 29
+          },
+          "insert": {
+            "ok": 1,
+            "total": 29
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"user_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"session_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "SessionLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"website_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Team",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"team_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Website",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"website_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "WebsiteEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Session`) did not go in"
+          },
+          {
+            "model": "EventData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "SessionData",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "TeamUser",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Team`) did not go in"
+          },
+          {
+            "model": "Report",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Annotation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Segment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Revenue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"link_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Pixel",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"pixel_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Board",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"board_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Share",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"share_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "SessionReplay",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "SessionReplaySaved",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "HeatmapEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Website`) did not go in"
+          },
+          {
+            "model": "TwoFactorAuth",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorBackupCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorOtpUsed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "TwoFactorRateLimit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ErrorIssue",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"issue_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "ErrorEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"website_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "ErrorRateLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"website_id\" is of type uuid but expression is of type text"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/umami; fi; exec /cache/bin/umami ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "diff": "-- DropForeignKey\nALTER TABLE \"annotation\" DROP CONSTRAINT \"fk-annotation-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"api_key\" DROP CONSTRAINT \"fk-api_key-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"fk-board-team_id\";\n\n-- DropForeignKey\nALTER TABLE \"board\" DROP CONSTRAINT \"fk-board-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"fk-event_data-website_event_id\";\n\n-- DropForeignKey\nALTER TABLE \"event_data\" DROP CONSTRAINT \"fk-event_data-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"heatmap_event\" DROP CONSTRAINT \"fk-heatmap_event-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"fk-link-team_id\";\n\n-- DropForeignKey\nALTER TABLE \"link\" DROP CONSTRAINT \"fk-link-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"fk-pixel-team_id\";\n\n-- DropForeignKey\nALTER TABLE \"pixel\" DROP CONSTRAINT \"fk-pixel-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"fk-report-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"report\" DROP CONSTRAINT \"fk-report-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"fk-revenue-session_id\";\n\n-- DropForeignKey\nALTER TABLE \"revenue\" DROP CONSTRAINT \"fk-revenue-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"segment\" DROP CONSTRAINT \"fk-segment-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"fk-session_data-session_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_data\" DROP CONSTRAINT \"fk-session_data-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay\" DROP CONSTRAINT \"fk-session_replay-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"session_replay_saved\" DROP CONSTRAINT \"fk-session_replay_saved-website_id\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"fk-team_user-team_id\";\n\n-- DropForeignKey\nALTER TABLE \"team_user\" DROP CONSTRAINT \"fk-team_user-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"fk-two_factor_auth-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"fk-two_factor_backup_code-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"fk-two_factor_otp_used-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"fk-two_factor_rate_limit-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"fk-website-created_by\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"fk-website-team_id\";\n\n-- DropForeignKey\nALTER TABLE \"website\" DROP CONSTRAINT \"fk-website-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"website_event\" DROP CONSTRAINT \"fk-website_event-session_id\";\n\n-- AlterTable\nALTER TABLE \"annotation\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"api_key\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"app_setting\" DROP CONSTRAINT \"app_setting_pkey\",\nALTER COLUMN \"key\" SET DATA TYPE TEXT,\nALTER COLUMN \"value\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"app_setting_pkey\" PRIMARY KEY (\"key\");\n\n-- AlterTable\nALTER TABLE \"board\" ALTER COLUMN \"parameters\" SET DATA TYPE JSONB,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"error_event\" ALTER COLUMN \"received_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"frames\" SET DATA TYPE JSONB,\nALTER COLUMN \"tags\" SET DATA TYPE JSONB;\nALTER TABLE \"error_event\" RENAME CONSTRAINT \"pk-error_event\" TO \"error_event_pkey\";\n\n-- AlterTable\nALTER TABLE \"error_issue\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"event_data\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"heatmap_event\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"link\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"pixel\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"report\" ALTER COLUMN \"parameters\" SET DATA TYPE JSONB,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"revenue\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"segment\" ALTER COLUMN \"parameters\" SET DATA TYPE JSONB,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session\" ALTER COLUMN \"country\" SET DATA TYPE CHAR(2),\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_data\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_link\" DROP CONSTRAINT \"pk-session_link\",\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nADD CONSTRAINT \"session_link_pkey\" PRIMARY KEY (\"website_id\", \"distinct_id\", \"session_id\");\nALTER TABLE \"session_link\" RENAME CONSTRAINT \"pk-session_link\" TO \"session_link_pkey\";\n\n-- AlterTable\nALTER TABLE \"session_replay\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"session_replay_saved\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"share\" ALTER COLUMN \"parameters\" SET DATA TYPE JSONB,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"team\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"team_user\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"two_factor_auth\" DROP CONSTRAINT \"two_factor_auth_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"secret\" SET DATA TYPE TEXT,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nADD CONSTRAINT \"two_factor_auth_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"two_factor_backup_code\" DROP CONSTRAINT \"two_factor_backup_code_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"code_hash\" SET DATA TYPE TEXT,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nADD CONSTRAINT \"two_factor_backup_code_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"two_factor_otp_used\" DROP CONSTRAINT \"two_factor_otp_used_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"otp\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"two_factor_otp_used_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"two_factor_rate_limit\" DROP CONSTRAINT \"two_factor_rate_limit_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"two_factor_rate_limit_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"user\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- AlterTable\nALTER TABLE \"website\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"replay_config\" SET DATA TYPE JSONB;\n\n-- AlterTable\nALTER TABLE \"website_event\" ALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP;\n\n-- CreateIndex\nCREATE INDEX \"annotation_website_id_date_idx\" ON \"annotation\"(\"website_id\", \"date\");\n\n-- CreateIndex\nCREATE INDEX \"api_key_user_id_idx\" ON \"api_key\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"board_user_id_idx\" ON \"board\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"board_team_id_idx\" ON \"board\"(\"team_id\");\n\n-- CreateIndex\nCREATE INDEX \"board_created_at_idx\" ON \"board\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"error_event_website_id_created_at_idx\" ON \"error_event\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"error_event_website_id_issue_id_created_at_idx\" ON \"error_event\"(\"website_id\", \"issue_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"error_issue_website_id_status_idx\" ON \"error_issue\"(\"website_id\", \"status\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"error_issue_website_id_grouping_version_fingerprint_key\" ON \"error_issue\"(\"website_id\", \"grouping_version\", \"fingerprint\");\n\n-- CreateIndex\nCREATE INDEX \"event_data_created_at_idx\" ON \"event_data\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"event_data_website_id_idx\" ON \"event_data\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"event_data_website_event_id_idx\" ON \"event_data\"(\"website_event_id\");\n\n-- CreateIndex\nCREATE INDEX \"event_data_website_id_created_at_idx\" ON \"event_data\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"event_data_website_id_created_at_data_key_idx\" ON \"event_data\"(\"website_id\", \"created_at\", \"data_key\");\n\n-- CreateIndex\nCREATE INDEX \"heatmap_event_website_id_idx\" ON \"heatmap_event\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"heatmap_event_visit_id_idx\" ON \"heatmap_event\"(\"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"heatmap_event_website_id_created_at_idx\" ON \"heatmap_event\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"heatmap_event_website_id_url_path_event_type_created_at_idx\" ON \"heatmap_event\"(\"website_id\", \"url_path\", \"event_type\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"link_slug_idx\" ON \"link\"(\"slug\");\n\n-- CreateIndex\nCREATE INDEX \"link_user_id_idx\" ON \"link\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"link_team_id_idx\" ON \"link\"(\"team_id\");\n\n-- CreateIndex\nCREATE INDEX \"link_created_at_idx\" ON \"link\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"pixel_slug_idx\" ON \"pixel\"(\"slug\");\n\n-- CreateIndex\nCREATE INDEX \"pixel_user_id_idx\" ON \"pixel\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"pixel_team_id_idx\" ON \"pixel\"(\"team_id\");\n\n-- CreateIndex\nCREATE INDEX \"pixel_created_at_idx\" ON \"pixel\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"report_user_id_idx\" ON \"report\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"report_website_id_idx\" ON \"report\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"report_type_idx\" ON \"report\"(\"type\");\n\n-- CreateIndex\nCREATE INDEX \"report_name_idx\" ON \"report\"(\"name\");\n\n-- CreateIndex\nCREATE INDEX \"revenue_website_id_idx\" ON \"revenue\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"revenue_session_id_idx\" ON \"revenue\"(\"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"revenue_website_id_created_at_idx\" ON \"revenue\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"revenue_website_id_session_id_created_at_idx\" ON \"revenue\"(\"website_id\", \"session_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"segment_website_id_idx\" ON \"segment\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_created_at_idx\" ON \"session\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_idx\" ON \"session\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_idx\" ON \"session\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_browser_idx\" ON \"session\"(\"website_id\", \"created_at\", \"browser\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_os_idx\" ON \"session\"(\"website_id\", \"created_at\", \"os\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_device_idx\" ON \"session\"(\"website_id\", \"created_at\", \"device\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_screen_idx\" ON \"session\"(\"website_id\", \"created_at\", \"screen\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_language_idx\" ON \"session\"(\"website_id\", \"created_at\", \"language\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_country_idx\" ON \"session\"(\"website_id\", \"created_at\", \"country\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_region_idx\" ON \"session\"(\"website_id\", \"created_at\", \"region\");\n\n-- CreateIndex\nCREATE INDEX \"session_website_id_created_at_city_idx\" ON \"session\"(\"website_id\", \"created_at\", \"city\");\n\n-- CreateIndex\nCREATE INDEX \"session_data_created_at_idx\" ON \"session_data\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"session_data_website_id_idx\" ON \"session_data\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_data_session_id_idx\" ON \"session_data\"(\"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_data_session_id_created_at_idx\" ON \"session_data\"(\"session_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"session_data_website_id_created_at_data_key_idx\" ON \"session_data\"(\"website_id\", \"created_at\", \"data_key\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"session_data_session_id_data_key_key\" ON \"session_data\"(\"session_id\", \"data_key\");\n\n-- CreateIndex\nCREATE INDEX \"session_link_website_id_session_id_idx\" ON \"session_link\"(\"website_id\", \"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_website_id_idx\" ON \"session_replay\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_session_id_idx\" ON \"session_replay\"(\"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_visit_id_idx\" ON \"session_replay\"(\"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_website_id_session_id_idx\" ON \"session_replay\"(\"website_id\", \"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_website_id_visit_id_idx\" ON \"session_replay\"(\"website_id\", \"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_website_id_created_at_idx\" ON \"session_replay\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_session_id_chunk_index_idx\" ON \"session_replay\"(\"session_id\", \"chunk_index\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_saved_website_id_idx\" ON \"session_replay_saved\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_saved_visit_id_idx\" ON \"session_replay_saved\"(\"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"session_replay_saved_website_id_created_at_idx\" ON \"session_replay_saved\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"session_replay_saved_website_id_visit_id_key\" ON \"session_replay_saved\"(\"website_id\", \"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"share_entity_id_idx\" ON \"share\"(\"entity_id\");\n\n-- CreateIndex\nCREATE INDEX \"team_access_code_idx\" ON \"team\"(\"access_code\");\n\n-- CreateIndex\nCREATE INDEX \"team_user_team_id_idx\" ON \"team_user\"(\"team_id\");\n\n-- CreateIndex\nCREATE INDEX \"team_user_user_id_idx\" ON \"team_user\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"two_factor_backup_code_user_id_idx\" ON \"two_factor_backup_code\"(\"user_id\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"two_factor_otp_used_user_id_otp_key\" ON \"two_factor_otp_used\"(\"user_id\", \"otp\");\n\n-- CreateIndex\nCREATE INDEX \"website_user_id_idx\" ON \"website\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"website_team_id_idx\" ON \"website\"(\"team_id\");\n\n-- CreateIndex\nCREATE INDEX \"website_created_at_idx\" ON \"website\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"website_created_by_idx\" ON \"website\"(\"created_by\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_created_at_idx\" ON \"website_event\"(\"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_session_id_idx\" ON \"website_event\"(\"session_id\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_visit_id_idx\" ON \"website_event\"(\"visit_id\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_idx\" ON \"website_event\"(\"website_id\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_idx\" ON \"website_event\"(\"website_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_url_path_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"url_path\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_url_query_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"url_query\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_referrer_domain_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"referrer_domain\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_page_title_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"page_title\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_event_name_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"event_name\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_tag_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"tag\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_session_id_created_at_idx\" ON \"website_event\"(\"website_id\", \"session_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_visit_id_created_at_idx\" ON \"website_event\"(\"website_id\", \"visit_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"website_event_website_id_created_at_hostname_idx\" ON \"website_event\"(\"website_id\", \"created_at\", \"hostname\");"
       }
     },
     {

@@ -167,11 +167,36 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
-      "ddl": "error"
+      "checks": {
+        "model": {
+          "ok": 12,
+          "total": 12
+        },
+        "insert": {
+          "ok": 10,
+          "total": 12
+        },
+        "read": {
+          "ok": 10,
+          "total": 10
+        },
+        "update": {
+          "ok": 10,
+          "total": 10
+        },
+        "relations": {
+          "ok": 18,
+          "total": 18
+        },
+        "delete": {
+          "ok": 10,
+          "total": 10
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
     },
     {
       "orm": "ecto",
@@ -701,9 +726,50 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/superproductivity; fi; exec /cache/bin/superproductivity crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 12,
+            "total": 12
+          },
+          "insert": {
+            "ok": 10,
+            "total": 12
+          },
+          "read": {
+            "ok": 10,
+            "total": 10
+          },
+          "update": {
+            "ok": 10,
+            "total": 10
+          },
+          "relations": {
+            "ok": 18,
+            "total": 18
+          },
+          "delete": {
+            "ok": 10,
+            "total": 10
+          }
+        },
+        "findings": [
+          {
+            "model": "Passkey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"passkeys\" violates not-null constraint"
+          },
+          {
+            "model": "PendingPasskeyRegistration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"pending_passkey_registrations\" violates not-null constraint"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/superproductivity; fi; exec /cache/bin/superproductivity ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "diff": "-- DropForeignKey\nALTER TABLE \"capture_auth\" DROP CONSTRAINT \"fk-capture_auth-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"capture_connect_codes\" DROP CONSTRAINT \"fk-capture_connect_codes-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"capture_grants\" DROP CONSTRAINT \"fk-capture_grants-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"capture_items\" DROP CONSTRAINT \"fk-capture_items-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"capture_keys\" DROP CONSTRAINT \"fk-capture_keys-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"connect_requests\" DROP CONSTRAINT \"fk-connect_requests-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"operations\" DROP CONSTRAINT \"fk-operations-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"passkeys\" DROP CONSTRAINT \"fk-passkeys-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"pending_passkey_registrations\" DROP CONSTRAINT \"fk-pending_passkey_registrations-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"sync_devices\" DROP CONSTRAINT \"fk-sync_devices-user_id\";\n\n-- DropForeignKey\nALTER TABLE \"user_sync_state\" DROP CONSTRAINT \"fk-user_sync_state-user_id\";\n\n-- AlterTable\nALTER TABLE \"capture_auth\" DROP CONSTRAINT \"capture_auth_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"client_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"client_name\" SET DATA TYPE TEXT,\nALTER COLUMN \"redirect_uri\" SET DATA TYPE TEXT,\nALTER COLUMN \"code_challenge\" SET DATA TYPE TEXT,\nALTER COLUMN \"resource\" SET DATA TYPE TEXT,\nALTER COLUMN \"state\" SET DATA TYPE TEXT,\nALTER COLUMN \"scope\" SET DATA TYPE TEXT,\nALTER COLUMN \"code_hash\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"capture_auth_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"capture_connect_codes\" ALTER COLUMN \"code_hash\" SET DATA TYPE TEXT;\n\n-- AlterTable\nALTER TABLE \"capture_grants\" DROP CONSTRAINT \"capture_grants_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"kind\" SET DATA TYPE TEXT,\nALTER COLUMN \"client_name\" SET DATA TYPE TEXT,\nALTER COLUMN \"secret_hash\" SET DATA TYPE TEXT,\nALTER COLUMN \"client_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"resource\" SET DATA TYPE TEXT,\nALTER COLUMN \"refresh_hash\" SET DATA TYPE TEXT,\nALTER COLUMN \"prev_refresh_hash\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"capture_grants_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"capture_items\" DROP CONSTRAINT \"capture_items_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"grant_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"ciphertext\" SET DATA TYPE TEXT,\nALTER COLUMN \"task_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"lease_device_id\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"capture_items_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"capture_keys\" ALTER COLUMN \"public_key\" SET DATA TYPE TEXT,\nALTER COLUMN \"fingerprint\" SET DATA TYPE TEXT;\n\n-- AlterTable\nALTER TABLE \"connect_requests\" DROP CONSTRAINT \"connect_requests_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"poll_secret_hash\" SET DATA TYPE TEXT,\nALTER COLUMN \"match_code\" SET DATA TYPE TEXT,\nALTER COLUMN \"device_name\" SET DATA TYPE TEXT,\nALTER COLUMN \"platform\" SET DATA TYPE TEXT,\nALTER COLUMN \"status\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"connect_requests_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"operations\" DROP CONSTRAINT \"operations_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"client_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"action_type\" SET DATA TYPE TEXT,\nALTER COLUMN \"op_type\" SET DATA TYPE TEXT,\nALTER COLUMN \"entity_type\" SET DATA TYPE TEXT,\nALTER COLUMN \"entity_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"entity_ids\" SET DEFAULT ARRAY[]::TEXT[],\nALTER COLUMN \"entity_ids\" SET DATA TYPE TEXT[],\nALTER COLUMN \"payload\" SET DATA TYPE JSONB,\nALTER COLUMN \"vector_clock\" SET DATA TYPE JSONB,\nALTER COLUMN \"sync_import_reason\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"operations_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"passkeys\" DROP CONSTRAINT \"passkeys_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"transports\" SET DATA TYPE TEXT,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3),\nALTER COLUMN \"last_used_at\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"passkeys_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"pending_passkey_registrations\" DROP CONSTRAINT \"pending_passkey_registrations_pkey\",\nALTER COLUMN \"id\" SET DATA TYPE TEXT,\nALTER COLUMN \"verification_token\" SET DATA TYPE TEXT,\nALTER COLUMN \"transports\" SET DATA TYPE TEXT,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3),\nADD CONSTRAINT \"pending_passkey_registrations_pkey\" PRIMARY KEY (\"id\");\n\n-- AlterTable\nALTER TABLE \"sync_devices\" DROP CONSTRAINT \"pk-sync_devices\",\nALTER COLUMN \"client_id\" SET DATA TYPE TEXT,\nALTER COLUMN \"device_name\" SET DATA TYPE TEXT,\nALTER COLUMN \"user_agent\" SET DATA TYPE TEXT,\nALTER COLUMN \"app_version\" SET DATA TYPE TEXT,\nADD CONSTRAINT \"sync_devices_pkey\" PRIMARY KEY (\"user_id\", \"client_id\");\nALTER TABLE \"sync_devices\" RENAME CONSTRAINT \"pk-sync_devices\" TO \"sync_devices_pkey\";\n\n-- AlterTable\nALTER TABLE \"user_sync_state\" ALTER COLUMN \"latest_full_state_vector_clock\" SET DATA TYPE JSONB;\n\n-- AlterTable\nALTER TABLE \"users\" ALTER COLUMN \"email\" SET DATA TYPE TEXT,\nALTER COLUMN \"password_hash\" SET DATA TYPE TEXT,\nALTER COLUMN \"verification_token\" SET DATA TYPE TEXT,\nALTER COLUMN \"reset_password_token\" SET DATA TYPE TEXT,\nALTER COLUMN \"passkey_recovery_token\" SET DATA TYPE TEXT,\nALTER COLUMN \"login_token\" SET DATA TYPE TEXT,\nALTER COLUMN \"created_at\" SET DEFAULT CURRENT_TIMESTAMP,\nALTER COLUMN \"created_at\" SET DATA TYPE TIMESTAMP(3);\n\n-- CreateIndex\nCREATE INDEX \"capture_auth_user_id_idx\" ON \"capture_auth\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"capture_auth_expires_at_idx\" ON \"capture_auth\"(\"expires_at\");\n\n-- CreateIndex\nCREATE INDEX \"capture_grants_user_id_idx\" ON \"capture_grants\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"capture_items_user_id_created_at_idx\" ON \"capture_items\"(\"user_id\", \"created_at\");\n\n-- CreateIndex\nCREATE INDEX \"capture_items_grant_id_idx\" ON \"capture_items\"(\"grant_id\");\n\n-- CreateIndex\nCREATE INDEX \"connect_requests_user_id_idx\" ON \"connect_requests\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"connect_requests_expires_at_idx\" ON \"connect_requests\"(\"expires_at\");\n\n-- CreateIndex\nCREATE INDEX \"operations_user_id_entity_type_entity_id_server_seq_idx\" ON \"operations\"(\"user_id\", \"entity_type\", \"entity_id\", \"server_seq\");\n\n-- CreateIndex\nCREATE INDEX \"operations_user_id_received_at_server_seq_idx\" ON \"operations\"(\"user_id\", \"received_at\", \"server_seq\");\n\n-- CreateIndex\nCREATE INDEX \"operations_entity_ids_gin\" ON \"operations\" USING GIN (\"entity_ids\");\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"operations_user_id_server_seq_key\" ON \"operations\"(\"user_id\", \"server_seq\");\n\n-- CreateIndex\nCREATE INDEX \"passkeys_user_id_idx\" ON \"passkeys\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"pending_passkey_registrations_user_id_idx\" ON \"pending_passkey_registrations\"(\"user_id\");\n\n-- CreateIndex\nCREATE INDEX \"users_verification_token_idx\" ON \"users\"(\"verification_token\");\n\n-- CreateIndex\nCREATE INDEX \"users_reset_password_token_idx\" ON \"users\"(\"reset_password_token\");\n\n-- CreateIndex\nCREATE INDEX \"users_passkey_recovery_token_idx\" ON \"users\"(\"passkey_recovery_token\");\n\n-- CreateIndex\nCREATE INDEX \"users_login_token_idx\" ON \"users\"(\"login_token\");\n\n-- AddForeignKey\nALTER TABLE \"passkeys\" ADD CONSTRAINT \"passkeys_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"pending_passkey_registrations\" ADD CONSTRAINT \"pending_passkey_registrations_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"operations\" ADD CONSTRAINT \"operations_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"user_sync_state\" ADD CONSTRAINT \"user_sync_state_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"sync_devices\" ADD CONSTRAINT \"sync_devices_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"capture_keys\" ADD CONSTRAINT \"capture_keys_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"capture_grants\" ADD CONSTRAINT \"capture_grants_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"capture_items\" ADD CONSTRAINT \"capture_items_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"capture_connect_codes\" ADD CONSTRAINT \"capture_connect_codes_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"capture_auth\" ADD CONSTRAINT \"capture_auth_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;\n\n-- AddForeignKey\nALTER TABLE \"connect_requests\" ADD CONSTRAINT \"connect_requests_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
       }
     },
     {

@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 90,
+          "total": 90
+        },
+        "insert": {
+          "ok": 6,
+          "total": 86
+        },
+        "read": {
+          "ok": 6,
+          "total": 6
+        },
+        "update": {
+          "ok": 3,
+          "total": 3
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 6,
+          "total": 6
+        }
+      },
+      "findings": 84,
       "ddl": "error"
     },
     {
@@ -1781,9 +1806,479 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/triggerdev; fi; exec /cache/bin/triggerdev crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 90,
+            "total": 90
+          },
+          "insert": {
+            "ok": 6,
+            "total": 86
+          },
+          "read": {
+            "ok": 6,
+            "total": 6
+          },
+          "update": {
+            "ok": 3,
+            "total": 3
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 6,
+            "total": 6
+          }
+        },
+        "findings": [
+          {
+            "model": "SecretReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"SecretReference\" violates not-null constraint"
+          },
+          {
+            "model": "InvitationCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"InvitationCode\" violates not-null constraint"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"User\" violates not-null constraint"
+          },
+          {
+            "model": "MfaBackupCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PersonalAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuthorizationCode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"AuthorizationCode\" violates not-null constraint"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Organization\" violates not-null constraint"
+          },
+          {
+            "model": "OrganizationAccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "OrgMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "OrgMemberInvite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkerGroupToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"WorkerGroupToken\" violates not-null constraint"
+          },
+          {
+            "model": "WorkerInstanceGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkerGroupToken`) did not go in"
+          },
+          {
+            "model": "Project",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "RuntimeEnvironmentSession",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "RuntimeEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "ApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "RevokedApiKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "EnvironmentEncryptionKey",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "EnvironmentEncryptionPolicy",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EnvironmentEncryptionKey`) did not go in"
+          },
+          {
+            "model": "OidcSigningKey",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OidcSigningKey\" violates not-null constraint"
+          },
+          {
+            "model": "DataMigration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"DataMigration\" violates not-null constraint"
+          },
+          {
+            "model": "BackgroundWorker",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "BackgroundWorkerFile",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Prompt",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PromptVersion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Prompt`) did not go in"
+          },
+          {
+            "model": "TaskQueue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "BackgroundWorkerTask",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BackgroundWorker`) did not go in"
+          },
+          {
+            "model": "WebhookEndpoint",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"WebhookEndpoint\" violates not-null constraint"
+          },
+          {
+            "model": "WebhookDelivery",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"WebhookDelivery\" violates not-null constraint"
+          },
+          {
+            "model": "TaskRunAttempt",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "Checkpoint",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "CheckpointRestoreEvent",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "BatchTaskRun",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"BatchTaskRun\" violates not-null constraint"
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "PlaygroundConversation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Session\" violates not-null constraint"
+          },
+          {
+            "model": "SessionRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Session`) did not go in"
+          },
+          {
+            "model": "TaskRunTemplate",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"TaskRunTemplate\" violates not-null constraint"
+          },
+          {
+            "model": "TaskRunCheckpoint",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "TaskRunExecutionSnapshot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskRun`) did not go in"
+          },
+          {
+            "model": "Waitpoint",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "TaskRunWaitpoint",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskRun`) did not go in"
+          },
+          {
+            "model": "WaitpointTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "FeatureFlag",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"FeatureFlag\" violates not-null constraint"
+          },
+          {
+            "model": "WorkerDeployment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "WorkerInstance",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkerInstanceGroup`) did not go in"
+          },
+          {
+            "model": "TaskRunTag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "TaskRunDependency",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskRun`) did not go in"
+          },
+          {
+            "model": "TaskRunNumberCounter",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "TaskEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"TaskEvent\" violates not-null constraint"
+          },
+          {
+            "model": "BatchTaskRunItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BatchTaskRun`) did not go in"
+          },
+          {
+            "model": "BatchTaskRunError",
+            "check": "insert",
+            "text": "not inserted: the parent row (`BatchTaskRun`) did not go in"
+          },
+          {
+            "model": "EnvironmentVariable",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "EnvironmentVariableValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`EnvironmentVariable`) did not go in"
+          },
+          {
+            "model": "WorkerDeploymentPromotion",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkerDeployment`) did not go in"
+          },
+          {
+            "model": "TaskSchedule",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "TaskScheduleInstance",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskSchedule`) did not go in"
+          },
+          {
+            "model": "OrganizationIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`SecretReference`) did not go in"
+          },
+          {
+            "model": "ProjectAlertChannel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ProjectAlert",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ProjectAlertStorage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "OrganizationProjectIntegration",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OrganizationIntegration`) did not go in"
+          },
+          {
+            "model": "BulkActionGroup",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "BulkActionItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TaskRun`) did not go in"
+          },
+          {
+            "model": "RealtimeStreamChunk",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"RealtimeStreamChunk\" violates not-null constraint"
+          },
+          {
+            "model": "TaskEventPartitioned",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"TaskEventPartitioned\" violates not-null constraint"
+          },
+          {
+            "model": "GithubAppInstallation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "GithubRepository",
+            "check": "insert",
+            "text": "not inserted: the parent row (`GithubAppInstallation`) did not go in"
+          },
+          {
+            "model": "TrustedDeployRepository",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "TrustedDeployEnvironment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TrustedDeployRepository`) did not go in"
+          },
+          {
+            "model": "ConnectedGithubRepository",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Project`) did not go in"
+          },
+          {
+            "model": "ImpersonationAuditLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "SupportAccessRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "CustomerQuery",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "IntegrationDeployment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"IntegrationDeployment\" violates not-null constraint"
+          },
+          {
+            "model": "MetricsDashboard",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "LlmModel",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"llm_models\" violates not-null constraint"
+          },
+          {
+            "model": "LlmPricingTier",
+            "check": "insert",
+            "text": "not inserted: the parent row (`LlmModel`) did not go in"
+          },
+          {
+            "model": "LlmPrice",
+            "check": "insert",
+            "text": "not inserted: the parent row (`LlmModel`) did not go in"
+          },
+          {
+            "model": "PlatformNotification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"PlatformNotification\" violates not-null constraint"
+          },
+          {
+            "model": "PlatformNotificationInteraction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PlatformNotification`) did not go in"
+          },
+          {
+            "model": "ErrorGroupState",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TaskIdentifier",
+            "check": "insert",
+            "text": "not inserted: the parent row (`RuntimeEnvironment`) did not go in"
+          },
+          {
+            "model": "OrganizationDataStore",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"OrganizationDataStore\" violates not-null constraint"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/triggerdev; fi; exec /cache/bin/triggerdev ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"SecretReference\": Execution Error: error returned from database: type \"secretstoreprovider\" does not exist"
       }
     },
     {

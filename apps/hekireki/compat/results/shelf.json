@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 66,
+          "total": 66
+        },
+        "insert": {
+          "ok": 2,
+          "total": 66
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 64,
       "ddl": "error"
     },
     {
@@ -1239,9 +1264,366 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/shelf; fi; exec /cache/bin/shelf crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 66,
+            "total": 66
+          },
+          "insert": {
+            "ok": 2,
+            "total": 66
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"User\" violates not-null constraint"
+          },
+          {
+            "model": "SsoDetails",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"SsoDetails\" violates not-null constraint"
+          },
+          {
+            "model": "Organization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Image",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserContact",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserBusinessIntel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Category",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetModel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Location",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Kit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Barcode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Asset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetFilterPreset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetIndexSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PdfTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "TeamMember",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Booking",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "BookingModelRequest",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Note",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "LocationNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Location`) did not go in"
+          },
+          {
+            "model": "PrintBatch",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"PrintBatch\" violates not-null constraint"
+          },
+          {
+            "model": "Qr",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Qr\" violates not-null constraint"
+          },
+          {
+            "model": "ReportFound",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"ReportFound\" violates not-null constraint"
+          },
+          {
+            "model": "Scan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "Role",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Role\" violates not-null constraint"
+          },
+          {
+            "model": "KitCustody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "Custody",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "UserOrganization",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ScimToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "UserScimExternalId",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "CustomTierLimit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"CustomTierLimit\" violates not-null constraint"
+          },
+          {
+            "model": "CustomField",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AssetCustomFieldValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetModelCustomFieldDefault",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AssetModel`) did not go in"
+          },
+          {
+            "model": "Invite",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Announcement",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Announcement\" violates not-null constraint"
+          },
+          {
+            "model": "ConsumptionLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "BookingAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "BookingSettings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckin",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "PartialBookingCheckout",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Booking`) did not go in"
+          },
+          {
+            "model": "MobileAuthCode",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PushToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "NotificationPreference",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AssetKit",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetLocation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Asset`) did not go in"
+          },
+          {
+            "model": "AssetReminder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHours",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "WorkingHoursOverride",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkingHours`) did not go in"
+          },
+          {
+            "model": "Update",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UserUpdateRead",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AuditAsset",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "TeamMemberNote",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TeamMember`) did not go in"
+          },
+          {
+            "model": "AssetImport",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "LinkPreview",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          },
+          {
+            "model": "AuditAssignment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditScan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "AuditImage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`AuditSession`) did not go in"
+          },
+          {
+            "model": "RoleChangeLog",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ActivityEvent",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Organization`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/shelf; fi; exec /cache/bin/shelf ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"TierLimit\": Execution Error: error returned from database: type \"tierid\" does not exist"
       }
     },
     {

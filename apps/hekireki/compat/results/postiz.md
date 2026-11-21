@@ -3686,8 +3686,10 @@ ALTER INDEX "mastra_workspace_versions_workspaceId_versionNumber_key" RENAME TO 
 The harness did not run:
 
 ```text
-sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/postiz; fi; exec /cache/bin/postiz crud /work/plan.json "$0": Directory nonexistent
-*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting "}")
+error: could not compile `compat` (bin "compat"); 89 warnings emitted
+
+Caused by:
+  process didn't exit successfully: `/usr/local/rustup/toolchains/1.100.0-aarch64-unknown-linux-gnu/bin/rustc --crate-name compat --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat,unused-externs-silent --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C codegen-units=256 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=3308b1551c65703a --out-dir /cache/target/debug/build/compat/9e86bd6376cb0957/out -C strip=debuginfo -L dependency=/cache/target/debug/build/ahash/beaa5059788fb34b/out -L dependency=/cache/target/debug/build/aliasable/4ad61ebda3e1890b/out -L dependency=/cache/target/debug/build/allocator-api2/b60da3c76860756f/out -L dependency=/cache/target/debug/build/arrayvec/752a547cf0947f86/out -L dependency=/cache/target/debug/build/async-stream-impl/6b0af6afb4ad95d6/out -L dependency=/cache/target/debug/build/async-stream/17df2d2913cc8ac8/out -L dependency=/cache/target/debug/build/async-trait/1252eb8b882c17c8/out -L dependency=/cache/target/debug/build/atoi/4d7987cd3e703390/out -L dependency=/cache/target/debug/build/base64/3778d157ee986330/out -L dependency=/cache/target/debug/build/base64ct/dd35fae4e41a53a8/out -L dependency=/cache/target/debug/build/bigdecimal/d0dc0128e83f355f/out -L dependency=/cache/target/debug/build/bitflags/56180e68cb013b42/out -L dependency=/cache/target/debug/build/block-buffer/97805c4c2062bf06/out -L dependency=/cache/target/debug/build/block-buffer/ffdfb5e737d0b269/out -L dependency=/cache/target/debug/build/byteorder/d365bf5d00b93496/out -L dependency=/cache/target/debug/build/bytes/4b33372dcd73a4d7/out -L dependency=/cache/target/debug/build/cfg-if/959e158ab1f18626/out -L dependency=/cache/target/debug/build/chacha20/f734dbc834c53627/out -L dependency=/cache/target/debug/build/chrono/324679fc8c013335/out -L dependency=/cache/target/debug/build/const-oid/0455
 ```
 
 ## ecto

@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 26,
+          "total": 26
+        },
+        "insert": {
+          "ok": 4,
+          "total": 26
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 4,
+          "total": 4
+        },
+        "relations": {
+          "ok": 4,
+          "total": 4
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 22,
       "ddl": "error"
     },
     {
@@ -865,9 +890,156 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/workoutcool; fi; exec /cache/bin/workoutcool crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 26,
+            "total": 26
+          },
+          "insert": {
+            "ok": 4,
+            "total": 26
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 4,
+            "total": 4
+          },
+          "relations": {
+            "ok": 4,
+            "total": 4
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "Exercise",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"exercises\" violates not-null constraint"
+          },
+          {
+            "model": "UserFavoriteExercise",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Exercise`) did not go in"
+          },
+          {
+            "model": "Feedbacks",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"feedbacks\" violates not-null constraint"
+          },
+          {
+            "model": "ExerciseAttributeName",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"exercise_attribute_names\" violates not-null constraint"
+          },
+          {
+            "model": "ExerciseAttributeValue",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ExerciseAttributeName`) did not go in"
+          },
+          {
+            "model": "ExerciseAttribute",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Exercise`) did not go in"
+          },
+          {
+            "model": "WorkoutSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"workout_sessions\" violates not-null constraint"
+          },
+          {
+            "model": "WorkoutSessionExercise",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkoutSession`) did not go in"
+          },
+          {
+            "model": "WorkoutSet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`WorkoutSessionExercise`) did not go in"
+          },
+          {
+            "model": "SubscriptionPlan",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"subscription_plans\" violates not-null constraint"
+          },
+          {
+            "model": "PlanProviderMapping",
+            "check": "insert",
+            "text": "not inserted: the parent row (`SubscriptionPlan`) did not go in"
+          },
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`SubscriptionPlan`) did not go in"
+          },
+          {
+            "model": "License",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"licenses\" violates not-null constraint"
+          },
+          {
+            "model": "RevenueCatWebhookEvent",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"revenuecat_webhook_events\" violates not-null constraint"
+          },
+          {
+            "model": "Program",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"programs\" violates not-null constraint"
+          },
+          {
+            "model": "ProgramCoach",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Program`) did not go in"
+          },
+          {
+            "model": "ProgramWeek",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Program`) did not go in"
+          },
+          {
+            "model": "ProgramSession",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProgramWeek`) did not go in"
+          },
+          {
+            "model": "ProgramSessionExercise",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProgramSession`) did not go in"
+          },
+          {
+            "model": "ProgramSuggestedSet",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ProgramSessionExercise`) did not go in"
+          },
+          {
+            "model": "UserProgramEnrollment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Program`) did not go in"
+          },
+          {
+            "model": "UserSessionProgress",
+            "check": "insert",
+            "text": "not inserted: the parent row (`UserProgramEnrollment`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/workoutcool; fi; exec /cache/bin/workoutcool ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"user\": Execution Error: error returned from database: type \"userrole\" does not exist"
       }
     },
     {

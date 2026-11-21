@@ -167,11 +167,36 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
-      "ddl": "error"
+      "checks": {
+        "model": {
+          "ok": 5,
+          "total": 5
+        },
+        "insert": {
+          "ok": 1,
+          "total": 5
+        },
+        "read": {
+          "ok": 1,
+          "total": 1
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 1,
+          "total": 1
+        }
+      },
+      "findings": 4,
+      "ddl": "differs"
     },
     {
       "orm": "ecto",
@@ -542,9 +567,59 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/nextauth; fi; exec /cache/bin/nextauth crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 5,
+            "total": 5
+          },
+          "insert": {
+            "ok": 1,
+            "total": 5
+          },
+          "read": {
+            "ok": 1,
+            "total": 1
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 1,
+            "total": 1
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: (code: 1299) NOT NULL constraint failed: User.id"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Authenticator",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/nextauth; fi; exec /cache/bin/nextauth ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_Account\" (\n    \"userId\" TEXT NOT NULL,\n    \"type\" TEXT NOT NULL,\n    \"provider\" TEXT NOT NULL,\n    \"providerAccountId\" TEXT NOT NULL,\n    \"refresh_token\" TEXT,\n    \"access_token\" TEXT,\n    \"expires_at\" INTEGER,\n    \"token_type\" TEXT,\n    \"scope\" TEXT,\n    \"id_token\" TEXT,\n    \"session_state\" TEXT,\n\n    PRIMARY KEY (\"provider\", \"providerAccountId\"),\n    CONSTRAINT \"Account_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new_Account\" (\"access_token\", \"expires_at\", \"id_token\", \"provider\", \"providerAccountId\", \"refresh_token\", \"scope\", \"session_state\", \"token_type\", \"type\", \"userId\") SELECT \"access_token\", \"expires_at\", \"id_token\", \"provider\", \"providerAccountId\", \"refresh_token\", \"scope\", \"session_state\", \"token_type\", \"type\", \"userId\" FROM \"Account\";\nDROP TABLE \"Account\";\nALTER TABLE \"new_Account\" RENAME TO \"Account\";\nCREATE TABLE \"new_Authenticator\" (\n    \"credentialID\" TEXT NOT NULL,\n    \"userId\" TEXT NOT NULL,\n    \"providerAccountId\" TEXT NOT NULL,\n    \"credentialPublicKey\" TEXT NOT NULL,\n    \"counter\" INTEGER NOT NULL,\n    \"credentialDeviceType\" TEXT NOT NULL,\n    \"credentialBackedUp\" BOOLEAN NOT NULL,\n    \"transports\" TEXT,\n\n    PRIMARY KEY (\"userId\", \"credentialID\"),\n    CONSTRAINT \"Authenticator_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new_Authenticator\" (\"counter\", \"credentialBackedUp\", \"credentialDeviceType\", \"credentialID\", \"credentialPublicKey\", \"providerAccountId\", \"transports\", \"userId\") SELECT \"counter\", \"credentialBackedUp\", \"credentialDeviceType\", \"credentialID\", \"credentialPublicKey\", \"providerAccountId\", \"transports\", \"userId\" FROM \"Authenticator\";\nDROP TABLE \"Authenticator\";\nALTER TABLE \"new_Authenticator\" RENAME TO \"Authenticator\";\nCREATE UNIQUE INDEX \"Authenticator_credentialID_key\" ON \"Authenticator\"(\"credentialID\");\nCREATE TABLE \"new_Session\" (\n    \"sessionToken\" TEXT NOT NULL,\n    \"userId\" TEXT NOT NULL,\n    \"expires\" DATETIME NOT NULL,\n    CONSTRAINT \"Session_userId_fkey\" FOREIGN KEY (\"userId\") REFERENCES \"User\" (\"id\") ON DELETE CASCADE ON UPDATE CASCADE\n);\nINSERT INTO \"new_Session\" (\"expires\", \"sessionToken\", \"userId\") SELECT \"expires\", \"sessionToken\", \"userId\" FROM \"Session\";\nDROP TABLE \"Session\";\nALTER TABLE \"new_Session\" RENAME TO \"Session\";\nCREATE UNIQUE INDEX \"Session_sessionToken_key\" ON \"Session\"(\"sessionToken\");\nCREATE TABLE \"new_User\" (\n    \"id\" TEXT NOT NULL PRIMARY KEY,\n    \"name\" TEXT,\n    \"email\" TEXT NOT NULL,\n    \"emailVerified\" DATETIME,\n    \"image\" TEXT\n);\nINSERT INTO \"new_User\" (\"email\", \"emailVerified\", \"id\", \"image\", \"name\") SELECT \"email\", \"emailVerified\", \"id\", \"image\", \"name\" FROM \"User\";\nDROP TABLE \"User\";\nALTER TABLE \"new_User\" RENAME TO \"User\";\nCREATE UNIQUE INDEX \"User_email_key\" ON \"User\"(\"email\");\nCREATE TABLE \"new_VerificationToken\" (\n    \"identifier\" TEXT NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"expires\" DATETIME NOT NULL,\n\n    PRIMARY KEY (\"identifier\", \"token\")\n);\nINSERT INTO \"new_VerificationToken\" (\"expires\", \"identifier\", \"token\") SELECT \"expires\", \"identifier\", \"token\" FROM \"VerificationToken\";\nDROP TABLE \"VerificationToken\";\nALTER TABLE \"new_VerificationToken\" RENAME TO \"VerificationToken\";\nCREATE UNIQUE INDEX \"VerificationToken_token_key\" ON \"VerificationToken\"(\"token\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {

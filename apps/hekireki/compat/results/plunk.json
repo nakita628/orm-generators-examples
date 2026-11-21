@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 19,
+          "total": 19
+        },
+        "insert": {
+          "ok": 19,
+          "total": 19
+        },
+        "read": {
+          "ok": 19,
+          "total": 19
+        },
+        "update": {
+          "ok": 16,
+          "total": 16
+        },
+        "relations": {
+          "ok": 68,
+          "total": 68
+        },
+        "delete": {
+          "ok": 19,
+          "total": 19
+        }
+      },
+      "findings": 0,
       "ddl": "error"
     },
     {
@@ -517,9 +542,37 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/plunk; fi; exec /cache/bin/plunk crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 19,
+            "total": 19
+          },
+          "insert": {
+            "ok": 19,
+            "total": 19
+          },
+          "read": {
+            "ok": 19,
+            "total": 19
+          },
+          "update": {
+            "ok": 16,
+            "total": 16
+          },
+          "relations": {
+            "ok": 68,
+            "total": 68
+          },
+          "delete": {
+            "ok": 19,
+            "total": 19
+          }
+        },
+        "findings": []
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/plunk; fi; exec /cache/bin/plunk ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"users\": Execution Error: error returned from database: type \"authmethod\" does not exist"
       }
     },
     {

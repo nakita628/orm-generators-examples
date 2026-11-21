@@ -105,9 +105,11 @@ activerecord, eloquent, efcore and exposed) over every schema. exposed covers th
 (hekireki-exposed writes PostgreSQL only), and eloquent leaves out the schemas hekireki leaves it
 out of.
 
-SeaORM has not run yet over the schemas from langfuse on (alphabetically), and calcom and inboxzero
-do not build on a machine with 8 GB of memory: rustc runs out of it compiling the harness over 100+
-entities. Those show "did not run" in the results.
+SeaORM's harness does not build for the six largest schemas (calcom, inboxzero, langfuse,
+langwatch, litellm, postiz: 85 to 213 models) on a machine with 8 GB of memory: rustc runs out of it
+compiling the generic harness over every entity. Those show "did not run" in the results. Its
+tables check creates the PostgreSQL enum types from Prisma's DDL first, and still fails where
+SeaORM writes an enum type's name unquoted (PostgreSQL folds it to lower case).
 
 A model whose required key closes a cycle with another model's is not inserted (it would need the
 other row first, and that row needs it). The report lists those models. A view is left out.

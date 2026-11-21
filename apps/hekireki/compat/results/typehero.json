@@ -167,11 +167,36 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
-      "ddl": "error"
+      "checks": {
+        "model": {
+          "ok": 22,
+          "total": 22
+        },
+        "insert": {
+          "ok": 20,
+          "total": 22
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 13,
+          "total": 13
+        },
+        "relations": {
+          "ok": 66,
+          "total": 66
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
     },
     {
       "orm": "ecto",
@@ -554,9 +579,50 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typehero; fi; exec /cache/bin/typehero crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 22,
+            "total": 22
+          },
+          "insert": {
+            "ok": 20,
+            "total": 22
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 13,
+            "total": 13
+          },
+          "relations": {
+            "ok": 66,
+            "total": 66
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Execution Error: error returned from database: 1364 (HY000): Field 'id' doesn't have a default value"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typehero; fi; exec /cache/bin/typehero ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "diff": "-- DropForeignKey\nALTER TABLE `Account` DROP FOREIGN KEY `fk-Account-userId`;\n\n-- DropForeignKey\nALTER TABLE `BetaTokens` DROP FOREIGN KEY `fk-BetaTokens-userId`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `fk-Bookmark-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `Bookmark` DROP FOREIGN KEY `fk-Bookmark-userId`;\n\n-- DropForeignKey\nALTER TABLE `Challenge` DROP FOREIGN KEY `fk-Challenge-userId`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `fk-Comment-parentId`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `fk-Comment-rootChallengeId`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `fk-Comment-rootSolutionId`;\n\n-- DropForeignKey\nALTER TABLE `Comment` DROP FOREIGN KEY `fk-Comment-userId`;\n\n-- DropForeignKey\nALTER TABLE `Donation` DROP FOREIGN KEY `fk-Donation-userId`;\n\n-- DropForeignKey\nALTER TABLE `ImageUpload` DROP FOREIGN KEY `fk-ImageUpload-userId`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `fk-Notification-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `fk-Notification-commentId`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `fk-Notification-fromUserId`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `fk-Notification-sharedSolutionId`;\n\n-- DropForeignKey\nALTER TABLE `Notification` DROP FOREIGN KEY `fk-Notification-toUserId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-commentId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-moderatorId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-reporterId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-solutionId`;\n\n-- DropForeignKey\nALTER TABLE `Report` DROP FOREIGN KEY `fk-Report-userId`;\n\n-- DropForeignKey\nALTER TABLE `ReportIssue` DROP FOREIGN KEY `fk-ReportIssue-reportId`;\n\n-- DropForeignKey\nALTER TABLE `Session` DROP FOREIGN KEY `fk-Session-userId`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `fk-SharedSolution-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `SharedSolution` DROP FOREIGN KEY `fk-SharedSolution-userId`;\n\n-- DropForeignKey\nALTER TABLE `ShortURL` DROP FOREIGN KEY `fk-ShortURL-userId`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `fk-Submission-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `Submission` DROP FOREIGN KEY `fk-Submission-userId`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `fk-TrackChallenge-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `TrackChallenge` DROP FOREIGN KEY `fk-TrackChallenge-trackId`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `fk-Vote-challengeId`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `fk-Vote-commentId`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `fk-Vote-sharedSolutionId`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `fk-Vote-submissionId`;\n\n-- DropForeignKey\nALTER TABLE `Vote` DROP FOREIGN KEY `fk-Vote-userId`;\n\n-- AlterTable\nALTER TABLE `Account` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `type` VARCHAR(191) NOT NULL,\n    MODIFY `provider` VARCHAR(191) NOT NULL,\n    MODIFY `providerAccountId` VARCHAR(191) NOT NULL,\n    MODIFY `refresh_token` VARCHAR(191) NULL,\n    MODIFY `access_token` VARCHAR(191) NULL,\n    MODIFY `token_type` VARCHAR(191) NULL,\n    MODIFY `scope` VARCHAR(191) NULL,\n    MODIFY `id_token` VARCHAR(191) NULL,\n    MODIFY `session_state` VARCHAR(191) NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `BetaTokens` MODIFY `token` VARCHAR(191) NOT NULL,\n    MODIFY `userId` VARCHAR(191) NULL;\n\n-- AlterTable\nALTER TABLE `Bookmark` MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `Challenge` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL,\n    MODIFY `name` VARCHAR(191) NOT NULL,\n    MODIFY `slug` VARCHAR(191) NOT NULL,\n    MODIFY `description` MEDIUMTEXT NOT NULL,\n    MODIFY `shortDescription` VARCHAR(191) NOT NULL,\n    MODIFY `code` MEDIUMTEXT NOT NULL,\n    MODIFY `tests` MEDIUMTEXT NOT NULL,\n    MODIFY `userId` VARCHAR(191) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Comment` MODIFY `text` MEDIUMTEXT NOT NULL,\n    MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Donation` MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `stripeCheckoutSessionId` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NULL DEFAULT CURRENT_TIMESTAMP(3);\n\n-- AlterTable\nALTER TABLE `ImageUpload` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `Notification` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL,\n    MODIFY `toUserId` VARCHAR(191) NOT NULL,\n    MODIFY `fromUserId` VARCHAR(191) NOT NULL,\n    MODIFY `content` VARCHAR(191) NULL,\n    MODIFY `blurb` VARCHAR(191) NULL,\n    MODIFY `url` VARCHAR(191) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Report` MODIFY `text` MEDIUMTEXT NOT NULL,\n    MODIFY `reporterId` VARCHAR(191) NOT NULL,\n    MODIFY `userId` VARCHAR(191) NULL,\n    MODIFY `moderatorId` VARCHAR(191) NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Role` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `Session` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    MODIFY `sessionToken` VARCHAR(191) NOT NULL,\n    MODIFY `userId` VARCHAR(191) NOT NULL,\n    MODIFY `expires` DATETIME(3) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `SharedSolution` MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `title` VARCHAR(191) NOT NULL,\n    MODIFY `description` MEDIUMTEXT NOT NULL,\n    MODIFY `userId` VARCHAR(191) NULL;\n\n-- AlterTable\nALTER TABLE `ShortURL` MODIFY `originalUrl` MEDIUMTEXT NOT NULL,\n    MODIFY `shortUrlSlug` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `expiresAt` DATETIME(3) NULL,\n    MODIFY `userId` VARCHAR(191) NULL;\n\n-- AlterTable\nALTER TABLE `Submission` MODIFY `code` MEDIUMTEXT NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `userId` VARCHAR(191) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Tag` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `Track` MODIFY `name` VARCHAR(191) NOT NULL,\n    MODIFY `slug` VARCHAR(191) NOT NULL,\n    MODIFY `description` MEDIUMTEXT NOT NULL;\n\n-- AlterTable\nALTER TABLE `User` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    MODIFY `name` VARCHAR(191) NOT NULL,\n    MODIFY `email` VARCHAR(191) NOT NULL,\n    MODIFY `emailVerified` DATETIME(3) NULL,\n    MODIFY `image` VARCHAR(191) NULL,\n    MODIFY `banReason` MEDIUMTEXT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `UserLink` DROP PRIMARY KEY,\n    MODIFY `id` VARCHAR(191) NOT NULL,\n    MODIFY `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),\n    MODIFY `updatedAt` DATETIME(3) NOT NULL,\n    ADD PRIMARY KEY (`id`);\n\n-- AlterTable\nALTER TABLE `VerificationToken` DROP PRIMARY KEY,\n    MODIFY `identifier` VARCHAR(191) NOT NULL,\n    MODIFY `token` VARCHAR(191) NOT NULL,\n    MODIFY `expires` DATETIME(3) NOT NULL;\n\n-- AlterTable\nALTER TABLE `Vote` MODIFY `userId` VARCHAR(191) NOT NULL;\n\n-- CreateTable\nCREATE TABLE `_RoleToUser` (\n    `A` VARCHAR(191) NOT NULL,\n    `B` VARCHAR(191) NOT NULL,\n\n    UNIQUE INDEX `_RoleToUser_AB_unique`(`A`, `B`),\n    INDEX `_RoleToUser_B_index`(`B`)\n) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n\n-- CreateTable\nCREATE TABLE `_UserToUserLink` (\n    `A` VARCHAR(191) NOT NULL,\n    `B` VARCHAR(191) NOT NULL,\n\n    UNIQUE INDEX `_UserToUserLink_AB_unique`(`A`, `B`),\n    INDEX `_UserToUserLink_B_index`(`B`)\n) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n\n-- CreateTable\nCREATE TABLE `_ChallengeToTag` (\n    `A` INTEGER NOT NULL,\n    `B` VARCHAR(191) NOT NULL,\n\n    UNIQUE INDEX `_ChallengeToTag_AB_unique`(`A`, `B`),\n    INDEX `_ChallengeToTag_B_index`(`B`)\n) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n\n-- CreateTable\nCREATE TABLE `_TrackToUser` (\n    `A` INTEGER NOT NULL,\n    `B` VARCHAR(191) NOT NULL,\n\n    UNIQUE INDEX `_TrackToUser_AB_unique`(`A`, `B`),\n    INDEX `_TrackToUser_B_index`(`B`)\n) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;\n\n-- CreateIndex\nCREATE UNIQUE INDEX `Account_provider_providerAccountId_key` ON `Account`(`provider`, `providerAccountId`);\n\n-- CreateIndex\nCREATE UNIQUE INDEX `Bookmark_userId_challengeId_key` ON `Bookmark`(`userId`, `challengeId`);\n\n-- CreateIndex\nCREATE UNIQUE INDEX `Report_id_key` ON `Report`(`id`);\n\n-- CreateIndex\nCREATE UNIQUE INDEX `ReportIssue_id_key` ON `ReportIssue`(`id`);\n\n-- CreateIndex\nCREATE INDEX `ShortURL_shortUrlSlug_idx` ON `ShortURL`(`shortUrlSlug`);\n\n-- CreateIndex\nCREATE UNIQUE INDEX `VerificationToken_identifier_token_key` ON `VerificationToken`(`identifier`, `token`);\n\n-- RenameIndex\nALTER TABLE `Account` RENAME INDEX `fk-Account-userId` TO `Account_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `BetaTokens` RENAME INDEX `fk-BetaTokens-userId` TO `BetaTokens_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `BetaTokens` RENAME INDEX `token` TO `BetaTokens_token_key`;\n\n-- RenameIndex\nALTER TABLE `Bookmark` RENAME INDEX `fk-Bookmark-challengeId` TO `Bookmark_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Bookmark` RENAME INDEX `fk-Bookmark-userId` TO `Bookmark_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Challenge` RENAME INDEX `fk-Challenge-userId` TO `Challenge_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Challenge` RENAME INDEX `name` TO `Challenge_name_key`;\n\n-- RenameIndex\nALTER TABLE `Challenge` RENAME INDEX `slug` TO `Challenge_slug_key`;\n\n-- RenameIndex\nALTER TABLE `Comment` RENAME INDEX `fk-Comment-parentId` TO `Comment_parentId_idx`;\n\n-- RenameIndex\nALTER TABLE `Comment` RENAME INDEX `fk-Comment-rootChallengeId` TO `Comment_rootChallengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Comment` RENAME INDEX `fk-Comment-rootSolutionId` TO `Comment_rootSolutionId_idx`;\n\n-- RenameIndex\nALTER TABLE `Comment` RENAME INDEX `fk-Comment-userId` TO `Comment_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Donation` RENAME INDEX `fk-Donation-userId` TO `Donation_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Donation` RENAME INDEX `stripeCheckoutSessionId` TO `Donation_stripeCheckoutSessionId_key`;\n\n-- RenameIndex\nALTER TABLE `ImageUpload` RENAME INDEX `fk-ImageUpload-userId` TO `ImageUpload_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Notification` RENAME INDEX `fk-Notification-challengeId` TO `Notification_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Notification` RENAME INDEX `fk-Notification-commentId` TO `Notification_commentId_idx`;\n\n-- RenameIndex\nALTER TABLE `Notification` RENAME INDEX `fk-Notification-fromUserId` TO `Notification_fromUserId_idx`;\n\n-- RenameIndex\nALTER TABLE `Notification` RENAME INDEX `fk-Notification-sharedSolutionId` TO `Notification_sharedSolutionId_idx`;\n\n-- RenameIndex\nALTER TABLE `Notification` RENAME INDEX `fk-Notification-toUserId` TO `Notification_toUserId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-challengeId` TO `Report_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-commentId` TO `Report_commentId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-moderatorId` TO `Report_moderatorId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-reporterId` TO `Report_reporterId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-solutionId` TO `Report_solutionId_idx`;\n\n-- RenameIndex\nALTER TABLE `Report` RENAME INDEX `fk-Report-userId` TO `Report_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `ReportIssue` RENAME INDEX `fk-ReportIssue-reportId` TO `ReportIssue_reportId_idx`;\n\n-- RenameIndex\nALTER TABLE `Role` RENAME INDEX `role` TO `Role_role_key`;\n\n-- RenameIndex\nALTER TABLE `Session` RENAME INDEX `fk-Session-userId` TO `Session_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Session` RENAME INDEX `sessionToken` TO `Session_sessionToken_key`;\n\n-- RenameIndex\nALTER TABLE `SharedSolution` RENAME INDEX `fk-SharedSolution-challengeId` TO `SharedSolution_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `SharedSolution` RENAME INDEX `fk-SharedSolution-userId` TO `SharedSolution_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `ShortURL` RENAME INDEX `fk-ShortURL-userId` TO `ShortURL_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `ShortURL` RENAME INDEX `shortUrlSlug` TO `ShortURL_shortUrlSlug_key`;\n\n-- RenameIndex\nALTER TABLE `Submission` RENAME INDEX `fk-Submission-challengeId` TO `Submission_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Submission` RENAME INDEX `fk-Submission-userId` TO `Submission_userId_idx`;\n\n-- RenameIndex\nALTER TABLE `Tag` RENAME INDEX `tag` TO `Tag_tag_key`;\n\n-- RenameIndex\nALTER TABLE `Track` RENAME INDEX `name` TO `Track_name_key`;\n\n-- RenameIndex\nALTER TABLE `Track` RENAME INDEX `slug` TO `Track_slug_key`;\n\n-- RenameIndex\nALTER TABLE `TrackChallenge` RENAME INDEX `fk-TrackChallenge-challengeId` TO `TrackChallenge_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `TrackChallenge` RENAME INDEX `fk-TrackChallenge-trackId` TO `TrackChallenge_trackId_idx`;\n\n-- RenameIndex\nALTER TABLE `User` RENAME INDEX `email` TO `User_email_key`;\n\n-- RenameIndex\nALTER TABLE `VerificationToken` RENAME INDEX `token` TO `VerificationToken_token_key`;\n\n-- RenameIndex\nALTER TABLE `Vote` RENAME INDEX `fk-Vote-challengeId` TO `Vote_challengeId_idx`;\n\n-- RenameIndex\nALTER TABLE `Vote` RENAME INDEX `fk-Vote-commentId` TO `Vote_commentId_idx`;\n\n-- RenameIndex\nALTER TABLE `Vote` RENAME INDEX `fk-Vote-sharedSolutionId` TO `Vote_sharedSolutionId_idx`;\n\n-- RenameIndex\nALTER TABLE `Vote` RENAME INDEX `fk-Vote-submissionId` TO `Vote_submissionId_idx`;\n\n-- RenameIndex\nALTER TABLE `Vote` RENAME INDEX `fk-Vote-userId` TO `Vote_userId_idx`;"
       }
     },
     {

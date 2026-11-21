@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 31,
+          "total": 31
+        },
+        "insert": {
+          "ok": 2,
+          "total": 31
+        },
+        "read": {
+          "ok": 2,
+          "total": 2
+        },
+        "update": {
+          "ok": 1,
+          "total": 1
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 2,
+          "total": 2
+        }
+      },
+      "findings": 29,
       "ddl": "error"
     },
     {
@@ -817,9 +842,187 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typebot; fi; exec /cache/bin/typebot crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 31,
+            "total": 31
+          },
+          "insert": {
+            "ok": 2,
+            "total": 31
+          },
+          "read": {
+            "ok": 2,
+            "total": 2
+          },
+          "update": {
+            "ok": 1,
+            "total": 1
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 2,
+            "total": 2
+          }
+        },
+        "findings": [
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"User\" violates not-null constraint"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Session",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "ApiToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Workspace",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"Workspace\" violates not-null constraint"
+          },
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "MemberInWorkspace",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "WorkspaceInvitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "CustomDomain",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Credentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "UserCredentials",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "DashboardFolder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Typebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "CollaboratorsOnTypebots",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "PublicTypebot",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "RuntimeMediaIdCache",
+            "check": "insert",
+            "text": "not inserted: the parent row (`PublicTypebot`) did not go in"
+          },
+          {
+            "model": "Result",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SetVariableHistoryItem",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "VisitedEdge",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Log",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Answer",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "AnswerV2",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Result`) did not go in"
+          },
+          {
+            "model": "Webhook",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "ClaimableCustomPlan",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "ChatSession",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"ChatSession\" violates not-null constraint"
+          },
+          {
+            "model": "ThemeTemplate",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Workspace`) did not go in"
+          },
+          {
+            "model": "BannedIp",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Typebot`) did not go in"
+          },
+          {
+            "model": "SuppressedEmail",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"SuppressedEmail\" violates not-null constraint"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/typebot; fi; exec /cache/bin/typebot ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"User\": Execution Error: error returned from database: type \"graphnavigation\" does not exist"
       }
     },
     {

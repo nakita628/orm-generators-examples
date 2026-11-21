@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 64,
+          "total": 64
+        },
+        "insert": {
+          "ok": 14,
+          "total": 64
+        },
+        "read": {
+          "ok": 14,
+          "total": 14
+        },
+        "update": {
+          "ok": 11,
+          "total": 11
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 14,
+          "total": 14
+        }
+      },
+      "findings": 50,
       "ddl": "error"
     },
     {
@@ -1162,9 +1187,321 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/teable; fi; exec /cache/bin/teable crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 64,
+            "total": 64
+          },
+          "insert": {
+            "ok": 14,
+            "total": 64
+          },
+          "read": {
+            "ok": 14,
+            "total": 14
+          },
+          "update": {
+            "ok": 11,
+            "total": 11
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 14,
+            "total": 14
+          }
+        },
+        "findings": [
+          {
+            "model": "Space",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"space\" violates not-null constraint"
+          },
+          {
+            "model": "DataDbConnection",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"data_db_connection\" violates not-null constraint"
+          },
+          {
+            "model": "SpaceDataDbBinding",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "SpaceDataDbMigrationJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "Base",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Space`) did not go in"
+          },
+          {
+            "model": "BaseDataDbMoveJob",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "PinResource",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"pin_resource\" violates not-null constraint"
+          },
+          {
+            "model": "TableMeta",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Base`) did not go in"
+          },
+          {
+            "model": "Field",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "ComputedUpdateOutbox",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"computed_update_outbox\" violates not-null constraint"
+          },
+          {
+            "model": "ComputedUpdateOutboxSeed",
+            "check": "insert",
+            "text": "not inserted: the parent row (`ComputedUpdateOutbox`) did not go in"
+          },
+          {
+            "model": "View",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "Ops",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"ops\" violates not-null constraint"
+          },
+          {
+            "model": "Reference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"reference\" violates not-null constraint"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"users\" violates not-null constraint"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"attachments\" violates not-null constraint"
+          },
+          {
+            "model": "AttachmentsTable",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"attachments_table\" violates not-null constraint"
+          },
+          {
+            "model": "Collaborator",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"collaborator\" violates not-null constraint"
+          },
+          {
+            "model": "Invitation",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"invitation\" violates not-null constraint"
+          },
+          {
+            "model": "InvitationRecord",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"invitation_record\" violates not-null constraint"
+          },
+          {
+            "model": "Notification",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"notification\" violates not-null constraint"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"access_token\" violates not-null constraint"
+          },
+          {
+            "model": "OAuthApp",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"oauth_app\" violates not-null constraint"
+          },
+          {
+            "model": "OAuthAppAuthorized",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppSecret",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "OAuthAppToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`OAuthApp`) did not go in"
+          },
+          {
+            "model": "RecordHistory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"record_history\" violates not-null constraint"
+          },
+          {
+            "model": "Trash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"trash\" violates not-null constraint"
+          },
+          {
+            "model": "TableTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"table_trash\" violates not-null constraint"
+          },
+          {
+            "model": "RecordTrash",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"record_trash\" violates not-null constraint"
+          },
+          {
+            "model": "Plugin",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"plugin\" violates not-null constraint"
+          },
+          {
+            "model": "PluginInstall",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Plugin`) did not go in"
+          },
+          {
+            "model": "Dashboard",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"dashboard\" violates not-null constraint"
+          },
+          {
+            "model": "Comment",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"comment\" violates not-null constraint"
+          },
+          {
+            "model": "CommentSubscription",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"comment_subscription\" violates not-null constraint"
+          },
+          {
+            "model": "Integration",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"integration\" violates not-null constraint"
+          },
+          {
+            "model": "PluginPanel",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "PluginContextMenu",
+            "check": "insert",
+            "text": "not inserted: the parent row (`TableMeta`) did not go in"
+          },
+          {
+            "model": "UserLastVisit",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"user_last_visit\" violates not-null constraint"
+          },
+          {
+            "model": "UserBaseOrder",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Template",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"template\" violates not-null constraint"
+          },
+          {
+            "model": "TemplateCategory",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"template_category\" violates not-null constraint"
+          },
+          {
+            "model": "Task",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"task\" violates not-null constraint"
+          },
+          {
+            "model": "TaskRun",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Task`) did not go in"
+          },
+          {
+            "model": "TaskReference",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"task_reference\" violates not-null constraint"
+          },
+          {
+            "model": "BaseNode",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"base_node\" violates not-null constraint"
+          },
+          {
+            "model": "BaseNodeFolder",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"base_node_folder\" violates not-null constraint"
+          },
+          {
+            "model": "BaseShare",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"base_share\" violates not-null constraint"
+          },
+          {
+            "model": "ShortLink",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: null value in column \"id\" of relation \"short_link\" violates not-null constraint"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/teable; fi; exec /cache/bin/teable ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"data_db_connection\": Execution Error: error returned from database: type \"datadbprovider\" does not exist"
       }
     },
     {

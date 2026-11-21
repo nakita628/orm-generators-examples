@@ -167,10 +167,35 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": true,
+      "fatal": false,
       "notGenerated": false,
-      "checks": null,
-      "findings": null,
+      "checks": {
+        "model": {
+          "ok": 15,
+          "total": 15
+        },
+        "insert": {
+          "ok": 4,
+          "total": 14
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 11,
       "ddl": "error"
     },
     {
@@ -610,9 +635,94 @@
     },
     {
       "orm": "sea-orm",
-      "fatal": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/linkwarden; fi; exec /cache/bin/linkwarden crud /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 15,
+            "total": 15
+          },
+          "insert": {
+            "ok": 4,
+            "total": 14
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "Subscription",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "User",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"uuid\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "Account",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Collection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "UsersAndCollections",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "Link",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Tag",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "AccessToken",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          },
+          {
+            "model": "RssSubscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Collection`) did not go in"
+          },
+          {
+            "model": "Highlight",
+            "check": "insert",
+            "text": "not inserted: the parent row (`Link`) did not go in"
+          },
+          {
+            "model": "DashboardSection",
+            "check": "insert",
+            "text": "not inserted: the parent row (`User`) did not go in"
+          }
+        ]
+      },
       "ddl": {
-        "error": "sh: 1: cannot create  /tmp/build.log | grep -A12 error | head -60 >&2; exit 1; }; cp /cache/target/debug/compat /cache/bin/linkwarden; fi; exec /cache/bin/linkwarden ddl /work/plan.json \"$0\": Directory nonexistent\n*Compiling|^warning|^: 1: Syntax error: end of file unexpected (expecting \"}\")"
+        "error": "\"Subscription\": Execution Error: error returned from database: type \"subscriptionprovider\" does not exist"
       }
     },
     {
