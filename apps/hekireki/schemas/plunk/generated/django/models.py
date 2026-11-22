@@ -31,6 +31,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -44,6 +56,11 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class ProjectDisabledReason(models.TextChoices):
@@ -169,8 +186,8 @@ class User(models.Model):
     password = models.TextField(null=True)
     type = models.TextField(choices=AuthMethod.choices)
     email_verified = models.BooleanField(db_column="emailVerified", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -199,8 +216,8 @@ class Project(models.Model):
     billing_limit_inbound = models.IntegerField(null=True, db_column="billingLimitInbound")
     tracking = models.TextField(choices=TrackingMode.choices, default=TrackingMode.ENABLED)
     language = models.TextField(default="en")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -215,8 +232,8 @@ class Membership(models.Model):
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="memberships", db_column="userId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="members", db_column="projectId", db_index=False)
     role = models.TextField(choices=Role.choices, default=Role.MEMBER)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -229,8 +246,8 @@ class Domain(models.Model):
     verified = models.BooleanField(default=False)
     dkim_tokens = models.JSONField(null=True, db_column="dkimTokens")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="domains", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -259,8 +276,8 @@ class Contact(models.Model):
     complaint paths, so a suppressed address can never be woken back up.
     """
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="contacts", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -287,8 +304,8 @@ class Template(models.Model):
     reply_to = models.TextField(null=True, db_column="replyTo")
     type = models.TextField(choices=TemplateType.choices, default=TemplateType.MARKETING)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="templates", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -308,8 +325,8 @@ class Segment(models.Model):
     track_membership = models.BooleanField(db_column="trackMembership", default=False)
     member_count = models.IntegerField(db_column="memberCount", default=0)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="segments", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -324,10 +341,10 @@ class SegmentMembership(models.Model):
     pk = models.CompositePrimaryKey("contact_id", "segment_id")
     contact = models.ForeignKey("Contact", on_delete=models.CASCADE, related_name="segment_memberships", db_column="contactId", db_index=False)
     segment = models.ForeignKey("Segment", on_delete=models.CASCADE, related_name="memberships", db_column="segmentId", db_index=False)
-    entered_at = UtcDateTimeField(db_column="enteredAt", default=timezone.now)
+    entered_at = UtcDateTimeField(db_column="enteredAt", default=now_milliseconds)
     exited_at = UtcDateTimeField(null=True, db_column="exitedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -365,8 +382,8 @@ class Campaign(models.Model):
     archived = models.BooleanField(default=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="campaigns", db_column="projectId", db_index=False)
     sent_at = UtcDateTimeField(null=True, db_column="sentAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -391,8 +408,8 @@ class Workflow(models.Model):
     throttle_window_seconds = models.IntegerField(null=True, db_column="throttleWindowSeconds")
     throttle_key = models.TextField(null=True, db_column="throttleKey")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="workflows", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -411,8 +428,8 @@ class WorkflowStep(models.Model):
     config = models.JSONField()
     workflow = models.ForeignKey("Workflow", on_delete=models.CASCADE, related_name="steps", db_column="workflowId", db_index=False)
     template = models.ForeignKey("Template", on_delete=models.SET_NULL, related_name="workflow_steps", db_column="templateId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -429,8 +446,8 @@ class WorkflowTransition(models.Model):
     to_step = models.ForeignKey("WorkflowStep", on_delete=models.CASCADE, related_name="incoming_transitions", db_column="toStepId", db_index=False)
     condition = models.JSONField(null=True)
     priority = models.IntegerField(default=0)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -449,10 +466,10 @@ class WorkflowExecution(models.Model):
     current_step = models.ForeignKey("WorkflowStep", on_delete=models.SET_NULL, related_name="current_workflow_executions", db_column="currentStepId", null=True, db_index=False)
     exit_reason = models.TextField(null=True, db_column="exitReason")
     context = models.JSONField(null=True)
-    started_at = UtcDateTimeField(db_column="startedAt", default=timezone.now)
+    started_at = UtcDateTimeField(db_column="startedAt", default=now_milliseconds)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -476,8 +493,8 @@ class WorkflowStepExecution(models.Model):
     error = models.TextField(null=True)
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -540,8 +557,8 @@ class Email(models.Model):
     """
     error = models.TextField(null=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="emails", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -570,7 +587,7 @@ class Event(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="events", db_column="projectId", db_index=False)
     contact = models.ForeignKey("Contact", on_delete=models.CASCADE, related_name="events", db_column="contactId", null=True, db_index=False)
     email = models.ForeignKey("Email", on_delete=models.CASCADE, related_name="events", db_column="emailId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "events"
@@ -594,7 +611,7 @@ class IdempotencyKey(models.Model):
     method = models.TextField()
     path = models.TextField()
     status_code = models.IntegerField(null=True, db_column="statusCode")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
 
     class Meta:
@@ -626,8 +643,8 @@ class ThrottleClaim(models.Model):
     workflow = models.ForeignKey("Workflow", on_delete=models.CASCADE, related_name="throttle_claims", db_column="workflowId", null=True, db_index=False)
     window_seconds = models.IntegerField(null=True, db_column="windowSeconds")
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -658,7 +675,7 @@ class ApiRequest(models.Model):
     error_message = models.TextField(null=True, db_column="errorMessage")
     request_size = models.IntegerField(null=True, db_column="requestSize")
     response_size = models.IntegerField(null=True, db_column="responseSize")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "api_requests"

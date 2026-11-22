@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -30,6 +31,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -39,6 +52,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class UserRole(models.TextChoices):
@@ -211,10 +233,10 @@ class User(models.Model):
 
 
 class UserFavoriteExercise(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="favorite_exercises", db_column="userId", db_index=False)
     exercise = models.ForeignKey("Exercise", on_delete=models.CASCADE, related_name="favorites_by_users", db_column="exerciseId", db_index=False)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -271,13 +293,13 @@ class Verification(models.Model):
 
 
 class Feedbacks(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     review = models.IntegerField()
     message = models.TextField()
     email = models.TextField(null=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="feedbacks", db_column="userId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -285,7 +307,7 @@ class Feedbacks(models.Model):
 
 
 class Exercise(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     name_en = models.TextField(null=True, db_column="nameEn")
     description = models.TextField(null=True)
@@ -296,8 +318,8 @@ class Exercise(models.Model):
     introduction_en = models.TextField(null=True, db_column="introductionEn")
     slug = models.TextField(null=True, unique=True)
     slug_en = models.TextField(null=True, unique=True, db_column="slugEn")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -305,10 +327,10 @@ class Exercise(models.Model):
 
 
 class ExerciseAttributeName(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(choices=ExerciseAttributeNameEnum.choices, unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -316,11 +338,11 @@ class ExerciseAttributeName(models.Model):
 
 
 class ExerciseAttributeValue(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     attribute_name = models.ForeignKey("ExerciseAttributeName", on_delete=models.RESTRICT, related_name="values", db_column="attributeNameId", db_index=False)
     value = models.TextField(choices=ExerciseAttributeValueEnum.choices)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -331,12 +353,12 @@ class ExerciseAttributeValue(models.Model):
 
 
 class ExerciseAttribute(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     exercise = models.ForeignKey("Exercise", on_delete=models.CASCADE, related_name="attributes", db_column="exerciseId", db_index=False)
     attribute_name = models.ForeignKey("ExerciseAttributeName", on_delete=models.RESTRICT, related_name="attributes", db_column="attributeNameId", db_index=False)
     attribute_value = models.ForeignKey("ExerciseAttributeValue", on_delete=models.RESTRICT, related_name="attributes", db_column="attributeValueId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -347,7 +369,7 @@ class ExerciseAttribute(models.Model):
 
 
 class WorkoutSession(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="workout_session", db_column="userId", db_index=False)
     started_at = UtcDateTimeField(db_column="startedAt")
     ended_at = UtcDateTimeField(null=True, db_column="endedAt")
@@ -361,7 +383,7 @@ class WorkoutSession(models.Model):
 
 
 class WorkoutSessionExercise(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     workout_session = models.ForeignKey("WorkoutSession", on_delete=models.CASCADE, related_name="exercises", db_column="workoutSessionId", db_index=False)
     exercise = models.ForeignKey("Exercise", on_delete=models.RESTRICT, related_name="workout_session_exercise", db_column="exerciseId", db_index=False)
     order = models.IntegerField()
@@ -371,7 +393,7 @@ class WorkoutSessionExercise(models.Model):
 
 
 class WorkoutSet(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     workout_session_exercise = models.ForeignKey("WorkoutSessionExercise", on_delete=models.CASCADE, related_name="sets", db_column="workoutSessionExerciseId", db_index=False)
     set_index = models.IntegerField(db_column="setIndex")
     type = models.TextField(choices=WorkoutSetType.choices)
@@ -386,15 +408,15 @@ class WorkoutSet(models.Model):
 
 
 class SubscriptionPlan(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     price_monthly = models.DecimalField(max_digits=10, decimal_places=2, null=True, db_column="priceMonthly")
     price_yearly = models.DecimalField(max_digits=10, decimal_places=2, null=True, db_column="priceYearly")
     currency = models.TextField(default="EUR")
     interval = models.TextField(default="month")
     is_active = models.BooleanField(db_column="isActive", default=True)
     available_regions = ArrayField(models.TextField(), db_column="availableRegions", default=list)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -402,15 +424,15 @@ class SubscriptionPlan(models.Model):
 
 
 class PlanProviderMapping(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     plan = models.ForeignKey("SubscriptionPlan", on_delete=models.CASCADE, related_name="provider_mappings", db_column="planId", db_index=False)
     provider = models.TextField(choices=PaymentProcessor.choices)
     external_id = models.TextField(db_column="externalId")
     region = models.TextField(null=True)
     metadata = models.JSONField(null=True)
     is_active = models.BooleanField(db_column="isActive", default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -424,7 +446,7 @@ class PlanProviderMapping(models.Model):
 
 
 class Subscription(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="subscriptions", db_column="userId", db_index=False)
     plan = models.ForeignKey("SubscriptionPlan", on_delete=models.RESTRICT, related_name="subscriptions", db_column="planId", db_index=False)
     revenue_cat_user_id = models.TextField(null=True, db_column="revenueCatUserId")
@@ -433,8 +455,8 @@ class Subscription(models.Model):
     current_period_end = UtcDateTimeField(null=True, db_column="currentPeriodEnd")
     cancelled_at = UtcDateTimeField(null=True, db_column="cancelledAt")
     platform = models.TextField(choices=Platform.choices, null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -445,23 +467,23 @@ class Subscription(models.Model):
 
 
 class License(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     key = models.TextField(unique=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="licenses", db_column="userId", null=True, db_index=False)
-    valid_from = UtcDateTimeField(db_column="validFrom", default=timezone.now)
+    valid_from = UtcDateTimeField(db_column="validFrom", default=now_milliseconds)
     valid_until = UtcDateTimeField(null=True, db_column="validUntil")
     max_users = models.IntegerField(null=True, db_column="maxUsers", default=1)
     features = models.JSONField(null=True)
     activated_at = UtcDateTimeField(null=True, db_column="activatedAt")
     last_checked_at = UtcDateTimeField(null=True, db_column="lastCheckedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "licenses"
 
 
 class RevenueCatWebhookEvent(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     event_type = models.TextField(db_column="eventType")
     event_timestamp = UtcDateTimeField(db_column="eventTimestamp")
     app_user_id = models.TextField(db_column="appUserId")
@@ -474,8 +496,8 @@ class RevenueCatWebhookEvent(models.Model):
     processing_error = models.TextField(null=True, db_column="processingError")
     retry_count = models.IntegerField(db_column="retryCount", default=0)
     raw_event_data = models.JSONField(db_column="rawEventData")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -489,7 +511,7 @@ class RevenueCatWebhookEvent(models.Model):
 
 
 class Program(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField(unique=True)
     slug_en = models.TextField(unique=True, db_column="slugEn")
     slug_es = models.TextField(unique=True, db_column="slugEs")
@@ -520,8 +542,8 @@ class Program(models.Model):
     is_active = models.BooleanField(db_column="isActive", default=True)
     visibility = models.TextField(choices=ProgramVisibility.choices, default=ProgramVisibility.DRAFT)
     participant_count = models.IntegerField(db_column="participantCount", default=0)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -529,7 +551,7 @@ class Program(models.Model):
 
 
 class ProgramCoach(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     program = models.ForeignKey("Program", on_delete=models.CASCADE, related_name="coaches", db_column="programId", db_index=False)
     name = models.TextField()
     image = models.TextField()
@@ -540,7 +562,7 @@ class ProgramCoach(models.Model):
 
 
 class ProgramWeek(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     program = models.ForeignKey("Program", on_delete=models.CASCADE, related_name="weeks", db_column="programId", db_index=False)
     week_number = models.IntegerField(db_column="weekNumber")
     title = models.TextField()
@@ -564,7 +586,7 @@ class ProgramWeek(models.Model):
 
 
 class ProgramSession(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     week = models.ForeignKey("ProgramWeek", on_delete=models.CASCADE, related_name="sessions", db_column="weekId", db_index=False)
     session_number = models.IntegerField(db_column="sessionNumber")
     title = models.TextField()
@@ -603,7 +625,7 @@ class ProgramSession(models.Model):
 
 
 class ProgramSessionExercise(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session = models.ForeignKey("ProgramSession", on_delete=models.CASCADE, related_name="exercises", db_column="sessionId", db_index=False)
     exercise = models.ForeignKey("Exercise", on_delete=models.RESTRICT, related_name="program_session_exercise", db_column="exerciseId", db_index=False)
     order = models.IntegerField()
@@ -622,7 +644,7 @@ class ProgramSessionExercise(models.Model):
 
 
 class ProgramSuggestedSet(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     program_session_exercise = models.ForeignKey("ProgramSessionExercise", on_delete=models.CASCADE, related_name="suggested_sets", db_column="programSessionExerciseId", db_index=False)
     set_index = models.IntegerField(db_column="setIndex")
     types = ArrayField(models.TextField(choices=WorkoutSetType.choices), default=list)
@@ -638,10 +660,10 @@ class ProgramSuggestedSet(models.Model):
 
 
 class UserProgramEnrollment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="program_enrollments", db_column="userId", db_index=False)
     program = models.ForeignKey("Program", on_delete=models.RESTRICT, related_name="enrollments", db_column="programId", db_index=False)
-    enrolled_at = UtcDateTimeField(db_column="enrolledAt", default=timezone.now)
+    enrolled_at = UtcDateTimeField(db_column="enrolledAt", default=now_milliseconds)
     current_week = models.IntegerField(db_column="currentWeek", default=1)
     current_session = models.IntegerField(db_column="currentSession", default=1)
     completed_sessions = models.IntegerField(db_column="completedSessions", default=0)
@@ -656,10 +678,10 @@ class UserProgramEnrollment(models.Model):
 
 
 class UserSessionProgress(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     enrollment = models.ForeignKey("UserProgramEnrollment", on_delete=models.CASCADE, related_name="session_progress", db_column="enrollmentId", db_index=False)
     session = models.ForeignKey("ProgramSession", on_delete=models.RESTRICT, related_name="user_progress", db_column="sessionId", db_index=False)
-    started_at = UtcDateTimeField(db_column="startedAt", default=timezone.now)
+    started_at = UtcDateTimeField(db_column="startedAt", default=now_milliseconds)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     workout_session = models.OneToOneField("WorkoutSession", on_delete=models.SET_NULL, related_name="user_session_progress", db_column="workoutSessionId", null=True)
 

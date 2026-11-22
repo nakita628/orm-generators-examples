@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -20,7 +21,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -64,7 +66,7 @@ class User(Base):
 class UserFavoriteExercise(Base):
     __tablename__ = "user_favorite_exercises"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("user.id", ondelete="CASCADE", onupdate="CASCADE", name="user_favorite_exercises_userId_fkey"))
     exercise_id: Mapped[str] = mapped_column("exerciseId", ForeignKey("exercises.id", ondelete="CASCADE", onupdate="CASCADE", name="user_favorite_exercises_exerciseId_fkey"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
@@ -127,7 +129,7 @@ class Verification(Base):
 class Feedbacks(Base):
     __tablename__ = "feedbacks"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     review: Mapped[int]
     message: Mapped[str]
     email: Mapped[Optional[str]]
@@ -140,7 +142,7 @@ class Feedbacks(Base):
 class Exercise(Base):
     __tablename__ = "exercises"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     name_en: Mapped[Optional[str]] = mapped_column("nameEn")
     description: Mapped[Optional[str]]
@@ -167,7 +169,7 @@ class Exercise(Base):
 class ExerciseAttributeName(Base):
     __tablename__ = "exercise_attribute_names"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str] = mapped_column(Enum("TYPE", "PRIMARY_MUSCLE", "SECONDARY_MUSCLE", "EQUIPMENT", "MECHANICS_TYPE", name="ExerciseAttributeNameEnum"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
@@ -182,7 +184,7 @@ class ExerciseAttributeName(Base):
 class ExerciseAttributeValue(Base):
     __tablename__ = "exercise_attribute_values"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     attribute_name_id: Mapped[str] = mapped_column("attributeNameId", ForeignKey("exercise_attribute_names.id", ondelete="RESTRICT", onupdate="CASCADE", name="exercise_attribute_values_attributeNameId_fkey"))
     value: Mapped[str] = mapped_column(Enum("BODYWEIGHT", "STRENGTH", "POWERLIFTING", "CALISTHENIC", "PLYOMETRICS", "STRETCHING", "STRONGMAN", "CARDIO", "STABILIZATION", "POWER", "RESISTANCE", "CROSSFIT", "WEIGHTLIFTING", "BICEPS", "SHOULDERS", "CHEST", "BACK", "GLUTES", "TRICEPS", "HAMSTRINGS", "QUADRICEPS", "FOREARMS", "CALVES", "TRAPS", "ABDOMINALS", "NECK", "LATS", "ADDUCTORS", "ABDUCTORS", "OBLIQUES", "GROIN", "FULL_BODY", "ROTATOR_CUFF", "HIP_FLEXOR", "ACHILLES_TENDON", "FINGERS", "DUMBBELL", "KETTLEBELLS", "BARBELL", "SMITH_MACHINE", "BODY_ONLY", "OTHER", "BANDS", "EZ_BAR", "MACHINE", "DESK", "PULLUP_BAR", "NONE", "CABLE", "MEDICINE_BALL", "SWISS_BALL", "FOAM_ROLL", "WEIGHT_PLATE", "TRX", "BOX", "ROPES", "SPIN_BIKE", "STEP", "BOSU", "TYRE", "SANDBAG", "POLE", "BENCH", "WALL", "BAR", "RACK", "CAR", "SLED", "CHAIN", "SKIERG", "ROPE", "NA", "ISOLATION", "COMPOUND", name="ExerciseAttributeValueEnum"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -198,7 +200,7 @@ class ExerciseAttributeValue(Base):
 class ExerciseAttribute(Base):
     __tablename__ = "exercise_attributes"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     exercise_id: Mapped[str] = mapped_column("exerciseId", ForeignKey("exercises.id", ondelete="CASCADE", onupdate="CASCADE", name="exercise_attributes_exerciseId_fkey"))
     attribute_name_id: Mapped[str] = mapped_column("attributeNameId", ForeignKey("exercise_attribute_names.id", ondelete="RESTRICT", onupdate="CASCADE", name="exercise_attributes_attributeNameId_fkey"))
     attribute_value_id: Mapped[str] = mapped_column("attributeValueId", ForeignKey("exercise_attribute_values.id", ondelete="RESTRICT", onupdate="CASCADE", name="exercise_attributes_attributeValueId_fkey"))
@@ -216,7 +218,7 @@ class ExerciseAttribute(Base):
 class WorkoutSession(Base):
     __tablename__ = "workout_sessions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("user.id", ondelete="RESTRICT", onupdate="CASCADE", name="workout_sessions_userId_fkey"))
     started_at: Mapped[datetime] = mapped_column("startedAt")
     ended_at: Mapped[Optional[datetime]] = mapped_column("endedAt")
@@ -232,7 +234,7 @@ class WorkoutSession(Base):
 class WorkoutSessionExercise(Base):
     __tablename__ = "workout_session_exercises"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workout_session_id: Mapped[str] = mapped_column("workoutSessionId", ForeignKey("workout_sessions.id", ondelete="CASCADE", onupdate="CASCADE", name="workout_session_exercises_workoutSessionId_fkey"))
     exercise_id: Mapped[str] = mapped_column("exerciseId", ForeignKey("exercises.id", ondelete="RESTRICT", onupdate="CASCADE", name="workout_session_exercises_exerciseId_fkey"))
     order: Mapped[int]
@@ -244,7 +246,7 @@ class WorkoutSessionExercise(Base):
 class WorkoutSet(Base):
     __tablename__ = "workout_sets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workout_session_exercise_id: Mapped[str] = mapped_column("workoutSessionExerciseId", ForeignKey("workout_session_exercises.id", ondelete="CASCADE", onupdate="CASCADE", name="workout_sets_workoutSessionExerciseId_fkey"))
     set_index: Mapped[int] = mapped_column("setIndex")
     type: Mapped[str] = mapped_column(Enum("TIME", "WEIGHT", "REPS", "BODYWEIGHT", "NA", name="WorkoutSetType"))
@@ -259,7 +261,7 @@ class WorkoutSet(Base):
 class SubscriptionPlan(Base):
     __tablename__ = "subscription_plans"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     price_monthly: Mapped[Optional[DecimalType]] = mapped_column("priceMonthly", Numeric(precision=10, scale=2))
     price_yearly: Mapped[Optional[DecimalType]] = mapped_column("priceYearly", Numeric(precision=10, scale=2))
     currency: Mapped[str] = mapped_column(default="EUR", server_default=text("'EUR'"))
@@ -275,7 +277,7 @@ class SubscriptionPlan(Base):
 class PlanProviderMapping(Base):
     __tablename__ = "plan_provider_mappings"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     plan_id: Mapped[str] = mapped_column("planId", ForeignKey("subscription_plans.id", ondelete="CASCADE", onupdate="CASCADE", name="plan_provider_mappings_planId_fkey"))
     provider: Mapped[str] = mapped_column(Enum("STRIPE", "PAYPAL", "LEMONSQUEEZY", "PADDLE", "APPLE_PAY", "GOOGLE_PAY", "REVENUECAT", "NONE", "OTHER", name="PaymentProcessor"))
     external_id: Mapped[str] = mapped_column("externalId")
@@ -295,7 +297,7 @@ class PlanProviderMapping(Base):
 class Subscription(Base):
     __tablename__ = "subscriptions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("user.id", ondelete="RESTRICT", onupdate="CASCADE", name="subscriptions_userId_fkey"))
     plan_id: Mapped[str] = mapped_column("planId", ForeignKey("subscription_plans.id", ondelete="RESTRICT", onupdate="CASCADE", name="subscriptions_planId_fkey"))
     revenue_cat_user_id: Mapped[Optional[str]] = mapped_column("revenueCatUserId")
@@ -317,7 +319,7 @@ class Subscription(Base):
 class License(Base):
     __tablename__ = "licenses"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     key: Mapped[str]
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("user.id", ondelete="SET NULL", onupdate="CASCADE", name="licenses_userId_fkey"))
     valid_from: Mapped[datetime] = mapped_column("validFrom", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -337,7 +339,7 @@ class License(Base):
 class RevenueCatWebhookEvent(Base):
     __tablename__ = "revenuecat_webhook_events"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     event_type: Mapped[str] = mapped_column("eventType")
     event_timestamp: Mapped[datetime] = mapped_column("eventTimestamp")
     app_user_id: Mapped[str] = mapped_column("appUserId")
@@ -363,7 +365,7 @@ class RevenueCatWebhookEvent(Base):
 class Program(Base):
     __tablename__ = "programs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     slug: Mapped[str]
     slug_en: Mapped[str] = mapped_column("slugEn")
     slug_es: Mapped[str] = mapped_column("slugEs")
@@ -413,7 +415,7 @@ class Program(Base):
 class ProgramCoach(Base):
     __tablename__ = "program_coaches"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     program_id: Mapped[str] = mapped_column("programId", ForeignKey("programs.id", ondelete="CASCADE", onupdate="CASCADE", name="program_coaches_programId_fkey"))
     name: Mapped[str]
     image: Mapped[str]
@@ -424,7 +426,7 @@ class ProgramCoach(Base):
 class ProgramWeek(Base):
     __tablename__ = "program_weeks"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     program_id: Mapped[str] = mapped_column("programId", ForeignKey("programs.id", ondelete="CASCADE", onupdate="CASCADE", name="program_weeks_programId_fkey"))
     week_number: Mapped[int] = mapped_column("weekNumber")
     title: Mapped[str]
@@ -450,7 +452,7 @@ class ProgramWeek(Base):
 class ProgramSession(Base):
     __tablename__ = "program_sessions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     week_id: Mapped[str] = mapped_column("weekId", ForeignKey("program_weeks.id", ondelete="CASCADE", onupdate="CASCADE", name="program_sessions_weekId_fkey"))
     session_number: Mapped[int] = mapped_column("sessionNumber")
     title: Mapped[str]
@@ -492,7 +494,7 @@ class ProgramSession(Base):
 class ProgramSessionExercise(Base):
     __tablename__ = "program_session_exercises"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_id: Mapped[str] = mapped_column("sessionId", ForeignKey("program_sessions.id", ondelete="CASCADE", onupdate="CASCADE", name="program_session_exercises_sessionId_fkey"))
     exercise_id: Mapped[str] = mapped_column("exerciseId", ForeignKey("exercises.id", ondelete="RESTRICT", onupdate="CASCADE", name="program_session_exercises_exerciseId_fkey"))
     order: Mapped[int]
@@ -514,7 +516,7 @@ class ProgramSessionExercise(Base):
 class ProgramSuggestedSet(Base):
     __tablename__ = "program_suggested_sets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     program_session_exercise_id: Mapped[str] = mapped_column("programSessionExerciseId", ForeignKey("program_session_exercises.id", ondelete="CASCADE", onupdate="CASCADE", name="program_suggested_sets_programSessionExerciseId_fkey"))
     set_index: Mapped[int] = mapped_column("setIndex")
     types: Mapped[list[str]] = mapped_column(ARRAY(Enum("TIME", "WEIGHT", "REPS", "BODYWEIGHT", "NA", name="WorkoutSetType")), nullable=True, default=lambda: [], server_default=text("ARRAY[]::\"WorkoutSetType\"[]"))
@@ -531,7 +533,7 @@ class ProgramSuggestedSet(Base):
 class UserProgramEnrollment(Base):
     __tablename__ = "user_program_enrollments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("user.id", ondelete="CASCADE", onupdate="CASCADE", name="user_program_enrollments_userId_fkey"))
     program_id: Mapped[str] = mapped_column("programId", ForeignKey("programs.id", ondelete="RESTRICT", onupdate="CASCADE", name="user_program_enrollments_programId_fkey"))
     enrolled_at: Mapped[datetime] = mapped_column("enrolledAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -552,7 +554,7 @@ class UserProgramEnrollment(Base):
 class UserSessionProgress(Base):
     __tablename__ = "user_session_progress"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     enrollment_id: Mapped[str] = mapped_column("enrollmentId", ForeignKey("user_program_enrollments.id", ondelete="CASCADE", onupdate="CASCADE", name="user_session_progress_enrollmentId_fkey"))
     session_id: Mapped[str] = mapped_column("sessionId", ForeignKey("program_sessions.id", ondelete="RESTRICT", onupdate="CASCADE", name="user_session_progress_sessionId_fkey"))
     started_at: Mapped[datetime] = mapped_column("startedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))

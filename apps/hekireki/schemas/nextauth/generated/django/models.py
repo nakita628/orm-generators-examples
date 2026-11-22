@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -29,8 +30,12 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(null=True)
     email = models.TextField(unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")

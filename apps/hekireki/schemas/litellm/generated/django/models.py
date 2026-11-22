@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -33,6 +34,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -46,6 +59,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def lite_llm_agent_identity_required_scopes_default() -> list[str]:
@@ -91,9 +113,9 @@ class LiteLLMBudgetTable(models.Model):
     allowed_models = ArrayField(models.TextField(), default=list)
     temp_budget_increase = models.FloatField(null=True)
     temp_budget_expiry = UtcDateTimeField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -108,9 +130,9 @@ class LiteLLMCustomerOrganizationTable(models.Model):
     customer_org_id = models.TextField(primary_key=True, default=uuid4_str)
     alias = models.TextField(null=True)
     default_budget_template = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="customer_organization_defaults", null=True, db_index=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -130,9 +152,9 @@ class LiteLLMCustomerTeamTable(models.Model):
     budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="customer_teams", null=True, db_index=False)
     budget_override = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="customer_team_overrides", null=True, db_index=False)
     budget_override_expires_at = UtcDateTimeField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -154,9 +176,9 @@ class LiteLLMCustomerMemberTable(models.Model):
     budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="customer_members", null=True, db_index=False)
     budget_override = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="customer_member_overrides", null=True, db_index=False)
     budget_override_expires_at = UtcDateTimeField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -176,7 +198,7 @@ class LiteLLMCustomerBudgetIncreaseRequest(models.Model):
     reason = models.TextField(null=True)
     status = models.TextField(default="pending_review")
     submitted_by = models.TextField()
-    submitted_at = UtcDateTimeField(default=timezone.now)
+    submitted_at = UtcDateTimeField(default=now_milliseconds)
     reviewed_by = models.TextField(null=True)
     reviewed_at = UtcDateTimeField(null=True)
     review_notes = models.TextField(null=True)
@@ -195,9 +217,9 @@ class LiteLLMCredentialsTable(models.Model):
     display_name = models.TextField(null=True)
     credential_values = models.JSONField()
     credential_info = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -211,9 +233,9 @@ class LiteLLMProxyModelTable(models.Model):
     litellm_params = models.JSONField()
     model_info = models.JSONField(null=True)
     blocked = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -240,9 +262,9 @@ class LiteLLMAgentsTable(models.Model):
     rpm_limit = models.IntegerField(null=True)
     session_tpm_limit = models.IntegerField(null=True)
     session_rpm_limit = models.IntegerField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -288,7 +310,7 @@ class LiteLLMRetiredAgentIdentity(models.Model):
 
 class LiteLLMRetiredAgent(models.Model):
     original_agent_id = models.TextField(primary_key=True, default=None)
-    retired_at = UtcDateTimeField(default=timezone.now)
+    retired_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_RetiredAgent"
@@ -302,7 +324,7 @@ class LiteLLMVerifiedSubject(models.Model):
     kind = models.TextField(default="human")
     user = models.ForeignKey("LiteLLMUserTable", on_delete=models.CASCADE, related_name="verified_subjects", null=True, db_index=False)
     verified_via = models.TextField(default="sso_interactive")
-    verified_at = UtcDateTimeField(default=timezone.now)
+    verified_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_VerifiedSubject"
@@ -323,9 +345,9 @@ class LiteLLMOrganizationTable(models.Model):
     spend = models.FloatField(default=0)
     model_spend = models.JSONField(default=dict)
     object_permission = models.ForeignKey("LiteLLMObjectPermissionTable", on_delete=models.SET_NULL, related_name="organizations", null=True, db_index=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -336,9 +358,9 @@ class LiteLLMOrganizationTable(models.Model):
 class LiteLLMModelTable(models.Model):
     id = models.AutoField(primary_key=True)
     model_aliases = models.JSONField(null=True, db_column="aliases")
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -366,8 +388,8 @@ class LiteLLMTeamTable(models.Model):
     budget_duration = models.TextField(null=True)
     budget_reset_at = UtcDateTimeField(null=True)
     blocked = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     model_spend = models.JSONField(default=dict)
     model_max_budget = models.JSONField(default=dict)
     router_settings = models.JSONField(null=True, default=dict)
@@ -403,9 +425,9 @@ class LiteLLMProjectTable(models.Model):
     model_tpm_limit = models.JSONField(default=dict)
     blocked = models.BooleanField(default=False)
     object_permission = models.ForeignKey("LiteLLMObjectPermissionTable", on_delete=models.SET_NULL, related_name="projects", null=True, db_index=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -444,7 +466,7 @@ class LiteLLMDeletedTeamTable(models.Model):
     allow_team_guardrail_config = models.BooleanField(default=False)
     created_at = UtcDateTimeField(null=True)
     updated_at = UtcDateTimeField(null=True)
-    deleted_at = UtcDateTimeField(default=timezone.now)
+    deleted_at = UtcDateTimeField(default=now_milliseconds)
     deleted_by = models.TextField(null=True)
     deleted_by_api_key = models.TextField(null=True)
     litellm_changed_by = models.TextField(null=True)
@@ -487,8 +509,8 @@ class LiteLLMUserTable(models.Model):
     policies = ArrayField(models.TextField(), default=list)
     model_spend = models.JSONField(default=dict)
     model_max_budget = models.JSONField(default=dict)
-    created_at = UtcDateTimeField(null=True, default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, auto_now=True)
+    created_at = UtcDateTimeField(null=True, default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -525,9 +547,9 @@ class LiteLLMMCPServerTable(models.Model):
     transport = models.TextField(default="sse")
     auth_type = models.TextField(null=True)
     credentials = models.JSONField(null=True, default=dict)
-    created_at = UtcDateTimeField(null=True, default=timezone.now)
+    created_at = UtcDateTimeField(null=True, default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(null=True, auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(null=True, auto_now=True)
     updated_by = models.TextField(null=True)
     mcp_info = models.JSONField(null=True, default=dict)
     mcp_access_groups = ArrayField(models.TextField())
@@ -585,9 +607,9 @@ class LiteLLMMCPToolsetTable(models.Model):
     toolset_name = models.TextField(unique=True)
     description = models.TextField(null=True)
     tools = models.JSONField(default=list)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -600,8 +622,8 @@ class LiteLLMMCPUserCredentials(models.Model):
     user_id = models.TextField()
     server_id = models.TextField()
     credential_b64 = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -617,8 +639,8 @@ class LiteLLMUserProviderCredentials(models.Model):
     credential_name = models.TextField()
     provider = models.TextField()
     credential_b64 = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -636,8 +658,8 @@ class LiteLLMMCPUserEnvVars(models.Model):
     user_id = models.TextField()
     server_id = models.TextField()
     values_b64 = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -654,8 +676,8 @@ class LiteLLMMCPUserEnvVars(models.Model):
 class LiteLLMMCPServerOAuthClient(models.Model):
     server_id = models.TextField(primary_key=True, default=None)
     credentials = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -665,8 +687,8 @@ class LiteLLMMCPServerOAuthClient(models.Model):
 class LiteLLMSSOIdentityAssertion(models.Model):
     user_id = models.TextField(primary_key=True, default=None)
     assertion_b64 = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -710,9 +732,9 @@ class LiteLLMVerificationToken(models.Model):
     litellm_budget_table = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="keys", db_column="budget_id", null=True, db_index=False)
     litellm_organization_table = models.ForeignKey("LiteLLMOrganizationTable", on_delete=models.SET_NULL, related_name="keys", db_column="organization_id", null=True, db_index=False)
     object_permission = models.ForeignKey("LiteLLMObjectPermissionTable", on_delete=models.SET_NULL, related_name="verification_tokens", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, default=timezone.now)
+    created_at = UtcDateTimeField(null=True, default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(null=True, auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(null=True, auto_now=True)
     updated_by = models.TextField(null=True)
     settings_updated_at = UtcDateTimeField(null=True)
     last_active = UtcDateTimeField(null=True)
@@ -741,9 +763,9 @@ class LiteLLMJWTKeyMapping(models.Model):
     litellm_verification_token = models.ForeignKey("LiteLLMVerificationToken", on_delete=models.CASCADE, related_name="jwt_key_mappings", db_column="token", db_index=False)
     description = models.TextField(null=True)
     is_active = models.BooleanField(default=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -762,7 +784,7 @@ class LiteLLMDeprecatedVerificationToken(models.Model):
     token = models.TextField(unique=True)
     active_token_id = models.TextField()
     revoke_at = UtcDateTimeField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_DeprecatedVerificationToken"
@@ -824,7 +846,7 @@ class LiteLLMDeletedVerificationToken(models.Model):
     rotation_interval = models.TextField(null=True)
     last_rotation_at = UtcDateTimeField(null=True)
     key_rotation_at = UtcDateTimeField(null=True)
-    deleted_at = UtcDateTimeField(default=timezone.now)
+    deleted_at = UtcDateTimeField(default=now_milliseconds)
     deleted_by = models.TextField(null=True)
     deleted_by_api_key = models.TextField(null=True)
     litellm_changed_by = models.TextField(null=True)
@@ -862,9 +884,9 @@ class LiteLLMModelAccessGroupBudgetTable(models.Model):
     access_group_name = models.TextField(primary_key=True, default=None)
     spend = models.FloatField(default=0)
     litellm_budget_table = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="model_access_groups", db_column="budget_id", null=True, db_index=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -879,9 +901,9 @@ class LiteLLMTagTable(models.Model):
     model_info = models.JSONField(null=True)
     spend = models.FloatField(default=0)
     litellm_budget_table = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="tags", db_column="budget_id", null=True, db_index=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -933,8 +955,8 @@ class LiteLLMSpendLogs(models.Model):
     agent_id = models.TextField(null=True)
     proxy_server_request = models.JSONField(null=True, default=dict)
     litellm_call_id = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -956,8 +978,8 @@ class LiteLLMBudgetWindowSpend(models.Model):
     window_duration = models.TextField()
     window_start = UtcDateTimeField()
     spend = models.FloatField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1011,8 +1033,8 @@ class LiteLLMOrganizationMembership(models.Model):
     user_role = models.TextField(null=True)
     spend = models.FloatField(null=True, default=0)
     litellm_budget_table = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="organization_membership", db_column="budget_id", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, auto_now=True)
+    created_at = UtcDateTimeField(null=True, default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1039,7 +1061,7 @@ class LiteLLMInvitationLink(models.Model):
 
 class LiteLLMAuditLog(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
     changed_by = models.TextField(default="")
     changed_by_api_key = models.TextField(default="")
     action = models.TextField()
@@ -1078,8 +1100,8 @@ class LiteLLMDailyUserSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1122,8 +1144,8 @@ class LiteLLMDailyGlobalSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1162,8 +1184,8 @@ class LiteLLMDailyOrganizationSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1209,8 +1231,8 @@ class LiteLLMDailyCustomerMemberSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1251,8 +1273,8 @@ class LiteLLMDailyEndUserSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1296,8 +1318,8 @@ class LiteLLMDailyAgentSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1342,8 +1364,8 @@ class LiteLLMDailyTeamSpend(models.Model):
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
     ptu_flat_cost = models.FloatField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1388,8 +1410,8 @@ class LiteLLMDailyTagSpend(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1410,18 +1432,18 @@ class LiteLLMDailyTagSpend(models.Model):
 class LiteLLMProxyWorkerHeartbeat(models.Model):
     worker_id = models.TextField(primary_key=True, default=None)
     hostname = models.TextField()
-    started_at = UtcDateTimeField(default=timezone.now)
-    last_heartbeat_at = UtcDateTimeField(default=timezone.now)
+    started_at = UtcDateTimeField(default=now_milliseconds)
+    last_heartbeat_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_ProxyWorkerHeartbeat"
 
 
 class LiteLLMCronJob(models.Model):
-    cronjob_id = models.TextField(primary_key=True, default=None)
+    cronjob_id = models.TextField(primary_key=True, default=cuid_str)
     pod_id = models.TextField()
     status = models.TextField(choices=JobStatus.choices, default=JobStatus.INACTIVE)
-    last_updated = UtcDateTimeField(default=timezone.now)
+    last_updated = UtcDateTimeField(default=now_milliseconds)
     ttl = UtcDateTimeField()
 
     class Meta:
@@ -1439,7 +1461,7 @@ class LiteLLMScheduledJobRun(models.Model):
     claimed_at = models.DateTimeField(null=True)
     lease_expires_at = models.DateTimeField(null=True)
     finished_at = models.DateTimeField(null=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_ScheduledJobRun"
@@ -1457,10 +1479,10 @@ class LiteLLMManagedFileTable(models.Model):
     flat_model_file_ids = ArrayField(models.TextField(), default=list)
     storage_backend = models.TextField(null=True)
     storage_url = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
     team_id = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1482,14 +1504,14 @@ class LiteLLMManagedObjectTable(models.Model):
     file_purpose = models.TextField()
     status = models.TextField(null=True)
     batch_processed = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
     team_id = models.TextField(null=True)
     org_id = models.TextField(null=True)
     api_key = models.TextField(null=True)
     request_tags = models.JSONField(null=True, default=list)
     end_user_id = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1505,7 +1527,7 @@ class LiteLLMManagedObjectTable(models.Model):
 class LiteLLMManagedFileContentTable(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     content = models.BinaryField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_ManagedFileContentTable"
@@ -1519,10 +1541,10 @@ class LiteLLMManagedVectorStoreTable(models.Model):
     flat_model_resource_ids = ArrayField(models.TextField(), default=list)
     storage_backend = models.TextField(null=True)
     storage_url = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
     team_id = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1540,8 +1562,8 @@ class LiteLLMManagedVectorStoresTable(models.Model):
     vector_store_name = models.TextField(null=True)
     vector_store_description = models.TextField(null=True)
     vector_store_metadata = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     litellm_credential_name = models.TextField(null=True)
     litellm_params = models.JSONField(null=True)
     team_id = models.TextField(null=True)
@@ -1562,8 +1584,8 @@ class LiteLLMGuardrailsTable(models.Model):
     litellm_params = models.JSONField()
     guardrail_info = models.JSONField(null=True)
     team_id = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     status = models.TextField(default="active")
     submitted_at = UtcDateTimeField(null=True)
     reviewed_at = UtcDateTimeField(null=True)
@@ -1586,8 +1608,8 @@ class LiteLLMDailyGuardrailMetrics(models.Model):
     flagged_count = models.BigIntegerField(default=0)
     avg_score = models.FloatField(null=True)
     avg_latency_ms = models.FloatField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1608,8 +1630,8 @@ class LiteLLMDailyGuardrailUsageUnits(models.Model):
     units = models.BigIntegerField(default=0)
     cost = models.FloatField(null=True)
     untracked_units = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1629,8 +1651,8 @@ class LiteLLMDailyPolicyMetrics(models.Model):
     flagged_count = models.BigIntegerField(default=0)
     avg_score = models.FloatField(null=True)
     avg_latency_ms = models.FloatField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1677,8 +1699,8 @@ class LiteLLMDailyToolSpend(models.Model):
     spend = models.FloatField(default=0)
     total_tokens = models.BigIntegerField(default=0)
     request_count = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1700,8 +1722,8 @@ class LiteLLMDailyModelUsage(models.Model):
     failed_requests = models.BigIntegerField(default=0)
     total_response_time_ms = models.BigIntegerField(default=0)
     timed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1719,8 +1741,8 @@ class LiteLLMDailyGatewayRequests(models.Model):
     route = models.TextField()
     successful_requests = models.BigIntegerField(default=0)
     failed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1737,8 +1759,8 @@ class LiteLLMDailyGatewayFailedRequests(models.Model):
     route = models.TextField()
     status_code = models.IntegerField()
     failed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1757,8 +1779,8 @@ class LiteLLMDailyRequestErrors(models.Model):
     model_group = models.TextField(default="")
     status_code = models.IntegerField()
     failed_requests = models.BigIntegerField(default=0)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1776,8 +1798,8 @@ class LiteLLMPromptTable(models.Model):
     created_by = models.TextField(null=True)
     litellm_params = models.JSONField()
     prompt_info = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1802,9 +1824,9 @@ class LiteLLMHealthCheckTable(models.Model):
     response_time_ms = models.FloatField(null=True)
     details = models.JSONField(null=True)
     checked_by = models.TextField(null=True)
-    checked_at = UtcDateTimeField(default=timezone.now)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    checked_at = UtcDateTimeField(default=now_milliseconds)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1822,8 +1844,8 @@ class LiteLLMSearchToolsTable(models.Model):
     search_tool_name = models.TextField(unique=True)
     litellm_params = models.JSONField()
     search_tool_info = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1833,8 +1855,8 @@ class LiteLLMSearchToolsTable(models.Model):
 class LiteLLMSSOConfig(models.Model):
     id = models.TextField(primary_key=True, default=None)
     sso_settings = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1846,9 +1868,9 @@ class LiteLLMManagedVectorStoreIndexTable(models.Model):
     index_name = models.TextField(unique=True)
     litellm_params = models.JSONField()
     index_info = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1859,8 +1881,8 @@ class LiteLLMManagedVectorStoreIndexTable(models.Model):
 class LiteLLMCacheConfig(models.Model):
     id = models.TextField(primary_key=True, default=None)
     cache_settings = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1870,8 +1892,8 @@ class LiteLLMCacheConfig(models.Model):
 class LiteLLMUISettings(models.Model):
     id = models.TextField(primary_key=True, default=None)
     ui_settings = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1881,8 +1903,8 @@ class LiteLLMUISettings(models.Model):
 class LiteLLMConfigOverrides(models.Model):
     config_type = models.TextField(primary_key=True, default=None)
     config_value = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1900,9 +1922,9 @@ class LiteLLMSkillsTable(models.Model):
     file_name = models.TextField(null=True)
     file_type = models.TextField(null=True)
     metadata = models.JSONField(null=True, default=dict)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1925,9 +1947,9 @@ class LiteLLMPolicyTable(models.Model):
     guardrails_remove = ArrayField(models.TextField(), default=list)
     condition = models.JSONField(null=True, default=dict)
     pipeline = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1951,9 +1973,9 @@ class LiteLLMPolicyAttachmentTable(models.Model):
     tags = ArrayField(models.TextField(), default=list)
     priority = models.IntegerField(null=True)
     is_default = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1974,9 +1996,9 @@ class LiteLLMToolTable(models.Model):
     key_alias = models.TextField(null=True)
     user_agent = models.TextField(null=True)
     last_used_at = UtcDateTimeField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2001,9 +2023,9 @@ class LiteLLMAccessGroupTable(models.Model):
     access_vector_store_ids = ArrayField(models.TextField(), default=list)
     assigned_team_ids = ArrayField(models.TextField(), default=list)
     assigned_key_ids = ArrayField(models.TextField(), default=list)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2019,8 +2041,8 @@ class LiteLLMClaudeCodePluginTable(models.Model):
     manifest_json = models.TextField(null=True)
     files_json = models.TextField(null=True, default="{}")
     enabled = models.BooleanField(default=True)
-    created_at = UtcDateTimeField(null=True, default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, auto_now=True)
+    created_at = UtcDateTimeField(null=True, default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, auto_now=True)
     created_by = models.TextField(null=True)
     anonymous_download_count = models.BigIntegerField(default=0)
     objects = AutoNowQuerySet.as_manager()
@@ -2058,7 +2080,7 @@ class LiteLLMSkillSubmission(models.Model):
     proposal_json = models.TextField()
     archive_content = models.BinaryField(null=True)
     submitted_by = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     base_plugin_id = models.TextField(null=True)
     base_updated_at = UtcDateTimeField(null=True)
     reviewed_by = models.TextField(null=True)
@@ -2079,7 +2101,7 @@ class LiteLLMSkillSubmission(models.Model):
 class LiteLLMClaudeCodePluginDownload(models.Model):
     id = models.BigAutoField(primary_key=True)
     plugin = models.ForeignKey("LiteLLMClaudeCodePluginTable", on_delete=models.CASCADE, related_name="downloads", db_index=False)
-    downloaded_at = UtcDateTimeField(default=timezone.now)
+    downloaded_at = UtcDateTimeField(default=now_milliseconds)
     version = models.TextField(null=True)
     digest = models.TextField()
     authenticated = models.BooleanField()
@@ -2111,9 +2133,9 @@ class LiteLLMMemoryTable(models.Model):
     metadata = models.JSONField(null=True)
     user_id = models.TextField(null=True)
     team_id = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2133,7 +2155,7 @@ class LiteLLMAdaptiveRouterState(models.Model):
     alpha = models.FloatField()
     beta = models.FloatField()
     total_samples = models.IntegerField(default=0)
-    last_updated_at = UtcDateTimeField(auto_now=True)
+    last_updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2161,7 +2183,7 @@ class LiteLLMAdaptiveRouterSession(models.Model):
     last_processed_turn = models.IntegerField(default=-1)
     clean_credit_awarded = models.BooleanField(default=False)
     terminal_status = models.IntegerField(null=True)
-    last_activity_at = UtcDateTimeField(auto_now=True)
+    last_activity_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2182,7 +2204,7 @@ class LiteLLMAutoRouterBaselineComparison(models.Model):
     history = models.TextField(null=True)
     attempted_at = UtcDateTimeField(null=True)
     retired = models.BooleanField(default=False)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_AutoRouterBaselineComparison"
@@ -2320,7 +2342,7 @@ class LiteLLMAutoRouterDailySpend(models.Model):
 
 
 class LiteLLMShadowEvalJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     group_id = models.TextField()
     target_type = models.TextField(default="key")
     target_id = models.TextField()
@@ -2333,7 +2355,7 @@ class LiteLLMShadowEvalJob(models.Model):
     shadow_percentage = models.FloatField()
     max_turns = models.IntegerField()
     max_budget = models.FloatField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField(null=True)
     ends_at = UtcDateTimeField()
     stopped_at = UtcDateTimeField(null=True)
@@ -2349,7 +2371,7 @@ class LiteLLMShadowEvalJob(models.Model):
 
 
 class LiteLLMShadowEvalAttempt(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     job_id = models.TextField()
     request_id = models.TextField()
     outcome = models.TextField()
@@ -2365,7 +2387,7 @@ class LiteLLMShadowEvalAttempt(models.Model):
     shadow_classifier_cost = models.FloatField(default=0)
     real_cache_hit = models.BooleanField(default=False)
     error = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_ShadowEvalAttempt"
@@ -2391,8 +2413,8 @@ class LiteLLMWorkflowRun(models.Model):
     workflow_type = models.TextField()
     status = models.TextField(default="pending")
     created_by = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     input = models.JSONField(null=True)
     output = models.JSONField(null=True)
     metadata = models.JSONField(null=True)
@@ -2415,7 +2437,7 @@ class LiteLLMWorkflowEvent(models.Model):
     step_name = models.TextField()
     sequence_number = models.IntegerField()
     data = models.JSONField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_WorkflowEvent"
@@ -2434,7 +2456,7 @@ class LiteLLMWorkflowMessage(models.Model):
     content = models.TextField()
     sequence_number = models.IntegerField()
     session_id = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_WorkflowMessage"
@@ -2450,7 +2472,7 @@ class LiteLLMBackgroundInteractionSettlement(models.Model):
     interaction_id = models.TextField(primary_key=True, default=None)
     custom_llm_provider = models.TextField()
     create_context = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     claimed_at = UtcDateTimeField(null=True)
     claimed_by = models.TextField(null=True)
     settled_at = UtcDateTimeField(null=True)
@@ -2466,7 +2488,7 @@ class LiteLLMBackgroundInteractionSettlement(models.Model):
 
 class LiteLLMBackgroundResponseSettlement(models.Model):
     response_id = models.TextField(primary_key=True, default=None)
-    settled_at = UtcDateTimeField(default=timezone.now)
+    settled_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_BackgroundResponseSettlement"
@@ -2564,7 +2586,7 @@ class LiteLLMTelemetryReport(models.Model):
     window_start = models.FloatField()
     window_end = models.FloatField()
     report = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_TelemetryReport"
@@ -2581,10 +2603,10 @@ class LiteLLMSpendLogDelivery(models.Model):
     accounting_payload = models.JSONField()
     is_batch = models.BooleanField()
     attempts = models.IntegerField(default=0)
-    next_attempt_at = UtcDateTimeField(default=timezone.now)
+    next_attempt_at = UtcDateTimeField(default=now_milliseconds)
     applied_at = UtcDateTimeField(null=True)
     last_error = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "LiteLLM_SpendLogDelivery"
@@ -2603,9 +2625,9 @@ class LiteLLMSubscriptionAccountTable(models.Model):
     monthly_fee = models.FloatField()
     currency = models.TextField()
     billing_period_start = models.TextField()
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -2626,8 +2648,8 @@ class LiteLLMAlert(models.Model):
     window_start = UtcDateTimeField()
     window_end = UtcDateTimeField()
     evidence = models.JSONField()
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.CharField(max_length=1024, null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2653,7 +2675,7 @@ class LiteLLMPerformanceAlertState(models.Model):
     start_scope = models.CharField(max_length=16, null=True)
     start_after = models.CharField(max_length=1024, default="")
     completed_at = UtcDateTimeField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

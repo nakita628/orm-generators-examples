@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTimeTz(TypeDecorator[datetime]):
@@ -21,7 +22,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -32,7 +34,7 @@ class Base(DeclarativeBase):
 class Team(Base):
     __tablename__ = "Team"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
 
     collections: Mapped[list["TeamCollection"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="team")
@@ -58,7 +60,7 @@ class TeamMember(Base):
 class TeamInvitation(Base):
     __tablename__ = "TeamInvitation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     team_id: Mapped[str] = mapped_column("teamID", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamInvitation_teamID_fkey"))
     creator_uid: Mapped[str] = mapped_column("creatorUid")
     invitee_email: Mapped[str] = mapped_column("inviteeEmail")
@@ -74,7 +76,7 @@ class TeamInvitation(Base):
 class TeamCollection(Base):
     __tablename__ = "TeamCollection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     parent_id: Mapped[Optional[str]] = mapped_column("parentID", ForeignKey("TeamCollection.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamCollection_parentID_fkey"))
     team_id: Mapped[str] = mapped_column("teamID", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamCollection_teamID_fkey"))
     title: Mapped[str]
@@ -95,7 +97,7 @@ class TeamCollection(Base):
 class TeamRequest(Base):
     __tablename__ = "TeamRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     collection_id: Mapped[str] = mapped_column("collectionID", ForeignKey("TeamCollection.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamRequest_collectionID_fkey"))
     team_id: Mapped[str] = mapped_column("teamID", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamRequest_teamID_fkey"))
     title: Mapped[str]
@@ -115,7 +117,7 @@ class TeamRequest(Base):
 class TeamEnvironment(Base):
     __tablename__ = "TeamEnvironment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     team_id: Mapped[str] = mapped_column("teamID", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamEnvironment_teamID_fkey"))
     name: Mapped[str]
     variables: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -125,7 +127,7 @@ class TeamEnvironment(Base):
 class User(Base):
     __tablename__ = "User"
 
-    uid: Mapped[str] = mapped_column(primary_key=True)
+    uid: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     display_name: Mapped[Optional[str]] = mapped_column("displayName")
     email: Mapped[Optional[str]]
     photo_url: Mapped[Optional[str]] = mapped_column("photoURL")
@@ -156,7 +158,7 @@ class User(Base):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     provider: Mapped[str]
     provider_account_id: Mapped[str] = mapped_column("providerAccountId")
@@ -175,7 +177,7 @@ class VerificationToken(Base):
     __tablename__ = "VerificationToken"
 
     device_identifier: Mapped[str] = mapped_column("deviceIdentifier")
-    token: Mapped[str] = mapped_column()
+    token: Mapped[str] = mapped_column(default=lambda: cuid.cuid())
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="VerificationToken_userUid_fkey"))
     expires_on: Mapped[datetime] = mapped_column("expiresOn", UtcDateTimeTz(precision=3))
 
@@ -191,7 +193,7 @@ class VerificationToken(Base):
 class UserSettings(Base):
     __tablename__ = "UserSettings"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="UserSettings_userUid_fkey"))
     properties: Mapped[dict[str, Any]] = mapped_column(JSONB)
     updated_on: Mapped[datetime] = mapped_column("updatedOn", UtcDateTimeTz(precision=3), default=utc_now, onupdate=utc_now)
@@ -205,7 +207,7 @@ class UserSettings(Base):
 class UserHistory(Base):
     __tablename__ = "UserHistory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="UserHistory_userUid_fkey"))
     req_type: Mapped[str] = mapped_column("reqType", Enum("REST", "GQL", name="ReqType"))
     request: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -218,7 +220,7 @@ class UserHistory(Base):
 class UserEnvironment(Base):
     __tablename__ = "UserEnvironment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="UserEnvironment_userUid_fkey"))
     name: Mapped[Optional[str]]
     variables: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -245,7 +247,7 @@ class InvitedUsers(Base):
 class UserRequest(Base):
     __tablename__ = "UserRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     collection_id: Mapped[str] = mapped_column("collectionID", ForeignKey("UserCollection.id", ondelete="CASCADE", onupdate="CASCADE", name="UserRequest_collectionID_fkey"))
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="UserRequest_userUid_fkey"))
     title: Mapped[str]
@@ -266,7 +268,7 @@ class UserRequest(Base):
 class UserCollection(Base):
     __tablename__ = "UserCollection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     parent_id: Mapped[Optional[str]] = mapped_column("parentID", ForeignKey("UserCollection.id", ondelete="CASCADE", onupdate="CASCADE", name="UserCollection_parentID_fkey"))
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="UserCollection_userUid_fkey"))
     title: Mapped[str]
@@ -288,7 +290,7 @@ class UserCollection(Base):
 class MockServer(Base):
     __tablename__ = "MockServer"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     subdomain: Mapped[str]
     creator_uid: Mapped[Optional[str]] = mapped_column("creatorUid", ForeignKey("User.uid", ondelete="SET NULL", onupdate="CASCADE", name="MockServer_creatorUid_fkey"))
@@ -315,7 +317,7 @@ class MockServer(Base):
 class MockServerLog(Base):
     __tablename__ = "MockServerLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     mock_server_id: Mapped[str] = mapped_column("mockServerID", ForeignKey("MockServer.id", ondelete="CASCADE", onupdate="CASCADE", name="MockServerLog_mockServerID_fkey"))
     request_method: Mapped[str] = mapped_column("requestMethod")
     request_path: Mapped[str] = mapped_column("requestPath")
@@ -340,7 +342,7 @@ class MockServerLog(Base):
 class MockServerActivity(Base):
     __tablename__ = "MockServerActivity"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     mock_server_id: Mapped[str] = mapped_column("mockServerID", ForeignKey("MockServer.id", ondelete="CASCADE", onupdate="CASCADE", name="MockServerActivity_mockServerID_fkey"))
     action: Mapped[str] = mapped_column(Enum("CREATED", "DELETED", "ACTIVATED", "DEACTIVATED", name="MockServerAction"))
     performed_by: Mapped[Optional[str]] = mapped_column("performedBy")
@@ -372,7 +374,7 @@ class Shortcode(Base):
 class InfraConfig(Base):
     __tablename__ = "InfraConfig"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     value: Mapped[Optional[str]]
     is_encrypted: Mapped[bool] = mapped_column("isEncrypted", default=False, server_default=text("false"))
@@ -387,7 +389,7 @@ class InfraConfig(Base):
 class PersonalAccessToken(Base):
     __tablename__ = "PersonalAccessToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_uid: Mapped[str] = mapped_column("userUid", ForeignKey("User.uid", ondelete="CASCADE", onupdate="CASCADE", name="PersonalAccessToken_userUid_fkey"))
     label: Mapped[str]
     token: Mapped[str] = mapped_column(default=lambda: str(uuid_mod.uuid4()))
@@ -404,7 +406,7 @@ class PersonalAccessToken(Base):
 class InfraToken(Base):
     __tablename__ = "InfraToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     creator_uid: Mapped[str] = mapped_column("creatorUid")
     label: Mapped[str]
     token: Mapped[str] = mapped_column(default=lambda: str(uuid_mod.uuid4()))
@@ -419,7 +421,7 @@ class InfraToken(Base):
 class PublishedDocs(Base):
     __tablename__ = "PublishedDocs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     slug: Mapped[str]
     title: Mapped[str]
     collection_id: Mapped[str] = mapped_column("collectionID")

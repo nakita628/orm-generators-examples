@@ -4,6 +4,9 @@ version = "0"
 description = "Runs the compat plan through the SQLAlchemy models hekireki wrote."
 requires-python = ">=3.12"
 dependencies = [
+    "cuid==0.4",
+    "cuid2==3.0.0",
+    "nanoid==2.0.0",
     "psycopg[binary]==3.3.9",
     "pymysql==1.2.4",
     "python-ulid==3.1.0",

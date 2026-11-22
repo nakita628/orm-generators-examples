@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -19,7 +20,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -74,7 +76,7 @@ class User(Base):
 class Passkey(Base):
     __tablename__ = "passkeys"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     credential_id: Mapped[bytes]
     public_key: Mapped[bytes]
     counter: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -93,7 +95,7 @@ class Passkey(Base):
 class PendingPasskeyRegistration(Base):
     __tablename__ = "pending_passkey_registrations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     verification_token: Mapped[str]
     verification_token_expires_at: Mapped[int] = mapped_column(BigInteger)
     credential_id: Mapped[bytes]

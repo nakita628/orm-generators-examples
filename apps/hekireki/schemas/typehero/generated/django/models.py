@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -30,6 +31,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -43,6 +56,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class NotificationType(models.TextChoices):
@@ -124,7 +146,7 @@ class CommentRoot(models.TextChoices):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -148,7 +170,7 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
@@ -174,8 +196,8 @@ class UserLink(models.Model):
 
     id = models.TextField(primary_key=True, default=uuid4_str)
     url = models.CharField(max_length=256)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -194,8 +216,8 @@ class User(models.Model):
     """this is the twitter URL that shows up on the profile page"""
     status = models.TextField(choices=UserStatus.choices, default=UserStatus.ACTIVE)
     ban_reason = models.TextField(null=True, db_column="banReason")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -224,8 +246,8 @@ class Tag(models.Model):
 
 class Challenge(models.Model):
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     difficulty = models.TextField(choices=Difficulty.choices)
     name = models.TextField(unique=True)
     slug = models.TextField(unique=True)
@@ -274,7 +296,7 @@ class SharedSolution(models.Model):
     """This is a public solution created by a user for a challenge"""
 
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     is_pinned = models.BooleanField(db_column="isPinned", default=False)
     title = models.TextField()
     description = models.TextField()
@@ -294,7 +316,7 @@ class Submission(models.Model):
 
     id = models.AutoField(primary_key=True)
     code = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     is_successful = models.BooleanField(db_column="isSuccessful")
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="submission", db_column="userId", db_index=False)
     challenge = models.ForeignKey("Challenge", on_delete=models.RESTRICT, related_name="submission", db_column="challengeId", db_index=False)
@@ -311,7 +333,7 @@ class Bookmark(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="bookmark", db_column="userId", db_index=False)
     challenge = models.ForeignKey("Challenge", on_delete=models.SET_NULL, related_name="bookmark", db_column="challengeId", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "Bookmark"
@@ -350,8 +372,8 @@ class Report(models.Model):
     comment = models.ForeignKey("Comment", on_delete=models.SET_NULL, related_name="report", db_column="commentId", null=True, db_index=False)
     solution = models.ForeignKey("SharedSolution", on_delete=models.SET_NULL, related_name="report", db_column="solutionId", null=True, db_index=False)
     moderator = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="moderated", db_column="moderatorId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -378,8 +400,8 @@ class Comment(models.Model):
     root_type = models.TextField(choices=CommentRoot.choices, db_column="rootType", default=CommentRoot.CHALLENGE)
     root_challenge = models.ForeignKey("Challenge", on_delete=models.SET_NULL, related_name="comment", db_column="rootChallengeId", null=True, db_index=False)
     root_solution = models.ForeignKey("SharedSolution", on_delete=models.SET_NULL, related_name="solution_comment", db_column="rootSolutionId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -399,8 +421,8 @@ class ImageUpload(models.Model):
     """the user id fk"""
     url = models.CharField(max_length=256)
     """the url to the s3 uploaded assets"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -456,7 +478,7 @@ class Donation(models.Model):
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="donations", db_column="userId", db_index=False)
     amount = models.IntegerField()
     stripe_checkout_session_id = models.TextField(unique=True, db_column="stripeCheckoutSessionId")
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "Donation"
@@ -467,8 +489,8 @@ class Donation(models.Model):
 
 class Notification(models.Model):
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     is_read = models.BooleanField(db_column="isRead", default=False)
     type = models.TextField(choices=NotificationType.choices)
     to_user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="to_user_notification", db_column="toUserId", db_index=False)
@@ -501,7 +523,7 @@ class ShortURL(models.Model):
     """the original full url that we want to shorten e.g. https://www.url.com"""
     short_url_slug = models.TextField(unique=True, db_column="shortUrlSlug")
     """slug for the short url e.g. url.com/[shortUrlSlug]"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
     """the time the short url will expire"""
     clicks = models.IntegerField(default=0)

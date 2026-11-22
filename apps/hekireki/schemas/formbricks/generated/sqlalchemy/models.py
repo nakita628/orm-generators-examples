@@ -5,6 +5,8 @@ from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, date, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
+import cuid2
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -21,7 +23,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -43,7 +46,7 @@ class Creative(Base):
 
     __tablename__ = "Creative"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -120,7 +123,7 @@ class CreativeTrigger(Base):
 
     __tablename__ = "CreativeTrigger"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     creative_id: Mapped[str] = mapped_column("creativeId", ForeignKey("Creative.id", ondelete="CASCADE", onupdate="CASCADE", name="CreativeTrigger_creativeId_fkey"))
@@ -247,7 +250,7 @@ class Webhook(Base):
 
     __tablename__ = "Webhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -278,7 +281,7 @@ class ContactAttribute(Base):
 
     __tablename__ = "ContactAttribute"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     attribute_key_id: Mapped[str] = mapped_column("attributeKeyId", ForeignKey("ContactAttributeKey.id", ondelete="CASCADE", onupdate="CASCADE", name="ContactAttribute_attributeKeyId_fkey"))
@@ -312,7 +315,7 @@ class ContactAttributeKey(Base):
 
     __tablename__ = "ContactAttributeKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     is_unique: Mapped[bool] = mapped_column("isUnique", default=False, server_default=text("false"))
@@ -345,7 +348,7 @@ class Contact(Base):
 
     __tablename__ = "Contact"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     workspace_id: Mapped[str] = mapped_column("workspaceId", ForeignKey("Workspace.id", ondelete="CASCADE", onupdate="CASCADE", name="Contact_workspaceId_fkey"))
@@ -375,7 +378,7 @@ class Response(Base):
 
     __tablename__ = "Response"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     finished: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -448,7 +451,7 @@ class Tag(Base):
 
     __tablename__ = "Tag"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -491,7 +494,7 @@ class Display(Base):
 
     __tablename__ = "Display"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     survey_id: Mapped[str] = mapped_column("surveyId", ForeignKey("Survey.id", ondelete="CASCADE", onupdate="CASCADE", name="Display_surveyId_fkey"))
@@ -522,7 +525,7 @@ class SurveyTrigger(Base):
 
     __tablename__ = "SurveyTrigger"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     survey_id: Mapped[str] = mapped_column("surveyId", ForeignKey("Survey.id", ondelete="CASCADE", onupdate="CASCADE", name="SurveyTrigger_surveyId_fkey"))
@@ -548,7 +551,7 @@ class SurveyAttributeFilter(Base):
 
     __tablename__ = "SurveyAttributeFilter"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     attribute_key_id: Mapped[str] = mapped_column("attributeKeyId", ForeignKey("ContactAttributeKey.id", ondelete="CASCADE", onupdate="CASCADE", name="SurveyAttributeFilter_attributeKeyId_fkey"))
@@ -588,7 +591,7 @@ class Survey(Base):
     variables: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: [], server_default=text("'[]'"))
     """[SurveyVariables]"""
     ownership_initialized: Mapped[bool] = mapped_column("ownershipInitialized", default=False, server_default=text("false"))
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -725,7 +728,7 @@ class SurveyQuota(Base):
 
     __tablename__ = "SurveyQuota"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     survey_id: Mapped[str] = mapped_column("surveyId", ForeignKey("Survey.id", ondelete="CASCADE", onupdate="CASCADE", name="SurveyQuota_surveyId_fkey"))
@@ -779,7 +782,7 @@ class SurveyFollowUp(Base):
 
     __tablename__ = "SurveyFollowUp"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     survey_id: Mapped[str] = mapped_column("surveyId", ForeignKey("Survey.id", ondelete="CASCADE", onupdate="CASCADE", name="SurveyFollowUp_surveyId_fkey"))
@@ -805,7 +808,7 @@ class ActionClass(Base):
 
     __tablename__ = "ActionClass"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -838,7 +841,7 @@ class Integration(Base):
 
     __tablename__ = "Integration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str] = mapped_column(Enum("googleSheets", "notion", "airtable", "slack", name="IntegrationType"))
     config: Mapped[dict[str, Any]] = mapped_column(JSONB)
     """[IntegrationConfig]"""
@@ -864,7 +867,7 @@ class DataMigration(Base):
 
     __tablename__ = "DataMigration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     started_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     finished_at: Mapped[Optional[datetime]]
     name: Mapped[str]
@@ -890,7 +893,7 @@ class Workspace(Base):
 
     __tablename__ = "Workspace"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -964,7 +967,7 @@ class Organization(Base):
 
     __tablename__ = "Organization"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1091,7 +1094,7 @@ class ApiKey(Base):
 
     __tablename__ = "ApiKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     created_by: Mapped[Optional[str]] = mapped_column("createdBy")
     last_used_at: Mapped[Optional[datetime]] = mapped_column("lastUsedAt")
@@ -1122,7 +1125,7 @@ class ApiKeyWorkspace(Base):
 
     __tablename__ = "ApiKeyWorkspace"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     api_key_id: Mapped[str] = mapped_column("apiKeyId", ForeignKey("ApiKey.id", ondelete="CASCADE", onupdate="CASCADE", name="ApiKeyWorkspace_apiKeyId_fkey"))
@@ -1151,7 +1154,7 @@ class Account(Base):
 
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
@@ -1200,7 +1203,7 @@ class Session(Base):
 
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     session_token: Mapped[str] = mapped_column("sessionToken")
@@ -1241,7 +1244,7 @@ class TwoFactor(Base):
 
     __tablename__ = "TwoFactor"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     secret: Mapped[str]
     backup_codes: Mapped[str] = mapped_column("backupCodes")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="TwoFactor_userId_fkey"))
@@ -1262,7 +1265,7 @@ class Jwks(Base):
 
     __tablename__ = "jwks"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     public_key: Mapped[str] = mapped_column("publicKey")
     private_key: Mapped[str] = mapped_column("privateKey")
     created_at: Mapped[datetime] = mapped_column("createdAt")
@@ -1289,7 +1292,7 @@ class OauthClient(Base):
 
     __tablename__ = "oauthClient"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId")
     client_secret: Mapped[Optional[str]] = mapped_column("clientSecret")
     disabled: Mapped[Optional[bool]] = mapped_column(default=False, server_default=text("false"))
@@ -1351,7 +1354,7 @@ class OauthAccessToken(Base):
 
     __tablename__ = "oauthAccessToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("oauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="oauthAccessToken_clientId_fkey"))
     session_id: Mapped[Optional[str]] = mapped_column("sessionId", ForeignKey("Session.id", ondelete="SET NULL", onupdate="CASCADE", name="oauthAccessToken_sessionId_fkey"))
@@ -1389,7 +1392,7 @@ class OauthRefreshToken(Base):
 
     __tablename__ = "oauthRefreshToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("oauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="oauthRefreshToken_clientId_fkey"))
     session_id: Mapped[Optional[str]] = mapped_column("sessionId", ForeignKey("Session.id", ondelete="SET NULL", onupdate="CASCADE", name="oauthRefreshToken_sessionId_fkey"))
@@ -1429,7 +1432,7 @@ class OauthConsent(Base):
 
     __tablename__ = "oauthConsent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("oauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="oauthConsent_clientId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="oauthConsent_userId_fkey"))
     reference_id: Mapped[Optional[str]] = mapped_column("referenceId")
@@ -1459,7 +1462,7 @@ class OauthResource(Base):
 
     __tablename__ = "oauthResource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     identifier: Mapped[str]
     name: Mapped[str]
     access_token_ttl: Mapped[Optional[int]] = mapped_column("accessTokenTtl")
@@ -1490,7 +1493,7 @@ class OauthClientResource(Base):
 
     __tablename__ = "oauthClientResource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("oauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="oauthClientResource_clientId_fkey"))
     resource_id: Mapped[str] = mapped_column("resourceId", ForeignKey("oauthResource.identifier", ondelete="CASCADE", onupdate="CASCADE", name="oauthClientResource_resourceId_fkey"))
     metadata_: Mapped[Optional[dict[str, Any]]] = mapped_column("metadata", JSONB(none_as_null=True))
@@ -1512,7 +1515,7 @@ class OauthClientAssertion(Base):
 
     __tablename__ = "oauthClientAssertion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     expires_at: Mapped[datetime] = mapped_column("expiresAt")
 
     __table_args__ = (
@@ -1526,7 +1529,7 @@ class PasswordResetToken(Base):
 
     __tablename__ = "PasswordResetToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     token_hash: Mapped[str]
@@ -1555,7 +1558,7 @@ class User(Base):
 
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1631,7 +1634,7 @@ class Segment(Base):
 
     __tablename__ = "Segment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     title: Mapped[str]
@@ -1661,7 +1664,7 @@ class Language(Base):
 
     __tablename__ = "Language"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     code: Mapped[str]
@@ -1723,7 +1726,7 @@ class EmbeddedData(Base):
 
     __tablename__ = "EmbeddedData"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     key: Mapped[Optional[str]]
@@ -1769,7 +1772,7 @@ class SurveyEmbeddedData(Base):
 
     __tablename__ = "SurveyEmbeddedData"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workspace_id: Mapped[str] = mapped_column("workspaceId")
     survey_id: Mapped[str] = mapped_column("surveyId")
     embedded_data_id: Mapped[str] = mapped_column("embeddedDataId")
@@ -1801,7 +1804,7 @@ class Team(Base):
 
     __tablename__ = "Team"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1879,7 +1882,7 @@ class Chart(Base):
 
     __tablename__ = "Chart"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1918,7 +1921,7 @@ class Dashboard(Base):
 
     __tablename__ = "Dashboard"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1948,7 +1951,7 @@ class DashboardWidget(Base):
 
     __tablename__ = "DashboardWidget"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     dashboard_id: Mapped[str] = mapped_column("dashboardId", ForeignKey("Dashboard.id", ondelete="CASCADE", onupdate="CASCADE", name="DashboardWidget_dashboardId_fkey"))
@@ -1974,7 +1977,7 @@ class DeletionCleanup(Base):
 
     __tablename__ = "DeletionCleanup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     kind: Mapped[str] = mapped_column(Enum("hubSurvey", "hubResponses", "storageFiles", "storageSurveyFolder", "hubResponseOutcome", name="DeletionCleanupKind"))
@@ -2011,7 +2014,7 @@ class AttachmentExport(Base):
 
     __tablename__ = "AttachmentExport"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     survey_id: Mapped[str] = mapped_column("surveyId")
@@ -2069,7 +2072,7 @@ class FeedbackSource(Base):
 
     __tablename__ = "FeedbackSource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2114,7 +2117,7 @@ class FeedbackSourceFormbricksMapping(Base):
 
     __tablename__ = "FeedbackSourceFormbricksMapping"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     feedback_source_id: Mapped[str]
     workspace_id: Mapped[str] = mapped_column("workspaceId")
@@ -2147,7 +2150,7 @@ class FeedbackSourceFieldMapping(Base):
 
     __tablename__ = "FeedbackSourceFieldMapping"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     feedback_source_id: Mapped[str]
     workspace_id: Mapped[str] = mapped_column("workspaceId")
@@ -2175,7 +2178,7 @@ class FeedbackDirectory(Base):
 
     __tablename__ = "FeedbackDirectory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2299,7 +2302,7 @@ class RetentionPolicy(Base):
 
     __tablename__ = "RetentionPolicy"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionPolicy_organizationId_fkey"))
@@ -2356,7 +2359,7 @@ class RetentionExemption(Base):
 
     __tablename__ = "RetentionExemption"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionExemption_organizationId_fkey"))
     entity: Mapped[str] = mapped_column(Enum("responses", "surveys", "members", name="RetentionEntity"))
@@ -2388,7 +2391,7 @@ class RetentionRun(Base):
 
     __tablename__ = "RetentionRun"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionRun_organizationId_fkey"))
     entity: Mapped[str] = mapped_column(Enum("responses", "surveys", "members", name="RetentionEntity"))
     kind: Mapped[str] = mapped_column(Enum("sweep", "purge", name="RetentionRunKind"), default="sweep", server_default=text("'sweep'"))
@@ -2422,7 +2425,7 @@ class RetentionRunItem(Base):
 
     __tablename__ = "RetentionRunItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     run_id: Mapped[str] = mapped_column("runId", ForeignKey("RetentionRun.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionRunItem_runId_fkey"))
     target_type: Mapped[str] = mapped_column("targetType", Enum("survey", "user", name="RetentionTargetType"))
     target_id: Mapped[str] = mapped_column("targetId")
@@ -2458,7 +2461,7 @@ class RetentionNotice(Base):
 
     __tablename__ = "RetentionNotice"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionNotice_organizationId_fkey"))
     entity: Mapped[str] = mapped_column(Enum("responses", "surveys", "members", name="RetentionEntity"))
     survey_id: Mapped[Optional[str]] = mapped_column("surveyId", ForeignKey("Survey.id", ondelete="CASCADE", onupdate="CASCADE", name="RetentionNotice_surveyId_fkey"))
@@ -2510,7 +2513,7 @@ class RetentionSurveyRestore(Base):
 class Workflow(Base):
     __tablename__ = "Workflow"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2535,7 +2538,7 @@ class Workflow(Base):
 class WorkflowVersion(Base):
     __tablename__ = "WorkflowVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     workflow_id: Mapped[str] = mapped_column("workflowId")
     workspace_id: Mapped[str] = mapped_column("workspaceId")
     version: Mapped[int]
@@ -2558,7 +2561,7 @@ class WorkflowVersion(Base):
 class WorkflowRun(Base):
     __tablename__ = "WorkflowRun"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     workflow_id: Mapped[str] = mapped_column("workflowId")
@@ -2602,7 +2605,7 @@ class WorkflowRun(Base):
 class WorkflowRunLog(Base):
     __tablename__ = "WorkflowRunLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
     run_id: Mapped[str] = mapped_column("runId", ForeignKey("WorkflowRun.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkflowRunLog_runId_fkey"))
     sequence: Mapped[int]
     step_id: Mapped[str] = mapped_column("stepId")

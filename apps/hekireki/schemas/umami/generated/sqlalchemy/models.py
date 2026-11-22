@@ -5,6 +5,7 @@ from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTimeTz(TypeDecorator[datetime]):
@@ -22,7 +23,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -550,7 +552,7 @@ class HeatmapEvent(Base):
 class TwoFactorAuth(Base):
     __tablename__ = "two_factor_auth"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[uuid_mod.UUID] = mapped_column(Uuid, ForeignKey("user.user_id", ondelete="CASCADE", onupdate="CASCADE", name="two_factor_auth_user_id_fkey"))
     secret: Mapped[str]
     is_enabled: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -566,7 +568,7 @@ class TwoFactorAuth(Base):
 class TwoFactorBackupCode(Base):
     __tablename__ = "two_factor_backup_code"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[uuid_mod.UUID] = mapped_column(Uuid, ForeignKey("user.user_id", ondelete="CASCADE", onupdate="CASCADE", name="two_factor_backup_code_user_id_fkey"))
     code_hash: Mapped[str]
     used: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -581,7 +583,7 @@ class TwoFactorBackupCode(Base):
 class TwoFactorOtpUsed(Base):
     __tablename__ = "two_factor_otp_used"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[uuid_mod.UUID] = mapped_column(Uuid, ForeignKey("user.user_id", ondelete="CASCADE", onupdate="CASCADE", name="two_factor_otp_used_user_id_fkey"))
     otp: Mapped[str]
     expires_at: Mapped[datetime] = mapped_column(UtcDateTimeTz(precision=6))
@@ -595,7 +597,7 @@ class TwoFactorOtpUsed(Base):
 class TwoFactorRateLimit(Base):
     __tablename__ = "two_factor_rate_limit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[uuid_mod.UUID] = mapped_column(Uuid, ForeignKey("user.user_id", ondelete="CASCADE", onupdate="CASCADE", name="two_factor_rate_limit_user_id_fkey"))
     attempts: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     locked_until: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=6))

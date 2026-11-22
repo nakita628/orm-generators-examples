@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -33,7 +34,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -44,7 +46,7 @@ class Base(DeclarativeBase):
 class Space(Base):
     __tablename__ = "space"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     avatar: Mapped[Optional[str]]
     credit: Mapped[Optional[int]]
@@ -64,7 +66,7 @@ class Space(Base):
 class DataDbConnection(Base):
     __tablename__ = "data_db_connection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     provider: Mapped[str] = mapped_column(Enum("postgres", name="DataDbProvider"), default="postgres", server_default=text("'postgres'"))
     encrypted_url: Mapped[str]
     url_fingerprint: Mapped[str]
@@ -96,7 +98,7 @@ class DataDbConnection(Base):
 class SpaceDataDbBinding(Base):
     __tablename__ = "space_data_db_binding"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("space.id", ondelete="CASCADE", onupdate="CASCADE", name="space_data_db_binding_space_id_fkey"))
     data_db_connection_id: Mapped[Optional[str]] = mapped_column(ForeignKey("data_db_connection.id", ondelete="SET NULL", onupdate="CASCADE", name="space_data_db_binding_data_db_connection_id_fkey"))
     mode: Mapped[str] = mapped_column(Enum("default", "byodb", name="SpaceDataDbBindingMode"), default="default", server_default=text("'default'"))
@@ -118,7 +120,7 @@ class SpaceDataDbBinding(Base):
 class SpaceDataDbMigrationJob(Base):
     __tablename__ = "space_data_db_migration_job"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("space.id", ondelete="CASCADE", onupdate="CASCADE", name="space_data_db_migration_job_space_id_fkey"))
     source_connection_id: Mapped[Optional[str]] = mapped_column(ForeignKey("data_db_connection.id", ondelete="SET NULL", onupdate="CASCADE", name="space_data_db_migration_job_source_connection_id_fkey"))
     target_connection_id: Mapped[Optional[str]] = mapped_column(ForeignKey("data_db_connection.id", ondelete="SET NULL", onupdate="CASCADE", name="space_data_db_migration_job_target_connection_id_fkey"))
@@ -150,7 +152,7 @@ class SpaceDataDbMigrationJob(Base):
 class BaseDataDbMoveJob(Base):
     __tablename__ = "base_data_db_move_job"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[str] = mapped_column(ForeignKey("base.id", ondelete="CASCADE", onupdate="CASCADE", name="base_data_db_move_job_base_id_fkey"))
     source_space_id: Mapped[str] = mapped_column(ForeignKey("space.id", ondelete="CASCADE", onupdate="CASCADE", name="base_data_db_move_job_source_space_id_fkey"))
     target_space_id: Mapped[str] = mapped_column(ForeignKey("space.id", ondelete="CASCADE", onupdate="CASCADE", name="base_data_db_move_job_target_space_id_fkey"))
@@ -181,7 +183,7 @@ class BaseDataDbMoveJob(Base):
 class PinResource(Base):
     __tablename__ = "pin_resource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str]
     resource_id: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -196,7 +198,7 @@ class PinResource(Base):
 class Base_(Base):
     __tablename__ = "base"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("space.id", ondelete="RESTRICT", onupdate="CASCADE", name="base_space_id_fkey"))
     name: Mapped[Optional[str]]
     order: Mapped[float]
@@ -362,7 +364,7 @@ class Field(Base):
 class ComputedUpdateOutbox(Base):
     __tablename__ = "computed_update_outbox"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[str]
     worker_lane: Mapped[str] = mapped_column(default="production", server_default=text("'production'"))
     seed_table_id: Mapped[str]
@@ -406,7 +408,7 @@ class ComputedUpdateOutbox(Base):
 class ComputedUpdateOutboxSeed(Base):
     __tablename__ = "computed_update_outbox_seed"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     task_id: Mapped[str] = mapped_column(ForeignKey("computed_update_outbox.id", ondelete="CASCADE", onupdate="CASCADE", name="computed_update_outbox_seed_task_id_fkey"))
     table_id: Mapped[str]
     record_id: Mapped[str]
@@ -673,7 +675,7 @@ class View(Base):
 class Ops(Base):
     __tablename__ = "ops"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     collection: Mapped[str]
     doc_id: Mapped[str]
     doc_type: Mapped[str]
@@ -690,7 +692,7 @@ class Ops(Base):
 class Reference(Base):
     __tablename__ = "reference"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     from_field_id: Mapped[str]
     to_field_id: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -704,7 +706,7 @@ class Reference(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     password: Mapped[Optional[str]]
     salt: Mapped[Optional[str]]
@@ -735,7 +737,7 @@ class User(Base):
 class Account(Base):
     __tablename__ = "account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="account_user_id_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -752,7 +754,7 @@ class Account(Base):
 class Attachments(Base):
     __tablename__ = "attachments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     hash: Mapped[str]
     size: Mapped[int] = mapped_column(BigInteger)
@@ -773,7 +775,7 @@ class Attachments(Base):
 class AttachmentsTable(Base):
     __tablename__ = "attachments_table"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     attachment_id: Mapped[str]
     name: Mapped[str]
     token: Mapped[str]
@@ -794,7 +796,7 @@ class AttachmentsTable(Base):
 class Collaborator(Base):
     __tablename__ = "collaborator"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     role_name: Mapped[str]
     resource_type: Mapped[str]
     resource_id: Mapped[str]
@@ -814,7 +816,7 @@ class Collaborator(Base):
 class Invitation(Base):
     __tablename__ = "invitation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[Optional[str]]
     space_id: Mapped[Optional[str]]
     type: Mapped[str]
@@ -835,7 +837,7 @@ class Invitation(Base):
 class InvitationRecord(Base):
     __tablename__ = "invitation_record"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     invitation_id: Mapped[str]
     base_id: Mapped[Optional[str]]
     space_id: Mapped[Optional[str]]
@@ -853,7 +855,7 @@ class InvitationRecord(Base):
 class Notification(Base):
     __tablename__ = "notification"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     from_user_id: Mapped[str]
     to_user_id: Mapped[str]
     type: Mapped[str]
@@ -873,7 +875,7 @@ class Notification(Base):
 class AccessToken(Base):
     __tablename__ = "access_token"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     user_id: Mapped[str]
@@ -912,7 +914,7 @@ class Setting(Base):
 class OAuthApp(Base):
     __tablename__ = "oauth_app"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     logo: Mapped[Optional[str]]
     homepage: Mapped[str]
@@ -937,7 +939,7 @@ class OAuthApp(Base):
 class OAuthAppAuthorized(Base):
     __tablename__ = "oauth_app_authorized"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column(ForeignKey("oauth_app.client_id", ondelete="CASCADE", onupdate="CASCADE", name="oauth_app_authorized_client_id_fkey"))
     user_id: Mapped[str]
     authorized_time: Mapped[datetime]
@@ -951,7 +953,7 @@ class OAuthAppAuthorized(Base):
 class OAuthAppSecret(Base):
     __tablename__ = "oauth_app_secret"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column(ForeignKey("oauth_app.client_id", ondelete="CASCADE", onupdate="CASCADE", name="oauth_app_secret_client_id_fkey"))
     secret: Mapped[str]
     masked_secret: Mapped[str]
@@ -969,7 +971,7 @@ class OAuthAppSecret(Base):
 class OAuthAppToken(Base):
     __tablename__ = "oauth_app_token"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column(ForeignKey("oauth_app.client_id", ondelete="CASCADE", onupdate="CASCADE", name="oauth_app_token_client_id_fkey"))
     app_secret_id: Mapped[Optional[str]] = mapped_column(ForeignKey("oauth_app_secret.id", ondelete="CASCADE", onupdate="CASCADE", name="oauth_app_token_app_secret_id_fkey"))
     refresh_token_sign: Mapped[str]
@@ -988,7 +990,7 @@ class OAuthAppToken(Base):
 class RecordHistory(Base):
     __tablename__ = "record_history"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str]
     record_id: Mapped[str]
     field_id: Mapped[str]
@@ -1005,7 +1007,7 @@ class RecordHistory(Base):
 class Trash(Base):
     __tablename__ = "trash"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     resource_type: Mapped[str]
     resource_id: Mapped[str]
     parent_id: Mapped[Optional[str]]
@@ -1019,7 +1021,7 @@ class Trash(Base):
 class TableTrash(Base):
     __tablename__ = "table_trash"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str]
     resource_type: Mapped[str]
     snapshot: Mapped[str]
@@ -1033,7 +1035,7 @@ class TableTrash(Base):
 class RecordTrash(Base):
     __tablename__ = "record_trash"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str]
     record_id: Mapped[str]
     snapshot: Mapped[str]
@@ -1066,7 +1068,7 @@ class RecordRemovalTombstone(Base):
 class Plugin(Base):
     __tablename__ = "plugin"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     detail_desc: Mapped[Optional[str]]
@@ -1094,7 +1096,7 @@ class Plugin(Base):
 class PluginInstall(Base):
     __tablename__ = "plugin_install"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     plugin_id: Mapped[str] = mapped_column(ForeignKey("plugin.id", ondelete="CASCADE", onupdate="CASCADE", name="plugin_install_plugin_id_fkey"))
     base_id: Mapped[str]
     name: Mapped[str]
@@ -1116,7 +1118,7 @@ class PluginInstall(Base):
 class Dashboard(Base):
     __tablename__ = "dashboard"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     base_id: Mapped[str]
     layout: Mapped[Optional[str]]
@@ -1133,7 +1135,7 @@ class Dashboard(Base):
 class Comment(Base):
     __tablename__ = "comment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str]
     record_id: Mapped[str]
     quote_id: Mapped[Optional[str]] = mapped_column("quote_Id")
@@ -1151,7 +1153,7 @@ class Comment(Base):
 class CommentSubscription(Base):
     __tablename__ = "comment_subscription"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str]
     record_id: Mapped[str]
     created_by: Mapped[str]
@@ -1165,7 +1167,7 @@ class CommentSubscription(Base):
 class Integration(Base):
     __tablename__ = "integration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     resource_id: Mapped[str]
     config: Mapped[str]
     type: Mapped[str]
@@ -1181,7 +1183,7 @@ class Integration(Base):
 class PluginPanel(Base):
     __tablename__ = "plugin_panel"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     table_id: Mapped[str] = mapped_column(ForeignKey("table_meta.id", ondelete="CASCADE", onupdate="CASCADE", name="plugin_panel_table_id_fkey"))
     layout: Mapped[Optional[str]]
@@ -1195,7 +1197,7 @@ class PluginPanel(Base):
 class PluginContextMenu(Base):
     __tablename__ = "plugin_context_menu"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     table_id: Mapped[str] = mapped_column(ForeignKey("table_meta.id", ondelete="CASCADE", onupdate="CASCADE", name="plugin_context_menu_table_id_fkey"))
     plugin_install_id: Mapped[str]
     order: Mapped[float]
@@ -1213,7 +1215,7 @@ class PluginContextMenu(Base):
 class UserLastVisit(Base):
     __tablename__ = "user_last_visit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str]
     resource_type: Mapped[str]
     resource_id: Mapped[str]
@@ -1228,7 +1230,7 @@ class UserLastVisit(Base):
 class UserBaseOrder(Base):
     __tablename__ = "user_base_order"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="user_base_order_user_id_fkey"))
     base_id: Mapped[str] = mapped_column(ForeignKey("base.id", ondelete="CASCADE", onupdate="CASCADE", name="user_base_order_base_id_fkey"))
     order: Mapped[float]
@@ -1247,7 +1249,7 @@ class UserBaseOrder(Base):
 class Template(Base):
     __tablename__ = "template"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[Optional[str]]
     cover: Mapped[Optional[str]]
     name: Mapped[Optional[str]]
@@ -1282,7 +1284,7 @@ class Template(Base):
 class TemplateCategory(Base):
     __tablename__ = "template_category"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     created_by: Mapped[str]
@@ -1302,7 +1304,7 @@ class TemplateCategory(Base):
 class Task(Base):
     __tablename__ = "task"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str]
     status: Mapped[str]
     snapshot: Mapped[Optional[str]]
@@ -1320,7 +1322,7 @@ class Task(Base):
 class TaskRun(Base):
     __tablename__ = "task_run"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     task_id: Mapped[str] = mapped_column(ForeignKey("task.id", ondelete="CASCADE", onupdate="CASCADE", name="task_run_task_id_fkey"))
     base_id: Mapped[str]
     status: Mapped[str]
@@ -1344,7 +1346,7 @@ class TaskRun(Base):
 class TaskReference(Base):
     __tablename__ = "task_reference"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     from_field_id: Mapped[str]
     to_field_id: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1372,7 +1374,7 @@ class Waitlist(Base):
 class BaseNode(Base):
     __tablename__ = "base_node"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     parent_id: Mapped[Optional[str]] = mapped_column(ForeignKey("base_node.id", ondelete="SET NULL", onupdate="CASCADE", name="base_node_parent_id_fkey"))
     base_id: Mapped[str]
     resource_type: Mapped[str]
@@ -1393,7 +1395,7 @@ class BaseNode(Base):
 class BaseNodeFolder(Base):
     __tablename__ = "base_node_folder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[str]
     name: Mapped[str]
     created_time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1409,7 +1411,7 @@ class BaseNodeFolder(Base):
 class BaseShare(Base):
     __tablename__ = "base_share"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     base_id: Mapped[str]
     share_id: Mapped[str]
     password: Mapped[Optional[str]]
@@ -1431,7 +1433,7 @@ class BaseShare(Base):
 class ShortLink(Base):
     __tablename__ = "short_link"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     code: Mapped[str] = mapped_column(String(32))
     type: Mapped[str] = mapped_column(String(32))
     resource_id: Mapped[str]

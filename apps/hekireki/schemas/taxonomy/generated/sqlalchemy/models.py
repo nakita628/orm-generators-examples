@@ -3,6 +3,7 @@ from sqlalchemy.dialects.mysql import DATETIME
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -19,7 +20,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -29,7 +31,7 @@ class Base(DeclarativeBase):
 class Account(Base):
     __tablename__ = "accounts"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="accounts_userId_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -54,7 +56,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "sessions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="sessions_userId_fkey"))
     expires: Mapped[datetime]
@@ -69,7 +71,7 @@ class Session(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     email_verified: Mapped[Optional[datetime]] = mapped_column("emailVerified")
@@ -110,7 +112,7 @@ class VerificationToken(Base):
 class Post(Base):
     __tablename__ = "posts"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[str]
     content: Mapped[Optional[dict[str, Any]]] = mapped_column(JSON(none_as_null=True))
     published: Mapped[bool] = mapped_column(default=False, server_default=text("false"))

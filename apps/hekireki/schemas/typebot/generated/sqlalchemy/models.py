@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -19,7 +20,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -30,7 +32,7 @@ class Base(DeclarativeBase):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -55,7 +57,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -69,7 +71,7 @@ class Session(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     last_activity_at: Mapped[datetime] = mapped_column("lastActivityAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -102,7 +104,7 @@ class User(Base):
 class ApiToken(Base):
     __tablename__ = "ApiToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     token: Mapped[str]
     name: Mapped[str]
@@ -117,7 +119,7 @@ class ApiToken(Base):
 class Workspace(Base):
     __tablename__ = "Workspace"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     name: Mapped[str]
@@ -158,7 +160,7 @@ class Workspace(Base):
 class Space(Base):
     __tablename__ = "Space"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     name: Mapped[str]
@@ -193,7 +195,7 @@ class MemberInWorkspace(Base):
 class WorkspaceInvitation(Base):
     __tablename__ = "WorkspaceInvitation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     email: Mapped[str]
@@ -214,7 +216,7 @@ class CustomDomain(Base):
 class Credentials(Base):
     __tablename__ = "Credentials"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     workspace_id: Mapped[str] = mapped_column("workspaceId", ForeignKey("Workspace.id", ondelete="CASCADE", onupdate="CASCADE", name="Credentials_workspaceId_fkey"))
     data: Mapped[str]
@@ -227,7 +229,7 @@ class Credentials(Base):
 class UserCredentials(Base):
     __tablename__ = "UserCredentials"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="UserCredentials_userId_fkey"))
     data: Mapped[str]
@@ -256,7 +258,7 @@ class VerificationToken(Base):
 class DashboardFolder(Base):
     __tablename__ = "DashboardFolder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     name: Mapped[str]
@@ -271,7 +273,7 @@ class DashboardFolder(Base):
 class Typebot(Base):
     __tablename__ = "Typebot"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     version: Mapped[Optional[str]]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -350,7 +352,7 @@ class CollaboratorsOnTypebots(Base):
 class PublicTypebot(Base):
     __tablename__ = "PublicTypebot"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     version: Mapped[Optional[str]]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -392,7 +394,7 @@ class RuntimeMediaIdCache(Base):
 class Result(Base):
     __tablename__ = "Result"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     typebot_id: Mapped[str] = mapped_column("typebotId", ForeignKey("Typebot.id", ondelete="CASCADE", onupdate="CASCADE", name="Result_typebotId_fkey"))
     variables: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -449,7 +451,7 @@ class VisitedEdge(Base):
 class Log(Base):
     __tablename__ = "Log"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     result_id: Mapped[str] = mapped_column("resultId", ForeignKey("Result.id", ondelete="CASCADE", onupdate="CASCADE", name="Log_resultId_fkey"))
     status: Mapped[str]
@@ -511,7 +513,7 @@ class Coupon(Base):
 class Webhook(Base):
     __tablename__ = "Webhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     url: Mapped[Optional[str]]
@@ -526,7 +528,7 @@ class Webhook(Base):
 class ClaimableCustomPlan(Base):
     __tablename__ = "ClaimableCustomPlan"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     claimed_at: Mapped[Optional[datetime]] = mapped_column("claimedAt")
     name: Mapped[str]
@@ -551,7 +553,7 @@ class ClaimableCustomPlan(Base):
 class ChatSession(Base):
     __tablename__ = "ChatSession"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     state: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -560,7 +562,7 @@ class ChatSession(Base):
 class ThemeTemplate(Base):
     __tablename__ = "ThemeTemplate"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     name: Mapped[str]
@@ -572,7 +574,7 @@ class ThemeTemplate(Base):
 class BannedIp(Base):
     __tablename__ = "BannedIp"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     ip: Mapped[str]
     responsible_typebot_id: Mapped[str] = mapped_column("responsibleTypebotId", ForeignKey("Typebot.id", ondelete="RESTRICT", onupdate="CASCADE", name="BannedIp_responsibleTypebotId_fkey"))
@@ -588,7 +590,7 @@ class BannedIp(Base):
 class SuppressedEmail(Base):
     __tablename__ = "SuppressedEmail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     email: Mapped[str]

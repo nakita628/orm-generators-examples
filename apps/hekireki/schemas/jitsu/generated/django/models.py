@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -31,6 +32,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -40,6 +53,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def oidc_provider_scopes_default() -> list[str]:
@@ -63,8 +85,8 @@ class ReverseSyncExtraction(models.TextChoices):
 
 
 class EmailLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    time = UtcDateTimeField(default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    time = UtcDateTimeField(default=now_milliseconds)
     email = models.JSONField()
     error = models.TextField(null=True)
     preview_url = models.TextField(null=True, db_column="previewUrl")
@@ -76,10 +98,10 @@ class EmailLog(models.Model):
 
 
 class UserPreferences(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     user = models.ForeignKey("UserProfile", on_delete=models.RESTRICT, related_name="user_preferences", db_column="userId", db_index=False)
     workspace = models.ForeignKey("Workspace", on_delete=models.SET_NULL, related_name="preferences", db_column="workspaceId", null=True, db_index=False)
@@ -92,13 +114,13 @@ class UserPreferences(models.Model):
 
 
 class UserProfile(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     email = models.TextField()
     admin = models.BooleanField(null=True, default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     login_provider = models.TextField(db_column="loginProvider")
     external_username = models.TextField(null=True, db_column="externalUsername")
@@ -116,10 +138,10 @@ class UserProfile(models.Model):
 
 
 class UserPassword(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     user = models.OneToOneField("UserProfile", on_delete=models.RESTRICT, related_name="password", db_column="userId")
     hash = models.TextField()
@@ -131,10 +153,10 @@ class UserPassword(models.Model):
 
 
 class Workspace(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     name = models.TextField()
     deleted = models.BooleanField(default=False)
@@ -154,10 +176,10 @@ class Workspace(models.Model):
 
 
 class WorkspaceOptions(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="workspace_options", db_column="workspaceId", db_index=False)
     namespace = models.TextField()
@@ -174,9 +196,9 @@ class WorkspaceOptions(models.Model):
 class WorkspaceAccess(models.Model):
     pk = models.CompositePrimaryKey("user_id", "workspace_id")
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="workspace_access", db_column="workspaceId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     user = models.ForeignKey("UserProfile", on_delete=models.RESTRICT, related_name="workspace_access", db_column="userId", db_index=False)
     role = models.TextField(choices=WorkspaceRole.choices, default=WorkspaceRole.owner)
@@ -190,7 +212,7 @@ class WorkspaceUserProperties(models.Model):
     pk = models.CompositePrimaryKey("workspace_id", "user_id")
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="workspace_user_properties", db_column="workspaceId", db_index=False)
     user = models.ForeignKey("UserProfile", on_delete=models.RESTRICT, related_name="workspace_user_properties", db_column="userId", db_index=False)
-    last_used = UtcDateTimeField(db_column="lastUsed", default=timezone.now)
+    last_used = UtcDateTimeField(db_column="lastUsed", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
 
     class Meta:
@@ -198,10 +220,10 @@ class WorkspaceUserProperties(models.Model):
 
 
 class UserApiToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     last_used = UtcDateTimeField(null=True, db_column="lastUsed")
     """@zod.custom(z.coerce.date())"""
@@ -222,10 +244,10 @@ class UserApiToken(models.Model):
 
 
 class OAuthClient(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     client_secret_hash = models.TextField(db_column="clientSecretHash")
     name = models.TextField()
@@ -251,8 +273,8 @@ class KvStoreEntry(models.Model):
 
 
 class OAuthAccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     last_used = UtcDateTimeField(null=True, db_column="lastUsed")
     """@zod.custom(z.coerce.date())"""
@@ -270,12 +292,12 @@ class OAuthAccessToken(models.Model):
 
 
 class InvitationToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     workspace_id = models.TextField(db_column="workspaceId")
     email = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     token = models.TextField()
     used_by = models.TextField(null=True, db_column="usedBy")
@@ -287,11 +309,11 @@ class InvitationToken(models.Model):
 
 
 class ConfigurationObject(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     deleted = models.BooleanField(null=True, default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     type = models.TextField()
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="configuration_object", db_column="workspaceId", db_index=False)
@@ -306,11 +328,11 @@ class ConfigurationObject(models.Model):
 
 
 class ConfigurationObjectLink(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     deleted = models.BooleanField(null=True, default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     type = models.TextField(null=True, default="push")
     data = models.JSONField(null=True)
@@ -328,14 +350,14 @@ class ConfigurationObjectLink(models.Model):
 
 
 class ConnectorPackage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     package_id = models.TextField(db_column="packageId")
     package_type = models.TextField(db_column="packageType", default="airbyte")
     meta = models.JSONField(null=True)
     logo_svg = models.BinaryField(null=True, db_column="logoSvg")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     objects = AutoNowQuerySet.as_manager()
 
@@ -344,8 +366,8 @@ class ConnectorPackage(models.Model):
 
 
 class AuditLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    timestamp = UtcDateTimeField(default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    timestamp = UtcDateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     type = models.TextField()
     severity = models.TextField(null=True, default="info")
@@ -368,10 +390,10 @@ class AuditLog(models.Model):
 
 
 class GlobalProps(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     name = models.TextField()
     value = models.JSONField(null=True)
@@ -386,7 +408,7 @@ class SourceSpec(models.Model):
     package = models.TextField()
     version = models.TextField()
     specs = models.JSONField(null=True)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     error = models.TextField(null=True)
 
@@ -400,7 +422,7 @@ class SourceCheck(models.Model):
     key = models.TextField(primary_key=True, default=None)
     status = models.TextField()
     description = models.TextField(null=True)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
 
     class Meta:
@@ -413,7 +435,7 @@ class SourceCatalog(models.Model):
     version = models.TextField()
     key = models.TextField()
     catalog = models.JSONField(null=True)
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     status = models.TextField()
     description = models.TextField(null=True)
@@ -471,7 +493,7 @@ class SourceState(models.Model):
     sync_id = models.TextField()
     stream = models.TextField()
     state = models.JSONField()
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
 
     class Meta:
@@ -483,9 +505,9 @@ class SourceTask(models.Model):
     task_id = models.TextField(primary_key=True, default=None)
     package = models.TextField()
     version = models.TextField()
-    started_at = models.DateTimeField(default=timezone.now)
+    started_at = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     started_by = models.JSONField(null=True)
     status = models.TextField()
@@ -509,7 +531,7 @@ class TaskLog(models.Model):
     message = models.TextField()
     sync_id = models.TextField()
     task_id = models.TextField()
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
 
     class Meta:
@@ -522,12 +544,12 @@ class TaskLog(models.Model):
 
 
 class ProfileBuilder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     deleted = models.BooleanField(null=True, default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="profile_builders", db_column="workspaceId", db_index=False)
     intermediate_storage_credentials = models.JSONField(db_column="intermediateStorageCredentials")
@@ -541,10 +563,10 @@ class ProfileBuilder(models.Model):
 
 
 class ProfileBuilderFunction(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     profile_builder = models.ForeignKey("ProfileBuilder", on_delete=models.RESTRICT, related_name="functions", db_column="profileBuilderId", db_index=False)
     function = models.ForeignKey("ConfigurationObject", on_delete=models.RESTRICT, related_name="profile_builder_function", db_column="functionId", db_index=False)
@@ -589,7 +611,7 @@ class StatusChange(models.Model):
     actor_id = models.TextField(db_column="actorId")
     type = models.TextField()
     table_name = models.TextField(db_column="tableName")
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     status = models.TextField()
     started_at = UtcDateTimeField(db_column="startedAt")
@@ -632,7 +654,7 @@ class Notification(models.Model):
     table_name = models.TextField(db_column="tableName")
     channel_id = models.TextField(db_column="channelId")
     status_change_id = models.BigIntegerField(db_column="statusChangeId")
-    timestamp = models.DateTimeField(default=timezone.now)
+    timestamp = models.DateTimeField(default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
     status = models.TextField()
     error = models.TextField(null=True)
@@ -646,10 +668,10 @@ class Notification(models.Model):
 
 
 class OidcProvider(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     name = models.TextField()
     issuer = models.TextField()
@@ -679,10 +701,10 @@ class OidcProvider(models.Model):
 
 
 class OidcLoginGroup(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     """@zod.custom(z.coerce.date())"""
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     """@zod.custom(z.coerce.date())"""
     workspace = models.ForeignKey("Workspace", on_delete=models.RESTRICT, related_name="oidc_login_groups", db_column="workspaceId", db_index=False)
     oidc_provider = models.ForeignKey("OidcProvider", on_delete=models.RESTRICT, related_name="oidc_login_groups", db_column="oidcProviderId", db_index=False)
@@ -702,7 +724,7 @@ class OidcLoginGroup(models.Model):
 
 
 class ReprocessingJobs(models.Model):
-    id = models.CharField(max_length=64, primary_key=True, default=None)
+    id = models.CharField(max_length=64, primary_key=True, default=cuid_str)
     config = models.JSONField()
     status = models.CharField(max_length=32)
     created_at = models.DateTimeField()
@@ -726,7 +748,7 @@ class ReprocessingWorkers(models.Model):
     worker_index = models.IntegerField()
     status = models.CharField(max_length=32)
     started_at = models.DateTimeField(null=True)
-    updated_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=now_milliseconds)
     completed_at = models.DateTimeField(null=True)
     current_file = models.TextField(null=True)
     current_line = models.BigIntegerField(null=True, default=0)
@@ -757,7 +779,7 @@ class FunctionsServer(models.Model):
     connections = ArrayField(models.TextField())
     empty_connections = ArrayField(models.TextField(), db_column="emptyConnections")
     profile_builders = ArrayField(models.TextField(), db_column="profileBuilders")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = models.DateTimeField(null=True, db_column="updatedAt")
 
     class Meta:

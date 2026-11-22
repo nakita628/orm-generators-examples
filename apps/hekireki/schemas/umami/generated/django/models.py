@@ -1,7 +1,21 @@
+from datetime import datetime
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.db import models
 from django.utils import timezone
+
+
+class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
 
 
 _M = TypeVar("_M", bound=models.Model)
@@ -15,6 +29,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
         return super().update(**kwargs)
 
 
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
+
+
 class User(models.Model):
     id = models.UUIDField(primary_key=True, db_column="user_id")
     username = models.CharField(max_length=255, unique=True)
@@ -23,8 +46,8 @@ class User(models.Model):
     logo_url = models.CharField(max_length=2183, null=True)
     display_name = models.CharField(max_length=255, null=True)
     two_factor_required = models.BooleanField(default=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -39,7 +62,7 @@ class ApiKey(models.Model):
     key_hash = models.CharField(max_length=128, unique=True)
     key_prefix = models.CharField(max_length=20)
     last_used_at = models.DateTimeField(null=True)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "api_key"
@@ -60,7 +83,7 @@ class Session(models.Model):
     region = models.CharField(max_length=20, null=True)
     city = models.CharField(max_length=50, null=True)
     distinct_id = models.CharField(max_length=50, null=True)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "session"
@@ -84,7 +107,7 @@ class SessionLink(models.Model):
     website_id = models.UUIDField()
     session_id = models.UUIDField()
     distinct_id = models.CharField(max_length=50)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "session_link"
@@ -101,8 +124,8 @@ class Website(models.Model):
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="websites", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.SET_NULL, related_name="websites", null=True, db_index=False)
     create_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="created_by", db_column="created_by", null=True, db_index=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     recorder_enabled = models.BooleanField(default=False)
     replay_config = models.JSONField(null=True)
@@ -123,7 +146,7 @@ class WebsiteEvent(models.Model):
     website_id = models.UUIDField()
     session = models.ForeignKey("Session", on_delete=models.RESTRICT, related_name="website_events", db_index=False)
     visit_id = models.UUIDField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
     url_path = models.CharField(max_length=500)
     url_query = models.CharField(max_length=500, null=True)
     utm_source = models.CharField(max_length=255, null=True)
@@ -180,7 +203,7 @@ class EventData(models.Model):
     number_value = models.DecimalField(max_digits=19, decimal_places=4, null=True)
     date_value = models.DateTimeField(null=True)
     data_type = models.IntegerField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "event_data"
@@ -203,7 +226,7 @@ class SessionData(models.Model):
     date_value = models.DateTimeField(null=True)
     data_type = models.IntegerField()
     distinct_id = models.CharField(max_length=50, null=True)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "session_data"
@@ -225,8 +248,8 @@ class Team(models.Model):
     access_code = models.CharField(max_length=50, null=True, unique=True)
     logo_url = models.CharField(max_length=2183, null=True)
     two_factor_required = models.BooleanField(default=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -242,8 +265,8 @@ class TeamUser(models.Model):
     team = models.ForeignKey("Team", on_delete=models.RESTRICT, related_name="members", db_index=False)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="teams", db_index=False)
     role = models.CharField(max_length=50)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -262,8 +285,8 @@ class Report(models.Model):
     name = models.CharField(max_length=200)
     description = models.CharField(max_length=500)
     parameters = models.JSONField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -283,8 +306,8 @@ class Annotation(models.Model):
     date = models.DateTimeField()
     all_day = models.BooleanField(default=True)
     note = models.CharField(max_length=500)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -300,8 +323,8 @@ class Segment(models.Model):
     type = models.CharField(max_length=50)
     name = models.CharField(max_length=200)
     parameters = models.JSONField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -319,7 +342,7 @@ class Revenue(models.Model):
     event_name = models.CharField(max_length=50)
     currency = models.CharField(max_length=10)
     revenue = models.DecimalField(max_digits=19, decimal_places=4, null=True)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "revenue"
@@ -338,8 +361,8 @@ class Link(models.Model):
     slug = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="links", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.SET_NULL, related_name="links", null=True, db_index=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -359,8 +382,8 @@ class Pixel(models.Model):
     slug = models.CharField(max_length=100, unique=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="pixels", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.SET_NULL, related_name="pixels", null=True, db_index=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     deleted_at = models.DateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -382,8 +405,8 @@ class Board(models.Model):
     parameters = models.JSONField()
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="boards", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.SET_NULL, related_name="boards", null=True, db_index=False)
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -402,8 +425,8 @@ class Share(models.Model):
     share_type = models.IntegerField()
     slug = models.CharField(max_length=100, unique=True)
     parameters = models.JSONField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -423,7 +446,7 @@ class SessionReplay(models.Model):
     event_count = models.IntegerField()
     started_at = models.DateTimeField()
     ended_at = models.DateTimeField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
 
     class Meta:
         db_table = "session_replay"
@@ -443,8 +466,8 @@ class SessionReplaySaved(models.Model):
     name = models.CharField(max_length=100)
     website = models.ForeignKey("Website", on_delete=models.RESTRICT, related_name="session_replays_saved", db_index=False)
     visit_id = models.UUIDField()
-    created_at = models.DateTimeField(null=True, default=timezone.now)
-    updated_at = models.DateTimeField(null=True, auto_now=True)
+    created_at = models.DateTimeField(null=True, default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -475,7 +498,7 @@ class HeatmapEvent(models.Model):
     viewport_h = models.IntegerField(null=True)
     page_h = models.IntegerField(null=True)
     scroll_pct = models.IntegerField(null=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "heatmap_event"
@@ -488,12 +511,12 @@ class HeatmapEvent(models.Model):
 
 
 class TwoFactorAuth(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="two_factor_auth")
     secret = models.TextField()
     is_enabled = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -501,11 +524,11 @@ class TwoFactorAuth(models.Model):
 
 
 class TwoFactorBackupCode(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="two_factor_backup_codes", db_index=False)
     code_hash = models.TextField()
     used = models.BooleanField(default=False)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "two_factor_backup_code"
@@ -515,7 +538,7 @@ class TwoFactorBackupCode(models.Model):
 
 
 class TwoFactorOtpUsed(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="two_factor_otp_useds", db_index=False)
     otp = models.TextField()
     expires_at = models.DateTimeField()
@@ -528,11 +551,11 @@ class TwoFactorOtpUsed(models.Model):
 
 
 class TwoFactorRateLimit(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="two_factor_rate_limit")
     attempts = models.IntegerField(default=0)
     locked_until = models.DateTimeField(null=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = AutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -555,7 +578,7 @@ class ErrorIssue(models.Model):
     title = models.CharField(max_length=2200)
     status = models.CharField(max_length=20, default="unresolved")
     resolved_at = models.DateTimeField(null=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "error_issue"
@@ -575,7 +598,7 @@ class ErrorEvent(models.Model):
     session_id = models.UUIDField()
     visit_id = models.UUIDField()
     created_at = models.DateTimeField()
-    received_at = models.DateTimeField(default=timezone.now)
+    received_at = models.DateTimeField(default=now_milliseconds)
     name = models.CharField(max_length=200)
     message = models.CharField(max_length=2000)
     stack = models.TextField()

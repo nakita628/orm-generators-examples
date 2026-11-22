@@ -30,6 +30,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -39,6 +51,11 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Accounts(models.Model):
@@ -53,8 +70,8 @@ class Accounts(models.Model):
     role = models.TextField(default="")
     login_type = models.TextField(db_column="loginType", default="")
     link_account_id = models.IntegerField(null=True, db_column="linkAccountId")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -72,8 +89,8 @@ class Attachments(models.Model):
     note = models.ForeignKey("Notes", on_delete=models.SET_NULL, related_name="attachments", db_column="noteId", null=True, db_index=False)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="attachments", db_column="accountId", null=True, db_index=False)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     perfix_path = models.TextField(null=True, db_column="perfixPath", default="")
     depth = models.IntegerField(null=True)
     metadata = models.JSONField(null=True)
@@ -110,8 +127,8 @@ class Notes(models.Model):
     metadata = models.JSONField(null=True)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="notes", db_column="accountId", null=True, db_index=False)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -127,8 +144,8 @@ class Comments(models.Model):
     guest_ua = models.TextField(null=True, db_column="guestUA")
     note = models.ForeignKey("Notes", on_delete=models.RESTRICT, related_name="comments", db_column="noteId", db_index=False)
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="replies", db_column="parentId", null=True, db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -141,8 +158,8 @@ class Tag(models.Model):
     icon = models.TextField(default="")
     parent = models.IntegerField(default=0)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="tags", db_column="accountId", null=True, db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     objects = AutoNowQuerySet.as_manager()
 
@@ -164,7 +181,7 @@ class NoteReference(models.Model):
     id = models.AutoField(primary_key=True)
     from_note = models.ForeignKey("Notes", on_delete=models.RESTRICT, related_name="references", db_column="fromNoteId", db_index=False)
     to_note = models.ForeignKey("Notes", on_delete=models.RESTRICT, related_name="referenced_by", db_column="toNoteId", db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "noteReference"
@@ -179,8 +196,8 @@ class Follows(models.Model):
     site_url = models.TextField(db_column="siteUrl")
     site_avatar = models.TextField(null=True, db_column="siteAvatar")
     description = models.TextField(null=True)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     follow_type = models.TextField(db_column="followType", default="following")
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="follows", db_column="accountId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -197,8 +214,8 @@ class Notifications(models.Model):
     metadata = models.JSONField(null=True)
     is_read = models.BooleanField(db_column="isRead", default=False)
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="notifications", db_column="accountId", db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -209,8 +226,8 @@ class Cache(models.Model):
     id = models.AutoField(primary_key=True)
     key = models.TextField(unique=True)
     value = models.JSONField()
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -223,8 +240,8 @@ class Plugin(models.Model):
     path = models.TextField()
     is_use = models.BooleanField(db_column="isUse", default=True)
     is_dev = models.BooleanField(db_column="isDev", default=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -236,8 +253,8 @@ class Conversation(models.Model):
     title = models.CharField(max_length=255, default="")
     is_share = models.BooleanField(db_column="isShare", default=False)
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="conversations", db_column="accountId", db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -252,8 +269,8 @@ class Message(models.Model):
     content = models.TextField()
     role = models.CharField(max_length=50)
     conversation = models.ForeignKey("Conversation", on_delete=models.RESTRICT, related_name="messages", db_column="conversationId", db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     metadata = models.JSONField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -271,7 +288,7 @@ class NoteHistory(models.Model):
     metadata = models.JSONField(null=True)
     version = models.IntegerField()
     account_id = models.IntegerField(null=True, db_column="accountId")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "noteHistory"
@@ -286,8 +303,8 @@ class NoteInternalShare(models.Model):
     note = models.ForeignKey("Notes", on_delete=models.CASCADE, related_name="internal_shares", db_column="noteId", db_index=False)
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="shared_notes", db_column="accountId", db_index=False)
     can_edit = models.BooleanField(db_column="canEdit", default=True)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -306,8 +323,8 @@ class Session(models.Model):
     sid = models.TextField(unique=True)
     data = models.TextField()
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -325,8 +342,8 @@ class AiProviders(models.Model):
     api_key = models.CharField(max_length=500, null=True, db_column="apiKey")
     config = models.JSONField(null=True)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -341,8 +358,8 @@ class AiModels(models.Model):
     capabilities = models.JSONField()
     config = models.JSONField(null=True)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -361,8 +378,8 @@ class AiScheduledTask(models.Model):
     last_run = models.DateTimeField(null=True, db_column="lastRun")
     last_result = models.JSONField(null=True, db_column="lastResult")
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="ai_scheduled_tasks", db_column="accountId", db_index=False)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -383,8 +400,8 @@ class McpServers(models.Model):
     env = models.JSONField(null=True)
     headers = models.JSONField(null=True)
     is_enabled = models.BooleanField(db_column="isEnabled", default=True)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -402,8 +419,8 @@ class Fonts(models.Model):
     weights = models.JSONField()
     category = models.CharField(max_length=50, default="sans-serif")
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -34,7 +35,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -1373,7 +1375,7 @@ class LiteLLMProxyWorkerHeartbeat(Base):
 class LiteLLMCronJob(Base):
     __tablename__ = "LiteLLM_CronJob"
 
-    cronjob_id: Mapped[str] = mapped_column(primary_key=True)
+    cronjob_id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     pod_id: Mapped[str]
     status: Mapped[str] = mapped_column(Enum("ACTIVE", "INACTIVE", name="JobStatus"), default="INACTIVE", server_default=text("'INACTIVE'"))
     last_updated: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -2197,7 +2199,7 @@ class LiteLLMAutoRouterDailySpend(Base):
 class LiteLLMShadowEvalJob(Base):
     __tablename__ = "LiteLLM_ShadowEvalJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     group_id: Mapped[str]
     target_type: Mapped[str] = mapped_column(default="key", server_default=text("'key'"))
     target_id: Mapped[str]
@@ -2225,7 +2227,7 @@ class LiteLLMShadowEvalJob(Base):
 class LiteLLMShadowEvalAttempt(Base):
     __tablename__ = "LiteLLM_ShadowEvalAttempt"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     job_id: Mapped[str]
     request_id: Mapped[str]
     outcome: Mapped[str]

@@ -3,6 +3,7 @@ from datetime import timezone as dt_timezone
 from decimal import Decimal
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -32,6 +33,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -41,6 +54,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def user_roles_default() -> list[str]:
@@ -263,9 +285,9 @@ class User(models.Model):
     password = models.TextField(null=True)
     source = models.TextField(null=True)
     signature = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
-    last_signed_in = UtcDateTimeField(db_column="lastSignedIn", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    last_signed_in = UtcDateTimeField(db_column="lastSignedIn", default=now_milliseconds)
     roles = ArrayField(models.TextField(choices=Role.choices), default=user_roles_default)
     identity_provider = models.TextField(choices=IdentityProvider.choices, db_column="identityProvider", default=IdentityProvider.DOCUMENSO)
     avatar_image = models.ForeignKey("AvatarImage", on_delete=models.SET_NULL, related_name="user", db_column="avatarImageId", null=True, db_index=False)
@@ -283,7 +305,7 @@ class User(models.Model):
 
 
 class TeamProfile(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     enabled = models.BooleanField(default=False)
     team = models.OneToOneField("Team", on_delete=models.CASCADE, related_name="profile", db_column="teamId")
     bio = models.TextField(null=True)
@@ -295,7 +317,7 @@ class TeamProfile(models.Model):
 class UserSecurityAuditLog(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="security_audit_logs", db_column="userId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     type = models.TextField(choices=UserSecurityAuditLogType.choices)
     user_agent = models.TextField(null=True, db_column="userAgent")
     ip_address = models.TextField(null=True, db_column="ipAddress")
@@ -307,7 +329,7 @@ class UserSecurityAuditLog(models.Model):
 class PasswordResetToken(models.Model):
     id = models.AutoField(primary_key=True)
     token = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expiry = UtcDateTimeField()
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="password_reset_tokens", db_column="userId", db_index=False)
 
@@ -316,11 +338,11 @@ class PasswordResetToken(models.Model):
 
 
 class Passkey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="passkeys", db_column="userId", db_index=False)
     name = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcDateTimeField(db_column="updatedAt", default=now_milliseconds)
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
     credential_id = models.BinaryField(db_column="credentialId")
     """@zod.custom.use(z.instanceof(Uint8Array))"""
@@ -336,10 +358,10 @@ class Passkey(models.Model):
 
 
 class AnonymousVerificationToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token = models.TextField(unique=True)
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "AnonymousVerificationToken"
@@ -347,12 +369,12 @@ class AnonymousVerificationToken(models.Model):
 
 class VerificationToken(models.Model):
     id = models.AutoField(primary_key=True)
-    secondary_id = models.TextField(unique=True, db_column="secondaryId")
+    secondary_id = models.TextField(unique=True, db_column="secondaryId", default=cuid_str)
     identifier = models.TextField()
     token = models.TextField(unique=True)
     completed = models.BooleanField(default=False)
     expires = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     metadata = models.JSONField(null=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="verification_tokens", db_column="userId", db_index=False)
 
@@ -361,13 +383,13 @@ class VerificationToken(models.Model):
 
 
 class Webhook(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     webhook_url = models.TextField(db_column="webhookUrl")
     event_triggers = ArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_column="eventTriggers")
     secret = models.TextField(null=True)
     enabled = models.BooleanField(default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="webhooks", db_column="userId", db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="webhooks", db_column="teamId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -377,7 +399,7 @@ class Webhook(models.Model):
 
 
 class WebhookCall(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     status = models.TextField(choices=WebhookCallStatus.choices)
     url = models.TextField()
     event = models.TextField(choices=WebhookTriggerEvents.choices)
@@ -385,7 +407,7 @@ class WebhookCall(models.Model):
     response_code = models.IntegerField(db_column="responseCode")
     response_headers = models.JSONField(null=True, db_column="responseHeaders")
     response_body = models.JSONField(null=True, db_column="responseBody")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     webhook = models.ForeignKey("Webhook", on_delete=models.CASCADE, related_name="webhook_calls", db_column="webhookId", db_index=False)
 
     class Meta:
@@ -398,7 +420,7 @@ class ApiToken(models.Model):
     token = models.TextField(unique=True)
     algorithm = models.TextField(choices=ApiTokenAlgorithm.choices, default=ApiTokenAlgorithm.SHA512)
     expires = UtcDateTimeField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="api_tokens", db_column="userId", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="api_tokens", db_column="teamId", db_index=False)
@@ -413,8 +435,8 @@ class Subscription(models.Model):
     plan_id = models.TextField(unique=True, db_column="planId")
     price_id = models.TextField(db_column="priceId")
     period_end = UtcDateTimeField(null=True, db_column="periodEnd")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     cancel_at_period_end = models.BooleanField(db_column="cancelAtPeriodEnd", default=False)
     customer_id = models.TextField(db_column="customerId")
     organisation = models.OneToOneField("Organisation", on_delete=models.CASCADE, related_name="subscription", db_column="organisationId")
@@ -430,9 +452,9 @@ class Subscription(models.Model):
 class SubscriptionClaim(models.Model):
     """@zod.import(["import { ZClaimFlagsSchema, ZRateLimitArraySchema } from '@documenso/lib/types/subscription';"])"""
 
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     locked = models.BooleanField(default=False)
     team_count = models.IntegerField(db_column="teamCount")
@@ -463,8 +485,8 @@ class OrganisationClaim(models.Model):
     """@zod.import(["import { ZClaimFlagsSchema, ZRateLimitArraySchema } from '@documenso/lib/types/subscription';"])"""
 
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     original_subscription_claim_id = models.TextField(null=True, db_column="originalSubscriptionClaimId")
     team_count = models.IntegerField(db_column="teamCount")
     member_count = models.IntegerField(db_column="memberCount")
@@ -492,8 +514,8 @@ class OrganisationClaim(models.Model):
 
 class OrganisationMonthlyStat(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="monthly_stats", db_column="organisationId", db_index=False)
     period = models.TextField()
     """UTC calendar month in `YYYY-MM` form, e.g. "2026-05"."""
@@ -514,8 +536,8 @@ class OrganisationMonthlyStat(models.Model):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -539,14 +561,14 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     ip_address = models.TextField(null=True, db_column="ipAddress")
     user_agent = models.TextField(null=True, db_column="userAgent")
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     is_embed = models.BooleanField(db_column="isEmbed", default=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -562,7 +584,7 @@ class AuthHandoff(models.Model):
     id = models.TextField(primary_key=True, default=None)
     type = models.TextField()
     payload = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
 
     class Meta:
@@ -573,14 +595,14 @@ class AuthHandoff(models.Model):
 
 
 class Folder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="folders", db_column="userId", db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="folders", db_column="teamId", db_index=False)
     pinned = models.BooleanField(default=False)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name="subfolders", db_column="parentId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     visibility = models.TextField(choices=DocumentVisibility.choices, default=DocumentVisibility.EVERYONE)
     type = models.TextField(choices=FolderType.choices)
     objects = AutoNowQuerySet.as_manager()
@@ -603,8 +625,8 @@ class Envelope(models.Model):
     external_id = models.TextField(null=True, db_column="externalId")
     """@zod.string.describe("A custom external ID you can use to identify the document.")"""
     type = models.TextField(choices=EnvelopeType.choices)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     title = models.TextField()
@@ -662,9 +684,9 @@ class EnvelopeItem(models.Model):
 
 
 class DocumentAuditLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     envelope = models.ForeignKey("Envelope", on_delete=models.SET_NULL, related_name="audit_logs", db_column="envelopeId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     type = models.TextField()
     data = models.JSONField()
     name = models.TextField(null=True)
@@ -681,7 +703,7 @@ class DocumentAuditLog(models.Model):
 
 
 class DocumentData(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField(choices=DocumentDataType.choices)
     data = models.TextField()
     initial_data = models.TextField(db_column="initialData")
@@ -693,7 +715,7 @@ class DocumentData(models.Model):
 class DocumentMeta(models.Model):
     """@zod.import(["import { ZDocumentEmailSettingsSchema } from '@documenso/lib/types/document-email';", "import { ZEnvelopeExpirationPeriod as ZEnvelopeExpirationPeriodSchema } from '@documenso/lib/constants/envelope-expiration';", "import { ZEnvelopeReminderSettings as ZEnvelopeReminderSettingsSchema } from '@documenso/lib/constants/envelope-reminder';"])"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     subject = models.TextField(null=True)
     message = models.TextField(null=True)
     timezone = models.TextField(null=True, default="Etc/UTC")
@@ -722,13 +744,13 @@ class DocumentMeta(models.Model):
 class EnvelopeAttachment(models.Model):
     """@zod.import(["import { ZEnvelopeAttachmentTypeSchema } from '@documenso/lib/types/envelope-attachment';"])"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField()
     """[EnvelopeAttachmentType] @zod.custom.use(ZEnvelopeAttachmentTypeSchema)"""
     label = models.TextField()
     data = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     envelope = models.ForeignKey("Envelope", on_delete=models.CASCADE, related_name="envelope_attachments", db_column="envelopeId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -787,7 +809,7 @@ class Field(models.Model):
     """@zod.import(["import { ZFieldMetaNotOptionalSchema } from '@documenso/lib/types/field-meta';"])"""
 
     id = models.AutoField(primary_key=True)
-    secondary_id = models.TextField(unique=True, db_column="secondaryId")
+    secondary_id = models.TextField(unique=True, db_column="secondaryId", default=cuid_str)
     envelope = models.ForeignKey("Envelope", on_delete=models.CASCADE, related_name="fields", db_column="envelopeId", db_index=False)
     envelope_item = models.ForeignKey("EnvelopeItem", on_delete=models.CASCADE, related_name="field", db_column="envelopeItemId", db_index=False)
     recipient = models.ForeignKey("Recipient", on_delete=models.CASCADE, related_name="fields", db_column="recipientId", db_index=False)
@@ -852,7 +874,7 @@ class DataContent(models.Model):
 
 class Signature(models.Model):
     id = models.AutoField(primary_key=True)
-    created = UtcDateTimeField(default=timezone.now)
+    created = UtcDateTimeField(default=now_milliseconds)
     recipient = models.ForeignKey("Recipient", on_delete=models.CASCADE, related_name="signatures", db_column="recipientId", db_index=False)
     field = models.OneToOneField("Field", on_delete=models.CASCADE, related_name="signature", db_column="fieldId")
     signature_image_as_base64 = models.TextField(null=True, db_column="signatureImageAsBase64")
@@ -872,7 +894,7 @@ class CscCredential(models.Model):
     CSC envelope; absent for SES recipients.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     provider_id = models.TextField(db_column="providerId")
     credential_id = models.TextField(db_column="credentialId")
     cert_cache = models.BinaryField(null=True, db_column="certCache")
@@ -893,8 +915,8 @@ class CscCredential(models.Model):
     """
     service_token_expires_at = UtcDateTimeField(null=True, db_column="serviceTokenExpiresAt")
     recipient = models.OneToOneField("Recipient", on_delete=models.CASCADE, related_name="csc_credential", db_column="recipientId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -909,7 +931,7 @@ class CscSession(models.Model):
     @zod.import(["import { ZCscSessionItemsSchema } from '@documenso/lib/types/csc-session';"])
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     envelope_id = models.TextField(db_column="envelopeId")
     """Denormalised envelope id for ergonomic lookups. No FK relation — cleanup
     flows through the Recipient cascade.
@@ -930,7 +952,7 @@ class CscSession(models.Model):
     creation; set together when the SAD is exchanged.
     """
     sad_expires_at = UtcDateTimeField(null=True, db_column="sadExpiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     recipient = models.OneToOneField("Recipient", on_delete=models.CASCADE, related_name="csc_session", db_column="recipientId")
 
     class Meta:
@@ -942,8 +964,8 @@ class DocumentShareLink(models.Model):
     email = models.TextField()
     slug = models.TextField(unique=True)
     envelope = models.ForeignKey("Envelope", on_delete=models.CASCADE, related_name="share_links", db_column="envelopeId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -955,8 +977,8 @@ class DocumentShareLink(models.Model):
 
 class Organisation(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     type = models.TextField(choices=OrganisationType.choices)
     name = models.TextField()
     url = models.TextField(unique=True)
@@ -978,8 +1000,8 @@ class Organisation(models.Model):
 
 class OrganisationMember(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="organisation_member", db_column="userId", db_index=False)
     organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="members", db_column="organisationId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -996,7 +1018,7 @@ class OrganisationMember(models.Model):
 
 class OrganisationMemberInvite(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     email = models.TextField()
     token = models.TextField(unique=True)
     status = models.TextField(choices=OrganisationMemberInviteStatus.choices, default=OrganisationMemberInviteStatus.PENDING)
@@ -1134,7 +1156,7 @@ class Team(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField()
     url = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     avatar_image = models.ForeignKey("AvatarImage", on_delete=models.SET_NULL, related_name="team", db_column="avatarImageId", null=True, db_index=False)
     organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="teams", db_column="organisationId", db_index=False)
     team_global_settings = models.OneToOneField("TeamGlobalSettings", on_delete=models.CASCADE, related_name="team", db_column="teamGlobalSettingsId")
@@ -1149,7 +1171,7 @@ class Team(models.Model):
 
 class TeamEmail(models.Model):
     team = models.OneToOneField("Team", on_delete=models.CASCADE, related_name="team_email", primary_key=True, db_column="teamId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     name = models.TextField()
     email = models.TextField(unique=True)
 
@@ -1164,17 +1186,17 @@ class TeamEmailVerification(models.Model):
     token = models.TextField(unique=True)
     completed = models.BooleanField(default=False)
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "TeamEmailVerification"
 
 
 class TemplateDirectLink(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     envelope = models.OneToOneField("Envelope", on_delete=models.CASCADE, related_name="direct_link", db_column="envelopeId")
     token = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     enabled = models.BooleanField()
     direct_template_recipient_id = models.IntegerField(db_column="directTemplateRecipientId")
 
@@ -1187,14 +1209,14 @@ class SiteSettings(models.Model):
     enabled = models.BooleanField(default=False)
     data = models.JSONField()
     last_modified_by_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="site_settings", db_column="lastModifiedByUserId", null=True, db_index=False)
-    last_modified_at = UtcDateTimeField(db_column="lastModifiedAt", default=timezone.now)
+    last_modified_at = UtcDateTimeField(db_column="lastModifiedAt", default=now_milliseconds)
 
     class Meta:
         db_table = "SiteSettings"
 
 
 class BackgroundJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     status = models.TextField(choices=BackgroundJobStatus.choices, default=BackgroundJobStatus.PENDING)
     payload = models.JSONField(null=True)
     retried = models.IntegerField(default=0)
@@ -1202,8 +1224,8 @@ class BackgroundJob(models.Model):
     job_id = models.TextField(db_column="jobId")
     name = models.TextField()
     version = models.TextField()
-    submitted_at = UtcDateTimeField(db_column="submittedAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    submitted_at = UtcDateTimeField(db_column="submittedAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     last_retried_at = UtcDateTimeField(null=True, db_column="lastRetriedAt")
     objects = AutoNowQuerySet.as_manager()
@@ -1219,8 +1241,8 @@ class BackgroundJobTask(models.Model):
     result = models.JSONField(null=True)
     retried = models.IntegerField(default=0)
     max_retries = models.IntegerField(db_column="maxRetries", default=3)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     background_job = models.ForeignKey("BackgroundJob", on_delete=models.CASCADE, related_name="tasks", db_column="jobId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1230,7 +1252,7 @@ class BackgroundJobTask(models.Model):
 
 
 class AvatarImage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     bytes = models.TextField()
 
     class Meta:
@@ -1239,8 +1261,8 @@ class AvatarImage(models.Model):
 
 class EmailDomain(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     status = models.TextField(choices=EmailDomainStatus.choices, default=EmailDomainStatus.PENDING)
     selector = models.TextField(unique=True)
     domain = models.TextField(unique=True)
@@ -1256,8 +1278,8 @@ class EmailDomain(models.Model):
 
 class OrganisationEmail(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField(unique=True)
     email_name = models.TextField(db_column="emailName")
     email_domain = models.ForeignKey("EmailDomain", on_delete=models.CASCADE, related_name="emails", db_column="emailDomainId", db_index=False)
@@ -1270,8 +1292,8 @@ class OrganisationEmail(models.Model):
 
 class EmailTransport(models.Model):
     id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     type = models.TextField(choices=EmailTransportType.choices)
     from_name = models.TextField(db_column="fromName")
@@ -1312,8 +1334,8 @@ class EmbedSignature(models.Model):
     """
 
     key = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="embed_signatures", db_column="organisationId", db_index=False)
     recipient_id = models.IntegerField(db_column="recipientId")
     """Last writer. Not a relation so the row survives document deletion and
@@ -1336,7 +1358,7 @@ class RateLimit(models.Model):
     action = models.TextField()
     bucket = UtcDateTimeField()
     count = models.IntegerField(default=1)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "RateLimit"

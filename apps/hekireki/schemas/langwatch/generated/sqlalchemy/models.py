@@ -4,6 +4,8 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
+import nanoid
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -34,7 +36,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -45,7 +48,7 @@ class Base(DeclarativeBase):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str] = mapped_column(default="oauth", server_default=text("'oauth'"))
     provider: Mapped[str]
@@ -101,7 +104,7 @@ class AccountCredential(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -200,7 +203,7 @@ class UserErasure(Base):
 
     __tablename__ = "UserErasure"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     account_created_at: Mapped[datetime] = mapped_column("accountCreatedAt")
     erased_at: Mapped[datetime] = mapped_column("erasedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
@@ -211,7 +214,7 @@ class UserErasure(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     email_verified: Mapped[bool] = mapped_column("emailVerified", default=False, server_default=text("false"))
@@ -315,7 +318,7 @@ class User(Base):
 class VerificationToken(Base):
     __tablename__ = "VerificationToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     identifier: Mapped[str]
     token: Mapped[str]
     """Not unique alone: better-auth stores plain values here (a user id, a counter). See WEB-19201."""
@@ -414,7 +417,7 @@ class TwoFactor(Base):
 
     __tablename__ = "TwoFactor"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="TwoFactor_userId_fkey"))
     secret: Mapped[str]
     backup_codes: Mapped[str] = mapped_column("backupCodes")
@@ -459,7 +462,7 @@ class SignInAttemptLock(Base):
 
     __tablename__ = "SignInAttemptLock"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     identifier_hash: Mapped[str] = mapped_column("identifierHash")
     """Keyed hash of the normalised address. Never the address itself."""
     failed_count: Mapped[int] = mapped_column("failedCount", default=0, server_default=text("0"))
@@ -507,7 +510,7 @@ class Passkey(Base):
 
     __tablename__ = "Passkey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[Optional[str]]
     public_key: Mapped[str] = mapped_column("publicKey")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Passkey_userId_fkey"))
@@ -1231,7 +1234,7 @@ class OrganizationAccessNotice(Base):
 class Team(Base):
     __tablename__ = "Team"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     slug: Mapped[str]
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="Team_organizationId_fkey"))
@@ -1262,7 +1265,7 @@ class Team(Base):
 class Organization(Base):
     __tablename__ = "Organization"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     kind: Mapped[str] = mapped_column(default="customer", server_default=text("'customer'"))
     """`customer` for every organization a person founds or an operator provisions; `system` for
@@ -1488,7 +1491,7 @@ class IssuedLicense(Base):
 
     __tablename__ = "IssuedLicense"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     license_id: Mapped[str] = mapped_column("licenseId")
     """The `licenseId` inside the signed license (`lic-<uuid>`)."""
     token_hash: Mapped[str] = mapped_column("tokenHash")
@@ -1602,7 +1605,7 @@ class ActivationCode(Base):
 
     __tablename__ = "ActivationCode"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     code_hash: Mapped[str] = mapped_column("codeHash")
     """SHA-256 of the normalised code. Looked up on every redemption."""
     code_hint: Mapped[str] = mapped_column("codeHint")
@@ -1661,7 +1664,7 @@ class ConnectedBillingAccount(Base):
 
     __tablename__ = "ConnectedBillingAccount"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="ConnectedBillingAccount_organizationId_fkey"))
     stripe_customer_id: Mapped[str] = mapped_column("stripeCustomerId")
     """The customer at the payment provider. Invoiced, never charged."""
@@ -1709,7 +1712,7 @@ class ConnectedCreditGrant(Base):
 
     __tablename__ = "ConnectedCreditGrant"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     account_id: Mapped[str] = mapped_column("accountId")
     """The `ConnectedBillingAccount` row. A plain column ref, like
     `IssuedLicense.replacesId`: relationMode="prisma" carries no foreign keys.
@@ -1738,7 +1741,7 @@ class ConnectedInvoice(Base):
 
     __tablename__ = "ConnectedInvoice"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     account_id: Mapped[str] = mapped_column("accountId")
     """The `ConnectedBillingAccount` row, as a plain column ref."""
     stripe_invoice_id: Mapped[str] = mapped_column("stripeInvoiceId")
@@ -1781,7 +1784,7 @@ class ScimRequestLog(Base):
 
     __tablename__ = "ScimRequestLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="ScimRequestLog_organizationId_fkey"))
     connection_id: Mapped[Optional[str]] = mapped_column("connectionId")
     """Null when the refusal resolved an organization and stopped before the
@@ -1813,7 +1816,7 @@ class ScimRequestLog(Base):
 class ScimToken(Base):
     __tablename__ = "ScimToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="ScimToken_organizationId_fkey"))
     connection_id: Mapped[Optional[str]] = mapped_column("connectionId")
     """D08: the SSO connection this token was issued for, and its ENTIRE write
@@ -1877,7 +1880,7 @@ class ScimExternalId(Base):
     __tablename__ = "ScimExternalId"
 
     organization_id: Mapped[str] = mapped_column("organizationId")
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     connection_id: Mapped[str] = mapped_column("connectionId")
     external_id: Mapped[str] = mapped_column("externalId")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="ScimExternalId_userId_fkey"))
@@ -2075,7 +2078,7 @@ class OrganizationSeatPeakMonth(Base):
 class Project(Base):
     __tablename__ = "Project"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     slug: Mapped[str]
     api_key: Mapped[str] = mapped_column("apiKey")
@@ -2231,7 +2234,7 @@ class Department(Base):
 
     __tablename__ = "Department"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     name: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -2259,7 +2262,7 @@ class DepartmentMembershipHistory(Base):
 
     __tablename__ = "DepartmentMembershipHistory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     user_id: Mapped[str] = mapped_column("userId")
     department_id: Mapped[str] = mapped_column("departmentId")
@@ -2285,7 +2288,7 @@ class PlatformToolPolicy(Base):
 
     __tablename__ = "PlatformToolPolicy"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     tool_slug: Mapped[str] = mapped_column("toolSlug")
     allow_vk: Mapped[bool] = mapped_column("allowVk", default=True, server_default=text("true"))
@@ -2301,7 +2304,7 @@ class PlatformToolPolicy(Base):
 class OrganizationInvite(Base):
     __tablename__ = "OrganizationInvite"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     email: Mapped[str]
     invite_code: Mapped[str] = mapped_column("inviteCode")
     expiration: Mapped[Optional[datetime]]
@@ -2329,7 +2332,7 @@ class OrganizationInvite(Base):
 class Monitor(Base):
     __tablename__ = "Monitor"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Monitor_projectId_fkey"))
     experiment_id: Mapped[Optional[str]] = mapped_column("experimentId", ForeignKey("Experiment.id", ondelete="RESTRICT", onupdate="RESTRICT", name="Monitor_experimentId_fkey"))
     evaluator_id: Mapped[Optional[str]] = mapped_column("evaluatorId", ForeignKey("Evaluator.id", ondelete="SET NULL", onupdate="CASCADE", name="Monitor_evaluatorId_fkey"))
@@ -2366,7 +2369,7 @@ class Monitor(Base):
 class Cost(Base):
     __tablename__ = "Cost"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Cost_projectId_fkey"))
     cost_type: Mapped[str] = mapped_column("costType", Enum("TRACE_CHECK", "GUARDRAIL", "CLUSTERING", "BATCH_EVALUATION", name="CostType"))
     cost_name: Mapped[Optional[str]] = mapped_column("costName")
@@ -2398,7 +2401,7 @@ class Topic(Base):
 
     __tablename__ = "Topic"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Topic_projectId_fkey"))
     name: Mapped[str]
     parent_id: Mapped[Optional[str]] = mapped_column("parentId", ForeignKey("Topic.id", ondelete="RESTRICT", onupdate="RESTRICT", name="Topic_parentId_fkey"))
@@ -2427,7 +2430,7 @@ class Topic(Base):
 class Dataset(Base):
     __tablename__ = "Dataset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Dataset_projectId_fkey"))
     name: Mapped[str]
     slug: Mapped[str]
@@ -2460,7 +2463,7 @@ class Dataset(Base):
 class DatasetRecord(Base):
     __tablename__ = "DatasetRecord"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     dataset_id: Mapped[str] = mapped_column("datasetId", ForeignKey("Dataset.id", ondelete="RESTRICT", onupdate="CASCADE", name="DatasetRecord_datasetId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="DatasetRecord_projectId_fkey"))
     entry: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -2530,7 +2533,7 @@ class DatasetVersionRun(Base):
 class Dashboard(Base):
     __tablename__ = "Dashboard"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Dashboard_projectId_fkey"))
     """The project that owns the board; only there can it be edited."""
     name: Mapped[str]
@@ -2578,7 +2581,7 @@ class DashboardFavourite(Base):
 
     __tablename__ = "DashboardFavourite"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     user_id: Mapped[str] = mapped_column("userId")
     dashboard_id: Mapped[Optional[str]] = mapped_column("dashboardId")
     """A DashboardsV2 board's id (copied boards kept their Dashboard id); null when
@@ -2606,7 +2609,7 @@ class DashboardsV2(Base):
 
     __tablename__ = "DashboardsV2"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     """The project that owns the board; only there can it be edited."""
     name: Mapped[str]
@@ -2640,7 +2643,7 @@ class DashboardWidget(Base):
 
     __tablename__ = "DashboardWidget"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     dashboard_id: Mapped[Optional[str]] = mapped_column("dashboardId")
     """The DashboardsV2 board it sits on; null while unplaced."""
@@ -2796,7 +2799,7 @@ class InsightDailyScheduleProjection(Base):
 class SavedView(Base):
     __tablename__ = "SavedView"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="SavedView_projectId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="SavedView_userId_fkey"))
     name: Mapped[str]
@@ -2826,7 +2829,7 @@ class SavedView(Base):
 class CustomGraph(Base):
     __tablename__ = "CustomGraph"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="CustomGraph_projectId_fkey"))
     name: Mapped[str]
     graph: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -2865,7 +2868,7 @@ class CustomGraph(Base):
 class BatchEvaluation(Base):
     __tablename__ = "BatchEvaluation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     experiment_id: Mapped[str] = mapped_column("experimentId", ForeignKey("Experiment.id", ondelete="RESTRICT", onupdate="CASCADE", name="BatchEvaluation_experimentId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="BatchEvaluation_projectId_fkey"))
     data: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: {}, server_default=text("'{}'"))
@@ -2895,7 +2898,7 @@ class BatchEvaluation(Base):
 class Trigger(Base):
     __tablename__ = "Trigger"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Trigger_projectId_fkey"))
     action: Mapped[str] = mapped_column(Enum("SEND_EMAIL", "ADD_TO_DATASET", "ADD_TO_ANNOTATION_QUEUE", "SEND_SLACK_MESSAGE", "SEND_WEBHOOK", name="TriggerAction"))
@@ -2942,7 +2945,7 @@ class SlackIntegration(Base):
 
     __tablename__ = "SlackIntegration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     kind: Mapped[str] = mapped_column(Enum("BOT", "INCOMING_WEBHOOK", name="SlackIntegrationKind"))
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "PROJECT", name="SlackIntegrationScopeType"))
@@ -3094,7 +3097,7 @@ class WebhookEndpointDelivery(Base):
 
     __tablename__ = "WebhookEndpointDelivery"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     channel: Mapped[str] = mapped_column(Enum("platform", "automations", name="WebhookDeliveryChannel"), default="platform", server_default=text("'platform'"))
     organization_id: Mapped[Optional[str]] = mapped_column("organizationId")
     """Platform tenancy. Null on automations rows."""
@@ -3133,7 +3136,7 @@ class WebhookEndpointDelivery(Base):
 class Experiment(Base):
     __tablename__ = "Experiment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[Optional[str]]
     type: Mapped[str] = mapped_column(Enum("DSPY", "BATCH_EVALUATION", "BATCH_EVALUATION_V2", "EVALUATIONS_V3", name="ExperimentType"))
     slug: Mapped[str]
@@ -3160,7 +3163,7 @@ class Experiment(Base):
 class ExperimentVersion(Base):
     __tablename__ = "ExperimentVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     experiment_id: Mapped[str] = mapped_column("experimentId")
     project_id: Mapped[str] = mapped_column("projectId")
     version: Mapped[int]
@@ -3206,7 +3209,7 @@ class ExperimentVersion(Base):
 class Annotation(Base):
     __tablename__ = "Annotation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Annotation_projectId_fkey"))
     trace_id: Mapped[str] = mapped_column("traceId")
     comment: Mapped[Optional[str]]
@@ -3235,7 +3238,7 @@ class Annotation(Base):
 class ModelProvider(Base):
     __tablename__ = "ModelProvider"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     provider: Mapped[str]
     routing_handle: Mapped[Optional[str]] = mapped_column("routingHandle")
@@ -3272,7 +3275,7 @@ class ModelProvider(Base):
 class ModelProviderScope(Base):
     __tablename__ = "ModelProviderScope"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     model_provider_id: Mapped[str] = mapped_column("modelProviderId", ForeignKey("ModelProvider.id", ondelete="CASCADE", onupdate="CASCADE", name="ModelProviderScope_modelProviderId_fkey"))
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="ModelProviderScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -3289,7 +3292,7 @@ class ModelProviderScope(Base):
 class ModelDefaultConfig(Base):
     __tablename__ = "ModelDefaultConfig"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     config: Mapped[dict[str, Any]] = mapped_column(JSONB)
     author_id: Mapped[Optional[str]] = mapped_column("authorId")
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -3305,7 +3308,7 @@ class ModelDefaultConfig(Base):
 class ModelDefaultConfigScope(Base):
     __tablename__ = "ModelDefaultConfigScope"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     config_id: Mapped[str] = mapped_column("configId", ForeignKey("ModelDefaultConfig.id", ondelete="CASCADE", onupdate="CASCADE", name="ModelDefaultConfigScope_configId_fkey"))
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="ModelDefaultScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -3335,7 +3338,7 @@ class GithubInstallation(Base):
 
     __tablename__ = "GithubInstallation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     installation_id: Mapped[str] = mapped_column("installationId")
     """GitHub installation id (numeric; stored as string). Globally unique."""
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="GithubInstallation_organizationId_fkey"))
@@ -3381,7 +3384,7 @@ class GithubPullRequest(Base):
 
     __tablename__ = "GithubPullRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="GithubPullRequest_organizationId_fkey"))
     repository_host: Mapped[str] = mapped_column("repositoryHost")
     """The GitHub host the repository lives on, e.g. "github.com"."""
@@ -3433,7 +3436,7 @@ class GithubBranchPullRequestCheck(Base):
 
     __tablename__ = "GithubBranchPullRequestCheck"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="GithubBranchPullRequestCheck_organizationId_fkey"))
     repository_host: Mapped[str] = mapped_column("repositoryHost")
     repository_full_name: Mapped[str] = mapped_column("repositoryFullName")
@@ -3470,7 +3473,7 @@ class LangyConversationProjection(Base):
 
     __tablename__ = "LangyConversationProjection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     conversation_id: Mapped[str] = mapped_column("conversationId")
     user_id: Mapped[str] = mapped_column("userId")
@@ -3523,7 +3526,7 @@ class LangyTurnRequest(Base):
 
     __tablename__ = "LangyTurnRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     user_id: Mapped[str] = mapped_column("userId")
     request_id: Mapped[str] = mapped_column("requestId")
@@ -3548,7 +3551,7 @@ class LangyActiveTurn(Base):
 
     __tablename__ = "LangyActiveTurn"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     conversation_id: Mapped[str] = mapped_column("conversationId")
     turn_id: Mapped[str] = mapped_column("turnId")
@@ -3570,7 +3573,7 @@ class LangyConversationTurnProjection(Base):
 
     __tablename__ = "LangyConversationTurnProjection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     conversation_id: Mapped[str] = mapped_column("conversationId")
     turn_id: Mapped[str] = mapped_column("turnId")
@@ -3610,7 +3613,7 @@ class LangyMessageProjection(Base):
 
     __tablename__ = "LangyMessageProjection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     conversation_id: Mapped[str] = mapped_column("conversationId")
     message_id: Mapped[str] = mapped_column("messageId")
@@ -3631,7 +3634,7 @@ class LangyMessageProjection(Base):
 class ProjectSecret(Base):
     __tablename__ = "ProjectSecret"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="ProjectSecret_projectId_fkey"))
     name: Mapped[str]
     encrypted_value: Mapped[str] = mapped_column("encryptedValue")
@@ -3652,7 +3655,7 @@ class ProjectSecret(Base):
 class TriggerSent(Base):
     __tablename__ = "TriggerSent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     trigger_id: Mapped[str] = mapped_column("triggerId", ForeignKey("Trigger.id", ondelete="RESTRICT", onupdate="CASCADE", name="TriggerSent_triggerId_fkey"))
     trace_id: Mapped[Optional[str]] = mapped_column("traceId")
     custom_graph_id: Mapped[Optional[str]] = mapped_column("customGraphId", ForeignKey("CustomGraph.id", ondelete="CASCADE", onupdate="CASCADE", name="TriggerSent_customGraphId_fkey"))
@@ -3699,7 +3702,7 @@ class TriggerLatestEvaluation(Base):
 class EmailSuppression(Base):
     __tablename__ = "EmailSuppression"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="EmailSuppression_projectId_fkey"))
     email: Mapped[str]
     trigger_id: Mapped[Optional[str]] = mapped_column("triggerId")
@@ -3716,7 +3719,7 @@ class EmailSuppression(Base):
 class AnnotationScore(Base):
     __tablename__ = "AnnotationScore"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="AnnotationScore_projectId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -3739,7 +3742,7 @@ class AnnotationScore(Base):
 class AnnotationQueue(Base):
     __tablename__ = "AnnotationQueue"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     slug: Mapped[str]
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="AnnotationQueue_projectId_fkey"))
@@ -3788,7 +3791,7 @@ class AnnotationQueueScores(Base):
 class AnnotationQueueItem(Base):
     __tablename__ = "AnnotationQueueItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     annotation_queue_id: Mapped[Optional[str]] = mapped_column("annotationQueueId", ForeignKey("AnnotationQueue.id", ondelete="SET NULL", onupdate="CASCADE", name="AnnotationQueueItem_annotationQueueId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="AnnotationQueueItem_userId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -3822,7 +3825,7 @@ class AnnotationQueueItem(Base):
 class ShareLink(Base):
     __tablename__ = "ShareLink"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     token: Mapped[str]
     resource_type: Mapped[str] = mapped_column("resourceType", Enum("TRACE", "THREAD", name="ShareResourceType"))
     resource_id: Mapped[str] = mapped_column("resourceId")
@@ -3848,7 +3851,7 @@ class ShareLink(Base):
 class PinnedTrace(Base):
     __tablename__ = "PinnedTrace"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="PinnedTrace_projectId_fkey"))
     trace_id: Mapped[str] = mapped_column("traceId")
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="PinnedTrace_userId_fkey"))
@@ -3897,7 +3900,7 @@ class TraceIngestSourceBilling(Base):
 class RetentionPolicy(Base):
     __tablename__ = "RetentionPolicy"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="RetentionPolicyScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -3915,7 +3918,7 @@ class RetentionPolicy(Base):
 class DataPrivacyPolicy(Base):
     __tablename__ = "DataPrivacyPolicy"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "DEPARTMENT", "TEAM", "PROJECT", name="DataPrivacyScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -3956,7 +3959,7 @@ class InstantEvalJudgeSpend(Base):
 class CustomLLMModelCost(Base):
     __tablename__ = "CustomLLMModelCost"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="CustomLLMModelCostScopeType"), default="PROJECT", server_default=text("'PROJECT'"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -3980,7 +3983,7 @@ class CustomLLMModelCost(Base):
 class Workflow(Base):
     __tablename__ = "Workflow"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Workflow_projectId_fkey"))
     name: Mapped[str]
     icon: Mapped[str]
@@ -4018,7 +4021,7 @@ class Workflow(Base):
 class WorkflowVersion(Base):
     __tablename__ = "WorkflowVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     version: Mapped[str]
     commit_message: Mapped[str] = mapped_column("commitMessage")
     author_id: Mapped[str] = mapped_column("authorId", ForeignKey("User.id", ondelete="RESTRICT", onupdate="CASCADE", name="WorkflowVersion_authorId_fkey"))
@@ -4050,7 +4053,7 @@ class WorkflowVersion(Base):
 class AuditLog(Base):
     __tablename__ = "AuditLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     user_id: Mapped[Optional[str]] = mapped_column("userId")
     project_id: Mapped[Optional[str]] = mapped_column("projectId")
@@ -4095,7 +4098,7 @@ class AuditLog(Base):
 class LlmPromptConfig(Base):
     __tablename__ = "LlmPromptConfig"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     handle: Mapped[Optional[str]]
     name: Mapped[str]
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="LlmPromptConfig_projectId_fkey"))
@@ -4122,7 +4125,7 @@ class LlmPromptConfig(Base):
 class LlmPromptConfigVersion(Base):
     __tablename__ = "LlmPromptConfigVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     version: Mapped[int]
     commit_message: Mapped[Optional[str]] = mapped_column("commitMessage")
     author_id: Mapped[Optional[str]] = mapped_column("authorId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="LlmPromptConfigVersion_authorId_fkey"))
@@ -4147,7 +4150,7 @@ class LlmPromptConfigVersion(Base):
 class PromptTagAssignment(Base):
     __tablename__ = "PromptTagAssignment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     config_id: Mapped[str] = mapped_column("configId", ForeignKey("LlmPromptConfig.id", ondelete="CASCADE", onupdate="CASCADE", name="PromptTagAssignment_configId_fkey"))
     version_id: Mapped[str] = mapped_column("versionId", ForeignKey("LlmPromptConfigVersion.id", ondelete="CASCADE", onupdate="CASCADE", name="PromptTagAssignment_versionId_fkey"))
     tag_id: Mapped[str] = mapped_column("tagId", ForeignKey("PromptTag.id", ondelete="CASCADE", onupdate="CASCADE", name="PromptTagAssignment_tagId_fkey"))
@@ -4174,7 +4177,7 @@ class PromptTagAssignment(Base):
 class PromptTag(Base):
     __tablename__ = "PromptTag"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="PromptTag_organizationId_fkey"))
     name: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -4195,7 +4198,7 @@ class PromptTag(Base):
 class Analytics(Base):
     __tablename__ = "Analytics"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Analytics_projectId_fkey"))
     key: Mapped[str]
     value: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
@@ -4214,7 +4217,7 @@ class Analytics(Base):
 class CustomRole(Base):
     __tablename__ = "CustomRole"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="CustomRole_organizationId_fkey"))
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -4235,7 +4238,7 @@ class CustomRole(Base):
 class Notification(Base):
     __tablename__ = "Notification"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[Optional[str]] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="Notification_organizationId_fkey"))
     project_id: Mapped[Optional[str]] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="Notification_projectId_fkey"))
     metadata_: Mapped[dict[str, Any]] = mapped_column("metadata", JSONB)
@@ -4256,7 +4259,7 @@ class Notification(Base):
 class Agent(Base):
     __tablename__ = "Agent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Agent_projectId_fkey"))
     name: Mapped[str]
     type: Mapped[str]
@@ -4335,7 +4338,7 @@ class AgentVersionLabel(Base):
 class Evaluator(Base):
     __tablename__ = "Evaluator"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Evaluator_projectId_fkey"))
     name: Mapped[str]
     slug: Mapped[Optional[str]]
@@ -4411,7 +4414,7 @@ class EvaluatorVersionLabel(Base):
 class Scenario(Base):
     __tablename__ = "Scenario"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="Scenario_projectId_fkey"))
     name: Mapped[str]
     situation: Mapped[str]
@@ -4444,7 +4447,7 @@ class Scenario(Base):
 class ScenarioVersion(Base):
     __tablename__ = "ScenarioVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     scenario_id: Mapped[str] = mapped_column("scenarioId", ForeignKey("Scenario.id", ondelete="CASCADE", onupdate="CASCADE", name="ScenarioVersion_scenarioId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId")
     """The project of the parent case, carried here so every read filters by
@@ -4479,7 +4482,7 @@ class ScenarioVersion(Base):
 class SimulationSuite(Base):
     __tablename__ = "SimulationSuite"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="SimulationSuite_projectId_fkey"))
     name: Mapped[str]
     slug: Mapped[str]
@@ -4510,7 +4513,7 @@ class SimulationSuite(Base):
 class Subscription(Base):
     __tablename__ = "Subscription"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="Subscription_organizationId_fkey"))
     plan: Mapped[str] = mapped_column(Enum("FREE", "PRO", "GROWTH", "GROWTH_SEAT_EUR_MONTHLY", "GROWTH_SEAT_EUR_ANNUAL", "GROWTH_SEAT_USD_MONTHLY", "GROWTH_SEAT_USD_ANNUAL", "ENTERPRISE", "LAUNCH", "ACCELERATE", "LAUNCH_ANNUAL", "ACCELERATE_ANNUAL", name="PlanTypes"))
     stripe_subscription_id: Mapped[Optional[str]] = mapped_column("stripeSubscriptionId")
@@ -4579,7 +4582,7 @@ class Subscription(Base):
 class Invoice(Base):
     __tablename__ = "Invoice"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     subscription_id: Mapped[str] = mapped_column("subscriptionId", ForeignKey("Subscription.id", ondelete="RESTRICT", onupdate="CASCADE", name="Invoice_subscriptionId_fkey"))
     total_amount: Mapped[float] = mapped_column("totalAmount")
     currency: Mapped[str]
@@ -4598,7 +4601,7 @@ class Invoice(Base):
 class InvoiceItem(Base):
     __tablename__ = "InvoiceItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     invoice_id: Mapped[str] = mapped_column("invoiceId", ForeignKey("Invoice.id", ondelete="RESTRICT", onupdate="CASCADE", name="InvoiceItem_invoiceId_fkey"))
     description: Mapped[str]
     amount: Mapped[float]
@@ -4614,7 +4617,7 @@ class InvoiceItem(Base):
 class Group(Base):
     __tablename__ = "Group"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="Group_organizationId_fkey"))
     name: Mapped[str]
     slug: Mapped[str]
@@ -4691,7 +4694,7 @@ class AuthzOrganizationPolicy(Base):
 class RoleBinding(Base):
     __tablename__ = "RoleBinding"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RoleBinding_organizationId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="RoleBinding_userId_fkey"))
     group_id: Mapped[Optional[str]] = mapped_column("groupId", ForeignKey("Group.id", ondelete="CASCADE", onupdate="CASCADE", name="RoleBinding_groupId_fkey"))
@@ -4787,7 +4790,7 @@ class Role(Base):
 class ApiKey(Base):
     __tablename__ = "ApiKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     lookup_id: Mapped[str] = mapped_column("lookupId")
@@ -4893,7 +4896,7 @@ class SigningKey(Base):
 class ProjectActiveDay(Base):
     __tablename__ = "ProjectActiveDay"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column("projectId")
     day: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -5049,7 +5052,7 @@ class NurturingTracedProject(Base):
 class BillingMeterCheckpoint(Base):
     __tablename__ = "BillingMeterCheckpoint"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId")
     billing_month: Mapped[str] = mapped_column("billingMonth")
     meter: Mapped[str] = mapped_column(default="langwatch_billable_events", server_default=text("'langwatch_billable_events'"))
@@ -5066,7 +5069,7 @@ class BillingMeterCheckpoint(Base):
 class VirtualKey(Base):
     __tablename__ = "VirtualKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -5120,7 +5123,7 @@ class VirtualKey(Base):
 class VirtualKeyScope(Base):
     __tablename__ = "VirtualKeyScope"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     virtual_key_id: Mapped[str] = mapped_column("virtualKeyId", ForeignKey("VirtualKey.id", ondelete="CASCADE", onupdate="CASCADE", name="VirtualKeyScope_virtualKeyId_fkey"))
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="VirtualKeyScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -5137,7 +5140,7 @@ class VirtualKeyScope(Base):
 class RoutingPolicy(Base):
     __tablename__ = "RoutingPolicy"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="RoutingPolicy_organizationId_fkey"))
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -5164,7 +5167,7 @@ class RoutingPolicy(Base):
 class RoutingPolicyScope(Base):
     __tablename__ = "RoutingPolicyScope"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     routing_policy_id: Mapped[str] = mapped_column("routingPolicyId", ForeignKey("RoutingPolicy.id", ondelete="CASCADE", onupdate="CASCADE", name="RoutingPolicyScope_routingPolicyId_fkey"))
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="RoutingPolicyScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -5181,7 +5184,7 @@ class RoutingPolicyScope(Base):
 class GatewayGuardrail(Base):
     __tablename__ = "GatewayGuardrail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="GatewayGuardrail_projectId_fkey"))
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -5221,7 +5224,7 @@ class IngestionSource(Base):
 
     __tablename__ = "IngestionSource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="IngestionSource_organizationId_fkey"))
     team_id: Mapped[Optional[str]] = mapped_column("teamId", ForeignKey("Team.id", ondelete="SET NULL", onupdate="CASCADE", name="IngestionSource_teamId_fkey"))
     """Optional team-scope. null = org-wide."""
@@ -5368,7 +5371,7 @@ class AnomalyRule(Base):
 
     __tablename__ = "AnomalyRule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AnomalyRule_organizationId_fkey"))
     scope: Mapped[str]
     """'organization' | 'team' | 'project' | 'source_type' | 'source'.
@@ -5441,7 +5444,7 @@ class AnomalyAlert(Base):
 
     __tablename__ = "AnomalyAlert"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AnomalyAlert_organizationId_fkey"))
     rule_id: Mapped[str] = mapped_column("ruleId", ForeignKey("AnomalyRule.id", ondelete="CASCADE", onupdate="CASCADE", name="AnomalyAlert_ruleId_fkey"))
     severity: Mapped[str]
@@ -5505,7 +5508,7 @@ class AiToolEntry(Base):
 
     __tablename__ = "AiToolEntry"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AiToolEntry_organizationId_fkey"))
     scope: Mapped[str]
     """"organization" | "team". String not enum so new scopes ship
@@ -5585,7 +5588,7 @@ class AiToolEntryTeam(Base):
 
     __tablename__ = "AiToolEntryTeam"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     entry_id: Mapped[str] = mapped_column("entryId", ForeignKey("AiToolEntry.id", ondelete="CASCADE", onupdate="CASCADE", name="AiToolEntryTeam_entryId_fkey"))
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="AiToolEntryTeam_teamId_fkey"))
 
@@ -5608,7 +5611,7 @@ class AiToolEntryDepartment(Base):
 
     __tablename__ = "AiToolEntryDepartment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     entry_id: Mapped[str] = mapped_column("entryId", ForeignKey("AiToolEntry.id", ondelete="CASCADE", onupdate="CASCADE", name="AiToolEntryDepartment_entryId_fkey"))
     department_id: Mapped[str] = mapped_column("departmentId")
 
@@ -5636,7 +5639,7 @@ class IngestionTemplate(Base):
 
     __tablename__ = "IngestionTemplate"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[Optional[str]] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="IngestionTemplate_organizationId_fkey"))
     slug: Mapped[str]
     """Stable slug - unique within (organizationId, slug) scope. Generated
@@ -5722,7 +5725,7 @@ class GatewayTraceExportKey(Base):
 class GatewayBudget(Base):
     __tablename__ = "GatewayBudget"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", "VIRTUAL_KEY", "PRINCIPAL", "GROUP", "ATTRIBUTED_USER", name="GatewayBudgetScopeType"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -5761,7 +5764,7 @@ class GatewayBudget(Base):
 class GatewayBudgetBucketBoundary(Base):
     __tablename__ = "GatewayBudgetBucketBoundary"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     budget_id: Mapped[str] = mapped_column("budgetId", ForeignKey("GatewayBudget.id", ondelete="CASCADE", onupdate="CASCADE", name="GatewayBudgetBucketBoundary_budgetId_fkey"))
     bucket_scope_id: Mapped[str] = mapped_column("bucketScopeId")
@@ -5779,7 +5782,7 @@ class GatewayBudgetBucketBoundary(Base):
 class GatewayBudgetLedger(Base):
     __tablename__ = "GatewayBudgetLedger"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     budget_id: Mapped[str] = mapped_column("budgetId", ForeignKey("GatewayBudget.id", ondelete="CASCADE", onupdate="CASCADE", name="GatewayBudgetLedger_budgetId_fkey"))
     virtual_key_id: Mapped[str] = mapped_column("virtualKeyId", ForeignKey("VirtualKey.id", ondelete="CASCADE", onupdate="CASCADE", name="GatewayBudgetLedger_virtualKeyId_fkey"))
     model_provider_id: Mapped[Optional[str]] = mapped_column("modelProviderId")
@@ -5831,7 +5834,7 @@ class GatewayChangeEvent(Base):
 class GatewayCacheRule(Base):
     __tablename__ = "GatewayCacheRule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -5885,7 +5888,7 @@ class ProcessManagerInstance(Base):
 
     __tablename__ = "ProcessManagerInstance"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     process_name: Mapped[str] = mapped_column("processName")
     project_id: Mapped[str] = mapped_column("projectId")
     process_key: Mapped[str] = mapped_column("processKey")
@@ -5906,7 +5909,7 @@ class ProcessManagerInbox(Base):
 
     __tablename__ = "ProcessManagerInbox"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     process_name: Mapped[str] = mapped_column("processName")
     project_id: Mapped[str] = mapped_column("projectId")
     process_key: Mapped[str] = mapped_column("processKey")
@@ -5946,7 +5949,7 @@ class ProcessManagerOutbox(Base):
 
     __tablename__ = "ProcessManagerOutbox"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     process_name: Mapped[str] = mapped_column("processName")
     project_id: Mapped[str] = mapped_column("projectId")
     process_key: Mapped[str] = mapped_column("processKey")
@@ -5985,7 +5988,7 @@ class ProcessManagerOutboxAttempt(Base):
 
     __tablename__ = "ProcessManagerOutboxAttempt"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     outbox_id: Mapped[str] = mapped_column("outboxId", ForeignKey("ProcessManagerOutbox.id", ondelete="CASCADE", onupdate="CASCADE", name="ProcessManagerOutboxAttempt_outboxId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId")
     attempt: Mapped[int]
@@ -6204,7 +6207,7 @@ class IngestionPullRunProjection(Base):
 class ScheduledJob(Base):
     __tablename__ = "ScheduledJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     project_id: Mapped[str] = mapped_column("projectId")
     target_type: Mapped[str] = mapped_column("targetType")
     target_id: Mapped[str] = mapped_column("targetId")
@@ -6228,7 +6231,7 @@ class ScheduledJob(Base):
 class BugReport(Base):
     __tablename__ = "BugReport"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     created_at: Mapped[datetime] = mapped_column("createdAt", UtcDateTimeTz(precision=3), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     source: Mapped[str]
     kind: Mapped[str]
@@ -6249,7 +6252,7 @@ class BugReport(Base):
 class IdempotencyReceipt(Base):
     __tablename__ = "IdempotencyReceipt"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     scope_id: Mapped[str] = mapped_column("scopeId")
     key: Mapped[str]
     claim_id: Mapped[str] = mapped_column("claimId")
@@ -6305,7 +6308,7 @@ class GatewayRealtimeSession(Base):
 class GatewayRealtimeSessionReport(Base):
     __tablename__ = "GatewayRealtimeSessionReport"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     session_id: Mapped[str] = mapped_column("sessionId")
     report_key: Mapped[str] = mapped_column("reportKey")
     project_id: Mapped[str] = mapped_column("projectId")
@@ -6392,7 +6395,7 @@ class DiscoveredPerson(Base):
 
     __tablename__ = "DiscoveredPerson"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     provider: Mapped[str]
     """"anthropic" | "openai" | "databricks" | ... - the provider that named them."""
@@ -6463,7 +6466,7 @@ class DiscoveredAgent(Base):
 
     __tablename__ = "DiscoveredAgent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     provider: Mapped[str]
     raw_agent_id: Mapped[str] = mapped_column("rawAgentId")
@@ -6491,7 +6494,7 @@ class AgentRegistryEntry(Base):
 
     __tablename__ = "AgentRegistryEntry"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     source_key: Mapped[str] = mapped_column("sourceKey")
     """Where the agent came from and its id there, e.g. `langwatch:<agentId>`."""
@@ -6519,7 +6522,7 @@ class AgentRegistryEvent(Base):
 
     __tablename__ = "AgentRegistryEvent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     sequence: Mapped[int] = mapped_column(BigInteger)
     type: Mapped[str]
@@ -6558,7 +6561,7 @@ class IdentityMatch(Base):
 
     __tablename__ = "IdentityMatch"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     discovered_person_id: Mapped[str] = mapped_column("discoveredPersonId")
     """The provider-side identity this link is about."""
@@ -6600,7 +6603,7 @@ class GovernanceTenantHistory(Base):
 
     __tablename__ = "GovernanceTenantHistory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     tenant_id: Mapped[str] = mapped_column("tenantId")
     """A hidden governance project id this organization has written rows under."""
@@ -6634,7 +6637,7 @@ class ErasedIdentifierSuppression(Base):
 
     __tablename__ = "ErasedIdentifierSuppression"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     provider: Mapped[str]
     identifier_hash: Mapped[str] = mapped_column("identifierHash")
@@ -6668,7 +6671,7 @@ class IdentityMatchSuggestion(Base):
 
     __tablename__ = "IdentityMatchSuggestion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     organization_id: Mapped[str] = mapped_column("organizationId")
     discovered_person_id: Mapped[str] = mapped_column("discoveredPersonId")
     user_id: Mapped[str] = mapped_column("userId")
@@ -6699,7 +6702,7 @@ class ConnectedSeatChange(Base):
 
     __tablename__ = "ConnectedSeatChange"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     license_id: Mapped[str] = mapped_column("licenseId")
     """The reissued `IssuedLicense` row that carries the new seat count. A
     plain column ref, like `replacesId`: relationMode="prisma" carries no
@@ -6742,7 +6745,7 @@ class ConnectedStatement(Base):
 
     __tablename__ = "ConnectedStatement"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     account_id: Mapped[str] = mapped_column("accountId")
     """The `ConnectedBillingAccount` row. A plain column ref."""
     month: Mapped[datetime]
@@ -6837,7 +6840,7 @@ class SelfHostedInstance(Base):
 
     __tablename__ = "SelfHostedInstance"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     instance_id: Mapped[str] = mapped_column("instanceId")
     """The UUID the install minted for itself. The join key for everything else."""
     first_seen_at: Mapped[datetime] = mapped_column("firstSeenAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -6967,7 +6970,7 @@ class SelfHostedInstanceReport(Base):
 
     __tablename__ = "SelfHostedInstanceReport"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     instance_id: Mapped[str] = mapped_column("instanceId")
     """The `SelfHostedInstance.instanceId` this report came from. A plain column
     ref for the same reason the instance row's refs are.
@@ -6993,7 +6996,7 @@ class WebPushSubscription(Base):
 
     __tablename__ = "WebPushSubscription"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
     user_id: Mapped[str] = mapped_column("userId")
     """The person the pushes are for. A plain column: the row leaves with the
     person through notification's own subscriber on the user lifecycle.

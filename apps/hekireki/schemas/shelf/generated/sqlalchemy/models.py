@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, date, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -33,7 +34,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -107,7 +109,7 @@ booking_notification_recipients = Table(
 class Image(Base):
     __tablename__ = "Image"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content_type: Mapped[str] = mapped_column("contentType")
     alt_text: Mapped[Optional[str]] = mapped_column("altText")
     blob: Mapped[bytes]
@@ -129,9 +131,9 @@ class Image(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     email: Mapped[str]
-    username: Mapped[str]
+    username: Mapped[str] = mapped_column(default=lambda: cuid.cuid())
     first_name: Mapped[Optional[str]] = mapped_column("firstName")
     last_name: Mapped[Optional[str]] = mapped_column("lastName")
     display_name: Mapped[Optional[str]] = mapped_column("displayName")
@@ -219,7 +221,7 @@ class User(Base):
 class UserContact(Base):
     __tablename__ = "UserContact"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     phone: Mapped[Optional[str]]
     street: Mapped[Optional[str]]
     city: Mapped[Optional[str]]
@@ -245,7 +247,7 @@ class UserContact(Base):
 class UserBusinessIntel(Base):
     __tablename__ = "UserBusinessIntel"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     how_did_you_hear_about_us: Mapped[Optional[str]] = mapped_column("howDidYouHearAboutUs")
     job_title: Mapped[Optional[str]] = mapped_column("jobTitle")
     team_size: Mapped[Optional[str]] = mapped_column("teamSize")
@@ -278,7 +280,7 @@ class UserBusinessIntel(Base):
 class Asset(Base):
     __tablename__ = "Asset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[str]
     description: Mapped[Optional[str]]
     main_image: Mapped[Optional[str]] = mapped_column("mainImage")
@@ -345,7 +347,7 @@ class Asset(Base):
 class AssetFilterPreset(Base):
     __tablename__ = "AssetFilterPreset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetFilterPreset_organizationId_fkey"))
     owner_id: Mapped[str] = mapped_column("ownerId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetFilterPreset_ownerId_fkey"))
     name: Mapped[str]
@@ -365,7 +367,7 @@ class AssetFilterPreset(Base):
 class AssetIndexSettings(Base):
     __tablename__ = "AssetIndexSettings"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetIndexSettings_userId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetIndexSettings_organizationId_fkey"))
     mode: Mapped[str] = mapped_column(Enum("SIMPLE", "ADVANCED", name="AssetIndexMode"), default="SIMPLE", server_default=text("'SIMPLE'"))
@@ -392,7 +394,7 @@ class PdfTemplate(Base):
 
     __tablename__ = "PdfTemplate"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     kind: Mapped[str] = mapped_column(Enum("BOOKING", name="PdfTemplateKind"), default="BOOKING", server_default=text("'BOOKING'"))
     config: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: {}, server_default=text("'{}'"))
@@ -420,7 +422,7 @@ class PdfTemplate(Base):
 class Category(Base):
     __tablename__ = "Category"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     color: Mapped[str]
@@ -451,7 +453,7 @@ class AssetModel(Base):
 
     __tablename__ = "AssetModel"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     image: Mapped[Optional[str]]
@@ -504,7 +506,7 @@ class BookingModelRequest(Base):
 
     __tablename__ = "BookingModelRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     booking_id: Mapped[str] = mapped_column("bookingId", ForeignKey("Booking.id", ondelete="CASCADE", onupdate="CASCADE", name="BookingModelRequest_bookingId_fkey"))
     asset_model_id: Mapped[str] = mapped_column("assetModelId", ForeignKey("AssetModel.id", ondelete="CASCADE", onupdate="CASCADE", name="BookingModelRequest_assetModelId_fkey"))
     quantity: Mapped[int]
@@ -554,7 +556,7 @@ class BookingModelRequest(Base):
 class Tag(Base):
     __tablename__ = "Tag"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     color: Mapped[Optional[str]]
@@ -578,7 +580,7 @@ class Tag(Base):
 class Note(Base):
     __tablename__ = "Note"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("COMMENT", "UPDATE", name="NoteType"), default="COMMENT", server_default=text("'COMMENT'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -597,7 +599,7 @@ class Note(Base):
 class BookingNote(Base):
     __tablename__ = "BookingNote"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("COMMENT", "UPDATE", name="NoteType"), default="COMMENT", server_default=text("'COMMENT'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -616,7 +618,7 @@ class BookingNote(Base):
 class LocationNote(Base):
     __tablename__ = "LocationNote"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("COMMENT", "UPDATE", name="NoteType"), default="COMMENT", server_default=text("'COMMENT'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -635,7 +637,7 @@ class LocationNote(Base):
 class Qr(Base):
     __tablename__ = "Qr"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     version: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     error_correction: Mapped[str] = mapped_column("errorCorrection", Enum("L", "M", "Q", "H", name="ErrorCorrection"), default="L", server_default=text("'L'"))
     asset_id: Mapped[Optional[str]] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="SET NULL", onupdate="CASCADE", name="Qr_assetId_fkey"))
@@ -665,7 +667,7 @@ class Qr(Base):
 class Barcode(Base):
     __tablename__ = "Barcode"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     value: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("Code128", "Code39", "DataMatrix", "ExternalQR", "EAN13", name="BarcodeType"), default="Code128", server_default=text("'Code128'"))
     asset_id: Mapped[Optional[str]] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="SET NULL", onupdate="CASCADE", name="Barcode_assetId_fkey"))
@@ -692,7 +694,7 @@ class Barcode(Base):
 class PrintBatch(Base):
     __tablename__ = "PrintBatch"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     printed: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -707,7 +709,7 @@ class PrintBatch(Base):
 class ReportFound(Base):
     __tablename__ = "ReportFound"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     email: Mapped[str]
     content: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -726,7 +728,7 @@ class ReportFound(Base):
 class Scan(Base):
     __tablename__ = "Scan"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     latitude: Mapped[Optional[str]]
     longitude: Mapped[Optional[str]]
     user_agent: Mapped[Optional[str]] = mapped_column("userAgent")
@@ -764,7 +766,7 @@ class Scan(Base):
 class Location(Base):
     __tablename__ = "Location"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     address: Mapped[Optional[str]]
@@ -803,7 +805,7 @@ class Location(Base):
 class Role(Base):
     __tablename__ = "Role"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str] = mapped_column(Enum("USER", "ADMIN", name="Roles"), default="USER", server_default=text("'USER'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
@@ -817,7 +819,7 @@ class Role(Base):
 class TeamMember(Base):
     __tablename__ = "TeamMember"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamMember_organizationId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="TeamMember_userId_fkey"))
@@ -846,7 +848,7 @@ class TeamMember(Base):
 class Custody(Base):
     __tablename__ = "Custody"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     team_member_id: Mapped[str] = mapped_column("teamMemberId", ForeignKey("TeamMember.id", ondelete="RESTRICT", onupdate="CASCADE", name="Custody_teamMemberId_fkey"))
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="Custody_assetId_fkey"))
     kit_custody_id: Mapped[Optional[str]] = mapped_column("kitCustodyId", ForeignKey("KitCustody.id", ondelete="CASCADE", onupdate="CASCADE", name="Custody_kitCustodyId_fkey"))
@@ -871,7 +873,7 @@ class Custody(Base):
 class Organization(Base):
     __tablename__ = "Organization"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str] = mapped_column(default="Personal", server_default=text("'Personal'"))
     type: Mapped[str] = mapped_column(Enum("PERSONAL", "TEAM", name="OrganizationType"), default="PERSONAL", server_default=text("'PERSONAL'"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Organization_userId_fkey"))
@@ -945,7 +947,7 @@ class Organization(Base):
 class UserOrganization(Base):
     __tablename__ = "UserOrganization"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="UserOrganization_userId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="UserOrganization_organizationId_fkey"))
     roles: Mapped[list[str]] = mapped_column(ARRAY(Enum("ADMIN", "BASE", "OWNER", "SELF_SERVICE", "MANAGER", name="OrganizationRoles")), nullable=True)
@@ -970,7 +972,7 @@ class UserOrganization(Base):
 class SsoDetails(Base):
     __tablename__ = "SsoDetails"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     domain: Mapped[str]
     base_user_group_id: Mapped[Optional[str]] = mapped_column("baseUserGroupId")
     self_service_group_id: Mapped[Optional[str]] = mapped_column("selfServiceGroupId")
@@ -985,7 +987,7 @@ class SsoDetails(Base):
 class ScimToken(Base):
     __tablename__ = "ScimToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token_hash: Mapped[str] = mapped_column("tokenHash")
     label: Mapped[str]
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="ScimToken_organizationId_fkey"))
@@ -1010,7 +1012,7 @@ class UserScimExternalId(Base):
 
     __tablename__ = "UserScimExternalId"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="UserScimExternalId_userId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="UserScimExternalId_organizationId_fkey"))
     scim_external_id: Mapped[str] = mapped_column("scimExternalId")
@@ -1063,7 +1065,7 @@ class TierLimit(Base):
 class CustomTierLimit(Base):
     __tablename__ = "CustomTierLimit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="CustomTierLimit_userId_fkey"))
     can_import_assets: Mapped[bool] = mapped_column("canImportAssets", default=True, server_default=text("true"))
     can_export_assets: Mapped[bool] = mapped_column("canExportAssets", default=True, server_default=text("true"))
@@ -1087,7 +1089,7 @@ class CustomTierLimit(Base):
 class CustomField(Base):
     __tablename__ = "CustomField"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     help_text: Mapped[Optional[str]] = mapped_column("helpText")
     required: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -1118,7 +1120,7 @@ class CustomField(Base):
 class AssetCustomFieldValue(Base):
     __tablename__ = "AssetCustomFieldValue"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     value: Mapped[dict[str, Any]] = mapped_column(JSONB)
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetCustomFieldValue_assetId_fkey"))
     custom_field_id: Mapped[str] = mapped_column("customFieldId", ForeignKey("CustomField.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetCustomFieldValue_customFieldId_fkey"))
@@ -1142,7 +1144,7 @@ class AssetModelCustomFieldDefault(Base):
 
     __tablename__ = "AssetModelCustomFieldDefault"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     value: Mapped[dict[str, Any]] = mapped_column(JSONB)
     asset_model_id: Mapped[str] = mapped_column("assetModelId", ForeignKey("AssetModel.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetModelCustomFieldDefault_assetModelId_fkey"))
     custom_field_id: Mapped[str] = mapped_column("customFieldId")
@@ -1159,7 +1161,7 @@ class AssetModelCustomFieldDefault(Base):
 class Invite(Base):
     __tablename__ = "Invite"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     inviter_id: Mapped[str] = mapped_column("inviterId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Invite_inviterId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="Invite_organizationId_fkey"))
     invitee_user_id: Mapped[Optional[str]] = mapped_column("inviteeUserId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Invite_inviteeUserId_fkey"))
@@ -1188,7 +1190,7 @@ class Invite(Base):
 class Announcement(Base):
     __tablename__ = "Announcement"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     content: Mapped[str]
     link: Mapped[Optional[str]]
@@ -1207,7 +1209,7 @@ class ConsumptionLog(Base):
 
     __tablename__ = "ConsumptionLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="ConsumptionLog_assetId_fkey"))
     category: Mapped[str] = mapped_column(Enum("CHECKOUT", "RETURN", "RESTOCK", "ADJUSTMENT", "LOSS", "CONSUME", "DAMAGE", "MOVE", "INITIAL", "OPENING_BALANCE", name="ConsumptionCategory"))
     quantity: Mapped[int]
@@ -1243,7 +1245,7 @@ class BookingAsset(Base):
 
     __tablename__ = "BookingAsset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     booking_id: Mapped[str] = mapped_column("bookingId", ForeignKey("Booking.id", ondelete="CASCADE", onupdate="CASCADE", name="BookingAsset_bookingId_fkey"))
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="BookingAsset_assetId_fkey"))
     quantity: Mapped[int] = mapped_column(default=1, server_default=text("1"))
@@ -1270,7 +1272,7 @@ class BookingAsset(Base):
 class Booking(Base):
     __tablename__ = "Booking"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     status: Mapped[str] = mapped_column(Enum("DRAFT", "RESERVED", "ONGOING", "OVERDUE", "COMPLETE", "ARCHIVED", "CANCELLED", name="BookingStatus"), default="DRAFT", server_default=text("'DRAFT'"))
     description: Mapped[Optional[str]] = mapped_column(default="", server_default=text("''"))
@@ -1314,7 +1316,7 @@ class Booking(Base):
 class BookingSettings(Base):
     __tablename__ = "BookingSettings"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     buffer_start_time: Mapped[int] = mapped_column("bufferStartTime", default=0, server_default=text("0"))
     tags_required: Mapped[bool] = mapped_column("tagsRequired", default=False, server_default=text("false"))
     max_booking_length: Mapped[Optional[int]] = mapped_column("maxBookingLength")
@@ -1353,7 +1355,7 @@ class PartialBookingCheckin(Base):
 
     __tablename__ = "PartialBookingCheckin"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     asset_ids: Mapped[list[str]] = mapped_column("assetIds", ARRAY(Text), nullable=True)
     checkin_count: Mapped[int] = mapped_column("checkinCount")
     checkin_timestamp: Mapped[datetime] = mapped_column("checkinTimestamp", UtcDateTimeTz(precision=3), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1386,7 +1388,7 @@ class PartialBookingCheckout(Base):
 
     __tablename__ = "PartialBookingCheckout"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     asset_ids: Mapped[list[str]] = mapped_column("assetIds", ARRAY(Text), nullable=True)
     quantities: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True, default=lambda: [], server_default=text("ARRAY[]::integer[]"))
     booking_asset_ids: Mapped[list[str]] = mapped_column("bookingAssetIds", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
@@ -1414,7 +1416,7 @@ class MobileAuthCode(Base):
 
     __tablename__ = "MobileAuthCode"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="MobileAuthCode_userId_fkey"))
     code_hash: Mapped[str] = mapped_column("codeHash")
     code_challenge: Mapped[Optional[str]] = mapped_column("codeChallenge")
@@ -1440,7 +1442,7 @@ class PushToken(Base):
 
     __tablename__ = "PushToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     platform: Mapped[str] = mapped_column(Enum("IOS", "ANDROID", name="DevicePlatform"))
     device_name: Mapped[Optional[str]] = mapped_column("deviceName")
@@ -1478,7 +1480,7 @@ class NotificationPreference(Base):
 class Kit(Base):
     __tablename__ = "Kit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     status: Mapped[str] = mapped_column(Enum("AVAILABLE", "IN_CUSTODY", "CHECKED_OUT", name="KitStatus"), default="AVAILABLE", server_default=text("'AVAILABLE'"))
@@ -1514,7 +1516,7 @@ class Kit(Base):
 class KitCustody(Base):
     __tablename__ = "KitCustody"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     custodian_id: Mapped[str] = mapped_column("custodianId", ForeignKey("TeamMember.id", ondelete="RESTRICT", onupdate="CASCADE", name="KitCustody_custodianId_fkey"))
     kit_id: Mapped[str] = mapped_column("kitId", ForeignKey("Kit.id", ondelete="CASCADE", onupdate="CASCADE", name="KitCustody_kitId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1541,7 +1543,7 @@ class AssetKit(Base):
 
     __tablename__ = "AssetKit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetKit_assetId_fkey"))
     kit_id: Mapped[str] = mapped_column("kitId", ForeignKey("Kit.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetKit_kitId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetKit_organizationId_fkey"))
@@ -1563,7 +1565,7 @@ class AssetKit(Base):
 class AssetLocation(Base):
     __tablename__ = "AssetLocation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetLocation_assetId_fkey"))
     location_id: Mapped[str] = mapped_column("locationId", ForeignKey("Location.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetLocation_locationId_fkey"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="AssetLocation_organizationId_fkey"))
@@ -1587,7 +1589,7 @@ class AssetLocation(Base):
 class AssetReminder(Base):
     __tablename__ = "AssetReminder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     message: Mapped[str]
     alert_date_time: Mapped[datetime] = mapped_column("alertDateTime")
@@ -1618,7 +1620,7 @@ class AssetReminder(Base):
 class WorkingHours(Base):
     __tablename__ = "WorkingHours"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     enabled: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     weekly_schedule: Mapped[dict[str, Any]] = mapped_column("weeklySchedule", JSONB, default=lambda: {"0": {"isOpen": False}, "1": {"isOpen": True, "openTime": "09:00", "closeTime": "17:00"}, "2": {"isOpen": True, "openTime": "09:00", "closeTime": "17:00"}, "3": {"isOpen": True, "openTime": "09:00", "closeTime": "17:00"}, "4": {"isOpen": True, "openTime": "09:00", "closeTime": "17:00"}, "5": {"isOpen": True, "openTime": "09:00", "closeTime": "17:00"}, "6": {"isOpen": False}}, server_default=text("'{\"0\":{\"isOpen\":false},\"1\":{\"isOpen\":true,\"openTime\":\"09:00\",\"closeTime\":\"17:00\"},\"2\":{\"isOpen\":true,\"openTime\":\"09:00\",\"closeTime\":\"17:00\"},\"3\":{\"isOpen\":true,\"openTime\":\"09:00\",\"closeTime\":\"17:00\"},\"4\":{\"isOpen\":true,\"openTime\":\"09:00\",\"closeTime\":\"17:00\"},\"5\":{\"isOpen\":true,\"openTime\":\"09:00\",\"closeTime\":\"17:00\"},\"6\":{\"isOpen\":false}}'"))
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkingHours_organizationId_fkey"))
@@ -1636,7 +1638,7 @@ class WorkingHours(Base):
 class WorkingHoursOverride(Base):
     __tablename__ = "WorkingHoursOverride"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     date_: Mapped[date] = mapped_column("date", Date)
     is_open: Mapped[bool] = mapped_column("isOpen", default=False, server_default=text("false"))
     open_time: Mapped[Optional[str]] = mapped_column("openTime")
@@ -1657,7 +1659,7 @@ class WorkingHoursOverride(Base):
 class Update(Base):
     __tablename__ = "Update"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[str]
     content: Mapped[str]
     url: Mapped[Optional[str]]
@@ -1683,7 +1685,7 @@ class Update(Base):
 class UserUpdateRead(Base):
     __tablename__ = "UserUpdateRead"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="UserUpdateRead_userId_fkey"))
     update_id: Mapped[str] = mapped_column("updateId", ForeignKey("Update.id", ondelete="CASCADE", onupdate="CASCADE", name="UserUpdateRead_updateId_fkey"))
     read_at: Mapped[datetime] = mapped_column("readAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1701,7 +1703,7 @@ class UserUpdateRead(Base):
 class AuditNote(Base):
     __tablename__ = "AuditNote"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("COMMENT", "UPDATE", name="NoteType"), default="COMMENT", server_default=text("'COMMENT'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1723,7 +1725,7 @@ class AuditNote(Base):
 class TeamMemberNote(Base):
     __tablename__ = "TeamMemberNote"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     type: Mapped[str] = mapped_column(Enum("COMMENT", "UPDATE", name="NoteType"), default="COMMENT", server_default=text("'COMMENT'"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1746,7 +1748,7 @@ class TeamMemberNote(Base):
 class AuditSession(Base):
     __tablename__ = "AuditSession"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     target_id: Mapped[Optional[str]] = mapped_column("targetId")
@@ -1790,7 +1792,7 @@ class AssetImport(Base):
 
     __tablename__ = "AssetImport"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     status: Mapped[str] = mapped_column(Enum("DRAFT", "QUEUED", "RUNNING", "COMPLETED", "FAILED", name="AssetImportStatus"), default="DRAFT", server_default=text("'DRAFT'"))
     phase: Mapped[str] = mapped_column(Enum("PREPARE", "ROWS", "FINALIZE", name="AssetImportPhase"), default="PREPARE", server_default=text("'PREPARE'"))
     file_name: Mapped[Optional[str]] = mapped_column("fileName")
@@ -1834,7 +1836,7 @@ class LinkPreview(Base):
 
     __tablename__ = "LinkPreview"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     url: Mapped[str]
     """`LinkKey` from @shelf/links, never a raw field value. At most 2048
     characters (CHECK constraint in the migration).
@@ -1863,7 +1865,7 @@ class LinkPreview(Base):
 class AuditAssignment(Base):
     __tablename__ = "AuditAssignment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     audit_session_id: Mapped[str] = mapped_column("auditSessionId", ForeignKey("AuditSession.id", ondelete="CASCADE", onupdate="CASCADE", name="AuditAssignment_auditSessionId_fkey"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="AuditAssignment_userId_fkey"))
     role: Mapped[Optional[str]] = mapped_column(Enum("LEAD", "PARTICIPANT", name="AuditAssignmentRole"))
@@ -1881,7 +1883,7 @@ class AuditAssignment(Base):
 class AuditAsset(Base):
     __tablename__ = "AuditAsset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     audit_session_id: Mapped[str] = mapped_column("auditSessionId", ForeignKey("AuditSession.id", ondelete="CASCADE", onupdate="CASCADE", name="AuditAsset_auditSessionId_fkey"))
     asset_id: Mapped[str] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="CASCADE", onupdate="CASCADE", name="AuditAsset_assetId_fkey"))
     expected: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
@@ -1928,7 +1930,7 @@ class AuditAsset(Base):
 class AuditScan(Base):
     __tablename__ = "AuditScan"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     audit_session_id: Mapped[str] = mapped_column("auditSessionId", ForeignKey("AuditSession.id", ondelete="CASCADE", onupdate="CASCADE", name="AuditScan_auditSessionId_fkey"))
     audit_asset_id: Mapped[Optional[str]] = mapped_column("auditAssetId", ForeignKey("AuditAsset.id", ondelete="SET NULL", onupdate="CASCADE", name="AuditScan_auditAssetId_fkey"))
     asset_id: Mapped[Optional[str]] = mapped_column("assetId", ForeignKey("Asset.id", ondelete="SET NULL", onupdate="CASCADE", name="AuditScan_assetId_fkey"))
@@ -1970,7 +1972,7 @@ class AuditScan(Base):
 class AuditImage(Base):
     __tablename__ = "AuditImage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     image_url: Mapped[str] = mapped_column("imageUrl")
     thumbnail_url: Mapped[Optional[str]] = mapped_column("thumbnailUrl")
     description: Mapped[Optional[str]]
@@ -2005,7 +2007,7 @@ class AuditImage(Base):
 class RoleChangeLog(Base):
     __tablename__ = "RoleChangeLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     previous_role: Mapped[str] = mapped_column("previousRole", Enum("ADMIN", "BASE", "OWNER", "SELF_SERVICE", "MANAGER", name="OrganizationRoles"))
     new_role: Mapped[str] = mapped_column("newRole", Enum("ADMIN", "BASE", "OWNER", "SELF_SERVICE", "MANAGER", name="OrganizationRoles"))
     source: Mapped[str] = mapped_column(Enum("MANUAL", "SSO", name="RoleChangeSource"), default="MANUAL", server_default=text("'MANUAL'"))
@@ -2027,7 +2029,7 @@ class RoleChangeLog(Base):
 class ActivityEvent(Base):
     __tablename__ = "ActivityEvent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="ActivityEvent_organizationId_fkey"))
     occurred_at: Mapped[datetime] = mapped_column("occurredAt", UtcDateTimeTz(precision=3), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     actor_user_id: Mapped[Optional[str]] = mapped_column("actorUserId")

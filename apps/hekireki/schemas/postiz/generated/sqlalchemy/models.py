@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, date, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -34,7 +35,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -429,7 +431,7 @@ class ClippingClip(Base):
 class Subscription(Base):
     __tablename__ = "Subscription"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="Subscription_organizationId_fkey"))
     subscription_tier: Mapped[str] = mapped_column("subscriptionTier", Enum("STANDARD", "PRO", "TEAM", "ULTIMATE", name="SubscriptionTier"))
     provider: Mapped[str] = mapped_column(default="stripe", server_default=text("'stripe'"))
@@ -470,7 +472,7 @@ class Customer(Base):
 class Integration(Base):
     __tablename__ = "Integration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     internal_id: Mapped[str] = mapped_column("internalId")
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="Integration_organizationId_fkey"))
     name: Mapped[str]
@@ -572,7 +574,7 @@ class Comments(Base):
 class Post(Base):
     __tablename__ = "Post"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     state: Mapped[str] = mapped_column(Enum("QUEUE", "PUBLISHED", "ERROR", "DRAFT", name="State"), default="QUEUE", server_default=text("'QUEUE'"))
     publish_date: Mapped[datetime] = mapped_column("publishDate")
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="RESTRICT", onupdate="CASCADE", name="Post_organizationId_fkey"))

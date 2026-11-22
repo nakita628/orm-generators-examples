@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, date, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -20,7 +21,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -116,7 +118,7 @@ class QueuedEmail(Base):
 
     __tablename__ = "queued_emails"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     kind: Mapped[str]
     """Which handler builds the email. A string rather than an enum so a new
     kind needs no migration; the claim only takes kinds the build knows.
@@ -156,7 +158,7 @@ class QueuedEmail(Base):
 class EventType(Base):
     __tablename__ = "event_types"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="event_types_space_id_fkey"))
     host_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="event_types_host_id_fkey"))
     name: Mapped[str]
@@ -182,7 +184,7 @@ class EventType(Base):
 class ScheduledEvent(Base):
     __tablename__ = "scheduled_events"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="scheduled_events_user_id_fkey"))
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="scheduled_events_space_id_fkey"))
     event_type_id: Mapped[Optional[str]] = mapped_column(ForeignKey("event_types.id", ondelete="SET NULL", onupdate="CASCADE", name="scheduled_events_event_type_id_fkey"))
@@ -225,7 +227,7 @@ class ScheduledEvent(Base):
 class RescheduledEventDate(Base):
     __tablename__ = "rescheduled_event_dates"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     scheduled_event_id: Mapped[str] = mapped_column(ForeignKey("scheduled_events.id", ondelete="CASCADE", onupdate="CASCADE", name="rescheduled_event_dates_scheduled_event_id_fkey"))
     start: Mapped[datetime]
     end: Mapped[datetime]
@@ -241,7 +243,7 @@ class RescheduledEventDate(Base):
 class ScheduledEventInvite(Base):
     __tablename__ = "scheduled_event_invites"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     uid: Mapped[str]
     scheduled_event_id: Mapped[str] = mapped_column(ForeignKey("scheduled_events.id", ondelete="CASCADE", onupdate="CASCADE", name="scheduled_event_invites_scheduled_event_id_fkey"))
     invitee_name: Mapped[str]
@@ -287,7 +289,7 @@ class InstanceSettings(Base):
 class Credential(Base):
     __tablename__ = "credentials"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="credentials_user_id_fkey"))
     provider: Mapped[str]
     provider_account_id: Mapped[str]
@@ -310,7 +312,7 @@ class Credential(Base):
 class CalendarConnection(Base):
     __tablename__ = "calendar_connections"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="calendar_connections_user_id_fkey"))
     provider: Mapped[str]
     integration_id: Mapped[str]
@@ -332,7 +334,7 @@ class CalendarConnection(Base):
 class ProviderCalendar(Base):
     __tablename__ = "provider_calendars"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     calendar_connection_id: Mapped[str] = mapped_column(ForeignKey("calendar_connections.id", ondelete="CASCADE", onupdate="CASCADE", name="provider_calendars_calendar_connection_id_fkey"))
     provider_calendar_id: Mapped[str]
     name: Mapped[str]
@@ -359,7 +361,7 @@ class ProviderCalendar(Base):
 class ConferencingConnection(Base):
     __tablename__ = "conferencing_connections"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="conferencing_connections_user_id_fkey"))
     provider: Mapped[str]
     integration_id: Mapped[str]
@@ -380,7 +382,7 @@ class ConferencingConnection(Base):
 class License(Base):
     __tablename__ = "licenses"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     license_key: Mapped[str]
     idempotency_key: Mapped[Optional[str]]
     version: Mapped[Optional[int]]
@@ -403,7 +405,7 @@ class License(Base):
 class LicenseValidation(Base):
     __tablename__ = "license_validations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     license_id: Mapped[str] = mapped_column(ForeignKey("licenses.id", ondelete="CASCADE", onupdate="CASCADE", name="license_validations_license_id_fkey"))
     ip_address: Mapped[Optional[str]]
     fingerprint: Mapped[Optional[str]]
@@ -415,7 +417,7 @@ class LicenseValidation(Base):
 class InstanceLicense(Base):
     __tablename__ = "instance_licenses"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     license_key: Mapped[str]
     version: Mapped[Optional[int]]
     type: Mapped[str] = mapped_column(Enum("PLUS", "ORGANIZATION", "ENTERPRISE", name="LicenseType"))
@@ -434,7 +436,7 @@ class InstanceLicense(Base):
 class UserNotificationPreferences(Base):
     __tablename__ = "user_notification_preferences"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="user_notification_preferences_user_id_fkey"))
     prefs: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: {}, server_default=text("'{}'"))
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -503,7 +505,7 @@ class Poll(Base):
 class Participant(Base):
     __tablename__ = "participants"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     email: Mapped[Optional[str]]
     note: Mapped[Optional[str]]
@@ -530,7 +532,7 @@ class Participant(Base):
 class PollInvite(Base):
     __tablename__ = "poll_invites"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     poll_id: Mapped[str] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE", onupdate="CASCADE", name="poll_invites_poll_id_fkey"))
     email: Mapped[str] = mapped_column(CITEXT)
     token: Mapped[str]
@@ -556,7 +558,7 @@ class PollInvite(Base):
 class PollActivity(Base):
     __tablename__ = "poll_activities"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     poll_id: Mapped[str] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE", onupdate="CASCADE", name="poll_activities_poll_id_fkey"))
     type: Mapped[str]
     """Validated by a zod union in the feature, not a DB enum: the activity vocabulary grows without migrations"""
@@ -581,7 +583,7 @@ class PollActivity(Base):
 class Option(Base):
     __tablename__ = "options"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     start_time: Mapped[datetime] = mapped_column(UtcDateTime(precision=0))
     duration: Mapped[int] = mapped_column("duration_minutes", default=0, server_default=text("0"))
     poll_id: Mapped[str] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE", onupdate="CASCADE", name="options_poll_id_fkey"))
@@ -597,7 +599,7 @@ class Option(Base):
 class Vote(Base):
     __tablename__ = "votes"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     participant_id: Mapped[str] = mapped_column(ForeignKey("participants.id", ondelete="CASCADE", onupdate="CASCADE", name="votes_participant_id_fkey"))
     option_id: Mapped[str] = mapped_column(ForeignKey("options.id", ondelete="CASCADE", onupdate="CASCADE", name="votes_option_id_fkey"))
     poll_id: Mapped[str] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE", onupdate="CASCADE", name="votes_poll_id_fkey"))
@@ -618,7 +620,7 @@ class Vote(Base):
 class Comment(Base):
     __tablename__ = "comments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     poll_id: Mapped[str] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE", onupdate="CASCADE", name="comments_poll_id_fkey"))
     author_name: Mapped[str]
@@ -637,7 +639,7 @@ class Comment(Base):
 class RegisteredInstance(Base):
     __tablename__ = "registered_instances"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     instance_id: Mapped[str]
     version: Mapped[str]
     first_seen_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -650,7 +652,7 @@ class RegisteredInstance(Base):
 class Sheet(Base):
     __tablename__ = "sheets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="sheets_space_id_fkey"))
     host_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="sheets_host_id_fkey"))
     title: Mapped[str]
@@ -674,7 +676,7 @@ class Sheet(Base):
 class SheetSlot(Base):
     __tablename__ = "sheet_slots"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     sheet_id: Mapped[str] = mapped_column(ForeignKey("sheets.id", ondelete="CASCADE", onupdate="CASCADE", name="sheet_slots_sheet_id_fkey"))
     event_type_id: Mapped[str] = mapped_column(ForeignKey("event_types.id", ondelete="RESTRICT", onupdate="CASCADE", name="sheet_slots_event_type_id_fkey"))
     start_time: Mapped[datetime]
@@ -766,7 +768,7 @@ class SpaceMemberInvite(Base):
 class SpaceApiKey(Base):
     __tablename__ = "space_api_keys"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="space_api_keys_space_id_fkey"))
     name: Mapped[str]
     prefix: Mapped[str]
@@ -789,7 +791,7 @@ class SpaceApiKey(Base):
 class SpaceWebhook(Base):
     __tablename__ = "space_webhooks"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="space_webhooks_space_id_fkey"))
     url: Mapped[str]
     secret: Mapped[str]
@@ -818,7 +820,7 @@ class SpaceWebhook(Base):
 class WebhookDelivery(Base):
     __tablename__ = "webhook_deliveries"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     webhook_id: Mapped[str] = mapped_column(ForeignKey("space_webhooks.id", ondelete="CASCADE", onupdate="CASCADE", name="webhook_deliveries_webhook_id_fkey"))
     activity_id: Mapped[str]
     """Soft reference to the PollActivity row this delivery was fanned out from; with webhookId it makes fan-out idempotent"""
@@ -843,7 +845,7 @@ class WebhookDelivery(Base):
 class Account(Base):
     __tablename__ = "accounts"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="accounts_user_id_fkey"))
     provider: Mapped[str]
     provider_account_id: Mapped[str]
@@ -868,7 +870,7 @@ class Account(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     email: Mapped[str] = mapped_column(CITEXT)
     email_verified: Mapped[Optional[bool]]

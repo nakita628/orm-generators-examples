@@ -3,6 +3,7 @@ from sqlalchemy.dialects.mysql import DATETIME, LONGTEXT, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -30,7 +31,8 @@ class UtcTimestamp(UtcDateTime):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -108,7 +110,7 @@ class Dashboard(Base):
 class Domain(Base):
     __tablename__ = "Domain"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     slug: Mapped[str]
     verified: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     placeholder: Mapped[Optional[str]]
@@ -140,7 +142,7 @@ class Domain(Base):
 class RegisteredDomain(Base):
     __tablename__ = "RegisteredDomain"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     slug: Mapped[str]
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="RESTRICT", onupdate="CASCADE", name="RegisteredDomain_projectId_fkey"))
     domain_id: Mapped[Optional[str]] = mapped_column("domainId", ForeignKey("Domain.id", ondelete="SET NULL", onupdate="CASCADE", name="RegisteredDomain_domainId_fkey"))
@@ -163,7 +165,7 @@ class RegisteredDomain(Base):
 class DefaultDomains(Base):
     __tablename__ = "DefaultDomains"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     dubsh: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
     chatgpt: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
     sptifi: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
@@ -210,7 +212,7 @@ class Folder(Base):
 class FolderUser(Base):
     __tablename__ = "FolderUser"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     folder_id: Mapped[str] = mapped_column("folderId", ForeignKey("Folder.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderUser_folderId_fkey"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderUser_userId_fkey"))
     role: Mapped[Optional[str]] = mapped_column(Enum("owner", "editor", "viewer", name="FolderUserRole"))
@@ -229,7 +231,7 @@ class FolderUser(Base):
 class FolderAccessRequest(Base):
     __tablename__ = "FolderAccessRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     folder_id: Mapped[str] = mapped_column("folderId", ForeignKey("Folder.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderAccessRequest_folderId_fkey"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderAccessRequest_userId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP(3)"))
@@ -246,7 +248,7 @@ class FolderAccessRequest(Base):
 class Integration(Base):
     __tablename__ = "Integration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Integration_userId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="Integration_projectId_fkey"))
     name: Mapped[str]
@@ -280,7 +282,7 @@ class Integration(Base):
 class InstalledIntegration(Base):
     __tablename__ = "InstalledIntegration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="InstalledIntegration_userId_fkey"))
     integration_id: Mapped[str] = mapped_column("integrationId", ForeignKey("Integration.id", ondelete="CASCADE", onupdate="CASCADE", name="InstalledIntegration_integrationId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="InstalledIntegration_projectId_fkey"))
@@ -466,7 +468,7 @@ class Link(Base):
 class YearInReview(Base):
     __tablename__ = "YearInReview"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     year: Mapped[int]
     total_links: Mapped[int] = mapped_column("totalLinks")
     total_clicks: Mapped[int] = mapped_column("totalClicks")
@@ -486,7 +488,7 @@ class YearInReview(Base):
 class UserNotificationPreferences(Base):
     __tablename__ = "UserNotificationPreferences"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="UserNotificationPreferences_userId_fkey"))
     dub_links: Mapped[bool] = mapped_column("dubLinks", default=True, server_default=text("true"))
 
@@ -500,7 +502,7 @@ class UserNotificationPreferences(Base):
 class NotificationPreference(Base):
     __tablename__ = "NotificationPreference"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_user_id: Mapped[str] = mapped_column("projectUserId", ForeignKey("ProjectUsers.id", ondelete="CASCADE", onupdate="CASCADE", name="NotificationPreference_projectUserId_fkey"))
     link_usage_summary: Mapped[bool] = mapped_column("linkUsageSummary", default=True, server_default=text("true"))
     domain_configuration_updates: Mapped[bool] = mapped_column("domainConfigurationUpdates", default=True, server_default=text("true"))
@@ -535,7 +537,7 @@ class OAuthApp(Base):
 class OAuthCode(Base):
     __tablename__ = "OAuthCode"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("OAuthApp.clientId", ondelete="CASCADE", onupdate="CASCADE", name="OAuthCode_clientId_fkey"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="OAuthCode_userId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="OAuthCode_projectId_fkey"))
@@ -562,7 +564,7 @@ class OAuthCode(Base):
 class OAuthRefreshToken(Base):
     __tablename__ = "OAuthRefreshToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     installation_id: Mapped[str] = mapped_column("installationId", ForeignKey("InstalledIntegration.id", ondelete="CASCADE", onupdate="CASCADE", name="OAuthRefreshToken_installationId_fkey"))
     access_token_id: Mapped[str] = mapped_column("accessTokenId", ForeignKey("RestrictedToken.id", ondelete="CASCADE", onupdate="CASCADE", name="OAuthRefreshToken_accessTokenId_fkey"))
     hashed_refresh_token: Mapped[str] = mapped_column("hashedRefreshToken")
@@ -582,7 +584,7 @@ class OAuthRefreshToken(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     email_verified: Mapped[Optional[datetime]] = mapped_column("emailVerified")
@@ -623,7 +625,7 @@ class User(Base):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -648,7 +650,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -683,7 +685,7 @@ class Tag(Base):
 class LinkTag(Base):
     __tablename__ = "LinkTag"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP(3)"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkTag_linkId_fkey"))
@@ -701,7 +703,7 @@ class LinkTag(Base):
 class Token(Base):
     __tablename__ = "Token"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     hashed_key: Mapped[str] = mapped_column("hashedKey")
     partial_key: Mapped[str] = mapped_column("partialKey")
@@ -722,7 +724,7 @@ class Token(Base):
 class RestrictedToken(Base):
     __tablename__ = "RestrictedToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     hashed_key: Mapped[str] = mapped_column("hashedKey")
     partial_key: Mapped[str] = mapped_column("partialKey")
@@ -850,7 +852,7 @@ class Webhook(Base):
 class LinkWebhook(Base):
     __tablename__ = "LinkWebhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkWebhook_linkId_fkey"))
     webhook_id: Mapped[str] = mapped_column("webhookId", ForeignKey("Webhook.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkWebhook_webhookId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP(3)"))
@@ -867,7 +869,7 @@ class LinkWebhook(Base):
 class FolderWebhook(Base):
     __tablename__ = "FolderWebhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     folder_id: Mapped[str] = mapped_column("folderId", ForeignKey("Folder.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderWebhook_folderId_fkey"))
     webhook_id: Mapped[str] = mapped_column("webhookId", ForeignKey("Webhook.id", ondelete="CASCADE", onupdate="CASCADE", name="FolderWebhook_webhookId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP(3)"))
@@ -985,7 +987,7 @@ class ProjectInvite(Base):
 class ProjectUsers(Base):
     __tablename__ = "ProjectUsers"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     role: Mapped[str] = mapped_column(Enum("owner", "member", "viewer", "billing", name="WorkspaceRole"), default="member", server_default=text("'member'"))
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="ProjectUsers_userId_fkey"))
     project_id: Mapped[str] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="ProjectUsers_projectId_fkey"))
@@ -1007,7 +1009,7 @@ class ProjectUsers(Base):
 class SentEmail(Base):
     __tablename__ = "SentEmail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP(3)"))
     project_id: Mapped[Optional[str]] = mapped_column("projectId", ForeignKey("Project.id", ondelete="CASCADE", onupdate="CASCADE", name="SentEmail_projectId_fkey"))

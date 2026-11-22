@@ -3,6 +3,7 @@ from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -34,7 +35,7 @@ class Base(DeclarativeBase):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     email: Mapped[str]
     email_verified: Mapped[Optional[datetime]] = mapped_column("emailVerified")

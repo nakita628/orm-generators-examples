@@ -5,6 +5,7 @@ from typing import Any, Optional
 from datetime import datetime, date, time as time_type, timezone
 import uuid as uuid_mod
 import uuid6
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -21,7 +22,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -1048,7 +1050,7 @@ class EventTypeCustomInput(Base):
 class ResetPasswordRequest(Base):
     __tablename__ = "ResetPasswordRequest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email: Mapped[str]
@@ -1132,7 +1134,7 @@ class Webhook(Base):
 class ApiKey(Base):
     __tablename__ = "ApiKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="ApiKey_userId_fkey"))
     team_id: Mapped[Optional[int]] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="ApiKey_teamId_fkey"))
     note: Mapped[Optional[str]]
@@ -1191,7 +1193,7 @@ class HashedLink(Base):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -1216,7 +1218,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -1636,7 +1638,7 @@ class HolidayCache(Base):
 class PlatformOAuthClient(Base):
     __tablename__ = "PlatformOAuthClient"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     secret: Mapped[str]
     permissions: Mapped[int]
@@ -1662,7 +1664,7 @@ class PlatformOAuthClient(Base):
 class PlatformAuthorizationToken(Base):
     __tablename__ = "PlatformAuthorizationToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     platform_oauth_client_id: Mapped[str] = mapped_column("platformOAuthClientId", ForeignKey("PlatformOAuthClient.id", ondelete="CASCADE", onupdate="CASCADE", name="PlatformAuthorizationToken_platformOAuthClientId_fkey"))
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="PlatformAuthorizationToken_userId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1952,7 +1954,7 @@ class WorkspacePlatform(Base):
 class EventTypeTranslation(Base):
     __tablename__ = "EventTypeTranslation"
 
-    uid: Mapped[str] = mapped_column(primary_key=True)
+    uid: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     event_type_id: Mapped[int] = mapped_column("eventTypeId", ForeignKey("EventType.id", ondelete="CASCADE", onupdate="CASCADE", name="EventTypeTranslation_eventTypeId_fkey"))
     field: Mapped[str] = mapped_column(Enum("DESCRIPTION", "TITLE", name="EventTypeAutoTranslatedField"))
     source_locale: Mapped[str] = mapped_column("sourceLocale")
@@ -2213,7 +2215,7 @@ class BookingInternalNote(Base):
 class Role(Base):
     __tablename__ = "Role"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     color: Mapped[Optional[str]]
     description: Mapped[Optional[str]]

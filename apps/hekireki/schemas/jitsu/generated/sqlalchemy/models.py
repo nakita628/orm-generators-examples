@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -34,7 +35,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -45,7 +47,7 @@ class Base(DeclarativeBase):
 class EmailLog(Base):
     __tablename__ = "EmailLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     time: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     email: Mapped[dict[str, Any]] = mapped_column(JSONB)
     error: Mapped[Optional[str]]
@@ -56,7 +58,7 @@ class EmailLog(Base):
 class UserPreferences(Base):
     __tablename__ = "UserPreferences"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -72,7 +74,7 @@ class UserPreferences(Base):
 class UserProfile(Base):
     __tablename__ = "UserProfile"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     email: Mapped[str]
     admin: Mapped[Optional[bool]] = mapped_column(default=False, server_default=text("false"))
@@ -98,7 +100,7 @@ class UserProfile(Base):
 class UserPassword(Base):
     __tablename__ = "UserPassword"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -116,7 +118,7 @@ class UserPassword(Base):
 class Workspace(Base):
     __tablename__ = "Workspace"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -144,7 +146,7 @@ class Workspace(Base):
 class WorkspaceOptions(Base):
     __tablename__ = "WorkspaceOptions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -187,7 +189,7 @@ class WorkspaceUserProperties(Base):
 class UserApiToken(Base):
     __tablename__ = "UserApiToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -212,7 +214,7 @@ class UserApiToken(Base):
 class OAuthClient(Base):
     __tablename__ = "OAuthClient"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -239,7 +241,7 @@ class KvStoreEntry(Base):
 class OAuthAccessToken(Base):
     __tablename__ = "OAuthAccessToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     last_used: Mapped[Optional[datetime]] = mapped_column("lastUsed")
@@ -259,7 +261,7 @@ class OAuthAccessToken(Base):
 class InvitationToken(Base):
     __tablename__ = "InvitationToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workspace_id: Mapped[str] = mapped_column("workspaceId")
     email: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -273,7 +275,7 @@ class InvitationToken(Base):
 class ConfigurationObject(Base):
     __tablename__ = "ConfigurationObject"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     deleted: Mapped[Optional[bool]] = mapped_column(default=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
@@ -296,7 +298,7 @@ class ConfigurationObject(Base):
 class ConfigurationObjectLink(Base):
     __tablename__ = "ConfigurationObjectLink"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     deleted: Mapped[Optional[bool]] = mapped_column(default=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
@@ -320,7 +322,7 @@ class ConfigurationObjectLink(Base):
 class ConnectorPackage(Base):
     __tablename__ = "ConnectorPackage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     package_id: Mapped[str] = mapped_column("packageId")
     package_type: Mapped[str] = mapped_column("packageType", default="airbyte", server_default=text("'airbyte'"))
     meta: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
@@ -333,7 +335,7 @@ class ConnectorPackage(Base):
 class AuditLog(Base):
     __tablename__ = "AuditLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     timestamp: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     type: Mapped[str]
@@ -356,7 +358,7 @@ class AuditLog(Base):
 class GlobalProps(Base):
     __tablename__ = "GlobalProps"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -489,7 +491,7 @@ class TaskLog(Base):
 class ProfileBuilder(Base):
     __tablename__ = "ProfileBuilder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     deleted: Mapped[Optional[bool]] = mapped_column(default=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -509,7 +511,7 @@ class ProfileBuilder(Base):
 class ProfileBuilderFunction(Base):
     __tablename__ = "ProfileBuilderFunction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -604,7 +606,7 @@ class Notification(Base):
 class OidcProvider(Base):
     __tablename__ = "OidcProvider"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -637,7 +639,7 @@ class OidcProvider(Base):
 class OidcLoginGroup(Base):
     __tablename__ = "OidcLoginGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     """@zod.custom(z.coerce.date())"""
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -659,7 +661,7 @@ class OidcLoginGroup(Base):
 class ReprocessingJobs(Base):
     __tablename__ = "reprocessing_jobs"
 
-    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    id: Mapped[str] = mapped_column(String(64), primary_key=True, default=lambda: cuid.cuid())
     config: Mapped[dict[str, Any]] = mapped_column(JSONB)
     status: Mapped[str] = mapped_column(String(32))
     created_at: Mapped[datetime] = mapped_column(UtcDateTimeTz(precision=6))

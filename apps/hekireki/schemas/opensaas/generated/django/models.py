@@ -30,6 +30,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -45,9 +57,14 @@ def uuid4_str() -> str:
     return str(uuid.uuid4())
 
 
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
+
+
 class User(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     email = models.TextField(null=True, unique=True)
     username = models.TextField(null=True, unique=True)
     is_admin = models.BooleanField(db_column="isAdmin", default=False)
@@ -65,7 +82,7 @@ class User(models.Model):
 
 class ProcessedWebhookEvent(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     payment_processor_event_id = models.TextField(unique=True, db_column="paymentProcessorEventId")
     event_type = models.TextField(db_column="eventType")
 
@@ -75,8 +92,8 @@ class ProcessedWebhookEvent(models.Model):
 
 class GptResponse(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="gpt_responses", db_column="userId", db_index=False)
     content = models.TextField()
     objects = AutoNowQuerySet.as_manager()
@@ -87,7 +104,7 @@ class GptResponse(models.Model):
 
 class Task(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="tasks", db_column="userId", db_index=False)
     description = models.TextField()
     time = models.TextField(default="1")
@@ -99,7 +116,7 @@ class Task(models.Model):
 
 class File(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="files", db_column="userId", db_index=False)
     name = models.TextField()
     type = models.TextField()
@@ -111,7 +128,7 @@ class File(models.Model):
 
 class DailyStats(models.Model):
     id = models.AutoField(primary_key=True)
-    date = UtcDateTimeField(unique=True, default=timezone.now)
+    date = UtcDateTimeField(unique=True, default=now_milliseconds)
     total_views = models.IntegerField(db_column="totalViews", default=0)
     prev_day_views_change_percent = models.TextField(db_column="prevDayViewsChangePercent", default="0")
     user_count = models.IntegerField(db_column="userCount", default=0)
@@ -128,7 +145,7 @@ class DailyStats(models.Model):
 class PageViewSource(models.Model):
     pk = models.CompositePrimaryKey("date", "name")
     name = models.TextField()
-    date = UtcDateTimeField(default=timezone.now)
+    date = UtcDateTimeField(default=now_milliseconds)
     daily_stats = models.ForeignKey("DailyStats", on_delete=models.SET_NULL, related_name="sources", db_column="dailyStatsId", null=True, db_index=False)
     visitors = models.IntegerField()
 
@@ -138,7 +155,7 @@ class PageViewSource(models.Model):
 
 class Logs(models.Model):
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     message = models.TextField()
     level = models.TextField()
 
@@ -148,7 +165,7 @@ class Logs(models.Model):
 
 class ContactFormMessage(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="contact_form_messages", db_column="userId", db_index=False)
     content = models.TextField()
     is_read = models.BooleanField(db_column="isRead", default=False)

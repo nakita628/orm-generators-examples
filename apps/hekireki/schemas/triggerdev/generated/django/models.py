@@ -3,6 +3,7 @@ from datetime import timezone as dt_timezone
 from decimal import Decimal
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import BTreeIndex, BrinIndex, GinIndex
@@ -32,6 +33,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -41,6 +54,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def project_alert_channel_environment_types_default() -> list[str]:
@@ -414,7 +436,7 @@ class DataStoreKind(models.TextChoices):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     email = models.TextField(unique=True)
     pending_email = models.TextField(null=True, db_column="pendingEmail")
     """Address awaiting confirmation; becomes `email` only after a link sent to it is opened"""
@@ -428,8 +450,8 @@ class User(models.Model):
     admin = models.BooleanField(default=False)
     dashboard_preferences = models.JSONField(null=True, db_column="dashboardPreferences")
     """Preferences for the dashboard"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     is_on_cloud_waitlist = models.BooleanField(db_column="isOnCloudWaitlist", default=False)
     """@deprecated"""
     feature_cloud = models.BooleanField(db_column="featureCloud", default=False)
@@ -464,13 +486,13 @@ class User(models.Model):
 
 
 class MfaBackupCode(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     code = models.TextField()
     """Hash of the actual code"""
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="backup_codes", db_column="userId", db_index=False)
     used_at = UtcDateTimeField(null=True, db_column="usedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -481,9 +503,9 @@ class MfaBackupCode(models.Model):
 
 
 class InvitationCode(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     code = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "InvitationCode"
@@ -492,7 +514,7 @@ class InvitationCode(models.Model):
 class AuthorizationCode(models.Model):
     """Used to generate PersonalAccessTokens, they're one-time use"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     code = models.TextField(unique=True)
     personal_access_token = models.ForeignKey("PersonalAccessToken", on_delete=models.CASCADE, related_name="authorization_codes", db_column="personalAccessTokenId", null=True, db_index=False)
     requester_ip = models.TextField(null=True, db_column="requesterIp")
@@ -503,8 +525,8 @@ class AuthorizationCode(models.Model):
     """Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it."""
     approval_code_hash = models.TextField(null=True, db_column="approvalCodeHash")
     """sha256 of the approval code, which only the approving browser ever sees."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -512,7 +534,7 @@ class AuthorizationCode(models.Model):
 
 
 class PersonalAccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     """If generated by the CLI this will be "cli", otherwise user-provided"""
     encrypted_token = models.JSONField(db_column="encryptedToken")
@@ -534,8 +556,8 @@ class PersonalAccessToken(models.Model):
     """When the "about to expire" email was sent. Set before sending, so it's sent at most once."""
     expired_notice_sent_at = UtcDateTimeField(null=True, db_column="expiredNoticeSentAt")
     """When the "has expired" email was sent. Set before sending, so it's sent at most once."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -546,7 +568,7 @@ class PersonalAccessToken(models.Model):
 
 
 class OrganizationAccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     """User-provided name for the token"""
     type = models.TextField(choices=OrganizationAccessTokenType.choices, default=OrganizationAccessTokenType.USER)
@@ -558,8 +580,8 @@ class OrganizationAccessToken(models.Model):
     """Optional expiration date for the token"""
     revoked_at = UtcDateTimeField(null=True, db_column="revokedAt")
     last_accessed_at = UtcDateTimeField(null=True, db_column="lastAccessedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -570,7 +592,7 @@ class OrganizationAccessToken(models.Model):
 
 
 class Organization(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField(unique=True)
     title = models.TextField()
     maximum_execution_time_per_run_in_ms = models.IntegerField(db_column="maximumExecutionTimePerRunInMs", default=900000)
@@ -579,8 +601,8 @@ class Organization(models.Model):
     """This is deprecated and will be removed in the future"""
     maximum_dev_queue_size = models.IntegerField(null=True, db_column="maximumDevQueueSize")
     maximum_deployed_queue_size = models.IntegerField(null=True, db_column="maximumDeployedQueueSize")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     company_size = models.TextField(null=True, db_column="companySize")
     onboarding_data = models.JSONField(null=True, db_column="onboardingData")
@@ -623,12 +645,12 @@ class Organization(models.Model):
 
 
 class OrgMember(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="members", db_column="organizationId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="org_memberships", db_column="userId", db_index=False)
     role = models.TextField(choices=OrgMemberRole.choices, default=OrgMemberRole.MEMBER)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -642,8 +664,8 @@ class OrgMember(models.Model):
 
 
 class OrgMemberInvite(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    token = models.TextField(unique=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    token = models.TextField(unique=True, default=cuid_str)
     email = models.TextField()
     role = models.TextField(choices=OrgMemberRole.choices, default=OrgMemberRole.MEMBER)
     rbac_role_id = models.TextField(null=True, db_column="rbacRoleId")
@@ -659,8 +681,8 @@ class OrgMemberInvite(models.Model):
     """
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="invites", db_column="organizationId", db_index=False)
     inviter = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sent_invites", db_column="inviterId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -671,7 +693,7 @@ class OrgMemberInvite(models.Model):
 
 
 class RuntimeEnvironment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField()
     api_key = models.TextField(unique=True, db_column="apiKey")
     root_api_key_hidden_at = UtcDateTimeField(null=True, db_column="rootApiKeyHiddenAt")
@@ -705,8 +727,8 @@ class RuntimeEnvironment(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="environments", db_column="organizationId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="environments", db_column="projectId", db_index=False)
     org_member = models.ForeignKey("OrgMember", on_delete=models.SET_NULL, related_name="environments", db_column="orgMemberId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     built_in_environment_variable_overrides = models.JSONField(null=True, db_column="builtInEnvironmentVariableOverrides")
     """Allows us to customize the built-in environment variables for a specific environment, like TRIGGER_OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT"""
     tunnel_id = models.TextField(null=True, db_column="tunnelId")
@@ -727,7 +749,7 @@ class RuntimeEnvironment(models.Model):
 
 
 class ApiKey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     key_hash = models.TextField(unique=True)
     last_four = models.TextField()
@@ -744,8 +766,8 @@ class ApiKey(models.Model):
     last_used_ip = models.TextField(null=True)
     revoked_at = UtcDateTimeField(null=True)
     expires_at = UtcDateTimeField(null=True)
-    updated_at = UtcDateTimeField(auto_now=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -761,11 +783,11 @@ class RevokedApiKey(models.Model):
     during a grace window after rotation. Extend or end the grace period by updating `expiresAt`.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     api_key = models.TextField(db_column="apiKey")
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="revoked_api_keys", db_column="runtimeEnvironmentId", db_index=False)
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "RevokedApiKey"
@@ -776,13 +798,13 @@ class RevokedApiKey(models.Model):
 
 
 class Project(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField(unique=True)
     name = models.TextField()
     external_ref = models.TextField(unique=True, db_column="externalRef")
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="projects", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     initialized_at = UtcDateTimeField(null=True, db_column="initializedAt")
     """Set the first time the CLI `init` command completes against this project. Drives the dev onboarding progress."""
@@ -814,13 +836,13 @@ class EnvironmentEncryptionPolicy(models.Model):
 
 
 class EnvironmentEncryptionKey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="encryption_keys", db_column="environmentId", db_index=False)
     wrapped_key = models.JSONField(db_column="wrappedKey")
     wrapping_provider = models.TextField(choices=EnvironmentKeyWrappingProvider.choices, db_column="wrappingProvider")
     wrapping_key_reference = models.TextField(db_column="wrappingKeyReference")
     revision = models.IntegerField(default=0)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "EnvironmentEncryptionKey"
@@ -833,11 +855,11 @@ class EnvironmentEncryptionKey(models.Model):
 
 
 class SecretReference(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     key = models.TextField(unique=True)
     provider = models.TextField(choices=SecretStoreProvider.choices, default=SecretStoreProvider.DATABASE)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -848,8 +870,8 @@ class SecretStore(models.Model):
     key = models.TextField(primary_key=True, default=None)
     value = models.JSONField()
     version = models.TextField(default="1")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -860,7 +882,7 @@ class SecretStore(models.Model):
 
 
 class OidcSigningKey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     kid = models.TextField(unique=True)
     purpose = models.TextField(choices=OidcSigningKeyPurpose.choices, default=OidcSigningKeyPurpose.EXTERNAL_OIDC)
     status = models.TextField(choices=OidcSigningKeyStatus.choices)
@@ -873,8 +895,8 @@ class OidcSigningKey(models.Model):
     activated_by_user_id = models.TextField(null=True, db_column="activatedByUserId")
     retired_at = UtcDateTimeField(null=True, db_column="retiredAt")
     retired_by_user_id = models.TextField(null=True, db_column="retiredByUserId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -882,10 +904,10 @@ class OidcSigningKey(models.Model):
 
 
 class DataMigration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -894,7 +916,7 @@ class DataMigration(models.Model):
 
 
 class BackgroundWorker(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     engine = models.TextField(choices=RunEngineVersion.choices, default=RunEngineVersion.V1)
     content_hash = models.TextField(db_column="contentHash")
@@ -906,8 +928,8 @@ class BackgroundWorker(models.Model):
     metadata = models.JSONField()
     runtime = models.TextField(null=True)
     runtime_version = models.TextField(null=True, db_column="runtimeVersion")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     files: "models.ManyToManyField[BackgroundWorkerFile, BackgroundWorkerToBackgroundWorkerFile]" = models.ManyToManyField("BackgroundWorkerFile", through="BackgroundWorkerToBackgroundWorkerFile", related_name="background_workers")
     queues: "models.ManyToManyField[TaskQueue, BackgroundWorkerToTaskQueue]" = models.ManyToManyField("TaskQueue", through="BackgroundWorkerToTaskQueue", related_name="workers")
     worker_group = models.ForeignKey("WorkerInstanceGroup", on_delete=models.SET_NULL, related_name="background_workers", db_column="workerGroupId", null=True, db_index=False)
@@ -926,13 +948,13 @@ class BackgroundWorker(models.Model):
 
 
 class BackgroundWorkerFile(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     file_path = models.TextField(db_column="filePath")
     content_hash = models.TextField(db_column="contentHash")
     contents = models.BinaryField()
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="background_worker_file", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "BackgroundWorkerFile"
@@ -942,7 +964,7 @@ class BackgroundWorkerFile(models.Model):
 
 
 class Prompt(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True)
     slug = models.TextField()
     description = models.TextField(null=True)
@@ -957,8 +979,8 @@ class Prompt(models.Model):
     default_config = models.JSONField(null=True, db_column="defaultConfig")
     tags = ArrayField(models.TextField(), default=list)
     archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -973,7 +995,7 @@ class Prompt(models.Model):
 
 
 class PromptVersion(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     version = models.IntegerField()
     prompt = models.ForeignKey("Prompt", on_delete=models.CASCADE, related_name="versions", db_column="promptId", db_index=False)
     text_content = models.TextField(null=True, db_column="textContent")
@@ -986,7 +1008,7 @@ class PromptVersion(models.Model):
     labels = ArrayField(models.TextField(), default=list)
     worker = models.ForeignKey("BackgroundWorker", on_delete=models.SET_NULL, related_name="prompt_versions", db_column="workerId", null=True, db_index=False)
     created_by = models.TextField(null=True, db_column="createdBy")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "prompt_versions"
@@ -1000,7 +1022,7 @@ class PromptVersion(models.Model):
 
 
 class BackgroundWorkerTask(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField()
     description = models.TextField(null=True)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
@@ -1010,8 +1032,8 @@ class BackgroundWorkerTask(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="background_worker_tasks", db_column="projectId", db_index=False)
     file = models.ForeignKey("BackgroundWorkerFile", on_delete=models.CASCADE, related_name="tasks", db_column="fileId", null=True, db_index=False)
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="background_worker_tasks", db_column="runtimeEnvironmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     queue_config = models.JSONField(null=True, db_column="queueConfig")
     retry_config = models.JSONField(null=True, db_column="retryConfig")
     machine_config = models.JSONField(null=True, db_column="machineConfig")
@@ -1044,7 +1066,7 @@ class BackgroundWorkerTask(models.Model):
 
 
 class WebhookEndpoint(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     opaque_id = models.TextField(unique=True, db_column="opaqueId")
     """URL key. CSPRNG, NOT a friendlyId: crypto.randomBytes(16) base64url.
@@ -1074,8 +1096,8 @@ class WebhookEndpoint(models.Model):
     owns the status: a redeploy that re-declares a previously-removed (auto-deactivated) webhook
     reactivates it. Non-null means the operator disabled it, so the sync leaves the status alone.
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1091,7 +1113,7 @@ class WebhookEndpoint(models.Model):
 
 class WebhookDelivery(models.Model):
     pk = models.CompositePrimaryKey("id", "created_at", "retention_days")
-    id = models.TextField()
+    id = models.TextField(default=cuid_str)
     friendly_id = models.TextField(db_column="friendlyId")
     webhook_endpoint_id = models.TextField(db_column="webhookEndpointId")
     organization_id = models.TextField(db_column="organizationId")
@@ -1111,8 +1133,8 @@ class WebhookDelivery(models.Model):
     filter_reason = models.TextField(null=True, db_column="filterReason")
     targets = models.JSONField(default=list)
     """Per-target results: WebhookDeliveryTargetResult[] ({ id, type, status, reason?, runId?, error? })."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     processed_at = UtcDateTimeField(null=True, db_column="processedAt")
     retention_days = models.IntegerField(db_column="retentionDays", default=30)
     """Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id."""
@@ -1148,8 +1170,8 @@ class Alert(models.Model):
     notifiers = models.JSONField(default=list)
     name = models.TextField(null=True)
     created_by = models.TextField(db_column="createdBy")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", default=timezone.now)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = models.DateTimeField(db_column="updatedAt", default=now_milliseconds)
     resolved_at = models.DateTimeField(null=True, db_column="resolvedAt")
     resolved_by = models.TextField(null=True, db_column="resolvedBy")
     stopped_at = models.DateTimeField(null=True, db_column="stoppedAt")
@@ -1177,7 +1199,7 @@ class AlertEvent(models.Model):
     id = models.TextField()
     alert_id = models.TextField(db_column="alertId")
     type = models.TextField()
-    at = models.DateTimeField(default=timezone.now)
+    at = models.DateTimeField(default=now_milliseconds)
     facts = models.JSONField(default=dict)
     actor_id = models.TextField(null=True, db_column="actorId")
     source_event_id = models.TextField(null=True, db_column="sourceEventId")
@@ -1194,7 +1216,7 @@ class AlertOccurrenceSeen(models.Model):
     alert_id = models.TextField(db_column="alertId")
     source_event_id = models.TextField(db_column="sourceEventId")
     row_time = models.DateTimeField(db_column="rowTime")
-    seen_at = models.DateTimeField(db_column="seenAt", default=timezone.now)
+    seen_at = models.DateTimeField(db_column="seenAt", default=now_milliseconds)
     expires_at = models.DateTimeField(db_column="expiresAt")
 
     class Meta:
@@ -1221,7 +1243,7 @@ class AlertDelivery(models.Model):
     provider_metadata = models.JSONField(null=True, db_column="providerMetadata")
     attempts = models.IntegerField(default=0)
     first_attempt_at = models.DateTimeField(null=True, db_column="firstAttemptAt")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "AlertDelivery"
@@ -1235,7 +1257,7 @@ class AlertDelivery(models.Model):
 
 
 class PlaygroundConversation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     chat_id = models.TextField(db_column="chatId")
     """The chat session ID used by the transport"""
     title = models.TextField(default="New conversation")
@@ -1254,8 +1276,8 @@ class PlaygroundConversation(models.Model):
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="playground_conversations", db_column="runtimeEnvironmentId", db_index=False)
     user_id = models.TextField(db_column="userId")
     """The user who started this conversation"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1277,7 +1299,7 @@ class Session(models.Model):
     from ClickHouse, not Postgres, so only point-lookup indexes live here.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     external_id = models.TextField(null=True, db_column="externalId")
     """User-supplied identifier scoped to the environment. Used for
@@ -1324,8 +1346,8 @@ class Session(models.Model):
     """Terminal markers — written once, never flipped back."""
     closed_reason = models.TextField(null=True, db_column="closedReason")
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     stream_basin_name = models.TextField(null=True, db_column="streamBasinName")
     """S2 basin where this session's stream pair lives. Stamped at create
     time from `Organization.streamBasinName` so reads can resolve the
@@ -1359,7 +1381,7 @@ class SessionRun(models.Model):
     FK to TaskRun so run pruning is independent.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session = models.ForeignKey("Session", on_delete=models.CASCADE, related_name="runs", db_column="sessionId", db_index=False)
     run_id = models.TextField(unique=True, db_column="runId")
     """TaskRun.id (no FK — runs may be archived independently of session history)"""
@@ -1367,7 +1389,7 @@ class SessionRun(models.Model):
     """One of: "initial" | "continuation" | "upgrade" | "manual".
     Plain string for forward-compat with future trigger reasons.
     """
-    triggered_at = UtcDateTimeField(db_column="triggeredAt", default=timezone.now)
+    triggered_at = UtcDateTimeField(db_column="triggeredAt", default=now_milliseconds)
 
     class Meta:
         db_table = "SessionRun"
@@ -1378,7 +1400,7 @@ class SessionRun(models.Model):
 
 
 class TaskRun(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     number = models.IntegerField(default=0)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     engine = models.TextField(choices=RunEngineVersion.choices, default=RunEngineVersion.V1)
@@ -1412,8 +1434,8 @@ class TaskRun(models.Model):
     """@deprecated"""
     attempt_number = models.IntegerField(null=True, db_column="attemptNumber")
     """From engine v2+ this will be defined after a run has been dequeued (starting at 1)"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     run_tags = ArrayField(models.TextField(), db_column="runTags")
     """Denormized column that holds the raw tags"""
     task_version = models.TextField(null=True, db_column="taskVersion")
@@ -1524,7 +1546,7 @@ class TaskRun(models.Model):
 
 
 class TaskRunTemplate(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task_slug = models.TextField(db_column="taskSlug")
     trigger_source = models.TextField(choices=TaskTriggerSource.choices, db_column="triggerSource")
     label = models.TextField()
@@ -1541,8 +1563,8 @@ class TaskRunTemplate(models.Model):
     machine_preset = models.TextField(null=True, db_column="machinePreset")
     project_id = models.TextField(db_column="projectId")
     organization_id = models.TextField(db_column="organizationId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1560,7 +1582,7 @@ class TaskRunExecutionSnapshot(models.Model):
     so there are no cascading relationships to other models.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     engine = models.TextField(choices=RunEngineVersion.choices, default=RunEngineVersion.V2)
     """This should always be 2+ (V1 didn't use the run engine or snapshots)"""
     execution_status = models.TextField(choices=TaskRunExecutionStatus.choices, db_column="executionStatus")
@@ -1592,8 +1614,8 @@ class TaskRunExecutionSnapshot(models.Model):
     worker_id = models.TextField(null=True, db_column="workerId")
     """Worker"""
     runner_id = models.TextField(null=True, db_column="runnerId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     last_heartbeat_at = UtcDateTimeField(null=True, db_column="lastHeartbeatAt")
     metadata = models.JSONField(null=True)
     """Metadata used by various systems in the run engine"""
@@ -1607,7 +1629,7 @@ class TaskRunExecutionSnapshot(models.Model):
 
 
 class TaskRunCheckpoint(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     type = models.TextField(choices=TaskRunCheckpointType.choices)
     location = models.TextField()
@@ -1616,8 +1638,8 @@ class TaskRunCheckpoint(models.Model):
     metadata = models.TextField(null=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="task_run_checkpoints", db_column="projectId", db_index=False)
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="task_run_checkpoints", db_column="runtimeEnvironmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1629,7 +1651,7 @@ class Waitpoint(models.Model):
     If there's a waitpoint blocking a run, it shouldn't be in the queue
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     type = models.TextField(choices=WaitpointType.choices)
     status = models.TextField(choices=WaitpointStatus.choices, default=WaitpointStatus.PENDING)
@@ -1659,8 +1681,8 @@ class Waitpoint(models.Model):
     output_is_error = models.BooleanField(db_column="outputIsError", default=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="waitpoints", db_column="projectId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="waitpoints", db_column="environmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     tags = ArrayField(models.TextField())
     """Denormized column that holds the raw tags
     Denormalized column that holds the raw tags
@@ -1681,7 +1703,7 @@ class Waitpoint(models.Model):
 
 
 class TaskRunWaitpoint(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task_run = models.ForeignKey("TaskRun", on_delete=models.RESTRICT, related_name="blocked_by_waitpoints", db_column="taskRunId", db_index=False)
     waitpoint = models.ForeignKey("Waitpoint", on_delete=models.RESTRICT, related_name="blocking_task_runs", db_column="waitpointId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="task_run_waitpoints", db_column="projectId", db_index=False)
@@ -1689,8 +1711,8 @@ class TaskRunWaitpoint(models.Model):
     """This span id is completed when the waitpoint is completed. This is used with cached runs (idempotent)"""
     batch = models.ForeignKey("BatchTaskRun", on_delete=models.SET_NULL, related_name="runs_blocked", db_column="batchId", null=True, db_index=False)
     batch_index = models.IntegerField(null=True, db_column="batchIndex")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1705,11 +1727,11 @@ class TaskRunWaitpoint(models.Model):
 
 
 class WaitpointTag(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="waitpoint_tags", db_column="environmentId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="waitpoint_tags", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "WaitpointTag"
@@ -1719,11 +1741,11 @@ class WaitpointTag(models.Model):
 
 
 class FeatureFlag(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     key = models.TextField(unique=True)
     value = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1731,7 +1753,7 @@ class FeatureFlag(models.Model):
 
 
 class WorkerInstance(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     """For example "worker-1\""""
     resource_identifier = models.TextField(db_column="resourceIdentifier")
@@ -1744,8 +1766,8 @@ class WorkerInstance(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="workers", db_column="projectId", null=True, db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="worker_instances", db_column="environmentId", null=True, db_index=False)
     deployment = models.ForeignKey("WorkerDeployment", on_delete=models.SET_NULL, related_name="worker_instance", db_column="deploymentId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     last_dequeue_at = UtcDateTimeField(null=True, db_column="lastDequeueAt")
     last_heartbeat_at = UtcDateTimeField(null=True, db_column="lastHeartbeatAt")
     objects = AutoNowQuerySet.as_manager()
@@ -1758,7 +1780,7 @@ class WorkerInstance(models.Model):
 
 
 class WorkerInstanceGroup(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField(choices=WorkerInstanceGroupType.choices)
     name = models.TextField()
     """For example "us-east-1\""""
@@ -1783,8 +1805,8 @@ class WorkerInstanceGroup(models.Model):
     """When true, runs enqueued to this worker queue may skip the intermediate queue
     and be pushed directly to the worker queue when concurrency is available.
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1792,12 +1814,12 @@ class WorkerInstanceGroup(models.Model):
 
 
 class WorkerGroupToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token_hash = models.TextField(unique=True, db_column="tokenHash")
     previous_token_hash = models.TextField(null=True, unique=True, db_column="previousTokenHash")
     previous_token_valid_until = UtcDateTimeField(null=True, db_column="previousTokenValidUntil")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1805,11 +1827,11 @@ class WorkerGroupToken(models.Model):
 
 
 class TaskRunTag(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="run_tags", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "TaskRunTag"
@@ -1824,7 +1846,7 @@ class TaskRunTag(models.Model):
 class TaskRunDependency(models.Model):
     """This is used for triggerAndWait and batchTriggerAndWait. The taskRun is the child task, it points at a parent attempt or a batch"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task_run = models.OneToOneField("TaskRun", on_delete=models.CASCADE, related_name="dependency", db_column="taskRunId")
     """The child run"""
     checkpoint_event = models.OneToOneField("CheckpointRestoreEvent", on_delete=models.CASCADE, related_name="task_run_dependency", db_column="checkpointEventId", null=True)
@@ -1832,8 +1854,8 @@ class TaskRunDependency(models.Model):
     """An attempt that is dependent on this task run."""
     dependent_batch_run = models.ForeignKey("BatchTaskRun", on_delete=models.SET_NULL, related_name="run_dependencies", db_column="dependentBatchRunId", null=True, db_index=False)
     """A batch run that is dependent on this task run"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     resumed_at = UtcDateTimeField(null=True, db_column="resumedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1858,7 +1880,7 @@ class TaskRunCounter(models.Model):
 class TaskRunNumberCounter(models.Model):
     """Used for the TaskRun number (e.g. #1,421)"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task_identifier = models.TextField(db_column="taskIdentifier")
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="task_run_number_counter", db_column="environmentId", db_index=False)
     last_number = models.IntegerField(db_column="lastNumber", default=0)
@@ -1873,7 +1895,7 @@ class TaskRunNumberCounter(models.Model):
 class TaskRunAttempt(models.Model):
     """This is not used from engine v2+, attempts use the TaskRunExecutionSnapshot and TaskRun"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     number = models.IntegerField(default=0)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     task_run = models.ForeignKey("TaskRun", on_delete=models.CASCADE, related_name="attempts", db_column="taskRunId", db_index=False)
@@ -1882,8 +1904,8 @@ class TaskRunAttempt(models.Model):
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="task_run_attempts", db_column="runtimeEnvironmentId", db_index=False)
     queue = models.ForeignKey("TaskQueue", on_delete=models.CASCADE, related_name="attempts", db_column="queueId", db_index=False)
     status = models.TextField(choices=TaskRunAttemptStatus.choices, default=TaskRunAttemptStatus.PENDING)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     usage_duration_ms = models.IntegerField(db_column="usageDurationMs", default=0)
@@ -1905,7 +1927,7 @@ class TaskRunAttempt(models.Model):
 class TaskEvent(models.Model):
     """This is the unified otel span/log model that will eventually be replaced by clickhouse"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     message = models.TextField()
     """This matches the span name for a trace event, or the log body for a log event"""
     trace_id = models.TextField(db_column="traceId")
@@ -1958,7 +1980,7 @@ class TaskEvent(models.Model):
     """This represents the mimetype of the output, such as application/json or application/super+json"""
     payload = models.JSONField(null=True)
     payload_type = models.TextField(null=True, db_column="payloadType")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     usage_duration_ms = models.IntegerField(db_column="usageDurationMs", default=0)
     usage_cost_in_cents = models.FloatField(db_column="usageCostInCents", default=0)
     machine_preset = models.TextField(null=True, db_column="machinePreset")
@@ -1976,7 +1998,7 @@ class TaskEvent(models.Model):
 
 
 class TaskQueue(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     name = models.TextField()
     type = models.TextField(choices=TaskQueueType.choices, default=TaskQueueType.VIRTUAL)
@@ -2019,8 +2041,8 @@ class TaskQueue(models.Model):
     paused = models.BooleanField(default=False)
     archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
     """Hidden from the dashboard queue list. Display-only: never read on trigger/dequeue paths."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2031,14 +2053,14 @@ class TaskQueue(models.Model):
 
 
 class BatchTaskRun(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     idempotency_key = models.TextField(null=True, db_column="idempotencyKey")
     idempotency_key_expires_at = UtcDateTimeField(null=True, db_column="idempotencyKeyExpiresAt")
     status = models.TextField(choices=BatchTaskRunStatus.choices, default=BatchTaskRunStatus.PENDING)
     runtime_environment_id = models.TextField(db_column="runtimeEnvironmentId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     run_ids = ArrayField(models.TextField(), db_column="runIds", default=list)
     """Friendly IDs"""
     run_count = models.IntegerField(db_column="runCount", default=0)
@@ -2089,13 +2111,13 @@ class BatchTaskRun(models.Model):
 class BatchTaskRunItem(models.Model):
     """Used in engine V1 only"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     status = models.TextField(choices=BatchTaskRunItemStatus.choices, default=BatchTaskRunItemStatus.PENDING)
     batch_task_run = models.ForeignKey("BatchTaskRun", on_delete=models.CASCADE, related_name="items", db_column="batchTaskRunId", db_index=False)
     task_run = models.ForeignKey("TaskRun", on_delete=models.CASCADE, related_name="batch_items", db_column="taskRunId", db_index=False)
     task_run_attempt = models.ForeignKey("TaskRunAttempt", on_delete=models.SET_NULL, related_name="batch_task_run_items", db_column="taskRunAttemptId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -2113,7 +2135,7 @@ class BatchTaskRunItem(models.Model):
 class BatchTaskRunError(models.Model):
     """Track individual run creation failures in batch processing (Run Engine v2)"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     batch_task_run = models.ForeignKey("BatchTaskRun", on_delete=models.CASCADE, related_name="errors", db_column="batchTaskRunId", db_index=False)
     index = models.IntegerField()
     """Which item in the batch (0-based index)"""
@@ -2127,7 +2149,7 @@ class BatchTaskRunError(models.Model):
     """Error message"""
     error_code = models.TextField(null=True, db_column="errorCode")
     """Error code if available"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "BatchTaskRunError"
@@ -2140,12 +2162,12 @@ class BatchTaskRunError(models.Model):
 
 
 class EnvironmentVariable(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     key = models.TextField()
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="environment_variables", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2156,14 +2178,14 @@ class EnvironmentVariable(models.Model):
 
 
 class EnvironmentVariableValue(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     value_reference = models.ForeignKey("SecretReference", on_delete=models.SET_NULL, related_name="environment_variable_values", db_column="valueReferenceId", null=True, db_index=False)
     variable = models.ForeignKey("EnvironmentVariable", on_delete=models.CASCADE, related_name="values", db_column="variableId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="environment_variable_values", db_column="environmentId", db_index=False)
     is_secret = models.BooleanField(db_column="isSecret", default=False)
     """If true, the value is secret and cannot be revealed"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     version = models.IntegerField(default=1)
     last_updated_by = models.JSONField(null=True, db_column="lastUpdatedBy")
     objects = AutoNowQuerySet.as_manager()
@@ -2181,7 +2203,7 @@ class EnvironmentVariableValue(models.Model):
 
 
 class Checkpoint(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     type = models.TextField(choices=CheckpointType.choices)
     location = models.TextField()
@@ -2193,8 +2215,8 @@ class Checkpoint(models.Model):
     attempt_number = models.IntegerField(null=True, db_column="attemptNumber")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="checkpoints", db_column="projectId", db_index=False)
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="checkpoints", db_column="runtimeEnvironmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2206,7 +2228,7 @@ class Checkpoint(models.Model):
 
 
 class CheckpointRestoreEvent(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField(choices=CheckpointRestoreEventType.choices)
     reason = models.TextField(null=True)
     metadata = models.TextField(null=True)
@@ -2215,8 +2237,8 @@ class CheckpointRestoreEvent(models.Model):
     attempt = models.ForeignKey("TaskRunAttempt", on_delete=models.CASCADE, related_name="checkpoint_restore_event", db_column="attemptId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="checkpoint_restore_event", db_column="projectId", db_index=False)
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="checkpoint_restore_event", db_column="runtimeEnvironmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2228,7 +2250,7 @@ class CheckpointRestoreEvent(models.Model):
 
 
 class WorkerDeployment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content_hash = models.TextField(db_column="contentHash")
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     short_code = models.TextField(db_column="shortCode")
@@ -2270,8 +2292,8 @@ class WorkerDeployment(models.Model):
     canceled_at = UtcDateTimeField(null=True, db_column="canceledAt")
     canceled_reason = models.TextField(null=True, db_column="canceledReason")
     git = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2289,7 +2311,7 @@ class WorkerDeployment(models.Model):
 
 
 class WorkerDeploymentPromotion(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     label = models.TextField()
     """This is the promotion label, e.g. "current\""""
     deployment = models.ForeignKey("WorkerDeployment", on_delete=models.CASCADE, related_name="promotions", db_column="deploymentId", db_index=False)
@@ -2305,20 +2327,20 @@ class WorkerDeploymentPromotion(models.Model):
 class TaskSchedule(models.Model):
     """Schedules can be attached to tasks to trigger them on a schedule"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField(choices=ScheduleType.choices, default=ScheduleType.IMPERATIVE)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     """users see this as `id`. They start with schedule_"""
     task_identifier = models.TextField(db_column="taskIdentifier")
     """a reference to a task (not a foreign key because it's across versions)"""
-    deduplication_key = models.TextField(db_column="deduplicationKey")
+    deduplication_key = models.TextField(db_column="deduplicationKey", default=cuid_str)
     """can be provided and we won't create another with the same key"""
     user_provided_deduplication_key = models.BooleanField(db_column="userProvidedDeduplicationKey", default=False)
     generator_expression = models.TextField(db_column="generatorExpression")
     """the CRON pattern"""
     generator_description = models.TextField(db_column="generatorDescription", default="")
     generator_type = models.TextField(choices=ScheduleGeneratorType.choices, db_column="generatorType", default=ScheduleGeneratorType.CRON)
-    timezone_field = models.TextField(db_column="timezone", default="UTC")
+    timezone = models.TextField(default="UTC")
     """These are IANA format string, or the default "UTC". E.g. "America/New_York\""""
     window_duration_seconds = models.IntegerField(null=True, db_column="windowDurationSeconds")
     window_percentage = models.IntegerField(null=True, db_column="windowPercentage")
@@ -2329,8 +2351,8 @@ class TaskSchedule(models.Model):
     last_run_triggered_at = UtcDateTimeField(null=True, db_column="lastRunTriggeredAt")
     """@deprecated stop writing 2026-04-30; reads moved out of code (UI now derives from cron's previous slot). Drop in follow-up."""
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="task_schedules", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     active = models.BooleanField(default=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2348,13 +2370,13 @@ class TaskSchedule(models.Model):
 class TaskScheduleInstance(models.Model):
     """An instance links a schedule with an environment"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task_schedule = models.ForeignKey("TaskSchedule", on_delete=models.CASCADE, related_name="instances", db_column="taskScheduleId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="task_schedule_instances", db_column="environmentId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="task_schedule_instances", db_column="projectId", db_index=False)
     schedule_phase = models.IntegerField(null=True, db_column="schedulePhase")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     active = models.BooleanField(default=True)
     last_scheduled_timestamp = UtcDateTimeField(null=True, db_column="lastScheduledTimestamp")
     """@deprecated stop writing 2026-04-30; engine derives from cron + exactScheduleTime. Drop in follow-up."""
@@ -2374,11 +2396,11 @@ class TaskScheduleInstance(models.Model):
 
 
 class RuntimeEnvironmentSession(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     ip_address = models.TextField(db_column="ipAddress")
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="sessions", db_column="environmentId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     disconnected_at = UtcDateTimeField(null=True, db_column="disconnectedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -2387,9 +2409,9 @@ class RuntimeEnvironmentSession(models.Model):
 
 
 class ProjectAlertChannel(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
-    deduplication_key = models.TextField(db_column="deduplicationKey")
+    deduplication_key = models.TextField(db_column="deduplicationKey", default=cuid_str)
     """can be provided and we won't create another with the same key"""
     user_provided_deduplication_key = models.BooleanField(db_column="userProvidedDeduplicationKey", default=False)
     integration = models.ForeignKey("OrganizationIntegration", on_delete=models.SET_NULL, related_name="alert_channels", db_column="integrationId", null=True, db_index=False)
@@ -2401,8 +2423,8 @@ class ProjectAlertChannel(models.Model):
     environment_types = ArrayField(models.TextField(choices=RuntimeEnvironmentType.choices), db_column="environmentTypes", default=project_alert_channel_environment_types_default)
     error_alert_config = models.JSONField(null=True, db_column="errorAlertConfig")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="alert_channels", db_column="projectId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2413,7 +2435,7 @@ class ProjectAlertChannel(models.Model):
 
 
 class ProjectAlert(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="alerts", db_column="projectId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="alerts", db_column="environmentId", db_index=False)
@@ -2423,8 +2445,8 @@ class ProjectAlert(models.Model):
     task_run_attempt_id = models.TextField(null=True, db_column="taskRunAttemptId")
     task_run_id = models.TextField(null=True, db_column="taskRunId")
     worker_deployment = models.ForeignKey("WorkerDeployment", on_delete=models.CASCADE, related_name="alerts", db_column="workerDeploymentId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2435,14 +2457,14 @@ class ProjectAlert(models.Model):
 
 
 class ProjectAlertStorage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="alert_storages", db_column="projectId", db_index=False)
     alert_channel = models.ForeignKey("ProjectAlertChannel", on_delete=models.CASCADE, related_name="alert_storages", db_column="alertChannelId", db_index=False)
     alert_type = models.TextField(choices=ProjectAlertType.choices, db_column="alertType")
     storage_id = models.TextField(db_column="storageId")
     storage_data = models.JSONField(db_column="storageData")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2453,7 +2475,7 @@ class ProjectAlertStorage(models.Model):
 
 
 class OrganizationIntegration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     service = models.TextField(choices=IntegrationService.choices)
     external_organization_id = models.TextField(null=True, db_column="externalOrganizationId")
@@ -2461,8 +2483,8 @@ class OrganizationIntegration(models.Model):
     integration_data = models.JSONField(db_column="integrationData")
     token_reference = models.ForeignKey("SecretReference", on_delete=models.CASCADE, related_name="organization_integration", db_column="tokenReferenceId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="organization_integrations", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -2474,7 +2496,7 @@ class OrganizationIntegration(models.Model):
 
 
 class OrganizationProjectIntegration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization_integration = models.ForeignKey("OrganizationIntegration", on_delete=models.CASCADE, related_name="organization_project_integration", db_column="organizationIntegrationId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="organization_project_integration", db_column="projectId", db_index=False)
     external_entity_id = models.TextField(db_column="externalEntityId")
@@ -2483,8 +2505,8 @@ class OrganizationProjectIntegration(models.Model):
     """Save useful data like config or external entity name"""
     installed_by = models.TextField(null=True, db_column="installedBy")
     """UserId who installed the integration"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -2500,7 +2522,7 @@ class OrganizationProjectIntegration(models.Model):
 class BulkActionGroup(models.Model):
     """Bulk actions, like canceling and replaying runs"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="bulk_action_groups", db_column="projectId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="bulk_action_group", db_column="environmentId", null=True, db_index=False)
@@ -2529,8 +2551,8 @@ class BulkActionGroup(models.Model):
     """The name of the bulk action"""
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
     """The time the bulk action was completed"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2543,7 +2565,7 @@ class BulkActionGroup(models.Model):
 
 
 class BulkActionItem(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(null=True, db_column="friendlyId")
     """@deprecated not used in new BulkActions"""
     group_id = models.TextField(db_column="groupId")
@@ -2555,8 +2577,8 @@ class BulkActionItem(models.Model):
     destination_run = models.ForeignKey("TaskRun", on_delete=models.CASCADE, related_name="destination_bulk_action_items", db_column="destinationRunId", null=True, db_index=False)
     """The run that's a result of the action, this will be set when the run has been created"""
     error = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2564,12 +2586,12 @@ class BulkActionItem(models.Model):
 
 
 class RealtimeStreamChunk(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     key = models.TextField()
     value = models.TextField()
     sequence = models.IntegerField()
     run_id = models.TextField(db_column="runId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "RealtimeStreamChunk"
@@ -2583,7 +2605,7 @@ class TaskEventPartitioned(models.Model):
     """This is the unified otel span/log model that will eventually be replaced by clickhouse"""
 
     pk = models.CompositePrimaryKey("id", "created_at")
-    id = models.TextField()
+    id = models.TextField(default=cuid_str)
     message = models.TextField()
     """This matches the span name for a trace event, or the log body for a log event"""
     trace_id = models.TextField(db_column="traceId")
@@ -2634,7 +2656,7 @@ class TaskEventPartitioned(models.Model):
     """This represents the mimetype of the output, such as application/json or application/super+json"""
     payload = models.JSONField(null=True)
     payload_type = models.TextField(null=True, db_column="payloadType")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     usage_duration_ms = models.IntegerField(db_column="usageDurationMs", default=0)
     usage_cost_in_cents = models.FloatField(db_column="usageCostInCents", default=0)
     machine_preset = models.TextField(null=True, db_column="machinePreset")
@@ -2652,7 +2674,7 @@ class TaskEventPartitioned(models.Model):
 
 
 class GithubAppInstallation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     app_installation_id = models.BigIntegerField(unique=True, db_column="appInstallationId")
     target_id = models.BigIntegerField(db_column="targetId")
     target_type = models.TextField(db_column="targetType")
@@ -2664,8 +2686,8 @@ class GithubAppInstallation(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="github_app_installations", db_column="organizationId", db_index=False)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     suspended_at = UtcDateTimeField(null=True, db_column="suspendedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2676,7 +2698,7 @@ class GithubAppInstallation(models.Model):
 
 
 class GithubRepository(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     github_id = models.BigIntegerField(db_column="githubId")
     name = models.TextField()
     full_name = models.TextField(db_column="fullName")
@@ -2684,8 +2706,8 @@ class GithubRepository(models.Model):
     private = models.BooleanField()
     default_branch = models.TextField(db_column="defaultBranch")
     installation = models.ForeignKey("GithubAppInstallation", on_delete=models.CASCADE, related_name="repositories", db_column="installationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2699,15 +2721,15 @@ class GithubRepository(models.Model):
 
 
 class TrustedDeployRepository(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     project = models.OneToOneField("Project", on_delete=models.CASCADE, related_name="trusted_deploy_repository", db_column="projectId")
     issuer = models.TextField(default="https://token.actions.githubusercontent.com")
     repository_owner = models.TextField(db_column="repositoryOwner")
     repository_name = models.TextField(db_column="repositoryName")
     repository_id = models.TextField(null=True, db_column="repositoryId")
     repository_owner_id = models.TextField(null=True, db_column="repositoryOwnerId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2715,15 +2737,15 @@ class TrustedDeployRepository(models.Model):
 
 
 class TrustedDeployEnvironment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     trusted_deploy_repository = models.ForeignKey("TrustedDeployRepository", on_delete=models.CASCADE, related_name="environments", db_column="trustedDeployRepositoryId", db_index=False)
     runtime_environment = models.OneToOneField("RuntimeEnvironment", on_delete=models.CASCADE, related_name="trusted_deploy_grant", db_column="runtimeEnvironmentId")
     enabled = models.BooleanField(default=False)
     scope = models.TextField(choices=TrustedDeployScope.choices)
     scope_value = models.TextField(null=True, db_column="scopeValue")
     additional_claims = models.JSONField(db_column="additionalClaims", default=dict)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2734,14 +2756,14 @@ class TrustedDeployEnvironment(models.Model):
 
 
 class ConnectedGithubRepository(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     project = models.OneToOneField("Project", on_delete=models.CASCADE, related_name="connected_github_repository", db_column="projectId")
     repository = models.ForeignKey("GithubRepository", on_delete=models.CASCADE, related_name="connected_github_repository", db_column="repositoryId", db_index=False)
     branch_tracking = models.JSONField(db_column="branchTracking")
     preview_deployments_enabled = models.BooleanField(db_column="previewDeploymentsEnabled", default=True)
     build_filters = models.JSONField(null=True, db_column="buildFilters")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2755,14 +2777,14 @@ class ConnectedGithubRepository(models.Model):
 
 
 class ImpersonationAuditLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     action = models.TextField(choices=ImpersonationAuditLogAction.choices)
     admin = models.ForeignKey("User", on_delete=models.CASCADE, related_name="impersonations_performed", db_column="adminId", db_index=False)
     """The admin user who initiated/ended the impersonation"""
     target = models.ForeignKey("User", on_delete=models.CASCADE, related_name="impersonations_received", db_column="targetId", db_index=False)
     """The user being impersonated"""
     ip_address = models.TextField(null=True, db_column="ipAddress")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ImpersonationAuditLog"
@@ -2774,7 +2796,7 @@ class ImpersonationAuditLog(models.Model):
 
 
 class SupportAccessRequest(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="support_access_requests", db_column="organizationId", db_index=False)
     requested_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="support_access_requests_made", db_column="requestedById", null=True, db_index=False)
     reason = models.TextField()
@@ -2784,8 +2806,8 @@ class SupportAccessRequest(models.Model):
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
     cancelled_by_id = models.TextField(null=True, db_column="cancelledById")
     cancelled_at = UtcDateTimeField(null=True, db_column="cancelledAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2798,7 +2820,7 @@ class SupportAccessRequest(models.Model):
 
 
 class CustomerQuery(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     query = models.TextField()
     """The TSQL query text that was executed"""
     scope = models.TextField(choices=CustomerQueryScope.choices)
@@ -2822,7 +2844,7 @@ class CustomerQuery(models.Model):
     """Custom start date (ISO 8601)"""
     filter_to = UtcDateTimeField(null=True, db_column="filterTo")
     """Custom end date (ISO 8601)"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "CustomerQuery"
@@ -2833,7 +2855,7 @@ class CustomerQuery(models.Model):
 
 
 class IntegrationDeployment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     integration_name = models.TextField(db_column="integrationName")
     """For example Vercel"""
     integration_deployment_id = models.TextField(db_column="integrationDeploymentId")
@@ -2842,8 +2864,8 @@ class IntegrationDeployment(models.Model):
     worker_deployment = models.ForeignKey("WorkerDeployment", on_delete=models.SET_NULL, related_name="integration_deployments", db_column="deploymentId", null=True, db_index=False)
     status = models.TextField(null=True)
     """External deployment status"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2857,7 +2879,7 @@ class IntegrationDeployment(models.Model):
 class MetricsDashboard(models.Model):
     """A user-defined metrics dashboard"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True, db_column="friendlyId")
     title = models.TextField()
     description = models.TextField(default="")
@@ -2865,8 +2887,8 @@ class MetricsDashboard(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="metrics_dashboards", db_column="projectId", null=True, db_index=False)
     owner = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="metrics_dashboards", db_column="ownerId", null=True, db_index=False)
     """Who created the dashboard"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     layout = models.TextField()
     """JSON that defines the config, queries, layout and config of all widgets.
     There will be a version field for the format.
@@ -2883,15 +2905,15 @@ class MetricsDashboard(models.Model):
 class LlmModel(models.Model):
     """A known LLM model or model pattern for cost tracking"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     friendly_id = models.TextField(unique=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="llm_models", null=True, db_index=False)
     model_name = models.TextField()
     match_pattern = models.TextField()
     start_date = UtcDateTimeField(null=True)
     source = models.TextField(default="default")
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     provider = models.TextField(null=True)
     description = models.TextField(null=True)
     context_window = models.IntegerField(null=True)
@@ -2915,7 +2937,7 @@ class LlmModel(models.Model):
 class LlmPricingTier(models.Model):
     """A pricing tier for a model (supports volume-based or conditional pricing)"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     model = models.ForeignKey("LlmModel", on_delete=models.CASCADE, related_name="pricing_tiers", db_index=False)
     name = models.TextField()
     is_default = models.BooleanField(default=True)
@@ -2933,7 +2955,7 @@ class LlmPricingTier(models.Model):
 class LlmPrice(models.Model):
     """A price point for a usage type within a pricing tier"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     model = models.ForeignKey("LlmModel", on_delete=models.CASCADE, related_name="prices", db_index=False)
     pricing_tier = models.ForeignKey("LlmPricingTier", on_delete=models.CASCADE, related_name="prices", db_index=False)
     usage_type = models.TextField()
@@ -2949,8 +2971,8 @@ class LlmPrice(models.Model):
 class PlatformNotification(models.Model):
     """Admin-created notification definitions"""
 
-    id = models.TextField(primary_key=True, default=None)
-    friendly_id = models.TextField(unique=True, db_column="friendlyId")
+    id = models.TextField(primary_key=True, default=cuid_str)
+    friendly_id = models.TextField(unique=True, db_column="friendlyId", default=cuid_str)
     title = models.TextField()
     """Admin-facing title for identification in admin tools"""
     payload = models.JSONField()
@@ -2982,8 +3004,8 @@ class PlatformNotification(models.Model):
     """
     archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
     """Soft delete"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2996,10 +3018,10 @@ class PlatformNotification(models.Model):
 class PlatformNotificationInteraction(models.Model):
     """Per-user tracking of notification views and dismissals"""
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     notification = models.ForeignKey("PlatformNotification", on_delete=models.CASCADE, related_name="interactions", db_column="notificationId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="platform_notification_interactions", db_column="userId", db_index=False)
-    first_seen_at = UtcDateTimeField(db_column="firstSeenAt", default=timezone.now)
+    first_seen_at = UtcDateTimeField(db_column="firstSeenAt", default=now_milliseconds)
     """Set by beacon/CLI GET on first impression"""
     show_count = models.IntegerField(db_column="showCount", default=1)
     """Times shown (incremented per beacon/CLI view)"""
@@ -3009,8 +3031,8 @@ class PlatformNotificationInteraction(models.Model):
     """User clicked a link in webapp"""
     cli_dismissed_at = UtcDateTimeField(null=True, db_column="cliDismissedAt")
     """Auto-dismissed or expired in CLI"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -3026,7 +3048,7 @@ class ErrorGroupState(models.Model):
     * The actual error data is in ClickHouse.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="error_group_states", db_column="organizationId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="error_group_states", db_column="projectId", db_index=False)
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="error_group_states", db_column="environmentId", null=True, db_index=False)
@@ -3076,8 +3098,8 @@ class ErrorGroupState(models.Model):
     """*
     * User who resolved the error
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -3091,14 +3113,14 @@ class ErrorGroupState(models.Model):
 
 
 class TaskIdentifier(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     runtime_environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="task_identifiers", db_column="runtimeEnvironmentId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="task_identifiers", db_column="projectId", db_index=False)
     slug = models.TextField()
     current_trigger_source = models.TextField(choices=TaskTriggerSource.choices, db_column="currentTriggerSource", default=TaskTriggerSource.STANDARD)
     current_worker = models.ForeignKey("BackgroundWorker", on_delete=models.SET_NULL, related_name="task_identifiers", db_column="currentWorkerId", null=True, db_index=False)
-    first_seen_at = UtcDateTimeField(db_column="firstSeenAt", default=timezone.now)
-    last_seen_at = UtcDateTimeField(db_column="lastSeenAt", default=timezone.now)
+    first_seen_at = UtcDateTimeField(db_column="firstSeenAt", default=now_milliseconds)
+    last_seen_at = UtcDateTimeField(db_column="lastSeenAt", default=now_milliseconds)
     is_in_latest_deployment = models.BooleanField(db_column="isInLatestDeployment", default=True)
 
     class Meta:
@@ -3116,7 +3138,7 @@ class OrganizationDataStore(models.Model):
     Multiple organizations can share a single data store row via organizationIds.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     key = models.TextField(unique=True)
     """Human-readable unique key (e.g. "hipaa-clickhouse-us-east")"""
     organization_ids = ArrayField(models.TextField(), db_column="organizationIds")
@@ -3124,8 +3146,8 @@ class OrganizationDataStore(models.Model):
     kind = models.TextField(choices=DataStoreKind.choices)
     config = models.JSONField()
     """Versioned config JSON. Structure is discriminated by the top-level `version` field."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

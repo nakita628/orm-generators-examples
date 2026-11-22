@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -31,6 +32,15 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
+
+
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     email = models.TextField(unique=True)
@@ -49,7 +59,7 @@ class User(models.Model):
     locked_until = models.BigIntegerField(null=True)
     token_version = models.IntegerField(default=0)
     terms_accepted_at = models.BigIntegerField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     storage_quota_bytes = models.BigIntegerField(default=104857600)
     storage_used_bytes = models.BigIntegerField(default=0)
 
@@ -64,12 +74,12 @@ class User(models.Model):
 
 
 class Passkey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     credential_id = models.BinaryField(unique=True)
     public_key = models.BinaryField()
     counter = models.BigIntegerField(default=0)
     transports = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     last_used_at = UtcDateTimeField(null=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="passkeys", db_index=False)
 
@@ -81,14 +91,14 @@ class Passkey(models.Model):
 
 
 class PendingPasskeyRegistration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     verification_token = models.TextField(unique=True)
     verification_token_expires_at = models.BigIntegerField()
     credential_id = models.BinaryField()
     public_key = models.BinaryField()
     counter = models.BigIntegerField(default=0)
     transports = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="pending_passkey_registrations", db_index=False)
 
     class Meta:

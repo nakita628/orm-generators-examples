@@ -1,8 +1,22 @@
 import uuid
+from datetime import datetime
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.db import models
 from django.utils import timezone
+
+
+class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
 
 
 _M = TypeVar("_M", bound=models.Model)
@@ -18,6 +32,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class WorkspaceType(models.TextChoices):
@@ -44,7 +67,7 @@ class MockServerAction(models.TextChoices):
 
 
 class Team(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
 
     class Meta:
@@ -65,7 +88,7 @@ class TeamMember(models.Model):
 
 
 class TeamInvitation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="invitations", db_column="teamID", db_index=False)
     creator_uid = models.TextField(db_column="creatorUid")
     invitee_email = models.TextField(db_column="inviteeEmail")
@@ -82,14 +105,14 @@ class TeamInvitation(models.Model):
 
 
 class TeamCollection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name="children", db_column="parentID", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="collections", db_column="teamID", db_index=False)
     title = models.TextField()
     order_index = models.IntegerField(db_column="orderIndex")
     data = models.JSONField(null=True)
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -100,15 +123,15 @@ class TeamCollection(models.Model):
 
 
 class TeamRequest(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     collection = models.ForeignKey("TeamCollection", on_delete=models.CASCADE, related_name="requests", db_column="collectionID", db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="requests", db_column="teamID", db_index=False)
     title = models.TextField()
     request = models.JSONField()
     mock_examples = models.JSONField(null=True, db_column="mockExamples")
     order_index = models.IntegerField(db_column="orderIndex")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -119,7 +142,7 @@ class TeamRequest(models.Model):
 
 
 class TeamEnvironment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="environments", db_column="teamID", db_index=False)
     name = models.TextField()
     variables = models.JSONField()
@@ -129,7 +152,7 @@ class TeamEnvironment(models.Model):
 
 
 class User(models.Model):
-    uid = models.TextField(primary_key=True, default=None)
+    uid = models.TextField(primary_key=True, default=cuid_str)
     display_name = models.TextField(null=True, db_column="displayName")
     email = models.TextField(null=True, unique=True)
     photo_url = models.TextField(null=True, db_column="photoURL")
@@ -137,7 +160,7 @@ class User(models.Model):
     refresh_token = models.TextField(null=True, db_column="refreshToken")
     current_restsession = models.JSONField(null=True, db_column="currentRESTSession")
     current_gqlsession = models.JSONField(null=True, db_column="currentGQLSession")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
     last_logged_on = models.DateTimeField(null=True, db_column="lastLoggedOn")
     last_active_on = models.DateTimeField(null=True, db_column="lastActiveOn")
 
@@ -146,14 +169,14 @@ class User(models.Model):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="provider_accounts", db_column="userId", db_index=False)
     provider = models.TextField()
     provider_account_id = models.TextField(db_column="providerAccountId")
     provider_refresh_token = models.TextField(null=True, db_column="providerRefreshToken")
     provider_access_token = models.TextField(null=True, db_column="providerAccessToken")
     provider_scope = models.TextField(null=True, db_column="providerScope")
-    logged_in = models.DateTimeField(db_column="loggedIn", default=timezone.now)
+    logged_in = models.DateTimeField(db_column="loggedIn", default=now_milliseconds)
 
     class Meta:
         db_table = "Account"
@@ -164,7 +187,7 @@ class Account(models.Model):
 
 class VerificationToken(models.Model):
     device_identifier = models.TextField(db_column="deviceIdentifier")
-    token = models.TextField(primary_key=True, default=None)
+    token = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="verification_tokens", db_column="userUid", db_index=False)
     expires_on = models.DateTimeField(db_column="expiresOn")
 
@@ -176,10 +199,10 @@ class VerificationToken(models.Model):
 
 
 class UserSettings(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="settings", db_column="userUid")
     properties = models.JSONField()
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -187,20 +210,20 @@ class UserSettings(models.Model):
 
 
 class UserHistory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="history", db_column="userUid", db_index=False)
     req_type = models.TextField(choices=ReqType.choices, db_column="reqType")
     request = models.JSONField()
     response_metadata = models.JSONField(db_column="responseMetadata")
     is_starred = models.BooleanField(db_column="isStarred")
-    executed_on = models.DateTimeField(db_column="executedOn", default=timezone.now)
+    executed_on = models.DateTimeField(db_column="executedOn", default=now_milliseconds)
 
     class Meta:
         db_table = "UserHistory"
 
 
 class UserEnvironment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="environments", db_column="userUid", db_index=False)
     name = models.TextField(null=True)
     variables = models.JSONField()
@@ -214,14 +237,14 @@ class InvitedUsers(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="invited_users", db_column="adminUid", db_index=False)
     admin_email = models.TextField(db_column="adminEmail")
     invitee_email = models.TextField(primary_key=True, db_column="inviteeEmail", default=None)
-    invited_on = models.DateTimeField(db_column="invitedOn", default=timezone.now)
+    invited_on = models.DateTimeField(db_column="invitedOn", default=now_milliseconds)
 
     class Meta:
         db_table = "InvitedUsers"
 
 
 class UserRequest(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user_collection = models.ForeignKey("UserCollection", on_delete=models.CASCADE, related_name="requests", db_column="collectionID", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_requests", db_column="userUid", db_index=False)
     title = models.TextField()
@@ -229,8 +252,8 @@ class UserRequest(models.Model):
     type = models.TextField(choices=ReqType.choices)
     mock_examples = models.JSONField(null=True, db_column="mockExamples")
     order_index = models.IntegerField(db_column="orderIndex")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -241,15 +264,15 @@ class UserRequest(models.Model):
 
 
 class UserCollection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     parent = models.ForeignKey("self", on_delete=models.CASCADE, related_name="children", db_column="parentID", null=True, db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_collections", db_column="userUid", db_index=False)
     title = models.TextField()
     type = models.TextField(choices=ReqType.choices)
     order_index = models.IntegerField(db_column="orderIndex")
     data = models.JSONField(null=True)
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -260,7 +283,7 @@ class UserCollection(models.Model):
 
 
 class MockServer(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     subdomain = models.TextField(unique=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="mock_servers", db_column="creatorUid", null=True, db_index=False)
@@ -272,8 +295,8 @@ class MockServer(models.Model):
     is_active = models.BooleanField(db_column="isActive", default=True)
     hit_count = models.IntegerField(db_column="hitCount", default=0)
     last_hit_at = models.DateTimeField(null=True, db_column="lastHitAt")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     deleted_at = models.DateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -282,7 +305,7 @@ class MockServer(models.Model):
 
 
 class MockServerLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     mock_server = models.ForeignKey("MockServer", on_delete=models.CASCADE, related_name="request_logs", db_column="mockServerID", db_index=False)
     request_method = models.TextField(db_column="requestMethod")
     request_path = models.TextField(db_column="requestPath")
@@ -295,7 +318,7 @@ class MockServerLog(models.Model):
     response_time = models.IntegerField(db_column="responseTime")
     ip_address = models.TextField(null=True, db_column="ipAddress")
     user_agent = models.TextField(null=True, db_column="userAgent")
-    executed_at = models.DateTimeField(db_column="executedAt", default=timezone.now)
+    executed_at = models.DateTimeField(db_column="executedAt", default=now_milliseconds)
 
     class Meta:
         db_table = "MockServerLog"
@@ -306,11 +329,11 @@ class MockServerLog(models.Model):
 
 
 class MockServerActivity(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     mock_server = models.ForeignKey("MockServer", on_delete=models.CASCADE, related_name="activity_history", db_column="mockServerID", db_index=False)
     action = models.TextField(choices=MockServerAction.choices)
     performed_by = models.TextField(null=True, db_column="performedBy")
-    performed_at = models.DateTimeField(db_column="performedAt", default=timezone.now)
+    performed_at = models.DateTimeField(db_column="performedAt", default=now_milliseconds)
 
     class Meta:
         db_table = "MockServerActivity"
@@ -324,8 +347,8 @@ class Shortcode(models.Model):
     request = models.JSONField()
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="shortcodes", db_column="creatorUid", null=True, db_index=False)
     embed_properties = models.JSONField(null=True, db_column="embedProperties")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -336,13 +359,13 @@ class Shortcode(models.Model):
 
 
 class InfraConfig(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(unique=True)
     value = models.TextField(null=True)
     is_encrypted = models.BooleanField(db_column="isEncrypted", default=False)
     last_synced_env_file_value = models.TextField(null=True, db_column="lastSyncedEnvFileValue")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -350,13 +373,13 @@ class InfraConfig(models.Model):
 
 
 class PersonalAccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="personal_access_tokens", db_column="userUid", db_index=False)
     label = models.TextField()
     token = models.TextField(unique=True, default=uuid4_str)
     expires_on = models.DateTimeField(null=True, db_column="expiresOn")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -364,20 +387,20 @@ class PersonalAccessToken(models.Model):
 
 
 class InfraToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     creator_uid = models.TextField(db_column="creatorUid")
     label = models.TextField()
     token = models.TextField(unique=True, default=uuid4_str)
     expires_on = models.DateTimeField(null=True, db_column="expiresOn")
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", default=timezone.now)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = models.DateTimeField(db_column="updatedOn", default=now_milliseconds)
 
     class Meta:
         db_table = "InfraToken"
 
 
 class PublishedDocs(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     slug = models.TextField()
     title = models.TextField()
     collection_id = models.TextField(db_column="collectionID")
@@ -391,8 +414,8 @@ class PublishedDocs(models.Model):
     environment_name = models.TextField(null=True, db_column="environmentName")
     environment_variables = models.JSONField(null=True, db_column="environmentVariables")
     metadata = models.JSONField(null=True)
-    created_on = models.DateTimeField(db_column="createdOn", default=timezone.now)
-    updated_on = models.DateTimeField(db_column="updatedOn", auto_now=True)
+    created_on = models.DateTimeField(db_column="createdOn", default=now_milliseconds)
+    updated_on = AutoNowDateTimeField(db_column="updatedOn", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

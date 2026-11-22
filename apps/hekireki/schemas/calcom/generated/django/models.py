@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 import uuid6
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
@@ -32,6 +33,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -45,6 +58,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class SchedulingType(models.TextChoices):
@@ -377,7 +399,7 @@ class Host(models.Model):
     weight = models.IntegerField(null=True)
     weight_adjustment = models.IntegerField(null=True, db_column="weightAdjustment")
     schedule = models.ForeignKey("Schedule", on_delete=models.SET_NULL, related_name="host", db_column="scheduleId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     group = models.ForeignKey("HostGroup", on_delete=models.SET_NULL, related_name="hosts", db_column="groupId", null=True, db_index=False)
     member = models.ForeignKey("Membership", on_delete=models.CASCADE, related_name="host", db_column="memberId", null=True, db_index=False)
 
@@ -395,8 +417,8 @@ class HostGroup(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     name = models.TextField()
     event_type = models.ForeignKey("EventType", on_delete=models.CASCADE, related_name="host_groups", db_column="eventTypeId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -416,8 +438,8 @@ class HostLocation(models.Model):
     link = models.TextField(null=True)
     address = models.TextField(null=True)
     phone_number = models.TextField(null=True, db_column="phoneNumber")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -441,8 +463,8 @@ class CalVideoSettings(models.Model):
     disable_transcription_for_guests = models.BooleanField(db_column="disableTranscriptionForGuests", default=False)
     disable_transcription_for_organizer = models.BooleanField(db_column="disableTranscriptionForOrganizer", default=False)
     require_email_for_guests = models.BooleanField(db_column="requireEmailForGuests", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -455,8 +477,8 @@ class VideoCallGuest(models.Model):
     email = models.TextField()
     name = models.TextField()
     joined_at = UtcDateTimeField(null=True, db_column="joinedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -572,8 +594,8 @@ class EventType(models.Model):
     rr_host_subset_enabled = models.BooleanField(db_column="rrHostSubsetEnabled", default=False)
     requires_cancellation_reason = models.TextField(choices=CancellationReasonRequirement.choices, null=True, db_column="requiresCancellationReason", default=CancellationReasonRequirement.MANDATORY_HOST_ONLY)
     enable_per_host_locations = models.BooleanField(db_column="enablePerHostLocations", default=False)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -629,8 +651,8 @@ class DestinationCalendar(models.Model):
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="destination_calendar", db_column="userId", null=True)
     event_type = models.OneToOneField("EventType", on_delete=models.CASCADE, related_name="destination_calendar", db_column="eventTypeId", null=True)
     credential = models.ForeignKey("Credential", on_delete=models.CASCADE, related_name="destination_calendars", db_column="credentialId", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     delegation_credential = models.ForeignKey("DelegationCredential", on_delete=models.CASCADE, related_name="destination_calendar", db_column="delegationCredentialId", null=True, db_index=False)
     custom_calendar_reminder = models.IntegerField(null=True, db_column="customCalendarReminder")
     objects = AutoNowQuerySet.as_manager()
@@ -684,7 +706,7 @@ class User(models.Model):
     hide_branding = models.BooleanField(db_column="hideBranding", default=False)
     theme = models.TextField(null=True)
     app_theme = models.TextField(null=True, db_column="appTheme")
-    created_date = UtcDateTimeField(db_column="created", default=timezone.now)
+    created_date = UtcDateTimeField(db_column="created", default=now_milliseconds)
     trial_ends_at = UtcDateTimeField(null=True, db_column="trialEndsAt")
     last_active_at = UtcDateTimeField(null=True, db_column="lastActiveAt")
     default_schedule_id = models.IntegerField(null=True, db_column="defaultScheduleId")
@@ -751,8 +773,8 @@ class Profile(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="profiles", db_column="userId", db_index=False)
     organization = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="org_profiles", db_column="organizationId", db_index=False)
     username = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -783,7 +805,7 @@ class Team(models.Model):
     hide_team_profile_link = models.BooleanField(db_column="hideTeamProfileLink", default=False)
     is_private = models.BooleanField(db_column="isPrivate", default=False)
     hide_book_ateam_member = models.BooleanField(db_column="hideBookATeamMember", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     metadata = models.JSONField(null=True)
     """@zod.import(["import { teamMetadataSchema } from '../../zod-utils'"]).custom.use(teamMetadataSchema)"""
     theme = models.TextField(null=True)
@@ -833,7 +855,7 @@ class CreditPurchaseLog(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     credit_balance = models.ForeignKey("CreditBalance", on_delete=models.CASCADE, related_name="purchase_logs", db_column="creditBalanceId", db_index=False)
     credits = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "CreditPurchaseLog"
@@ -894,8 +916,8 @@ class Membership(models.Model):
     accepted = models.BooleanField(default=False)
     role = models.TextField(choices=MembershipRole.choices)
     custom_role = models.ForeignKey("Role", on_delete=models.SET_NULL, related_name="memberships", db_column="customRoleId", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -918,8 +940,8 @@ class VerificationToken(models.Model):
     token = models.TextField(unique=True)
     expires = UtcDateTimeField()
     expires_in_days = models.IntegerField(null=True, db_column="expiresInDays")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     team = models.ForeignKey("Team", on_delete=models.SET_NULL, related_name="invite_tokens", db_column="teamId", null=True, db_index=False)
     secondary_email = models.ForeignKey("SecondaryEmail", on_delete=models.SET_NULL, related_name="verification_tokens", db_column="secondaryEmailId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -942,8 +964,8 @@ class InstantMeetingToken(models.Model):
     expires = UtcDateTimeField()
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="instant_meeting_tokens", db_column="teamId", db_index=False)
     booking = models.OneToOneField("Booking", on_delete=models.CASCADE, related_name="instant_meeting_token", db_column="bookingId", null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1013,8 +1035,8 @@ class Booking(models.Model):
     start_time = UtcDateTimeField(db_column="startTime")
     end_time = UtcDateTimeField(db_column="endTime")
     location = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     status = models.TextField(choices=BookingStatus.choices, default=BookingStatus.ACCEPTED)
     paid = models.BooleanField(default=False)
     destination_calendar = models.ForeignKey("DestinationCalendar", on_delete=models.SET_NULL, related_name="booking", db_column="destinationCalendarId", null=True, db_index=False)
@@ -1117,8 +1139,8 @@ class SelectedCalendar(models.Model):
     integration = models.TextField()
     external_id = models.TextField(db_column="externalId")
     credential = models.ForeignKey("Credential", on_delete=models.CASCADE, related_name="selected_calendars", db_column="credentialId", null=True, db_index=False)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     google_channel_id = models.TextField(null=True, db_column="googleChannelId")
     google_channel_kind = models.TextField(null=True, db_column="googleChannelKind")
     google_channel_resource_id = models.TextField(null=True, db_column="googleChannelResourceId")
@@ -1180,9 +1202,9 @@ class EventTypeCustomInput(models.Model):
 
 
 class ResetPasswordRequest(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField()
     expires = UtcDateTimeField()
     objects = AutoNowQuerySet.as_manager()
@@ -1196,7 +1218,7 @@ class ReminderMail(models.Model):
     reference_id = models.IntegerField(db_column="referenceId")
     reminder_type = models.TextField(choices=ReminderType.choices, db_column="reminderType")
     elapsed_minutes = models.IntegerField(db_column="elapsedMinutes")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ReminderMail"
@@ -1237,7 +1259,7 @@ class Webhook(models.Model):
     subscriber_url = models.TextField(db_column="subscriberUrl")
     """@zod.string.url()"""
     payload_template = models.TextField(null=True, db_column="payloadTemplate")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     active = models.BooleanField(default=True)
     event_triggers = ArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_column="eventTriggers")
     app = models.ForeignKey("App", on_delete=models.CASCADE, related_name="webhook", db_column="appId", null=True, db_index=False)
@@ -1259,11 +1281,11 @@ class Webhook(models.Model):
 
 
 class ApiKey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="api_keys", db_column="userId", db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="api_keys", db_column="teamId", null=True, db_index=False)
     note = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
     hashed_key = models.TextField(unique=True, db_column="hashedKey")
@@ -1283,8 +1305,8 @@ class RateLimit(models.Model):
     ttl = models.IntegerField()
     limit = models.IntegerField()
     block_duration = models.IntegerField(db_column="blockDuration")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1310,7 +1332,7 @@ class HashedLink(models.Model):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -1336,7 +1358,7 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
@@ -1353,8 +1375,8 @@ class App(models.Model):
     dir_name = models.TextField(unique=True, db_column="dirName")
     keys = models.JSONField(null=True)
     categories = ArrayField(models.TextField(choices=AppCategories.choices))
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     enabled = models.BooleanField(default=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1367,7 +1389,7 @@ class App(models.Model):
 
 class Feedback(models.Model):
     id = models.AutoField(primary_key=True)
-    date = UtcDateTimeField(default=timezone.now)
+    date = UtcDateTimeField(default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="feedback", db_column="userId", db_index=False)
     rating = models.TextField()
     comment = models.TextField(null=True)
@@ -1401,7 +1423,7 @@ class WebhookScheduledTriggers(models.Model):
     payload = models.TextField()
     start_after = UtcDateTimeField(db_column="startAfter")
     retry_count = models.IntegerField(db_column="retryCount", default=0)
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
     app_id = models.TextField(null=True, db_column="appId")
     webhook = models.ForeignKey("Webhook", on_delete=models.CASCADE, related_name="scheduled_triggers", db_column="webhookId", null=True, db_index=False)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="scheduled_triggers", db_column="bookingId", null=True, db_index=False)
@@ -1462,8 +1484,8 @@ class Feature(models.Model):
     type = models.TextField(choices=FeatureType.choices, null=True, default=FeatureType.RELEASE)
     stale = models.BooleanField(null=True, default=False)
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
-    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     updated_by = models.IntegerField(null=True, db_column="updatedBy")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1480,9 +1502,9 @@ class UserFeatures(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="features", db_column="userId", db_index=False)
     feature = models.ForeignKey("Feature", on_delete=models.CASCADE, related_name="users", db_column="featureId", db_index=False)
     enabled = models.BooleanField()
-    assigned_at = UtcDateTimeField(db_column="assignedAt", default=timezone.now)
+    assigned_at = UtcDateTimeField(db_column="assignedAt", default=now_milliseconds)
     assigned_by = models.TextField(db_column="assignedBy")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1497,9 +1519,9 @@ class TeamFeatures(models.Model):
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="features", db_column="teamId", db_index=False)
     feature = models.ForeignKey("Feature", on_delete=models.CASCADE, related_name="teams", db_column="featureId", db_index=False)
     enabled = models.BooleanField()
-    assigned_at = UtcDateTimeField(db_column="assignedAt", default=timezone.now)
+    assigned_at = UtcDateTimeField(db_column="assignedAt", default=now_milliseconds)
     assigned_by = models.TextField(db_column="assignedBy")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1539,7 +1561,7 @@ class OAuthClient(models.Model):
     is_trusted = models.BooleanField(db_column="isTrusted", default=False)
     status = models.TextField(choices=OAuthClientStatus.choices, default=OAuthClientStatus.APPROVED)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="o_auth_clients", db_column="userId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "OAuthClient"
@@ -1612,7 +1634,7 @@ class CalendarCache(models.Model):
     key = models.TextField()
     value = models.JSONField()
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     credential = models.ForeignKey("Credential", on_delete=models.CASCADE, related_name="calendar_cache", db_column="credentialId", db_index=False)
     user_id = models.IntegerField(null=True, db_column="userId")
     objects = AutoNowQuerySet.as_manager()
@@ -1634,8 +1656,8 @@ class TempOrgRedirect(models.Model):
     type = models.TextField(choices=RedirectType.choices)
     to_url = models.TextField(db_column="toUrl")
     enabled = models.BooleanField(default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1669,8 +1691,8 @@ class OutOfOfficeEntry(models.Model):
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="booking_redirects", db_column="userId", db_index=False)
     to_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="booking_redirects_to", db_column="toUserId", null=True, db_index=False)
     reason = models.ForeignKey("OutOfOfficeReason", on_delete=models.SET_NULL, related_name="entries", db_column="reasonId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1699,8 +1721,8 @@ class UserHolidaySettings(models.Model):
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="holiday_settings", db_column="userId")
     country_code = models.TextField(null=True, db_column="countryCode")
     disabled_ids = ArrayField(models.TextField(), db_column="disabledIds")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1715,8 +1737,8 @@ class HolidayCache(models.Model):
     name = models.TextField()
     date = UtcDateTimeField()
     year = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1731,7 +1753,7 @@ class HolidayCache(models.Model):
 
 
 class PlatformOAuthClient(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     secret = models.TextField()
     permissions = models.IntegerField()
@@ -1745,17 +1767,17 @@ class PlatformOAuthClient(models.Model):
     are_emails_enabled = models.BooleanField(db_column="areEmailsEnabled", default=False)
     are_default_event_types_enabled = models.BooleanField(db_column="areDefaultEventTypesEnabled", default=True)
     are_calendar_events_enabled = models.BooleanField(db_column="areCalendarEventsEnabled", default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "PlatformOAuthClient"
 
 
 class PlatformAuthorizationToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     client = models.ForeignKey("PlatformOAuthClient", on_delete=models.CASCADE, related_name="authorization_tokens", db_column="platformOAuthClientId", db_index=False)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="platform_authorization_token", db_column="userId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "PlatformAuthorizationToken"
@@ -1767,7 +1789,7 @@ class PlatformAuthorizationToken(models.Model):
 class AccessToken(models.Model):
     id = models.AutoField(primary_key=True)
     secret = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
     client = models.ForeignKey("PlatformOAuthClient", on_delete=models.CASCADE, related_name="access_tokens", db_column="platformOAuthClientId", db_index=False)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="access_token", db_column="userId", db_index=False)
@@ -1779,7 +1801,7 @@ class AccessToken(models.Model):
 class RefreshToken(models.Model):
     id = models.AutoField(primary_key=True)
     secret = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
     client = models.ForeignKey("PlatformOAuthClient", on_delete=models.CASCADE, related_name="refresh_token", db_column="platformOAuthClientId", db_index=False)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="refresh_token", db_column="userId", db_index=False)
@@ -1832,9 +1854,9 @@ class SecondaryEmail(models.Model):
 
 class Task(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
-    scheduled_at = UtcDateTimeField(db_column="scheduledAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    scheduled_at = UtcDateTimeField(db_column="scheduledAt", default=now_milliseconds)
     succeeded_at = UtcDateTimeField(null=True, db_column="succeededAt")
     type = models.TextField()
     payload = models.TextField()
@@ -1859,7 +1881,7 @@ class Task(models.Model):
 class ManagedOrganization(models.Model):
     managed_organization = models.OneToOneField("Team", on_delete=models.CASCADE, related_name="managed_organization", primary_key=True, db_column="managedOrganizationId")
     manager_organization = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="managed_organizations", db_column="managerOrganizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ManagedOrganization"
@@ -1906,8 +1928,8 @@ class Attribute(models.Model):
     slug = models.TextField()
     enabled = models.BooleanField(default=True)
     users_can_edit_relation = models.BooleanField(db_column="usersCanEditRelation", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     is_weights_enabled = models.BooleanField(db_column="isWeightsEnabled", default=False)
     is_locked = models.BooleanField(db_column="isLocked", default=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1927,10 +1949,10 @@ class AttributeToUser(models.Model):
     member = models.ForeignKey("Membership", on_delete=models.CASCADE, related_name="attribute_to_user", db_column="memberId", db_index=False)
     attribute_option = models.ForeignKey("AttributeOption", on_delete=models.CASCADE, related_name="assigned_users", db_column="attributeOptionId", db_index=False)
     weight = models.IntegerField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     created_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="created_attribute_to_users", db_column="createdById", null=True, db_index=False)
     created_by_dsync = models.ForeignKey("DSyncData", on_delete=models.SET_NULL, related_name="created_attribute_to_users", to_field="directory_id", db_column="createdByDSyncId", null=True, db_index=False)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     updated_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="updated_attribute_to_users", db_column="updatedById", null=True, db_index=False)
     updated_by_dsync = models.ForeignKey("DSyncData", on_delete=models.SET_NULL, related_name="updated_attribute_to_users", to_field="directory_id", db_column="updatedByDSyncId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1944,7 +1966,7 @@ class AttributeToUser(models.Model):
 
 class AssignmentReason(models.Model):
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="assignment_reason", db_column="bookingId", db_index=False)
     reason_enum = models.TextField(choices=AssignmentReasonEnum.choices, db_column="reasonEnum")
     reason_string = models.TextField(db_column="reasonString")
@@ -1966,8 +1988,8 @@ class DelegationCredential(models.Model):
     last_disabled_at = UtcDateTimeField(null=True, db_column="lastDisabledAt")
     organization = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="delegation_credentials", db_column="organizationId", db_index=False)
     domain = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1989,8 +2011,8 @@ class WorkspacePlatform(models.Model):
     description = models.TextField()
     default_service_account_key = models.JSONField(db_column="defaultServiceAccountKey")
     """@zod.import(["import { serviceAccountKeySchema } from '../../zod-utils'"]).custom.use(serviceAccountKeySchema)"""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     enabled = models.BooleanField(default=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2002,15 +2024,15 @@ class WorkspacePlatform(models.Model):
 
 
 class EventTypeTranslation(models.Model):
-    uid = models.TextField(primary_key=True, default=None)
+    uid = models.TextField(primary_key=True, default=cuid_str)
     event_type = models.ForeignKey("EventType", on_delete=models.CASCADE, related_name="field_translations", db_column="eventTypeId", db_index=False)
     field = models.TextField(choices=EventTypeAutoTranslatedField.choices)
     source_locale = models.TextField(db_column="sourceLocale")
     target_locale = models.TextField(db_column="targetLocale")
     translated_text = models.TextField(db_column="translatedText")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     creator = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="created_translations", db_column="createdBy", db_index=False)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     updater = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="updated_translations", db_column="updatedBy", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2033,7 +2055,7 @@ class Watchlist(models.Model):
     organization_id = models.IntegerField(null=True, db_column="organizationId")
     action = models.TextField(choices=WatchlistAction.choices, default=WatchlistAction.REPORT)
     source = models.TextField(choices=WatchlistSource.choices, default=WatchlistSource.MANUAL)
-    last_updated_at = UtcDateTimeField(db_column="lastUpdatedAt", default=timezone.now)
+    last_updated_at = UtcDateTimeField(db_column="lastUpdatedAt", default=now_milliseconds)
 
     class Meta:
         db_table = "Watchlist"
@@ -2051,7 +2073,7 @@ class WatchlistAudit(models.Model):
     value = models.TextField()
     description = models.TextField(null=True)
     action = models.TextField(choices=WatchlistAction.choices, default=WatchlistAction.REPORT)
-    changed_at = UtcDateTimeField(db_column="changedAt", default=timezone.now)
+    changed_at = UtcDateTimeField(db_column="changedAt", default=now_milliseconds)
     changed_by_user_id = models.IntegerField(null=True, db_column="changedByUserId")
     watchlist = models.ForeignKey("Watchlist", on_delete=models.SET_NULL, related_name="audits", db_column="watchlistId", null=True, db_index=False)
 
@@ -2067,7 +2089,7 @@ class WatchlistEventAudit(models.Model):
     watchlist_id = models.UUIDField(db_column="watchlistId")
     event_type_id = models.IntegerField(db_column="eventTypeId")
     action_taken = models.TextField(choices=WatchlistAction.choices, db_column="actionTaken")
-    timestamp = UtcDateTimeField(default=timezone.now)
+    timestamp = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "WatchlistEventAudit"
@@ -2082,8 +2104,8 @@ class BookingReport(models.Model):
     reason = models.TextField(choices=BookingReportReason.choices)
     description = models.TextField(null=True)
     cancelled = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     status = models.TextField(choices=BookingReportStatus.choices, default=BookingReportStatus.PENDING)
     system_status = models.TextField(choices=SystemReportStatus.choices, db_column="systemStatus", default=SystemReportStatus.PENDING)
     watchlist = models.ForeignKey("Watchlist", on_delete=models.SET_NULL, related_name="booking_reports", db_column="watchlistId", null=True, db_index=False)
@@ -2113,8 +2135,8 @@ class WrongAssignmentReport(models.Model):
     status = models.TextField(choices=WrongAssignmentReportStatus.choices, default=WrongAssignmentReportStatus.PENDING)
     reviewed_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="reviewed_wrong_assignment_reports", db_column="reviewedById", null=True, db_index=False)
     reviewed_at = UtcDateTimeField(null=True, db_column="reviewedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2132,10 +2154,10 @@ class WrongAssignmentReport(models.Model):
 class OrganizationOnboarding(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="created_organization_onboardings", db_column="createdById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     org_owner_email = models.TextField(unique=True, db_column="orgOwnerEmail")
     error = models.TextField(null=True)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organization = models.OneToOneField("Team", on_delete=models.CASCADE, related_name="organization_onboarding", db_column="organizationId", null=True)
     billing_period = models.TextField(choices=BillingPeriod.choices, db_column="billingPeriod")
     price_per_seat = models.FloatField(db_column="pricePerSeat")
@@ -2171,7 +2193,7 @@ class InternalNotePreset(models.Model):
     name = models.TextField()
     cancellation_reason = models.TextField(null=True, db_column="cancellationReason")
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="internal_note_presets", db_column="teamId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "InternalNotePreset"
@@ -2194,8 +2216,8 @@ class FilterSegment(models.Model):
     column_sizing = models.JSONField(null=True, db_column="columnSizing")
     per_page = models.IntegerField(db_column="perPage")
     search_term = models.TextField(null=True, db_column="searchTerm")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="filter_segments", db_column="userId", db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="filter_segments", db_column="teamId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -2214,8 +2236,8 @@ class UserFilterSegmentPreference(models.Model):
     table_identifier = models.TextField(db_column="tableIdentifier")
     segment = models.ForeignKey("FilterSegment", on_delete=models.CASCADE, related_name="user_preferences", db_column="segmentId", null=True, db_index=False)
     system_segment_id = models.TextField(null=True, db_column="systemSegmentId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2235,7 +2257,7 @@ class BookingInternalNote(models.Model):
     text = models.TextField(null=True)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="internal_note", db_column="bookingId", db_index=False)
     created_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="booking_internal_note", db_column="createdById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "BookingInternalNote"
@@ -2248,13 +2270,13 @@ class BookingInternalNote(models.Model):
 
 
 class Role(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     color = models.TextField(null=True)
     description = models.TextField(null=True)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="roles", db_column="teamId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     type = models.TextField(choices=RoleType.choices, default=RoleType.CUSTOM)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2273,7 +2295,7 @@ class RolePermission(models.Model):
     role = models.ForeignKey("Role", on_delete=models.CASCADE, related_name="permissions", db_column="roleId", db_index=False)
     resource = models.TextField()
     action = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "RolePermission"
@@ -2295,7 +2317,7 @@ class AuditActor(models.Model):
     email = models.TextField(null=True, unique=True)
     phone = models.TextField(null=True, unique=True)
     name = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "AuditActor"
@@ -2321,8 +2343,8 @@ class BookingAudit(models.Model):
     type = models.TextField(choices=BookingAuditType.choices)
     action = models.TextField(choices=BookingAuditAction.choices)
     timestamp = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     source = models.TextField(choices=BookingAuditSource.choices)
     operation_id = models.TextField(db_column="operationId")
     data = models.JSONField(null=True)
@@ -2348,8 +2370,8 @@ class Agent(models.Model):
     inbound_event_type_id = models.IntegerField(null=True, db_column="inboundEventTypeId")
     outbound_event_type_id = models.IntegerField(null=True, db_column="outboundEventTypeId")
     enabled = models.BooleanField(default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2369,8 +2391,8 @@ class CalAiPhoneNumber(models.Model):
     phone_number = models.TextField(unique=True, db_column="phoneNumber")
     provider = models.TextField()
     provider_phone_number_id = models.TextField(null=True, unique=True, db_column="providerPhoneNumberId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     stripe_customer_id = models.TextField(null=True, db_column="stripeCustomerId")
     stripe_subscription_id = models.TextField(null=True, unique=True, db_column="stripeSubscriptionId")
     subscription_status = models.TextField(choices=PhoneNumberSubscriptionStatus.choices, null=True, db_column="subscriptionStatus")
@@ -2405,8 +2427,8 @@ class TeamBilling(models.Model):
     paid_seats = models.IntegerField(null=True, db_column="paidSeats")
     high_water_mark = models.IntegerField(null=True, db_column="highWaterMark")
     high_water_mark_period_start = UtcDateTimeField(null=True, db_column="highWaterMarkPeriodStart")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2430,8 +2452,8 @@ class OrganizationBilling(models.Model):
     paid_seats = models.IntegerField(null=True, db_column="paidSeats")
     high_water_mark = models.IntegerField(null=True, db_column="highWaterMark")
     high_water_mark_period_start = UtcDateTimeField(null=True, db_column="highWaterMarkPeriodStart")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2445,12 +2467,12 @@ class SeatChangeLog(models.Model):
     seat_count = models.IntegerField(db_column="seatCount")
     user_id = models.IntegerField(null=True, db_column="userId")
     triggered_by = models.IntegerField(null=True, db_column="triggeredBy")
-    change_date = UtcDateTimeField(db_column="changeDate", default=timezone.now)
+    change_date = UtcDateTimeField(db_column="changeDate", default=now_milliseconds)
     month_key = models.TextField(db_column="monthKey")
     operation_id = models.TextField(null=True, db_column="operationId")
     proration = models.ForeignKey("MonthlyProration", on_delete=models.SET_NULL, related_name="seat_changes", db_column="processedInProrationId", null=True, db_index=False)
     metadata = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     team_billing = models.ForeignKey("TeamBilling", on_delete=models.SET_NULL, related_name="seat_change_logs", db_column="teamBillingId", null=True, db_index=False)
     organization_billing = models.ForeignKey("OrganizationBilling", on_delete=models.SET_NULL, related_name="seat_change_logs", db_column="organizationBillingId", null=True, db_index=False)
 
@@ -2494,8 +2516,8 @@ class MonthlyProration(models.Model):
     failure_reason = models.TextField(null=True, db_column="failureReason")
     retry_count = models.IntegerField(db_column="retryCount", default=0)
     metadata = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     team_billing = models.ForeignKey("TeamBilling", on_delete=models.SET_NULL, related_name="monthly_prorations", db_column="teamBillingId", null=True, db_index=False)
     organization_billing = models.ForeignKey("OrganizationBilling", on_delete=models.SET_NULL, related_name="monthly_prorations", db_column="organizationBillingId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -2529,8 +2551,8 @@ class CalendarCacheEvent(models.Model):
     status = models.TextField(choices=CalendarCacheEventStatus.choices, default=CalendarCacheEventStatus.confirmed)
     recurring_event_id = models.TextField(null=True, db_column="recurringEventId")
     original_start_time = UtcDateTimeField(null=True, db_column="originalStartTime")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     external_created_at = UtcDateTimeField(null=True, db_column="externalCreatedAt")
     external_updated_at = UtcDateTimeField(null=True, db_column="externalUpdatedAt")
     objects = AutoNowQuerySet.as_manager()
@@ -2553,8 +2575,8 @@ class IntegrationAttributeSync(models.Model):
     integration = models.TextField()
     credential = models.ForeignKey("Credential", on_delete=models.CASCADE, related_name="integration_attribute_syncs", db_column="credentialId", null=True, db_index=False)
     enabled = models.BooleanField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2569,8 +2591,8 @@ class AttributeSyncRule(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     integration_attribute_sync = models.OneToOneField("IntegrationAttributeSync", on_delete=models.CASCADE, related_name="attribute_sync_rule", db_column="integrationAttributeSyncId")
     rule = models.JSONField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2583,8 +2605,8 @@ class AttributeSyncFieldMapping(models.Model):
     attribute = models.ForeignKey("Attribute", on_delete=models.CASCADE, related_name="attribute_sync_field_mappings", db_column="attributeId", db_index=False)
     enabled = models.BooleanField()
     integration_attribute_sync = models.ForeignKey("IntegrationAttributeSync", on_delete=models.CASCADE, related_name="sync_field_mappings", db_column="integrationAttributeSyncId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

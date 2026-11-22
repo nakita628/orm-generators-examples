@@ -4,6 +4,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -20,7 +21,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -72,7 +74,7 @@ class User(Base):
 class TeamProfile(Base):
     __tablename__ = "TeamProfile"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     enabled: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     team_id: Mapped[int] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="TeamProfile_teamId_fkey"))
     bio: Mapped[Optional[str]]
@@ -113,7 +115,7 @@ class PasswordResetToken(Base):
 class Passkey(Base):
     __tablename__ = "Passkey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Passkey_userId_fkey"))
     name: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -133,7 +135,7 @@ class Passkey(Base):
 class AnonymousVerificationToken(Base):
     __tablename__ = "AnonymousVerificationToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     expires_at: Mapped[datetime] = mapped_column("expiresAt")
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -147,7 +149,7 @@ class VerificationToken(Base):
     __tablename__ = "VerificationToken"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    secondary_id: Mapped[str] = mapped_column("secondaryId")
+    secondary_id: Mapped[str] = mapped_column("secondaryId", default=lambda: cuid.cuid())
     identifier: Mapped[str]
     token: Mapped[str]
     completed: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -166,7 +168,7 @@ class VerificationToken(Base):
 class Webhook(Base):
     __tablename__ = "Webhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     webhook_url: Mapped[str] = mapped_column("webhookUrl")
     event_triggers: Mapped[list[str]] = mapped_column("eventTriggers", ARRAY(Enum("DOCUMENT_CREATED", "DOCUMENT_SENT", "DOCUMENT_OPENED", "DOCUMENT_SIGNED", "DOCUMENT_COMPLETED", "DOCUMENT_REJECTED", "DOCUMENT_CANCELLED", "RECIPIENT_EXPIRED", "DOCUMENT_RECIPIENT_COMPLETED", "DOCUMENT_REMINDER_SENT", "TEMPLATE_CREATED", "TEMPLATE_UPDATED", "TEMPLATE_DELETED", "TEMPLATE_USED", name="WebhookTriggerEvents")), nullable=True)
     secret: Mapped[Optional[str]]
@@ -183,7 +185,7 @@ class Webhook(Base):
 class WebhookCall(Base):
     __tablename__ = "WebhookCall"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     status: Mapped[str] = mapped_column(Enum("SUCCESS", "FAILED", name="WebhookCallStatus"))
     url: Mapped[str]
     event: Mapped[str] = mapped_column(Enum("DOCUMENT_CREATED", "DOCUMENT_SENT", "DOCUMENT_OPENED", "DOCUMENT_SIGNED", "DOCUMENT_COMPLETED", "DOCUMENT_REJECTED", "DOCUMENT_CANCELLED", "RECIPIENT_EXPIRED", "DOCUMENT_RECIPIENT_COMPLETED", "DOCUMENT_REMINDER_SENT", "TEMPLATE_CREATED", "TEMPLATE_UPDATED", "TEMPLATE_DELETED", "TEMPLATE_USED", name="WebhookTriggerEvents"))
@@ -243,7 +245,7 @@ class SubscriptionClaim(Base):
 
     __tablename__ = "SubscriptionClaim"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -324,7 +326,7 @@ class OrganisationMonthlyStat(Base):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at1: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str]
@@ -350,7 +352,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     ip_address: Mapped[Optional[str]] = mapped_column("ipAddress")
@@ -384,7 +386,7 @@ class AuthHandoff(Base):
 class Folder(Base):
     __tablename__ = "Folder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     user_id: Mapped[int] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Folder_userId_fkey"))
     team_id: Mapped[int] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="Folder_teamId_fkey"))
@@ -492,7 +494,7 @@ class EnvelopeItem(Base):
 class DocumentAuditLog(Base):
     __tablename__ = "DocumentAuditLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     envelope_id: Mapped[Optional[str]] = mapped_column("envelopeId", ForeignKey("Envelope.id", ondelete="SET NULL", onupdate="CASCADE", name="DocumentAuditLog_envelopeId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     type: Mapped[str]
@@ -512,7 +514,7 @@ class DocumentAuditLog(Base):
 class DocumentData(Base):
     __tablename__ = "DocumentData"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str] = mapped_column(Enum("S3_PATH", "BYTES", "BYTES_64", name="DocumentDataType"))
     data: Mapped[str]
     initial_data: Mapped[str] = mapped_column("initialData")
@@ -524,7 +526,7 @@ class DocumentMeta(Base):
 
     __tablename__ = "DocumentMeta"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     subject: Mapped[Optional[str]]
     message: Mapped[Optional[str]]
     timezone_: Mapped[Optional[str]] = mapped_column("timezone", default="Etc/UTC", server_default=text("'Etc/UTC'"))
@@ -553,7 +555,7 @@ class EnvelopeAttachment(Base):
 
     __tablename__ = "EnvelopeAttachment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str]
     """[EnvelopeAttachmentType] @zod.custom.use(ZEnvelopeAttachmentTypeSchema)"""
     label: Mapped[str]
@@ -623,7 +625,7 @@ class Field(Base):
     __tablename__ = "Field"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    secondary_id: Mapped[str] = mapped_column("secondaryId")
+    secondary_id: Mapped[str] = mapped_column("secondaryId", default=lambda: cuid.cuid())
     envelope_id: Mapped[str] = mapped_column("envelopeId", ForeignKey("Envelope.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_envelopeId_fkey"))
     envelope_item_id: Mapped[str] = mapped_column("envelopeItemId", ForeignKey("EnvelopeItem.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_envelopeItemId_fkey"))
     recipient_id: Mapped[int] = mapped_column("recipientId", ForeignKey("Recipient.id", ondelete="CASCADE", onupdate="CASCADE", name="Field_recipientId_fkey"))
@@ -719,7 +721,7 @@ class CscCredential(Base):
 
     __tablename__ = "CscCredential"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     provider_id: Mapped[str] = mapped_column("providerId")
     credential_id: Mapped[str] = mapped_column("credentialId")
     cert_cache: Mapped[Optional[bytes]] = mapped_column("certCache")
@@ -759,7 +761,7 @@ class CscSession(Base):
 
     __tablename__ = "CscSession"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     envelope_id: Mapped[str] = mapped_column("envelopeId")
     """Denormalised envelope id for ergonomic lookups. No FK relation — cleanup
     flows through the Recipient cascade.
@@ -1076,7 +1078,7 @@ class TeamEmailVerification(Base):
 class TemplateDirectLink(Base):
     __tablename__ = "TemplateDirectLink"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     envelope_id: Mapped[str] = mapped_column("envelopeId", ForeignKey("Envelope.id", ondelete="CASCADE", onupdate="CASCADE", name="TemplateDirectLink_envelopeId_fkey"))
     token: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1105,7 +1107,7 @@ class SiteSettings(Base):
 class BackgroundJob(Base):
     __tablename__ = "BackgroundJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     status: Mapped[str] = mapped_column(Enum("PENDING", "PROCESSING", "COMPLETED", "FAILED", name="BackgroundJobStatus"), default="PENDING", server_default=text("'PENDING'"))
     payload: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     retried: Mapped[int] = mapped_column(default=0, server_default=text("0"))
@@ -1139,7 +1141,7 @@ class BackgroundJobTask(Base):
 class AvatarImage(Base):
     __tablename__ = "AvatarImage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     bytes_: Mapped[str] = mapped_column("bytes")
 
     team: Mapped[list["Team"]] = relationship(back_populates="avatar_image")

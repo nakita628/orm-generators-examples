@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -19,7 +20,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -30,7 +32,7 @@ class Base(DeclarativeBase):
 class DocumentAnnotation(Base):
     __tablename__ = "DocumentAnnotation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[str]
     content: Mapped[dict[str, Any]] = mapped_column(JSONB)
     pages: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True)
@@ -55,7 +57,7 @@ class DocumentAnnotation(Base):
 class AnnotationImage(Base):
     __tablename__ = "AnnotationImage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     filename: Mapped[str]
     url: Mapped[str]
     size: Mapped[Optional[int]]
@@ -72,7 +74,7 @@ class AnnotationImage(Base):
 class Brand(Base):
     __tablename__ = "Brand"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     logo: Mapped[Optional[str]]
     hide_logo: Mapped[bool] = mapped_column("hideLogo", default=False, server_default=text("false"))
     banner: Mapped[Optional[str]]
@@ -113,7 +115,7 @@ class Brand(Base):
 class Conversation(Base):
     __tablename__ = "Conversation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[Optional[str]]
     is_enabled: Mapped[bool] = mapped_column("isEnabled", default=True, server_default=text("true"))
     visibility_mode: Mapped[str] = mapped_column("visibilityMode", Enum("PRIVATE", "PUBLIC_LINK", "PUBLIC_GROUP", "PUBLIC_DOCUMENT", "PUBLIC_DATAROOM", name="ConversationVisibility"), default="PRIVATE", server_default=text("'PRIVATE'"))
@@ -162,7 +164,7 @@ class Conversation(Base):
 class DataroomQuestion(Base):
     __tablename__ = "DataroomQuestion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     category: Mapped[Optional[str]]
     priority: Mapped[Optional[str]]
@@ -196,7 +198,7 @@ class DataroomQuestion(Base):
 class DataroomQuestionAssignment(Base):
     __tablename__ = "DataroomQuestionAssignment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     question_id: Mapped[str] = mapped_column("questionId", ForeignKey("DataroomQuestion.id", ondelete="CASCADE", onupdate="CASCADE", name="DataroomQuestionAssignment_questionId_fkey"))
     link_id: Mapped[Optional[str]] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="DataroomQuestionAssignment_linkId_fkey"))
     group_id: Mapped[Optional[str]] = mapped_column("groupId", ForeignKey("ViewerGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="DataroomQuestionAssignment_groupId_fkey"))
@@ -223,7 +225,7 @@ class DataroomQuestionAssignment(Base):
 class ConversationParticipant(Base):
     __tablename__ = "ConversationParticipant"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     conversation_id: Mapped[str] = mapped_column("conversationId", ForeignKey("Conversation.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationParticipant_conversationId_fkey"))
     role: Mapped[str] = mapped_column(Enum("OWNER", "PARTICIPANT", name="ParticipantRole"), default="PARTICIPANT", server_default=text("'PARTICIPANT'"))
     viewer_id: Mapped[Optional[str]] = mapped_column("viewerId", ForeignKey("Viewer.id", ondelete="SET NULL", onupdate="CASCADE", name="ConversationParticipant_viewerId_fkey"))
@@ -246,7 +248,7 @@ class ConversationParticipant(Base):
 class Message(Base):
     __tablename__ = "Message"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     content: Mapped[str]
     conversation_id: Mapped[str] = mapped_column("conversationId", ForeignKey("Conversation.id", ondelete="CASCADE", onupdate="CASCADE", name="Message_conversationId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Message_userId_fkey"))
@@ -274,7 +276,7 @@ class Message(Base):
 class ConversationView(Base):
     __tablename__ = "ConversationView"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     conversation_id: Mapped[str] = mapped_column("conversationId", ForeignKey("Conversation.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationView_conversationId_fkey"))
     view_id: Mapped[str] = mapped_column("viewId", ForeignKey("View.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationView_viewId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -291,7 +293,7 @@ class ConversationView(Base):
 class DataroomFaqItem(Base):
     __tablename__ = "DataroomFaqItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[Optional[str]]
     edited_question: Mapped[str] = mapped_column("editedQuestion")
     original_question: Mapped[Optional[str]] = mapped_column("originalQuestion")
@@ -339,7 +341,7 @@ class DataroomFaqItem(Base):
 class Dataroom(Base):
     __tablename__ = "Dataroom"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     p_id: Mapped[str] = mapped_column("pId")
     name: Mapped[str]
     internal_name: Mapped[Optional[str]] = mapped_column("internalName")
@@ -399,7 +401,7 @@ class Dataroom(Base):
 class TaskList(Base):
     __tablename__ = "TaskList"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     order_index: Mapped[Optional[int]] = mapped_column("orderIndex")
     dataroom_id: Mapped[str] = mapped_column("dataroomId", ForeignKey("Dataroom.id", ondelete="CASCADE", onupdate="CASCADE", name="TaskList_dataroomId_fkey"))
@@ -420,7 +422,7 @@ class TaskList(Base):
 class Task(Base):
     __tablename__ = "Task"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[str]
     description: Mapped[Optional[str]]
     type: Mapped[str] = mapped_column(default="TODO", server_default=text("'TODO'"))
@@ -457,7 +459,7 @@ class Task(Base):
 class TaskAssignment(Base):
     __tablename__ = "TaskAssignment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     task_id: Mapped[str] = mapped_column("taskId", ForeignKey("Task.id", ondelete="CASCADE", onupdate="CASCADE", name="TaskAssignment_taskId_fkey"))
     viewer_id: Mapped[Optional[str]] = mapped_column("viewerId", ForeignKey("Viewer.id", ondelete="CASCADE", onupdate="CASCADE", name="TaskAssignment_viewerId_fkey"))
     group_id: Mapped[Optional[str]] = mapped_column("groupId", ForeignKey("ViewerGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="TaskAssignment_groupId_fkey"))
@@ -487,7 +489,7 @@ class TaskAssignment(Base):
 class TaskActivity(Base):
     __tablename__ = "TaskActivity"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     task_id: Mapped[str] = mapped_column("taskId", ForeignKey("Task.id", ondelete="CASCADE", onupdate="CASCADE", name="TaskActivity_taskId_fkey"))
     type: Mapped[str]
     comment: Mapped[Optional[str]]
@@ -514,7 +516,7 @@ class TaskActivity(Base):
 class DataroomDocument(Base):
     __tablename__ = "DataroomDocument"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     dataroom_id: Mapped[str] = mapped_column("dataroomId", ForeignKey("Dataroom.id", ondelete="CASCADE", onupdate="CASCADE", name="DataroomDocument_dataroomId_fkey"))
     document_id: Mapped[str] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="DataroomDocument_documentId_fkey"))
     folder_id: Mapped[Optional[str]] = mapped_column("folderId", ForeignKey("DataroomFolder.id", ondelete="SET NULL", onupdate="CASCADE", name="DataroomDocument_folderId_fkey"))
@@ -542,7 +544,7 @@ class DataroomDocument(Base):
 class DataroomFolder(Base):
     __tablename__ = "DataroomFolder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     path: Mapped[str]
     parent_id: Mapped[Optional[str]] = mapped_column("parentId", ForeignKey("DataroomFolder.id", ondelete="SET NULL", onupdate="CASCADE", name="DataroomFolder_parentId_fkey"))
@@ -569,7 +571,7 @@ class DataroomFolder(Base):
 class DataroomBrand(Base):
     __tablename__ = "DataroomBrand"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     logo: Mapped[Optional[str]]
     hide_logo: Mapped[Optional[bool]] = mapped_column("hideLogo")
     banner: Mapped[Optional[str]]
@@ -604,7 +606,7 @@ class DataroomBrand(Base):
 class ViewerGroup(Base):
     __tablename__ = "ViewerGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     domains: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True)
     allow_all: Mapped[bool] = mapped_column("allowAll", default=False, server_default=text("false"))
@@ -633,7 +635,7 @@ class ViewerGroup(Base):
 class ViewerGroupMembership(Base):
     __tablename__ = "ViewerGroupMembership"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     viewer_id: Mapped[str] = mapped_column("viewerId", ForeignKey("Viewer.id", ondelete="CASCADE", onupdate="CASCADE", name="ViewerGroupMembership_viewerId_fkey"))
     group_id: Mapped[str] = mapped_column("groupId", ForeignKey("ViewerGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="ViewerGroupMembership_groupId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -651,7 +653,7 @@ class ViewerGroupMembership(Base):
 class ViewerGroupAccessControls(Base):
     __tablename__ = "ViewerGroupAccessControls"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     group_id: Mapped[str] = mapped_column("groupId", ForeignKey("ViewerGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="ViewerGroupAccessControls_groupId_fkey"))
     item_id: Mapped[str] = mapped_column("itemId")
     item_type: Mapped[str] = mapped_column("itemType", Enum("DATAROOM_DOCUMENT", "DATAROOM_FOLDER", name="ItemType"))
@@ -670,7 +672,7 @@ class ViewerGroupAccessControls(Base):
 class PermissionGroup(Base):
     __tablename__ = "PermissionGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     dataroom_id: Mapped[str] = mapped_column("dataroomId", ForeignKey("Dataroom.id", ondelete="CASCADE", onupdate="CASCADE", name="PermissionGroup_dataroomId_fkey"))
@@ -691,7 +693,7 @@ class PermissionGroup(Base):
 class PermissionGroupAccessControls(Base):
     __tablename__ = "PermissionGroupAccessControls"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     group_id: Mapped[str] = mapped_column("groupId", ForeignKey("PermissionGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="PermissionGroupAccessControls_groupId_fkey"))
     item_id: Mapped[str] = mapped_column("itemId")
     item_type: Mapped[str] = mapped_column("itemType", Enum("DATAROOM_DOCUMENT", "DATAROOM_FOLDER", name="ItemType"))
@@ -711,7 +713,7 @@ class PermissionGroupAccessControls(Base):
 class Document(Base):
     __tablename__ = "Document"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     file: Mapped[str]
@@ -757,7 +759,7 @@ class Document(Base):
 class DocumentVersion(Base):
     __tablename__ = "DocumentVersion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     version_number: Mapped[int] = mapped_column("versionNumber")
     document_id: Mapped[str] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentVersion_documentId_fkey"))
     file: Mapped[str]
@@ -791,7 +793,7 @@ class DocumentVersion(Base):
 class DocumentPage(Base):
     __tablename__ = "DocumentPage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     version_id: Mapped[str] = mapped_column("versionId", ForeignKey("DocumentVersion.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentPage_versionId_fkey"))
     page_number: Mapped[int] = mapped_column("pageNumber")
     embedded_links: Mapped[list[str]] = mapped_column("embeddedLinks", ARRAY(Text), nullable=True)
@@ -812,7 +814,7 @@ class DocumentPage(Base):
 class Folder(Base):
     __tablename__ = "Folder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     path: Mapped[str]
     parent_id: Mapped[Optional[str]] = mapped_column("parentId", ForeignKey("Folder.id", ondelete="SET NULL", onupdate="CASCADE", name="Folder_parentId_fkey"))
@@ -837,7 +839,7 @@ class Folder(Base):
 class DocumentUpload(Base):
     __tablename__ = "DocumentUpload"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     document_id: Mapped[str] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentUpload_documentId_fkey"))
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentUpload_teamId_fkey"))
     viewer_id: Mapped[Optional[str]] = mapped_column("viewerId", ForeignKey("Viewer.id", ondelete="SET NULL", onupdate="CASCADE", name="DocumentUpload_viewerId_fkey"))
@@ -877,7 +879,7 @@ class DocumentUpload(Base):
 class PendingDocumentUpload(Base):
     __tablename__ = "PendingDocumentUpload"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     upload_id: Mapped[str] = mapped_column("uploadId")
     team_id: Mapped[str] = mapped_column("teamId")
     token_id: Mapped[str] = mapped_column("tokenId")
@@ -897,7 +899,7 @@ class PendingDocumentUpload(Base):
 class Integration(Base):
     __tablename__ = "Integration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     slug: Mapped[str]
     description: Mapped[Optional[str]]
@@ -922,7 +924,7 @@ class Integration(Base):
 class InstalledIntegration(Base):
     __tablename__ = "InstalledIntegration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     credentials: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     configuration: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     enabled: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
@@ -981,7 +983,7 @@ class JacksonTtl(Base):
 class Link(Base):
     __tablename__ = "Link"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     document_id: Mapped[Optional[str]] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="Link_documentId_fkey"))
     dataroom_id: Mapped[Optional[str]] = mapped_column("dataroomId", ForeignKey("Dataroom.id", ondelete="CASCADE", onupdate="CASCADE", name="Link_dataroomId_fkey"))
     link_type: Mapped[str] = mapped_column("linkType", Enum("DOCUMENT_LINK", "DATAROOM_LINK", "WORKFLOW_LINK", name="LinkType"), default="DOCUMENT_LINK", server_default=text("'DOCUMENT_LINK'"))
@@ -1072,7 +1074,7 @@ class Link(Base):
 class LinkPreset(Base):
     __tablename__ = "LinkPreset"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkPreset_teamId_fkey"))
     p_id: Mapped[Optional[str]] = mapped_column("pId")
@@ -1117,7 +1119,7 @@ class LinkPreset(Base):
 class VisitorGroup(Base):
     __tablename__ = "VisitorGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     emails: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True)
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="VisitorGroup_teamId_fkey"))
@@ -1134,7 +1136,7 @@ class VisitorGroup(Base):
 class LinkVisitorGroup(Base):
     __tablename__ = "LinkVisitorGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkVisitorGroup_linkId_fkey"))
     visitor_group_id: Mapped[str] = mapped_column("visitorGroupId", ForeignKey("VisitorGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="LinkVisitorGroup_visitorGroupId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1151,7 +1153,7 @@ class LinkVisitorGroup(Base):
 class CustomField(Base):
     __tablename__ = "CustomField"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     type: Mapped[str] = mapped_column(Enum("SHORT_TEXT", "LONG_TEXT", "NUMBER", "PHONE_NUMBER", "URL", "CHECKBOX", "SELECT", "MULTI_SELECT", name="CustomFieldType"))
@@ -1172,7 +1174,7 @@ class CustomField(Base):
 class CustomFieldResponse(Base):
     __tablename__ = "CustomFieldResponse"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
     view_id: Mapped[str] = mapped_column("viewId", ForeignKey("View.id", ondelete="CASCADE", onupdate="CASCADE", name="CustomFieldResponse_viewId_fkey"))
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1188,7 +1190,7 @@ class CustomFieldResponse(Base):
 class NotificationPreference(Base):
     __tablename__ = "NotificationPreference"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="NotificationPreference_userId_fkey"))
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="NotificationPreference_teamId_fkey"))
     type: Mapped[str]
@@ -1208,7 +1210,7 @@ class NotificationPreference(Base):
 class OAuthClient(Base):
     __tablename__ = "OAuthClient"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId")
     client_name: Mapped[str] = mapped_column("clientName")
     client_uri: Mapped[Optional[str]] = mapped_column("clientUri")
@@ -1233,7 +1235,7 @@ class OAuthClient(Base):
 class OAuthClientApproval(Base):
     __tablename__ = "OAuthClientApproval"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId")
     client_id: Mapped[str] = mapped_column("clientId")
     approved_at: Mapped[datetime] = mapped_column("approvedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1248,7 +1250,7 @@ class OAuthClientApproval(Base):
 class OAuthGrantTeam(Base):
     __tablename__ = "OAuthGrantTeam"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     grant_id: Mapped[str] = mapped_column("grantId")
     team_id: Mapped[str] = mapped_column("teamId")
     user_id: Mapped[str] = mapped_column("userId")
@@ -1283,7 +1285,7 @@ class OAuthRecord(Base):
 class DocumentRedactionJob(Base):
     __tablename__ = "DocumentRedactionJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     document_id: Mapped[str] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentRedactionJob_documentId_fkey"))
     document_version_id: Mapped[str] = mapped_column("documentVersionId", ForeignKey("DocumentVersion.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentRedactionJob_documentVersionId_fkey"))
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentRedactionJob_teamId_fkey"))
@@ -1314,7 +1316,7 @@ class DocumentRedactionJob(Base):
 class DocumentRedaction(Base):
     __tablename__ = "DocumentRedaction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     job_id: Mapped[str] = mapped_column("jobId", ForeignKey("DocumentRedactionJob.id", ondelete="CASCADE", onupdate="CASCADE", name="DocumentRedaction_jobId_fkey"))
     page_number: Mapped[int] = mapped_column("pageNumber")
     x: Mapped[float]
@@ -1341,7 +1343,7 @@ class DocumentRedaction(Base):
 class ReferralInvite(Base):
     __tablename__ = "ReferralInvite"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="ReferralInvite_userId_fkey"))
     team_id: Mapped[Optional[str]] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="ReferralInvite_teamId_fkey"))
     scope_id: Mapped[str] = mapped_column("scopeId")
@@ -1368,7 +1370,7 @@ class ReferralInvite(Base):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -1390,7 +1392,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -1404,7 +1406,7 @@ class Session(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     email_verified: Mapped[Optional[datetime]] = mapped_column("emailVerified")
@@ -1465,7 +1467,7 @@ class VerificationToken(Base):
 class Domain(Base):
     __tablename__ = "Domain"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     slug: Mapped[str]
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Domain_userId_fkey"))
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="Domain_teamId_fkey"))
@@ -1489,7 +1491,7 @@ class Domain(Base):
 class View(Base):
     __tablename__ = "View"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="View_linkId_fkey"))
     document_id: Mapped[Optional[str]] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="View_documentId_fkey"))
     dataroom_id: Mapped[Optional[str]] = mapped_column("dataroomId", ForeignKey("Dataroom.id", ondelete="CASCADE", onupdate="CASCADE", name="View_dataroomId_fkey"))
@@ -1542,7 +1544,7 @@ class View(Base):
 class Viewer(Base):
     __tablename__ = "Viewer"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     email: Mapped[str]
     verified: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     invited_at: Mapped[Optional[datetime]] = mapped_column("invitedAt")
@@ -1575,7 +1577,7 @@ class Viewer(Base):
 class Reaction(Base):
     __tablename__ = "Reaction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     view_id: Mapped[str] = mapped_column("viewId", ForeignKey("View.id", ondelete="CASCADE", onupdate="CASCADE", name="Reaction_viewId_fkey"))
     page_number: Mapped[int] = mapped_column("pageNumber")
     type: Mapped[str]
@@ -1611,7 +1613,7 @@ class Invitation(Base):
 class SentEmail(Base):
     __tablename__ = "SentEmail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     type: Mapped[str] = mapped_column(Enum("FIRST_DAY_DOMAIN_REMINDER_EMAIL", "FIRST_DOMAIN_INVALID_EMAIL", "SECOND_DOMAIN_INVALID_EMAIL", "FIRST_TRIAL_END_REMINDER_EMAIL", "FINAL_TRIAL_END_REMINDER_EMAIL", name="EmailType"))
     recipient: Mapped[str]
     marketing: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
@@ -1628,7 +1630,7 @@ class SentEmail(Base):
 class Chat(Base):
     __tablename__ = "Chat"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     title: Mapped[Optional[str]]
     team_id: Mapped[str] = mapped_column("teamId", ForeignKey("Team.id", ondelete="CASCADE", onupdate="CASCADE", name="Chat_teamId_fkey"))
     document_id: Mapped[Optional[str]] = mapped_column("documentId", ForeignKey("Document.id", ondelete="CASCADE", onupdate="CASCADE", name="Chat_documentId_fkey"))
@@ -1665,7 +1667,7 @@ class Chat(Base):
 class ChatMessage(Base):
     __tablename__ = "ChatMessage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     chat_id: Mapped[str] = mapped_column("chatId", ForeignKey("Chat.id", ondelete="CASCADE", onupdate="CASCADE", name="ChatMessage_chatId_fkey"))
     role: Mapped[str]
     content: Mapped[str]
@@ -1682,7 +1684,7 @@ class ChatMessage(Base):
 class Feedback(Base):
     __tablename__ = "Feedback"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="Feedback_linkId_fkey"))
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1699,7 +1701,7 @@ class Feedback(Base):
 class FeedbackResponse(Base):
     __tablename__ = "FeedbackResponse"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     feedback_id: Mapped[str] = mapped_column("feedbackId", ForeignKey("Feedback.id", ondelete="CASCADE", onupdate="CASCADE", name="FeedbackResponse_feedbackId_fkey"))
     data: Mapped[dict[str, Any]] = mapped_column(JSONB)
     view_id: Mapped[str] = mapped_column("viewId", ForeignKey("View.id", ondelete="CASCADE", onupdate="CASCADE", name="FeedbackResponse_viewId_fkey"))
@@ -1718,7 +1720,7 @@ class FeedbackResponse(Base):
 class Agreement(Base):
     __tablename__ = "Agreement"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     content: Mapped[str]
     content_type: Mapped[str] = mapped_column("contentType", default="LINK", server_default=text("'LINK'"))
@@ -1745,7 +1747,7 @@ class Agreement(Base):
 class AgreementResponse(Base):
     __tablename__ = "AgreementResponse"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     agreement_id: Mapped[str] = mapped_column("agreementId", ForeignKey("Agreement.id", ondelete="CASCADE", onupdate="CASCADE", name="AgreementResponse_agreementId_fkey"))
     view_id: Mapped[Optional[str]] = mapped_column("viewId", ForeignKey("View.id", ondelete="CASCADE", onupdate="CASCADE", name="AgreementResponse_viewId_fkey"))
     link_id: Mapped[Optional[str]] = mapped_column("linkId")
@@ -1778,7 +1780,7 @@ class AgreementResponse(Base):
 class IncomingWebhook(Base):
     __tablename__ = "IncomingWebhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     external_id: Mapped[str] = mapped_column("externalId")
     name: Mapped[str]
     secret: Mapped[Optional[str]]
@@ -1801,7 +1803,7 @@ class IncomingWebhook(Base):
 class RestrictedToken(Base):
     __tablename__ = "RestrictedToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     hashed_key: Mapped[str] = mapped_column("hashedKey")
     partial_key: Mapped[str] = mapped_column("partialKey")
@@ -1833,7 +1835,7 @@ class RestrictedToken(Base):
 class Webhook(Base):
     __tablename__ = "Webhook"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     p_id: Mapped[str] = mapped_column("pId")
     name: Mapped[str]
     url: Mapped[str]
@@ -1853,7 +1855,7 @@ class Webhook(Base):
 class YearInReview(Base):
     __tablename__ = "YearInReview"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     team_id: Mapped[str] = mapped_column("teamId")
     status: Mapped[str] = mapped_column(default="pending", server_default=text("'pending'"))
     attempts: Mapped[int] = mapped_column(default=0, server_default=text("0"))
@@ -1871,7 +1873,7 @@ class YearInReview(Base):
 class Tag(Base):
     __tablename__ = "Tag"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     color: Mapped[str]
     description: Mapped[Optional[str]]
@@ -1893,7 +1895,7 @@ class Tag(Base):
 class TagItem(Base):
     __tablename__ = "TagItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     tag_id: Mapped[str] = mapped_column("tagId", ForeignKey("Tag.id", ondelete="CASCADE", onupdate="CASCADE", name="TagItem_tagId_fkey"))
     item_type: Mapped[str] = mapped_column("itemType", Enum("LINK_TAG", "DOCUMENT_TAG", "DATAROOM_TAG", name="TagType"))
     link_id: Mapped[Optional[str]] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="TagItem_linkId_fkey"))
@@ -1917,7 +1919,7 @@ class TagItem(Base):
 class ViewerInvitation(Base):
     __tablename__ = "ViewerInvitation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     viewer_id: Mapped[str] = mapped_column("viewerId", ForeignKey("Viewer.id", ondelete="CASCADE", onupdate="CASCADE", name="ViewerInvitation_viewerId_fkey"))
     link_id: Mapped[str] = mapped_column("linkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="ViewerInvitation_linkId_fkey"))
     group_id: Mapped[Optional[str]] = mapped_column("groupId", ForeignKey("ViewerGroup.id", ondelete="SET NULL", onupdate="CASCADE", name="ViewerInvitation_groupId_fkey"))
@@ -1940,7 +1942,7 @@ class ViewerInvitation(Base):
 class Team(Base):
     __tablename__ = "Team"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     slug: Mapped[Optional[str]]
     default_brand_id: Mapped[Optional[str]] = mapped_column("defaultBrandId", ForeignKey("Brand.id", ondelete="SET NULL", onupdate="CASCADE", name="Team_defaultBrandId_fkey"))
@@ -2058,7 +2060,7 @@ class UserTeam(Base):
 class Workflow(Base):
     __tablename__ = "Workflow"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     entry_link_id: Mapped[str] = mapped_column("entryLinkId", ForeignKey("Link.id", ondelete="CASCADE", onupdate="CASCADE", name="Workflow_entryLinkId_fkey"))
@@ -2082,7 +2084,7 @@ class Workflow(Base):
 class WorkflowStep(Base):
     __tablename__ = "WorkflowStep"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workflow_id: Mapped[str] = mapped_column("workflowId", ForeignKey("Workflow.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkflowStep_workflowId_fkey"))
     name: Mapped[str]
     step_order: Mapped[int] = mapped_column("stepOrder")
@@ -2103,7 +2105,7 @@ class WorkflowStep(Base):
 class WorkflowExecution(Base):
     __tablename__ = "WorkflowExecution"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     workflow_id: Mapped[str] = mapped_column("workflowId", ForeignKey("Workflow.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkflowExecution_workflowId_fkey"))
     visitor_email: Mapped[Optional[str]] = mapped_column("visitorEmail")
     visitor_ip: Mapped[Optional[str]] = mapped_column("visitorIp")
@@ -2125,7 +2127,7 @@ class WorkflowExecution(Base):
 class WorkflowStepLog(Base):
     __tablename__ = "WorkflowStepLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     execution_id: Mapped[str] = mapped_column("executionId", ForeignKey("WorkflowExecution.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkflowStepLog_executionId_fkey"))
     workflow_step_id: Mapped[str] = mapped_column("workflowStepId", ForeignKey("WorkflowStep.id", ondelete="CASCADE", onupdate="CASCADE", name="WorkflowStepLog_workflowStepId_fkey"))
     conditions_matched: Mapped[bool] = mapped_column("conditionsMatched")

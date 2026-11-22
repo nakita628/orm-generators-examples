@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -29,6 +30,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -38,6 +51,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class ChatProvider(models.TextChoices):
@@ -74,7 +96,7 @@ class CollaborationType(models.TextChoices):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -98,7 +120,7 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
@@ -108,10 +130,10 @@ class Session(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
-    last_activity_at = UtcDateTimeField(db_column="lastActivityAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    last_activity_at = UtcDateTimeField(db_column="lastActivityAt", default=now_milliseconds)
     name = models.TextField(null=True)
     email = models.TextField(null=True, unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")
@@ -132,8 +154,8 @@ class User(models.Model):
 
 
 class ApiToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     token = models.TextField(unique=True)
     name = models.TextField()
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="api_tokens", db_column="ownerId", db_index=False)
@@ -143,9 +165,9 @@ class ApiToken(models.Model):
 
 
 class Workspace(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     icon = models.TextField(null=True)
     plan = models.TextField(choices=Plan.choices, default=Plan.FREE)
@@ -173,9 +195,9 @@ class Workspace(models.Model):
 
 
 class Space(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     icon = models.TextField(null=True)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="spaces", db_column="workspaceId", db_index=False)
@@ -190,8 +212,8 @@ class Space(models.Model):
 
 class MemberInWorkspace(models.Model):
     pk = models.CompositePrimaryKey("user_id", "workspace_id")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="workspaces", db_column="userId", db_index=False)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="members", db_column="workspaceId", db_index=False)
     role = models.TextField(choices=WorkspaceRole.choices)
@@ -205,9 +227,9 @@ class MemberInWorkspace(models.Model):
 
 
 class WorkspaceInvitation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField()
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="invitations", db_column="workspaceId", db_index=False)
     type = models.TextField(choices=WorkspaceRole.choices)
@@ -219,7 +241,7 @@ class WorkspaceInvitation(models.Model):
 
 class CustomDomain(models.Model):
     name = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="custom_domains", db_column="workspaceId", db_index=False)
 
     class Meta:
@@ -227,8 +249,8 @@ class CustomDomain(models.Model):
 
 
 class Credentials(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="credentials", db_column="workspaceId", db_index=False)
     data = models.TextField()
     name = models.TextField()
@@ -240,8 +262,8 @@ class Credentials(models.Model):
 
 
 class UserCredentials(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="credentials", db_column="userId", db_index=False)
     data = models.TextField()
     name = models.TextField()
@@ -267,9 +289,9 @@ class VerificationToken(models.Model):
 
 
 class DashboardFolder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     parent_folder = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="children_folder", db_column="parentFolderId", null=True, db_index=False)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="folders", db_column="workspaceId", db_index=False)
@@ -280,10 +302,10 @@ class DashboardFolder(models.Model):
 
 
 class Typebot(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     version = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     icon = models.TextField(null=True)
     name = models.TextField()
     folder = models.ForeignKey("DashboardFolder", on_delete=models.SET_NULL, related_name="typebots", db_column="folderId", null=True, db_index=False)
@@ -315,8 +337,8 @@ class Typebot(models.Model):
 
 class Invitation(models.Model):
     pk = models.CompositePrimaryKey("email", "typebot_id")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField()
     typebot = models.ForeignKey("Typebot", on_delete=models.CASCADE, related_name="invitations", db_column="typebotId", db_index=False)
     type = models.TextField(choices=CollaborationType.choices)
@@ -331,8 +353,8 @@ class Invitation(models.Model):
 
 class CollaboratorsOnTypebots(models.Model):
     pk = models.CompositePrimaryKey("user_id", "typebot_id")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="collaborators_on_typebots", db_column="userId", db_index=False)
     typebot = models.ForeignKey("Typebot", on_delete=models.CASCADE, related_name="collaborators", db_column="typebotId", db_index=False)
     type = models.TextField(choices=CollaborationType.choices)
@@ -346,10 +368,10 @@ class CollaboratorsOnTypebots(models.Model):
 
 
 class PublicTypebot(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     version = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcDateTimeField(db_column="updatedAt", default=now_milliseconds)
     last_activity_at = UtcDateTimeField(null=True, db_column="lastActivityAt")
     typebot = models.OneToOneField("Typebot", on_delete=models.CASCADE, related_name="published_typebot", db_column="typebotId")
     groups = models.JSONField()
@@ -385,8 +407,8 @@ class RuntimeMediaIdCache(models.Model):
 
 
 class Result(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     typebot = models.ForeignKey("Typebot", on_delete=models.CASCADE, related_name="results", db_column="typebotId", db_index=False)
     variables = models.JSONField()
     is_completed = models.BooleanField(db_column="isCompleted")
@@ -432,8 +454,8 @@ class VisitedEdge(models.Model):
 
 
 class Log(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     result = models.ForeignKey("Result", on_delete=models.CASCADE, related_name="logs", db_column="resultId", db_index=False)
     status = models.TextField()
     context = models.TextField(null=True)
@@ -449,7 +471,7 @@ class Log(models.Model):
 
 class Answer(models.Model):
     pk = models.CompositePrimaryKey("result_id", "block_id", "group_id")
-    created_at = UtcDateTimeField(db_column="createdAt", auto_now=True)
+    created_at = UtcAutoNowDateTimeField(db_column="createdAt", auto_now=True)
     result = models.ForeignKey("Result", on_delete=models.CASCADE, related_name="answers", db_column="resultId", db_index=False)
     block_id = models.TextField(db_column="blockId")
     group_id = models.TextField(db_column="groupId")
@@ -466,7 +488,7 @@ class Answer(models.Model):
 
 class AnswerV2(models.Model):
     id = models.AutoField(primary_key=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     block_id = models.TextField(db_column="blockId")
     content = models.TextField()
     attached_file_urls = models.JSONField(null=True, db_column="attachedFileUrls")
@@ -489,9 +511,9 @@ class Coupon(models.Model):
 
 
 class Webhook(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     url = models.TextField(null=True)
     method = models.TextField()
     query_params = models.JSONField(db_column="queryParams")
@@ -505,8 +527,8 @@ class Webhook(models.Model):
 
 
 class ClaimableCustomPlan(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     claimed_at = UtcDateTimeField(null=True, db_column="claimedAt")
     name = models.TextField()
     description = models.TextField(null=True)
@@ -526,9 +548,9 @@ class ClaimableCustomPlan(models.Model):
 
 
 class ChatSession(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     state = models.JSONField()
     is_replying = models.BooleanField(null=True, db_column="isReplying")
     objects = AutoNowQuerySet.as_manager()
@@ -538,9 +560,9 @@ class ChatSession(models.Model):
 
 
 class ThemeTemplate(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     theme = models.JSONField()
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="theme_templates", db_column="workspaceId", db_index=False)
@@ -551,8 +573,8 @@ class ThemeTemplate(models.Model):
 
 
 class BannedIp(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     ip = models.TextField(unique=True)
     responsible_typebot = models.ForeignKey("Typebot", on_delete=models.RESTRICT, related_name="banned_ips", db_column="responsibleTypebotId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="banned_ips", db_column="userId", db_index=False)
@@ -562,9 +584,9 @@ class BannedIp(models.Model):
 
 
 class SuppressedEmail(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField(unique=True)
     transient_general_bounce_count = models.IntegerField(db_column="transientGeneralBounceCount", default=0)
     suppressed_at = UtcDateTimeField(null=True, db_column="suppressedAt")

@@ -3,6 +3,7 @@ from datetime import date, datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.indexes import GinIndex
 from django.db import models
@@ -31,6 +32,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -44,6 +57,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def utc_today() -> date:
@@ -131,8 +153,8 @@ class Organization(models.Model):
     api_key = models.TextField(null=True, db_column="apiKey")
     payment_id = models.TextField(null=True, db_column="paymentId")
     streak_since = UtcDateTimeField(null=True, db_column="streakSince")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     allow_trial = models.BooleanField(db_column="allowTrial", default=False)
     is_trailing = models.BooleanField(db_column="isTrailing", default=False)
@@ -155,8 +177,8 @@ class Tags(models.Model):
     color = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="tags", db_column="orgId", db_index=False)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -171,8 +193,8 @@ class TagsPosts(models.Model):
     pk = models.CompositePrimaryKey("post_id", "tag_id")
     post = models.ForeignKey("Post", on_delete=models.RESTRICT, related_name="tags", db_column="postId", db_index=False)
     tag = models.ForeignKey("Tags", on_delete=models.RESTRICT, related_name="posts", db_column="tagId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -194,16 +216,16 @@ class User(models.Model):
     audience = models.IntegerField(default=0)
     picture = models.ForeignKey("Media", on_delete=models.SET_NULL, related_name="user_picture", db_column="pictureId", null=True, db_index=False)
     provider_id = models.TextField(null=True, db_column="providerId")
-    timezone_field = models.IntegerField(db_column="timezone")
+    timezone = models.IntegerField()
     timezone_name = models.TextField(null=True, db_column="timezoneName")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
-    last_read_notifications = UtcDateTimeField(db_column="lastReadNotifications", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    last_read_notifications = UtcDateTimeField(db_column="lastReadNotifications", default=now_milliseconds)
     invite_id = models.TextField(null=True, db_column="inviteId")
     activated = models.BooleanField(default=True)
     account = models.TextField(null=True)
     connected_account = models.BooleanField(db_column="connectedAccount", default=False)
-    last_online = UtcDateTimeField(db_column="lastOnline", default=timezone.now)
+    last_online = UtcDateTimeField(db_column="lastOnline", default=now_milliseconds)
     ip = models.TextField(null=True)
     agent = models.TextField(null=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
@@ -232,8 +254,8 @@ class UsedCodes(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     code = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="used_codes", db_column="orgId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -249,8 +271,8 @@ class UserOrganization(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="users", db_column="organizationId", db_index=False)
     disabled = models.BooleanField(default=False)
     role = models.TextField(choices=Role.choices, default=Role.USER)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -271,8 +293,8 @@ class GitHub(models.Model):
     token = models.TextField()
     job_id = models.TextField(null=True, db_column="jobId")
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="github", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -289,8 +311,8 @@ class Trending(models.Model):
     language = models.TextField(null=True, unique=True)
     hash = models.TextField()
     date = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -333,8 +355,8 @@ class Star(models.Model):
     total_forks = models.IntegerField(db_column="totalForks")
     login = models.TextField()
     date = models.DateField(default=utc_today)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -350,8 +372,8 @@ class Media(models.Model):
     original_name = models.TextField(null=True, db_column="originalName")
     path = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="media", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     file_size = models.IntegerField(db_column="fileSize", default=0)
     type = models.TextField(default="image")
@@ -386,8 +408,8 @@ class SocialMediaAgency(models.Model):
     short_description = models.TextField(db_column="shortDescription")
     description = models.TextField()
     approved = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -413,8 +435,8 @@ class Credits(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="credits", db_column="organizationId", db_index=False)
     credits = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     type = models.TextField(default="ai_images")
     objects = AutoNowQuerySet.as_manager()
 
@@ -440,8 +462,8 @@ class Clipping(models.Model):
     integrations = models.TextField()
     credits_id = models.TextField(null=True, db_column="creditsId")
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -466,8 +488,8 @@ class ClippingClip(models.Model):
     path = models.TextField(null=True)
     thumbnail = models.TextField(null=True)
     drafted_at = UtcDateTimeField(null=True, db_column="draftedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -478,7 +500,7 @@ class ClippingClip(models.Model):
 
 
 class Subscription(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.OneToOneField("Organization", on_delete=models.RESTRICT, related_name="subscription", db_column="organizationId")
     subscription_tier = models.TextField(choices=SubscriptionTier.choices, db_column="subscriptionTier")
     provider = models.TextField(default="stripe")
@@ -487,8 +509,8 @@ class Subscription(models.Model):
     period = models.TextField(choices=Period.choices)
     total_channels = models.IntegerField(db_column="totalChannels")
     is_lifetime = models.BooleanField(db_column="isLifetime", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -504,8 +526,8 @@ class Customer(models.Model):
     id = models.TextField(primary_key=True, default=uuid4_str)
     name = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="customers", db_column="orgId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -517,7 +539,7 @@ class Customer(models.Model):
 
 
 class Integration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     internal_id = models.TextField(db_column="internalId")
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="integration", db_column="organizationId", db_index=False)
     name = models.TextField()
@@ -531,8 +553,8 @@ class Integration(models.Model):
     refresh_token = models.TextField(null=True, db_column="refreshToken")
     profile = models.TextField(null=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(null=True, db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(null=True, db_column="updatedAt", auto_now=True)
     in_between_steps = models.BooleanField(db_column="inBetweenSteps", default=False)
     refresh_needed = models.BooleanField(db_column="refreshNeeded", default=False)
     posting_times = models.TextField(db_column="postingTimes", default="[{\"time\":120}, {\"time\":400}, {\"time\":700}]")
@@ -566,8 +588,8 @@ class Signatures(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="signatures", db_column="organizationId", db_index=False)
     content = models.TextField()
     auto_add = models.BooleanField(db_column="autoAdd")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -592,8 +614,8 @@ class Comments(models.Model):
     anchor_end = models.IntegerField(null=True, db_column="anchorEnd")
     anchor_quote = models.TextField(null=True, db_column="anchorQuote")
     resolved_at = UtcDateTimeField(null=True, db_column="resolvedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -611,7 +633,7 @@ class Comments(models.Model):
 
 
 class Post(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     state = models.TextField(choices=State.choices, default=State.QUEUE)
     publish_date = UtcDateTimeField(db_column="publishDate")
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="post", db_column="organizationId", db_index=False)
@@ -634,8 +656,8 @@ class Post(models.Model):
     last_message = models.ForeignKey("Messages", on_delete=models.SET_NULL, related_name="posts", db_column="lastMessageId", null=True, db_index=False)
     interval_in_days = models.IntegerField(null=True, db_column="intervalInDays")
     error = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -664,8 +686,8 @@ class Notifications(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="notifications", db_column="organizationId", db_index=False)
     content = models.TextField()
     link = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -683,8 +705,8 @@ class MessagesGroup(models.Model):
     buyer_organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="buyer_organization", db_column="buyerOrganizationId", db_index=False)
     buyer = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="group_buyer", db_column="buyerId", db_index=False)
     seller = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="group_seller", db_column="sellerId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -706,8 +728,8 @@ class PayoutProblems(models.Model):
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="payout_problems", db_column="userId", db_index=False)
     post = models.ForeignKey("Post", on_delete=models.SET_NULL, related_name="payout_problems", db_column="postId", null=True, db_index=False)
     amount = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -721,8 +743,8 @@ class Orders(models.Model):
     status = models.TextField(choices=OrderStatus.choices)
     message_group = models.ForeignKey("MessagesGroup", on_delete=models.RESTRICT, related_name="orders", db_column="messageGroupId", db_index=False)
     capture_id = models.TextField(null=True, db_column="captureId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -757,8 +779,8 @@ class Messages(models.Model):
     content = models.TextField(null=True)
     group = models.ForeignKey("MessagesGroup", on_delete=models.RESTRICT, related_name="messages", db_column="groupId", db_index=False)
     special = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -808,8 +830,8 @@ class PopularPosts(models.Model):
     topic = models.TextField()
     content = models.TextField()
     hook = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -838,8 +860,8 @@ class Webhooks(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="webhooks", db_column="organizationId", db_index=False)
     url = models.TextField()
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -864,8 +886,8 @@ class AutoPost(models.Model):
     generate_content = models.BooleanField(db_column="generateContent")
     integrations = models.TextField()
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -880,8 +902,8 @@ class Sets(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="sets", db_column="organizationId", db_index=False)
     name = models.TextField()
     content = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -898,8 +920,8 @@ class ThirdParty(models.Model):
     name = models.TextField()
     internal_id = models.TextField(db_column="internalId")
     api_key = models.TextField(db_column="apiKey")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -919,8 +941,8 @@ class Errors(models.Model):
     message = models.TextField()
     platform = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="errors", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     post = models.ForeignKey("Post", on_delete=models.RESTRICT, related_name="errors", db_column="postId", db_index=False)
     body = models.TextField(default="{}")
     objects = AutoNowQuerySet.as_manager()
@@ -939,8 +961,8 @@ class Mentions(models.Model):
     name = models.TextField()
     username = models.TextField()
     platform = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     image = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -959,7 +981,7 @@ class MastraMessages(models.Model):
     type = models.TextField()
     created_at = UtcDateTimeField(db_column="createdAt")
     resource_id = models.TextField(null=True, db_column="resourceId")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_messages"
@@ -974,8 +996,8 @@ class MastraResources(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_resources"
@@ -1011,8 +1033,8 @@ class MastraScorers(models.Model):
     thread_id = models.TextField(null=True, db_column="threadId")
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     span_id = models.TextField(null=True, db_column="spanId")
     request_context = models.JSONField(null=True, db_column="requestContext")
     organization_id = models.TextField(null=True, db_column="organizationId")
@@ -1035,8 +1057,8 @@ class MastraThreads(models.Model):
     metadata = models.TextField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_threads"
@@ -1060,7 +1082,7 @@ class MastraTraces(models.Model):
     start_time = models.BigIntegerField(db_column="startTime")
     end_time = models.BigIntegerField(db_column="endTime")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_traces"
@@ -1077,8 +1099,8 @@ class MastraWorkflowSnapshot(models.Model):
     snapshot = models.TextField()
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_workflow_snapshot"
@@ -1115,7 +1137,7 @@ class MastraAgentVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
     durable = models.JSONField(null=True)
     browser = models.JSONField(null=True)
     tool_providers = models.JSONField(null=True, db_column="toolProviders")
@@ -1132,8 +1154,8 @@ class MastraAgents(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     visibility = models.TextField(null=True)
     favorite_count = models.IntegerField(null=True, db_column="favoriteCount")
 
@@ -1161,10 +1183,10 @@ class MastraBackgroundTasks(models.Model):
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     suspended_at = UtcDateTimeField(null=True, db_column="suspendedAt")
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=timezone.now)
-    suspended_at_z = models.DateTimeField(null=True, db_column="suspendedAtZ", default=timezone.now)
-    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=now_milliseconds)
+    suspended_at_z = models.DateTimeField(null=True, db_column="suspendedAtZ", default=now_milliseconds)
+    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_background_tasks"
@@ -1180,7 +1202,7 @@ class MastraChannelConfig(models.Model):
     platform = models.TextField(primary_key=True, default=None)
     data = models.JSONField()
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_channel_config"
@@ -1197,8 +1219,8 @@ class MastraChannelInstallations(models.Model):
     error = models.TextField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_channel_installations"
@@ -1221,8 +1243,8 @@ class MastraDatasetItems(models.Model):
     source = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     expected_trajectory = models.JSONField(null=True, db_column="expectedTrajectory")
     organization_id = models.TextField(null=True, db_column="organizationId")
     project_id = models.TextField(null=True, db_column="projectId")
@@ -1247,7 +1269,7 @@ class MastraDatasetVersions(models.Model):
     dataset_id = models.TextField(db_column="datasetId")
     version = models.IntegerField()
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_dataset_versions"
@@ -1274,8 +1296,8 @@ class MastraDatasets(models.Model):
     version = models.IntegerField()
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     organization_id = models.TextField(null=True, db_column="organizationId")
     project_id = models.TextField(null=True, db_column="projectId")
     candidate_key = models.TextField(null=True, db_column="candidateKey")
@@ -1305,9 +1327,9 @@ class MastraExperimentResults(models.Model):
     status = models.TextField(null=True)
     tags = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
-    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=timezone.now)
-    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=timezone.now)
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=now_milliseconds)
+    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=now_milliseconds)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
     comment = models.TextField(null=True)
     tool_mock_report = models.JSONField(null=True, db_column="toolMockReport")
     metadata = models.JSONField(null=True)
@@ -1346,10 +1368,10 @@ class MastraExperiments(models.Model):
     agent_version = models.TextField(null=True, db_column="agentVersion")
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=timezone.now)
-    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=timezone.now)
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    started_at_z = models.DateTimeField(null=True, db_column="startedAtZ", default=now_milliseconds)
+    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=now_milliseconds)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     organization_id = models.TextField(null=True, db_column="organizationId")
     project_id = models.TextField(null=True, db_column="projectId")
     provenance = models.JSONField(null=True)
@@ -1375,7 +1397,7 @@ class MastraFavorites(models.Model):
     entity_type = models.TextField(db_column="entityType")
     entity_id = models.TextField(db_column="entityId")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_favorites"
@@ -1393,7 +1415,7 @@ class MastraKnowledgeActivity(models.Model):
     scope_key = models.TextField(db_column="scopeKey")
     source_thread_id = models.TextField(null=True, db_column="sourceThreadId")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_knowledge_activity"
@@ -1408,7 +1430,7 @@ class MastraKnowledgeCursors(models.Model):
     agent = models.TextField()
     last_knowledge_id = models.TextField(db_column="lastKnowledgeId")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_knowledge_cursors"
@@ -1441,8 +1463,8 @@ class MastraKnowledgeNodes(models.Model):
     merged_into = models.TextField(null=True, db_column="mergedInto")
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_knowledge_nodes"
@@ -1467,9 +1489,9 @@ class MastraKnowledgeRecords(models.Model):
     metadata = models.JSONField(null=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     deleted_by = models.TextField(null=True, db_column="deletedBy")
-    captured_at_z = models.DateTimeField(null=True, db_column="capturedAtZ", default=timezone.now)
-    when_z = models.DateTimeField(null=True, db_column="whenZ", default=timezone.now)
-    deleted_at_z = models.DateTimeField(null=True, db_column="deletedAtZ", default=timezone.now)
+    captured_at_z = models.DateTimeField(null=True, db_column="capturedAtZ", default=now_milliseconds)
+    when_z = models.DateTimeField(null=True, db_column="whenZ", default=now_milliseconds)
+    deleted_at_z = models.DateTimeField(null=True, db_column="deletedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_knowledge_records"
@@ -1494,10 +1516,10 @@ class MastraKnowledgeSemanticOutbox(models.Model):
     claimed_by = models.TextField(null=True, db_column="claimedBy")
     created_at = UtcDateTimeField(db_column="createdAt")
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
-    available_at_z = models.DateTimeField(null=True, db_column="availableAtZ", default=timezone.now)
-    claimed_at_z = models.DateTimeField(null=True, db_column="claimedAtZ", default=timezone.now)
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=timezone.now)
+    available_at_z = models.DateTimeField(null=True, db_column="availableAtZ", default=now_milliseconds)
+    claimed_at_z = models.DateTimeField(null=True, db_column="claimedAtZ", default=now_milliseconds)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    completed_at_z = models.DateTimeField(null=True, db_column="completedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_knowledge_semantic_outbox"
@@ -1516,7 +1538,7 @@ class MastraMcpClientVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_mcp_client_versions"
@@ -1533,8 +1555,8 @@ class MastraMcpClients(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_mcp_clients"
@@ -1558,7 +1580,7 @@ class MastraMcpServerVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_mcp_server_versions"
@@ -1575,8 +1597,8 @@ class MastraMcpServers(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_mcp_servers"
@@ -1617,11 +1639,11 @@ class MastraObservationalMemory(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    last_observed_at_z = models.DateTimeField(null=True, db_column="lastObservedAtZ", default=timezone.now)
-    last_reflection_at_z = models.DateTimeField(null=True, db_column="lastReflectionAtZ", default=timezone.now)
-    last_buffered_at_time_z = models.DateTimeField(null=True, db_column="lastBufferedAtTimeZ", default=timezone.now)
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    last_observed_at_z = models.DateTimeField(null=True, db_column="lastObservedAtZ", default=now_milliseconds)
+    last_reflection_at_z = models.DateTimeField(null=True, db_column="lastReflectionAtZ", default=now_milliseconds)
+    last_buffered_at_time_z = models.DateTimeField(null=True, db_column="lastBufferedAtTimeZ", default=now_milliseconds)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_observational_memory"
@@ -1642,7 +1664,7 @@ class MastraPromptBlockVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_prompt_block_versions"
@@ -1659,8 +1681,8 @@ class MastraPromptBlocks(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_prompt_blocks"
@@ -1722,7 +1744,7 @@ class MastraScorerDefinitionVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_scorer_definition_versions"
@@ -1739,8 +1761,8 @@ class MastraScorerDefinitions(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     organization_id = models.TextField(null=True, db_column="organizationId")
     project_id = models.TextField(null=True, db_column="projectId")
 
@@ -1754,7 +1776,7 @@ class MastraSkillBlobs(models.Model):
     size = models.IntegerField()
     mime_type = models.TextField(null=True, db_column="mimeType")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_skill_blobs"
@@ -1778,7 +1800,7 @@ class MastraSkillVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
     files = models.JSONField(null=True)
 
     class Meta:
@@ -1795,8 +1817,8 @@ class MastraSkills(models.Model):
     author_id = models.TextField(null=True, db_column="authorId")
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
     visibility = models.TextField(null=True)
     favorite_count = models.IntegerField(null=True, db_column="favoriteCount")
 
@@ -1811,8 +1833,8 @@ class MastraThreadState(models.Model):
     value = models.JSONField()
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_thread_state"
@@ -1828,8 +1850,8 @@ class MastraToolProviderConnections(models.Model):
     scope = models.TextField()
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_tool_provider_connections"
@@ -1853,8 +1875,8 @@ class MastraWorkflowDefinitions(models.Model):
     author_id = models.TextField(null=True, db_column="authorId")
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_workflow_definitions"
@@ -1880,7 +1902,7 @@ class MastraWorkspaceVersions(models.Model):
     changed_fields = models.JSONField(null=True, db_column="changedFields")
     change_message = models.TextField(null=True, db_column="changeMessage")
     created_at = UtcDateTimeField(db_column="createdAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_workspace_versions"
@@ -1897,8 +1919,8 @@ class MastraWorkspaces(models.Model):
     metadata = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
-    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=timezone.now)
-    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=timezone.now)
+    created_at_z = models.DateTimeField(null=True, db_column="createdAtZ", default=now_milliseconds)
+    updated_at_z = models.DateTimeField(null=True, db_column="updatedAtZ", default=now_milliseconds)
 
     class Meta:
         db_table = "mastra_workspaces"
@@ -1916,8 +1938,8 @@ class OAuthApp(models.Model):
     client_secret = models.TextField(null=True, db_column="clientSecret")
     dynamic = models.BooleanField(default=False)
     token_endpoint_auth_method = models.TextField(null=True, db_column="tokenEndpointAuthMethod")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1946,8 +1968,8 @@ class OAuthAuthorization(models.Model):
     code_challenge_method = models.TextField(null=True, db_column="codeChallengeMethod")
     redirect_uri = models.TextField(null=True, db_column="redirectUri")
     revoked_at = UtcDateTimeField(null=True, db_column="revokedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1978,8 +2000,8 @@ class OAuthSelfHostedAuthorization(models.Model):
     code_challenge_method = models.TextField(null=True, db_column="codeChallengeMethod")
     redirect_uri = models.TextField(null=True, db_column="redirectUri")
     revoked_at = UtcDateTimeField(null=True, db_column="revokedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1996,7 +2018,7 @@ class Announcement(models.Model):
     title = models.TextField()
     description = models.TextField()
     color = models.TextField(choices=AnnouncementColor.choices, default=AnnouncementColor.INFO)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "Announcement"

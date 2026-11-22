@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -31,6 +32,30 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
+class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -40,6 +65,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class ProvisionState(models.TextChoices):
@@ -110,15 +144,15 @@ class BaseDataDbMoveJobState(models.TextChoices):
 
 
 class Space(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     avatar = models.TextField(null=True)
     credit = models.IntegerField(null=True)
     deleted_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     is_template = models.BooleanField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -127,7 +161,7 @@ class Space(models.Model):
 
 
 class DataDbConnection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     provider = models.TextField(choices=DataDbProvider.choices, default=DataDbProvider.postgres)
     encrypted_url = models.TextField()
     url_fingerprint = models.TextField(unique=True)
@@ -145,8 +179,8 @@ class DataDbConnection(models.Model):
     last_health_check_at = UtcDateTimeField(null=True)
     consecutive_health_failures = models.IntegerField(default=0)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -154,14 +188,14 @@ class DataDbConnection(models.Model):
 
 
 class SpaceDataDbBinding(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     space = models.OneToOneField("Space", on_delete=models.CASCADE, related_name="data_db_binding")
     data_db_connection = models.ForeignKey("DataDbConnection", on_delete=models.SET_NULL, related_name="space_bindings", null=True, db_index=False)
     mode = models.TextField(choices=SpaceDataDbBindingMode.choices, default=SpaceDataDbBindingMode.default)
     state = models.TextField(choices=SpaceDataDbBindingState.choices, default=SpaceDataDbBindingState.ready)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_history_flushed_at = UtcDateTimeField(null=True)
     last_removal_flushed_at = UtcDateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -174,7 +208,7 @@ class SpaceDataDbBinding(models.Model):
 
 
 class SpaceDataDbMigrationJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="data_db_migration_jobs", db_index=False)
     source_connection = models.ForeignKey("DataDbConnection", on_delete=models.SET_NULL, related_name="source_migration_jobs", null=True, db_index=False)
     target_connection = models.ForeignKey("DataDbConnection", on_delete=models.SET_NULL, related_name="target_migration_jobs", null=True, db_index=False)
@@ -190,8 +224,8 @@ class SpaceDataDbMigrationJob(models.Model):
     started_at = UtcDateTimeField(null=True)
     completed_at = UtcDateTimeField(null=True)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -204,7 +238,7 @@ class SpaceDataDbMigrationJob(models.Model):
 
 
 class BaseDataDbMoveJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base = models.ForeignKey("Base", on_delete=models.CASCADE, related_name="data_db_move_jobs", db_index=False)
     source_space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="base_data_db_move_jobs_as_source", db_index=False)
     target_space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="base_data_db_move_jobs_as_target", db_index=False)
@@ -218,8 +252,8 @@ class BaseDataDbMoveJob(models.Model):
     started_at = UtcDateTimeField(null=True)
     completed_at = UtcDateTimeField(null=True)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -233,10 +267,10 @@ class BaseDataDbMoveJob(models.Model):
 
 
 class PinResource(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField()
     resource_id = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     order = models.FloatField()
 
@@ -251,7 +285,7 @@ class PinResource(models.Model):
 
 
 class Base(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     space = models.ForeignKey("Space", on_delete=models.RESTRICT, related_name="base_group", db_index=False)
     name = models.TextField(null=True)
     order = models.FloatField()
@@ -260,10 +294,10 @@ class Base(models.Model):
     v2_enabled = models.BooleanField(default=False)
     provision_state = models.TextField(choices=ProvisionState.choices, default=ProvisionState.ready)
     deleted_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -288,8 +322,8 @@ class TableMeta(models.Model):
     provision_state = models.TextField(choices=ProvisionState.choices, default=ProvisionState.ready)
     version = models.IntegerField()
     order = models.FloatField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     deleted_time = UtcDateTimeField(null=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
@@ -324,7 +358,7 @@ class TableQueryObservationShard(models.Model):
     max_db_duration_ms = models.FloatField(null=True)
     shape = models.JSONField()
     sql_diagnostics = models.JSONField(null=True)
-    created_time = models.DateTimeField(default=timezone.now)
+    created_time = models.DateTimeField(default=now_milliseconds)
     last_modified_time = models.DateTimeField(null=True)
 
     class Meta:
@@ -351,13 +385,13 @@ class SchemaOperation(models.Model):
     result = models.JSONField(null=True)
     attempts = models.IntegerField(default=0)
     max_attempts = models.IntegerField(default=8)
-    next_run_at = models.DateTimeField(default=timezone.now)
+    next_run_at = models.DateTimeField(default=now_milliseconds)
     locked_at = models.DateTimeField(null=True)
     locked_by = models.TextField(null=True)
     last_error = models.TextField(null=True)
-    created_time = models.DateTimeField(default=timezone.now)
+    created_time = models.DateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = models.DateTimeField(null=True, auto_now=True)
+    last_modified_time = AutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -397,8 +431,8 @@ class Field(models.Model):
     table = models.ForeignKey("TableMeta", on_delete=models.RESTRICT, related_name="fields", db_index=False)
     order = models.FloatField()
     version = models.IntegerField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     deleted_time = UtcDateTimeField(null=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
@@ -413,7 +447,7 @@ class Field(models.Model):
 
 
 class ComputedUpdateOutbox(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField()
     worker_lane = models.TextField(default="production")
     seed_table_id = models.TextField()
@@ -424,7 +458,7 @@ class ComputedUpdateOutbox(models.Model):
     status = models.TextField()
     attempts = models.IntegerField(default=0)
     max_attempts = models.IntegerField(default=8)
-    next_run_at = UtcDateTimeField(default=timezone.now)
+    next_run_at = UtcDateTimeField(default=now_milliseconds)
     locked_at = UtcDateTimeField(null=True)
     locked_by = models.TextField(null=True)
     last_error = models.TextField(null=True)
@@ -441,8 +475,8 @@ class ComputedUpdateOutbox(models.Model):
     source_changed_at = UtcDateTimeField(null=True)
     stage_depth = models.IntegerField(default=0)
     predecessor_task_id = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(auto_now=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -457,7 +491,7 @@ class ComputedUpdateOutbox(models.Model):
 
 
 class ComputedUpdateOutboxSeed(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task = models.ForeignKey("ComputedUpdateOutbox", on_delete=models.CASCADE, related_name="seeds", db_index=False)
     table_id = models.TextField()
     record_id = models.TextField()
@@ -618,12 +652,12 @@ class ComputedUpdatePauseScope(models.Model):
     id = models.TextField(primary_key=True, default=None)
     scope_type = models.TextField()
     scope_id = models.TextField()
-    paused_at = UtcDateTimeField(default=timezone.now)
+    paused_at = UtcDateTimeField(default=now_milliseconds)
     paused_by = models.TextField(null=True)
     resume_at = UtcDateTimeField(null=True)
     reason = models.TextField(null=True)
     write_policy = models.TextField(default="allow_bounded")
-    updated_at = UtcDateTimeField(auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -656,7 +690,7 @@ class ComputedFieldActivity(models.Model):
     last_duration_ms = models.IntegerField(null=True)
     last_error = models.JSONField(null=True)
     extensions = models.JSONField(null=True)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "computed_field_activity"
@@ -677,7 +711,7 @@ class ComputedTableActivity(models.Model):
     estimated_complexity = models.BigIntegerField(default=0)
     recent_completions = models.JSONField(default=list)
     generation = models.BigIntegerField(default=0)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "computed_table_activity"
@@ -695,7 +729,7 @@ class ComputedTaskFieldRef(models.Model):
     table_id = models.TextField()
     base_id = models.TextField()
     was_processing = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "computed_task_field_ref"
@@ -722,8 +756,8 @@ class View(models.Model):
     enable_share = models.BooleanField(null=True)
     share_id = models.TextField(null=True, unique=True)
     share_meta = models.TextField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     deleted_time = UtcDateTimeField(null=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
@@ -738,13 +772,13 @@ class View(models.Model):
 
 
 class Ops(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     collection = models.TextField()
     doc_id = models.TextField()
     doc_type = models.TextField()
     version = models.IntegerField()
     operation = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
 
     class Meta:
@@ -758,10 +792,10 @@ class Ops(models.Model):
 
 
 class Reference(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     from_field_id = models.TextField()
     to_field_id = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "reference"
@@ -775,7 +809,7 @@ class Reference(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     password = models.TextField(null=True)
     salt = models.TextField(null=True)
@@ -789,9 +823,9 @@ class User(models.Model):
     notify_meta = models.TextField(null=True)
     last_sign_time = UtcDateTimeField(null=True)
     deactivated_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     deleted_time = UtcDateTimeField(null=True)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     permanent_deleted_time = UtcDateTimeField(null=True)
     ref_meta = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -801,13 +835,13 @@ class User(models.Model):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_index=False)
     type = models.TextField()
     provider = models.TextField()
     provider_id = models.TextField()
     connection_id = models.TextField(default="")
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "account"
@@ -817,7 +851,7 @@ class Account(models.Model):
 
 
 class Attachments(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token = models.TextField(unique=True)
     hash = models.TextField()
     size = models.BigIntegerField()
@@ -826,7 +860,7 @@ class Attachments(models.Model):
     width = models.IntegerField(null=True)
     height = models.IntegerField(null=True)
     deleted_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
     thumbnail_path = models.TextField(null=True)
@@ -836,17 +870,17 @@ class Attachments(models.Model):
 
 
 class AttachmentsTable(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     attachment_id = models.TextField()
     name = models.TextField()
     token = models.TextField()
     table_id = models.TextField()
     record_id = models.TextField()
     field_id = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -859,15 +893,15 @@ class AttachmentsTable(models.Model):
 
 
 class Collaborator(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     role_name = models.TextField()
     resource_type = models.TextField()
     resource_id = models.TextField()
     principal_id = models.TextField()
     principal_type = models.TextField()
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -883,7 +917,7 @@ class Collaborator(models.Model):
 
 
 class Invitation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField(null=True)
     space_id = models.TextField(null=True)
     type = models.TextField()
@@ -891,8 +925,8 @@ class Invitation(models.Model):
     invitation_code = models.TextField()
     expired_time = UtcDateTimeField(null=True)
     created_by = models.TextField(db_column="create_by")
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     deleted_time = UtcDateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -906,14 +940,14 @@ class Invitation(models.Model):
 
 
 class InvitationRecord(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     invitation_id = models.TextField()
     base_id = models.TextField(null=True)
     space_id = models.TextField(null=True)
     type = models.TextField()
     inviter = models.TextField()
     accepter = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "invitation_record"
@@ -925,7 +959,7 @@ class InvitationRecord(models.Model):
 
 
 class Notification(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     from_user_id = models.TextField()
     to_user_id = models.TextField()
     type = models.TextField()
@@ -934,7 +968,7 @@ class Notification(models.Model):
     severity = models.TextField(default="info")
     url_path = models.TextField(null=True)
     is_read = models.BooleanField(default=False)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
 
     class Meta:
@@ -946,7 +980,7 @@ class Notification(models.Model):
 
 
 class AccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     user_id = models.TextField()
@@ -958,8 +992,8 @@ class AccessToken(models.Model):
     has_full_access = models.BooleanField(null=True)
     expired_time = UtcDateTimeField()
     last_used_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -973,8 +1007,8 @@ class AccessToken(models.Model):
 class Setting(models.Model):
     name = models.TextField(primary_key=True, default=None)
     content = models.TextField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -984,7 +1018,7 @@ class Setting(models.Model):
 
 
 class OAuthApp(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     logo = models.TextField(null=True)
     homepage = models.TextField()
@@ -994,8 +1028,8 @@ class OAuthApp(models.Model):
     scopes = models.TextField(null=True)
     allow_device_flow = models.BooleanField(default=False)
     dynamic_registration = models.BooleanField(default=False)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     created_by = models.TextField()
     objects = AutoNowQuerySet.as_manager()
 
@@ -1004,7 +1038,7 @@ class OAuthApp(models.Model):
 
 
 class OAuthAppAuthorized(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     o_auth_app = models.ForeignKey("OAuthApp", on_delete=models.CASCADE, related_name="authorized", to_field="client_id", db_column="client_id", db_index=False)
     user_id = models.TextField()
     authorized_time = UtcDateTimeField()
@@ -1017,11 +1051,11 @@ class OAuthAppAuthorized(models.Model):
 
 
 class OAuthAppSecret(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     o_auth_app = models.ForeignKey("OAuthApp", on_delete=models.CASCADE, related_name="secrets", to_field="client_id", db_column="client_id", db_index=False)
     secret = models.TextField(unique=True)
     masked_secret = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     last_used_time = UtcDateTimeField(null=True)
 
@@ -1030,12 +1064,12 @@ class OAuthAppSecret(models.Model):
 
 
 class OAuthAppToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     o_auth_app = models.ForeignKey("OAuthApp", on_delete=models.CASCADE, related_name="tokens", to_field="client_id", db_column="client_id", db_index=False)
     o_auth_app_secret = models.ForeignKey("OAuthAppSecret", on_delete=models.CASCADE, related_name="tokens", db_column="app_secret_id", null=True, db_index=False)
     refresh_token_sign = models.TextField(unique=True)
     expired_time = UtcDateTimeField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
 
     class Meta:
@@ -1046,13 +1080,13 @@ class OAuthAppToken(models.Model):
 
 
 class RecordHistory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table_id = models.TextField()
     record_id = models.TextField()
     field_id = models.TextField()
     before = models.TextField()
     after = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
 
     class Meta:
@@ -1064,11 +1098,11 @@ class RecordHistory(models.Model):
 
 
 class Trash(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     resource_type = models.TextField()
     resource_id = models.TextField()
     parent_id = models.TextField(null=True)
-    deleted_time = UtcDateTimeField(default=timezone.now)
+    deleted_time = UtcDateTimeField(default=now_milliseconds)
     deleted_by = models.TextField()
 
     class Meta:
@@ -1079,11 +1113,11 @@ class Trash(models.Model):
 
 
 class TableTrash(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table_id = models.TextField()
     resource_type = models.TextField()
     snapshot = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
 
     class Meta:
@@ -1094,11 +1128,11 @@ class TableTrash(models.Model):
 
 
 class RecordTrash(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table_id = models.TextField()
     record_id = models.TextField()
     snapshot = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     reason = models.TextField(default="deleted")
     record_created_time = UtcDateTimeField(null=True)
@@ -1119,7 +1153,7 @@ class RecordRemovalTombstone(models.Model):
     table_id = models.TextField()
     record_id = models.TextField()
     type = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "record_removal_tombstone"
@@ -1129,7 +1163,7 @@ class RecordRemovalTombstone(models.Model):
 
 
 class Plugin(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     detail_desc = models.TextField(null=True)
@@ -1143,8 +1177,8 @@ class Plugin(models.Model):
     i18n = models.TextField(null=True)
     config = models.TextField(null=True)
     plugin_user = models.TextField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -1154,16 +1188,16 @@ class Plugin(models.Model):
 
 
 class PluginInstall(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     plugin = models.ForeignKey("Plugin", on_delete=models.CASCADE, related_name="plugin_install", db_index=False)
     base_id = models.TextField()
     name = models.TextField()
     position_id = models.TextField()
     position = models.TextField()
     storage = models.TextField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1176,13 +1210,13 @@ class PluginInstall(models.Model):
 
 
 class Dashboard(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     base_id = models.TextField()
     layout = models.TextField(null=True)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     deleted_time = UtcDateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -1195,16 +1229,16 @@ class Dashboard(models.Model):
 
 
 class Comment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table_id = models.TextField()
     record_id = models.TextField()
     quote_id = models.TextField(null=True, db_column="quote_Id")
     content = models.TextField(null=True)
     reaction = models.TextField(null=True)
     deleted_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1215,11 +1249,11 @@ class Comment(models.Model):
 
 
 class CommentSubscription(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table_id = models.TextField()
     record_id = models.TextField()
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "comment_subscription"
@@ -1232,13 +1266,13 @@ class CommentSubscription(models.Model):
 
 
 class Integration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     resource_id = models.TextField(unique=True)
     config = models.TextField()
     type = models.TextField()
     enable = models.BooleanField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1249,13 +1283,13 @@ class Integration(models.Model):
 
 
 class PluginPanel(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     table = models.ForeignKey("TableMeta", on_delete=models.CASCADE, related_name="plugin_panel", db_index=False)
     layout = models.TextField(null=True)
     created_by = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1264,13 +1298,13 @@ class PluginPanel(models.Model):
 
 
 class PluginContextMenu(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     table = models.ForeignKey("TableMeta", on_delete=models.CASCADE, related_name="plugin_context_menu", db_index=False)
     plugin_install_id = models.TextField(unique=True)
     order = models.FloatField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1279,12 +1313,12 @@ class PluginContextMenu(models.Model):
 
 
 class UserLastVisit(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user_id = models.TextField()
     resource_type = models.TextField()
     resource_id = models.TextField()
     parent_resource_id = models.TextField()
-    last_visit_time = UtcDateTimeField(default=timezone.now)
+    last_visit_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "user_last_visit"
@@ -1297,12 +1331,12 @@ class UserLastVisit(models.Model):
 
 
 class UserBaseOrder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="base_orders", db_index=False)
     base = models.ForeignKey("Base", on_delete=models.CASCADE, related_name="user_orders", db_index=False)
     order = models.FloatField()
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1317,16 +1351,16 @@ class UserBaseOrder(models.Model):
 
 
 class Template(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField(null=True, unique=True)
     cover = models.TextField(null=True)
     name = models.TextField(null=True)
     description = models.TextField(null=True)
     markdown_description = models.TextField(null=True)
     category_id = ArrayField(models.TextField())
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     is_system = models.BooleanField(null=True)
     is_published = models.BooleanField(null=True)
@@ -1353,11 +1387,11 @@ class Template(models.Model):
 
 
 class TemplateCategory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(unique=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     order = models.FloatField()
     parent_id = models.TextField(null=True)
@@ -1373,12 +1407,12 @@ class TemplateCategory(models.Model):
 
 
 class Task(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     type = models.TextField()
     status = models.TextField()
     snapshot = models.TextField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     created_by = models.TextField()
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -1391,7 +1425,7 @@ class Task(models.Model):
 
 
 class TaskRun(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     task = models.ForeignKey("Task", on_delete=models.CASCADE, related_name="runs", db_index=False)
     base_id = models.TextField()
     status = models.TextField()
@@ -1401,8 +1435,8 @@ class TaskRun(models.Model):
     log = models.TextField(null=True)
     error_msg = models.TextField(null=True)
     started_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    created_time = UtcDateTimeField(default=now_milliseconds)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1415,10 +1449,10 @@ class TaskRun(models.Model):
 
 
 class TaskReference(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     from_field_id = models.TextField()
     to_field_id = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "task_reference"
@@ -1435,22 +1469,22 @@ class Waitlist(models.Model):
     email = models.TextField(primary_key=True, default=None)
     invite = models.BooleanField(null=True)
     invite_time = UtcDateTimeField(null=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "waitlist"
 
 
 class BaseNode(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="children", null=True, db_index=False)
     base_id = models.TextField()
     resource_type = models.TextField()
     resource_id = models.TextField()
     order = models.FloatField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1462,12 +1496,12 @@ class BaseNode(models.Model):
 
 
 class BaseNodeFolder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField()
     name = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     last_modified_by = models.TextField(null=True)
     deleted_time = UtcDateTimeField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -1480,7 +1514,7 @@ class BaseNodeFolder(models.Model):
 
 
 class BaseShare(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField()
     share_id = models.TextField(unique=True)
     password = models.TextField(null=True)
@@ -1489,9 +1523,9 @@ class BaseShare(models.Model):
     allow_copy = models.BooleanField(null=True)
     allow_edit = models.BooleanField(null=True)
     enabled = models.BooleanField(default=True)
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
-    last_modified_time = UtcDateTimeField(null=True, auto_now=True)
+    last_modified_time = UtcAutoNowDateTimeField(null=True, auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1505,11 +1539,11 @@ class BaseShare(models.Model):
 
 
 class ShortLink(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     code = models.CharField(max_length=32, unique=True)
     type = models.CharField(max_length=32)
     resource_id = models.TextField()
-    created_time = UtcDateTimeField(default=timezone.now)
+    created_time = UtcDateTimeField(default=now_milliseconds)
     created_by = models.TextField()
     deleted_time = UtcDateTimeField(null=True)
 

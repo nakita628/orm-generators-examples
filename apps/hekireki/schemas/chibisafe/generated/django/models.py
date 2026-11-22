@@ -29,6 +29,11 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
+
+
 class Users(models.Model):
     id = models.AutoField(primary_key=True)
     uuid = models.TextField(unique=True)
@@ -39,7 +44,7 @@ class Users(models.Model):
     api_key = models.TextField(null=True, unique=True, db_column="apiKey")
     password_edited_at = UtcDateTimeField(null=True, db_column="passwordEditedAt")
     api_key_edited_at = UtcDateTimeField(null=True, db_column="apiKeyEditedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
 
     class Meta:
@@ -68,7 +73,7 @@ class Files(models.Model):
     source_url = models.TextField(null=True, db_column="sourceUrl")
     is_s3 = models.BooleanField(db_column="isS3", default=False)
     is_watched = models.BooleanField(db_column="isWatched", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
     tags: "models.ManyToManyField[Tags, FilesTotags]" = models.ManyToManyField("Tags", through="FilesTotags", related_name="files")
     quarantine = models.BooleanField(default=False)
@@ -96,7 +101,7 @@ class Snippets(models.Model):
     content = models.TextField()
     language = models.TextField()
     parent_uuid = models.TextField(null=True, db_column="parentUuid")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
 
     class Meta:
@@ -110,7 +115,7 @@ class ShortenedLinks(models.Model):
     identifier = models.TextField(unique=True)
     destination = models.TextField()
     views = models.IntegerField(default=0)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "shortenedLinks"
@@ -123,7 +128,7 @@ class Albums(models.Model):
     name = models.TextField()
     description = models.TextField(null=True)
     zipped_at = UtcDateTimeField(null=True, db_column="zippedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
     nsfw = models.BooleanField(default=False)
     sort_order = models.TextField(null=True, db_column="sortOrder")
@@ -137,7 +142,7 @@ class Bans(models.Model):
     id = models.AutoField(primary_key=True)
     ip = models.TextField()
     reason = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "bans"
@@ -153,7 +158,7 @@ class Links(models.Model):
     enabled = models.BooleanField(default=True)
     enable_download = models.BooleanField(db_column="enableDownload", default=False)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
 
     class Meta:
@@ -215,7 +220,7 @@ class Statistics(models.Model):
     batch_id = models.IntegerField(null=True, db_column="batchId")
     type = models.TextField(null=True)
     data = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "statistics"
@@ -226,7 +231,7 @@ class Tags(models.Model):
     uuid = models.TextField(unique=True)
     user_id = models.IntegerField(db_column="userId")
     name = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
 
     class Meta:
@@ -239,7 +244,7 @@ class Invites(models.Model):
     used_by = models.TextField(null=True, db_column="usedBy")
     code = models.TextField(unique=True)
     used = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     edited_at = UtcDateTimeField(null=True, db_column="editedAt")
 
     class Meta:

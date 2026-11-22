@@ -6,3 +6,8 @@ psycopg[binary]==3.2.13
 mysqlclient==2.2.7
 python-ulid==4.0.1
 uuid6==2025.0.1
+# Generated cuid(), cuid(2) and nanoid() defaults call these (hekireki 0.52.2+).
+cuid==0.4
+cuid2==3.0.0
+nanoid==2.0.0
+types-nanoid==2.0.0.20260508

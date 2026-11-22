@@ -5,6 +5,7 @@ from typing import Any, Optional
 from decimal import Decimal as DecimalType
 from datetime import datetime, timezone
 import uuid as uuid_mod
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -35,7 +36,8 @@ class UtcDateTimeTz(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -46,7 +48,7 @@ class Base(DeclarativeBase):
 class Account(Base):
     __tablename__ = "Account"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_user_id_fkey"))
     type: Mapped[str]
     provider: Mapped[str]
@@ -73,7 +75,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str]
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_user_id_fkey"))
     expires: Mapped[datetime]
@@ -87,7 +89,7 @@ class Session(Base):
 class User(Base):
     __tablename__ = "users"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[Optional[str]]
     email: Mapped[Optional[str]]
     email_verified: Mapped[Optional[datetime]]
@@ -157,7 +159,7 @@ class VerificationToken(Base):
 class Organization(Base):
     __tablename__ = "organizations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -188,7 +190,7 @@ class Organization(Base):
 class Project(Base):
     __tablename__ = "projects"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     org_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="projects_org_id_fkey"))
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -269,7 +271,7 @@ class Project(Base):
 class ApiKey(Base):
     __tablename__ = "api_keys"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     note: Mapped[Optional[str]]
     public_key: Mapped[str]
@@ -312,7 +314,7 @@ class ApiKey(Base):
 class RoleAssignment(Base):
     __tablename__ = "role_assignments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     owner_id: Mapped[str]
     project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="role_assignments_project_id_fkey"))
     org_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="role_assignments_org_id_fkey"))
@@ -353,7 +355,7 @@ class GatewayConfig(Base):
 class GatewayAiConnection(Base):
     __tablename__ = "gateway_ai_connections"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_ai_connections_organization_id_fkey"))
     name: Mapped[str]
     provider: Mapped[str] = mapped_column(Enum("openai", "anthropic", "bedrock", "openrouter", "xai", "vercel", "azure", "google_ai_studio", "vertex", name="GatewayProvider"))
@@ -486,7 +488,7 @@ class InAppAgentPendingToolApproval(Base):
 class BackgroundMigration(Base):
     __tablename__ = "background_migrations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     script: Mapped[str]
     args: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -504,7 +506,7 @@ class BackgroundMigration(Base):
 class LlmApiKeys(Base):
     __tablename__ = "llm_api_keys"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     provider: Mapped[str]
@@ -536,7 +538,7 @@ class LlmApiKeys(Base):
 class OrganizationMembership(Base):
     __tablename__ = "organization_memberships"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     org_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="organization_memberships_org_id_fkey"))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="organization_memberships_user_id_fkey"))
     role: Mapped[str] = mapped_column(Enum("OWNER", "ADMIN", "MEMBER", "VIEWER", "NONE", "AI_GATEWAY", name="Role"))
@@ -575,7 +577,7 @@ class ProjectMembership(Base):
 class MembershipInvitation(Base):
     __tablename__ = "membership_invitations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     email: Mapped[str]
     org_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="membership_invitations_org_id_fkey"))
     org_role: Mapped[str] = mapped_column(Enum("OWNER", "ADMIN", "MEMBER", "VIEWER", "NONE", "AI_GATEWAY", name="Role"))
@@ -600,7 +602,7 @@ class MembershipInvitation(Base):
 class TraceSession(Base):
     __tablename__ = "trace_sessions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="trace_sessions_project_id_fkey"), primary_key=True)
@@ -617,7 +619,7 @@ class TraceSession(Base):
 class ScoreConfig(Base):
     __tablename__ = "score_configs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="score_configs_project_id_fkey"))
@@ -644,7 +646,7 @@ class ScoreConfig(Base):
 class AnnotationQueue(Base):
     __tablename__ = "annotation_queues"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     description: Mapped[Optional[str]]
     score_config_ids: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
@@ -665,7 +667,7 @@ class AnnotationQueue(Base):
 class AnnotationQueueItem(Base):
     __tablename__ = "annotation_queue_items"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     queue_id: Mapped[str] = mapped_column(ForeignKey("annotation_queues.id", ondelete="CASCADE", onupdate="CASCADE", name="annotation_queue_items_queue_id_fkey"))
     object_id: Mapped[str]
     object_type: Mapped[str] = mapped_column(Enum("TRACE", "OBSERVATION", "SESSION", name="AnnotationQueueObjectType"))
@@ -694,7 +696,7 @@ class AnnotationQueueItem(Base):
 class AnnotationQueueAssignment(Base):
     __tablename__ = "annotation_queue_assignments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="annotation_queue_assignments_project_id_fkey"))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="annotation_queue_assignments_user_id_fkey"))
     queue_id: Mapped[str] = mapped_column(ForeignKey("annotation_queues.id", ondelete="CASCADE", onupdate="CASCADE", name="annotation_queue_assignments_queue_id_fkey"))
@@ -720,7 +722,7 @@ class CronJobs(Base):
 class Dataset(Base):
     __tablename__ = "datasets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="datasets_project_id_fkey"), primary_key=True)
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -750,7 +752,7 @@ class Dataset(Base):
 class DatasetItem(Base):
     __tablename__ = "dataset_items"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(primary_key=True)
     status: Mapped[Optional[str]] = mapped_column(Enum("ACTIVE", "ARCHIVED", name="DatasetStatus"), default="ACTIVE", server_default=text("'ACTIVE'"))
     input: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
@@ -781,7 +783,7 @@ class DatasetItem(Base):
 class DatasetRuns(Base):
     __tablename__ = "dataset_runs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(primary_key=True)
     name: Mapped[str]
     description: Mapped[Optional[str]]
@@ -803,7 +805,7 @@ class DatasetRuns(Base):
 class Comment(Base):
     __tablename__ = "comments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="comments_project_id_fkey"))
     object_type: Mapped[str] = mapped_column(Enum("TRACE", "OBSERVATION", "SESSION", "PROMPT", name="CommentObjectType"))
     object_id: Mapped[str]
@@ -826,7 +828,7 @@ class Comment(Base):
 class CommentReaction(Base):
     __tablename__ = "comment_reactions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="comment_reactions_project_id_fkey"))
     comment_id: Mapped[str] = mapped_column(ForeignKey("comments.id", ondelete="CASCADE", onupdate="CASCADE", name="comment_reactions_comment_id_fkey"))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="comment_reactions_user_id_fkey"))
@@ -844,7 +846,7 @@ class CommentReaction(Base):
 class NotificationPreference(Base):
     __tablename__ = "notification_preferences"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="notification_preferences_user_id_fkey"))
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="notification_preferences_project_id_fkey"))
     channel: Mapped[str] = mapped_column(Enum("EMAIL", name="NotificationChannel"))
@@ -863,7 +865,7 @@ class NotificationPreference(Base):
 class Prompt(Base):
     __tablename__ = "prompts"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="prompts_project_id_fkey"))
@@ -892,7 +894,7 @@ class Prompt(Base):
 class PromptDependency(Base):
     __tablename__ = "prompt_dependencies"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="prompt_dependencies_project_id_fkey"))
@@ -912,7 +914,7 @@ class PromptDependency(Base):
 class PromptProtectedLabels(Base):
     __tablename__ = "prompt_protected_labels"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="prompt_protected_labels_project_id_fkey"))
@@ -927,7 +929,7 @@ class PromptProtectedLabels(Base):
 class Skill(Base):
     __tablename__ = "skills"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="skills_project_id_fkey"))
@@ -954,7 +956,7 @@ class Skill(Base):
 class SkillFile(Base):
     __tablename__ = "skill_files"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="skill_files_project_id_fkey"))
     skill_id: Mapped[str] = mapped_column(ForeignKey("skills.id", ondelete="CASCADE", onupdate="CASCADE", name="skill_files_skill_id_fkey"))
@@ -973,7 +975,7 @@ class SkillFile(Base):
 class SkillBlob(Base):
     __tablename__ = "skill_blobs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="skill_blobs_project_id_fkey"))
     sha256_hash: Mapped[str] = mapped_column("sha_256_hash", CHAR(44))
@@ -991,7 +993,7 @@ class SkillBlob(Base):
 class Model(Base):
     __tablename__ = "models"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="models_project_id_fkey"))
@@ -1017,7 +1019,7 @@ class Model(Base):
 class Price(Base):
     __tablename__ = "prices"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     model_id: Mapped[str] = mapped_column(ForeignKey("models.id", ondelete="CASCADE", onupdate="CASCADE", name="prices_model_id_fkey"))
@@ -1038,7 +1040,7 @@ class Price(Base):
 class PricingTier(Base):
     __tablename__ = "pricing_tiers"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     model_id: Mapped[str] = mapped_column(ForeignKey("models.id", ondelete="CASCADE", onupdate="CASCADE", name="pricing_tiers_model_id_fkey"))
@@ -1058,7 +1060,7 @@ class PricingTier(Base):
 class AuditLog(Base):
     __tablename__ = "audit_logs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     type: Mapped[str] = mapped_column(Enum("USER", "API_KEY", name="AuditLogRecordType"), default="USER", server_default=text("'USER'"))
@@ -1095,7 +1097,7 @@ class AuditLogStaging(Base):
 class EvalTemplate(Base):
     __tablename__ = "eval_templates"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="eval_templates_project_id_fkey"))
@@ -1123,7 +1125,7 @@ class EvalTemplate(Base):
 class Evaluator(Base):
     __tablename__ = "evaluators"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="evaluators_project_id_fkey"))
@@ -1148,7 +1150,7 @@ class Evaluator(Base):
 class EvaluatorVersion(Base):
     __tablename__ = "evaluator_versions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     evaluator_id: Mapped[str] = mapped_column(ForeignKey("evaluators.id", ondelete="CASCADE", onupdate="CASCADE", name="evaluator_versions_evaluator_id_fkey"))
     version: Mapped[int]
@@ -1177,7 +1179,7 @@ class EvaluatorVersion(Base):
 class JobConfiguration(Base):
     __tablename__ = "job_configurations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="job_configurations_project_id_fkey"))
@@ -1205,7 +1207,7 @@ class JobConfiguration(Base):
 class EvaluationRule(Base):
     __tablename__ = "evaluation_rules"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="evaluation_rules_project_id_fkey"))
@@ -1244,7 +1246,7 @@ class TracingReadinessSettings(Base):
 class EvaluationRuleEvaluatorAssignment(Base):
     __tablename__ = "evaluation_rule_evaluator_assignments"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="evaluation_rule_evaluator_assignments_project_id_fkey"))
@@ -1265,7 +1267,7 @@ class EvaluationRuleEvaluatorAssignment(Base):
 class JobExecution(Base):
     __tablename__ = "job_executions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="job_executions_project_id_fkey"))
@@ -1294,7 +1296,7 @@ class JobExecution(Base):
 class DefaultLlmModel(Base):
     __tablename__ = "default_llm_models"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="default_llm_models_project_id_fkey"))
@@ -1314,7 +1316,7 @@ class DefaultLlmModel(Base):
 class TopicConfig(Base):
     __tablename__ = "topic_configs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     created_by: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="topic_configs_created_by_fkey"))
@@ -1349,7 +1351,7 @@ class TopicConfig(Base):
 class SsoConfig(Base):
     __tablename__ = "sso_configs"
 
-    domain: Mapped[str] = mapped_column(primary_key=True)
+    domain: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     auth_provider: Mapped[str]
@@ -1464,7 +1466,7 @@ class ExternalMediaStorageIntegration(Base):
 class WebCalloutEndpoint(Base):
     __tablename__ = "web_callout_endpoints"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="web_callout_endpoints_project_id_fkey"))
@@ -1485,7 +1487,7 @@ class WebCalloutEndpoint(Base):
 class BatchExport(Base):
     __tablename__ = "batch_exports"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="batch_exports_project_id_fkey"))
@@ -1509,7 +1511,7 @@ class BatchExport(Base):
 class BatchAction(Base):
     __tablename__ = "batch_actions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="batch_actions_project_id_fkey"))
@@ -1563,7 +1565,7 @@ class Media(Base):
 class TraceMedia(Base):
     __tablename__ = "trace_media"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -1580,7 +1582,7 @@ class TraceMedia(Base):
 class ObservationMedia(Base):
     __tablename__ = "observation_media"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -1598,7 +1600,7 @@ class ObservationMedia(Base):
 class DatasetItemMedia(Base):
     __tablename__ = "dataset_item_media"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -1639,7 +1641,7 @@ class BillingMeterBackup(Base):
 class LlmSchema(Base):
     __tablename__ = "llm_schemas"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="llm_schemas_project_id_fkey"))
@@ -1656,7 +1658,7 @@ class LlmSchema(Base):
 class LlmTool(Base):
     __tablename__ = "llm_tools"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="llm_tools_project_id_fkey"))
@@ -1673,7 +1675,7 @@ class LlmTool(Base):
 class Dashboard(Base):
     __tablename__ = "dashboards"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     created_by: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="dashboards_created_by_fkey"))
@@ -1692,7 +1694,7 @@ class Dashboard(Base):
 class DashboardWidget(Base):
     __tablename__ = "dashboard_widgets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     created_by: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="dashboard_widgets_created_by_fkey"))
@@ -1715,7 +1717,7 @@ class DashboardWidget(Base):
 class TableViewPreset(Base):
     __tablename__ = "table_view_presets"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="table_view_presets_project_id_fkey"))
@@ -1741,7 +1743,7 @@ class SessionView(Base):
     __tablename__ = "session_views"
 
     is_pinned_by_default_for_project: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="session_views_project_id_fkey"))
     name: Mapped[str]
     filters: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -1763,7 +1765,7 @@ class SessionView(Base):
 class SessionViewPinOverride(Base):
     __tablename__ = "session_view_pin_overrides"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="session_view_pin_overrides_project_id_fkey"))
     user_id: Mapped[str] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="session_view_pin_overrides_user_id_fkey"))
     view_id: Mapped[Optional[str]]
@@ -1785,7 +1787,7 @@ class SessionViewPinOverride(Base):
 class DefaultView(Base):
     __tablename__ = "default_views"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="default_views_project_id_fkey"))
@@ -1803,7 +1805,7 @@ class DefaultView(Base):
 class Action(Base):
     __tablename__ = "actions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="actions_project_id_fkey"))
@@ -1821,7 +1823,7 @@ class Action(Base):
 class Trigger(Base):
     __tablename__ = "triggers"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="triggers_project_id_fkey"))
@@ -1841,7 +1843,7 @@ class Trigger(Base):
 class Automation(Base):
     __tablename__ = "automations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     trigger_id: Mapped[str] = mapped_column(ForeignKey("triggers.id", ondelete="CASCADE", onupdate="CASCADE", name="automations_trigger_id_fkey"))
     action_id: Mapped[str] = mapped_column(ForeignKey("actions.id", ondelete="CASCADE", onupdate="CASCADE", name="automations_action_id_fkey"))
@@ -1861,7 +1863,7 @@ class Automation(Base):
 class AutomationExecution(Base):
     __tablename__ = "automation_executions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     source_id: Mapped[str]
@@ -1890,7 +1892,7 @@ class AutomationExecution(Base):
 class Monitor(Base):
     __tablename__ = "monitors"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     created_by: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="monitors_created_by_fkey"))
@@ -1932,7 +1934,7 @@ class Monitor(Base):
 class SlackIntegration(Base):
     __tablename__ = "slack_integrations"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="slack_integrations_project_id_fkey"))
     team_id: Mapped[str]
     team_name: Mapped[str]
@@ -1953,7 +1955,7 @@ class SlackIntegration(Base):
 class PendingDeletion(Base):
     __tablename__ = "pending_deletions"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="pending_deletions_project_id_fkey"))
     object: Mapped[str]
     object_id: Mapped[str]
@@ -1971,7 +1973,7 @@ class PendingDeletion(Base):
 class Survey(Base):
     __tablename__ = "surveys"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     survey_name: Mapped[str] = mapped_column(Enum("org_onboarding", "user_onboarding", name="SurveyName"))
     response: Mapped[dict[str, Any]] = mapped_column(JSONB)
@@ -1985,7 +1987,7 @@ class Survey(Base):
 class CloudSpendAlert(Base):
     __tablename__ = "cloud_spend_alerts"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     org_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="cloud_spend_alerts_org_id_fkey"))
     title: Mapped[str]
     threshold: Mapped[DecimalType]
@@ -2002,7 +2004,7 @@ class CloudSpendAlert(Base):
 class TopicClusteringRun(Base):
     __tablename__ = "topic_clustering_runs"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="topic_clustering_runs_project_id_fkey"))
     facet_id: Mapped[str]
     facet_version: Mapped[int]

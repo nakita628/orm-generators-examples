@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.db import models
 from django.db.backends.base.base import BaseDatabaseWrapper
@@ -29,8 +30,17 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
+
+
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -42,8 +52,8 @@ class Account(models.Model):
     scope = models.TextField(null=True)
     id_token = models.TextField(null=True)
     session_state = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
 
     class Meta:
         db_table = "accounts"
@@ -53,7 +63,7 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
@@ -63,13 +73,13 @@ class Session(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(null=True)
     email = models.TextField(null=True, unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")
     image = models.TextField(null=True)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
     stripe_customer_id = models.TextField(null=True, unique=True)
     stripe_subscription_id = models.TextField(null=True, unique=True)
     stripe_price_id = models.TextField(null=True)
@@ -92,12 +102,12 @@ class VerificationToken(models.Model):
 
 
 class Post(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     title = models.TextField()
     content = models.JSONField(null=True)
     published = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(default=timezone.now)
-    updated_at = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcDateTimeField(default=now_milliseconds)
     author = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="post", db_column="authorId", db_index=False)
 
     class Meta:

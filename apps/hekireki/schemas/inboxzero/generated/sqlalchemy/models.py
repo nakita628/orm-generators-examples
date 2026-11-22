@@ -3,6 +3,7 @@ from sqlalchemy.dialects.postgresql import JSONB, TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from typing import Any, Optional
 from datetime import datetime, timezone
+import cuid  # type: ignore[import-untyped, unused-ignore]
 
 
 class UtcDateTime(TypeDecorator[datetime]):
@@ -19,7 +20,8 @@ class UtcDateTime(TypeDecorator[datetime]):
 
 
 def utc_now() -> datetime:
-    return datetime.now(timezone.utc)
+    now = datetime.now(timezone.utc)
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Base(DeclarativeBase):
@@ -40,7 +42,7 @@ class Account(Base):
     __tablename__ = "Account"
 
     password: Mapped[Optional[str]]
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Account_userId_fkey"))
@@ -68,7 +70,7 @@ class Account(Base):
 class Session(Base):
     __tablename__ = "Session"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     session_token: Mapped[str] = mapped_column("sessionToken")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Session_userId_fkey"))
     expires: Mapped[datetime]
@@ -94,7 +96,7 @@ class Session(Base):
 class User(Base):
     __tablename__ = "User"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[Optional[str]]
@@ -157,7 +159,7 @@ class User(Base):
 class EmailAccount(Base):
     __tablename__ = "EmailAccount"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     email: Mapped[str]
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
@@ -287,7 +289,7 @@ class EmailAccount(Base):
 class MailSplit(Base):
     __tablename__ = "MailSplit"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -316,7 +318,7 @@ class MailSplitFilter(Base):
 
     __tablename__ = "MailSplitFilter"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     kind: Mapped[str] = mapped_column(Enum("UNREAD", "STARRED", "LABEL", "CATEGORY", "FROM", "OLDER_THAN", "TO", name="MailSplitFilterKind"))
     value: Mapped[Optional[str]]
     order: Mapped[int]
@@ -333,7 +335,7 @@ class MailSplitFilter(Base):
 class Organization(Base):
     __tablename__ = "Organization"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     name: Mapped[str]
     slug: Mapped[str]
     logo: Mapped[Optional[str]]
@@ -355,7 +357,7 @@ class Organization(Base):
 class OrganizationRule(Base):
     __tablename__ = "OrganizationRule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="OrganizationRule_organizationId_fkey"))
@@ -381,7 +383,7 @@ class OrganizationRule(Base):
 class OrganizationRuleAction(Base):
     __tablename__ = "OrganizationRuleAction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     organization_rule_id: Mapped[str] = mapped_column("organizationRuleId", ForeignKey("OrganizationRule.id", ondelete="CASCADE", onupdate="CASCADE", name="OrganizationRuleAction_organizationRuleId_fkey"))
@@ -406,7 +408,7 @@ class OrganizationRuleAction(Base):
 class Member(Base):
     __tablename__ = "Member"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="Member_organizationId_fkey"))
     email_account_id: Mapped[str] = mapped_column("emailAccountId", ForeignKey("EmailAccount.id", ondelete="RESTRICT", onupdate="CASCADE", name="Member_emailAccountId_fkey"))
     role: Mapped[str] = mapped_column(default="member", server_default=text("'member'"))
@@ -428,7 +430,7 @@ class Member(Base):
 class Conversation(Base):
     __tablename__ = "Conversation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="Conversation_organizationId_fkey"))
@@ -451,7 +453,7 @@ class Conversation(Base):
 class ConversationParticipant(Base):
     __tablename__ = "ConversationParticipant"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     conversation_id: Mapped[str] = mapped_column("conversationId", ForeignKey("Conversation.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationParticipant_conversationId_fkey"))
     member_id: Mapped[str] = mapped_column("memberId", ForeignKey("Member.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationParticipant_memberId_fkey"))
     generation: Mapped[int]
@@ -472,7 +474,7 @@ class ConversationParticipant(Base):
 class ConversationComment(Base):
     __tablename__ = "ConversationComment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     conversation_id: Mapped[str] = mapped_column("conversationId", ForeignKey("Conversation.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationComment_conversationId_fkey"))
     author_member_id: Mapped[Optional[str]] = mapped_column("authorMemberId", ForeignKey("Member.id", ondelete="SET NULL", onupdate="CASCADE", name="ConversationComment_authorMemberId_fkey"))
     client_mutation_id: Mapped[str] = mapped_column("clientMutationId")
@@ -493,7 +495,7 @@ class ConversationComment(Base):
 class ConversationActivity(Base):
     __tablename__ = "ConversationActivity"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     participant_id: Mapped[str] = mapped_column("participantId", ForeignKey("ConversationParticipant.id", ondelete="CASCADE", onupdate="CASCADE", name="ConversationActivity_participantId_fkey"))
     comment_id: Mapped[Optional[str]] = mapped_column("commentId", ForeignKey("ConversationComment.id", ondelete="SET NULL", onupdate="CASCADE", name="ConversationActivity_commentId_fkey"))
     kind: Mapped[str] = mapped_column(Enum("INVITED", "COMMENT", "MENTION", name="ConversationActivityKind"))
@@ -511,7 +513,7 @@ class ConversationActivity(Base):
 class Invitation(Base):
     __tablename__ = "invitation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="invitation_organizationId_fkey"))
     email: Mapped[str]
     role: Mapped[Optional[str]]
@@ -530,7 +532,7 @@ class Invitation(Base):
 class Verification(Base):
     __tablename__ = "verification"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     identifier: Mapped[str]
     value: Mapped[str]
     expires_at: Mapped[datetime] = mapped_column("expiresAt")
@@ -541,7 +543,7 @@ class SsoProvider(Base):
     __tablename__ = "ssoProvider"
 
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="ssoProvider_userId_fkey"))
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     issuer: Mapped[str]
     oidc_config: Mapped[Optional[str]] = mapped_column("oidcConfig")
     saml_config: Mapped[Optional[str]] = mapped_column("samlConfig")
@@ -563,7 +565,7 @@ class SsoProvider(Base):
 class Digest(Base):
     __tablename__ = "Digest"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email_account_id: Mapped[str] = mapped_column("emailAccountId", ForeignKey("EmailAccount.id", ondelete="CASCADE", onupdate="CASCADE", name="Digest_emailAccountId_fkey"))
@@ -580,7 +582,7 @@ class Digest(Base):
 class DigestItem(Base):
     __tablename__ = "DigestItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     message_id: Mapped[str] = mapped_column("messageId")
@@ -603,7 +605,7 @@ class DigestItem(Base):
 class Schedule(Base):
     __tablename__ = "Schedule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     interval_days: Mapped[Optional[int]] = mapped_column("intervalDays")
@@ -623,7 +625,7 @@ class Schedule(Base):
 class Premium(Base):
     __tablename__ = "Premium"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     pending_invites: Mapped[list[str]] = mapped_column("pendingInvites", ARRAY(Text), nullable=True)
@@ -694,7 +696,7 @@ class Premium(Base):
 class PendingPremiumGrant(Base):
     __tablename__ = "PendingPremiumGrant"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email: Mapped[str]
@@ -709,7 +711,7 @@ class PendingPremiumGrant(Base):
 class VerificationToken(Base):
     __tablename__ = "VerificationToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     identifier: Mapped[str]
@@ -724,7 +726,7 @@ class VerificationToken(Base):
 class Label(Base):
     __tablename__ = "Label"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     gmail_label_id: Mapped[str] = mapped_column("gmailLabelId")
@@ -744,7 +746,7 @@ class Label(Base):
 class Rule(Base):
     __tablename__ = "Rule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -788,7 +790,7 @@ class Rule(Base):
 class Action(Base):
     __tablename__ = "Action"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     type: Mapped[str] = mapped_column(Enum("ARCHIVE", "LABEL", "REPLY", "SEND_EMAIL", "FORWARD", "DRAFT_EMAIL", "DRAFT_MESSAGING_CHANNEL", "NOTIFY_MESSAGING_CHANNEL", "MARK_SPAM", "CALL_WEBHOOK", "MARK_READ", "STAR", "DELETE", "DIGEST", "MOVE_FOLDER", "NOTIFY_SENDER", "INTEGRATION", name="ActionType"))
@@ -827,7 +829,7 @@ class Action(Base):
 class RuleHistory(Base):
     __tablename__ = "RuleHistory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     rule_id: Mapped[str] = mapped_column("ruleId", ForeignKey("Rule.id", ondelete="CASCADE", onupdate="CASCADE", name="RuleHistory_ruleId_fkey"))
     version: Mapped[int]
@@ -858,7 +860,7 @@ class RuleHistory(Base):
 class ExecutedRule(Base):
     __tablename__ = "ExecutedRule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     thread_id: Mapped[str] = mapped_column("threadId")
@@ -888,7 +890,7 @@ class ExecutedRule(Base):
 class ExecutedAction(Base):
     __tablename__ = "ExecutedAction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     type: Mapped[str] = mapped_column(Enum("ARCHIVE", "LABEL", "REPLY", "SEND_EMAIL", "FORWARD", "DRAFT_EMAIL", "DRAFT_MESSAGING_CHANNEL", "NOTIFY_MESSAGING_CHANNEL", "MARK_SPAM", "CALL_WEBHOOK", "MARK_READ", "STAR", "DELETE", "DIGEST", "MOVE_FOLDER", "NOTIFY_SENDER", "INTEGRATION", name="ActionType"))
@@ -943,7 +945,7 @@ class ExecutedAction(Base):
 class ScheduledAction(Base):
     __tablename__ = "ScheduledAction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     executed_rule_id: Mapped[str] = mapped_column("executedRuleId", ForeignKey("ExecutedRule.id", ondelete="CASCADE", onupdate="CASCADE", name="ScheduledAction_executedRuleId_fkey"))
@@ -984,7 +986,7 @@ class ScheduledAction(Base):
 class SnoozedThread(Base):
     __tablename__ = "SnoozedThread"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     thread_id: Mapped[str] = mapped_column("threadId")
     scheduled_for: Mapped[datetime] = mapped_column("scheduledFor")
@@ -1003,7 +1005,7 @@ class SnoozedThread(Base):
 class ScheduledEmail(Base):
     __tablename__ = "ScheduledEmail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email_account_id: Mapped[str] = mapped_column("emailAccountId", ForeignKey("EmailAccount.id", ondelete="CASCADE", onupdate="CASCADE", name="ScheduledEmail_emailAccountId_fkey"))
@@ -1037,7 +1039,7 @@ class ScheduledEmail(Base):
 class EmailSendOperation(Base):
     __tablename__ = "EmailSendOperation"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     client_mutation_id: Mapped[str] = mapped_column("clientMutationId")
@@ -1057,7 +1059,7 @@ class EmailSendOperation(Base):
 class SentMessageOpen(Base):
     __tablename__ = "SentMessageOpen"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     token: Mapped[str]
@@ -1079,7 +1081,7 @@ class SentMessageOpen(Base):
 class Group(Base):
     __tablename__ = "Group"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1098,7 +1100,7 @@ class Group(Base):
 class GroupItem(Base):
     __tablename__ = "GroupItem"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     group_id: Mapped[Optional[str]] = mapped_column("groupId", ForeignKey("Group.id", ondelete="CASCADE", onupdate="CASCADE", name="GroupItem_groupId_fkey"))
@@ -1119,7 +1121,7 @@ class GroupItem(Base):
 class ClassificationFeedback(Base):
     __tablename__ = "ClassificationFeedback"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     sender: Mapped[str]
     event_type: Mapped[str] = mapped_column("eventType", Enum("LABEL_ADDED", "LABEL_REMOVED", name="ClassificationFeedbackEventType"))
@@ -1139,7 +1141,7 @@ class ClassificationFeedback(Base):
 class Category(Base):
     __tablename__ = "Category"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1158,7 +1160,7 @@ class Category(Base):
 class Newsletter(Base):
     __tablename__ = "Newsletter"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email: Mapped[str]
@@ -1181,7 +1183,7 @@ class Newsletter(Base):
 class ColdEmail(Base):
     __tablename__ = "ColdEmail"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     from_email: Mapped[str] = mapped_column("fromEmail")
@@ -1203,7 +1205,7 @@ class ColdEmail(Base):
 class EmailMessage(Base):
     __tablename__ = "EmailMessage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     thread_id: Mapped[str] = mapped_column("threadId")
@@ -1233,7 +1235,7 @@ class EmailMessage(Base):
 class ResponseTime(Base):
     __tablename__ = "ResponseTime"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     thread_id: Mapped[str] = mapped_column("threadId")
     sent_message_id: Mapped[str] = mapped_column("sentMessageId")
@@ -1253,7 +1255,7 @@ class ResponseTime(Base):
 class ThreadTracker(Base):
     __tablename__ = "ThreadTracker"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     sent_at: Mapped[datetime] = mapped_column("sentAt")
@@ -1282,7 +1284,7 @@ class ThreadTracker(Base):
 class CleanupJob(Base):
     __tablename__ = "CleanupJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     action: Mapped[str] = mapped_column(Enum("ARCHIVE", "MARK_READ", name="CleanAction"), default="ARCHIVE", server_default=text("'ARCHIVE'"))
@@ -1306,7 +1308,7 @@ class CleanupJob(Base):
 class CleanupThread(Base):
     __tablename__ = "CleanupThread"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     thread_id: Mapped[str] = mapped_column("threadId")
@@ -1325,7 +1327,7 @@ class CleanupThread(Base):
 class BulkInboxActionJob(Base):
     __tablename__ = "BulkInboxActionJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     status: Mapped[str] = mapped_column(Enum("RUNNING", "COMPLETED", "FAILED", "CANCELLED", name="BulkInboxActionJobStatus"), default="RUNNING", server_default=text("'RUNNING'"))
@@ -1371,7 +1373,7 @@ class BulkInboxActionThread(Base):
 class Knowledge(Base):
     __tablename__ = "Knowledge"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     title: Mapped[str]
@@ -1387,7 +1389,7 @@ class Knowledge(Base):
 class Snippet(Base):
     __tablename__ = "Snippet"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     shortcut: Mapped[str]
@@ -1404,7 +1406,7 @@ class Snippet(Base):
 class EmailSignature(Base):
     __tablename__ = "EmailSignature"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1420,7 +1422,7 @@ class EmailSignature(Base):
 class ReplyMemory(Base):
     __tablename__ = "ReplyMemory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     content: Mapped[str]
@@ -1458,7 +1460,7 @@ class ReplyMemorySource(Base):
 class ApiKey(Base):
     __tablename__ = "ApiKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[Optional[str]]
@@ -1482,7 +1484,7 @@ class ApiKey(Base):
 class EmailToken(Base):
     __tablename__ = "EmailToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     token: Mapped[str]
     expires_at: Mapped[datetime] = mapped_column("expiresAt")
@@ -1498,7 +1500,7 @@ class EmailToken(Base):
 class Payment(Base):
     __tablename__ = "Payment"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt")
     updated_at: Mapped[datetime] = mapped_column("updatedAt")
     premium_id: Mapped[Optional[str]] = mapped_column("premiumId", ForeignKey("Premium.id", ondelete="SET NULL", onupdate="CASCADE", name="Payment_premiumId_fkey"))
@@ -1527,7 +1529,7 @@ class Payment(Base):
 class DraftSendLog(Base):
     __tablename__ = "DraftSendLog"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     executed_action_id: Mapped[str] = mapped_column("executedActionId", ForeignKey("ExecutedAction.id", ondelete="CASCADE", onupdate="CASCADE", name="DraftSendLog_executedActionId_fkey"))
     sent_message_id: Mapped[str] = mapped_column("sentMessageId")
@@ -1552,7 +1554,7 @@ class DraftSendLog(Base):
 class Chat(Base):
     __tablename__ = "Chat"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     deleted_at: Mapped[Optional[datetime]] = mapped_column("deletedAt")
@@ -1578,7 +1580,7 @@ class Chat(Base):
 class ChatMessage(Base):
     __tablename__ = "ChatMessage"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     role: Mapped[str]
@@ -1595,7 +1597,7 @@ class ChatMessage(Base):
 class ChatCompaction(Base):
     __tablename__ = "ChatCompaction"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     summary: Mapped[str]
     message_count: Mapped[int] = mapped_column("messageCount")
@@ -1611,7 +1613,7 @@ class ChatCompaction(Base):
 class ChatActionTotal(Base):
     __tablename__ = "ChatActionTotal"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     action: Mapped[str]
@@ -1627,7 +1629,7 @@ class ChatActionTotal(Base):
 class ChatMemory(Base):
     __tablename__ = "ChatMemory"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     content: Mapped[str]
@@ -1644,7 +1646,7 @@ class ChatMemory(Base):
 class CalendarConnection(Base):
     __tablename__ = "CalendarConnection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     provider: Mapped[str]
@@ -1665,7 +1667,7 @@ class CalendarConnection(Base):
 class Calendar(Base):
     __tablename__ = "Calendar"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     calendar_id: Mapped[str] = mapped_column("calendarId")
@@ -1686,7 +1688,7 @@ class Calendar(Base):
 class BookingLink(Base):
     __tablename__ = "BookingLink"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     slug: Mapped[str]
@@ -1719,7 +1721,7 @@ class BookingLink(Base):
 class AvailabilitySchedule(Base):
     __tablename__ = "AvailabilitySchedule"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1740,7 +1742,7 @@ class AvailabilitySchedule(Base):
 class AvailabilityWindow(Base):
     __tablename__ = "AvailabilityWindow"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     weekday: Mapped[int]
@@ -1757,7 +1759,7 @@ class AvailabilityWindow(Base):
 class Booking(Base):
     __tablename__ = "Booking"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     guest_name: Mapped[str] = mapped_column("guestName")
@@ -1789,7 +1791,7 @@ class Booking(Base):
 class MeetingBriefing(Base):
     __tablename__ = "MeetingBriefing"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     calendar_event_id: Mapped[str] = mapped_column("calendarEventId")
     event_title: Mapped[str] = mapped_column("eventTitle")
@@ -1808,7 +1810,7 @@ class MeetingBriefing(Base):
 class ContactResearch(Base):
     __tablename__ = "ContactResearch"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     email: Mapped[str]
     research_started_at: Mapped[datetime] = mapped_column("researchStartedAt")
@@ -1825,7 +1827,7 @@ class ContactResearch(Base):
 class MeetingRecording(Base):
     __tablename__ = "MeetingRecording"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     bot_provider: Mapped[str] = mapped_column("botProvider", default="recall", server_default=text("'recall'"))
@@ -1860,7 +1862,7 @@ class MeetingRecording(Base):
 class Meeting(Base):
     __tablename__ = "Meeting"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     calendar_event_id: Mapped[str] = mapped_column("calendarEventId")
@@ -1893,7 +1895,7 @@ class Meeting(Base):
 class MessagingChannel(Base):
     __tablename__ = "MessagingChannel"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     provider: Mapped[str] = mapped_column(Enum("SLACK", "TEAMS", "TELEGRAM", name="MessagingProvider"))
@@ -1923,7 +1925,7 @@ class MessagingChannel(Base):
 class MessagingRoute(Base):
     __tablename__ = "MessagingRoute"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     purpose: Mapped[str] = mapped_column(Enum("RULE_NOTIFICATIONS", "SCHEDULED_CHECK_INS", "MEETING_BRIEFS", "DOCUMENT_FILINGS", "DIGESTS", "FOLLOW_UPS", name="MessagingRoutePurpose"))
@@ -1940,7 +1942,7 @@ class MessagingRoute(Base):
 class AutomationJob(Base):
     __tablename__ = "AutomationJob"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -1965,7 +1967,7 @@ class AutomationJob(Base):
 class AutomationJobRun(Base):
     __tablename__ = "AutomationJobRun"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     status: Mapped[str] = mapped_column(Enum("PENDING", "RUNNING", "SENT", "SKIPPED", "FAILED", name="AutomationJobRunStatus"), default="PENDING", server_default=text("'PENDING'"))
     scheduled_for: Mapped[datetime] = mapped_column("scheduledFor")
@@ -1986,7 +1988,7 @@ class AutomationJobRun(Base):
 class DriveConnection(Base):
     __tablename__ = "DriveConnection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     provider: Mapped[str]
@@ -2010,7 +2012,7 @@ class DriveConnection(Base):
 class FilingFolder(Base):
     __tablename__ = "FilingFolder"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     folder_id: Mapped[str] = mapped_column("folderId")
@@ -2030,7 +2032,7 @@ class FilingFolder(Base):
 class DocumentFiling(Base):
     __tablename__ = "DocumentFiling"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     message_id: Mapped[str] = mapped_column("messageId")
@@ -2069,7 +2071,7 @@ class DocumentFiling(Base):
 class AttachmentSource(Base):
     __tablename__ = "AttachmentSource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2092,7 +2094,7 @@ class AttachmentSource(Base):
 class AttachmentDocument(Base):
     __tablename__ = "AttachmentDocument"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     attachment_source_id: Mapped[str] = mapped_column("attachmentSourceId", ForeignKey("AttachmentSource.id", ondelete="CASCADE", onupdate="CASCADE", name="AttachmentDocument_attachmentSourceId_fkey"))
@@ -2116,7 +2118,7 @@ class AttachmentDocument(Base):
 class Referral(Base):
     __tablename__ = "Referral"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     referrer_user_id: Mapped[str] = mapped_column("referrerUserId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="Referral_referrerUserId_fkey"))
@@ -2139,7 +2141,7 @@ class Referral(Base):
 class McpIntegration(Base):
     __tablename__ = "McpIntegration"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2164,7 +2166,7 @@ class McpIntegration(Base):
 class McpConnection(Base):
     __tablename__ = "McpConnection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2187,7 +2189,7 @@ class McpConnection(Base):
 class McpTool(Base):
     __tablename__ = "McpTool"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     name: Mapped[str]
@@ -2206,7 +2208,7 @@ class McpTool(Base):
 class MobilePushToken(Base):
     __tablename__ = "MobilePushToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     token: Mapped[str]
@@ -2226,7 +2228,7 @@ class MobilePushToken(Base):
 class MobilePushDelivery(Base):
     __tablename__ = "MobilePushDelivery"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     deduplication_key: Mapped[str] = mapped_column("deduplicationKey")
     mobile_push_token_id: Mapped[str] = mapped_column("mobilePushTokenId", ForeignKey("MobilePushToken.id", ondelete="CASCADE", onupdate="CASCADE", name="MobilePushDelivery_mobilePushTokenId_fkey"))
@@ -2242,7 +2244,7 @@ class MobilePushDelivery(Base):
 class OauthClient(Base):
     __tablename__ = "OauthClient"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId")
     client_secret: Mapped[Optional[str]] = mapped_column("clientSecret")
     client_discovery_id: Mapped[Optional[str]] = mapped_column("clientDiscoveryId")
@@ -2293,7 +2295,7 @@ class OauthClient(Base):
 class OauthRefreshToken(Base):
     __tablename__ = "OauthRefreshToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("OauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="OauthRefreshToken_clientId_fkey"))
     session_id: Mapped[Optional[str]] = mapped_column("sessionId", ForeignKey("Session.id", ondelete="SET NULL", onupdate="CASCADE", name="OauthRefreshToken_sessionId_fkey"))
@@ -2328,7 +2330,7 @@ class OauthRefreshToken(Base):
 class OauthAccessToken(Base):
     __tablename__ = "OauthAccessToken"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     token: Mapped[str]
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("OauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="OauthAccessToken_clientId_fkey"))
     session_id: Mapped[Optional[str]] = mapped_column("sessionId", ForeignKey("Session.id", ondelete="SET NULL", onupdate="CASCADE", name="OauthAccessToken_sessionId_fkey"))
@@ -2361,7 +2363,7 @@ class OauthAccessToken(Base):
 class OauthConsent(Base):
     __tablename__ = "OauthConsent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("OauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="OauthConsent_clientId_fkey"))
     user_id: Mapped[Optional[str]] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="OauthConsent_userId_fkey"))
     reference_id: Mapped[Optional[str]] = mapped_column("referenceId")
@@ -2382,7 +2384,7 @@ class OauthConsent(Base):
 class Jwks(Base):
     __tablename__ = "Jwks"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     public_key: Mapped[str] = mapped_column("publicKey")
     private_key: Mapped[str] = mapped_column("privateKey")
     created_at: Mapped[datetime] = mapped_column("createdAt")
@@ -2393,7 +2395,7 @@ class Jwks(Base):
 class OauthResource(Base):
     __tablename__ = "OauthResource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     identifier: Mapped[str]
     name: Mapped[str]
     access_token_ttl: Mapped[Optional[int]] = mapped_column("accessTokenTtl")
@@ -2418,7 +2420,7 @@ class OauthResource(Base):
 class OauthClientResource(Base):
     __tablename__ = "OauthClientResource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     client_id: Mapped[str] = mapped_column("clientId", ForeignKey("OauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="OauthClientResource_clientId_fkey"))
     resource_id: Mapped[str] = mapped_column("resourceId", ForeignKey("OauthResource.identifier", ondelete="CASCADE", onupdate="CASCADE", name="OauthClientResource_resourceId_fkey"))
     metadata_: Mapped[Optional[dict[str, Any]]] = mapped_column("metadata", JSONB(none_as_null=True))
@@ -2436,13 +2438,13 @@ class OauthClientResource(Base):
 class OauthClientAssertion(Base):
     __tablename__ = "OauthClientAssertion"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     expires_at: Mapped[datetime] = mapped_column("expiresAt")
 
 class ScimManagedConnection(Base):
     __tablename__ = "scimManagedConnection"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     creation_request_id: Mapped[str] = mapped_column("creationRequestId")
     connection_id: Mapped[str] = mapped_column("connectionId")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
@@ -2467,7 +2469,7 @@ class ScimManagedConnection(Base):
 class ScimManagedCredential(Base):
     __tablename__ = "scimManagedCredential"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_record_id: Mapped[str] = mapped_column("connectionRecordId", ForeignKey("scimManagedConnection.id", ondelete="CASCADE", onupdate="CASCADE", name="scimManagedCredential_connectionRecordId_fkey"))
     credential_id: Mapped[str] = mapped_column("credentialId")
     token_digest: Mapped[str] = mapped_column("tokenDigest")
@@ -2494,7 +2496,7 @@ class ScimManagedCredential(Base):
 class ScimManagedConnectionEvent(Base):
     __tablename__ = "scimManagedConnectionEvent"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_record_id: Mapped[str] = mapped_column("connectionRecordId", ForeignKey("scimManagedConnection.id", ondelete="CASCADE", onupdate="CASCADE", name="scimManagedConnectionEvent_connectionRecordId_fkey"))
     event_key: Mapped[str] = mapped_column("eventKey")
     sequence: Mapped[int]
@@ -2513,7 +2515,7 @@ class ScimManagedConnectionEvent(Base):
 class ScimConnectionBinding(Base):
     __tablename__ = "scimConnectionBinding"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     connection_key: Mapped[str] = mapped_column("connectionKey")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
@@ -2536,7 +2538,7 @@ class ScimConnectionBinding(Base):
 class ScimIdentityTombstone(Base):
     __tablename__ = "scimIdentityTombstone"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
     external_id: Mapped[str] = mapped_column("externalId")
@@ -2557,7 +2559,7 @@ class ScimIdentityTombstone(Base):
 class ScimSubject(Base):
     __tablename__ = "scimSubject"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="scimSubject_userId_fkey"))
     profile_source_id: Mapped[Optional[str]] = mapped_column("profileSourceId")
     revision: Mapped[int]
@@ -2574,7 +2576,7 @@ class ScimSubject(Base):
 class ScimUser(Base):
     __tablename__ = "scimUser"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="scimUser_userId_fkey"))
@@ -2614,7 +2616,7 @@ class ScimUser(Base):
 class ScimProjectionGrant(Base):
     __tablename__ = "scimProjectionGrant"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
     scim_user_id: Mapped[str] = mapped_column("scimUserId", ForeignKey("scimUser.id", ondelete="CASCADE", onupdate="CASCADE", name="scimProjectionGrant_scimUserId_fkey"))
@@ -2641,7 +2643,7 @@ class ScimProjectionGrant(Base):
 class ScimGroup(Base):
     __tablename__ = "scimGroup"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     provisioning_domain_id: Mapped[str] = mapped_column("provisioningDomainId")
     revision: Mapped[int] = mapped_column(default=0, server_default=text("0"))
@@ -2666,7 +2668,7 @@ class ScimGroup(Base):
 class ScimGroupMember(Base):
     __tablename__ = "scimGroupMember"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     group_id: Mapped[str] = mapped_column("groupId", ForeignKey("scimGroup.id", ondelete="CASCADE", onupdate="CASCADE", name="scimGroupMember_groupId_fkey"))
     scim_user_id: Mapped[str] = mapped_column("scimUserId", ForeignKey("scimUser.id", ondelete="CASCADE", onupdate="CASCADE", name="scimGroupMember_scimUserId_fkey"))
@@ -2686,7 +2688,7 @@ class ScimGroupMember(Base):
 class ScimIdentityLink(Base):
     __tablename__ = "ScimIdentityLink"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     connection_id: Mapped[str] = mapped_column("connectionId")
     external_id: Mapped[str] = mapped_column("externalId")
     user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="ScimIdentityLink_userId_fkey"))
@@ -2701,7 +2703,7 @@ class ScimIdentityLink(Base):
 class LoopsEmailSource(Base):
     __tablename__ = "LoopsEmailSource"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     email_message_id: Mapped[Optional[str]] = mapped_column("emailMessageId")

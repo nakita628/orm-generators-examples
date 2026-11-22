@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -31,6 +32,30 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
+class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -40,6 +65,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 def asset_index_settings_columns_default() -> list[Any]:
@@ -559,12 +593,12 @@ class ActivityAction(models.TextChoices):
 
 
 class Image(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content_type = models.TextField(db_column="contentType")
     alt_text = models.TextField(null=True, db_column="altText")
     blob = models.BinaryField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     owner_org = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="images", db_column="ownerOrgId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="images", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -578,9 +612,9 @@ class Image(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     email = models.TextField(unique=True)
-    username = models.TextField(unique=True)
+    username = models.TextField(unique=True, default=cuid_str)
     first_name = models.TextField(null=True, db_column="firstName")
     last_name = models.TextField(null=True, db_column="lastName")
     display_name = models.TextField(null=True, db_column="displayName")
@@ -594,8 +628,8 @@ class User(models.Model):
     has_unpaid_invoice = models.BooleanField(db_column="hasUnpaidInvoice", default=False)
     warn_for_no_payment_method = models.BooleanField(db_column="warnForNoPaymentMethod", default=False)
     last_selected_organization = models.ForeignKey("Organization", on_delete=models.SET_NULL, related_name="users_with_last_selected", db_column="lastSelectedOrganizationId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     last_mobile_active_at = UtcDateTimeField(null=True, db_column="lastMobileActiveAt")
     date_format = models.TextField(choices=DateFormatPreference.choices, null=True, db_column="dateFormat")
@@ -620,7 +654,7 @@ class User(models.Model):
 
 
 class UserContact(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     phone = models.TextField(null=True)
     street = models.TextField(null=True)
     city = models.TextField(null=True)
@@ -628,8 +662,8 @@ class UserContact(models.Model):
     zip_postal_code = models.TextField(null=True, db_column="zipPostalCode")
     country_region = models.TextField(null=True, db_column="countryRegion")
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="contact", db_column="userId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -645,7 +679,7 @@ class UserContact(models.Model):
 
 
 class UserBusinessIntel(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     how_did_you_hear_about_us = models.TextField(null=True, db_column="howDidYouHearAboutUs")
     job_title = models.TextField(null=True, db_column="jobTitle")
     team_size = models.TextField(null=True, db_column="teamSize")
@@ -660,8 +694,8 @@ class UserBusinessIntel(models.Model):
     utm_campaign = models.TextField(null=True, db_column="utmCampaign")
     utm_content = models.TextField(null=True, db_column="utmContent")
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="business_intel", db_column="userId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -677,7 +711,7 @@ class UserBusinessIntel(models.Model):
 
 
 class Asset(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     title = models.TextField()
     description = models.TextField(null=True)
     main_image = models.TextField(null=True, db_column="mainImage")
@@ -696,8 +730,8 @@ class Asset(models.Model):
     unit_of_measure = models.TextField(null=True, db_column="unitOfMeasure")
     low_stock_notified_at = UtcDateTimeField(null=True, db_column="lowStockNotifiedAt")
     stock_ledger_started_at = UtcDateTimeField(null=True, db_column="stockLedgerStartedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="assets", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="assets", db_column="organizationId", db_index=False)
     category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="assets", db_column="categoryId", null=True, db_index=False)
@@ -727,14 +761,14 @@ class Asset(models.Model):
 
 
 class AssetFilterPreset(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_filter_presets", db_column="organizationId", db_index=False)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="asset_filter_presets", db_column="ownerId", db_index=False)
     name = models.TextField()
     query = models.TextField()
     starred = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -748,15 +782,15 @@ class AssetFilterPreset(models.Model):
 
 
 class AssetIndexSettings(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="asset_index_settings", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_index_settings", db_column="organizationId", db_index=False)
     mode = models.TextField(choices=AssetIndexMode.choices, default=AssetIndexMode.SIMPLE)
     columns = models.JSONField(default=asset_index_settings_columns_default)
     freeze_column = models.BooleanField(db_column="freezeColumn", default=True)
     show_asset_image = models.BooleanField(db_column="showAssetImage", default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -776,7 +810,7 @@ class PdfTemplate(models.Model):
     picks a template by name.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     kind = models.TextField(choices=PdfTemplateKind.choices, default=PdfTemplateKind.BOOKING)
     config = models.JSONField(default=dict)
@@ -792,8 +826,8 @@ class PdfTemplate(models.Model):
     migration.
     """
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="pdf_templates", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -804,12 +838,12 @@ class PdfTemplate(models.Model):
 
 
 class Category(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     color = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="categories", db_column="userId", db_index=False)
     custom_fields: "models.ManyToManyField[CustomField, CategoryToCustomField]" = models.ManyToManyField("CustomField", through="CategoryToCustomField", related_name="categories")
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="categories", db_column="organizationId", db_index=False)
@@ -831,7 +865,7 @@ class AssetModel(models.Model):
     * and provides default field values when creating new assets from the model.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     image = models.TextField(null=True)
@@ -848,8 +882,8 @@ class AssetModel(models.Model):
     default_valuation = models.FloatField(null=True, db_column="defaultValuation")
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_models", db_column="organizationId", db_index=False)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="asset_models", db_column="userId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -875,7 +909,7 @@ class BookingModelRequest(models.Model):
     moment they're checked out.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="model_requests", db_column="bookingId", db_index=False)
     asset_model = models.ForeignKey("AssetModel", on_delete=models.CASCADE, related_name="model_requests", db_column="assetModelId", db_index=False)
     quantity = models.IntegerField()
@@ -911,8 +945,8 @@ class BookingModelRequest(models.Model):
     statement guarded by `WHERE "fulfilledQuantity" < "quantity"`; upsert
     rejects a shrink below it), so any decrement re-opens the row.
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -926,15 +960,15 @@ class BookingModelRequest(models.Model):
 
 
 class Tag(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     color = models.TextField(null=True)
     use_for = ArrayField(models.TextField(choices=TagUseFor.choices), db_column="useFor", default=tag_use_for_default)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="tags", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="tags", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -947,11 +981,11 @@ class Tag(models.Model):
 
 
 class Note(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content = models.TextField()
     type = models.TextField(choices=NoteType.choices, default=NoteType.COMMENT)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="notes", db_column="userId", null=True, db_index=False)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="notes", db_column="assetId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -965,11 +999,11 @@ class Note(models.Model):
 
 
 class BookingNote(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content = models.TextField()
     type = models.TextField(choices=NoteType.choices, default=NoteType.COMMENT)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="booking_notes", db_column="userId", null=True, db_index=False)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="notes", db_column="bookingId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -983,11 +1017,11 @@ class BookingNote(models.Model):
 
 
 class LocationNote(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content = models.TextField()
     type = models.TextField(choices=NoteType.choices, default=NoteType.COMMENT)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="location_notes", db_column="userId", null=True, db_index=False)
     location = models.ForeignKey("Location", on_delete=models.CASCADE, related_name="notes", db_column="locationId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1001,7 +1035,7 @@ class LocationNote(models.Model):
 
 
 class Qr(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     version = models.IntegerField(default=0)
     error_correction = models.TextField(choices=ErrorCorrection.choices, db_column="errorCorrection", default=ErrorCorrection.L)
     asset = models.ForeignKey("Asset", on_delete=models.SET_NULL, related_name="qr_codes", db_column="assetId", null=True, db_index=False)
@@ -1009,8 +1043,8 @@ class Qr(models.Model):
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="qr_codes", db_column="userId", null=True, db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.SET_NULL, related_name="qr_codes", db_column="organizationId", null=True, db_index=False)
     batch = models.ForeignKey("PrintBatch", on_delete=models.SET_NULL, related_name="qr_codes", db_column="batchId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1026,14 +1060,14 @@ class Qr(models.Model):
 
 
 class Barcode(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     value = models.TextField()
     type = models.TextField(choices=BarcodeType.choices, default=BarcodeType.Code128)
     asset = models.ForeignKey("Asset", on_delete=models.SET_NULL, related_name="barcodes", db_column="assetId", null=True, db_index=False)
     kit = models.ForeignKey("Kit", on_delete=models.SET_NULL, related_name="barcodes", db_column="kitId", null=True, db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="barcodes", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1051,11 +1085,11 @@ class Barcode(models.Model):
 
 
 class PrintBatch(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(unique=True)
     printed = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1063,11 +1097,11 @@ class PrintBatch(models.Model):
 
 
 class ReportFound(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     email = models.TextField()
     content = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="reports", db_column="assetId", null=True, db_index=False)
     kit = models.ForeignKey("Kit", on_delete=models.CASCADE, related_name="reports", db_column="kitId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1081,7 +1115,7 @@ class ReportFound(models.Model):
 
 
 class Scan(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     latitude = models.TextField(null=True)
     longitude = models.TextField(null=True)
     user_agent = models.TextField(null=True, db_column="userAgent")
@@ -1096,8 +1130,8 @@ class Scan(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="scans", db_column="organizationId", db_index=False)
     source = models.TextField(choices=ScanSource.choices, null=True)
     manually_generated = models.BooleanField(db_column="manuallyGenerated", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1114,7 +1148,7 @@ class Scan(models.Model):
 
 
 class Location(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     address = models.TextField(null=True)
@@ -1123,8 +1157,8 @@ class Location(models.Model):
     image_url = models.TextField(null=True, db_column="imageUrl")
     thumbnail_url = models.TextField(null=True, db_column="thumbnailUrl")
     image = models.OneToOneField("Image", on_delete=models.SET_NULL, related_name="location", db_column="imageId", null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="locations", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="locations", db_column="organizationId", db_index=False)
     parent = models.ForeignKey("self", on_delete=models.SET_NULL, related_name="children", db_column="parentId", null=True, db_index=False)
@@ -1143,10 +1177,10 @@ class Location(models.Model):
 
 
 class Role(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(choices=Roles.choices, unique=True, default=Roles.USER)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     users: "models.ManyToManyField[User, RoleToUser]" = models.ManyToManyField("User", through="RoleToUser", related_name="roles")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1155,12 +1189,12 @@ class Role(models.Model):
 
 
 class TeamMember(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="members", db_column="organizationId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="team_members", db_column="userId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1174,15 +1208,15 @@ class TeamMember(models.Model):
 
 
 class Custody(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     custodian = models.ForeignKey("TeamMember", on_delete=models.RESTRICT, related_name="custodies", db_column="teamMemberId", db_index=False)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="custody", db_column="assetId", db_index=False)
     kit_custody = models.ForeignKey("KitCustody", on_delete=models.CASCADE, related_name="inherited_custody", db_column="kitCustodyId", null=True, db_index=False)
     quantity = models.IntegerField(default=1)
     location = models.ForeignKey("Location", on_delete=models.SET_NULL, related_name="custodies", db_column="locationId", null=True, db_index=False)
     source_unknown = models.BooleanField(db_column="sourceUnknown", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1196,7 +1230,7 @@ class Custody(models.Model):
 
 
 class Organization(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField(default="Personal")
     type = models.TextField(choices=OrganizationType.choices, default=OrganizationType.PERSONAL)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="organizations", db_column="userId", db_index=False)
@@ -1216,8 +1250,8 @@ class Organization(models.Model):
     audits_enabled_at = UtcDateTimeField(null=True, db_column="auditsEnabledAt")
     used_audit_trial = models.BooleanField(db_column="usedAuditTrial", default=False)
     workspace_disabled = models.BooleanField(db_column="workspaceDisabled", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     has_sequential_ids_migrated = models.BooleanField(db_column="hasSequentialIdsMigrated", default=False)
     qr_id_display_preference = models.TextField(choices=QrIdDisplayPreference.choices, db_column="qrIdDisplayPreference", default=QrIdDisplayPreference.QR_ID)
     show_shelf_branding = models.BooleanField(db_column="showShelfBranding", default=True)
@@ -1234,12 +1268,12 @@ class Organization(models.Model):
 
 
 class UserOrganization(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_organizations", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="user_organizations", db_column="organizationId", db_index=False)
     roles = ArrayField(models.TextField(choices=OrganizationRoles.choices))
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     calendar_token_id = models.TextField(null=True, unique=True, db_column="calendarTokenId")
     """Secret, unguessable token for this member's iCal calendar-feed subscription
     in this workspace. Null until the user generates a feed; regenerating it
@@ -1259,15 +1293,15 @@ class UserOrganization(models.Model):
 
 
 class SsoDetails(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     domain = models.TextField()
     base_user_group_id = models.TextField(null=True, db_column="baseUserGroupId")
     self_service_group_id = models.TextField(null=True, db_column="selfServiceGroupId")
     admin_group_id = models.TextField(null=True, db_column="adminGroupId")
     manager_group_id = models.TextField(null=True, db_column="managerGroupId")
     require_sso_login = models.BooleanField(db_column="requireSsoLogin", default=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1275,12 +1309,12 @@ class SsoDetails(models.Model):
 
 
 class ScimToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token_hash = models.TextField(unique=True, db_column="tokenHash")
     label = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="scim_tokens", db_column="organizationId", db_index=False)
     created_by_id = models.TextField(db_column="createdById")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
 
     class Meta:
@@ -1298,12 +1332,12 @@ class UserScimExternalId(models.Model):
     * external ID must be scoped to the (user, organization) pair.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="scim_external_ids", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="scim_external_ids", db_column="organizationId", db_index=False)
     scim_external_id = models.TextField(db_column="scimExternalId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1321,8 +1355,8 @@ class Tier(models.Model):
     id = models.TextField(choices=TierId.choices, primary_key=True, default=None)
     name = models.TextField()
     tier_limit = models.OneToOneField("TierLimit", on_delete=models.SET_NULL, related_name="tier", db_column="tierLimitId", null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1340,8 +1374,8 @@ class TierLimit(models.Model):
     can_use_push_notifications = models.BooleanField(db_column="canUsePushNotifications", default=False)
     max_custom_fields = models.IntegerField(db_column="maxCustomFields", default=0)
     max_organizations = models.IntegerField(db_column="maxOrganizations", default=1)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1349,7 +1383,7 @@ class TierLimit(models.Model):
 
 
 class CustomTierLimit(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.SET_NULL, related_name="custom_tier_limit", db_column="userId", null=True)
     can_import_assets = models.BooleanField(db_column="canImportAssets", default=True)
     can_export_assets = models.BooleanField(db_column="canExportAssets", default=True)
@@ -1361,8 +1395,8 @@ class CustomTierLimit(models.Model):
     max_custom_fields = models.IntegerField(db_column="maxCustomFields", default=1000)
     max_organizations = models.IntegerField(db_column="maxOrganizations", default=1)
     is_enterprise = models.BooleanField(db_column="isEnterprise", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1370,7 +1404,7 @@ class CustomTierLimit(models.Model):
 
 
 class CustomField(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     help_text = models.TextField(null=True, db_column="helpText")
     required = models.BooleanField(default=False)
@@ -1383,8 +1417,8 @@ class CustomField(models.Model):
     """
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="custom_fields", db_column="organizationId", db_index=False)
     created_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="custom_fields", db_column="userId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1398,12 +1432,12 @@ class CustomField(models.Model):
 
 
 class AssetCustomFieldValue(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     value = models.JSONField()
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="custom_fields", db_column="assetId", db_index=False)
     custom_field = models.ForeignKey("CustomField", on_delete=models.CASCADE, related_name="asset_custom_fields_values", db_column="customFieldId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1421,12 +1455,12 @@ class AssetModelCustomFieldDefault(models.Model):
     asset is a plain copy. Rows cascade away with their model or field.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     value = models.JSONField()
     asset_model = models.ForeignKey("AssetModel", on_delete=models.CASCADE, related_name="custom_field_defaults", db_column="assetModelId", db_index=False)
     custom_field_id = models.TextField(db_column="customFieldId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1440,7 +1474,7 @@ class AssetModelCustomFieldDefault(models.Model):
 
 
 class Invite(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     inviter = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sent_invites", db_column="inviterId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="invites", db_column="organizationId", db_index=False)
     invitee_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="received_invites", db_column="inviteeUserId", null=True, db_index=False)
@@ -1451,8 +1485,8 @@ class Invite(models.Model):
     roles = ArrayField(models.TextField(choices=OrganizationRoles.choices))
     invite_message = models.CharField(max_length=1000, null=True, db_column="inviteMessage")
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1466,14 +1500,14 @@ class Invite(models.Model):
 
 
 class Announcement(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     content = models.TextField()
     link = models.TextField(null=True)
     link_text = models.TextField(null=True, db_column="linkText")
     published = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1488,7 +1522,7 @@ class ConsumptionLog(models.Model):
     * Quantity is always positive — direction is determined by category.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="consumption_logs", db_column="assetId", db_index=False)
     category = models.TextField(choices=ConsumptionCategory.choices)
     quantity = models.IntegerField()
@@ -1499,7 +1533,7 @@ class ConsumptionLog(models.Model):
     booking_asset_id = models.TextField(null=True, db_column="bookingAssetId")
     location = models.ForeignKey("Location", on_delete=models.SET_NULL, related_name="consumption_logs", db_column="locationId", null=True, db_index=False)
     stock_change = models.IntegerField(null=True, db_column="stockChange")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ConsumptionLog"
@@ -1519,7 +1553,7 @@ class BookingAsset(models.Model):
     * Replaces the implicit M2M (_AssetToBooking) via a rename migration in Phase 3.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="booking_assets", db_column="bookingId", db_index=False)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="booking_assets", db_column="assetId", db_index=False)
     quantity = models.IntegerField(default=1)
@@ -1544,7 +1578,7 @@ class BookingAsset(models.Model):
 
 
 class Booking(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     status = models.TextField(choices=BookingStatus.choices, default=BookingStatus.DRAFT)
     description = models.TextField(null=True, default="")
@@ -1554,8 +1588,8 @@ class Booking(models.Model):
     custodian_team_member = models.ForeignKey("TeamMember", on_delete=models.CASCADE, related_name="bookings", db_column="custodianTeamMemberId", null=True, db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="bookings", db_column="organizationId", db_index=False)
     tags: "models.ManyToManyField[Tag, BookingToTag]" = models.ManyToManyField("Tag", through="BookingToTag", related_name="bookings")
-    created_at = models.DateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = models.DateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     from_field = models.DateTimeField(db_column="from")
     to = models.DateTimeField()
     original_from = models.DateTimeField(null=True, db_column="originalFrom")
@@ -1579,7 +1613,7 @@ class Booking(models.Model):
 
 
 class BookingSettings(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     buffer_start_time = models.IntegerField(db_column="bufferStartTime", default=0)
     tags_required = models.BooleanField(db_column="tagsRequired", default=False)
     max_booking_length = models.IntegerField(null=True, db_column="maxBookingLength")
@@ -1596,8 +1630,8 @@ class BookingSettings(models.Model):
     notify_admins_on_new_booking = models.BooleanField(db_column="notifyAdminsOnNewBooking", default=True)
     always_notify_team_members: "models.ManyToManyField[TeamMember, BookingSettingsAlwaysNotify]" = models.ManyToManyField("TeamMember", through="BookingSettingsAlwaysNotify", related_name="always_notify_booking_settings")
     organization = models.OneToOneField("Organization", on_delete=models.CASCADE, related_name="booking_settings", db_column="organizationId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1617,14 +1651,14 @@ class PartialBookingCheckin(models.Model):
     `BookingAsset.checkedInAt` is the per-slice fact.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     asset_ids = ArrayField(models.TextField(), db_column="assetIds")
     checkin_count = models.IntegerField(db_column="checkinCount")
-    checkin_timestamp = models.DateTimeField(db_column="checkinTimestamp", default=timezone.now)
+    checkin_timestamp = models.DateTimeField(db_column="checkinTimestamp", default=now_milliseconds)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="partial_checkins", db_column="bookingId", db_index=False)
     checked_in_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="partial_checkins", db_column="checkedInById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1649,16 +1683,16 @@ class PartialBookingCheckout(models.Model):
     "never checked out". `BookingAsset.checkedOutAt` answers that question.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     asset_ids = ArrayField(models.TextField(), db_column="assetIds")
     quantities = ArrayField(models.IntegerField(), default=list)
     booking_asset_ids = ArrayField(models.TextField(), db_column="bookingAssetIds", default=list)
     checkout_count = models.IntegerField(db_column="checkoutCount")
-    checkout_timestamp = models.DateTimeField(db_column="checkoutTimestamp", default=timezone.now)
+    checkout_timestamp = models.DateTimeField(db_column="checkoutTimestamp", default=now_milliseconds)
     booking = models.ForeignKey("Booking", on_delete=models.CASCADE, related_name="partial_checkouts", db_column="bookingId", db_index=False)
     checked_out_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="partial_checkouts", db_column="checkedOutById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1676,14 +1710,14 @@ class MobileAuthCode(models.Model):
     @see apps/webapp/app/routes/_auth+/oauth.callback.mobile.tsx
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="mobile_auth_codes", db_column="userId", db_index=False)
     code_hash = models.TextField(unique=True, db_column="codeHash")
     code_challenge = models.TextField(null=True, db_column="codeChallenge")
     session_ciphertext = models.TextField(null=True, db_column="sessionCiphertext")
     consumed_at = UtcDateTimeField(null=True, db_column="consumedAt")
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "MobileAuthCode"
@@ -1700,7 +1734,7 @@ class PushToken(models.Model):
     @see apps/webapp/app/modules/push/service.server.ts
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token = models.TextField(unique=True)
     platform = models.TextField(choices=DevicePlatform.choices)
     device_name = models.TextField(null=True, db_column="deviceName")
@@ -1708,8 +1742,8 @@ class PushToken(models.Model):
     last_seen_at = UtcDateTimeField(db_column="lastSeenAt")
     disabled_at = UtcDateTimeField(null=True, db_column="disabledAt")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="push_tokens", db_column="userId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1730,7 +1764,7 @@ class NotificationPreference(models.Model):
     bookings = models.BooleanField(default=True)
     audits = models.BooleanField(default=True)
     stock_and_reminders = models.BooleanField(db_column="stockAndReminders", default=True)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1738,7 +1772,7 @@ class NotificationPreference(models.Model):
 
 
 class Kit(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     status = models.TextField(choices=KitStatus.choices, default=KitStatus.AVAILABLE)
@@ -1747,8 +1781,8 @@ class Kit(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="kits", db_column="organizationId", db_index=False)
     created_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="created_kits", db_column="createdById", db_index=False)
     category = models.ForeignKey("Category", on_delete=models.SET_NULL, related_name="kits", db_column="categoryId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     location = models.ForeignKey("Location", on_delete=models.SET_NULL, related_name="kits", db_column="locationId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -1765,11 +1799,11 @@ class Kit(models.Model):
 
 
 class KitCustody(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     custodian = models.ForeignKey("TeamMember", on_delete=models.RESTRICT, related_name="kit_custodies", db_column="custodianId", db_index=False)
     kit = models.OneToOneField("Kit", on_delete=models.CASCADE, related_name="custody", db_column="kitId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1789,13 +1823,13 @@ class AssetKit(models.Model):
     TRIGGER (parallel to the Custody / BookingAsset pivots).
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="asset_kits", db_column="assetId", db_index=False)
     kit = models.ForeignKey("Kit", on_delete=models.CASCADE, related_name="asset_kits", db_column="kitId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_kits", db_column="organizationId", db_index=False)
     quantity = models.IntegerField(default=1)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1810,14 +1844,14 @@ class AssetKit(models.Model):
 
 
 class AssetLocation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="asset_locations", db_column="assetId", db_index=False)
     location = models.ForeignKey("Location", on_delete=models.CASCADE, related_name="asset_locations", db_column="locationId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_locations", db_column="organizationId", db_index=False)
     quantity = models.IntegerField(default=1)
     asset_kit = models.ForeignKey("AssetKit", on_delete=models.CASCADE, related_name="asset_locations", db_column="assetKitId", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1831,7 +1865,7 @@ class AssetLocation(models.Model):
 
 
 class AssetReminder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     message = models.TextField()
     alert_date_time = UtcDateTimeField(db_column="alertDateTime")
@@ -1844,8 +1878,8 @@ class AssetReminder(models.Model):
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="reminders", db_column="assetId", db_index=False)
     team_members: "models.ManyToManyField[TeamMember, AssetReminderToTeamMember]" = models.ManyToManyField("TeamMember", through="AssetReminderToTeamMember", related_name="asset_reminders")
     created_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="asset_reminders", db_column="createdById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1860,12 +1894,12 @@ class AssetReminder(models.Model):
 
 
 class WorkingHours(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     enabled = models.BooleanField(default=False)
     weekly_schedule = models.JSONField(db_column="weeklySchedule", default=working_hours_weekly_schedule_default)
     organization = models.OneToOneField("Organization", on_delete=models.CASCADE, related_name="working_hours", db_column="organizationId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1876,15 +1910,15 @@ class WorkingHours(models.Model):
 
 
 class WorkingHoursOverride(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     date = models.DateField()
     is_open = models.BooleanField(db_column="isOpen", default=False)
     open_time = models.TextField(null=True, db_column="openTime")
     close_time = models.TextField(null=True, db_column="closeTime")
     reason = models.TextField(null=True)
     working_hours = models.ForeignKey("WorkingHours", on_delete=models.CASCADE, related_name="overrides", db_column="workingHoursId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1899,7 +1933,7 @@ class WorkingHoursOverride(models.Model):
 
 
 class Update(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     title = models.TextField()
     content = models.TextField()
     url = models.TextField(null=True)
@@ -1910,8 +1944,8 @@ class Update(models.Model):
     click_count = models.IntegerField(db_column="clickCount", default=0)
     view_count = models.IntegerField(db_column="viewCount", default=0)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="created_updates", db_column="createdById", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1924,10 +1958,10 @@ class Update(models.Model):
 
 
 class UserUpdateRead(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="update_reads", db_column="userId", db_index=False)
     update = models.ForeignKey("Update", on_delete=models.CASCADE, related_name="user_reads", db_column="updateId", db_index=False)
-    read_at = UtcDateTimeField(db_column="readAt", default=timezone.now)
+    read_at = UtcDateTimeField(db_column="readAt", default=now_milliseconds)
 
     class Meta:
         db_table = "UserUpdateRead"
@@ -1942,11 +1976,11 @@ class UserUpdateRead(models.Model):
 
 
 class AuditNote(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content = models.TextField()
     type = models.TextField(choices=NoteType.choices, default=NoteType.COMMENT)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="audit_notes", db_column="userId", null=True, db_index=False)
     audit_session = models.ForeignKey("AuditSession", on_delete=models.CASCADE, related_name="notes", db_column="auditSessionId", db_index=False)
     audit_asset = models.ForeignKey("AuditAsset", on_delete=models.SET_NULL, related_name="notes", db_column="auditAssetId", null=True, db_index=False)
@@ -1962,11 +1996,11 @@ class AuditNote(models.Model):
 
 
 class TeamMemberNote(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     content = models.TextField()
     type = models.TextField(choices=NoteType.choices, default=NoteType.COMMENT)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="team_member_notes_authored", db_column="userId", null=True, db_index=False)
     team_member = models.ForeignKey("TeamMember", on_delete=models.CASCADE, related_name="team_member_notes", db_column="teamMemberId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="team_member_notes", db_column="organizationId", db_index=False)
@@ -1983,7 +2017,7 @@ class TeamMemberNote(models.Model):
 
 
 class AuditSession(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     description = models.TextField(null=True)
     target_id = models.TextField(null=True, db_column="targetId")
@@ -2000,8 +2034,8 @@ class AuditSession(models.Model):
     active_scheduler_reference = models.TextField(null=True, db_column="activeSchedulerReference")
     created_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="audits_created", db_column="createdById", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="audit_sessions", db_column="organizationId", db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2021,7 +2055,7 @@ class AssetImport(models.Model):
     20261015120100_asset_import_one_active_per_workspace.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     status = models.TextField(choices=AssetImportStatus.choices, default=AssetImportStatus.DRAFT)
     phase = models.TextField(choices=AssetImportPhase.choices, default=AssetImportPhase.PREPARE)
     file_name = models.TextField(null=True, db_column="fileName")
@@ -2044,8 +2078,8 @@ class AssetImport(models.Model):
     confirmed_at = UtcDateTimeField(null=True, db_column="confirmedAt")
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     completed_at = UtcDateTimeField(null=True, db_column="completedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="asset_imports", db_column="createdById", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="asset_imports", db_column="organizationId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -2064,7 +2098,7 @@ class LinkPreview(models.Model):
     the link preview job (fetch columns) and people (customTitle).
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     url = models.TextField()
     """`LinkKey` from @shelf/links, never a raw field value. At most 2048
     characters (CHECK constraint in the migration).
@@ -2074,14 +2108,14 @@ class LinkPreview(models.Model):
     """Null until the first fetch finishes."""
     attempts = models.IntegerField(default=0)
     fetched_at = UtcDateTimeField(null=True, db_column="fetchedAt")
-    next_fetch_at = UtcDateTimeField(null=True, db_column="nextFetchAt", default=timezone.now)
+    next_fetch_at = UtcDateTimeField(null=True, db_column="nextFetchAt", default=now_milliseconds)
     """When the link may be fetched next; null means never again. A claim moves
     it a few minutes ahead, which is also the lease on a fetch in flight.
     """
     custom_title = models.TextField(null=True, db_column="customTitle")
     """The name a person gave the link in this workspace; wins over pageTitle."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="link_previews", db_column="organizationId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -2093,12 +2127,12 @@ class LinkPreview(models.Model):
 
 
 class AuditAssignment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     audit_session = models.ForeignKey("AuditSession", on_delete=models.CASCADE, related_name="assignments", db_column="auditSessionId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="audit_assignments", db_column="userId", db_index=False)
     role = models.TextField(choices=AuditAssignmentRole.choices, null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2112,7 +2146,7 @@ class AuditAssignment(models.Model):
 
 
 class AuditAsset(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     audit_session = models.ForeignKey("AuditSession", on_delete=models.CASCADE, related_name="assets", db_column="auditSessionId", db_index=False)
     asset = models.ForeignKey("Asset", on_delete=models.CASCADE, related_name="audit_entries", db_column="assetId", db_index=False)
     expected = models.BooleanField(default=True)
@@ -2139,8 +2173,8 @@ class AuditAsset(models.Model):
     Both columns are non-negative, enforced by CHECK constraints in raw SQL
     (migration `20261104120000_add_audit_asset_quantities`).
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2156,7 +2190,7 @@ class AuditAsset(models.Model):
 
 
 class AuditScan(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     audit_session = models.ForeignKey("AuditSession", on_delete=models.CASCADE, related_name="scans", db_column="auditSessionId", db_index=False)
     audit_asset = models.ForeignKey("AuditAsset", on_delete=models.SET_NULL, related_name="scans", db_column="auditAssetId", null=True, db_index=False)
     asset = models.ForeignKey("Asset", on_delete=models.SET_NULL, related_name="audit_scans", db_column="assetId", null=True, db_index=False)
@@ -2181,8 +2215,8 @@ class AuditScan(models.Model):
     """
     was_expected = models.BooleanField(null=True, db_column="wasExpected")
     metadata = models.JSONField(null=True)
-    scanned_at = UtcDateTimeField(db_column="scannedAt", default=timezone.now)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    scanned_at = UtcDateTimeField(db_column="scannedAt", default=now_milliseconds)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "AuditScan"
@@ -2194,7 +2228,7 @@ class AuditScan(models.Model):
 
 
 class AuditImage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     image_url = models.TextField(db_column="imageUrl")
     thumbnail_url = models.TextField(null=True, db_column="thumbnailUrl")
     description = models.TextField(null=True)
@@ -2211,8 +2245,8 @@ class AuditImage(models.Model):
     """How the photo reached Shelf. Null only for photos uploaded before this
     field existed; a phone upload with no or an unknown source is PHONE.
     """
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2226,12 +2260,12 @@ class AuditImage(models.Model):
 
 
 class RoleChangeLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     previous_role = models.TextField(choices=OrganizationRoles.choices, db_column="previousRole")
     new_role = models.TextField(choices=OrganizationRoles.choices, db_column="newRole")
     source = models.TextField(choices=RoleChangeSource.choices, default=RoleChangeSource.MANUAL)
     """How the change was made. SSO rows name the member themself as `changedBy`."""
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="role_changes_received", db_column="userId", db_index=False)
     changed_by = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="role_changes_performed", db_column="changedById", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.RESTRICT, related_name="role_change_logs", db_column="organizationId", db_index=False)
@@ -2245,9 +2279,9 @@ class RoleChangeLog(models.Model):
 
 
 class ActivityEvent(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="activity_events", db_column="organizationId", db_index=False)
-    occurred_at = models.DateTimeField(db_column="occurredAt", default=timezone.now)
+    occurred_at = models.DateTimeField(db_column="occurredAt", default=now_milliseconds)
     actor_user_id = models.TextField(null=True, db_column="actorUserId")
     actor_snapshot = models.JSONField(null=True, db_column="actorSnapshot")
     action = models.TextField(choices=ActivityAction.choices)

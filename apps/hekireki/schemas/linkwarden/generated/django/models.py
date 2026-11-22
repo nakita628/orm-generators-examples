@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
@@ -31,6 +32,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -40,6 +53,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class Theme(models.TextChoices):
@@ -84,7 +106,7 @@ class AppMigrationStatus(models.TextChoices):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     type = models.TextField()
     provider = models.TextField()
@@ -141,8 +163,8 @@ class User(models.Model):
     session_version = models.IntegerField(db_column="sessionVersion", default=0)
     password_retries = models.IntegerField(db_column="passwordRetries", default=0)
     password_retry_at = UtcDateTimeField(null=True, db_column="passwordRetryAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -153,8 +175,8 @@ class VerificationToken(models.Model):
     identifier = models.TextField()
     token = models.TextField(primary_key=True, default=None)
     expires = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -169,8 +191,8 @@ class EmailVerificationCode(models.Model):
     code = models.TextField()
     attempts = models.IntegerField(default=0)
     expires = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -181,8 +203,8 @@ class PasswordResetToken(models.Model):
     identifier = models.TextField()
     token = models.TextField(primary_key=True, default=None)
     expires = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -200,8 +222,8 @@ class Collection(models.Model):
     is_public = models.BooleanField(db_column="isPublic", default=False)
     owner = models.ForeignKey("User", on_delete=models.CASCADE, related_name="collections", db_column="ownerId", db_index=False)
     created_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="created_collections", db_column="createdById", null=True, db_index=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -218,8 +240,8 @@ class UsersAndCollections(models.Model):
     can_create = models.BooleanField(db_column="canCreate")
     can_update = models.BooleanField(db_column="canUpdate")
     can_delete = models.BooleanField(db_column="canDelete")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -255,8 +277,8 @@ class Link(models.Model):
     index_version = models.IntegerField(null=True, db_column="indexVersion")
     last_preserved = UtcDateTimeField(null=True, db_column="lastPreserved")
     import_date = UtcDateTimeField(null=True, db_column="importDate")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -278,8 +300,8 @@ class Tag(models.Model):
     archive_as_wayback_machine = models.BooleanField(null=True, db_column="archiveAsWaybackMachine")
     ai_tag = models.BooleanField(null=True, db_column="aiTag")
     ai_generated = models.BooleanField(db_column="aiGenerated", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -305,8 +327,8 @@ class Subscription(models.Model):
     store_metadata = models.JSONField(null=True, db_column="storeMetadata")
     stripe_subscription_id = models.TextField(null=True, unique=True, db_column="stripeSubscriptionId")
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="subscriptions", db_column="userId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -322,8 +344,8 @@ class AccessToken(models.Model):
     is_session = models.BooleanField(db_column="isSession", default=False)
     expires = UtcDateTimeField()
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -337,8 +359,8 @@ class RssSubscription(models.Model):
     last_build_date = UtcDateTimeField(null=True, db_column="lastBuildDate")
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, related_name="rss_subscriptions", db_column="collectionId", db_index=False)
     owner_id = models.IntegerField(db_column="ownerId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -354,8 +376,8 @@ class Highlight(models.Model):
     start_offset = models.IntegerField(db_column="startOffset")
     end_offset = models.IntegerField(db_column="endOffset")
     text = models.TextField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -368,8 +390,8 @@ class DashboardSection(models.Model):
     collection = models.ForeignKey("Collection", on_delete=models.CASCADE, related_name="dashboard_section", db_column="collectionId", null=True, db_index=False)
     type = models.TextField(choices=DashboardSectionType.choices)
     order = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -384,7 +406,7 @@ class AppMigration(models.Model):
     name = models.TextField(unique=True)
     status = models.TextField(choices=AppMigrationStatus.choices)
     finished_at = UtcDateTimeField(null=True, db_column="finishedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "AppMigration"

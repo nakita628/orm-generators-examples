@@ -2,6 +2,7 @@ from datetime import datetime
 from datetime import timezone as dt_timezone
 from typing import Any, TypeVar
 
+import cuid  # type: ignore[import-untyped, unused-ignore]
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.indexes import GinIndex
@@ -31,6 +32,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -40,6 +53,15 @@ class AutoNowQuerySet(models.QuerySet[_M]):
             if getattr(field, "auto_now", False):
                 kwargs.setdefault(field.name, getattr(field, "stamp", timezone.now)())
         return super().update(**kwargs)
+
+
+def cuid_str() -> str:
+    return str(cuid.cuid())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class SignupIntent(models.TextChoices):
@@ -437,9 +459,9 @@ class ConversationActivityKind(models.TextChoices):
 
 class Account(models.Model):
     password = models.TextField(null=True)
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     provider = models.TextField()
     type = models.TextField(default="oidc")
@@ -447,7 +469,7 @@ class Account(models.Model):
     refresh_token = models.TextField(null=True)
     refresh_token_expires_at = UtcDateTimeField(null=True, db_column="refreshTokenExpiresAt")
     access_token = models.TextField(null=True)
-    expires_at = UtcDateTimeField(null=True, default=timezone.now)
+    expires_at = UtcDateTimeField(null=True, default=now_milliseconds)
     disconnected_at = UtcDateTimeField(null=True, db_column="disconnectedAt")
     token_type = models.TextField(null=True)
     scope = models.TextField(null=True)
@@ -466,12 +488,12 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     session_token = models.TextField(unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email_otp = models.BooleanField(db_column="emailOtp", default=False)
     email_otp_version = models.IntegerField(db_column="emailOtpVersion", default=0)
     ip_address = models.TextField(null=True, db_column="ipAddress")
@@ -488,9 +510,9 @@ class Session(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField(null=True)
     email = models.TextField(unique=True)
     email_verified = models.BooleanField(null=True, db_column="emailVerified", default=False)
@@ -529,10 +551,10 @@ class User(models.Model):
 
 
 class EmailAccount(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     email = models.TextField(unique=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField(null=True)
     image = models.TextField(null=True)
     sort_order = models.IntegerField(null=True, db_column="sortOrder")
@@ -609,9 +631,9 @@ class EmailAccount(models.Model):
 
 
 class MailSplit(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     order = models.IntegerField()
     match_all = models.BooleanField(db_column="matchAll", default=True)
@@ -639,7 +661,7 @@ class MailSplitFilter(models.Model):
     kind (two senders, two labels), so kind is deliberately not unique per split.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     kind = models.TextField(choices=MailSplitFilterKind.choices)
     value = models.TextField(null=True)
     order = models.IntegerField()
@@ -657,13 +679,13 @@ class MailSplitFilter(models.Model):
 
 
 class Organization(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     name = models.TextField()
     slug = models.TextField(unique=True)
     logo = models.TextField(null=True)
     metadata = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -671,9 +693,9 @@ class Organization(models.Model):
 
 
 class OrganizationRule(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="rules", db_column="organizationId", db_index=False)
     enabled = models.BooleanField(default=True)
     name = models.TextField()
@@ -697,9 +719,9 @@ class OrganizationRule(models.Model):
 
 
 class OrganizationRuleAction(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organization_rule = models.ForeignKey("OrganizationRule", on_delete=models.CASCADE, related_name="actions", db_column="organizationRuleId", db_index=False)
     type = models.TextField(choices=ActionType.choices)
     label = models.TextField(null=True)
@@ -722,13 +744,13 @@ class OrganizationRuleAction(models.Model):
 
 
 class Member(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="members", db_column="organizationId", db_index=False)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.RESTRICT, related_name="members", db_column="emailAccountId", db_index=False)
     role = models.TextField(default="member")
     allow_org_admin_analytics = models.BooleanField(db_column="allowOrgAdminAnalytics", default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -740,9 +762,9 @@ class Member(models.Model):
 
 
 class Conversation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="conversations", db_column="organizationId", db_index=False)
     publisher = models.ForeignKey("Member", on_delete=models.CASCADE, related_name="conversations", db_column="publisherId", db_index=False)
     thread_id = models.TextField(db_column="threadId")
@@ -762,14 +784,14 @@ class Conversation(models.Model):
 
 
 class ConversationParticipant(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     conversation = models.ForeignKey("Conversation", on_delete=models.CASCADE, related_name="participants", db_column="conversationId", db_index=False)
     member = models.ForeignKey("Member", on_delete=models.CASCADE, related_name="conversation_participants", db_column="memberId", db_index=False)
     generation = models.IntegerField()
     active = models.BooleanField(default=True)
     read_revision = models.IntegerField(db_column="readRevision", default=0)
     muted = models.BooleanField(default=False)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ConversationParticipant"
@@ -782,14 +804,14 @@ class ConversationParticipant(models.Model):
 
 
 class ConversationComment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     conversation = models.ForeignKey("Conversation", on_delete=models.CASCADE, related_name="comments", db_column="conversationId", db_index=False)
     author = models.ForeignKey("Member", on_delete=models.SET_NULL, related_name="conversation_comments", db_column="authorMemberId", null=True, db_index=False)
     client_mutation_id = models.TextField(db_column="clientMutationId")
     body = models.TextField()
     revision = models.IntegerField()
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ConversationComment"
@@ -800,12 +822,12 @@ class ConversationComment(models.Model):
 
 
 class ConversationActivity(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     participant = models.ForeignKey("ConversationParticipant", on_delete=models.CASCADE, related_name="activity", db_column="participantId", db_index=False)
     comment = models.ForeignKey("ConversationComment", on_delete=models.SET_NULL, related_name="activity", db_column="commentId", null=True, db_index=False)
     kind = models.TextField(choices=ConversationActivityKind.choices)
     revision = models.IntegerField()
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
     class Meta:
         db_table = "ConversationActivity"
@@ -818,7 +840,7 @@ class ConversationActivity(models.Model):
 
 
 class Invitation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="invitations", db_column="organizationId", db_index=False)
     email = models.TextField()
     role = models.TextField(null=True)
@@ -835,12 +857,12 @@ class Invitation(models.Model):
 
 
 class Verification(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     identifier = models.TextField()
     value = models.TextField()
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -849,7 +871,7 @@ class Verification(models.Model):
 
 class SsoProvider(models.Model):
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="sso_providers", db_column="userId", null=True, db_index=False)
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     issuer = models.TextField()
     oidc_config = models.TextField(null=True, db_column="oidcConfig")
     saml_config = models.TextField(null=True, db_column="samlConfig")
@@ -866,9 +888,9 @@ class SsoProvider(models.Model):
 
 
 class Digest(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="digests", db_column="emailAccountId", db_index=False)
     sent_at = UtcDateTimeField(null=True, db_column="sentAt")
     status = models.TextField(choices=DigestStatus.choices, default=DigestStatus.PENDING)
@@ -882,9 +904,9 @@ class Digest(models.Model):
 
 
 class DigestItem(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     message_id = models.TextField(db_column="messageId")
     thread_id = models.TextField(db_column="threadId")
     content = models.TextField()
@@ -905,9 +927,9 @@ class DigestItem(models.Model):
 
 
 class Schedule(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     interval_days = models.IntegerField(null=True, db_column="intervalDays")
     occurrences = models.IntegerField(null=True)
     days_of_week = models.IntegerField(null=True, db_column="daysOfWeek")
@@ -925,9 +947,9 @@ class Schedule(models.Model):
 
 
 class Premium(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     pending_invites = ArrayField(models.TextField(), db_column="pendingInvites")
     lemon_squeezy_renews_at = UtcDateTimeField(null=True, db_column="lemonSqueezyRenewsAt")
     lemon_squeezy_customer_id = models.IntegerField(null=True, db_column="lemonSqueezyCustomerId")
@@ -989,9 +1011,9 @@ class Premium(models.Model):
 
 
 class PendingPremiumGrant(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField(unique=True)
     tier = models.TextField(choices=PremiumTier.choices)
     count = models.IntegerField(default=1)
@@ -1003,9 +1025,9 @@ class PendingPremiumGrant(models.Model):
 
 
 class VerificationToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     identifier = models.TextField()
     token = models.TextField(unique=True)
     expires = UtcDateTimeField()
@@ -1019,9 +1041,9 @@ class VerificationToken(models.Model):
 
 
 class Label(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     gmail_label_id = models.TextField(db_column="gmailLabelId")
     name = models.TextField()
     description = models.TextField(null=True)
@@ -1041,9 +1063,9 @@ class Label(models.Model):
 
 
 class Rule(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     enabled = models.BooleanField(default=True)
     automate = models.BooleanField(default=True)
@@ -1078,9 +1100,9 @@ class Rule(models.Model):
 
 
 class Action(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     type = models.TextField(choices=ActionType.choices)
     rule_id = models.TextField(db_column="ruleId")
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="actions", db_column="emailAccountId", db_index=False)
@@ -1113,8 +1135,8 @@ class Action(models.Model):
 
 
 class RuleHistory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     rule = models.ForeignKey("Rule", on_delete=models.CASCADE, related_name="history", db_column="ruleId", db_index=False)
     version = models.IntegerField()
     trigger_type = models.TextField(db_column="triggerType")
@@ -1145,9 +1167,9 @@ class RuleHistory(models.Model):
 
 
 class ExecutedRule(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     thread_id = models.TextField(db_column="threadId")
     message_id = models.TextField(db_column="messageId")
     status = models.TextField(choices=ExecutedRuleStatus.choices)
@@ -1172,9 +1194,9 @@ class ExecutedRule(models.Model):
 
 
 class ExecutedAction(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     type = models.TextField(choices=ActionType.choices)
     execution_status = models.TextField(choices=ExecutedActionStatus.choices, null=True, db_column="executionStatus")
     execution_started_at = UtcDateTimeField(null=True, db_column="executionStartedAt")
@@ -1222,9 +1244,9 @@ class ExecutedAction(models.Model):
 
 
 class ScheduledAction(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     executed_rule = models.ForeignKey("ExecutedRule", on_delete=models.CASCADE, related_name="scheduled_actions", db_column="executedRuleId", db_index=False)
     action_type = models.TextField(choices=ActionType.choices, db_column="actionType")
     message_id = models.TextField(db_column="messageId")
@@ -1260,8 +1282,8 @@ class ScheduledAction(models.Model):
 
 
 class SnoozedThread(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     thread_id = models.TextField(db_column="threadId")
     scheduled_for = UtcDateTimeField(db_column="scheduledFor")
     status = models.TextField(choices=SnoozedThreadStatus.choices, default=SnoozedThreadStatus.PENDING)
@@ -1281,9 +1303,9 @@ class SnoozedThread(models.Model):
 
 
 class ScheduledEmail(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="scheduled_emails", db_column="emailAccountId", db_index=False)
     client_mutation_id = models.TextField(db_column="clientMutationId")
     payload_hash = models.TextField(db_column="payloadHash")
@@ -1317,13 +1339,13 @@ class ScheduledEmail(models.Model):
 
 
 class EmailSendOperation(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     client_mutation_id = models.TextField(db_column="clientMutationId")
     payload_hash = models.TextField(db_column="payloadHash")
     status = models.TextField(choices=EmailSendOperationStatus.choices, default=EmailSendOperationStatus.PROCESSING)
-    processing_started_at = UtcDateTimeField(db_column="processingStartedAt", default=timezone.now)
+    processing_started_at = UtcDateTimeField(db_column="processingStartedAt", default=now_milliseconds)
     result = models.JSONField(null=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="email_send_operations", db_column="emailAccountId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -1339,9 +1361,9 @@ class EmailSendOperation(models.Model):
 
 
 class SentMessageOpen(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     token = models.TextField(unique=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="sent_message_opens", db_column="emailAccountId", db_index=False)
     thread_id = models.TextField(null=True, db_column="threadId")
@@ -1362,9 +1384,9 @@ class SentMessageOpen(models.Model):
 
 
 class Group(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     prompt = models.TextField(null=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="groups", db_column="emailAccountId", db_index=False)
@@ -1381,9 +1403,9 @@ class Group(models.Model):
 
 
 class GroupItem(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     group = models.ForeignKey("Group", on_delete=models.CASCADE, related_name="items", db_column="groupId", null=True, db_index=False)
     type = models.TextField(choices=GroupItemType.choices)
     value = models.TextField()
@@ -1402,8 +1424,8 @@ class GroupItem(models.Model):
 
 
 class ClassificationFeedback(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     sender = models.TextField()
     event_type = models.TextField(choices=ClassificationFeedbackEventType.choices, db_column="eventType")
     rule = models.ForeignKey("Rule", on_delete=models.CASCADE, related_name="classification_feedback", db_column="ruleId", db_index=False)
@@ -1422,9 +1444,9 @@ class ClassificationFeedback(models.Model):
 
 
 class Category(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     description = models.TextField(null=True)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="categories", db_column="emailAccountId", db_index=False)
@@ -1442,9 +1464,9 @@ class Category(models.Model):
 
 
 class Newsletter(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email = models.TextField()
     name = models.TextField(null=True)
     status = models.TextField(choices=NewsletterStatus.choices, null=True)
@@ -1466,9 +1488,9 @@ class Newsletter(models.Model):
 
 
 class ColdEmail(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     from_email = models.TextField(db_column="fromEmail")
     message_id = models.TextField(null=True, db_column="messageId")
     thread_id = models.TextField(null=True, db_column="threadId")
@@ -1489,9 +1511,9 @@ class ColdEmail(models.Model):
 
 
 class EmailMessage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     thread_id = models.TextField(db_column="threadId")
     message_id = models.TextField(db_column="messageId")
     date = UtcDateTimeField()
@@ -1521,8 +1543,8 @@ class EmailMessage(models.Model):
 
 
 class ResponseTime(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     thread_id = models.TextField(db_column="threadId")
     sent_message_id = models.TextField(db_column="sentMessageId")
     received_message_id = models.TextField(db_column="receivedMessageId")
@@ -1542,9 +1564,9 @@ class ResponseTime(models.Model):
 
 
 class ThreadTracker(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     sent_at = UtcDateTimeField(db_column="sentAt")
     thread_id = models.TextField(db_column="threadId")
     message_id = models.TextField(db_column="messageId")
@@ -1573,9 +1595,9 @@ class ThreadTracker(models.Model):
 
 
 class CleanupJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     action = models.TextField(choices=CleanAction.choices, default=CleanAction.ARCHIVE)
     days_old = models.IntegerField(db_column="daysOld", default=7)
     instructions = models.TextField(null=True)
@@ -1596,9 +1618,9 @@ class CleanupJob(models.Model):
 
 
 class CleanupThread(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     thread_id = models.TextField(db_column="threadId")
     archived = models.BooleanField()
     job = models.ForeignKey("CleanupJob", on_delete=models.CASCADE, related_name="threads", db_column="jobId", db_index=False)
@@ -1614,9 +1636,9 @@ class CleanupThread(models.Model):
 
 
 class BulkInboxActionJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     status = models.TextField(choices=BulkInboxActionJobStatus.choices, default=BulkInboxActionJobStatus.RUNNING)
     search = models.JSONField()
     action = models.TextField()
@@ -1661,9 +1683,9 @@ class BulkInboxActionThread(models.Model):
 
 
 class Knowledge(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     title = models.TextField()
     content = models.TextField()
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="knowledge", db_column="emailAccountId", db_index=False)
@@ -1677,9 +1699,9 @@ class Knowledge(models.Model):
 
 
 class Snippet(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     shortcut = models.TextField()
     content = models.TextField()
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="snippets", db_column="emailAccountId", db_index=False)
@@ -1696,9 +1718,9 @@ class Snippet(models.Model):
 
 
 class EmailSignature(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     html = models.TextField()
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="email_signatures", db_column="emailAccountId", db_index=False)
@@ -1712,9 +1734,9 @@ class EmailSignature(models.Model):
 
 
 class ReplyMemory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     content = models.TextField()
     kind = models.TextField(choices=ReplyMemoryKind.choices)
     scope_type = models.TextField(choices=ReplyMemoryScopeType.choices, db_column="scopeType")
@@ -1736,7 +1758,7 @@ class ReplyMemory(models.Model):
 
 class ReplyMemorySource(models.Model):
     pk = models.CompositePrimaryKey("reply_memory_id", "draft_send_log_id")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     learned_writing_style_analyzed_at = UtcDateTimeField(null=True, db_column="learnedWritingStyleAnalyzedAt")
     reply_memory = models.ForeignKey("ReplyMemory", on_delete=models.CASCADE, related_name="sources", db_column="replyMemoryId", db_index=False)
     draft_send_log = models.ForeignKey("DraftSendLog", on_delete=models.CASCADE, related_name="reply_memory_sources", db_column="draftSendLogId", db_index=False)
@@ -1750,9 +1772,9 @@ class ReplyMemorySource(models.Model):
 
 
 class ApiKey(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField(null=True)
     hashed_key = models.TextField(unique=True, db_column="hashedKey")
     is_active = models.BooleanField(db_column="isActive", default=True)
@@ -1772,8 +1794,8 @@ class ApiKey(models.Model):
 
 
 class EmailToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     token = models.TextField(unique=True)
     expires_at = UtcDateTimeField(db_column="expiresAt")
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="email_tokens", db_column="emailAccountId", db_index=False)
@@ -1786,7 +1808,7 @@ class EmailToken(models.Model):
 
 
 class Payment(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     created_at = UtcDateTimeField(db_column="createdAt")
     updated_at = UtcDateTimeField(db_column="updatedAt")
     premium = models.ForeignKey("Premium", on_delete=models.SET_NULL, related_name="payments", db_column="premiumId", null=True, db_index=False)
@@ -1813,8 +1835,8 @@ class Payment(models.Model):
 
 
 class DraftSendLog(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     executed_action = models.OneToOneField("ExecutedAction", on_delete=models.CASCADE, related_name="draft_send_log", db_column="executedActionId")
     sent_message_id = models.TextField(db_column="sentMessageId")
     similarity_score = models.FloatField(db_column="similarityScore")
@@ -1835,9 +1857,9 @@ class DraftSendLog(models.Model):
 
 
 class Chat(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     deleted_at = UtcDateTimeField(null=True, db_column="deletedAt")
     name = models.TextField(null=True)
     compaction_count = models.IntegerField(db_column="compactionCount", default=0)
@@ -1856,9 +1878,9 @@ class Chat(models.Model):
 
 
 class ChatMessage(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     role = models.TextField()
     parts = models.JSONField()
     metadata = models.JSONField(null=True)
@@ -1873,8 +1895,8 @@ class ChatMessage(models.Model):
 
 
 class ChatCompaction(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     summary = models.TextField()
     message_count = models.IntegerField(db_column="messageCount")
     compacted_before_created_at = UtcDateTimeField(db_column="compactedBeforeCreatedAt")
@@ -1888,9 +1910,9 @@ class ChatCompaction(models.Model):
 
 
 class ChatActionTotal(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     action = models.TextField()
     count = models.IntegerField(default=0)
     chat = models.ForeignKey("Chat", on_delete=models.CASCADE, related_name="action_totals", db_column="chatId", db_index=False)
@@ -1904,9 +1926,9 @@ class ChatActionTotal(models.Model):
 
 
 class ChatMemory(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     content = models.TextField()
     chat = models.ForeignKey("Chat", on_delete=models.SET_NULL, related_name="memories", db_column="chatId", null=True, db_index=False)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="chat_memories", db_column="emailAccountId", db_index=False)
@@ -1920,9 +1942,9 @@ class ChatMemory(models.Model):
 
 
 class CalendarConnection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     provider = models.TextField()
     email = models.TextField()
     access_token = models.TextField(null=True, db_column="accessToken")
@@ -1940,9 +1962,9 @@ class CalendarConnection(models.Model):
 
 
 class Calendar(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     calendar_id = models.TextField(db_column="calendarId")
     name = models.TextField()
     description = models.TextField(null=True)
@@ -1960,9 +1982,9 @@ class Calendar(models.Model):
 
 
 class BookingLink(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     slug = models.TextField(unique=True)
     title = models.TextField()
     description = models.TextField(null=True)
@@ -1987,9 +2009,9 @@ class BookingLink(models.Model):
 
 
 class AvailabilitySchedule(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     is_default = models.BooleanField(db_column="isDefault", default=False)
     timezone = models.TextField(default="UTC")
@@ -2008,9 +2030,9 @@ class AvailabilitySchedule(models.Model):
 
 
 class AvailabilityWindow(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     weekday = models.IntegerField()
     start_minutes = models.IntegerField(db_column="startMinutes")
     end_minutes = models.IntegerField(db_column="endMinutes")
@@ -2025,9 +2047,9 @@ class AvailabilityWindow(models.Model):
 
 
 class Booking(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     guest_name = models.TextField(db_column="guestName")
     guest_email = models.TextField(db_column="guestEmail")
     guest_note = models.TextField(null=True, db_column="guestNote")
@@ -2058,8 +2080,8 @@ class Booking(models.Model):
 
 
 class MeetingBriefing(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     calendar_event_id = models.TextField(db_column="calendarEventId")
     event_title = models.TextField(db_column="eventTitle")
     event_start_time = UtcDateTimeField(db_column="eventStartTime")
@@ -2078,8 +2100,8 @@ class MeetingBriefing(models.Model):
 
 
 class ContactResearch(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     email = models.TextField()
     research_started_at = UtcDateTimeField(db_column="researchStartedAt")
     found = models.BooleanField()
@@ -2096,9 +2118,9 @@ class ContactResearch(models.Model):
 
 
 class MeetingRecording(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     bot_provider = models.TextField(db_column="botProvider", default="recall")
     external_bot_id = models.TextField(null=True, db_column="externalBotId")
     bot_name = models.TextField(null=True, db_column="botName")
@@ -2132,9 +2154,9 @@ class MeetingRecording(models.Model):
 
 
 class Meeting(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     calendar_event_id = models.TextField(db_column="calendarEventId")
     event_title = models.TextField(db_column="eventTitle")
     start_time = UtcDateTimeField(db_column="startTime")
@@ -2166,9 +2188,9 @@ class Meeting(models.Model):
 
 
 class MessagingChannel(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     provider = models.TextField(choices=MessagingProvider.choices)
     is_connected = models.BooleanField(db_column="isConnected", default=True)
     team_id = models.TextField(db_column="teamId")
@@ -2194,9 +2216,9 @@ class MessagingChannel(models.Model):
 
 
 class MessagingRoute(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     purpose = models.TextField(choices=MessagingRoutePurpose.choices)
     target_type = models.TextField(choices=MessagingRouteTargetType.choices, db_column="targetType")
     target_id = models.TextField(db_column="targetId")
@@ -2211,9 +2233,9 @@ class MessagingRoute(models.Model):
 
 
 class AutomationJob(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     enabled = models.BooleanField(default=True)
     prompt = models.TextField(null=True)
@@ -2236,8 +2258,8 @@ class AutomationJob(models.Model):
 
 
 class AutomationJobRun(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     status = models.TextField(choices=AutomationJobRunStatus.choices, default=AutomationJobRunStatus.PENDING)
     scheduled_for = UtcDateTimeField(db_column="scheduledFor")
     processed_at = UtcDateTimeField(null=True, db_column="processedAt")
@@ -2258,9 +2280,9 @@ class AutomationJobRun(models.Model):
 
 
 class DriveConnection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     provider = models.TextField()
     email = models.TextField()
     access_token = models.TextField(null=True, db_column="accessToken")
@@ -2281,9 +2303,9 @@ class DriveConnection(models.Model):
 
 
 class FilingFolder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     folder_id = models.TextField(db_column="folderId")
     folder_name = models.TextField(db_column="folderName")
     folder_path = models.TextField(db_column="folderPath")
@@ -2302,9 +2324,9 @@ class FilingFolder(models.Model):
 
 
 class DocumentFiling(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     message_id = models.TextField(db_column="messageId")
     attachment_id = models.TextField(db_column="attachmentId")
     filename = models.TextField()
@@ -2341,9 +2363,9 @@ class DocumentFiling(models.Model):
 
 
 class AttachmentSource(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     type = models.TextField(choices=AttachmentSourceType.choices)
     source_id = models.TextField(db_column="sourceId")
@@ -2364,9 +2386,9 @@ class AttachmentSource(models.Model):
 
 
 class AttachmentDocument(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     attachment_source = models.ForeignKey("AttachmentSource", on_delete=models.CASCADE, related_name="documents", db_column="attachmentSourceId", db_index=False)
     file_id = models.TextField(db_column="fileId")
     name = models.TextField()
@@ -2390,9 +2412,9 @@ class AttachmentDocument(models.Model):
 
 
 class Referral(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     referrer_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="referrals_made", db_column="referrerUserId", db_index=False)
     referred_user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="referral_received", db_column="referredUserId")
     referral_code_used = models.TextField(db_column="referralCodeUsed")
@@ -2411,9 +2433,9 @@ class Referral(models.Model):
 
 
 class McpIntegration(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField(unique=True)
     registered_server_url = models.TextField(null=True, db_column="registeredServerUrl")
     registered_authorization_url = models.TextField(null=True, db_column="registeredAuthorizationUrl")
@@ -2434,9 +2456,9 @@ class McpIntegration(models.Model):
 
 
 class McpConnection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     is_active = models.BooleanField(db_column="isActive", default=True)
     access_token = models.TextField(null=True, db_column="accessToken")
@@ -2455,9 +2477,9 @@ class McpConnection(models.Model):
 
 
 class McpTool(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     name = models.TextField()
     description = models.TextField(null=True)
     schema = models.JSONField(null=True)
@@ -2474,9 +2496,9 @@ class McpTool(models.Model):
 
 
 class MobilePushToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     token = models.TextField(unique=True)
     platform = models.TextField(choices=MobilePushPlatform.choices)
     token_type = models.TextField(choices=MobilePushTokenType.choices, db_column="tokenType", default=MobilePushTokenType.EXPO)
@@ -2492,8 +2514,8 @@ class MobilePushToken(models.Model):
 
 
 class MobilePushDelivery(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     deduplication_key = models.TextField(db_column="deduplicationKey")
     mobile_push_token = models.ForeignKey("MobilePushToken", on_delete=models.CASCADE, related_name="mobile_push_deliveries", db_column="mobilePushTokenId", db_index=False)
 
@@ -2509,7 +2531,7 @@ class MobilePushDelivery(models.Model):
 
 
 class OauthClient(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     client_id = models.TextField(unique=True, db_column="clientId")
     client_secret = models.TextField(null=True, db_column="clientSecret")
     client_discovery_id = models.TextField(null=True, db_column="clientDiscoveryId")
@@ -2557,7 +2579,7 @@ class OauthClient(models.Model):
 
 
 class OauthRefreshToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token = models.TextField(unique=True)
     client = models.ForeignKey("OauthClient", on_delete=models.CASCADE, related_name="oauthrefreshtokens", to_field="client_id", db_column="clientId", db_index=False)
     session = models.ForeignKey("Session", on_delete=models.SET_NULL, related_name="oauth_refresh_token_records", db_column="sessionId", null=True, db_index=False)
@@ -2590,7 +2612,7 @@ class OauthRefreshToken(models.Model):
 
 
 class OauthAccessToken(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     token = models.TextField(unique=True)
     client = models.ForeignKey("OauthClient", on_delete=models.CASCADE, related_name="oauthaccesstokens", to_field="client_id", db_column="clientId", db_index=False)
     session = models.ForeignKey("Session", on_delete=models.SET_NULL, related_name="oauth_access_token_records", db_column="sessionId", null=True, db_index=False)
@@ -2621,7 +2643,7 @@ class OauthAccessToken(models.Model):
 
 
 class OauthConsent(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     client = models.ForeignKey("OauthClient", on_delete=models.CASCADE, related_name="oauthconsents", to_field="client_id", db_column="clientId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="oauth_consent_records", db_column="userId", null=True, db_index=False)
     reference_id = models.TextField(null=True, db_column="referenceId")
@@ -2642,7 +2664,7 @@ class OauthConsent(models.Model):
 
 
 class Jwks(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     public_key = models.TextField(db_column="publicKey")
     private_key = models.TextField(db_column="privateKey")
     created_at = UtcDateTimeField(db_column="createdAt")
@@ -2655,7 +2677,7 @@ class Jwks(models.Model):
 
 
 class OauthResource(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     identifier = models.TextField(unique=True)
     name = models.TextField()
     access_token_ttl = models.IntegerField(null=True, db_column="accessTokenTtl")
@@ -2679,7 +2701,7 @@ class OauthResource(models.Model):
 
 
 class OauthClientResource(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     client = models.ForeignKey("OauthClient", on_delete=models.CASCADE, related_name="oauth_client_resources", to_field="client_id", db_column="clientId", db_index=False)
     oauth_resource = models.ForeignKey("OauthResource", on_delete=models.CASCADE, related_name="oauth_client_resources", to_field="identifier", db_column="resourceId", db_index=False)
     metadata = models.JSONField(null=True)
@@ -2697,7 +2719,7 @@ class OauthClientResource(models.Model):
 
 
 class OauthClientAssertion(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     expires_at = UtcDateTimeField(db_column="expiresAt")
 
     class Meta:
@@ -2705,7 +2727,7 @@ class OauthClientAssertion(models.Model):
 
 
 class ScimManagedConnection(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     creation_request_id = models.TextField(unique=True, db_column="creationRequestId")
     connection_id = models.TextField(unique=True, db_column="connectionId")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
@@ -2730,7 +2752,7 @@ class ScimManagedConnection(models.Model):
 
 
 class ScimManagedCredential(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     scimmanagedconnection = models.ForeignKey("ScimManagedConnection", on_delete=models.CASCADE, related_name="scimmanagedcredentials", db_column="connectionRecordId", db_index=False)
     credential_id = models.TextField(unique=True, db_column="credentialId")
     token_digest = models.TextField(db_column="tokenDigest")
@@ -2758,7 +2780,7 @@ class ScimManagedCredential(models.Model):
 
 
 class ScimManagedConnectionEvent(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     scimmanagedconnection = models.ForeignKey("ScimManagedConnection", on_delete=models.CASCADE, related_name="scimmanagedconnectionevents", db_column="connectionRecordId", db_index=False)
     event_key = models.TextField(unique=True, db_column="eventKey")
     sequence = models.IntegerField()
@@ -2778,7 +2800,7 @@ class ScimManagedConnectionEvent(models.Model):
 
 
 class ScimConnectionBinding(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     connection_key = models.TextField(unique=True, db_column="connectionKey")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
@@ -2804,7 +2826,7 @@ class ScimConnectionBinding(models.Model):
 
 
 class ScimIdentityTombstone(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
     external_id = models.TextField(db_column="externalId")
@@ -2826,7 +2848,7 @@ class ScimIdentityTombstone(models.Model):
 
 
 class ScimSubject(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="scim_subject", db_column="userId")
     profile_source_id = models.TextField(null=True, db_column="profileSourceId")
     revision = models.IntegerField()
@@ -2844,7 +2866,7 @@ class ScimSubject(models.Model):
 
 
 class ScimUser(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="scim_users", db_column="userId", db_index=False)
@@ -2883,7 +2905,7 @@ class ScimUser(models.Model):
 
 
 class ScimProjectionGrant(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
     scim_user = models.ForeignKey("ScimUser", on_delete=models.CASCADE, related_name="scim_projection_grants", db_column="scimUserId", db_index=False)
@@ -2910,7 +2932,7 @@ class ScimProjectionGrant(models.Model):
 
 
 class ScimGroup(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     provisioning_domain_id = models.TextField(db_column="provisioningDomainId")
     revision = models.IntegerField(default=0)
@@ -2936,7 +2958,7 @@ class ScimGroup(models.Model):
 
 
 class ScimGroupMember(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     scim_group = models.ForeignKey("ScimGroup", on_delete=models.CASCADE, related_name="scim_group_members", db_column="groupId", db_index=False)
     scim_user = models.ForeignKey("ScimUser", on_delete=models.CASCADE, related_name="scim_group_members", db_column="scimUserId", db_index=False)
@@ -2956,7 +2978,7 @@ class ScimGroupMember(models.Model):
 
 
 class ScimIdentityLink(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default=cuid_str)
     connection_id = models.TextField(db_column="connectionId")
     external_id = models.TextField(db_column="externalId")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="scim_identity_links", db_column="userId", db_index=False)
@@ -2972,9 +2994,9 @@ class ScimIdentityLink(models.Model):
 
 
 class LoopsEmailSource(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     email_message_id = models.TextField(null=True, unique=True, db_column="emailMessageId")
     loop_id = models.TextField(null=True, db_column="loopId")
     loop_name = models.TextField(null=True, db_column="loopName")

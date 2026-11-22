@@ -31,6 +31,18 @@ class UtcDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value if settings.USE_TZ else timezone.make_naive(value, timezone.get_default_timezone())
 
 
+class UtcAutoNowDateTimeField(UtcDateTimeField):
+    def stamp(self) -> datetime:
+        return now_milliseconds()
+
+    def pre_save(self, model_instance: models.Model, add: bool) -> Any:
+        if not self.auto_now:
+            return super().pre_save(model_instance, add)
+        value = self.stamp()
+        setattr(model_instance, self.attname, value)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -44,6 +56,11 @@ class AutoNowQuerySet(models.QuerySet[_M]):
 
 def uuid4_str() -> str:
     return str(uuid.uuid4())
+
+
+def now_milliseconds() -> datetime:
+    now = timezone.now()
+    return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
 class AccessType(models.TextChoices):
@@ -134,7 +151,7 @@ class ViewMode(models.TextChoices):
 
 class Access(models.Model):
     alias = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
     grantee_user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accesses_get", db_column="granteeUserId", null=True, db_index=False)
     id = models.TextField(primary_key=True, default=uuid4_str)
@@ -142,7 +159,7 @@ class Access(models.Model):
     scopes = ArrayField(models.TextField(), default=list)
     settings = models.JSONField(default=dict)
     type = models.TextField(choices=AccessType.choices, default=AccessType.PRIVATE)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accesses_give", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -158,12 +175,12 @@ class Access(models.Model):
 class Account(models.Model):
     pk = models.CompositePrimaryKey("id", "user_id")
     comment = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     currency = models.TextField(null=True)
     id = models.TextField(default=uuid4_str)
     name = models.TextField(null=True)
     platform = models.ForeignKey("Platform", on_delete=models.SET_NULL, related_name="accounts", db_column="platformId", null=True, db_index=False)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -180,10 +197,10 @@ class Account(models.Model):
 class AccountBalance(models.Model):
     account_id = models.TextField(db_column="accountId")
     comment = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
-    date = UtcDateTimeField(default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    date = UtcDateTimeField(default=now_milliseconds)
     id = models.TextField(primary_key=True, default=uuid4_str)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user_id = models.TextField(db_column="userId")
     value = models.FloatField()
     objects = AutoNowQuerySet.as_manager()
@@ -203,9 +220,9 @@ class Analytics(models.Model):
     activity_count = models.IntegerField(db_column="activityCount", default=0)
     country = models.TextField(null=True)
     data_provider_ghostfolio_daily_requests = models.IntegerField(db_column="dataProviderGhostfolioDailyRequests", default=0)
-    last_request_at = UtcDateTimeField(db_column="lastRequestAt", default=timezone.now)
+    last_request_at = UtcDateTimeField(db_column="lastRequestAt", default=now_milliseconds)
     last_request_client = models.TextField(choices=RequestClient.choices, null=True, db_column="lastRequestClient")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="analytics", primary_key=True, db_column="userId")
     objects = AutoNowQuerySet.as_manager()
 
@@ -218,10 +235,10 @@ class Analytics(models.Model):
 
 
 class ApiKey(models.Model):
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     hashed_key = models.TextField(unique=True, db_column="hashedKey")
     id = models.TextField(primary_key=True, default=uuid4_str)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="api_keys", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -240,7 +257,7 @@ class AssetProfileOverrides(models.Model):
     name = models.TextField(null=True)
     sectors = models.JSONField(null=True, default=list)
     symbol_profile = models.OneToOneField("SymbolProfile", on_delete=models.CASCADE, related_name="asset_profile_overrides", primary_key=True, db_column="symbolProfileId")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     url = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
@@ -249,7 +266,7 @@ class AssetProfileOverrides(models.Model):
 
 
 class AssetProfileResolution(models.Model):
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     currency = models.TextField()
     data_source_origin = models.TextField(choices=DataSource.choices, db_column="dataSourceOrigin")
     data_source_target = models.TextField(choices=DataSource.choices, db_column="dataSourceTarget")
@@ -257,7 +274,7 @@ class AssetProfileResolution(models.Model):
     request_count = models.IntegerField(db_column="requestCount", default=1)
     symbol_origin = models.TextField(db_column="symbolOrigin")
     symbol_target = models.TextField(db_column="symbolTarget")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -283,13 +300,13 @@ class AssetProfileSplit(models.Model):
     adjusted again.
     """
 
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     date = UtcDateTimeField()
     denominator = models.IntegerField()
     id = models.TextField(primary_key=True, default=uuid4_str)
     numerator = models.IntegerField()
     symbol_profile = models.ForeignKey("SymbolProfile", on_delete=models.CASCADE, related_name="asset_profile_splits", db_column="symbolProfileId", db_index=False)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -303,12 +320,12 @@ class AssetProfileSplit(models.Model):
 
 
 class AuthDevice(models.Model):
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     credential_id = models.BinaryField(db_column="credentialId")
     credential_public_key = models.BinaryField(db_column="credentialPublicKey")
     counter = models.IntegerField()
     id = models.TextField(primary_key=True, default=uuid4_str)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="auth_devices", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -320,7 +337,7 @@ class AuthDevice(models.Model):
 
 
 class MarketData(models.Model):
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     data_source = models.TextField(choices=DataSource.choices, db_column="dataSource")
     date = UtcDateTimeField()
     id = models.TextField(primary_key=True, default=uuid4_str)
@@ -345,7 +362,7 @@ class Order(models.Model):
     account_id = models.TextField(null=True, db_column="accountId")
     account_user_id = models.TextField(null=True, db_column="accountUserId")
     comment = models.TextField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     currency = models.TextField(null=True)
     date = UtcDateTimeField()
     fee = models.FloatField()
@@ -355,7 +372,7 @@ class Order(models.Model):
     tags: "models.ManyToManyField[Tag, OrderToTag]" = models.ManyToManyField("Tag", through="OrderToTag", related_name="activities")
     type = models.TextField(choices=Type.choices)
     unit_price = models.FloatField(db_column="unitPrice")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="activities", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -392,7 +409,7 @@ class Property(models.Model):
 
 class Settings(models.Model):
     settings = models.JSONField(null=True)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="settings", primary_key=True, db_column="userId")
     objects = AutoNowQuerySet.as_manager()
 
@@ -405,7 +422,7 @@ class SymbolProfile(models.Model):
     asset_sub_class = models.TextField(choices=AssetSubClass.choices, null=True, db_column="assetSubClass")
     comment = models.TextField(null=True)
     countries = models.JSONField(null=True)
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     currency = models.TextField()
     cusip = models.TextField(null=True)
     data_gathering_frequency = models.TextField(choices=DataGatheringFrequency.choices, db_column="dataGatheringFrequency", default=DataGatheringFrequency.DAILY)
@@ -422,7 +439,7 @@ class SymbolProfile(models.Model):
     sectors = models.JSONField(null=True)
     symbol = models.TextField()
     symbol_mapping = models.JSONField(null=True, db_column="symbolMapping")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     url = models.TextField(null=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="symbol_profile", db_column="userId", null=True, db_index=False)
     watched_by: "models.ManyToManyField[User, UserWatchlist]" = models.ManyToManyField("User", through="UserWatchlist", related_name="watchlist")
@@ -447,12 +464,12 @@ class SymbolProfile(models.Model):
 
 
 class Subscription(models.Model):
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(db_column="expiresAt")
     id = models.TextField(primary_key=True, default=uuid4_str)
     price = models.FloatField(null=True)
     stripe_checkout_session_id = models.TextField(null=True, unique=True, db_column="stripeCheckoutSessionId")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="subscriptions", db_column="userId", db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
@@ -481,9 +498,9 @@ class Tag(models.Model):
 class TagsOnAccounts(models.Model):
     pk = models.CompositePrimaryKey("account_id", "tag_id", "user_id")
     account_id = models.TextField(db_column="accountId")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     tag = models.ForeignKey("Tag", on_delete=models.CASCADE, related_name="accounts", db_column="tagId", db_index=False)
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     user_id = models.TextField(db_column="userId")
     objects = AutoNowQuerySet.as_manager()
 
@@ -497,12 +514,12 @@ class TagsOnAccounts(models.Model):
 class User(models.Model):
     access_token = models.TextField(null=True, db_column="accessToken")
     auth_challenge = models.TextField(null=True, db_column="authChallenge")
-    created_at = UtcDateTimeField(db_column="createdAt", default=timezone.now)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     id = models.TextField(primary_key=True, default=uuid4_str)
     provider = models.TextField(choices=Provider.choices, default=Provider.ANONYMOUS)
     role = models.TextField(choices=Role.choices, default=Role.USER)
     third_party_id = models.TextField(null=True, db_column="thirdPartyId")
-    updated_at = UtcDateTimeField(db_column="updatedAt", auto_now=True)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
