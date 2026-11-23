@@ -24,6 +24,7 @@ pnpm-workspace.yaml    its packages, the drizzler catalog, allowBuilds
 pnpm-lock.yaml         every npm package of every app, read by rules_js
 tools/golden/          `golden()`: the `.write` / `.test` pair every example's output goes through
 tools/uv/              the uv binary of MODULE.bazel for the host platform
+tools/upstream/        the daily upstream sync: check.mjs, blocked.json (see .claude/skills/upstream-sync)
 apps/hekireki/         schemas/<name>/ (schema.prisma, generated/), checks/<lang>/, compat/, tools/
 apps/drizzler/         examples/<name>/ (src/, drizzle.config.ts, docs/), packages/tsconfig, tools/
 apps/djangoer/         examples/<name>/ (pyproject.toml, uv.lock, settings.py, outputs), scripts/, tools/
@@ -80,6 +81,15 @@ Machine-specific flags go in `user.bazelrc` (ignored by git), for example
 - Python: each Django example has its own `pyproject.toml` and `uv.lock`; Python 3.14 is set in
   [apps/djangoer/.python-version](apps/djangoer/.python-version).
 - Node, uv and the Bazel rules: [MODULE.bazel](MODULE.bazel).
+
+## Following upstream
+
+A scheduled task runs once a day: [`tools/upstream/check.mjs`](tools/upstream/check.mjs) finds the
+schemas whose upstream project changed and the generator releases not yet pinned, and each one is
+followed, regenerated and tested, then pushed to `main`. A failure that is the generator's becomes
+an issue on hekireki, drizzler or Djangoer, and the example waits at its last good pin
+([`tools/upstream/blocked.json`](tools/upstream/blocked.json)). See
+[tools/upstream](tools/upstream/README.md).
 
 ## License
 
