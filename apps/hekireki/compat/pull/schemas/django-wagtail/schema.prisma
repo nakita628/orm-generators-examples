@@ -1,0 +1,1011 @@
+// django-wagtail: the tables that Django creates from the models of apps/djangoer/examples/wagtail,
+// read back by `prisma db pull`, under hekireki's generator blocks. Written by pull.mjs; do not edit.
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator Hekireki-Drizzle {
+  provider = "hekireki-drizzle"
+  output   = "generated/drizzle/schema.ts"
+  previewFeatures = ["partialIndexes"]
+}
+
+generator Hekireki-Kysely {
+  provider = "hekireki-kysely"
+  output   = "generated/kysely/types.ts"
+}
+
+generator Hekireki-SQLAlchemy {
+  provider = "hekireki-sqlalchemy"
+  output   = "generated/sqlalchemy"
+}
+
+generator Hekireki-Django {
+  provider = "hekireki-django"
+  output   = "generated/django"
+}
+
+generator Hekireki-GORM {
+  provider = "hekireki-gorm"
+  output   = "generated/gorm"
+  package  = "model"
+}
+
+generator Hekireki-SeaORM {
+  provider = "hekireki-sea-orm"
+  output   = "generated/sea-orm"
+}
+
+generator Hekireki-Ecto {
+  provider = "hekireki-ecto"
+  output   = "generated/ecto"
+  app      = "Wagtail"
+}
+
+generator Hekireki-ActiveRecord {
+  provider = "hekireki-activerecord"
+  output   = "generated/activerecord"
+}
+
+generator Hekireki-Eloquent {
+  provider  = "hekireki-eloquent"
+  output    = "generated/eloquent"
+  namespace = "App\\Models"
+}
+
+generator Hekireki-EFCore {
+  provider  = "hekireki-efcore"
+  output    = "generated/efcore"
+  namespace = "Wagtail.Models"
+  context   = "WagtailContext"
+}
+
+generator Hekireki-Exposed {
+  provider = "hekireki-exposed"
+  output   = "generated/exposed"
+  package  = "wagtail.models"
+}
+
+model auth_group {
+  id                                           Int                                            @id @default(autoincrement())
+  name                                         String                                         @unique @db.VarChar(150)
+  auth_group_permissions                       auth_group_permissions[]
+  auth_user_groups                             auth_user_groups[]
+  wagtailcore_collectionviewrestriction_groups wagtailcore_collectionviewrestriction_groups[]
+  wagtailcore_groupapprovaltask_groups         wagtailcore_groupapprovaltask_groups[]
+  wagtailcore_groupcollectionpermission        wagtailcore_groupcollectionpermission[]
+  wagtailcore_grouppagepermission              wagtailcore_grouppagepermission[]
+  wagtailcore_groupsitepermission              wagtailcore_groupsitepermission[]
+  wagtailcore_pageviewrestriction_groups       wagtailcore_pageviewrestriction_groups[]
+
+  @@index([name], map: "auth_group_name_a6ea08ec_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_group_permissions {
+  id              Int             @id @default(autoincrement())
+  group_id        Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm")
+  auth_group      auth_group      @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id")
+
+  @@unique([group_id, permission_id], map: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
+  @@index([group_id], map: "auth_group_permissions_group_id_b120cbf9")
+  @@index([permission_id], map: "auth_group_permissions_permission_id_84c5c92e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_permission {
+  id                                    Int                                     @id @default(autoincrement())
+  name                                  String                                  @db.VarChar(255)
+  content_type_id                       Int
+  codename                              String                                  @db.VarChar(100)
+  auth_group_permissions                auth_group_permissions[]
+  django_content_type                   django_content_type                     @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_permission_content_type_id_2f476e4b_fk_django_co")
+  auth_user_user_permissions            auth_user_user_permissions[]
+  wagtailcore_groupcollectionpermission wagtailcore_groupcollectionpermission[]
+  wagtailcore_grouppagepermission       wagtailcore_grouppagepermission[]
+  wagtailcore_groupsitepermission       wagtailcore_groupsitepermission[]
+
+  @@unique([content_type_id, codename], map: "auth_permission_content_type_id_codename_01ab375a_uniq")
+  @@index([content_type_id], map: "auth_permission_content_type_id_2f476e4b")
+}
+
+model auth_user {
+  id                                                                Int                            @id @default(autoincrement())
+  password                                                          String                         @db.VarChar(128)
+  last_login                                                        DateTime?                      @db.Timestamptz(6)
+  is_superuser                                                      Boolean
+  username                                                          String                         @unique @db.VarChar(150)
+  first_name                                                        String                         @db.VarChar(150)
+  last_name                                                         String                         @db.VarChar(150)
+  email                                                             String                         @db.VarChar(254)
+  is_staff                                                          Boolean
+  is_active                                                         Boolean
+  date_joined                                                       DateTime                       @db.Timestamptz(6)
+  auth_user_groups                                                  auth_user_groups[]
+  auth_user_user_permissions                                        auth_user_user_permissions[]
+  django_admin_log                                                  django_admin_log[]
+  wagtailadmin_editingsession                                       wagtailadmin_editingsession[]
+  wagtailadmin_formstate                                            wagtailadmin_formstate[]
+  wagtailcore_apitoken                                              wagtailcore_apitoken[]
+  wagtailcore_comment_wagtailcore_comment_resolved_by_idToauth_user wagtailcore_comment[]          @relation("wagtailcore_comment_resolved_by_idToauth_user")
+  wagtailcore_comment_wagtailcore_comment_user_idToauth_user        wagtailcore_comment[]          @relation("wagtailcore_comment_user_idToauth_user")
+  wagtailcore_commentreply                                          wagtailcore_commentreply[]
+  wagtailcore_page_wagtailcore_page_locked_by_idToauth_user         wagtailcore_page[]             @relation("wagtailcore_page_locked_by_idToauth_user")
+  wagtailcore_page_wagtailcore_page_owner_idToauth_user             wagtailcore_page[]             @relation("wagtailcore_page_owner_idToauth_user")
+  wagtailcore_pagesubscription                                      wagtailcore_pagesubscription[]
+  wagtailcore_revision                                              wagtailcore_revision[]
+  wagtailcore_taskstate                                             wagtailcore_taskstate[]
+  wagtailcore_uploadedfile                                          wagtailcore_uploadedfile[]
+  wagtailcore_workflowstate                                         wagtailcore_workflowstate[]
+  wagtaildocs_document                                              wagtaildocs_document[]
+  wagtailimages_image                                               wagtailimages_image[]
+  wagtailusers_userprofile                                          wagtailusers_userprofile?
+
+  @@index([username], map: "auth_user_username_6821ab7c_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_user_groups {
+  id         Int        @id @default(autoincrement())
+  user_id    Int
+  group_id   Int
+  auth_group auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_group_id_97559544_fk_auth_group_id")
+  auth_user  auth_user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id")
+
+  @@unique([user_id, group_id], map: "auth_user_groups_user_id_group_id_94350c0c_uniq")
+  @@index([group_id], map: "auth_user_groups_group_id_97559544")
+  @@index([user_id], map: "auth_user_groups_user_id_6a12ed8b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_user_user_permissions {
+  id              Int             @id @default(autoincrement())
+  user_id         Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm")
+  auth_user       auth_user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id")
+
+  @@unique([user_id, permission_id], map: "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq")
+  @@index([permission_id], map: "auth_user_user_permissions_permission_id_1fbb5f2c")
+  @@index([user_id], map: "auth_user_user_permissions_user_id_a95ead1b")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_admin_log {
+  id                  Int                  @id @default(autoincrement())
+  action_time         DateTime             @db.Timestamptz(6)
+  user_id             Int
+  content_type_id     Int?
+  object_id           String?
+  object_repr         String               @db.VarChar(200)
+  action_flag         Int                  @db.SmallInt
+  change_message      String
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_content_type_id_c4bce8eb_fk_django_co")
+  auth_user           auth_user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_user_id_c564eba6_fk_auth_user_id")
+
+  @@index([content_type_id], map: "django_admin_log_content_type_id_c4bce8eb")
+  @@index([user_id], map: "django_admin_log_user_id_c564eba6")
+}
+
+model django_content_type {
+  id                                                                                              Int                              @id @default(autoincrement())
+  app_label                                                                                       String                           @db.VarChar(100)
+  model                                                                                           String                           @db.VarChar(100)
+  auth_permission                                                                                 auth_permission[]
+  django_admin_log                                                                                django_admin_log[]
+  taggit_taggeditem                                                                               taggit_taggeditem[]
+  wagtailadmin_editingsession                                                                     wagtailadmin_editingsession[]
+  wagtailadmin_formstate                                                                          wagtailadmin_formstate[]
+  wagtailcore_modellogentry                                                                       wagtailcore_modellogentry[]
+  wagtailcore_page                                                                                wagtailcore_page[]
+  wagtailcore_pagelogentry                                                                        wagtailcore_pagelogentry[]
+  wagtailcore_referenceindex_wagtailcore_referenceindex_base_content_type_idTodjango_content_type wagtailcore_referenceindex[]     @relation("wagtailcore_referenceindex_base_content_type_idTodjango_content_type")
+  wagtailcore_referenceindex_wagtailcore_referenceindex_content_type_idTodjango_content_type      wagtailcore_referenceindex[]     @relation("wagtailcore_referenceindex_content_type_idTodjango_content_type")
+  wagtailcore_referenceindex_wagtailcore_referenceindex_to_content_type_idTodjango_content_type   wagtailcore_referenceindex[]     @relation("wagtailcore_referenceindex_to_content_type_idTodjango_content_type")
+  wagtailcore_revision_wagtailcore_revision_base_content_type_idTodjango_content_type             wagtailcore_revision[]           @relation("wagtailcore_revision_base_content_type_idTodjango_content_type")
+  wagtailcore_revision_wagtailcore_revision_content_type_idTodjango_content_type                  wagtailcore_revision[]           @relation("wagtailcore_revision_content_type_idTodjango_content_type")
+  wagtailcore_task                                                                                wagtailcore_task[]
+  wagtailcore_taskstate                                                                           wagtailcore_taskstate[]
+  wagtailcore_uploadedfile                                                                        wagtailcore_uploadedfile[]
+  wagtailcore_workflowcontenttype                                                                 wagtailcore_workflowcontenttype?
+  wagtailcore_workflowstate_wagtailcore_workflowstate_base_content_type_idTodjango_content_type   wagtailcore_workflowstate[]      @relation("wagtailcore_workflowstate_base_content_type_idTodjango_content_type")
+  wagtailcore_workflowstate_wagtailcore_workflowstate_content_type_idTodjango_content_type        wagtailcore_workflowstate[]      @relation("wagtailcore_workflowstate_content_type_idTodjango_content_type")
+  wagtailsearch_indexentry                                                                        wagtailsearch_indexentry[]
+
+  @@unique([app_label, model], map: "django_content_type_app_label_model_76bd3d3b_uniq")
+}
+
+model django_session {
+  session_key  String   @id @db.VarChar(40)
+  session_data String
+  expire_date  DateTime @db.Timestamptz(6)
+
+  @@index([expire_date], map: "django_session_expire_date_a5c62663")
+  @@index([session_key], map: "django_session_session_key_c0390e0f_like")
+}
+
+model simple_translation_simpletranslation {
+  id Int @id @default(autoincrement())
+}
+
+model taggit_tag {
+  id                Int                 @id @default(autoincrement())
+  name              String              @unique @db.VarChar(100)
+  slug              String              @unique @db.VarChar(100)
+  taggit_taggeditem taggit_taggeditem[]
+
+  @@index([name], map: "taggit_tag_name_58eb2ed9_like")
+  @@index([slug], map: "taggit_tag_slug_6be58b2c_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model taggit_taggeditem {
+  id                  Int                 @id @default(autoincrement())
+  tag_id              Int
+  content_type_id     Int
+  object_id           Int
+  django_content_type django_content_type @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "taggit_taggeditem_content_type_id_9957a03c_fk_django_co")
+  taggit_tag          taggit_tag          @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id")
+
+  @@unique([content_type_id, object_id, tag_id], map: "taggit_taggeditem_content_type_id_object_id_tag_id_4bb97a8e_uni")
+  @@index([content_type_id, object_id], map: "taggit_tagg_content_8fc721_idx")
+  @@index([content_type_id], map: "taggit_taggeditem_content_type_id_9957a03c")
+  @@index([object_id], map: "taggit_taggeditem_object_id_e2d7d1df")
+  @@index([tag_id], map: "taggit_taggeditem_tag_id_f4f5b767")
+}
+
+model wagtailadmin_admin {
+  id Int @id @default(autoincrement())
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailadmin_editingsession {
+  id                  Int                 @id @default(autoincrement())
+  user_id             Int
+  content_type_id     Int
+  object_id           String              @db.VarChar(255)
+  last_seen_at        DateTime            @db.Timestamptz(6)
+  is_editing          Boolean
+  django_content_type django_content_type @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailadmin_editing_content_type_id_4df7730e_fk_django_co")
+  auth_user           auth_user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailadmin_editingsession_user_id_6e1a9b70_fk_auth_user_id")
+
+  @@index([content_type_id, object_id], map: "wagtailadmi_content_717955_idx")
+  @@index([content_type_id], map: "wagtailadmin_editingsession_content_type_id_4df7730e")
+  @@index([user_id], map: "wagtailadmin_editingsession_user_id_6e1a9b70")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailadmin_formstate {
+  id                  Int                 @id @default(autoincrement())
+  data                String
+  user_id             Int
+  content_type_id     Int
+  object_id           String              @db.VarChar(255)
+  parent_object_id    String              @db.VarChar(255)
+  last_updated_at     DateTime            @db.Timestamptz(6)
+  django_content_type django_content_type @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailadmin_formsta_content_type_id_e32438b3_fk_django_co")
+  auth_user           auth_user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailadmin_formstate_user_id_b910adc2_fk_auth_user_id")
+
+  @@index([user_id, content_type_id, object_id, parent_object_id], map: "formstate_user_object")
+  @@index([content_type_id], map: "wagtailadmin_formstate_content_type_id_e32438b3")
+  @@index([user_id], map: "wagtailadmin_formstate_user_id_b910adc2")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_apitoken {
+  id           Int       @id @default(autoincrement())
+  user_id      Int
+  name         String    @db.VarChar(255)
+  key_hash     String    @unique @db.VarChar(64)
+  prefix       String    @db.VarChar(16)
+  created      DateTime  @db.Timestamptz(6)
+  revoked_at   DateTime? @db.Timestamptz(6)
+  last_used_at DateTime? @db.Timestamptz(6)
+  auth_user    auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_apitoken_user_id_49b1141b_fk_auth_user_id")
+
+  @@index([key_hash], map: "wagtailcore_apitoken_key_hash_65979b78_like")
+  @@index([user_id], map: "wagtailcore_apitoken_user_id_49b1141b")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model wagtailcore_collection {
+  id                                    Int                                     @id @default(autoincrement())
+  path                                  String                                  @unique @db.VarChar(255)
+  depth                                 Int
+  numchild                              Int
+  name                                  String                                  @db.VarChar(255)
+  wagtailcore_collectionviewrestriction wagtailcore_collectionviewrestriction[]
+  wagtailcore_groupcollectionpermission wagtailcore_groupcollectionpermission[]
+  wagtaildocs_document                  wagtaildocs_document[]
+  wagtailimages_image                   wagtailimages_image[]
+
+  @@index([path], map: "wagtailcore_collection_path_d848dc19_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_collectionviewrestriction {
+  id                                           Int                                            @id @default(autoincrement())
+  restriction_type                             String                                         @db.VarChar(20)
+  password                                     String                                         @db.VarChar(255)
+  collection_id                                Int
+  wagtailcore_collection                       wagtailcore_collection                         @relation(fields: [collection_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_collecti_collection_id_761908ec_fk_wagtailco")
+  wagtailcore_collectionviewrestriction_groups wagtailcore_collectionviewrestriction_groups[]
+
+  @@index([collection_id], map: "wagtailcore_collectionviewrestriction_collection_id_761908ec")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_collectionviewrestriction_groups {
+  id                                    Int                                   @id @default(autoincrement())
+  collectionviewrestriction_id          Int
+  group_id                              Int
+  wagtailcore_collectionviewrestriction wagtailcore_collectionviewrestriction @relation(fields: [collectionviewrestriction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_collecti_collectionviewrestri_47320efd_fk_wagtailco")
+  auth_group                            auth_group                            @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_collecti_group_id_1823f2a3_fk_auth_grou")
+
+  @@unique([collectionviewrestriction_id, group_id], map: "wagtailcore_collectionvi_collectionviewrestrictio_988995ae_uniq")
+  @@index([collectionviewrestriction_id], map: "wagtailcore_collectionview_collectionviewrestriction__47320efd")
+  @@index([group_id], map: "wagtailcore_collectionviewrestriction_groups_group_id_1823f2a3")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_comment {
+  id                                                      Int                        @id @default(autoincrement())
+  page_id                                                 Int
+  user_id                                                 Int
+  text                                                    String
+  contentpath                                             String
+  position                                                String
+  created_at                                              DateTime                   @db.Timestamptz(6)
+  updated_at                                              DateTime                   @db.Timestamptz(6)
+  revision_created_id                                     Int?
+  resolved_at                                             DateTime?                  @db.Timestamptz(6)
+  resolved_by_id                                          Int?
+  wagtailcore_page                                        wagtailcore_page           @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_comment_page_id_108444b5_fk_wagtailcore_page_id")
+  auth_user_wagtailcore_comment_resolved_by_idToauth_user auth_user?                 @relation("wagtailcore_comment_resolved_by_idToauth_user", fields: [resolved_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_comment_resolved_by_id_a282aa0e_fk_auth_user_id")
+  wagtailcore_revision                                    wagtailcore_revision?      @relation(fields: [revision_created_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_comment_revision_created_id_1d058279_fk_wagtailco")
+  auth_user_wagtailcore_comment_user_idToauth_user        auth_user                  @relation("wagtailcore_comment_user_idToauth_user", fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_comment_user_id_0c577ca6_fk_auth_user_id")
+  wagtailcore_commentreply                                wagtailcore_commentreply[]
+
+  @@index([page_id], map: "wagtailcore_comment_page_id_108444b5")
+  @@index([resolved_by_id], map: "wagtailcore_comment_resolved_by_id_a282aa0e")
+  @@index([revision_created_id], map: "wagtailcore_comment_revision_created_id_1d058279")
+  @@index([user_id], map: "wagtailcore_comment_user_id_0c577ca6")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_commentreply {
+  id                  Int                 @id @default(autoincrement())
+  comment_id          Int
+  user_id             Int
+  text                String
+  created_at          DateTime            @db.Timestamptz(6)
+  updated_at          DateTime            @db.Timestamptz(6)
+  wagtailcore_comment wagtailcore_comment @relation(fields: [comment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_commentr_comment_id_afc7e027_fk_wagtailco")
+  auth_user           auth_user           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_commentreply_user_id_d0b3b9c3_fk_auth_user_id")
+
+  @@index([comment_id], map: "wagtailcore_commentreply_comment_id_afc7e027")
+  @@index([user_id], map: "wagtailcore_commentreply_user_id_d0b3b9c3")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_groupapprovaltask {
+  task_ptr_id                          Int                                    @id
+  wagtailcore_task                     wagtailcore_task                       @relation(fields: [task_ptr_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupapp_task_ptr_id_cfe58781_fk_wagtailco")
+  wagtailcore_groupapprovaltask_groups wagtailcore_groupapprovaltask_groups[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_groupapprovaltask_groups {
+  id                            Int                           @id @default(autoincrement())
+  groupapprovaltask_id          Int
+  group_id                      Int
+  auth_group                    auth_group                    @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupapp_group_id_2e64b61f_fk_auth_grou")
+  wagtailcore_groupapprovaltask wagtailcore_groupapprovaltask @relation(fields: [groupapprovaltask_id], references: [task_ptr_id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupapp_groupapprovaltask_id_9a9255ea_fk_wagtailco")
+
+  @@unique([groupapprovaltask_id, group_id], map: "wagtailcore_groupapprova_groupapprovaltask_id_gro_bb5ee7eb_uniq")
+  @@index([groupapprovaltask_id], map: "wagtailcore_groupapprovalt_groupapprovaltask_id_9a9255ea")
+  @@index([group_id], map: "wagtailcore_groupapprovaltask_groups_group_id_2e64b61f")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_groupcollectionpermission {
+  id                     Int                    @id @default(autoincrement())
+  group_id               Int
+  collection_id          Int
+  permission_id          Int
+  wagtailcore_collection wagtailcore_collection @relation(fields: [collection_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupcol_collection_id_5423575a_fk_wagtailco")
+  auth_group             auth_group             @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupcol_group_id_05d61460_fk_auth_grou")
+  auth_permission        auth_permission        @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupcol_permission_id_1b626275_fk_auth_perm")
+
+  @@unique([group_id, collection_id, permission_id], map: "wagtailcore_groupcollect_group_id_collection_id_p_a21cefe9_uniq")
+  @@index([collection_id], map: "wagtailcore_groupcollectionpermission_collection_id_5423575a")
+  @@index([group_id], map: "wagtailcore_groupcollectionpermission_group_id_05d61460")
+  @@index([permission_id], map: "wagtailcore_groupcollectionpermission_permission_id_1b626275")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_grouppagepermission {
+  id               Int              @id @default(autoincrement())
+  group_id         Int
+  page_id          Int
+  permission_id    Int
+  auth_group       auth_group       @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_grouppag_group_id_fc07e671_fk_auth_grou")
+  wagtailcore_page wagtailcore_page @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_grouppag_page_id_710b114a_fk_wagtailco")
+  auth_permission  auth_permission  @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_grouppag_permission_id_05acb22e_fk_auth_perm")
+
+  @@unique([group_id, page_id, permission_id], map: "unique_permission")
+  @@index([group_id], map: "wagtailcore_grouppagepermission_group_id_fc07e671")
+  @@index([page_id], map: "wagtailcore_grouppagepermission_page_id_710b114a")
+  @@index([permission_id], map: "wagtailcore_grouppagepermission_permission_id_05acb22e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_groupsitepermission {
+  id               Int              @id @default(autoincrement())
+  group_id         Int
+  site_id          Int
+  permission_id    Int
+  auth_group       auth_group       @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupsit_group_id_e5cdbee4_fk_auth_grou")
+  auth_permission  auth_permission  @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupsit_permission_id_459b1f38_fk_auth_perm")
+  wagtailcore_site wagtailcore_site @relation(fields: [site_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_groupsit_site_id_245de488_fk_wagtailco")
+
+  @@unique([group_id, site_id, permission_id], map: "wagtailcore_groupsiteper_group_id_site_id_permiss_a58ee30d_uniq")
+  @@index([group_id], map: "wagtailcore_groupsitepermission_group_id_e5cdbee4")
+  @@index([permission_id], map: "wagtailcore_groupsitepermission_permission_id_459b1f38")
+  @@index([site_id], map: "wagtailcore_groupsitepermission_site_id_245de488")
+}
+
+model wagtailcore_locale {
+  id               Int                @id @default(autoincrement())
+  language_code    String             @unique @db.VarChar(100)
+  wagtailcore_page wagtailcore_page[]
+
+  @@index([language_code], map: "wagtailcore_locale_language_code_03149338_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_modellogentry {
+  id                  Int                  @id @default(autoincrement())
+  content_type_id     Int?
+  label               String
+  action              String               @db.VarChar(255)
+  data                Json
+  timestamp           DateTime             @db.Timestamptz(6)
+  uuid                String?              @db.Uuid
+  user_id             Int?
+  revision_id         Int?
+  content_changed     Boolean
+  deleted             Boolean
+  object_id           String               @db.VarChar(255)
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_modellog_content_type_id_68849e77_fk_django_co")
+
+  @@index([action], map: "wagtailcore_modellogentry_action_d2d856ee")
+  @@index([action], map: "wagtailcore_modellogentry_action_d2d856ee_like")
+  @@index([content_changed], map: "wagtailcore_modellogentry_content_changed_8bc39742")
+  @@index([content_type_id], map: "wagtailcore_modellogentry_content_type_id_68849e77")
+  @@index([object_id], map: "wagtailcore_modellogentry_object_id_e0e7d4ef")
+  @@index([object_id], map: "wagtailcore_modellogentry_object_id_e0e7d4ef_like")
+  @@index([revision_id], map: "wagtailcore_modellogentry_revision_id_df6ca33a")
+  @@index([timestamp], map: "wagtailcore_modellogentry_timestamp_9694521b")
+  @@index([user_id], map: "wagtailcore_modellogentry_user_id_0278d1bf")
+  @@index([uuid, action, timestamp(sort: Desc)], map: "wagtailcore_uuid_d6363b_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_page {
+  id                                                                             Int                                       @id @default(autoincrement())
+  path                                                                           String                                    @unique @db.VarChar(255)
+  depth                                                                          Int
+  numchild                                                                       Int
+  translation_key                                                                String                                    @db.Uuid
+  locale_id                                                                      Int
+  latest_revision_id                                                             Int?
+  live                                                                           Boolean
+  has_unpublished_changes                                                        Boolean
+  first_published_at                                                             DateTime?                                 @db.Timestamptz(6)
+  last_published_at                                                              DateTime?                                 @db.Timestamptz(6)
+  live_revision_id                                                               Int?
+  go_live_at                                                                     DateTime?                                 @db.Timestamptz(6)
+  expire_at                                                                      DateTime?                                 @db.Timestamptz(6)
+  expired                                                                        Boolean
+  locked                                                                         Boolean
+  locked_at                                                                      DateTime?                                 @db.Timestamptz(6)
+  locked_by_id                                                                   Int?
+  title                                                                          String                                    @db.VarChar(255)
+  draft_title                                                                    String                                    @db.VarChar(255)
+  slug                                                                           String                                    @db.VarChar(255)
+  content_type_id                                                                Int
+  url_path                                                                       String
+  owner_id                                                                       Int?
+  latest_revision_created_at                                                     DateTime?                                 @db.Timestamptz(6)
+  alias_of_id                                                                    Int?
+  show_in_menus                                                                  Boolean
+  seo_title                                                                      String                                    @db.VarChar(255)
+  search_description                                                             String
+  wagtailcore_comment                                                            wagtailcore_comment[]
+  wagtailcore_grouppagepermission                                                wagtailcore_grouppagepermission[]
+  wagtailcore_page                                                               wagtailcore_page?                         @relation("wagtailcore_pageTowagtailcore_page", fields: [alias_of_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_alias_of_id_12945502_fk_wagtailcore_page_id")
+  other_wagtailcore_page                                                         wagtailcore_page[]                        @relation("wagtailcore_pageTowagtailcore_page")
+  django_content_type                                                            django_content_type                       @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_content_type_id_c28424df_fk_django_co")
+  wagtailcore_revision_wagtailcore_page_latest_revision_idTowagtailcore_revision wagtailcore_revision?                     @relation("wagtailcore_page_latest_revision_idTowagtailcore_revision", fields: [latest_revision_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_latest_revision_id_e60fef51_fk_wagtailco")
+  wagtailcore_revision_wagtailcore_page_live_revision_idTowagtailcore_revision   wagtailcore_revision?                     @relation("wagtailcore_page_live_revision_idTowagtailcore_revision", fields: [live_revision_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_live_revision_id_930bd822_fk_wagtailco")
+  wagtailcore_locale                                                             wagtailcore_locale                        @relation(fields: [locale_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_locale_id_3c7e30a6_fk_wagtailcore_locale_id")
+  auth_user_wagtailcore_page_locked_by_idToauth_user                             auth_user?                                @relation("wagtailcore_page_locked_by_idToauth_user", fields: [locked_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_locked_by_id_bcb86245_fk_auth_user_id")
+  auth_user_wagtailcore_page_owner_idToauth_user                                 auth_user?                                @relation("wagtailcore_page_owner_idToauth_user", fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_page_owner_id_fbf7c332_fk_auth_user_id")
+  wagtailcore_pagesubscription                                                   wagtailcore_pagesubscription[]
+  wagtailcore_pageviewrestriction                                                wagtailcore_pageviewrestriction[]
+  wagtailcore_site                                                               wagtailcore_site[]
+  wagtailcore_workflowpage                                                       wagtailcore_workflowpage?
+  wagtailforms_formsubmission                                                    wagtailforms_formsubmission[]
+  wagtailredirects_redirect                                                      wagtailredirects_redirect[]
+  wagtailsearchpromotions_searchpromotion                                        wagtailsearchpromotions_searchpromotion[]
+
+  @@unique([translation_key, locale_id], map: "wagtailcore_page_translation_key_locale_id_9b041bad_uniq")
+  @@index([alias_of_id], map: "wagtailcore_page_alias_of_id_12945502")
+  @@index([content_type_id], map: "wagtailcore_page_content_type_id_c28424df")
+  @@index([first_published_at], map: "wagtailcore_page_first_published_at_2b5dd637")
+  @@index([latest_revision_id], map: "wagtailcore_page_latest_revision_id_e60fef51")
+  @@index([live_revision_id], map: "wagtailcore_page_live_revision_id_930bd822")
+  @@index([locale_id], map: "wagtailcore_page_locale_id_3c7e30a6")
+  @@index([locked_by_id], map: "wagtailcore_page_locked_by_id_bcb86245")
+  @@index([owner_id], map: "wagtailcore_page_owner_id_fbf7c332")
+  @@index([path], map: "wagtailcore_page_path_98eba2c8_like")
+  @@index([slug], map: "wagtailcore_page_slug_e7c11b8f")
+  @@index([slug], map: "wagtailcore_page_slug_e7c11b8f_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_pagelogentry {
+  id                  Int                  @id @default(autoincrement())
+  content_type_id     Int?
+  label               String
+  action              String               @db.VarChar(255)
+  data                Json
+  timestamp           DateTime             @db.Timestamptz(6)
+  uuid                String?              @db.Uuid
+  user_id             Int?
+  revision_id         Int?
+  content_changed     Boolean
+  deleted             Boolean
+  page_id             Int
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pageloge_content_type_id_74e7708a_fk_django_co")
+
+  @@index([action], map: "wagtailcore_pagelogentry_action_c2408198")
+  @@index([action], map: "wagtailcore_pagelogentry_action_c2408198_like")
+  @@index([content_changed], map: "wagtailcore_pagelogentry_content_changed_99f27ade")
+  @@index([content_type_id], map: "wagtailcore_pagelogentry_content_type_id_74e7708a")
+  @@index([page_id], map: "wagtailcore_pagelogentry_page_id_8464e327")
+  @@index([revision_id], map: "wagtailcore_pagelogentry_revision_id_8043d103")
+  @@index([timestamp], map: "wagtailcore_pagelogentry_timestamp_deb774c4")
+  @@index([user_id], map: "wagtailcore_pagelogentry_user_id_604ccfd8")
+  @@index([uuid, action, timestamp(sort: Desc)], map: "wagtailcore_uuid_06a44d_idx")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_pagesubscription {
+  id                    Int              @id @default(autoincrement())
+  user_id               Int
+  page_id               Int
+  comment_notifications Boolean
+  wagtailcore_page      wagtailcore_page @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pagesubs_page_id_a085e7a6_fk_wagtailco")
+  auth_user             auth_user        @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pagesubscription_user_id_89d7def9_fk_auth_user_id")
+
+  @@unique([page_id, user_id], map: "wagtailcore_pagesubscription_page_id_user_id_0cef73ed_uniq")
+  @@index([page_id], map: "wagtailcore_pagesubscription_page_id_a085e7a6")
+  @@index([user_id], map: "wagtailcore_pagesubscription_user_id_89d7def9")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_pageviewrestriction {
+  id                                     Int                                      @id @default(autoincrement())
+  restriction_type                       String                                   @db.VarChar(20)
+  password                               String                                   @db.VarChar(255)
+  page_id                                Int
+  wagtailcore_page                       wagtailcore_page                         @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pageview_page_id_15a8bea6_fk_wagtailco")
+  wagtailcore_pageviewrestriction_groups wagtailcore_pageviewrestriction_groups[]
+
+  @@index([page_id], map: "wagtailcore_pageviewrestriction_page_id_15a8bea6")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_pageviewrestriction_groups {
+  id                              Int                             @id @default(autoincrement())
+  pageviewrestriction_id          Int
+  group_id                        Int
+  auth_group                      auth_group                      @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pageview_group_id_6460f223_fk_auth_grou")
+  wagtailcore_pageviewrestriction wagtailcore_pageviewrestriction @relation(fields: [pageviewrestriction_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_pageview_pageviewrestriction__f147a99a_fk_wagtailco")
+
+  @@unique([pageviewrestriction_id, group_id], map: "wagtailcore_pageviewrest_pageviewrestriction_id_g_d23f80bb_uniq")
+  @@index([pageviewrestriction_id], map: "wagtailcore_pageviewrestri_pageviewrestriction_id_f147a99a")
+  @@index([group_id], map: "wagtailcore_pageviewrestriction_groups_group_id_6460f223")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_referenceindex {
+  id                                                                                       Int                 @id @default(autoincrement())
+  content_type_id                                                                          Int
+  base_content_type_id                                                                     Int
+  object_id                                                                                String              @db.VarChar(255)
+  to_content_type_id                                                                       Int
+  to_object_id                                                                             String              @db.VarChar(255)
+  model_path                                                                               String
+  content_path                                                                             String
+  content_path_hash                                                                        String              @db.Uuid
+  django_content_type_wagtailcore_referenceindex_base_content_type_idTodjango_content_type django_content_type @relation("wagtailcore_referenceindex_base_content_type_idTodjango_content_type", fields: [base_content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_referenc_base_content_type_id_313cf40f_fk_django_co")
+  django_content_type_wagtailcore_referenceindex_content_type_idTodjango_content_type      django_content_type @relation("wagtailcore_referenceindex_content_type_idTodjango_content_type", fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_referenc_content_type_id_766e0336_fk_django_co")
+  django_content_type_wagtailcore_referenceindex_to_content_type_idTodjango_content_type   django_content_type @relation("wagtailcore_referenceindex_to_content_type_idTodjango_content_type", fields: [to_content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_referenc_to_content_type_id_93690bbd_fk_django_co")
+
+  @@unique([base_content_type_id, object_id, to_content_type_id, to_object_id, content_path_hash], map: "wagtailcore_referenceind_base_content_type_id_obj_9e6ccd6a_uniq")
+  @@index([base_content_type_id, object_id], map: "referenceindex_source_object")
+  @@index([to_content_type_id, to_object_id], map: "referenceindex_target_object")
+  @@index([base_content_type_id], map: "wagtailcore_referenceindex_base_content_type_id_313cf40f")
+  @@index([content_type_id], map: "wagtailcore_referenceindex_content_type_id_766e0336")
+  @@index([to_content_type_id], map: "wagtailcore_referenceindex_to_content_type_id_93690bbd")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_revision {
+  id                                                                                 Int                     @id @default(autoincrement())
+  content_type_id                                                                    Int
+  base_content_type_id                                                               Int
+  object_id                                                                          String                  @db.VarChar(255)
+  created_at                                                                         DateTime                @db.Timestamptz(6)
+  user_id                                                                            Int?
+  object_str                                                                         String
+  content                                                                            Json
+  approved_go_live_at                                                                DateTime?               @db.Timestamptz(6)
+  wagtailcore_comment                                                                wagtailcore_comment[]
+  wagtailcore_page_wagtailcore_page_latest_revision_idTowagtailcore_revision         wagtailcore_page[]      @relation("wagtailcore_page_latest_revision_idTowagtailcore_revision")
+  wagtailcore_page_wagtailcore_page_live_revision_idTowagtailcore_revision           wagtailcore_page[]      @relation("wagtailcore_page_live_revision_idTowagtailcore_revision")
+  django_content_type_wagtailcore_revision_base_content_type_idTodjango_content_type django_content_type     @relation("wagtailcore_revision_base_content_type_idTodjango_content_type", fields: [base_content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_revision_base_content_type_id_5b4ef7bd_fk_django_co")
+  django_content_type_wagtailcore_revision_content_type_idTodjango_content_type      django_content_type     @relation("wagtailcore_revision_content_type_idTodjango_content_type", fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_revision_content_type_id_c8cb69c0_fk_django_co")
+  auth_user                                                                          auth_user?              @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_revision_user_id_03df83b0_fk_auth_user_id")
+  wagtailcore_taskstate                                                              wagtailcore_taskstate[]
+
+  @@index([base_content_type_id, object_id], map: "base_content_object_idx")
+  @@index([content_type_id, object_id], map: "content_object_idx")
+  @@index([approved_go_live_at], map: "wagtailcore_revision_approved_go_live_at_88d3dee5")
+  @@index([base_content_type_id], map: "wagtailcore_revision_base_content_type_id_5b4ef7bd")
+  @@index([content_type_id], map: "wagtailcore_revision_content_type_id_c8cb69c0")
+  @@index([created_at], map: "wagtailcore_revision_created_at_81450aa6")
+  @@index([user_id], map: "wagtailcore_revision_user_id_03df83b0")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_site {
+  id                              Int                               @id @default(autoincrement())
+  hostname                        String                            @db.VarChar(255)
+  port                            Int
+  site_name                       String                            @db.VarChar(255)
+  root_page_id                    Int
+  is_default_site                 Boolean
+  wagtailcore_groupsitepermission wagtailcore_groupsitepermission[]
+  wagtailcore_page                wagtailcore_page                  @relation(fields: [root_page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_site_root_page_id_e02fb95c_fk_wagtailcore_page_id")
+  wagtailredirects_redirect       wagtailredirects_redirect[]
+
+  @@unique([hostname, port], map: "wagtailcore_site_hostname_port_2c626d70_uniq")
+  @@index([hostname], map: "wagtailcore_site_hostname_96b20b46")
+  @@index([hostname], map: "wagtailcore_site_hostname_96b20b46_like")
+  @@index([root_page_id], map: "wagtailcore_site_root_page_id_e02fb95c")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_task {
+  id                            Int                            @id @default(autoincrement())
+  name                          String                         @db.VarChar(255)
+  content_type_id               Int
+  active                        Boolean
+  wagtailcore_groupapprovaltask wagtailcore_groupapprovaltask?
+  django_content_type           django_content_type            @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_task_content_type_id_249ab8ba_fk_django_co")
+  wagtailcore_taskstate         wagtailcore_taskstate[]
+  wagtailcore_workflowtask      wagtailcore_workflowtask[]
+
+  @@index([content_type_id], map: "wagtailcore_task_content_type_id_249ab8ba")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_taskstate {
+  id                                                                                               Int                        @id @default(autoincrement())
+  workflow_state_id                                                                                Int
+  revision_id                                                                                      Int
+  task_id                                                                                          Int
+  status                                                                                           String                     @db.VarChar(50)
+  started_at                                                                                       DateTime                   @db.Timestamptz(6)
+  finished_at                                                                                      DateTime?                  @db.Timestamptz(6)
+  finished_by_id                                                                                   Int?
+  comment                                                                                          String
+  content_type_id                                                                                  Int
+  django_content_type                                                                              django_content_type        @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_taskstat_content_type_id_0a758fdc_fk_django_co")
+  wagtailcore_revision                                                                             wagtailcore_revision       @relation(fields: [revision_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_taskstat_revision_id_df25a499_fk_wagtailco")
+  wagtailcore_workflowstate_wagtailcore_taskstate_workflow_state_idTowagtailcore_workflowstate     wagtailcore_workflowstate  @relation("wagtailcore_taskstate_workflow_state_idTowagtailcore_workflowstate", fields: [workflow_state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_taskstat_workflow_state_id_9239a775_fk_wagtailco")
+  auth_user                                                                                        auth_user?                 @relation(fields: [finished_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_taskstate_finished_by_id_13f98229_fk_auth_user_id")
+  wagtailcore_task                                                                                 wagtailcore_task           @relation(fields: [task_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_taskstate_task_id_c3677c34_fk_wagtailcore_task_id")
+  wagtailcore_workflowstate_wagtailcore_workflowstate_current_task_state_idTowagtailcore_taskstate wagtailcore_workflowstate? @relation("wagtailcore_workflowstate_current_task_state_idTowagtailcore_taskstate")
+
+  @@index([content_type_id], map: "wagtailcore_taskstate_content_type_id_0a758fdc")
+  @@index([finished_by_id], map: "wagtailcore_taskstate_finished_by_id_13f98229")
+  @@index([revision_id], map: "wagtailcore_taskstate_revision_id_df25a499")
+  @@index([task_id], map: "wagtailcore_taskstate_task_id_c3677c34")
+  @@index([workflow_state_id], map: "wagtailcore_taskstate_workflow_state_id_9239a775")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_uploadedfile {
+  id                  Int                  @id @default(autoincrement())
+  for_content_type_id Int?
+  file                String               @db.VarChar(200)
+  uploaded_by_user_id Int?
+  django_content_type django_content_type? @relation(fields: [for_content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_uploaded_for_content_type_id_b0fc87b2_fk_django_co")
+  auth_user           auth_user?           @relation(fields: [uploaded_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_uploaded_uploaded_by_user_id_c7580fe8_fk_auth_user")
+
+  @@index([for_content_type_id], map: "wagtailcore_uploadedfile_for_content_type_id_b0fc87b2")
+  @@index([uploaded_by_user_id], map: "wagtailcore_uploadedfile_uploaded_by_user_id_c7580fe8")
+}
+
+model wagtailcore_workflow {
+  id                              Int                               @id @default(autoincrement())
+  name                            String                            @db.VarChar(255)
+  active                          Boolean
+  wagtailcore_workflowcontenttype wagtailcore_workflowcontenttype[]
+  wagtailcore_workflowpage        wagtailcore_workflowpage[]
+  wagtailcore_workflowstate       wagtailcore_workflowstate[]
+  wagtailcore_workflowtask        wagtailcore_workflowtask[]
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_workflowcontenttype {
+  content_type_id      Int                  @id
+  workflow_id          Int
+  django_content_type  django_content_type  @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_content_type_id_b261bb37_fk_django_co")
+  wagtailcore_workflow wagtailcore_workflow @relation(fields: [workflow_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_workflow_id_9aad7cd2_fk_wagtailco")
+
+  @@index([workflow_id], map: "wagtailcore_workflowcontenttype_workflow_id_9aad7cd2")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_workflowpage {
+  page_id              Int                  @id
+  workflow_id          Int
+  wagtailcore_page     wagtailcore_page     @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_page_id_81e7bab6_fk_wagtailco")
+  wagtailcore_workflow wagtailcore_workflow @relation(fields: [workflow_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_workflow_id_56f56ff6_fk_wagtailco")
+
+  @@index([workflow_id], map: "wagtailcore_workflowpage_workflow_id_56f56ff6")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_workflowstate {
+  id                                                                                           Int                     @id @default(autoincrement())
+  content_type_id                                                                              Int
+  base_content_type_id                                                                         Int
+  object_id                                                                                    String                  @db.VarChar(255)
+  workflow_id                                                                                  Int
+  status                                                                                       String                  @db.VarChar(50)
+  created_at                                                                                   DateTime                @db.Timestamptz(6)
+  requested_by_id                                                                              Int?
+  current_task_state_id                                                                        Int?                    @unique
+  wagtailcore_taskstate_wagtailcore_taskstate_workflow_state_idTowagtailcore_workflowstate     wagtailcore_taskstate[] @relation("wagtailcore_taskstate_workflow_state_idTowagtailcore_workflowstate")
+  django_content_type_wagtailcore_workflowstate_base_content_type_idTodjango_content_type      django_content_type     @relation("wagtailcore_workflowstate_base_content_type_idTodjango_content_type", fields: [base_content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_base_content_type_id_a30dc576_fk_django_co")
+  django_content_type_wagtailcore_workflowstate_content_type_idTodjango_content_type           django_content_type     @relation("wagtailcore_workflowstate_content_type_idTodjango_content_type", fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_content_type_id_2bb78ce1_fk_django_co")
+  wagtailcore_taskstate_wagtailcore_workflowstate_current_task_state_idTowagtailcore_taskstate wagtailcore_taskstate?  @relation("wagtailcore_workflowstate_current_task_state_idTowagtailcore_taskstate", fields: [current_task_state_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_current_task_state_i_3a1a0632_fk_wagtailco")
+  auth_user                                                                                    auth_user?              @relation(fields: [requested_by_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_requested_by_id_4090bca3_fk_auth_user")
+  wagtailcore_workflow                                                                         wagtailcore_workflow    @relation(fields: [workflow_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_workflow_id_1f18378f_fk_wagtailco")
+
+  @@unique([base_content_type_id, object_id], map: "unique_in_progress_workflow", where: raw("((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]))"))
+  @@index([base_content_type_id], map: "wagtailcore_workflowstate_base_content_type_id_a30dc576")
+  @@index([content_type_id], map: "wagtailcore_workflowstate_content_type_id_2bb78ce1")
+  @@index([requested_by_id], map: "wagtailcore_workflowstate_requested_by_id_4090bca3")
+  @@index([workflow_id], map: "wagtailcore_workflowstate_workflow_id_1f18378f")
+  @@index([base_content_type_id, object_id], map: "workflowstate_base_ct_id_idx")
+  @@index([content_type_id, object_id], map: "workflowstate_ct_id_idx")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailcore_workflowtask {
+  id                   Int                  @id @default(autoincrement())
+  sort_order           Int?
+  workflow_id          Int
+  task_id              Int
+  wagtailcore_task     wagtailcore_task     @relation(fields: [task_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_task_id_ce7716fe_fk_wagtailco")
+  wagtailcore_workflow wagtailcore_workflow @relation(fields: [workflow_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailcore_workflow_workflow_id_b9717175_fk_wagtailco")
+
+  @@unique([workflow_id, task_id], map: "wagtailcore_workflowtask_workflow_id_task_id_4ec7a62b_uniq")
+  @@index([task_id], map: "wagtailcore_workflowtask_task_id_ce7716fe")
+  @@index([workflow_id], map: "wagtailcore_workflowtask_workflow_id_b9717175")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtaildocs_document {
+  id                     Int                    @id @default(autoincrement())
+  collection_id          Int
+  title                  String                 @db.VarChar(255)
+  file                   String                 @db.VarChar(100)
+  created_at             DateTime               @db.Timestamptz(6)
+  uploaded_by_user_id    Int?
+  file_size              BigInt?
+  file_hash              String                 @db.VarChar(40)
+  wagtailcore_collection wagtailcore_collection @relation(fields: [collection_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtaildocs_document_collection_id_23881625_fk_wagtailco")
+  auth_user              auth_user?             @relation(fields: [uploaded_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtaildocs_document_uploaded_by_user_id_17258b41_fk_auth_user")
+
+  @@index([collection_id], map: "wagtaildocs_document_collection_id_23881625")
+  @@index([uploaded_by_user_id], map: "wagtaildocs_document_uploaded_by_user_id_17258b41")
+}
+
+model wagtailembeds_embed {
+  id            Int       @id @default(autoincrement())
+  url           String
+  max_width     Int?      @db.SmallInt
+  hash          String    @unique @db.VarChar(32)
+  type          String    @db.VarChar(10)
+  html          String
+  title         String
+  author_name   String
+  provider_name String
+  thumbnail_url String
+  width         Int?
+  height        Int?
+  last_updated  DateTime  @db.Timestamptz(6)
+  cache_until   DateTime? @db.Timestamptz(6)
+
+  @@index([cache_until], map: "wagtailembeds_embed_cache_until_26c94bb0")
+  @@index([hash], map: "wagtailembeds_embed_hash_c9bd8c9a_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailforms_formsubmission {
+  id               Int              @id @default(autoincrement())
+  form_data        Json
+  page_id          Int
+  submit_time      DateTime         @db.Timestamptz(6)
+  wagtailcore_page wagtailcore_page @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailforms_formsub_page_id_e48e93e7_fk_wagtailco")
+
+  @@index([page_id], map: "wagtailforms_formsubmission_page_id_e48e93e7")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailimages_image {
+  id                      Int                       @id @default(autoincrement())
+  collection_id           Int
+  title                   String                    @db.VarChar(255)
+  file                    String                    @db.VarChar(100)
+  description             String                    @db.VarChar(255)
+  width                   Int
+  height                  Int
+  created_at              DateTime                  @db.Timestamptz(6)
+  uploaded_by_user_id     Int?
+  focal_point_x           Int?
+  focal_point_y           Int?
+  focal_point_width       Int?
+  focal_point_height      Int?
+  file_size               Int?
+  file_hash               String                    @db.VarChar(40)
+  wagtailcore_collection  wagtailcore_collection    @relation(fields: [collection_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailimages_image_collection_id_c2f8af7e_fk_wagtailco")
+  auth_user               auth_user?                @relation(fields: [uploaded_by_user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailimages_image_uploaded_by_user_id_5d73dc75_fk_auth_user")
+  wagtailimages_rendition wagtailimages_rendition[]
+
+  @@index([collection_id], map: "wagtailimages_image_collection_id_c2f8af7e")
+  @@index([created_at], map: "wagtailimages_image_created_at_86fa6cd4")
+  @@index([file_hash], map: "wagtailimages_image_file_hash_fb5bbb23")
+  @@index([file_hash], map: "wagtailimages_image_file_hash_fb5bbb23_like")
+  @@index([uploaded_by_user_id], map: "wagtailimages_image_uploaded_by_user_id_5d73dc75")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailimages_rendition {
+  id                  Int                 @id @default(autoincrement())
+  filter_spec         String              @db.VarChar(255)
+  file                String              @db.VarChar(100)
+  width               Int
+  height              Int
+  focal_point_key     String              @db.VarChar(16)
+  image_id            Int
+  wagtailimages_image wagtailimages_image @relation(fields: [image_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailimages_rendit_image_id_3e1fd774_fk_wagtailim")
+
+  @@unique([image_id, filter_spec, focal_point_key], map: "wagtailimages_rendition_image_id_filter_spec_foc_323c8fe0_uniq")
+  @@index([filter_spec], map: "wagtailimages_rendition_filter_spec_1cba3201")
+  @@index([filter_spec], map: "wagtailimages_rendition_filter_spec_1cba3201_like")
+  @@index([image_id], map: "wagtailimages_rendition_image_id_3e1fd774")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailredirects_redirect {
+  id                       Int               @id @default(autoincrement())
+  old_path                 String            @db.VarChar(255)
+  site_id                  Int?
+  is_permanent             Boolean
+  redirect_page_id         Int?
+  redirect_page_route_path String            @db.VarChar(255)
+  redirect_link            String            @db.VarChar(255)
+  automatically_created    Boolean
+  created_at               DateTime?         @db.Timestamptz(6)
+  wagtailcore_page         wagtailcore_page? @relation(fields: [redirect_page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailredirects_red_redirect_page_id_b5728a8f_fk_wagtailco")
+  wagtailcore_site         wagtailcore_site? @relation(fields: [site_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailredirects_red_site_id_780a0e1e_fk_wagtailco")
+
+  @@unique([old_path, site_id], map: "wagtailredirects_redirect_old_path_site_id_783622d7_uniq")
+  @@index([old_path], map: "wagtailredirects_redirect_old_path_bb35247b")
+  @@index([old_path], map: "wagtailredirects_redirect_old_path_bb35247b_like")
+  @@index([redirect_page_id], map: "wagtailredirects_redirect_redirect_page_id_b5728a8f")
+  @@index([site_id], map: "wagtailredirects_redirect_site_id_780a0e1e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailsearch_indexentry {
+  id                  Int                     @id @default(autoincrement())
+  content_type_id     Int
+  object_id           String                  @db.VarChar(50)
+  title_norm          Float
+  autocomplete        Unsupported("tsvector")
+  title               Unsupported("tsvector")
+  body                Unsupported("tsvector")
+  title_text          String
+  body_text           String
+  django_content_type django_content_type     @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailsearch_indexe_content_type_id_62ed694f_fk_django_co")
+
+  @@unique([content_type_id, object_id], map: "wagtailsearch_indexentry_content_type_id_object_i_bcd7ba73_uniq")
+  @@index([autocomplete], map: "wagtailsear_autocom_476c89_gin", type: Gin)
+  @@index([body], map: "wagtailsear_body_90c85d_gin", type: Gin)
+  @@index([title], map: "wagtailsear_title_9caae0_gin", type: Gin)
+  @@index([content_type_id], map: "wagtailsearch_indexentry_content_type_id_62ed694f")
+}
+
+model wagtailsearchpromotions_query {
+  id                                      Int                                       @id @default(autoincrement())
+  query_string                            String                                    @unique @db.VarChar(255)
+  wagtailsearchpromotions_querydailyhits  wagtailsearchpromotions_querydailyhits[]
+  wagtailsearchpromotions_searchpromotion wagtailsearchpromotions_searchpromotion[]
+
+  @@index([query_string], map: "wagtailsearchpromotions_query_query_string_0e19aecc_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailsearchpromotions_querydailyhits {
+  id                            Int                           @id @default(autoincrement())
+  query_id                      Int
+  date                          DateTime                      @db.Date
+  hits                          Int
+  wagtailsearchpromotions_query wagtailsearchpromotions_query @relation(fields: [query_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailsearchpromoti_query_id_3a591f4d_fk_wagtailse")
+
+  @@unique([query_id, date], map: "wagtailsearchpromotions__query_id_date_b9f15515_uniq")
+  @@index([query_id], map: "wagtailsearchpromotions_querydailyhits_query_id_3a591f4d")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailsearchpromotions_searchpromotion {
+  id                            Int                           @id @default(autoincrement())
+  query_id                      Int
+  page_id                       Int?
+  external_link_url             String                        @db.VarChar(200)
+  external_link_text            String?                       @db.VarChar(200)
+  description                   String
+  sort_order                    Int?
+  wagtailcore_page              wagtailcore_page?             @relation(fields: [page_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailsearchpromoti_page_id_71920f17_fk_wagtailco")
+  wagtailsearchpromotions_query wagtailsearchpromotions_query @relation(fields: [query_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailsearchpromoti_query_id_fbce4eaa_fk_wagtailse")
+
+  @@index([page_id], map: "wagtailsearchpromotions_searchpromotion_page_id_71920f17")
+  @@index([query_id], map: "wagtailsearchpromotions_searchpromotion_query_id_fbce4eaa")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model wagtailusers_userprofile {
+  id                             Int       @id @default(autoincrement())
+  user_id                        Int       @unique
+  submitted_notifications        Boolean
+  approved_notifications         Boolean
+  rejected_notifications         Boolean
+  updated_comments_notifications Boolean
+  preferred_language             String    @db.VarChar(10)
+  current_time_zone              String    @db.VarChar(40)
+  avatar                         String    @db.VarChar(100)
+  dismissibles                   Json
+  theme                          String    @db.VarChar(40)
+  contrast                       String    @db.VarChar(40)
+  density                        String    @db.VarChar(40)
+  keyboard_shortcuts             Boolean
+  auth_user                      auth_user @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "wagtailusers_userprofile_user_id_59c92331_fk_auth_user_id")
+}

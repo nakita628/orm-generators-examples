@@ -1,0 +1,1529 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 2,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 18,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "differs"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "differs"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "differs"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 20,
+          "total": 20
+        },
+        "insert": {
+          "ok": 4,
+          "total": 4
+        },
+        "read": {
+          "ok": 4,
+          "total": 4
+        },
+        "update": {
+          "ok": 0,
+          "total": 0
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 4,
+          "total": 4
+        }
+      },
+      "findings": 16,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": true,
+      "checks": null,
+      "findings": null,
+      "ddl": null
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 2,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "message_search_index_data",
+            "check": "read",
+            "text": "`block` (Bytes) came back as {\"type\":\"Buffer\",\"data\":[98,121,116,101,115,45,51,53]}, expected \"Ynl0ZXMtMzU=\""
+          },
+          {
+            "model": "message_search_index_docsize",
+            "check": "read",
+            "text": "`sz` (Bytes) came back as {\"type\":\"Buffer\",\"data\":[98,121,116,101,115,45,51,54]}, expected \"Ynl0ZXMtMzY=\""
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_schema_migrations\" (\n    \"version\" TEXT NOT NULL PRIMARY KEY\n);\nINSERT INTO \"new_schema_migrations\" (\"version\") SELECT \"version\" FROM \"schema_migrations\";\nDROP TABLE \"schema_migrations\";\nALTER TABLE \"new_schema_migrations\" RENAME TO \"schema_migrations\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- RedefineIndex\nDROP INDEX \"sqlite_autoindex_active_storage_variant_records_1\";\nCREATE UNIQUE INDEX \"index_active_storage_variant_records_uniqueness\" ON \"active_storage_variant_records\"(\"blob_id\", \"variation_digest\");"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_schema_migrations\" (\n    \"version\" TEXT NOT NULL PRIMARY KEY\n);\nINSERT INTO \"new_schema_migrations\" (\"version\") SELECT \"version\" FROM \"schema_migrations\";\nDROP TABLE \"schema_migrations\";\nALTER TABLE \"new_schema_migrations\" RENAME TO \"schema_migrations\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- RedefineIndex\nDROP INDEX \"active_storage_variant_records_blob_id_variation_digest_key\";\nCREATE UNIQUE INDEX \"index_active_storage_variant_records_uniqueness\" ON \"active_storage_variant_records\"(\"blob_id\", \"variation_digest\");"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_message_search_index_data\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"block\" BLOB\n);\nINSERT INTO \"new_message_search_index_data\" (\"block\", \"id\") SELECT \"block\", \"id\" FROM \"message_search_index_data\";\nDROP TABLE \"message_search_index_data\";\nALTER TABLE \"new_message_search_index_data\" RENAME TO \"message_search_index_data\";\nCREATE TABLE \"new_message_search_index_docsize\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"sz\" BLOB\n);\nINSERT INTO \"new_message_search_index_docsize\" (\"id\", \"sz\") SELECT \"id\", \"sz\" FROM \"message_search_index_docsize\";\nDROP TABLE \"message_search_index_docsize\";\nALTER TABLE \"new_message_search_index_docsize\" RENAME TO \"message_search_index_docsize\";\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"index_active_storage_variant_records_uniqueness\" ON \"active_storage_variant_records\"(\"blob_id\", \"variation_digest\");"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 20,
+            "total": 20
+          },
+          "insert": {
+            "ok": 4,
+            "total": 4
+          },
+          "read": {
+            "ok": 4,
+            "total": 4
+          },
+          "update": {
+            "ok": 0,
+            "total": 0
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 4,
+            "total": 4
+          }
+        },
+        "findings": [
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "action_text_rich_texts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: its required key points at `active_storage_blobs`, which is not inserted"
+          },
+          {
+            "model": "ar_internal_metadata",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "bans",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "rooms",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "boosts",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "memberships",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "push_subscriptions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "searches",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `last_active_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          },
+          {
+            "model": "webhooks",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`created_at` Unsupported(\"datetime(6)\"), `updated_at` Unsupported(\"datetime(6)\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- AlterTable\nALTER TABLE \"message_search_index_content\" ADD COLUMN \"c0\" ;\n\n-- CreateTable\nCREATE TABLE \"message_search_index\" (\n    \"body\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_config\" (\n    \"k\"  NOT NULL PRIMARY KEY,\n    \"v\" \n);\n\n-- CreateTable\nCREATE TABLE \"message_search_index_idx\" (\n    \"segid\"  NOT NULL,\n    \"term\"  NOT NULL,\n    \"pgno\" ,\n\n    PRIMARY KEY (\"segid\", \"term\")\n);\n\n-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_accounts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"custom_styles\" TEXT,\n    \"join_code\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"settings\" json,\n    \"singleton_guard\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_accounts\" (\"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\") SELECT \"custom_styles\", \"id\", \"join_code\", \"name\", \"singleton_guard\" FROM \"accounts\";\nDROP TABLE \"accounts\";\nALTER TABLE \"new_accounts\" RENAME TO \"accounts\";\nCREATE UNIQUE INDEX \"index_accounts_on_singleton_guard\" ON \"accounts\"(\"singleton_guard\");\nCREATE TABLE \"new_action_text_rich_texts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"body\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_action_text_rich_texts\" (\"body\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"body\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"action_text_rich_texts\";\nDROP TABLE \"action_text_rich_texts\";\nALTER TABLE \"new_action_text_rich_texts\" RENAME TO \"action_text_rich_texts\";\nCREATE UNIQUE INDEX \"index_action_text_rich_texts_uniqueness\" ON \"action_text_rich_texts\"(\"record_type\", \"record_id\", \"name\");\nCREATE TABLE \"new_active_storage_attachments\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"blob_id\" INTEGER NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"record_id\" BIGINT NOT NULL,\n    \"record_type\" TEXT NOT NULL,\n    CONSTRAINT \"active_storage_attachments_blob_id_fkey\" FOREIGN KEY (\"blob_id\") REFERENCES \"active_storage_blobs\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_active_storage_attachments\" (\"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\") SELECT \"blob_id\", \"id\", \"name\", \"record_id\", \"record_type\" FROM \"active_storage_attachments\";\nDROP TABLE \"active_storage_attachments\";\nALTER TABLE \"new_active_storage_attachments\" RENAME TO \"active_storage_attachments\";\nCREATE INDEX \"index_active_storage_attachments_on_blob_id\" ON \"active_storage_attachments\"(\"blob_id\");\nCREATE UNIQUE INDEX \"index_active_storage_attachments_uniqueness\" ON \"active_storage_attachments\"(\"record_type\", \"record_id\", \"name\", \"blob_id\");\nCREATE TABLE \"new_active_storage_blobs\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"byte_size\" BIGINT NOT NULL,\n    \"checksum\" TEXT,\n    \"content_type\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"filename\" TEXT NOT NULL,\n    \"key\" TEXT NOT NULL,\n    \"metadata\" TEXT,\n    \"service_name\" TEXT NOT NULL\n);\nINSERT INTO \"new_active_storage_blobs\" (\"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\") SELECT \"byte_size\", \"checksum\", \"content_type\", \"filename\", \"id\", \"key\", \"metadata\", \"service_name\" FROM \"active_storage_blobs\";\nDROP TABLE \"active_storage_blobs\";\nALTER TABLE \"new_active_storage_blobs\" RENAME TO \"active_storage_blobs\";\nCREATE UNIQUE INDEX \"index_active_storage_blobs_on_key\" ON \"active_storage_blobs\"(\"key\");\nCREATE TABLE \"new_ar_internal_metadata\" (\n    \"key\" TEXT NOT NULL PRIMARY KEY,\n    \"value\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_ar_internal_metadata\" (\"key\", \"value\") SELECT \"key\", \"value\" FROM \"ar_internal_metadata\";\nDROP TABLE \"ar_internal_metadata\";\nALTER TABLE \"new_ar_internal_metadata\" RENAME TO \"ar_internal_metadata\";\nCREATE TABLE \"new_bans\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"bans_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_bans\" (\"id\", \"ip_address\", \"user_id\") SELECT \"id\", \"ip_address\", \"user_id\" FROM \"bans\";\nDROP TABLE \"bans\";\nALTER TABLE \"new_bans\" RENAME TO \"bans\";\nCREATE INDEX \"index_bans_on_user_id\" ON \"bans\"(\"user_id\");\nCREATE INDEX \"index_bans_on_ip_address\" ON \"bans\"(\"ip_address\");\nCREATE TABLE \"new_boosts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"booster_id\" INTEGER NOT NULL,\n    \"content\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"message_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"boosts_message_id_fkey\" FOREIGN KEY (\"message_id\") REFERENCES \"messages\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_boosts\" (\"booster_id\", \"content\", \"id\", \"message_id\") SELECT \"booster_id\", \"content\", \"id\", \"message_id\" FROM \"boosts\";\nDROP TABLE \"boosts\";\nALTER TABLE \"new_boosts\" RENAME TO \"boosts\";\nCREATE INDEX \"index_boosts_on_message_id\" ON \"boosts\"(\"message_id\");\nCREATE INDEX \"index_boosts_on_booster_id\" ON \"boosts\"(\"booster_id\");\nCREATE TABLE \"new_memberships\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"connected_at\" datetime(6),\n    \"connections\" INTEGER NOT NULL DEFAULT 0,\n    \"created_at\" datetime(6) NOT NULL,\n    \"involvement\" TEXT DEFAULT 'mentions',\n    \"room_id\" INTEGER NOT NULL,\n    \"unread_at\" datetime(6),\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL\n);\nINSERT INTO \"new_memberships\" (\"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\") SELECT \"connections\", \"id\", \"involvement\", \"room_id\", \"user_id\" FROM \"memberships\";\nDROP TABLE \"memberships\";\nALTER TABLE \"new_memberships\" RENAME TO \"memberships\";\nCREATE INDEX \"index_memberships_on_user_id\" ON \"memberships\"(\"user_id\");\nCREATE INDEX \"index_memberships_on_room_id\" ON \"memberships\"(\"room_id\");\nCREATE INDEX \"index_memberships_on_room_id_and_created_at\" ON \"memberships\"(\"room_id\", \"created_at\");\nCREATE UNIQUE INDEX \"index_memberships_on_room_id_and_user_id\" ON \"memberships\"(\"room_id\", \"user_id\");\nCREATE TABLE \"new_messages\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"client_message_id\" TEXT NOT NULL,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" INTEGER NOT NULL,\n    \"room_id\" INTEGER NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    CONSTRAINT \"messages_creator_id_fkey\" FOREIGN KEY (\"creator_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION,\n    CONSTRAINT \"messages_room_id_fkey\" FOREIGN KEY (\"room_id\") REFERENCES \"rooms\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_messages\" (\"client_message_id\", \"creator_id\", \"id\", \"room_id\") SELECT \"client_message_id\", \"creator_id\", \"id\", \"room_id\" FROM \"messages\";\nDROP TABLE \"messages\";\nALTER TABLE \"new_messages\" RENAME TO \"messages\";\nCREATE INDEX \"index_messages_on_room_id\" ON \"messages\"(\"room_id\");\nCREATE INDEX \"index_messages_on_room_id_and_updated_at\" ON \"messages\"(\"room_id\", \"updated_at\");\nCREATE INDEX \"index_messages_on_room_id_and_created_at\" ON \"messages\"(\"room_id\", \"created_at\");\nCREATE INDEX \"index_messages_on_creator_id\" ON \"messages\"(\"creator_id\");\nCREATE TABLE \"new_push_subscriptions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"auth_key\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"endpoint\" TEXT,\n    \"p256dh_key\" TEXT,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"push_subscriptions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_push_subscriptions\" (\"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\") SELECT \"auth_key\", \"endpoint\", \"id\", \"p256dh_key\", \"user_agent\", \"user_id\" FROM \"push_subscriptions\";\nDROP TABLE \"push_subscriptions\";\nALTER TABLE \"new_push_subscriptions\" RENAME TO \"push_subscriptions\";\nCREATE INDEX \"index_push_subscriptions_on_user_id\" ON \"push_subscriptions\"(\"user_id\");\nCREATE INDEX \"idx_on_endpoint_p256dh_key_auth_key_7553014576\" ON \"push_subscriptions\"(\"endpoint\", \"p256dh_key\", \"auth_key\");\nCREATE TABLE \"new_rooms\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"creator_id\" BIGINT NOT NULL,\n    \"name\" TEXT,\n    \"type\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"messages_count\" INTEGER NOT NULL DEFAULT 0\n);\nINSERT INTO \"new_rooms\" (\"creator_id\", \"id\", \"messages_count\", \"name\", \"type\") SELECT \"creator_id\", \"id\", \"messages_count\", \"name\", \"type\" FROM \"rooms\";\nDROP TABLE \"rooms\";\nALTER TABLE \"new_rooms\" RENAME TO \"rooms\";\nCREATE TABLE \"new_searches\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"query\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"searches_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_searches\" (\"id\", \"query\", \"user_id\") SELECT \"id\", \"query\", \"user_id\" FROM \"searches\";\nDROP TABLE \"searches\";\nALTER TABLE \"new_searches\" RENAME TO \"searches\";\nCREATE INDEX \"index_searches_on_user_id\" ON \"searches\"(\"user_id\");\nCREATE TABLE \"new_sessions\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"ip_address\" TEXT,\n    \"last_active_at\" datetime(6) NOT NULL,\n    \"token\" TEXT NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"user_agent\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"sessions_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_sessions\" (\"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\") SELECT \"id\", \"ip_address\", \"token\", \"user_agent\", \"user_id\" FROM \"sessions\";\nDROP TABLE \"sessions\";\nALTER TABLE \"new_sessions\" RENAME TO \"sessions\";\nCREATE UNIQUE INDEX \"index_sessions_on_token\" ON \"sessions\"(\"token\");\nCREATE INDEX \"index_sessions_on_user_id\" ON \"sessions\"(\"user_id\");\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"bio\" TEXT,\n    \"bot_token\" TEXT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"email_address\" TEXT,\n    \"name\" TEXT NOT NULL,\n    \"password_digest\" TEXT,\n    \"role\" INTEGER NOT NULL DEFAULT 0,\n    \"status\" INTEGER NOT NULL DEFAULT 0,\n    \"updated_at\" datetime(6) NOT NULL\n);\nINSERT INTO \"new_users\" (\"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\") SELECT \"bio\", \"bot_token\", \"email_address\", \"id\", \"name\", \"password_digest\", \"role\", \"status\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"index_users_on_bot_token\" ON \"users\"(\"bot_token\");\nCREATE UNIQUE INDEX \"index_users_on_email_address\" ON \"users\"(\"email_address\");\nCREATE TABLE \"new_webhooks\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"created_at\" datetime(6) NOT NULL,\n    \"updated_at\" datetime(6) NOT NULL,\n    \"url\" TEXT,\n    \"user_id\" INTEGER NOT NULL,\n    CONSTRAINT \"webhooks_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE NO ACTION ON UPDATE NO ACTION\n);\nINSERT INTO \"new_webhooks\" (\"id\", \"url\", \"user_id\") SELECT \"id\", \"url\", \"user_id\" FROM \"webhooks\";\nDROP TABLE \"webhooks\";\nALTER TABLE \"new_webhooks\" RENAME TO \"webhooks\";\nCREATE INDEX \"index_webhooks_on_user_id\" ON \"webhooks\"(\"user_id\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+      }
+    },
+    {
+      "orm": "exposed",
+      "notGenerated": true
+    }
+  ]
+}

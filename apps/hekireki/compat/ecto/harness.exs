@@ -291,6 +291,11 @@ defmodule Compat.Harness do
       end
 
     Logger.configure(level: :warning)
+    # The log goes to stderr: stdout is the harness's JSON, which run.mjs reads (a connection
+    # that Postgrex drops, as on a deferred foreign key's violation at commit, logs an error).
+    # (A handler's output cannot change once it runs, so the default one is replaced.)
+    :logger.remove_handler(:default)
+    :logger.add_handler(:default, :logger_std_h, %{config: %{type: :standard_error}})
     {:ok, _} = Application.ensure_all_started(:ecto_sql)
     {:ok, _} = repo.start_link(Keyword.merge(opts, pool_size: 1, log: false))
     repo

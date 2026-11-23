@@ -94,6 +94,29 @@ export async function makePlan(source) {
   })
 
   const ordered = order(models)
+  // A column of a type Prisma does not support (`Unsupported("tsvector")`, ...) is not in the DMMF,
+  // so no harness knows to write it. A model with a required one and no default cannot be
+  // inserted (Prisma Client cannot create it either), and neither can a model whose required key
+  // points at it: both are left out, as a model whose key closes a cycle is.
+  const unsupported = new Map()
+  for (const [, name, body] of code.matchAll(/^\s*model\s+(\w+)\s*\{([^]*?)^\s*\}/gm)) {
+    for (const [, field, type, list, optional, rest] of body.matchAll(/^[ \t]*(\w+)[ \t]+(Unsupported\("[^"]*"\))(\[\])?(\?)?([^\n]*)$/gm)) {
+      if (!optional && !/@default\(/.test(rest)) unsupported.set(name, [...(unsupported.get(name) ?? []), `\`${field}\` ${type}${list ?? ''}`])
+    }
+  }
+  const byPlanName = new Map(ordered.map((m) => [m.name, m]))
+  for (const m of ordered) {
+    if (unsupported.has(m.name)) {
+      m.insertable = false
+      m.skipReason = `a required column of a type Prisma does not support, without a default (${unsupported.get(m.name).join(', ')})`
+      continue
+    }
+    const parent = m.fields.find((f) => f.fk && f.required && f.fk.model !== m.name && byPlanName.get(f.fk.model)?.skipReason)
+    if (parent) {
+      m.insertable = false
+      m.skipReason = `its required key points at \`${parent.fk.model}\`, which is not inserted`
+    }
+  }
   // Columns another model's key points at: changing one after the insert would leave the rows
   // inserted later pointing at a value that is gone.
   const referenced = new Set(models.flatMap((m) => m.fields.filter((f) => f.fk).map((f) => `${f.fk.model}.${f.fk.column}`)))

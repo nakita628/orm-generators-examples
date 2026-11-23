@@ -1,0 +1,15 @@
+{
+  "source": "rails/maybe",
+  "about": "[Maybe](https://github.com/maybe-finance/maybe)'s db/schema.rb",
+  "repo": "maybe-finance/maybe",
+  "commit": "77b5469832758d1cbee1a940f3012a1ae1c74cd3",
+  "path": "db/schema.rb",
+  "license": "AGPL-3.0",
+  "dialect": "postgresql",
+  "tables": 61,
+  "models": 61,
+  "prisma": "8.1.0-dev.9",
+  "hekireki": "0.52.2",
+  "pulled_at": "2026-11-23T14:23:53.239Z",
+  "checked_at": "2026-11-23T14:26:02.390Z"
+}

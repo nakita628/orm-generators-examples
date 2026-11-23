@@ -115,3 +115,71 @@ A model whose required key closes a cycle with another model's is not inserted (
 other row first, and that row needs it). The report lists those models. A view is left out.
 Exposed's relations are loaded through the DAO by a single id, so a model with a composite key
 has its relations skipped.
+
+## Pulled schemas: other ORMs' tables, read back into Prisma
+
+**[Results](pull/results/README.md)**
+
+The schemas above are Prisma schemas as their projects wrote them. [pull.mjs](pull.mjs) turns the
+direction around: a well-known project's **own** ORM creates its tables from the project's own
+definitions, `prisma db pull` reads them into a Prisma schema, hekireki generates every ORM's code
+from that, and run.mjs runs the code against the tables the project's ORM created (not tables
+from `prisma db push`). The generated Django models then have to work on the tables Django itself
+made from Wagtail's models, the generated Active Record models on Mastodon's `db/schema.rb`, and
+so on for every ORM, on schemas no one wrote for Prisma.
+
+| Source | Projects | How the tables are made |
+| --- | --: | --- |
+| `django/<example>` | every [djangoer example](../../djangoer/examples) | Django's schema editor creates every model's table ([pull/django/create_tables.py](pull/django/create_tables.py)), on PostgreSQL |
+| `drizzle/<example>` | every [drizzler example](../../drizzler/examples) | `drizzle-kit export`, in the example's dialect |
+| `rails/<app>` | Mastodon, Forem, Chatwoot, Lobsters, Maybe, Loomio, Campfire ([pull/sources.json](pull/sources.json)) | Active Record loads the app's `db/schema.rb` at a pinned commit ([pull/activerecord/load_schema.rb](pull/activerecord/load_schema.rb)) |
+| `sqlalchemy/<project>` | MLflow | the project's own command (`mlflow db upgrade`), or `metadata.create_all()` ([pull/sqlalchemy/create_all.py](pull/sqlalchemy/create_all.py)) |
+
+For each source, `pull/schemas/<kind>-<name>/` keeps:
+
+- `source.sql`: the tables as the project's ORM created them (pg_dump, mysqldump, sqlite_master).
+  run.mjs makes the crud database from it.
+- `schema.prisma`: what `prisma db pull` wrote, under hekireki's generator blocks. Where Prisma
+  writes a schema it refuses itself (an integer foreign key on a bigint id, a default on an
+  `Unsupported` field), pull.mjs makes the smallest change that validates and lists it in the
+  header and in `source.json`'s `fixes`.
+- `prisma-diff.sql`: what `prisma migrate diff` would run to turn the tables into the Prisma
+  schema's, that is, what a Prisma schema cannot say about them (left out when there is nothing).
+  A difference listed there is Prisma's, not hekireki's.
+- `source.json`: where the tables came from, the versions, and when they were last checked.
+
+`generated/` beside them is hekireki's output, written again by every run (not committed); a
+generator that fails writes `generated/<orm>.error` instead, and the results show it.
+
+```sh
+node pull.mjs --list                          # every source, and when it was last checked
+node pull.mjs django/wagtail rails/mastodon   # pull, generate and check these
+node pull.mjs --random 3                      # three: never checked first, then the oldest
+node pull.mjs --orm django,activerecord ...   # only these ORMs
+node pull.mjs --pull-only drizzle/northwind   # only the pull: schema.prisma and source.sql
+```
+
+It needs what run.mjs needs, plus uv for the Django and SQLAlchemy sources, the pnpm install of
+apps/drizzler for drizzle-kit, and the Active Record image for the Rails ones. A source that cannot
+be pulled at all goes in `skip` of [pull/sources.json](pull/sources.json), with the reason.
+
+A Claude Code scheduled task runs `node pull.mjs --random 3` every day, files what is hekireki's
+on [hekireki](https://github.com/nakita628/hekireki/issues), and pushes the results; see
+[.claude/skills/hekireki-pull-check](../../../.claude/skills/hekireki-pull-check/SKILL.md).
+
+## In a Claude Code cloud session
+
+On your own machine, Docker is used as it is. In a cloud session, run
+[cloud/prepare.sh](cloud/prepare.sh) first and export what it prints:
+
+```sh
+eval "$(bash apps/hekireki/compat/cloud/prepare.sh | tail -1)"
+```
+
+It starts dockerd with mirror.gcr.io in front of Docker Hub, re-tags each Dockerfile's base image
+with the session proxy's CA in it ([cloud/base.Dockerfile](cloud/base.Dockerfile)), builds every
+image with the host's network, and prints `COMPAT_DOCKER_BUILD_ARGS`, which run.mjs and pull.mjs
+add to their own `docker build` so that it finds every layer in the cache. The Dockerfiles
+themselves stay as they are. The environment has to allow `deb.debian.org`, `repo.hex.pm` and
+`builds.hex.pm`; Maven Central comes from Google's mirror of it
+([cloud/maven-mirror.gradle](cloud/maven-mirror.gradle)), and Composer installs from git.

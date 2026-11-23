@@ -26,7 +26,7 @@ export function compare(plan, out) {
     }
     for (const col of r.unmapped ?? []) add('model', `no attribute maps the column \`${col}\``)
     if (r.skipped) {
-      add('insert', `not inserted: ${r.skipped}`)
+      add('insert', `not inserted: ${m.skipReason ?? r.skipped}`)
       continue
     }
 

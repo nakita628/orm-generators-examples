@@ -1,0 +1,24 @@
+// Gradle init script for the cloud base images (base.Dockerfile): Maven Central from Google's
+// mirror of it, because repo.maven.apache.org and repo1.maven.org rate-limit the cloud session's
+// shared egress. It comes first for plugins too, so that the plugin portal does not redirect a
+// plugin's artifacts to repo.maven.apache.org.
+def central = 'https://maven-central.storage-download.googleapis.com/maven2/'
+def redirect = { repos ->
+  repos.configureEach { r ->
+    if (r instanceof org.gradle.api.artifacts.repositories.MavenArtifactRepository && r.url.host in ['repo.maven.apache.org', 'repo1.maven.org']) {
+      r.url = central
+    }
+  }
+}
+beforeSettings { settings ->
+  settings.pluginManagement.repositories {
+    maven { url = central }
+    gradlePluginPortal()
+  }
+  redirect(settings.pluginManagement.repositories)
+  redirect(settings.dependencyResolutionManagement.repositories)
+}
+allprojects {
+  redirect(repositories)
+  redirect(buildscript.repositories)
+}

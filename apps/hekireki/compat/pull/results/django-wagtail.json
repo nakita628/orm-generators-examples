@@ -1,0 +1,1049 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 53,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 2,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 38,
+          "total": 54
+        },
+        "read": {
+          "ok": 38,
+          "total": 38
+        },
+        "update": {
+          "ok": 24,
+          "total": 24
+        },
+        "relations": {
+          "ok": 102,
+          "total": 102
+        },
+        "delete": {
+          "ok": 36,
+          "total": 38
+        }
+      },
+      "findings": 19,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 40,
+          "total": 54
+        },
+        "read": {
+          "ok": 40,
+          "total": 40
+        },
+        "update": {
+          "ok": 26,
+          "total": 26
+        },
+        "relations": {
+          "ok": 106,
+          "total": 106
+        },
+        "delete": {
+          "ok": 35,
+          "total": 40
+        }
+      },
+      "findings": 20,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 53,
+          "total": 54
+        },
+        "read": {
+          "ok": 53,
+          "total": 53
+        },
+        "update": {
+          "ok": 34,
+          "total": 34
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 53,
+          "total": 53
+        }
+      },
+      "findings": 2,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 177,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 2,
+      "ddl": "differs"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 55,
+          "total": 55
+        },
+        "insert": {
+          "ok": 54,
+          "total": 54
+        },
+        "read": {
+          "ok": 54,
+          "total": 54
+        },
+        "update": {
+          "ok": 35,
+          "total": 35
+        },
+        "relations": {
+          "ok": 178,
+          "total": 178
+        },
+        "delete": {
+          "ok": 54,
+          "total": 54
+        }
+      },
+      "findings": 1,
+      "ddl": "differs"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"wagtailcore_uuid_d6363b_idx\";\n\n-- DropIndex\nDROP INDEX \"wagtailcore_uuid_06a44d_idx\";\n\n-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE INDEX \"wagtailcore_uuid_d6363b_idx\" ON \"wagtailcore_modellogentry\"(\"uuid\", \"action\", \"timestamp\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"wagtailcore_uuid_06a44d_idx\" ON \"wagtailcore_pagelogentry\"(\"uuid\", \"action\", \"timestamp\" DESC);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_group_id_fkey\" TO \"auth_group_permissions_group_id_b120cbf9_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_permission_id_fkey\" TO \"auth_group_permissio_permission_id_84c5c92e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_permission\" RENAME CONSTRAINT \"auth_permission_content_type_id_fkey\" TO \"auth_permission_content_type_id_2f476e4b_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_group_id_fkey\" TO \"auth_user_groups_group_id_97559544_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_user_id_fkey\" TO \"auth_user_groups_user_id_6a12ed8b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_permission_id_fkey\" TO \"auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_user_id_fkey\" TO \"auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_content_type_id_fkey\" TO \"django_admin_log_content_type_id_c4bce8eb_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_user_id_fkey\" TO \"django_admin_log_user_id_c564eba6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_content_type_id_fkey\" TO \"taggit_taggeditem_content_type_id_9957a03c_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_tag_id_fkey\" TO \"taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_content_type_id_fkey\" TO \"wagtailadmin_editing_content_type_id_4df7730e_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_user_id_fkey\" TO \"wagtailadmin_editingsession_user_id_6e1a9b70_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_content_type_id_fkey\" TO \"wagtailadmin_formsta_content_type_id_e32438b3_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_user_id_fkey\" TO \"wagtailadmin_formstate_user_id_b910adc2_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_apitoken\" RENAME CONSTRAINT \"wagtailcore_apitoken_user_id_fkey\" TO \"wagtailcore_apitoken_user_id_49b1141b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_collection_id_fkey\" TO \"wagtailcore_collecti_collection_id_761908ec_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_collectionvie_fkey\" TO \"wagtailcore_collecti_collectionviewrestri_47320efd_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_collecti_group_id_1823f2a3_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_page_id_fkey\" TO \"wagtailcore_comment_page_id_108444b5_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_resolved_by_id_fkey\" TO \"wagtailcore_comment_resolved_by_id_a282aa0e_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_revision_created_id_fkey\" TO \"wagtailcore_comment_revision_created_id_1d058279_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_user_id_fkey\" TO \"wagtailcore_comment_user_id_0c577ca6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_comment_id_fkey\" TO \"wagtailcore_commentr_comment_id_afc7e027_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_user_id_fkey\" TO \"wagtailcore_commentreply_user_id_d0b3b9c3_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_task_ptr_id_fkey\" TO \"wagtailcore_groupapp_task_ptr_id_cfe58781_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_group_id_fkey\" TO \"wagtailcore_groupapp_group_id_2e64b61f_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_fkey\" TO \"wagtailcore_groupapp_groupapprovaltask_id_9a9255ea_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_collection_id_fkey\" TO \"wagtailcore_groupcol_collection_id_5423575a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_group_id_fkey\" TO \"wagtailcore_groupcol_group_id_05d61460_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_permission_id_fkey\" TO \"wagtailcore_groupcol_permission_id_1b626275_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_group_id_fkey\" TO \"wagtailcore_grouppag_group_id_fc07e671_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_page_id_fkey\" TO \"wagtailcore_grouppag_page_id_710b114a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_permission_id_fkey\" TO \"wagtailcore_grouppag_permission_id_05acb22e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_group_id_fkey\" TO \"wagtailcore_groupsit_group_id_e5cdbee4_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_permission_id_fkey\" TO \"wagtailcore_groupsit_permission_id_459b1f38_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_site_id_fkey\" TO \"wagtailcore_groupsit_site_id_245de488_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_modellogentry\" RENAME CONSTRAINT \"wagtailcore_modellogentry_content_type_id_fkey\" TO \"wagtailcore_modellog_content_type_id_68849e77_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_alias_of_id_fkey\" TO \"wagtailcore_page_alias_of_id_12945502_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_content_type_id_fkey\" TO \"wagtailcore_page_content_type_id_c28424df_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_latest_revision_id_fkey\" TO \"wagtailcore_page_latest_revision_id_e60fef51_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_live_revision_id_fkey\" TO \"wagtailcore_page_live_revision_id_930bd822_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locale_id_fkey\" TO \"wagtailcore_page_locale_id_3c7e30a6_fk_wagtailcore_locale_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locked_by_id_fkey\" TO \"wagtailcore_page_locked_by_id_bcb86245_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_owner_id_fkey\" TO \"wagtailcore_page_owner_id_fbf7c332_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagelogentry\" RENAME CONSTRAINT \"wagtailcore_pagelogentry_content_type_id_fkey\" TO \"wagtailcore_pageloge_content_type_id_74e7708a_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_page_id_fkey\" TO \"wagtailcore_pagesubs_page_id_a085e7a6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_user_id_fkey\" TO \"wagtailcore_pagesubscription_user_id_89d7def9_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_page_id_fkey\" TO \"wagtailcore_pageview_page_id_15a8bea6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_pageview_group_id_6460f223_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_pageviewrestriction_fkey\" TO \"wagtailcore_pageview_pageviewrestriction__f147a99a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_base_content_type_id_fkey\" TO \"wagtailcore_referenc_base_content_type_id_313cf40f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_content_type_id_fkey\" TO \"wagtailcore_referenc_content_type_id_766e0336_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_to_content_type_id_fkey\" TO \"wagtailcore_referenc_to_content_type_id_93690bbd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_base_content_type_id_fkey\" TO \"wagtailcore_revision_base_content_type_id_5b4ef7bd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_content_type_id_fkey\" TO \"wagtailcore_revision_content_type_id_c8cb69c0_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_user_id_fkey\" TO \"wagtailcore_revision_user_id_03df83b0_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_site\" RENAME CONSTRAINT \"wagtailcore_site_root_page_id_fkey\" TO \"wagtailcore_site_root_page_id_e02fb95c_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_task\" RENAME CONSTRAINT \"wagtailcore_task_content_type_id_fkey\" TO \"wagtailcore_task_content_type_id_249ab8ba_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_content_type_id_fkey\" TO \"wagtailcore_taskstat_content_type_id_0a758fdc_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_finished_by_id_fkey\" TO \"wagtailcore_taskstate_finished_by_id_13f98229_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_revision_id_fkey\" TO \"wagtailcore_taskstat_revision_id_df25a499_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_task_id_fkey\" TO \"wagtailcore_taskstate_task_id_c3677c34_fk_wagtailcore_task_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_workflow_state_id_fkey\" TO \"wagtailcore_taskstat_workflow_state_id_9239a775_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_for_content_type_id_fkey\" TO \"wagtailcore_uploaded_for_content_type_id_b0fc87b2_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_uploaded_by_user_id_fkey\" TO \"wagtailcore_uploaded_uploaded_by_user_id_c7580fe8_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_b261bb37_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_9aad7cd2_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_page_id_fkey\" TO \"wagtailcore_workflow_page_id_81e7bab6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_56f56ff6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_base_content_type_id_fkey\" TO \"wagtailcore_workflow_base_content_type_id_a30dc576_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_2bb78ce1_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_current_task_state_id_fkey\" TO \"wagtailcore_workflow_current_task_state_i_3a1a0632_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_requested_by_id_fkey\" TO \"wagtailcore_workflow_requested_by_id_4090bca3_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_1f18378f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_task_id_fkey\" TO \"wagtailcore_workflow_task_id_ce7716fe_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_b9717175_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_collection_id_fkey\" TO \"wagtaildocs_document_collection_id_23881625_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_uploaded_by_user_id_fkey\" TO \"wagtaildocs_document_uploaded_by_user_id_17258b41_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailforms_formsubmission\" RENAME CONSTRAINT \"wagtailforms_formsubmission_page_id_fkey\" TO \"wagtailforms_formsub_page_id_e48e93e7_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_collection_id_fkey\" TO \"wagtailimages_image_collection_id_c2f8af7e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_uploaded_by_user_id_fkey\" TO \"wagtailimages_image_uploaded_by_user_id_5d73dc75_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_rendition\" RENAME CONSTRAINT \"wagtailimages_rendition_image_id_fkey\" TO \"wagtailimages_rendit_image_id_3e1fd774_fk_wagtailim\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_redirect_page_id_fkey\" TO \"wagtailredirects_red_redirect_page_id_b5728a8f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_site_id_fkey\" TO \"wagtailredirects_red_site_id_780a0e1e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearch_indexentry\" RENAME CONSTRAINT \"wagtailsearch_indexentry_content_type_id_fkey\" TO \"wagtailsearch_indexe_content_type_id_62ed694f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_querydailyhits\" RENAME CONSTRAINT \"wagtailsearchpromotions_querydailyhits_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_3a591f4d_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_page_id_fkey\" TO \"wagtailsearchpromoti_page_id_71920f17_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_fbce4eaa_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailusers_userprofile\" RENAME CONSTRAINT \"wagtailusers_userprofile_user_id_fkey\" TO \"wagtailusers_userprofile_user_id_59c92331_fk_auth_user_id\";"
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 53,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtaildocs_document",
+            "check": "read",
+            "text": "`file_size` is typed `bigint | null` but came back as string"
+          },
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"wagtailcore_uuid_d6363b_idx\";\n\n-- DropIndex\nDROP INDEX \"wagtailcore_uuid_06a44d_idx\";\n\n-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE INDEX \"wagtailcore_uuid_d6363b_idx\" ON \"wagtailcore_modellogentry\"(\"uuid\", \"action\", \"timestamp\" DESC);\n\n-- CreateIndex\nCREATE INDEX \"wagtailcore_uuid_06a44d_idx\" ON \"wagtailcore_pagelogentry\"(\"uuid\", \"action\", \"timestamp\" DESC);\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_group_id_fkey\" TO \"auth_group_permissions_group_id_b120cbf9_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_permission_id_fkey\" TO \"auth_group_permissio_permission_id_84c5c92e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_permission\" RENAME CONSTRAINT \"auth_permission_content_type_id_fkey\" TO \"auth_permission_content_type_id_2f476e4b_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_group_id_fkey\" TO \"auth_user_groups_group_id_97559544_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_user_id_fkey\" TO \"auth_user_groups_user_id_6a12ed8b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_permission_id_fkey\" TO \"auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_user_id_fkey\" TO \"auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_content_type_id_fkey\" TO \"django_admin_log_content_type_id_c4bce8eb_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_user_id_fkey\" TO \"django_admin_log_user_id_c564eba6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_content_type_id_fkey\" TO \"taggit_taggeditem_content_type_id_9957a03c_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_tag_id_fkey\" TO \"taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_content_type_id_fkey\" TO \"wagtailadmin_editing_content_type_id_4df7730e_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_user_id_fkey\" TO \"wagtailadmin_editingsession_user_id_6e1a9b70_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_content_type_id_fkey\" TO \"wagtailadmin_formsta_content_type_id_e32438b3_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_user_id_fkey\" TO \"wagtailadmin_formstate_user_id_b910adc2_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_apitoken\" RENAME CONSTRAINT \"wagtailcore_apitoken_user_id_fkey\" TO \"wagtailcore_apitoken_user_id_49b1141b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_collection_id_fkey\" TO \"wagtailcore_collecti_collection_id_761908ec_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_collectionvie_fkey\" TO \"wagtailcore_collecti_collectionviewrestri_47320efd_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_collecti_group_id_1823f2a3_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_page_id_fkey\" TO \"wagtailcore_comment_page_id_108444b5_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_resolved_by_id_fkey\" TO \"wagtailcore_comment_resolved_by_id_a282aa0e_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_revision_created_id_fkey\" TO \"wagtailcore_comment_revision_created_id_1d058279_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_user_id_fkey\" TO \"wagtailcore_comment_user_id_0c577ca6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_comment_id_fkey\" TO \"wagtailcore_commentr_comment_id_afc7e027_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_user_id_fkey\" TO \"wagtailcore_commentreply_user_id_d0b3b9c3_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_task_ptr_id_fkey\" TO \"wagtailcore_groupapp_task_ptr_id_cfe58781_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_group_id_fkey\" TO \"wagtailcore_groupapp_group_id_2e64b61f_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_fkey\" TO \"wagtailcore_groupapp_groupapprovaltask_id_9a9255ea_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_collection_id_fkey\" TO \"wagtailcore_groupcol_collection_id_5423575a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_group_id_fkey\" TO \"wagtailcore_groupcol_group_id_05d61460_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_permission_id_fkey\" TO \"wagtailcore_groupcol_permission_id_1b626275_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_group_id_fkey\" TO \"wagtailcore_grouppag_group_id_fc07e671_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_page_id_fkey\" TO \"wagtailcore_grouppag_page_id_710b114a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_permission_id_fkey\" TO \"wagtailcore_grouppag_permission_id_05acb22e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_group_id_fkey\" TO \"wagtailcore_groupsit_group_id_e5cdbee4_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_permission_id_fkey\" TO \"wagtailcore_groupsit_permission_id_459b1f38_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_site_id_fkey\" TO \"wagtailcore_groupsit_site_id_245de488_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_modellogentry\" RENAME CONSTRAINT \"wagtailcore_modellogentry_content_type_id_fkey\" TO \"wagtailcore_modellog_content_type_id_68849e77_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_alias_of_id_fkey\" TO \"wagtailcore_page_alias_of_id_12945502_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_content_type_id_fkey\" TO \"wagtailcore_page_content_type_id_c28424df_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_latest_revision_id_fkey\" TO \"wagtailcore_page_latest_revision_id_e60fef51_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_live_revision_id_fkey\" TO \"wagtailcore_page_live_revision_id_930bd822_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locale_id_fkey\" TO \"wagtailcore_page_locale_id_3c7e30a6_fk_wagtailcore_locale_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locked_by_id_fkey\" TO \"wagtailcore_page_locked_by_id_bcb86245_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_owner_id_fkey\" TO \"wagtailcore_page_owner_id_fbf7c332_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagelogentry\" RENAME CONSTRAINT \"wagtailcore_pagelogentry_content_type_id_fkey\" TO \"wagtailcore_pageloge_content_type_id_74e7708a_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_page_id_fkey\" TO \"wagtailcore_pagesubs_page_id_a085e7a6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_user_id_fkey\" TO \"wagtailcore_pagesubscription_user_id_89d7def9_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_page_id_fkey\" TO \"wagtailcore_pageview_page_id_15a8bea6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_pageview_group_id_6460f223_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_pageviewrestriction_fkey\" TO \"wagtailcore_pageview_pageviewrestriction__f147a99a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_base_content_type_id_fkey\" TO \"wagtailcore_referenc_base_content_type_id_313cf40f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_content_type_id_fkey\" TO \"wagtailcore_referenc_content_type_id_766e0336_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_to_content_type_id_fkey\" TO \"wagtailcore_referenc_to_content_type_id_93690bbd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_base_content_type_id_fkey\" TO \"wagtailcore_revision_base_content_type_id_5b4ef7bd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_content_type_id_fkey\" TO \"wagtailcore_revision_content_type_id_c8cb69c0_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_user_id_fkey\" TO \"wagtailcore_revision_user_id_03df83b0_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_site\" RENAME CONSTRAINT \"wagtailcore_site_root_page_id_fkey\" TO \"wagtailcore_site_root_page_id_e02fb95c_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_task\" RENAME CONSTRAINT \"wagtailcore_task_content_type_id_fkey\" TO \"wagtailcore_task_content_type_id_249ab8ba_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_content_type_id_fkey\" TO \"wagtailcore_taskstat_content_type_id_0a758fdc_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_finished_by_id_fkey\" TO \"wagtailcore_taskstate_finished_by_id_13f98229_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_revision_id_fkey\" TO \"wagtailcore_taskstat_revision_id_df25a499_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_task_id_fkey\" TO \"wagtailcore_taskstate_task_id_c3677c34_fk_wagtailcore_task_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_workflow_state_id_fkey\" TO \"wagtailcore_taskstat_workflow_state_id_9239a775_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_for_content_type_id_fkey\" TO \"wagtailcore_uploaded_for_content_type_id_b0fc87b2_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_uploaded_by_user_id_fkey\" TO \"wagtailcore_uploaded_uploaded_by_user_id_c7580fe8_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_b261bb37_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_9aad7cd2_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_page_id_fkey\" TO \"wagtailcore_workflow_page_id_81e7bab6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_56f56ff6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_base_content_type_id_fkey\" TO \"wagtailcore_workflow_base_content_type_id_a30dc576_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_2bb78ce1_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_current_task_state_id_fkey\" TO \"wagtailcore_workflow_current_task_state_i_3a1a0632_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_requested_by_id_fkey\" TO \"wagtailcore_workflow_requested_by_id_4090bca3_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_1f18378f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_task_id_fkey\" TO \"wagtailcore_workflow_task_id_ce7716fe_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_b9717175_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_collection_id_fkey\" TO \"wagtaildocs_document_collection_id_23881625_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_uploaded_by_user_id_fkey\" TO \"wagtaildocs_document_uploaded_by_user_id_17258b41_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailforms_formsubmission\" RENAME CONSTRAINT \"wagtailforms_formsubmission_page_id_fkey\" TO \"wagtailforms_formsub_page_id_e48e93e7_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_collection_id_fkey\" TO \"wagtailimages_image_collection_id_c2f8af7e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_uploaded_by_user_id_fkey\" TO \"wagtailimages_image_uploaded_by_user_id_5d73dc75_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_rendition\" RENAME CONSTRAINT \"wagtailimages_rendition_image_id_fkey\" TO \"wagtailimages_rendit_image_id_3e1fd774_fk_wagtailim\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_redirect_page_id_fkey\" TO \"wagtailredirects_red_redirect_page_id_b5728a8f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_site_id_fkey\" TO \"wagtailredirects_red_site_id_780a0e1e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearch_indexentry\" RENAME CONSTRAINT \"wagtailsearch_indexentry_content_type_id_fkey\" TO \"wagtailsearch_indexe_content_type_id_62ed694f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_querydailyhits\" RENAME CONSTRAINT \"wagtailsearchpromotions_querydailyhits_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_3a591f4d_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_page_id_fkey\" TO \"wagtailsearchpromoti_page_id_71920f17_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_fbce4eaa_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailusers_userprofile\" RENAME CONSTRAINT \"wagtailusers_userprofile_user_id_fkey\" TO \"wagtailusers_userprofile_user_id_59c92331_fk_auth_user_id\";"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.DuplicateTable: relation \"taggit_tag_name_58eb2ed9_like\" already exists\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"wagtailcore_taskstate\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 38,
+            "total": 54
+          },
+          "read": {
+            "ok": 38,
+            "total": 38
+          },
+          "update": {
+            "ok": 24,
+            "total": 24
+          },
+          "relations": {
+            "ok": 102,
+            "total": 102
+          },
+          "delete": {
+            "ok": 36,
+            "total": 38
+          }
+        },
+        "findings": [
+          {
+            "model": "django_content_type",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "Execution Error: error returned from database: update or delete on table \"django_content_type\" violates foreign key constraint \"django_admin_log_content_type_id_c4bce8eb_fk_django_co\" on table \"django_admin_log\""
+          },
+          {
+            "model": "auth_user",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "Execution Error: error returned from database: update or delete on table \"auth_user\" violates foreign key constraint \"django_admin_log_user_id_c564eba6_fk_auth_user_id\" on table \"django_admin_log\""
+          },
+          {
+            "model": "django_admin_log",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"action_flag\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT2`"
+          },
+          {
+            "model": "wagtailcore_page",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"translation_key\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "wagtailcore_comment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_commentreply",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_comment`) did not go in"
+          },
+          {
+            "model": "wagtailcore_grouppagepermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_site",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_groupsitepermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_site`) did not go in"
+          },
+          {
+            "model": "wagtailcore_modellogentry",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"uuid\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "wagtailcore_pagelogentry",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"uuid\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "wagtailcore_pagesubscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_pageviewrestriction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_pageviewrestriction_groups",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_pageviewrestriction`) did not go in"
+          },
+          {
+            "model": "wagtailcore_referenceindex",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"content_path_hash\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "wagtailcore_workflowpage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailembeds_embed",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"max_width\": mismatched types; Rust type `core::option::Option<i32>` (as SQL type `INT4`) is not compatible with SQL type `INT2`"
+          },
+          {
+            "model": "wagtailforms_formsubmission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"wagtailcore_workflowstate\": Execution Error: error returned from database: relation \"wagtailcore_taskstate\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 40,
+            "total": 54
+          },
+          "read": {
+            "ok": 40,
+            "total": 40
+          },
+          "update": {
+            "ok": 26,
+            "total": 26
+          },
+          "relations": {
+            "ok": 106,
+            "total": 106
+          },
+          "delete": {
+            "ok": 35,
+            "total": 40
+          }
+        },
+        "findings": [
+          {
+            "model": "django_content_type",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "constraint error when attempting to delete struct:\n\n    * \"wagtailcore_task_content_type_id_249ab8ba_fk_django_co\" (foreign_key_constraint)\n\nIf you would like to stop this constraint violation from raising an\nexception and instead add it as an error to your changeset, please\ncall `foreign_key_constraint/3` on your changeset with the constraint\n`:name` as an option.\n\nThe changeset has not defined any constraint.\n"
+          },
+          {
+            "model": "wagtailcore_page",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000055\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "wagtailcore_comment",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_commentreply",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_comment`) did not go in"
+          },
+          {
+            "model": "wagtailcore_task",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "constraint error when attempting to delete struct:\n\n    * \"wagtailcore_groupapp_task_ptr_id_cfe58781_fk_wagtailco\" (foreign_key_constraint)\n\nIf you would like to stop this constraint violation from raising an\nexception and instead add it as an error to your changeset, please\ncall `foreign_key_constraint/3` on your changeset with the constraint\n`:name` as an option.\n\nThe changeset has not defined any constraint.\n"
+          },
+          {
+            "model": "wagtailcore_groupapprovaltask",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Wagtail.WagtailcoreGroupapprovaltask` has no primary key"
+          },
+          {
+            "model": "wagtailcore_grouppagepermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_site",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_groupsitepermission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_site`) did not go in"
+          },
+          {
+            "model": "wagtailcore_modellogentry",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000092\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "wagtailcore_pagelogentry",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000102\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "wagtailcore_pagesubscription",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_pageviewrestriction",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailcore_pageviewrestriction_groups",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_pageviewrestriction`) did not go in"
+          },
+          {
+            "model": "wagtailcore_referenceindex",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000115\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "wagtailcore_workflow",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "constraint error when attempting to delete struct:\n\n    * \"wagtailcore_workflow_workflow_id_9aad7cd2_fk_wagtailco\" (foreign_key_constraint)\n\nIf you would like to stop this constraint violation from raising an\nexception and instead add it as an error to your changeset, please\ncall `foreign_key_constraint/3` on your changeset with the constraint\n`:name` as an option.\n\nThe changeset has not defined any constraint.\n"
+          },
+          {
+            "model": "wagtailcore_workflowcontenttype",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "schema `Wagtail.WagtailcoreWorkflowcontenttype` has no primary key"
+          },
+          {
+            "model": "wagtailcore_workflowpage",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailforms_formsubmission",
+            "check": "insert",
+            "text": "not inserted: the parent row (`wagtailcore_page`) did not go in"
+          },
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 53,
+            "total": 54
+          },
+          "read": {
+            "ok": 53,
+            "total": 53
+          },
+          "update": {
+            "ok": 34,
+            "total": 34
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 53,
+            "total": 53
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailembeds_embed",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ActiveRecord::DangerousAttributeError: hash is defined by Active Record. Check to make sure that you don't have an attribute or method with the same name."
+          },
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 177,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          },
+          {
+            "model": "wagtailcore_page",
+            "check": "relations",
+            "text": "no relation for `wagtailcore_page` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_group_id_fkey\" TO \"auth_group_permissions_group_id_b120cbf9_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_group_permissions\" RENAME CONSTRAINT \"auth_group_permissions_permission_id_fkey\" TO \"auth_group_permissio_permission_id_84c5c92e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_permission\" RENAME CONSTRAINT \"auth_permission_content_type_id_fkey\" TO \"auth_permission_content_type_id_2f476e4b_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_group_id_fkey\" TO \"auth_user_groups_group_id_97559544_fk_auth_group_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_groups\" RENAME CONSTRAINT \"auth_user_groups_user_id_fkey\" TO \"auth_user_groups_user_id_6a12ed8b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_permission_id_fkey\" TO \"auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"auth_user_user_permissions\" RENAME CONSTRAINT \"auth_user_user_permissions_user_id_fkey\" TO \"auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_content_type_id_fkey\" TO \"django_admin_log_content_type_id_c4bce8eb_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"django_admin_log\" RENAME CONSTRAINT \"django_admin_log_user_id_fkey\" TO \"django_admin_log_user_id_c564eba6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_content_type_id_fkey\" TO \"taggit_taggeditem_content_type_id_9957a03c_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"taggit_taggeditem\" RENAME CONSTRAINT \"taggit_taggeditem_tag_id_fkey\" TO \"taggit_taggeditem_tag_id_f4f5b767_fk_taggit_tag_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_content_type_id_fkey\" TO \"wagtailadmin_editing_content_type_id_4df7730e_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_editingsession\" RENAME CONSTRAINT \"wagtailadmin_editingsession_user_id_fkey\" TO \"wagtailadmin_editingsession_user_id_6e1a9b70_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_content_type_id_fkey\" TO \"wagtailadmin_formsta_content_type_id_e32438b3_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailadmin_formstate\" RENAME CONSTRAINT \"wagtailadmin_formstate_user_id_fkey\" TO \"wagtailadmin_formstate_user_id_b910adc2_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_apitoken\" RENAME CONSTRAINT \"wagtailcore_apitoken_user_id_fkey\" TO \"wagtailcore_apitoken_user_id_49b1141b_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_collection_id_fkey\" TO \"wagtailcore_collecti_collection_id_761908ec_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_collectionvie_fkey\" TO \"wagtailcore_collecti_collectionviewrestri_47320efd_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_collectionviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_collectionviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_collecti_group_id_1823f2a3_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_page_id_fkey\" TO \"wagtailcore_comment_page_id_108444b5_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_resolved_by_id_fkey\" TO \"wagtailcore_comment_resolved_by_id_a282aa0e_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_revision_created_id_fkey\" TO \"wagtailcore_comment_revision_created_id_1d058279_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_comment\" RENAME CONSTRAINT \"wagtailcore_comment_user_id_fkey\" TO \"wagtailcore_comment_user_id_0c577ca6_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_comment_id_fkey\" TO \"wagtailcore_commentr_comment_id_afc7e027_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_commentreply\" RENAME CONSTRAINT \"wagtailcore_commentreply_user_id_fkey\" TO \"wagtailcore_commentreply_user_id_d0b3b9c3_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_task_ptr_id_fkey\" TO \"wagtailcore_groupapp_task_ptr_id_cfe58781_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_group_id_fkey\" TO \"wagtailcore_groupapp_group_id_2e64b61f_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupapprovaltask_groups\" RENAME CONSTRAINT \"wagtailcore_groupapprovaltask_groups_groupapprovaltask_id_fkey\" TO \"wagtailcore_groupapp_groupapprovaltask_id_9a9255ea_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_collection_id_fkey\" TO \"wagtailcore_groupcol_collection_id_5423575a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_group_id_fkey\" TO \"wagtailcore_groupcol_group_id_05d61460_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupcollectionpermission\" RENAME CONSTRAINT \"wagtailcore_groupcollectionpermission_permission_id_fkey\" TO \"wagtailcore_groupcol_permission_id_1b626275_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_group_id_fkey\" TO \"wagtailcore_grouppag_group_id_fc07e671_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_page_id_fkey\" TO \"wagtailcore_grouppag_page_id_710b114a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_grouppagepermission\" RENAME CONSTRAINT \"wagtailcore_grouppagepermission_permission_id_fkey\" TO \"wagtailcore_grouppag_permission_id_05acb22e_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_group_id_fkey\" TO \"wagtailcore_groupsit_group_id_e5cdbee4_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_permission_id_fkey\" TO \"wagtailcore_groupsit_permission_id_459b1f38_fk_auth_perm\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_groupsitepermission\" RENAME CONSTRAINT \"wagtailcore_groupsitepermission_site_id_fkey\" TO \"wagtailcore_groupsit_site_id_245de488_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_modellogentry\" RENAME CONSTRAINT \"wagtailcore_modellogentry_content_type_id_fkey\" TO \"wagtailcore_modellog_content_type_id_68849e77_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_alias_of_id_fkey\" TO \"wagtailcore_page_alias_of_id_12945502_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_content_type_id_fkey\" TO \"wagtailcore_page_content_type_id_c28424df_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_latest_revision_id_fkey\" TO \"wagtailcore_page_latest_revision_id_e60fef51_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_live_revision_id_fkey\" TO \"wagtailcore_page_live_revision_id_930bd822_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locale_id_fkey\" TO \"wagtailcore_page_locale_id_3c7e30a6_fk_wagtailcore_locale_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_locked_by_id_fkey\" TO \"wagtailcore_page_locked_by_id_bcb86245_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_page\" RENAME CONSTRAINT \"wagtailcore_page_owner_id_fkey\" TO \"wagtailcore_page_owner_id_fbf7c332_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagelogentry\" RENAME CONSTRAINT \"wagtailcore_pagelogentry_content_type_id_fkey\" TO \"wagtailcore_pageloge_content_type_id_74e7708a_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_page_id_fkey\" TO \"wagtailcore_pagesubs_page_id_a085e7a6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pagesubscription\" RENAME CONSTRAINT \"wagtailcore_pagesubscription_user_id_fkey\" TO \"wagtailcore_pagesubscription_user_id_89d7def9_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_page_id_fkey\" TO \"wagtailcore_pageview_page_id_15a8bea6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_group_id_fkey\" TO \"wagtailcore_pageview_group_id_6460f223_fk_auth_grou\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_pageviewrestriction_groups\" RENAME CONSTRAINT \"wagtailcore_pageviewrestriction_groups_pageviewrestriction_fkey\" TO \"wagtailcore_pageview_pageviewrestriction__f147a99a_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_base_content_type_id_fkey\" TO \"wagtailcore_referenc_base_content_type_id_313cf40f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_content_type_id_fkey\" TO \"wagtailcore_referenc_content_type_id_766e0336_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_referenceindex\" RENAME CONSTRAINT \"wagtailcore_referenceindex_to_content_type_id_fkey\" TO \"wagtailcore_referenc_to_content_type_id_93690bbd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_base_content_type_id_fkey\" TO \"wagtailcore_revision_base_content_type_id_5b4ef7bd_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_content_type_id_fkey\" TO \"wagtailcore_revision_content_type_id_c8cb69c0_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_revision\" RENAME CONSTRAINT \"wagtailcore_revision_user_id_fkey\" TO \"wagtailcore_revision_user_id_03df83b0_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_site\" RENAME CONSTRAINT \"wagtailcore_site_root_page_id_fkey\" TO \"wagtailcore_site_root_page_id_e02fb95c_fk_wagtailcore_page_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_task\" RENAME CONSTRAINT \"wagtailcore_task_content_type_id_fkey\" TO \"wagtailcore_task_content_type_id_249ab8ba_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_content_type_id_fkey\" TO \"wagtailcore_taskstat_content_type_id_0a758fdc_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_finished_by_id_fkey\" TO \"wagtailcore_taskstate_finished_by_id_13f98229_fk_auth_user_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_revision_id_fkey\" TO \"wagtailcore_taskstat_revision_id_df25a499_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_task_id_fkey\" TO \"wagtailcore_taskstate_task_id_c3677c34_fk_wagtailcore_task_id\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_taskstate\" RENAME CONSTRAINT \"wagtailcore_taskstate_workflow_state_id_fkey\" TO \"wagtailcore_taskstat_workflow_state_id_9239a775_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_for_content_type_id_fkey\" TO \"wagtailcore_uploaded_for_content_type_id_b0fc87b2_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_uploadedfile\" RENAME CONSTRAINT \"wagtailcore_uploadedfile_uploaded_by_user_id_fkey\" TO \"wagtailcore_uploaded_uploaded_by_user_id_c7580fe8_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_b261bb37_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowcontenttype\" RENAME CONSTRAINT \"wagtailcore_workflowcontenttype_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_9aad7cd2_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_page_id_fkey\" TO \"wagtailcore_workflow_page_id_81e7bab6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowpage\" RENAME CONSTRAINT \"wagtailcore_workflowpage_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_56f56ff6_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_base_content_type_id_fkey\" TO \"wagtailcore_workflow_base_content_type_id_a30dc576_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_content_type_id_fkey\" TO \"wagtailcore_workflow_content_type_id_2bb78ce1_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_current_task_state_id_fkey\" TO \"wagtailcore_workflow_current_task_state_i_3a1a0632_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_requested_by_id_fkey\" TO \"wagtailcore_workflow_requested_by_id_4090bca3_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowstate\" RENAME CONSTRAINT \"wagtailcore_workflowstate_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_1f18378f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_task_id_fkey\" TO \"wagtailcore_workflow_task_id_ce7716fe_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailcore_workflowtask\" RENAME CONSTRAINT \"wagtailcore_workflowtask_workflow_id_fkey\" TO \"wagtailcore_workflow_workflow_id_b9717175_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_collection_id_fkey\" TO \"wagtaildocs_document_collection_id_23881625_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtaildocs_document\" RENAME CONSTRAINT \"wagtaildocs_document_uploaded_by_user_id_fkey\" TO \"wagtaildocs_document_uploaded_by_user_id_17258b41_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailforms_formsubmission\" RENAME CONSTRAINT \"wagtailforms_formsubmission_page_id_fkey\" TO \"wagtailforms_formsub_page_id_e48e93e7_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_collection_id_fkey\" TO \"wagtailimages_image_collection_id_c2f8af7e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_image\" RENAME CONSTRAINT \"wagtailimages_image_uploaded_by_user_id_fkey\" TO \"wagtailimages_image_uploaded_by_user_id_5d73dc75_fk_auth_user\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailimages_rendition\" RENAME CONSTRAINT \"wagtailimages_rendition_image_id_fkey\" TO \"wagtailimages_rendit_image_id_3e1fd774_fk_wagtailim\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_redirect_page_id_fkey\" TO \"wagtailredirects_red_redirect_page_id_b5728a8f_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailredirects_redirect\" RENAME CONSTRAINT \"wagtailredirects_redirect_site_id_fkey\" TO \"wagtailredirects_red_site_id_780a0e1e_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearch_indexentry\" RENAME CONSTRAINT \"wagtailsearch_indexentry_content_type_id_fkey\" TO \"wagtailsearch_indexe_content_type_id_62ed694f_fk_django_co\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_querydailyhits\" RENAME CONSTRAINT \"wagtailsearchpromotions_querydailyhits_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_3a591f4d_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_page_id_fkey\" TO \"wagtailsearchpromoti_page_id_71920f17_fk_wagtailco\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailsearchpromotions_searchpromotion\" RENAME CONSTRAINT \"wagtailsearchpromotions_searchpromotion_query_id_fkey\" TO \"wagtailsearchpromoti_query_id_fbce4eaa_fk_wagtailse\";\n\n-- RenameForeignKey\nALTER TABLE \"wagtailusers_userprofile\" RENAME CONSTRAINT \"wagtailusers_userprofile_user_id_fkey\" TO \"wagtailusers_userprofile_user_id_59c92331_fk_auth_user_id\";"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 55,
+            "total": 55
+          },
+          "insert": {
+            "ok": 54,
+            "total": 54
+          },
+          "read": {
+            "ok": 54,
+            "total": 54
+          },
+          "update": {
+            "ok": 35,
+            "total": 35
+          },
+          "relations": {
+            "ok": 178,
+            "total": 178
+          },
+          "delete": {
+            "ok": 54,
+            "total": 54
+          }
+        },
+        "findings": [
+          {
+            "model": "wagtailsearch_indexentry",
+            "check": "insert",
+            "text": "not inserted: a required column of a type Prisma does not support, without a default (`autocomplete` Unsupported(\"tsvector\"), `title` Unsupported(\"tsvector\"), `body` Unsupported(\"tsvector\"))"
+          }
+        ]
+      },
+      "ddl": {
+        "diff": "-- DropIndex\nDROP INDEX \"unique_in_progress_workflow\";\n\n-- AlterTable\nALTER TABLE \"wagtailsearch_indexentry\" ADD COLUMN     \"autocomplete\" tsvector NOT NULL,\nADD COLUMN     \"body\" tsvector NOT NULL,\nADD COLUMN     \"title\" tsvector NOT NULL;\n\n-- CreateIndex\nCREATE UNIQUE INDEX \"unique_in_progress_workflow\" ON \"wagtailcore_workflowstate\"(\"base_content_type_id\", \"object_id\") WHERE ((status)::text = ANY ((ARRAY['in_progress'::character varying, 'needs_changes'::character varying])::text[]));\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_autocom_476c89_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"autocomplete\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_body_90c85d_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"body\");\n\n-- CreateIndex\nCREATE INDEX \"wagtailsear_title_9caae0_gin\" ON \"wagtailsearch_indexentry\" USING GIN (\"title\");"
+      }
+    }
+  ]
+}

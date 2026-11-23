@@ -91,6 +91,22 @@ an issue on hekireki, drizzler or Djangoer, and the example waits at its last go
 ([`tools/upstream/blocked.json`](tools/upstream/blocked.json)). See
 [tools/upstream](tools/upstream/README.md).
 
+## Checking hekireki against other ORMs' schemas
+
+[apps/hekireki/compat](apps/hekireki/compat) runs what hekireki generates against a real database
+(Docker). Besides the Prisma schemas above, [pull.mjs](apps/hekireki/compat/pull.mjs) takes
+well-known projects written for other ORMs (every djangoer and drizzler example, Rails apps such as
+Mastodon and Forem, MLflow): their own ORM creates the tables, `prisma db pull` reads them back,
+and every ORM hekireki generates from that has to work on those tables. A scheduled task checks
+three of them a day and files what is hekireki's on hekireki
+([results](apps/hekireki/compat/pull/results/README.md)). Both run on your own Docker as well:
+
+```sh
+pnpm install
+cd apps/hekireki/compat
+node pull.mjs --random 3      # or: node pull.mjs django/wagtail rails/mastodon
+```
+
 ## License
 
 Each schema belongs to the project it comes from, under that project's license; see each app's

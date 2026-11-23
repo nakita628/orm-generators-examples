@@ -54,7 +54,9 @@ One commit per generator, in the existing style (`Bump hekireki to 0.52.17 and r
 - **djangoer**: for each example, `uvx --from uv==<UV_VERSION of MODULE.bazel> uv lock
   --upgrade-package djangoer --project apps/djangoer/examples/<name>`; run every
   `//apps/djangoer/examples/<name>:generate.write` with `--config=djangoer`, then
-  `bazel test --config=djangoer //apps/djangoer/...`.
+  `bazel test --config=djangoer //apps/djangoer/...`. Every example's environment together takes
+  about 24 GB (`~/.cache/orm-generators-examples/djangoer/venvs`); the session's disk is limited,
+  so remove that directory once the djangoer tests are done.
 
 Then read the diff of the generated output (`git diff --stat`, and the files that changed most).
 A release is expected to change output; a change that is plainly a regression (a column, relation,

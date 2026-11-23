@@ -2,6 +2,14 @@
 // Holds what hekireki generated to the database Prisma creates from the same schema.
 //
 //   node run.mjs [--orm drizzle,sqlalchemy,gorm] [schema ...]
+//   node run.mjs --schemas <dir> --results <dir> [--orm ...] [schema ...]
+//
+// --schemas: where <schema>/schema.prisma and <schema>/generated/<orm> are (default ../schemas).
+// --results: where the findings go (default results/). pull.mjs runs it this way over the schemas
+// it pulled from other ORMs' databases: a <schema>/source.sql beside the schema is that database,
+// and the crud database is made from it instead of from `prisma db push`, so the generated code
+// runs against the tables the other ORM created. A generated/<orm>.error in place of
+// generated/<orm> is a generator that failed on the schema.
 //
 // For every schema and ORM:
 //
@@ -19,7 +27,7 @@ import { spawnSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, symlinkSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
-import { dirname, join, resolve } from 'node:path'
+import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { makePlan } from './lib/plan.mjs'
 import { compare } from './lib/compare.mjs'
@@ -28,12 +36,12 @@ import { renderSchema, renderIndex } from './lib/report.mjs'
 const here = dirname(fileURLToPath(import.meta.url))
 const require = createRequire(import.meta.url)
 const prismaCli = require.resolve('prisma/build/index.js')
-const schemasDir = resolve(here, '../schemas')
+let schemasDir = resolve(here, '../schemas')
 // What a run writes (plans, SQLite files, copies of the generated code) goes outside the source
 // tree, where a bind-mounted workspace cannot leave stale files; its node_modules links back here,
 // so the copied drizzle schema resolves drizzle-orm from this package.
 const workRoot = process.env.COMPAT_WORK ?? join(homedir(), '.cache', 'hekireki-compat')
-const resultsDir = join(here, 'results')
+let resultsDir = join(here, 'results')
 
 const ORMS = ['drizzle', 'kysely', 'sqlalchemy', 'django', 'gorm', 'sea-orm', 'ecto', 'activerecord', 'eloquent', 'efcore', 'exposed']
 // pgvector's image is PostgreSQL 17 with the vector extension, which formbricks asks for.
@@ -48,6 +56,8 @@ let orms = ORMS
 const schemas = []
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--orm') orms = args[++i].split(',')
+  else if (args[i] === '--schemas') schemasDir = resolve(args[++i])
+  else if (args[i] === '--results') resultsDir = resolve(args[++i])
   else schemas.push(args[i])
 }
 if (schemas.length === 0) throw new Error('usage: node run.mjs [--orm a,b] <schema> [schema ...]')
@@ -84,13 +94,20 @@ for (const name of schemas) {
     results.push(result)
     // hekireki leaves a generator out of a schema it refuses (schemas.bzl, SKIPPED).
     const generatedDir = { drizzle: 'drizzle', kysely: 'kysely', sqlalchemy: 'sqlalchemy', django: 'django', gorm: 'gorm', ecto: 'ecto', activerecord: 'activerecord', eloquent: 'eloquent', efcore: 'efcore', exposed: 'exposed', 'sea-orm': 'sea-orm' }[orm]
+    const generatorError = join(schemasDir, name, 'generated', `${generatedDir}.error`)
+    if (existsSync(generatorError)) {
+      result.generatorError = readFileSync(generatorError, 'utf8').trim().slice(0, 3000)
+      continue
+    }
     if (!existsSync(join(schemasDir, name, 'generated', generatedDir))) {
       result.notGenerated = true
       continue
     }
     try {
       const crudUrl = await freshDatabase(plan.dialect, work, `${name}_${orm}`)
-      prisma(work, crudUrl, ['db', 'push'])
+      const sourceSql = join(schemasDir, name, 'source.sql')
+      if (existsSync(sourceSql)) prisma(work, crudUrl, ['db', 'execute', '--file', sourceSql])
+      else prisma(work, crudUrl, ['db', 'push'])
       const harness = HARNESSES[orm]
       const prepared = harness.prepare(name, work)
       const command = harness.crud(prepared, join(work, 'plan.json'), crudUrl)
@@ -123,13 +140,27 @@ for (const name of schemas) {
   const file = join(resultsDir, `${name}.json`)
   const earlier = existsSync(file) ? (JSON.parse(readFileSync(file, 'utf8')).results ?? []) : []
   const merged = ORMS.map((orm) => results.find((r) => r.orm === orm) ?? earlier.find((r) => r.orm === orm)).filter(Boolean)
-  writeFileSync(join(resultsDir, `${name}.md`), renderSchema(name, plan, merged))
+  writeFileSync(join(resultsDir, `${name}.md`), renderSchema(name, plan, merged, { schemaHref: relative(resultsDir, join(schemasDir, name, 'schema.prisma')), about: about(name) }))
   writeFileSync(file, JSON.stringify({ ...summary(merged), results: merged }, null, 2) + '\n')
 }
 const all = readdirSync(resultsDir)
   .filter((f) => f.endsWith('.json'))
   .map((f) => ({ name: f.replace(/\.json$/, ''), ...JSON.parse(readFileSync(join(resultsDir, f), 'utf8')) }))
 writeFileSync(join(resultsDir, 'README.md'), renderIndex(all))
+}
+
+// Where a pulled schema came from (pull.mjs writes source.json beside it); nothing for the others.
+function about(name) {
+  const file = join(schemasDir, name, 'source.json')
+  if (!existsSync(file)) return []
+  const info = JSON.parse(readFileSync(file, 'utf8'))
+  const link = (f) => relative(resultsDir, join(schemasDir, name, f))
+  const diff = existsSync(join(schemasDir, name, 'prisma-diff.sql'))
+  const lines = [
+    `Pulled from ${info.about}${info.commit ? ` at \`${info.commit.slice(0, 12)}\`` : ''}: [source.sql](${link('source.sql')}) holds the tables its own ORM created, which every ORM below runs against${diff ? `, and [prisma-diff.sql](${link('prisma-diff.sql')}) what the Prisma schema cannot say about them` : ''}.`,
+  ]
+  if (info.fixes?.length) lines.push(`\`prisma db pull\` wrote a schema Prisma refuses; ${info.fixes.length} change${info.fixes.length === 1 ? '' : 's'} made it valid (listed in the schema's header).`)
+  return lines
 }
 
 // --- harnesses -------------------------------------------------------------------------------
@@ -424,9 +455,12 @@ function efcoreRun(p, plan, url, mode) {
   )
 }
 
+// COMPAT_DOCKER_BUILD_ARGS: more `docker build` arguments, for a machine that needs them to reach
+// the network from a build (cloud/prepare.sh prints them for a Claude Code cloud session).
 function dockerBuild(orm) {
   const image = `hekireki-compat-${orm}`
-  const built = sh(['docker', 'build', '-q', '-t', image, join(here, orm)])
+  const extra = (process.env.COMPAT_DOCKER_BUILD_ARGS ?? '').split(/\s+/).filter(Boolean)
+  const built = sh(['docker', 'build', '-q', ...extra, '-t', image, join(here, orm)])
   if (built.status !== 0) throw new Error(`docker build ${orm}: ${built.stderr.trim().slice(-2000)}`)
   return image
 }
@@ -530,6 +564,7 @@ function summary(results) {
     orms: results.map((r) => ({
       orm: r.orm,
       fatal: Boolean(r.fatal),
+      generatorError: Boolean(r.generatorError),
       notGenerated: Boolean(r.notGenerated),
       checks: r.crud?.counts ?? null,
       findings: r.crud?.findings.length ?? null,

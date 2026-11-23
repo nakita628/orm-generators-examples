@@ -1,0 +1,1872 @@
+{
+  "orms": [
+    {
+      "orm": "drizzle",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 58,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 96,
+          "total": 96
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 3,
+      "ddl": "error"
+    },
+    {
+      "orm": "kysely",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 53,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 10,
+      "ddl": "na"
+    },
+    {
+      "orm": "sqlalchemy",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 58,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 96,
+          "total": 96
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 3,
+      "ddl": "error"
+    },
+    {
+      "orm": "django",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 57,
+          "total": 58
+        },
+        "update": {
+          "ok": 41,
+          "total": 42
+        },
+        "relations": {
+          "ok": 94,
+          "total": 94
+        },
+        "delete": {
+          "ok": 55,
+          "total": 57
+        }
+      },
+      "findings": 7,
+      "ddl": "error"
+    },
+    {
+      "orm": "gorm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 45,
+          "total": 60
+        },
+        "read": {
+          "ok": 45,
+          "total": 45
+        },
+        "update": {
+          "ok": 32,
+          "total": 32
+        },
+        "relations": {
+          "ok": 56,
+          "total": 56
+        },
+        "delete": {
+          "ok": 45,
+          "total": 45
+        }
+      },
+      "findings": 16,
+      "ddl": "error"
+    },
+    {
+      "orm": "sea-orm",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 3,
+          "total": 60
+        },
+        "read": {
+          "ok": 3,
+          "total": 3
+        },
+        "update": {
+          "ok": 2,
+          "total": 2
+        },
+        "relations": {
+          "ok": 0,
+          "total": 0
+        },
+        "delete": {
+          "ok": 3,
+          "total": 3
+        }
+      },
+      "findings": 58,
+      "ddl": "error"
+    },
+    {
+      "orm": "ecto",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 20,
+          "total": 60
+        },
+        "read": {
+          "ok": 20,
+          "total": 20
+        },
+        "update": {
+          "ok": 10,
+          "total": 10
+        },
+        "relations": {
+          "ok": 2,
+          "total": 2
+        },
+        "delete": {
+          "ok": 20,
+          "total": 20
+        }
+      },
+      "findings": 41,
+      "ddl": "na"
+    },
+    {
+      "orm": "activerecord",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 58,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 96,
+          "total": 96
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 3,
+      "ddl": "na"
+    },
+    {
+      "orm": "eloquent",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 29,
+          "total": 60
+        },
+        "read": {
+          "ok": 6,
+          "total": 29
+        },
+        "update": {
+          "ok": 5,
+          "total": 5
+        },
+        "relations": {
+          "ok": 4,
+          "total": 4
+        },
+        "delete": {
+          "ok": 6,
+          "total": 6
+        }
+      },
+      "findings": 55,
+      "ddl": "na"
+    },
+    {
+      "orm": "efcore",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 58,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 94,
+          "total": 96
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 5,
+      "ddl": "error"
+    },
+    {
+      "orm": "exposed",
+      "fatal": false,
+      "generatorError": false,
+      "notGenerated": false,
+      "checks": {
+        "model": {
+          "ok": 61,
+          "total": 61
+        },
+        "insert": {
+          "ok": 58,
+          "total": 60
+        },
+        "read": {
+          "ok": 58,
+          "total": 58
+        },
+        "update": {
+          "ok": 43,
+          "total": 43
+        },
+        "relations": {
+          "ok": 96,
+          "total": 96
+        },
+        "delete": {
+          "ok": 58,
+          "total": 58
+        }
+      },
+      "findings": 3,
+      "ddl": "error"
+    }
+  ],
+  "results": [
+    {
+      "orm": "drizzle",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 58,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 96,
+            "total": 96
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Loaded Prisma config from prisma.config.mjs.\n\nError: ERROR: syntax error at or near \",\""
+      }
+    },
+    {
+      "orm": "kysely",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 53,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "active_storage_blobs",
+            "check": "read",
+            "text": "`byte_size` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "oauth_applications",
+            "check": "read",
+            "text": "`id` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "oauth_access_grants",
+            "check": "read",
+            "text": "`id` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "oauth_access_grants",
+            "check": "read",
+            "text": "`application_id` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "oauth_access_tokens",
+            "check": "read",
+            "text": "`id` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "oauth_access_tokens",
+            "check": "read",
+            "text": "`application_id` is typed `bigint` but came back as string"
+          },
+          {
+            "model": "settings",
+            "check": "read",
+            "text": "`id` is typed `Generated<bigint>` but came back as string"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-kysely writes types only; the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "sqlalchemy",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 58,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 96,
+            "total": 96
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1969, in _exec_single_context\n    self.dialect.do_execute(\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 952, in do_execute\n    cursor.execute(statement, parameters)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 117, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression\nLINE 15:     WHEN ((accountable_type)::text = ANY (ARRAY[('Loan'::cha...\n                    ^\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 242, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 41, in main\n    base.metadata.create_all(engine)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py\", line 5930, in create_all\n    bind._run_ddl_visitor(\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 3270, in _run_ddl_visitor\n    conn._run_ddl_visitor(visitorcallable, element, **kwargs)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 2469, in _run_ddl_visitor\n    ).traverse_single(element)\n      ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py\", line 661, in trave"
+      }
+    },
+    {
+      "orm": "django",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 57,
+            "total": 58
+          },
+          "update": {
+            "ok": 41,
+            "total": 42
+          },
+          "relations": {
+            "ok": 94,
+            "total": 94
+          },
+          "delete": {
+            "ok": 55,
+            "total": 57
+          }
+        },
+        "findings": [
+          {
+            "model": "families",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "IntegrityError: update or delete on table \"families\" violates foreign key constraint \"fk_rails_87dbf420c1\" on table \"users\"\nDETAIL:  Key (id)=(9a37d066-8b10-4f5b-8789-94f845554855) is still referenced from table \"users\"."
+          },
+          {
+            "model": "accounts",
+            "check": "update",
+            "text": "update of `subtype` failed",
+            "detail": "ProgrammingError: column \"classification\" can only be updated to DEFAULT\nDETAIL:  Column \"classification\" is a generated column."
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "delete",
+            "text": "delete failed",
+            "detail": "IntegrityError: update or delete on table \"users\" violates foreign key constraint \"fk_rails_32c28d0dc2\" on table \"api_keys\"\nDETAIL:  Key (id)=(a8b29bb9-91de-4122-b82e-3328af96a686) is still referenced from table \"api_keys\"."
+          },
+          {
+            "model": "api_keys",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "TypeError: the JSON object must be str, bytes or bytearray, not dict"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/db/backends/utils.py\", line 103, in _execute\n    return self.cursor.execute(sql)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/psycopg/cursor.py\", line 97, in execute\n    raise ex.with_traceback(None)\npsycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression\nLINE 3:     WHEN ((accountable_type)::text = ANY (ARRAY[('Loan'::cha...\n                   ^\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 245, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/harness.py\", line 45, in main\n    call_command(\"migrate\", \"app\", verbosity=0)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/__init__.py\", line 194, in call_command\n    return command.execute(*args, **defaults)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 464, in execute\n    output = self.handle(*args, **options)\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/base.py\", line 111, in wrapper\n    res = handle_func(*args, **kwargs)\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/django/.venv/lib/python3.12/site-packages/django/core/management/commands/migrate.py\", line 353, in handle\n    post_migrate_state = executor.migrate(\n                         ^^^^^^^"
+      }
+    },
+    {
+      "orm": "gorm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 45,
+            "total": 60
+          },
+          "read": {
+            "ok": 45,
+            "total": 45
+          },
+          "update": {
+            "ok": 32,
+            "total": 32
+          },
+          "relations": {
+            "ok": 56,
+            "total": 56
+          },
+          "delete": {
+            "ok": 45,
+            "total": 45
+          }
+        },
+        "findings": [
+          {
+            "model": "plaid_items",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "plaid_accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`plaid_items`) did not go in"
+          },
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: cannot insert a non-DEFAULT value into column \"classification\" (SQLSTATE 428C9)"
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "ERROR: malformed array literal: \"\" (SQLSTATE 22P02)"
+          },
+          {
+            "model": "api_keys",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "balances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "entries",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "holdings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "impersonation_sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "impersonation_session_logs",
+            "check": "insert",
+            "text": "not inserted: the parent row (`impersonation_sessions`) did not go in"
+          },
+          {
+            "model": "invitations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "ERROR: relation \"users\" does not exist (SQLSTATE 42P01)"
+      }
+    },
+    {
+      "orm": "sea-orm",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 3,
+            "total": 60
+          },
+          "read": {
+            "ok": 3,
+            "total": 3
+          },
+          "update": {
+            "ok": 2,
+            "total": 2
+          },
+          "relations": {
+            "ok": 0,
+            "total": 0
+          },
+          "delete": {
+            "ok": 3,
+            "total": 3
+          }
+        },
+        "findings": [
+          {
+            "model": "families",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "imports",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "plaid_items",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "plaid_accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`plaid_items`) did not go in"
+          },
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: the parent row (`active_storage_blobs`) did not go in"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: the parent row (`active_storage_blobs`) did not go in"
+          },
+          {
+            "model": "addresses",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"addressable_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "api_keys",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "balances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "budgets",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "categories",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "budget_categories",
+            "check": "insert",
+            "text": "not inserted: the parent row (`budgets`) did not go in"
+          },
+          {
+            "model": "credit_cards",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "cryptos",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "data_enrichments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"enrichable_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "depositories",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "entries",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "exchange_rates",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "family_exports",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "securities",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "holdings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "impersonation_sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "impersonation_session_logs",
+            "check": "insert",
+            "text": "not inserted: the parent row (`impersonation_sessions`) did not go in"
+          },
+          {
+            "model": "import_mappings",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"import_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "import_rows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`imports`) did not go in"
+          },
+          {
+            "model": "investments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "invitations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "invite_codes",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "loans",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "merchants",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"family_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "oauth_applications",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"owner_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "oauth_access_grants",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauth_applications`) did not go in"
+          },
+          {
+            "model": "oauth_access_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauth_applications`) did not go in"
+          },
+          {
+            "model": "other_assets",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "other_liabilities",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "properties",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "transactions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"category_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "rejected_transfers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`transactions`) did not go in"
+          },
+          {
+            "model": "rules",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "rule_actions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`rules`) did not go in"
+          },
+          {
+            "model": "rule_conditions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"rule_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "security_prices",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"security_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "subscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "syncs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error returned from database: column \"syncable_id\" is of type uuid but expression is of type text"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          },
+          {
+            "model": "trades",
+            "check": "insert",
+            "text": "not inserted: the parent row (`securities`) did not go in"
+          },
+          {
+            "model": "transfers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`transactions`) did not go in"
+          },
+          {
+            "model": "valuations",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          },
+          {
+            "model": "vehicles",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "Query Error: error occurred while decoding column \"id\": mismatched types; Rust type `core::option::Option<alloc::string::String>` (as SQL type `TEXT`) is not compatible with SQL type `UUID`"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "\"chats\": Execution Error: error returned from database: relation \"users\" does not exist"
+      }
+    },
+    {
+      "orm": "ecto",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 20,
+            "total": 60
+          },
+          "read": {
+            "ok": 20,
+            "total": 20
+          },
+          "update": {
+            "ok": 10,
+            "total": 10
+          },
+          "relations": {
+            "ok": 2,
+            "total": 2
+          },
+          "delete": {
+            "ok": 20,
+            "total": 20
+          }
+        },
+        "findings": [
+          {
+            "model": "imports",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "plaid_items",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "plaid_accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`plaid_items`) did not go in"
+          },
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000054\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"N+IsJuveTVK+BUnGBSYdYw==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"N+IsJuveTVK+BUnGBSYdYw==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "addresses",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000071\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "api_keys",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "balances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "budgets",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "categories",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "budget_categories",
+            "check": "insert",
+            "text": "not inserted: the parent row (`budgets`) did not go in"
+          },
+          {
+            "model": "data_enrichments",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000140\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "entries",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "family_exports",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "holdings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "impersonation_sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "impersonation_session_logs",
+            "check": "insert",
+            "text": "not inserted: the parent row (`impersonation_sessions`) did not go in"
+          },
+          {
+            "model": "import_mappings",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000198\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "import_rows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`imports`) did not go in"
+          },
+          {
+            "model": "invitations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "merchants",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "oauth_applications",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000266\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "oauth_access_grants",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauth_applications`) did not go in"
+          },
+          {
+            "model": "oauth_access_tokens",
+            "check": "insert",
+            "text": "not inserted: the parent row (`oauth_applications`) did not go in"
+          },
+          {
+            "model": "rejected_transfers",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"25YzXeRQSneJ30f080h8/w==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "rules",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "rule_actions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`rules`) did not go in"
+          },
+          {
+            "model": "security_prices",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"yA2bwKmDS4yzRd8W+/yB3Q==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "subscriptions",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "syncs",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"00000000-0000-4000-8000-000000000332\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"WTghDbymTZubcRuazEllbA==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          },
+          {
+            "model": "trades",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"yA2bwKmDS4yzRd8W+/yB3Q==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          },
+          {
+            "model": "transfers",
+            "check": "insert",
+            "text": "insert failed",
+            "detail": "\"Postgrex expected a binary of 16 bytes, got \\\"25YzXeRQSneJ30f080h8/w==\\\". Please make sure the value you are passing matches the definition in your table or in your query or convert the value accordingly.\""
+          }
+        ]
+      },
+      "ddl": {
+        "na": "Ecto schemas do not create tables (migrations are written by hand); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "activerecord",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 58,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 96,
+            "total": 96
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-activerecord writes models only (no migrations or schema.rb); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "eloquent",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 29,
+            "total": 60
+          },
+          "read": {
+            "ok": 6,
+            "total": 29
+          },
+          "update": {
+            "ok": 5,
+            "total": 5
+          },
+          "relations": {
+            "ok": 4,
+            "total": 4
+          },
+          "delete": {
+            "ok": 6,
+            "total": 6
+          }
+        },
+        "findings": [
+          {
+            "model": "families",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "imports",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "plaid_items",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "plaid_accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`plaid_items`) did not go in"
+          },
+          {
+            "model": "accounts",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "active_storage_blobs",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "active_storage_attachments",
+            "check": "insert",
+            "text": "not inserted: the parent row (`active_storage_blobs`) did not go in"
+          },
+          {
+            "model": "active_storage_variant_records",
+            "check": "insert",
+            "text": "not inserted: the parent row (`active_storage_blobs`) did not go in"
+          },
+          {
+            "model": "addresses",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "users",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "api_keys",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "balances",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "budgets",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "categories",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "budget_categories",
+            "check": "insert",
+            "text": "not inserted: the parent row (`budgets`) did not go in"
+          },
+          {
+            "model": "credit_cards",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "cryptos",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "data_enrichments",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "depositories",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "entries",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "exchange_rates",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "family_exports",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "securities",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "holdings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`accounts`) did not go in"
+          },
+          {
+            "model": "impersonation_sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "impersonation_session_logs",
+            "check": "insert",
+            "text": "not inserted: the parent row (`impersonation_sessions`) did not go in"
+          },
+          {
+            "model": "import_mappings",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "import_rows",
+            "check": "insert",
+            "text": "not inserted: the parent row (`imports`) did not go in"
+          },
+          {
+            "model": "investments",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "invitations",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "invite_codes",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "loans",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "merchants",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "mobile_devices",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "other_assets",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "other_liabilities",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "properties",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "transactions",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "rejected_transfers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`transactions`) did not go in"
+          },
+          {
+            "model": "rules",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "rule_actions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`rules`) did not go in"
+          },
+          {
+            "model": "rule_conditions",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "security_prices",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "sessions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`users`) did not go in"
+          },
+          {
+            "model": "subscriptions",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "syncs",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "tags",
+            "check": "insert",
+            "text": "not inserted: the parent row (`families`) did not go in"
+          },
+          {
+            "model": "taggings",
+            "check": "insert",
+            "text": "not inserted: the parent row (`tags`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          },
+          {
+            "model": "trades",
+            "check": "insert",
+            "text": "not inserted: the parent row (`securities`) did not go in"
+          },
+          {
+            "model": "transfers",
+            "check": "insert",
+            "text": "not inserted: the parent row (`transactions`) did not go in"
+          },
+          {
+            "model": "valuations",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          },
+          {
+            "model": "vehicles",
+            "check": "read",
+            "text": "read back failed",
+            "detail": "RuntimeException: no row came back for the key the insert returned"
+          }
+        ]
+      },
+      "ddl": {
+        "na": "hekireki-eloquent writes models only (no migrations); the tables come from Prisma."
+      }
+    },
+    {
+      "orm": "efcore",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 58,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 94,
+            "total": 96
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          },
+          {
+            "model": "rule_conditions",
+            "check": "relations",
+            "text": "no relation for `rule_conditions` (toOne)"
+          },
+          {
+            "model": "syncs",
+            "check": "relations",
+            "text": "no relation for `syncs` (toOne)"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "0A000: cannot use column reference in DEFAULT expression\n\nPOSITION: 462"
+      }
+    },
+    {
+      "orm": "exposed",
+      "crud": {
+        "counts": {
+          "model": {
+            "ok": 61,
+            "total": 61
+          },
+          "insert": {
+            "ok": 58,
+            "total": 60
+          },
+          "read": {
+            "ok": 58,
+            "total": 58
+          },
+          "update": {
+            "ok": 43,
+            "total": 43
+          },
+          "relations": {
+            "ok": 96,
+            "total": 96
+          },
+          "delete": {
+            "ok": 58,
+            "total": 58
+          }
+        },
+        "findings": [
+          {
+            "model": "chats",
+            "check": "insert",
+            "text": "not inserted: a required key closes a cycle"
+          },
+          {
+            "model": "messages",
+            "check": "insert",
+            "text": "not inserted: the parent row (`chats`) did not go in"
+          },
+          {
+            "model": "tool_calls",
+            "check": "insert",
+            "text": "not inserted: the parent row (`messages`) did not go in"
+          }
+        ]
+      },
+      "ddl": {
+        "error": "Picked up JAVA_TOOL_OPTIONS: -Dhttps.proxyHost=127.0.0.1 -Dhttps.proxyPort=41915 -Dhttp.nonProxyHosts=localhost|127.0.0.1 -Dorg.gradle.internal.repository.max.retries=8 -Dorg.gradle.internal.repository.initial.backoff=2000\nException in thread \"main\" org.jetbrains.exposed.v1.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: cannot use column reference in DEFAULT expression\n  Position: 366\nSQL: [CREATE TABLE IF NOT EXISTS accounts (id uuid DEFAULT gen_random_uuid(), subtype VARCHAR NULL, family_id uuid NOT NULL, \"name\" VARCHAR NULL, created_at TIMESTAMP(6) NOT NULL, updated_at TIMESTAMP(6) NOT NULL, accountable_type VARCHAR NULL, accountable_id uuid NULL, balance DECIMAL(19, 4) NULL, currency VARCHAR NULL, classification VARCHAR DEFAULT \nCASE\n    WHEN ((accountable_type)::text = ANY (ARRAY[('Loan'::character varying)::text, ('CreditCard'::character varying)::text, ('OtherLiability'::character varying)::text])) THEN 'liability'::text\n    ELSE 'asset'::text\nEND NULL, import_id uuid NULL, plaid_account_id uuid NULL, cash_balance DECIMAL(19, 4) DEFAULT 0.0 NULL, locked_attributes JSONB DEFAULT '{}'::jsonb NULL, status VARCHAR DEFAULT 'active' NULL, CONSTRAINT accounts_pkey PRIMARY KEY (id), CONSTRAINT fk_rails_363bf5a48d FOREIGN KEY (family_id) REFERENCES families(id), CONSTRAINT fk_rails_86697e7a91 FOREIGN KEY (import_id) REFERENCES imports(id), CONSTRAINT fk_rails_9d788ddfbc FOREIGN KEY (plaid_account_id) REFERENCES plaid_accounts(id))]\nCaused by: org.postgresql.util.PSQLException: ERROR: cannot use column reference in DEFAULT expression\n  Position: 366\n\t... 17 more"
+      }
+    }
+  ]
+}
