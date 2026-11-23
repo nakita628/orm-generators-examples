@@ -1,0 +1,102 @@
+// drizzle/northwind: the tables that drizzle-kit creates from the Drizzle schema of apps/drizzler/examples/northwind,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+
+datasource db {
+  provider = "postgresql"
+}
+
+model customers {
+  id            String   @id @db.VarChar(5)
+  company_name  String   @db.VarChar
+  contact_name  String   @db.VarChar
+  contact_title String   @db.VarChar
+  address       String   @db.VarChar
+  city          String   @db.VarChar
+  postal_code   String?  @db.VarChar
+  region        String?  @db.VarChar
+  country       String   @db.VarChar
+  phone         String   @db.VarChar
+  fax           String?  @db.VarChar
+  orders        orders[]
+}
+
+model employees {
+  id                String      @id @db.VarChar
+  last_name         String      @db.VarChar
+  first_name        String?     @db.VarChar
+  title             String      @db.VarChar
+  title_of_courtesy String      @db.VarChar
+  birth_date        DateTime    @db.Date
+  hire_date         DateTime    @db.Date
+  address           String      @db.VarChar
+  city              String      @db.VarChar
+  postal_code       String      @db.VarChar
+  country           String      @db.VarChar
+  home_phone        String      @db.VarChar
+  extension         Int
+  notes             String
+  recipient_id      String?     @db.VarChar
+  employees         employees?  @relation("employeesToemployees", fields: [recipient_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "employees_recipient_id_employees_id_fkey")
+  other_employees   employees[] @relation("employeesToemployees")
+  orders            orders[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model order_details {
+  unit_price Float
+  quantity   Int
+  discount   Float
+  order_id   String   @db.VarChar
+  product_id String   @db.VarChar
+  orders     orders   @relation(fields: [order_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "order_details_order_id_orders_id_fkey")
+  products   products @relation(fields: [product_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "order_details_product_id_products_id_fkey")
+
+  @@ignore
+}
+
+model orders {
+  id               String          @id @db.VarChar
+  order_date       DateTime        @db.Date
+  required_date    DateTime        @db.Date
+  shipped_date     DateTime?       @db.Date
+  ship_via         Int
+  freight          Float
+  ship_name        String          @db.VarChar
+  ship_city        String          @db.VarChar
+  ship_region      String?         @db.VarChar
+  ship_postal_code String?         @db.VarChar
+  ship_country     String          @db.VarChar
+  customer_id      String          @db.VarChar
+  employee_id      String          @db.VarChar
+  order_details    order_details[] @ignore
+  customers        customers       @relation(fields: [customer_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "orders_customer_id_customers_id_fkey")
+  employees        employees       @relation(fields: [employee_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "orders_employee_id_employees_id_fkey")
+}
+
+model products {
+  id             String          @id @db.VarChar
+  name           String          @db.VarChar
+  qt_per_unit    String          @db.VarChar
+  unit_price     Float
+  units_in_stock Int
+  units_on_order Int
+  reorder_level  Int
+  discontinued   Int
+  supplier_id    String          @db.VarChar
+  order_details  order_details[] @ignore
+  suppliers      suppliers       @relation(fields: [supplier_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "products_supplier_id_suppliers_id_fkey")
+}
+
+model suppliers {
+  id            String     @id @db.VarChar
+  company_name  String     @db.VarChar
+  contact_name  String     @db.VarChar
+  contact_title String     @db.VarChar
+  address       String     @db.VarChar
+  city          String     @db.VarChar
+  region        String?    @db.VarChar
+  postal_code   String     @db.VarChar
+  country       String     @db.VarChar
+  phone         String     @db.VarChar
+  products      products[]
+}

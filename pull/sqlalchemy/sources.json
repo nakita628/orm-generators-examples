@@ -1,0 +1,21 @@
+{
+  "sources": {
+    "mlflow": {
+      "package": "mlflow-skinny==3.18.0",
+      "with": [
+        "sqlalchemy",
+        "alembic"
+      ],
+      "command": [
+        "mlflow",
+        "db",
+        "upgrade",
+        "{url}"
+      ],
+      "dialect": "postgresql",
+      "license": "Apache-2.0",
+      "about": "[MLflow](https://github.com/mlflow/mlflow)'s tracking store, as `mlflow db upgrade` creates it (its SQLAlchemy models with their Alembic migrations)"
+    }
+  },
+  "skip": {}
+}

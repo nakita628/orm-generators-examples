@@ -25,9 +25,11 @@ pnpm-lock.yaml         every npm package of every app, read by rules_js
 tools/golden/          `golden()`: the `.write` / `.test` pair every example's output goes through
 tools/uv/              the uv binary of MODULE.bazel for the host platform
 tools/upstream/        the daily upstream sync: check.mjs, blocked.json (see .claude/skills/upstream-sync)
+tools/cloud/           Docker in a Claude Code cloud session, for hekireki's compat and pull/
 apps/hekireki/         schemas/<name>/ (schema.prisma, generated/), checks/<lang>/, compat/, tools/
 apps/drizzler/         examples/<name>/ (src/, drizzle.config.ts, docs/), packages/tsconfig, tools/
 apps/djangoer/         examples/<name>/ (pyproject.toml, uv.lock, settings.py, outputs), scripts/, tools/
+pull/                  <orm>/<project>/: the SQL other ORMs generate (source.sql), written up in Prisma (schema.prisma)
 ```
 
 ## Usage
@@ -91,20 +93,18 @@ an issue on hekireki, drizzler or Djangoer, and the example waits at its last go
 ([`tools/upstream/blocked.json`](tools/upstream/blocked.json)). See
 [tools/upstream](tools/upstream/README.md).
 
-## Checking hekireki against other ORMs' schemas
+## pull: other ORMs' SQL, written up in Prisma
 
-[apps/hekireki/compat](apps/hekireki/compat) runs what hekireki generates against a real database
-(Docker). Besides the Prisma schemas above, [pull.mjs](apps/hekireki/compat/pull.mjs) takes
-well-known projects written for other ORMs (every djangoer and drizzler example, Rails apps such as
-Mastodon and Forem, MLflow): their own ORM creates the tables, `prisma db pull` reads them back,
-and every ORM hekireki generates from that has to work on those tables. A scheduled task checks
-three of them a day and files what is hekireki's on hekireki
-([results](apps/hekireki/compat/pull/results/README.md)). Both run on your own Docker as well:
+[pull/](pull) goes the other way: well-known projects written for other ORMs (every djangoer and
+drizzler example, Rails apps such as Mastodon and Forem, MLflow) have their own ORM create their
+tables, the tables are kept as SQL, and `prisma db pull` writes them up in Prisma, one layer per
+ORM (`pull/django/`, `pull/drizzle/`, `pull/activerecord/`, `pull/sqlalchemy/`). Every ORM
+hekireki generates from a write-up then runs against the project's own tables. A scheduled task
+does three projects a day and files what is hekireki's on hekireki. It runs on your own Docker:
 
 ```sh
 pnpm install
-cd apps/hekireki/compat
-node pull.mjs --random 3      # or: node pull.mjs django/wagtail rails/mastodon
+node pull/pull.mjs --random 3      # or: node pull/pull.mjs django/wagtail activerecord/mastodon
 ```
 
 ## License

@@ -67,3 +67,5 @@ apps/drizzler/examples/turborepo-elysia/node_modules
 apps/drizzler/examples/vercel-ai-chatbot/node_modules
 apps/drizzler/examples/zero/node_modules
 apps/drizzler/examples/zws/node_modules
+# pull/ runs outside Bazel (Docker, uv): see pull/README.md
+pull

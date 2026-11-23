@@ -5,11 +5,11 @@
 //   node run.mjs --schemas <dir> --results <dir> [--orm ...] [schema ...]
 //
 // --schemas: where <schema>/schema.prisma and <schema>/generated/<orm> are (default ../schemas).
-// --results: where the findings go (default results/). pull.mjs runs it this way over the schemas
-// it pulled from other ORMs' databases: a <schema>/source.sql beside the schema is that database,
-// and the crud database is made from it instead of from `prisma db push`, so the generated code
-// runs against the tables the other ORM created. A generated/<orm>.error in place of
-// generated/<orm> is a generator that failed on the schema.
+// --results: where the findings go (default results/). pull/pull.mjs, at the root of the
+// repository, runs it this way over the schemas it writes up from other ORMs' SQL: a
+// <schema>/source.sql beside the schema is that SQL, and the crud database is made from it instead
+// of from `prisma db push`, so the generated code runs against the tables the other ORM created.
+// A generated/<orm>.error in place of generated/<orm> is a generator that failed on the schema.
 //
 // For every schema and ORM:
 //
@@ -149,7 +149,8 @@ const all = readdirSync(resultsDir)
 writeFileSync(join(resultsDir, 'README.md'), renderIndex(all))
 }
 
-// Where a pulled schema came from (pull.mjs writes source.json beside it); nothing for the others.
+// Where a written-up schema came from (pull/pull.mjs writes source.json beside it); nothing for
+// the others.
 function about(name) {
   const file = join(schemasDir, name, 'source.json')
   if (!existsSync(file)) return []
@@ -157,7 +158,7 @@ function about(name) {
   const link = (f) => relative(resultsDir, join(schemasDir, name, f))
   const diff = existsSync(join(schemasDir, name, 'prisma-diff.sql'))
   const lines = [
-    `Pulled from ${info.about}${info.commit ? ` at \`${info.commit.slice(0, 12)}\`` : ''}: [source.sql](${link('source.sql')}) holds the tables its own ORM created, which every ORM below runs against${diff ? `, and [prisma-diff.sql](${link('prisma-diff.sql')}) what the Prisma schema cannot say about them` : ''}.`,
+    `Written up from ${info.about}${info.commit ? ` at \`${info.commit.slice(0, 12)}\`` : ''}: [source.sql](${link('source.sql')}) holds the tables its own ORM created (the SQL every ORM below runs against)${diff ? `, and [prisma-diff.sql](${link('prisma-diff.sql')}) what the Prisma schema cannot say about them` : ''}.`,
   ]
   if (info.fixes?.length) lines.push(`\`prisma db pull\` wrote a schema Prisma refuses; ${info.fixes.length} change${info.fixes.length === 1 ? '' : 's'} made it valid (listed in the schema's header).`)
   return lines
@@ -456,7 +457,7 @@ function efcoreRun(p, plan, url, mode) {
 }
 
 // COMPAT_DOCKER_BUILD_ARGS: more `docker build` arguments, for a machine that needs them to reach
-// the network from a build (cloud/prepare.sh prints them for a Claude Code cloud session).
+// the network from a build (tools/cloud/prepare.sh prints them for a Claude Code cloud session).
 function dockerBuild(orm) {
   const image = `hekireki-compat-${orm}`
   const extra = (process.env.COMPAT_DOCKER_BUILD_ARGS ?? '').split(/\s+/).filter(Boolean)

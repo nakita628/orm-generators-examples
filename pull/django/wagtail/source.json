@@ -1,0 +1,11 @@
+{
+  "source": "django/wagtail",
+  "about": "the models of [apps/djangoer/examples/wagtail](../../../apps/djangoer/examples/wagtail)",
+  "dialect": "postgresql",
+  "tables": 55,
+  "models": 55,
+  "prisma": "8.1.0-dev.9",
+  "pulled_at": "2026-11-23T14:42:25.240Z",
+  "hekireki": "0.52.2",
+  "checked_at": "2026-11-23T14:44:51.631Z"
+}

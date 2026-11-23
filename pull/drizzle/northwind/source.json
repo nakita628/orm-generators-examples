@@ -1,0 +1,11 @@
+{
+  "source": "drizzle/northwind",
+  "about": "the Drizzle schema of [apps/drizzler/examples/northwind](../../../apps/drizzler/examples/northwind)",
+  "dialect": "postgresql",
+  "tables": 6,
+  "models": 6,
+  "prisma": "8.1.0-dev.9",
+  "pulled_at": "2026-11-23T14:44:55.667Z",
+  "hekireki": "0.52.2",
+  "checked_at": "2026-11-23T14:46:17.231Z"
+}

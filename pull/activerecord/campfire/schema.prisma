@@ -1,0 +1,260 @@
+// activerecord/campfire: the tables that Active Record creates from Campfire's db/schema.rb,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+//
+// Changed from what `prisma db pull` wrote, which `prisma validate` refuses:
+// - active_storage_attachments.blob_id: BigInt -> Int, the type of active_storage_blobs.id it references
+// - active_storage_variant_records.blob_id: BigInt -> Int, the type of active_storage_blobs.id it references
+
+datasource db {
+  provider = "sqlite"
+}
+
+model accounts {
+  id              Int                        @id @default(autoincrement())
+  created_at      Unsupported("datetime(6)")
+  custom_styles   String?
+  join_code       String
+  name            String
+  settings        Unsupported("json")?
+  singleton_guard Int                        @unique(map: "index_accounts_on_singleton_guard") @default(0)
+  updated_at      Unsupported("datetime(6)")
+}
+
+model action_text_rich_texts {
+  id          Int                        @id @default(autoincrement())
+  body        String?
+  created_at  Unsupported("datetime(6)")
+  name        String
+  record_id   BigInt
+  record_type String
+  updated_at  Unsupported("datetime(6)")
+
+  @@unique([record_type, record_id, name], map: "index_action_text_rich_texts_uniqueness")
+}
+
+model active_storage_attachments {
+  id                   Int                        @id @default(autoincrement())
+  blob_id              Int
+  created_at           Unsupported("datetime(6)")
+  name                 String
+  record_id            BigInt
+  record_type          String
+  active_storage_blobs active_storage_blobs       @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([record_type, record_id, name, blob_id], map: "index_active_storage_attachments_uniqueness")
+  @@index([blob_id], map: "index_active_storage_attachments_on_blob_id")
+}
+
+model active_storage_blobs {
+  id                             Int                              @id @default(autoincrement())
+  byte_size                      BigInt
+  checksum                       String?
+  content_type                   String?
+  created_at                     Unsupported("datetime(6)")
+  filename                       String
+  key                            String                           @unique(map: "index_active_storage_blobs_on_key")
+  metadata                       String?
+  service_name                   String
+  active_storage_attachments     active_storage_attachments[]
+  active_storage_variant_records active_storage_variant_records[]
+}
+
+model active_storage_variant_records {
+  id                   Int                  @id @default(autoincrement())
+  blob_id              Int
+  variation_digest     String
+  active_storage_blobs active_storage_blobs @relation(fields: [blob_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([blob_id, variation_digest], map: "index_active_storage_variant_records_uniqueness")
+}
+
+model ar_internal_metadata {
+  key        String                     @id
+  value      String?
+  created_at Unsupported("datetime(6)")
+  updated_at Unsupported("datetime(6)")
+}
+
+model bans {
+  id         Int                        @id @default(autoincrement())
+  created_at Unsupported("datetime(6)")
+  ip_address String
+  updated_at Unsupported("datetime(6)")
+  user_id    Int
+  users      users                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "index_bans_on_user_id")
+  @@index([ip_address], map: "index_bans_on_ip_address")
+}
+
+model boosts {
+  id         Int                        @id @default(autoincrement())
+  booster_id Int
+  content    String
+  created_at Unsupported("datetime(6)")
+  message_id Int
+  updated_at Unsupported("datetime(6)")
+  messages   messages                   @relation(fields: [message_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([message_id], map: "index_boosts_on_message_id")
+  @@index([booster_id], map: "index_boosts_on_booster_id")
+}
+
+model memberships {
+  id           Int                         @id @default(autoincrement())
+  connected_at Unsupported("datetime(6)")?
+  connections  Int                         @default(0)
+  created_at   Unsupported("datetime(6)")
+  involvement  String?                     @default("mentions")
+  room_id      Int
+  unread_at    Unsupported("datetime(6)")?
+  updated_at   Unsupported("datetime(6)")
+  user_id      Int
+
+  @@unique([room_id, user_id], map: "index_memberships_on_room_id_and_user_id")
+  @@index([user_id], map: "index_memberships_on_user_id")
+  @@index([room_id], map: "index_memberships_on_room_id")
+  @@index([room_id, created_at], map: "index_memberships_on_room_id_and_created_at")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model message_search_index {
+  body Unsupported("")?
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model message_search_index_config {
+  k Unsupported("")  @id
+  v Unsupported("")?
+
+  @@ignore
+}
+
+model message_search_index_content {
+  id Int              @id @default(autoincrement())
+  c0 Unsupported("")?
+}
+
+model message_search_index_data {
+  id    Int    @id @default(autoincrement())
+  block Bytes?
+}
+
+model message_search_index_docsize {
+  id Int    @id @default(autoincrement())
+  sz Bytes?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model message_search_index_idx {
+  segid Unsupported("")
+  term  Unsupported("")
+  pgno  Unsupported("")?
+
+  @@id([segid, term])
+  @@ignore
+}
+
+model messages {
+  id                Int                        @id @default(autoincrement())
+  client_message_id String
+  created_at        Unsupported("datetime(6)")
+  creator_id        Int
+  room_id           Int
+  updated_at        Unsupported("datetime(6)")
+  boosts            boosts[]
+  users             users                      @relation(fields: [creator_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  rooms             rooms                      @relation(fields: [room_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([room_id], map: "index_messages_on_room_id")
+  @@index([room_id, updated_at], map: "index_messages_on_room_id_and_updated_at")
+  @@index([room_id, created_at], map: "index_messages_on_room_id_and_created_at")
+  @@index([creator_id], map: "index_messages_on_creator_id")
+}
+
+model push_subscriptions {
+  id         Int                        @id @default(autoincrement())
+  auth_key   String?
+  created_at Unsupported("datetime(6)")
+  endpoint   String?
+  p256dh_key String?
+  updated_at Unsupported("datetime(6)")
+  user_agent String?
+  user_id    Int
+  users      users                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "index_push_subscriptions_on_user_id")
+  @@index([endpoint, p256dh_key, auth_key], map: "idx_on_endpoint_p256dh_key_auth_key_7553014576")
+}
+
+model rooms {
+  id             Int                        @id @default(autoincrement())
+  created_at     Unsupported("datetime(6)")
+  creator_id     BigInt
+  name           String?
+  type           String
+  updated_at     Unsupported("datetime(6)")
+  messages_count Int                        @default(0)
+  messages       messages[]
+}
+
+model schema_migrations {
+  version String @id
+}
+
+model searches {
+  id         Int                        @id @default(autoincrement())
+  created_at Unsupported("datetime(6)")
+  query      String
+  updated_at Unsupported("datetime(6)")
+  user_id    Int
+  users      users                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "index_searches_on_user_id")
+}
+
+model sessions {
+  id             Int                        @id @default(autoincrement())
+  created_at     Unsupported("datetime(6)")
+  ip_address     String?
+  last_active_at Unsupported("datetime(6)")
+  token          String                     @unique(map: "index_sessions_on_token")
+  updated_at     Unsupported("datetime(6)")
+  user_agent     String?
+  user_id        Int
+  users          users                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "index_sessions_on_user_id")
+}
+
+model users {
+  id                 Int                        @id @default(autoincrement())
+  bio                String?
+  bot_token          String?                    @unique(map: "index_users_on_bot_token")
+  created_at         Unsupported("datetime(6)")
+  email_address      String?                    @unique(map: "index_users_on_email_address")
+  name               String
+  password_digest    String?
+  role               Int                        @default(0)
+  status             Int                        @default(0)
+  updated_at         Unsupported("datetime(6)")
+  bans               bans[]
+  messages           messages[]
+  push_subscriptions push_subscriptions[]
+  searches           searches[]
+  sessions           sessions[]
+  webhooks           webhooks[]
+}
+
+model webhooks {
+  id         Int                        @id @default(autoincrement())
+  created_at Unsupported("datetime(6)")
+  updated_at Unsupported("datetime(6)")
+  url        String?
+  user_id    Int
+  users      users                      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([user_id], map: "index_webhooks_on_user_id")
+}

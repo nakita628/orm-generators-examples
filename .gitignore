@@ -39,5 +39,5 @@ apps/hekireki/checks/*/.gradle/
 apps/hekireki/compat/ecto/_build/
 apps/hekireki/compat/ecto/deps/
 
-# hekireki compat pull: each pulled schema's generated code (pull.mjs writes it again on every run)
-apps/hekireki/compat/pull/schemas/*/generated/
+# pull: hekireki's output from each write-up (pull/pull.mjs writes it again on every run)
+pull/*/*/generated/
