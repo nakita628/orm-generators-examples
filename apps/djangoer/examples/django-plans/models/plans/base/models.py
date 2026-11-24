@@ -1318,8 +1318,8 @@ class AbstractOrder(BaseMixin, models.Model):
             if self.status == self.STATUS.COMPLETED:
                 if self.pricing is not None:
                     extended_from = self.plan_extended_from
-                    if extended_from is None:
-                        extended_from = self.completed
+                    if extended_from is None and self.completed is not None:
+                        extended_from = localdate(self.completed)
                     # Should never happen, but make sure we reduce for the same number of days as we extended.
                     if (
                         self.plan_extended_until is None
@@ -1738,16 +1738,16 @@ class AbstractInvoice(BaseMixin, models.Model):
 
     @classmethod
     def create(cls, order, invoice_type):
-        language_code = get_user_language(order.user)
-
-        if language_code is not None:
-            translation.activate(language_code)
-
         BillingInfo = AbstractBillingInfo.get_concrete_model()
         try:
             billing_info = BillingInfo.objects.get(user=order.user)
         except BillingInfo.DoesNotExist:
             return
+
+        language_code = get_user_language(order.user)
+
+        if language_code is not None:
+            translation.activate(language_code)
 
         day = localdate()
         pday = order.completed
