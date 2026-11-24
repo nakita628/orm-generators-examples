@@ -19,7 +19,9 @@
 //     refuses the schema, with the reason), which a comment stands in for.
 // Everything else, the `///` comments included, is kept as the project wrote it: a schema as it
 // is in the wild is what hekireki is being checked against.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
 
 const root = resolve(import.meta.dirname, '../..')
@@ -50,15 +52,28 @@ async function fetchText(url) {
   return response.text()
 }
 
+/**
+ * The paths under `dir` at `commit`, from a tree-only fetch (`--filter=blob:none`, as
+ * tools/upstream/check.mjs does) rather than api.github.com, which a sandbox's proxy refuses
+ * (403) for a repository it was not given.
+ */
+function listTree(repo, commit, dir) {
+  const work = mkdtempSync(join(tmpdir(), 'import-schema-'))
+  try {
+    const git = (...gitArgs) => execFileSync('git', ['-C', work, ...gitArgs], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 })
+    git('init', '-q', '--bare')
+    git('fetch', '-q', '--depth', '1', '--filter=blob:none', `https://github.com/${repo}`, commit)
+    return git('ls-tree', '-r', '--name-only', commit, '--', dir).split('\n').filter(Boolean)
+  } finally {
+    rmSync(work, { recursive: true, force: true })
+  }
+}
+
 /** The schema's text at the pinned commit, and the files it came from. */
 async function fetchSchema(source) {
   const raw = `https://raw.githubusercontent.com/${source.repo}/${source.commit}/`
   if (!source.path.endsWith('/')) return { text: await fetchText(raw + source.path), files: [source.path] }
-  const tree = JSON.parse(
-    await fetchText(`https://api.github.com/repos/${source.repo}/git/trees/${source.commit}?recursive=1`),
-  )
-  const files = tree.tree
-    .map((entry) => entry.path)
+  const files = listTree(source.repo, source.commit, source.path)
     .filter((path) => path.startsWith(source.path) && path.endsWith('.prisma'))
     .sort()
   if (files.length === 0) throw new Error(`no .prisma files under ${source.path} in ${source.repo}@${source.commit}`)
