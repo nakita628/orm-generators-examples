@@ -251,7 +251,7 @@
   "shelf": {
     "repo": "shelf-nu/shelf.nu",
     "path": "packages/database/prisma/schema.prisma",
-    "commit": "1f4b5c377a1cdf4287b81ec2df7fc11767238264",
+    "commit": "000f135e5e32e171717f54b2633954a8a5639153",
     "license": "AGPL-3.0",
     "app": "Shelf",
     "description": "Shelf asset management: organizations, users, assets, kits, bookings, audits and custody.",

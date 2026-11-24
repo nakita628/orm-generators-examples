@@ -1,6 +1,6 @@
 // Shelf: Shelf asset management: organizations, users, assets, kits, bookings, audits and custody.
 //
-// Imported from https://github.com/shelf-nu/shelf.nu/blob/1f4b5c377a1cdf4287b81ec2df7fc11767238264/packages/database/prisma/schema.prisma
+// Imported from https://github.com/shelf-nu/shelf.nu/blob/000f135e5e32e171717f54b2633954a8a5639153/packages/database/prisma/schema.prisma
 // (AGPL-3.0 license) by tools/import/import-schema.mjs, which dropped the original
 // generator blocks and the datasource's connection URLs and added the hekireki generators below.
 // The models, enums and `///` comments are the project's own, as they are at that commit.
@@ -1832,10 +1832,12 @@ model ConsumptionLog {
   // `ON DELETE SET NULL` so removing a BookingAsset row doesn't lose
   // history — the log stays but loses its per-row attribution.
   //
-  // Legacy rows (pre-Polish-6, pre-this-migration) keep `NULL` and are
-  // handled by a greedy-fill fallback in readers (kit-driven slices
-  // attribute first, then standalone) so existing bookings still
-  // render sensibly.
+  // `NULL` when the writer did not name a row: rows from before per-row
+  // attribution, and check-ins that send only asset ids. Readers place
+  // those with `attributeDispositionsByBookingAsset`
+  // (`apps/webapp/app/modules/booking/checkout-attribution.ts`):
+  // standalone slice first, then kit-driven ones. Every reader uses that
+  // one order, so the stock reads and the booking surfaces agree.
   bookingAssetId String?
 
   // The location the units left or arrived at, when the movement had one:
