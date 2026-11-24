@@ -380,8 +380,10 @@ Since: 1.0.0'''
 
 Table appointment_emailverificationcode {
   id integer [pk, increment]
-  user_id integer [not null]
+  user_id integer
   code varchar(6) [not null, note: 'The verification code sent to the user\'s email.']
+  email varchar(254) [default: '', not null, note: 'The address the code was sent to.']
+  attempts "smallint unsigned" [default: 0, not null, note: 'Number of wrong codes entered.']
   created_at datetime [not null, note: 'default in Python: now()']
   updated_at datetime [not null, note: 'default in Python: now()']
 

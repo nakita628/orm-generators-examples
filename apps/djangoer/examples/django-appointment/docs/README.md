@@ -48,7 +48,7 @@ CREATE TABLE "appointment_config" ("id" integer NOT NULL PRIMARY KEY AUTOINCREME
 
 CREATE TABLE "appointment_paymentinfo" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "appointment_id" bigint NOT NULL REFERENCES "appointment_appointment" ("id") DEFERRABLE INITIALLY DEFERRED, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
 
-CREATE TABLE "appointment_emailverificationcode" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "code" varchar(6) NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
+CREATE TABLE "appointment_emailverificationcode" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "code" varchar(6) NOT NULL, "email" varchar(254) NOT NULL, "attempts" smallint unsigned NOT NULL CHECK ("attempts" >= 0), "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
 
 CREATE TABLE "appointment_passwordresettoken" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED, "token" char(32) NOT NULL UNIQUE, "expires_at" datetime NOT NULL, "status" varchar(11) NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL);
 
@@ -636,8 +636,10 @@ Since: 1.1.0
 | Column | Field | Type | Null | Key | Default | Description |
 | --- | --- | --- | --- | --- | --- | --- |
 | `id` | `BigAutoField` | `integer` |  | PK | `autoincrement()` |  |
-| `user_id` | `ForeignKey` | `integer` |  | FK |  |  |
+| `user_id` | `ForeignKey` | `integer` | yes | FK |  |  |
 | `code` | `CharField` | `varchar(6)` |  |  |  | The verification code sent to the user's email. |
+| `email` | `EmailField` | `varchar(254)` |  |  | `''` | The address the code was sent to. |
+| `attempts` | `PositiveSmallIntegerField` | `smallint unsigned` |  |  | `0` | Number of wrong codes entered. |
 | `created_at` | `DateTimeField` | `datetime` |  |  | `now()` |  |
 | `updated_at` | `DateTimeField` | `datetime` |  |  | `now()` |  |
 

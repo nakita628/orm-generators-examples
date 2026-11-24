@@ -15,7 +15,7 @@ erDiagram
     auth_user |o--o{ appointment_appointment : "(id) - (client_id)"
     appointment_appointmentrequest ||--o| appointment_appointment : "(id) - (appointment_request_id)"
     appointment_appointment ||--o{ appointment_paymentinfo : "(id) - (appointment_id)"
-    auth_user ||--o{ appointment_emailverificationcode : "(id) - (user_id)"
+    auth_user |o--o{ appointment_emailverificationcode : "(id) - (user_id)"
     auth_user ||--o{ appointment_passwordresettoken : "(id) - (user_id)"
     appointment_staffmember ||--o{ appointment_dayoff : "(id) - (staff_member_id)"
     appointment_staffmember ||--o{ appointment_unavailability : "(id) - (staff_member_id)"
@@ -194,6 +194,8 @@ erDiagram
         BigAutoField id PK
         ForeignKey user_id FK
         CharField code "The verification code sent to the user's email."
+        EmailField email "The address the code was sent to."
+        PositiveSmallIntegerField attempts "Number of wrong codes entered."
         DateTimeField created_at
         DateTimeField updated_at
     }
