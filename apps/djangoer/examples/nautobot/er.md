@@ -1817,10 +1817,10 @@ erDiagram
     }
     dcim_inventoryitem {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         ForeignKeyWithAutoRelatedName device_id FK
         CharField name
         NaturalOrderingField _name
@@ -2197,10 +2197,10 @@ erDiagram
     }
     dcim_controllermanageddevicegroup {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         CharField name UK "Name of the controller device group"
         CharField description
         PositiveIntegerField weight "Weight of the controller device group, used to sort the groups within its parent group"
@@ -2266,20 +2266,20 @@ erDiagram
     }
     dcim_locationtype {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         CharField name UK
         CharField description
         BooleanField nestable "Allow Locations of this type to be parents/children of other Locations of this same type"
     }
     dcim_location {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         CharField name
         NaturalOrderingField _name
         ForeignKey location_type_id FK
@@ -2334,10 +2334,10 @@ erDiagram
     }
     dcim_rackgroup {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         CharField name
         ForeignKey location_id FK
         CharField description
@@ -3235,10 +3235,10 @@ erDiagram
     }
     tenancy_tenantgroup {
         UUIDField id PK
+        TreeNodeForeignKey parent_id FK
         DateTimeField created
         DateTimeField last_updated
         JSONField _custom_field_data
-        TreeNodeForeignKey parent_id FK
         CharField name UK
         CharField description
     }

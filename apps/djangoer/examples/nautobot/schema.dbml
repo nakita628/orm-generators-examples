@@ -4800,10 +4800,10 @@ Columns from BaseModel (abstract): id.'''
 
 Table dcim_inventoryitem {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   device_id uuid [not null]
   name varchar(255) [not null]
   _name varchar(255) [not null]
@@ -5720,10 +5720,10 @@ Columns from BaseModel (abstract): id.'''
 
 Table dcim_controllermanageddevicegroup {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   name varchar(255) [unique, not null, note: 'Name of the controller device group']
   description varchar(255) [not null]
   weight integer [default: 1000, not null, note: 'Weight of the controller device group, used to sort the groups within its parent group']
@@ -5907,10 +5907,10 @@ Table dcim_interfacevdcassignment {
 
 Table dcim_locationtype {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   name varchar(255) [unique, not null]
   description varchar(255) [not null]
   nestable boolean [default: false, not null, note: 'Allow Locations of this type to be parents/children of other Locations of this same type']
@@ -5937,10 +5937,10 @@ Columns from BaseModel (abstract): id.'''
 
 Table dcim_location {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   name varchar(255) [not null]
   _name varchar(255) [not null]
   location_type_id uuid [not null]
@@ -6070,10 +6070,10 @@ Columns from BaseModel (abstract): id.'''
 
 Table dcim_rackgroup {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   name varchar(255) [not null]
   location_id uuid [not null]
   description varchar(255) [not null]
@@ -8144,10 +8144,10 @@ Columns from BaseModel (abstract): id.'''
 
 Table tenancy_tenantgroup {
   id uuid [pk, note: 'default in Python: uuid4()']
+  parent_id uuid
   created "timestamp with time zone" [note: 'default in Python: now()']
   last_updated "timestamp with time zone" [note: 'default in Python: now()']
   _custom_field_data jsonb [not null, note: 'default in Python: dict()']
-  parent_id uuid
   name varchar(255) [unique, not null]
   description varchar(255) [not null]
 
