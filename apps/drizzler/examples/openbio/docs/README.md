@@ -107,6 +107,14 @@ CREATE TABLE "verification" (
 	"updated_at" timestamp with time zone
 );
 
+CREATE INDEX "email_subscriber_link_id_idx" ON "email_subscriber" ("link_id");
+
+CREATE INDEX "link_user_id_idx" ON "link" ("user_id");
+
+CREATE INDEX "link_click_link_id_created_at_idx" ON "link_click" ("link_id","created_at");
+
+CREATE INDEX "link_view_link_id_created_at_idx" ON "link_view" ("link_id","created_at");
+
 ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "user"("id") ON DELETE CASCADE;
 
 ALTER TABLE "email_subscriber" ADD CONSTRAINT "email_subscriber_link_id_link_id_fkey" FOREIGN KEY ("link_id") REFERENCES "link"("id") ON DELETE CASCADE;
@@ -714,7 +722,13 @@ CREATE TABLE "link" (
 	"updated_at" timestamp with time zone DEFAULT now(),
 	"user_id" text NOT NULL
 );
+
+CREATE INDEX "link_user_id_idx" ON "link" ("user_id");
 ```
+
+#### Indexes
+
+- INDEX `userId`
 
 #### References
 
@@ -847,7 +861,13 @@ CREATE TABLE "link_view" (
 	"updated_at" timestamp with time zone DEFAULT now(),
 	"link_id" uuid NOT NULL
 );
+
+CREATE INDEX "link_view_link_id_created_at_idx" ON "link_view" ("link_id","created_at");
 ```
+
+#### Indexes
+
+- INDEX `linkId`, `createdAt`
 
 #### References
 
@@ -980,7 +1000,13 @@ CREATE TABLE "link_click" (
 	"created_at" timestamp with time zone DEFAULT now(),
 	"link_id" uuid NOT NULL
 );
+
+CREATE INDEX "link_click_link_id_created_at_idx" ON "link_click" ("link_id","created_at");
 ```
+
+#### Indexes
+
+- INDEX `linkId`, `createdAt`
 
 #### References
 
@@ -1108,8 +1134,14 @@ CREATE TABLE "email_subscriber" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
+CREATE INDEX "email_subscriber_link_id_idx" ON "email_subscriber" ("link_id");
+
 ALTER TABLE "email_subscriber" ADD CONSTRAINT "email_subscriber_link_id_link_id_fkey" FOREIGN KEY ("link_id") REFERENCES "link"("id") ON DELETE CASCADE;
 ```
+
+#### Indexes
+
+- INDEX `linkId`
 
 #### References
 

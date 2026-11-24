@@ -68,6 +68,9 @@ Table link {
   created_at timestamptz
   updated_at timestamptz
   user_id text [not null]
+  indexes {
+    (user_id) [name: 'link_user_id_idx']
+  }
 }
 
 Table link_view {
@@ -79,6 +82,9 @@ Table link_view {
   created_at timestamptz
   updated_at timestamptz
   link_id uuid [not null]
+  indexes {
+    (link_id, created_at) [name: 'link_view_link_id_created_at_idx']
+  }
 }
 
 Table link_click {
@@ -90,6 +96,9 @@ Table link_click {
   referrer text
   created_at timestamptz
   link_id uuid [not null]
+  indexes {
+    (link_id, created_at) [name: 'link_click_link_id_created_at_idx']
+  }
 }
 
 Table email_subscriber {
@@ -97,6 +106,9 @@ Table email_subscriber {
   email text [not null]
   link_id uuid [not null]
   created_at timestamptz [not null]
+  indexes {
+    (link_id) [name: 'email_subscriber_link_id_idx']
+  }
 }
 
 Ref session_user_id_user_id_fk: session.user_id > user.id [delete: cascade]
