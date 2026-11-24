@@ -15,11 +15,17 @@ in the same session, whether the sync followed anything or not.
 
 ## 0. Set up
 
+In a cloud session `gh` has no valid token (only `gh api -X GET search/issues -f q='repo:… is:issue …'`
+works); read, file and comment on issues with the GitHub MCP tools (`issue_read`, `list_issues`,
+`issue_write`, `add_issue_comment`) wherever this file says `gh api`.
+
 1. `git checkout main && git pull --ff-only`.
 2. `bazel version` must work. If it is missing or Bazel cannot download, the environment's setup
    script did not run: see "Machine setup" in `tools/upstream/README.md`, run those steps, and go on.
 3. Attach the generator repositories so issues can be filed: `nakita628/hekireki`,
-   `nakita628/drizzler`, `nakita628/djangoer` (add_repo, access `push`; no need to clone them).
+   `nakita628/drizzler`, `nakita628/djangoer` (add_repo, access `push`; no need to clone them). When
+   the session has no `add_repo` tool, they are already attached (cloned under `/home/user`) and the
+   GitHub tools reach them.
 
 ## 1. Unblock
 
@@ -56,8 +62,8 @@ One commit per generator, in the existing style (`Bump hekireki to 0.52.17 and r
   `//apps/drizzler/examples/*:docs.write`, then `bazel test //apps/drizzler/...`.
 - **djangoer**: for each example, `uvx --from uv==<UV_VERSION of MODULE.bazel> uv lock
   --upgrade-package djangoer --project apps/djangoer/examples/<name>`; run every
-  `//apps/djangoer/examples/<name>:generate.write` with `--config=djangoer`, then
-  `bazel test --config=djangoer //apps/djangoer/...`. Every example's environment together takes
+  `//apps/djangoer/examples/<name>:generate.write` (plain `bazel run`: `--config=djangoer` is a `test`
+  config), then `bazel test --config=djangoer //apps/djangoer/...`. Every example's environment together takes
   about 24 GB (`~/.cache/orm-generators-examples/djangoer/venvs`); the session's disk is limited,
   so remove that directory once the djangoer tests are done.
 
@@ -89,6 +95,12 @@ finish, restore its `sources.json` commit and `schema.prisma` with `git checkout
 
 ### drizzler
 
+0. `node tools/upstream/follow-drizzler.mjs <name> <head of the check's JSON> [--exact]` reports, and
+   with `--apply` does, steps 2 to 4 below as a 3-way merge per file (base = the upstream file at the
+   pinned commit, theirs = at the new one, ours = the example's copy), and lists conflicts, added and
+   deleted files. Then do what is left of them by hand: resolve the conflicts (when upstream now does
+   what a "Changes from upstream" line did, take upstream's file and drop that line), apply the list
+   to the added files, and add a stand-in or a copy for a new import of an app module.
 1. Read the example's `README.md`: the `- Source:` links and `## Changes from upstream`.
 2. Download every linked file (or directory) at the new HEAD commit from
    `https://raw.githubusercontent.com/<repo>/<commit>/<path>` (for a directory, list it with a
@@ -108,7 +120,7 @@ finish, restore its `sources.json` commit and `schema.prisma` with `git checkout
 
 ```bash
 uvx --from uv==<UV_VERSION> uv lock --upgrade --project apps/djangoer/examples/<name>
-bazel run --config=djangoer //apps/djangoer/examples/<name>:generate.write
+bazel run //apps/djangoer/examples/<name>:generate.write      # no --config: it is defined for `test` only
 bazel test --config=djangoer //apps/djangoer/examples/<name>:all
 ```
 

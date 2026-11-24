@@ -114,6 +114,10 @@ it is likely the same root cause: check its issue first.
 
 ## 5. File what is hekireki's
 
+(In a cloud session `gh` has no valid token: use the GitHub MCP tools, `list_issues`, `issue_write` and
+`add_issue_comment`, for what `gh api` does below; `gh api -X GET search/issues -f q='repo:nakita628/hekireki is:issue …'`
+still works for searching.)
+
 1. Search first, open and closed:
    `gh api 'repos/nakita628/hekireki/issues?state=all&per_page=100' --jq '.[] | select(.pull_request == null) | "\(.number) \(.state) \(.title)"'`
    (more pages with `&page=2`…). Same problem and open: comment with the new case. Closed in a

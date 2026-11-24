@@ -11,6 +11,7 @@ what passes straight to `main`.
 | File | |
 | --- | --- |
 | [`check.mjs`](check.mjs) | reports what is behind: upstream schemas (hekireki's `sources.json`, drizzler's `- Source:` links), djangoer's locked packages, and the generator versions |
+| [`follow-drizzler.mjs`](follow-drizzler.mjs) | follows one drizzler example to a newer upstream commit with a 3-way merge per file (the example's changes from upstream are kept) |
 | [`blocked.json`](blocked.json) | pins held back, each with the generator issue that holds it (or `null` and a reason, for an upstream problem) |
 
 ```bash
