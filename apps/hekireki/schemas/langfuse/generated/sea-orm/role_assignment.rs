@@ -17,6 +17,8 @@ pub struct Model {
     pub api_key_id: Option<String>,
     pub role_id: String,
     pub system_role: SystemRole,
+    pub expires_at: Option<DateTime>,
+    pub tags: Vec<String>,
     pub created_at: DateTime,
     pub updated_at: DateTime,
 }

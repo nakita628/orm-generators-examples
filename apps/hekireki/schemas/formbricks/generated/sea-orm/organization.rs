@@ -54,6 +54,8 @@ pub enum Relation {
     RetentionRuns,
     #[sea_orm(has_many = "super::retention_notice::Entity")]
     RetentionNotices,
+    #[sea_orm(has_many = "super::mcp_grant_organization::Entity")]
+    McpGrants,
     #[sea_orm(has_one = "super::organization_billing::Entity")]
     Billing,
 }
@@ -115,6 +117,12 @@ impl Related<super::retention_run::Entity> for Entity {
 impl Related<super::retention_notice::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::RetentionNotices.def()
+    }
+}
+
+impl Related<super::mcp_grant_organization::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::McpGrants.def()
     }
 }
 

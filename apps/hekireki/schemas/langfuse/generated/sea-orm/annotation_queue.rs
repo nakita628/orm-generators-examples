@@ -11,6 +11,7 @@ pub struct Model {
     pub name: String,
     pub description: Option<String>,
     pub score_config_ids: Vec<String>,
+    pub session_view_id: Option<String>,
     pub project_id: String,
     pub created_at: DateTime,
     pub updated_at: DateTime,
@@ -18,6 +19,13 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::session_view::Entity",
+        from = "(Column::ProjectId, Column::SessionViewId)",
+        to = "(super::session_view::Column::ProjectId, super::session_view::Column::Id)",
+        on_delete = "NoAction"
+    )]
+    SessionView,
     #[sea_orm(
         belongs_to = "super::project::Entity",
         from = "Column::ProjectId",
@@ -29,6 +37,12 @@ pub enum Relation {
     AnnotationQueueItem,
     #[sea_orm(has_many = "super::annotation_queue_assignment::Entity")]
     AnnotationQueueAssignment,
+}
+
+impl Related<super::session_view::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::SessionView.def()
+    }
 }
 
 impl Related<super::project::Entity> for Entity {

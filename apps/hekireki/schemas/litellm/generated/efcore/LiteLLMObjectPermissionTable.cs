@@ -32,6 +32,8 @@ public partial class LiteLLMObjectPermissionTable
 
     public List<string>? Skills { get; set; } = new List<string>();
 
+    public List<string>? Apps { get; set; } = new List<string>();
+
     public virtual ICollection<LiteLLMTeamTable> Teams { get; set; } = new List<LiteLLMTeamTable>();
 
     public virtual ICollection<LiteLLMProjectTable> Projects { get; set; } = new List<LiteLLMProjectTable>();

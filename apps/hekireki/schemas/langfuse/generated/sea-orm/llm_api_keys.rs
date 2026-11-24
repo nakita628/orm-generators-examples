@@ -21,6 +21,7 @@ pub struct Model {
     pub extra_headers: Option<String>,
     pub extra_header_keys: Vec<String>,
     pub config: Option<Json>,
+    pub external_id: Option<String>,
     pub project_id: Option<String>,
     pub organization_id: Option<String>,
 }

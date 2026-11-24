@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_BudgetTable")]
 pub struct Model {
+    pub rollover_max_budget: Option<f64>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub budget_id: String,
     pub name: Option<String>,
@@ -35,6 +36,64 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        has_many = "super::lite_llm_app_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_table::Column::BudgetId"
+    )]
+    Apps,
+    #[sea_orm(has_many = "super::lite_llm_app_group_table::Entity")]
+    AppGroups,
+    #[sea_orm(has_many = "super::lite_llm_app_group_customer_org_table::Entity")]
+    AppGroupOrgBudgets,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_table::Column::DefaultTierBudgetId"
+    )]
+    AppDefaultTiers,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_table::Column::DefaultCustomerMemberBudgetId"
+    )]
+    AppDefaultMembers,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_org_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_org_table::Column::TierBudgetId"
+    )]
+    AppOrgTiers,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_org_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_org_table::Column::BudgetId"
+    )]
+    AppOrgBudgets,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_member_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_member_table::Column::BudgetId"
+    )]
+    AppMemberBudgets,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_org_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_org_table::Column::BudgetOverrideId"
+    )]
+    AppOrgOverrides,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_org_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_org_table::Column::CustomerMemberBudgetId"
+    )]
+    AppOrgMembers,
+    #[sea_orm(
+        has_many = "super::lite_llm_app_customer_member_table::Entity",
+        from = "Column::BudgetId",
+        to = "super::lite_llm_app_customer_member_table::Column::BudgetOverrideId"
+    )]
+    AppMemberOverrides,
     #[sea_orm(
         has_many = "super::lite_llm_customer_organization_table::Entity",
         from = "Column::BudgetId",
@@ -87,6 +146,36 @@ pub enum Relation {
     TeamMembership,
     #[sea_orm(has_many = "super::lite_llm_organization_membership::Entity")]
     OrganizationMembership,
+}
+
+impl Related<super::lite_llm_app_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Apps.def()
+    }
+}
+
+impl Related<super::lite_llm_app_group_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AppGroups.def()
+    }
+}
+
+impl Related<super::lite_llm_app_group_customer_org_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AppGroupOrgBudgets.def()
+    }
+}
+
+impl Related<super::lite_llm_app_customer_org_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AppOrgTiers.def()
+    }
+}
+
+impl Related<super::lite_llm_app_customer_member_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AppMemberBudgets.def()
+    }
 }
 
 impl Related<super::lite_llm_customer_organization_table::Entity> for Entity {

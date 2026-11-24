@@ -17,11 +17,14 @@ class Model < ApplicationRecord
   attribute :id, default: -> { Cuid.generate }
   alias_attribute :model_name_value, :model_name
 
+  enum :scope, { langfuse: "LANGFUSE", organization: "ORGANIZATION", project: "PROJECT" }, validate: true
+
   validates :model_name_value, presence: true,
                                uniqueness: { scope: %i[project_id start_date unit], conditions: -> { where.not(project_id: nil).where.not(start_date: nil).where.not(unit: nil) } }
   validates :match_pattern, presence: true
 
   belongs_to :project, optional: true, inverse_of: :model
+  belongs_to :organization, optional: true, inverse_of: :models
   has_many :price, dependent: :destroy
   has_many :pricing_tiers, dependent: :destroy
 end

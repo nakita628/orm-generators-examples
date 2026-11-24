@@ -58,6 +58,8 @@ class UserEntity(
     val evaluatorsCreated by EvaluatorEntity optionalReferrersOn EvaluatorTable.createdByUserId
     val evaluatorVersionsCreated by EvaluatorVersionEntity optionalReferrersOn EvaluatorVersionTable.createdByUserId
     val evaluationRulesCreated by EvaluationRuleEntity optionalReferrersOn EvaluationRuleTable.createdByUserId
+    val gatewaySpendLimitsOwned by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.ownerUserId
+    val gatewaySpendLimits by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.userId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

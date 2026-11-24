@@ -33,6 +33,7 @@ class LiteLLMObjectPermissionTable extends Model
         'search_tools',
         'mcp_tool_search_enabled',
         'skills',
+        'apps',
     ];
 
     protected $casts = [
@@ -48,6 +49,7 @@ class LiteLLMObjectPermissionTable extends Model
         'search_tools' => AsPrismaList::class,
         'mcp_tool_search_enabled' => 'boolean',
         'skills' => AsPrismaList::class,
+        'apps' => AsPrismaList::class,
     ];
 
     public function teams(): HasMany

@@ -5,6 +5,7 @@ class EnvironmentVariableValue < ApplicationRecord
 
   attribute :id, default: -> { Cuid.generate }
   attribute :isSecret, default: false
+  attribute :isProxyOnly, default: false
   attribute :version, default: 1
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

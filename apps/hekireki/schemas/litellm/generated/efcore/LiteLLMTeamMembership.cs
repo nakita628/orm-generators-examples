@@ -4,6 +4,8 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMTeamMembership
 {
+    public double? RolloverCredit { get; set; }
+
     public string UserId { get; set; } = null!;
 
     public string TeamId { get; set; } = null!;

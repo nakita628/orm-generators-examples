@@ -42,6 +42,9 @@ class UserEntity(
     val siteSettings by SiteSettingsEntity optionalReferrersOn SiteSettingsTable.lastModifiedByUserId
     val passkeys by PasskeyEntity referrersOn PasskeyTable.userId
     var avatarImage by AvatarImageEntity optionalReferencedOn UserTable.avatarImageId
+    val adminRuleMatches by AdminRuleMatchEntity optionalReferrersOn AdminRuleMatchTable.actorUserId
+    val adminTags by AdminTagEntity optionalReferrersOn AdminTagTable.userId
+    val createdAdminTags by AdminTagEntity optionalReferrersOn AdminTagTable.createdByUserId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

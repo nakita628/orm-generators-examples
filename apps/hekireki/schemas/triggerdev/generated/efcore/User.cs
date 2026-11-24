@@ -124,4 +124,6 @@ public partial class User
     public virtual ICollection<PlatformNotification> PlatformNotifications { get; set; } = new List<PlatformNotification>();
 
     public virtual ICollection<PlatformNotificationInteraction> PlatformNotificationInteractions { get; set; } = new List<PlatformNotificationInteraction>();
+
+    public virtual ICollection<EnvironmentVariableIgnore> EnvironmentVariableIgnores { get; set; } = new List<EnvironmentVariableIgnore>();
 }

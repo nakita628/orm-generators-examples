@@ -62,6 +62,7 @@ class LiteLLMMCPServerTableEntity(
     var timeout by LiteLLMMCPServerTableTable.timeout
     var maxConcurrentRequests by LiteLLMMCPServerTableTable.maxConcurrentRequests
     var rpm by LiteLLMMCPServerTableTable.rpm
+    var events by LiteLLMMCPServerTableTable.events
     var approvalStatus by LiteLLMMCPServerTableTable.approvalStatus
     var submittedBy by LiteLLMMCPServerTableTable.submittedBy
     var submittedAt by LiteLLMMCPServerTableTable.submittedAt

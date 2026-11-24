@@ -74,6 +74,21 @@ object SubscriptionTable : IdTable<String>("\"Subscription\"") {
     /** The lease a seat change or seat line repair holds while it reads and moves the seat line. */
     val seatLineLeaseToken = text("seatLineLeaseToken").nullable()
     val seatLineLeaseUntil = pgTimestamp("seatLineLeaseUntil", 3).nullable()
+
+    /**
+     * An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+     * charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+     */
+    val paymentRecoveryInvoiceId = text("paymentRecoveryInvoiceId").nullable()
+    val paymentRecoveryStartedAt = pgTimestamp("paymentRecoveryStartedAt", 3).nullable()
+    val paymentRecoveryNoticeDay = integer("paymentRecoveryNoticeDay").nullable()
+
+    /**
+     * The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+     * organization is on Free with more members than Free allows; ended once that no longer holds.
+     */
+    val overPlanSince = pgTimestamp("overPlanSince", 3).nullable()
+    val overPlanEndedAt = pgTimestamp("overPlanEndedAt", 3).nullable()
     override val primaryKey = PrimaryKey(id, name = "\"Subscription_pkey\"")
 
     init {

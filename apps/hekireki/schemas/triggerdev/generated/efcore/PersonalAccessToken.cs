@@ -63,4 +63,10 @@ public partial class PersonalAccessToken
     public DateTime UpdatedAt { get; set; }
 
     public virtual ICollection<AuthorizationCode> AuthorizationCodes { get; set; } = new List<AuthorizationCode>();
+
+    public virtual OAuthClient? OauthClient { get; set; }
+
+    public string? OauthClientId { get; set; }
+
+    public virtual ICollection<OAuthRefreshToken> OauthRefreshTokens { get; set; } = new List<OAuthRefreshToken>();
 }

@@ -100,4 +100,8 @@ public partial class User
     public virtual ICollection<EvaluatorVersion> EvaluatorVersionsCreated { get; set; } = new List<EvaluatorVersion>();
 
     public virtual ICollection<EvaluationRule> EvaluationRulesCreated { get; set; } = new List<EvaluationRule>();
+
+    public virtual ICollection<GatewaySpendLimit> GatewaySpendLimitsOwned { get; set; } = new List<GatewaySpendLimit>();
+
+    public virtual ICollection<GatewaySpendLimit> GatewaySpendLimits { get; set; } = new List<GatewaySpendLimit>();
 }

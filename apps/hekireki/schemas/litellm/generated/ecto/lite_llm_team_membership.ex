@@ -4,6 +4,7 @@ defmodule LiteLLM.LiteLLMTeamMembership do
   @primary_key false
 
   @type t :: %__MODULE__{
+          rollover_credit: float() | nil,
           user_id: String.t(),
           team_id: String.t(),
           spend: float(),
@@ -12,6 +13,7 @@ defmodule LiteLLM.LiteLLMTeamMembership do
         }
 
   schema "LiteLLM_TeamMembership" do
+    field(:rollover_credit, :float)
     field(:user_id, :string, primary_key: true)
     field(:team_id, :string, primary_key: true)
     field(:spend, :float, default: 0.0)

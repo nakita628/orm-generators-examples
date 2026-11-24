@@ -8,6 +8,10 @@ import org.jetbrains.exposed.v1.dao.EntityBatchUpdate
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+/**
+ * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+ * deployments keep working during the switch, then dropped.
+ */
 class ApiUsageEntity(
     id: EntityID<CompositeID>,
 ) : CompositeEntity(id) {

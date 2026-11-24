@@ -19,6 +19,7 @@ pub struct Model {
     pub search_tools: Vec<String>,
     pub mcp_tool_search_enabled: Option<bool>,
     pub skills: Vec<String>,
+    pub apps: Vec<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

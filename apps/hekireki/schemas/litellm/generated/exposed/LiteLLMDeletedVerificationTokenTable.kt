@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 object LiteLLMDeletedVerificationTokenTable : IdTable<String>("\"LiteLLM_DeletedVerificationToken\"") {
+    val keyId = text("key_id").nullable()
     override val id = text("id").clientDefault { UUID.randomUUID().toString() }.entityId()
     val token = text("token")
     val keyName = text("key_name").nullable()

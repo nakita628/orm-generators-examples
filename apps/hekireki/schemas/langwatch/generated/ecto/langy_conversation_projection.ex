@@ -29,6 +29,7 @@ defmodule LangWatch.LangyConversationProjection do
           pending_handoff_turn_id: String.t() | nil,
           run_token: String.t() | nil,
           archived_at: float() | nil,
+          ci_follow_ups_in_arow: integer(),
           created_at: float(),
           updated_at: float(),
           occurred_at: float(),
@@ -67,6 +68,8 @@ defmodule LangWatch.LangyConversationProjection do
     # Per-conversation HMAC key for worker stream frames; server-side only.
     field(:run_token, :string, source: :runToken)
     field(:archived_at, :float, source: :archivedAt)
+    # Messages CI started on a pull request since the person last wrote.
+    field(:ci_follow_ups_in_arow, :integer, default: 0, source: :ciFollowUpsInARow)
     field(:created_at, :float, source: :createdAt)
     field(:updated_at, :float, source: :updatedAt)
     # Business time of the latest applied event.

@@ -31,6 +31,7 @@ class LiteLLMDailyTagSpendEntity(
     var gatewayInjectedCachingSavingsSpend by LiteLLMDailyTagSpendTable.gatewayInjectedCachingSavingsSpend
     var autorouterSavingsSpend by LiteLLMDailyTagSpendTable.autorouterSavingsSpend
     var guardrailSpend by LiteLLMDailyTagSpendTable.guardrailSpend
+    var customerMarginSpend by LiteLLMDailyTagSpendTable.customerMarginSpend
     var spend by LiteLLMDailyTagSpendTable.spend
     var apiRequests by LiteLLMDailyTagSpendTable.apiRequests
     var successfulRequests by LiteLLMDailyTagSpendTable.successfulRequests

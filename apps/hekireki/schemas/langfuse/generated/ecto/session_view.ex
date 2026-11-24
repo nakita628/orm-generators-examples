@@ -5,6 +5,7 @@ defmodule Langfuse.SessionView do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          ownership: atom(),
           is_pinned_by_default_for_project: boolean(),
           id: String.t(),
           name: String.t(),
@@ -18,6 +19,7 @@ defmodule Langfuse.SessionView do
         }
 
   schema "session_views" do
+    field(:ownership, Ecto.Enum, values: [:PRIVATE, :PROJECT], default: :PROJECT)
     field(:is_pinned_by_default_for_project, :boolean, default: false)
     field(:id, :string, primary_key: true)
     field(:name, :string)

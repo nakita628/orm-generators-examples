@@ -17,6 +17,11 @@ erDiagram
     projects |o--o{ gateway_configs : "(id) - (defaultIngestionProjectId)"
     organizations ||--o{ gateway_ai_connections : "(id) - (organizationId)"
     api_keys ||--o| gateway_api_key_associations : "(id) - (apiKeyId)"
+    organizations ||--o{ gateway_spend_limits : "(id) - (organizationId)"
+    api_keys |o--o{ gateway_spend_limits : "(id) - (apiKeyId)"
+    users |o--o{ gateway_spend_limits : "(id) - (userId)"
+    users |o--o{ gateway_spend_limits : "(id) - (ownerUserId)"
+    gateway_spend_limits ||--o{ gateway_spend_limit_alerts : "(id) - (spendLimitId)"
     projects ||--o{ in_app_agent_conversations : "(id) - (projectId)"
     users |o--o{ in_app_agent_conversations : "(id) - (createdByUserId)"
     projects ||--o{ in_app_agent_events : "(id) - (projectId)"
@@ -39,6 +44,7 @@ erDiagram
     users |o--o{ membership_invitations : "(id) - (invitedByUserId)"
     projects ||--o{ trace_sessions : "(id) - (projectId)"
     projects ||--o{ score_configs : "(id) - (projectId)"
+    session_views |o--o{ annotation_queues : "(projectId) - (projectId)"
     projects ||--o{ annotation_queues : "(id) - (projectId)"
     annotation_queues ||--o{ annotation_queue_items : "(id) - (queueId)"
     users |o--o{ annotation_queue_items : "(id) - (lockedByUserId)"
@@ -66,6 +72,7 @@ erDiagram
     skill_blobs ||--o{ skill_files : "(id) - (blobId)"
     projects ||--o{ skill_blobs : "(id) - (projectId)"
     projects |o--o{ models : "(id) - (projectId)"
+    organizations |o--o{ models : "(id) - (organizationId)"
     models ||--o{ prices : "(id) - (modelId)"
     projects |o--o{ prices : "(id) - (projectId)"
     pricing_tiers ||--o{ prices : "(id) - (pricingTierId)"
@@ -241,6 +248,8 @@ erDiagram
         string apiKeyId FK
         string roleId UK
         systemrole systemRole UK
+        datetime expiresAt
+        string[] tags
         datetime createdAt
         datetime updatedAt
     }
@@ -273,6 +282,30 @@ erDiagram
         string apiKeyId PK, FK
         json metadata
         json allowedModels
+    }
+    gateway_spend_limits {
+        string id PK
+        string organizationId FK, UK
+        gatewayspendlimitscope scope
+        string apiKeyId FK, UK
+        string userId FK, UK
+        gatewayspendlimitinterval interval UK
+        decimal limitUsd
+        int[] alertThresholds
+        datetime countingStartedAt
+        string ownerUserId FK
+        datetime createdAt
+        datetime updatedAt
+    }
+    gateway_spend_limit_alerts {
+        string id PK
+        string spendLimitId FK, UK
+        string subjectId UK
+        gatewayspendlimitalerttype type UK
+        int thresholdPercent UK
+        datetime countingStartedAt UK
+        datetime windowStart UK
+        datetime createdAt
     }
     in_app_agent_conversations {
         string id PK
@@ -349,6 +382,7 @@ erDiagram
         string extraHeaders
         string[] extraHeaderKeys
         json config
+        string externalId
         string projectId FK, UK
         string organizationId FK, UK
     }
@@ -406,6 +440,7 @@ erDiagram
         string name UK
         string description
         string[] scoreConfigIds
+        string sessionViewId FK
         string projectId FK, UK
         datetime createdAt
         datetime updatedAt
@@ -582,7 +617,9 @@ erDiagram
         string id PK
         datetime createdAt
         datetime updatedAt
+        modelscope scope
         string projectId FK, UK
+        string organizationId FK
         string modelName UK
         string matchPattern
         datetime startDate UK
@@ -1042,10 +1079,11 @@ erDiagram
         json orderBy
     }
     session_views {
+        sessionviewownership ownership
         boolean isPinnedByDefaultForProject
         string id PK, UK
         string projectId FK, UK
-        string name UK
+        string name
         json filters
         sessionviewmode viewMode
         sessionunmatchedtraces unmatchedTraces

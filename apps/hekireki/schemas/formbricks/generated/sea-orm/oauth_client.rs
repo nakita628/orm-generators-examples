@@ -94,6 +94,8 @@ pub enum Relation {
     Consents,
     #[sea_orm(has_many = "super::oauth_client_resource::Entity")]
     Resources,
+    #[sea_orm(has_many = "super::mcp_grant::Entity")]
+    McpGrants,
 }
 
 impl Related<super::user::Entity> for Entity {
@@ -123,6 +125,12 @@ impl Related<super::oauth_consent::Entity> for Entity {
 impl Related<super::oauth_client_resource::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Resources.def()
+    }
+}
+
+impl Related<super::mcp_grant::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::McpGrants.def()
     }
 }
 

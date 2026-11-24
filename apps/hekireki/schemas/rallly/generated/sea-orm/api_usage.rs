@@ -4,6 +4,8 @@ use sea_orm::entity::prelude::*;
 use sea_orm::Set;
 use serde::{Deserialize, Serialize};
 
+/// Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+/// deployments keep working during the switch, then dropped.
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "api_usage")]
 pub struct Model {

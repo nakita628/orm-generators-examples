@@ -45,6 +45,7 @@ class Workspace < ApplicationRecord
   has_many :feedback_directory_workspaces, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :charts, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :dashboards, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
+  has_many :embedded_field_labels, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :creatives, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :attachment_exports, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :surveys, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
@@ -59,4 +60,6 @@ class Workspace < ApplicationRecord
   has_many :feedback_sources, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :workflows, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
   has_many :workflow_runs, foreign_key: "workspaceId", inverse_of: :workspace, dependent: :destroy
+  has_many :mcp_grants, class_name: "McpGrantWorkspace", foreign_key: "workspaceId", inverse_of: :workspace,
+                        dependent: :destroy
 end

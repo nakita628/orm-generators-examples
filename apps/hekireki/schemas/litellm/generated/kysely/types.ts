@@ -14,6 +14,7 @@ export type ScheduledJobRunStatus = 'PENDING' | 'RUNNING' | 'SUCCEEDED' | 'FAILE
 export type AccountingDeliveryState = 'pending' | 'applied' | 'parked'
 
 export interface LiteLLM_BudgetTable {
+  rollover_max_budget: number | null
   budget_id: string
   name: string | null
   max_budget: number | null
@@ -37,6 +38,69 @@ export interface LiteLLM_BudgetTable {
   created_by: string
   updated_at: Generated<Timestamp>
   updated_by: string
+}
+
+export interface LiteLLM_AppGroupTable {
+  app_group_id: string
+  name: string
+  description: string | null
+  metadata: unknown
+  budget_id: string | null
+  spend: Generated<number>
+  spend_reset_window: string | null
+  created_at: Generated<Timestamp>
+  created_by: string
+  updated_at: Generated<Timestamp>
+  updated_by: string
+}
+
+export interface LiteLLM_AppGroupCustomerOrgTable {
+  app_group_id: string
+  customer_org_id: string
+  budget_id: string | null
+  spend: Generated<number>
+  spend_reset_window: string | null
+}
+
+export interface LiteLLM_AppTable {
+  app_id: string
+  app_group_id: string | null
+  resource_type: string | null
+  resource_id: string | null
+  alias: string
+  spend: Generated<number>
+  spend_reset_window: string | null
+  budget_id: string | null
+  default_tier_budget_id: string | null
+  default_customer_member_budget_id: string | null
+  auto_create_customers: Generated<boolean>
+  customer_margin: number | null
+  created_at: Generated<Timestamp>
+  created_by: string
+  updated_at: Generated<Timestamp>
+  updated_by: string
+}
+
+export interface LiteLLM_AppCustomerOrgTable {
+  app_id: string
+  customer_org_id: string
+  spend: Generated<number>
+  spend_reset_window: string | null
+  tier_budget_id: string | null
+  budget_id: string | null
+  budget_override_id: string | null
+  budget_override_expires_at: Timestamp | null
+  customer_member_budget_id: string | null
+}
+
+export interface LiteLLM_AppCustomerMemberTable {
+  app_id: string
+  customer_member_id: string
+  spend: Generated<number>
+  spend_reset_window: string | null
+  budget_override_id: string | null
+  budget_id: string | null
+  budget_override_expires_at: Timestamp | null
 }
 
 export interface LiteLLM_CustomerOrganizationTable {
@@ -301,6 +365,8 @@ export interface LiteLLM_DeletedTeamTable {
 }
 
 export interface LiteLLM_UserTable {
+  rollover_max_budget: number | null
+  rollover_credit: number | null
   budget_limits: unknown
   user_id: string
   user_alias: string | null
@@ -345,6 +411,7 @@ export interface LiteLLM_ObjectPermissionTable {
   search_tools: Generated<string[]>
   mcp_tool_search_enabled: boolean | null
   skills: Generated<string[]>
+  apps: Generated<string[]>
 }
 
 export interface LiteLLM_MCPServerTable {
@@ -399,6 +466,7 @@ export interface LiteLLM_MCPServerTable {
   timeout: number | null
   max_concurrent_requests: number | null
   rpm: number | null
+  events: unknown
   approval_status: Generated<string | null>
   submitted_by: string | null
   submitted_at: Timestamp | null
@@ -460,6 +528,7 @@ export interface LiteLLM_SSOIdentityAssertion {
 }
 
 export interface LiteLLM_VerificationToken {
+  key_id: string | null
   token: string
   key_name: string | null
   key_alias: string | null
@@ -533,6 +602,7 @@ export interface LiteLLM_DeprecatedVerificationToken {
 }
 
 export interface LiteLLM_DeletedVerificationToken {
+  key_id: string | null
   id: string
   token: string
   key_name: string | null
@@ -701,6 +771,7 @@ export interface LiteLLM_UserNotifications {
 }
 
 export interface LiteLLM_TeamMembership {
+  rollover_credit: number | null
   user_id: string
   team_id: string
   spend: Generated<number>
@@ -770,6 +841,7 @@ export interface LiteLLM_DailyUserSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -810,6 +882,7 @@ export interface LiteLLM_DailyGlobalSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -852,6 +925,7 @@ export interface LiteLLM_DailyOrganizationSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -867,6 +941,8 @@ export interface LiteLLM_DailyOrganizationSpend {
 }
 
 export interface LiteLLM_DailyCustomerMemberSpend {
+  app_group_id: Generated<string>
+  app_id: Generated<string>
   id: string
   date: string
   customer_org_id: string
@@ -889,6 +965,10 @@ export interface LiteLLM_DailyCustomerMemberSpend {
   cache_creation_input_tokens: Generated<
     ColumnType<string, bigint | number | string, bigint | number | string>
   >
+  cache_cost: Generated<number>
+  priced_cache_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_saved_tokens: Generated<
     ColumnType<string, bigint | number | string, bigint | number | string>
   >
@@ -897,6 +977,7 @@ export interface LiteLLM_DailyCustomerMemberSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
     ColumnType<string, bigint | number | string, bigint | number | string>
@@ -938,6 +1019,7 @@ export interface LiteLLM_DailyEndUserSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -980,6 +1062,7 @@ export interface LiteLLM_DailyAgentSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -1022,6 +1105,7 @@ export interface LiteLLM_DailyTeamSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -1066,6 +1150,7 @@ export interface LiteLLM_DailyTagSpend {
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
+  customer_margin_spend: Generated<number>
   spend: Generated<number>
   api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   successful_requests: Generated<
@@ -1139,6 +1224,7 @@ export interface LiteLLM_ManagedObjectTable {
   api_key: string | null
   request_tags: Generated<unknown>
   end_user_id: string | null
+  creator_billing_context: unknown
   updated_at: Timestamp
   updated_by: string | null
 }
@@ -1719,6 +1805,7 @@ export interface LiteLLM_ShadowEvalJob {
   models: Generated<string[]>
   direction: Generated<string>
   baseline_model: string | null
+  skip_same_model: Generated<boolean>
   judge_model: string
   shadow_percentage: number
   max_turns: number
@@ -1728,6 +1815,8 @@ export interface LiteLLM_ShadowEvalJob {
   ends_at: Timestamp
   stopped_at: Timestamp | null
   stopped_by: string | null
+  rubric: string | null
+  rubric_version: number | null
 }
 
 export interface LiteLLM_ShadowEvalAttempt {
@@ -1746,6 +1835,8 @@ export interface LiteLLM_ShadowEvalAttempt {
   real_classifier_cost: Generated<number>
   shadow_classifier_cost: Generated<number>
   real_cache_hit: Generated<boolean>
+  real_grade: number | null
+  shadow_grade: number | null
   error: string | null
   created_at: Generated<Timestamp>
 }
@@ -1753,6 +1844,7 @@ export interface LiteLLM_ShadowEvalAttempt {
 export interface LiteLLM_ShadowEvalFunnel {
   job_id: string
   not_sampled: Generated<number>
+  same_model: Generated<number>
   unjudgeable: Generated<number>
   shed: Generated<number>
   withheld: Generated<number>
@@ -1805,6 +1897,14 @@ export interface LiteLLM_BackgroundInteractionSettlement {
 export interface LiteLLM_BackgroundResponseSettlement {
   response_id: string
   settled_at: Generated<Timestamp>
+}
+
+export interface LiteLLM_BackgroundResponseCreator {
+  response_id: string
+  upstream_url: string
+  create_context: unknown
+  created_at: Generated<Timestamp>
+  poll_lease_expires_at: Timestamp | null
 }
 
 export interface LiteLLM_Lens {
@@ -1870,7 +1970,7 @@ export interface LiteLLM_TelemetryReport {
 }
 
 export interface LiteLLM_SpendLogDelivery {
-  delivery_id: Generated<string>
+  delivery_id: string
   request_id: string
   state: Generated<AccountingDeliveryState>
   accounting_payload: unknown
@@ -1931,6 +2031,11 @@ export interface LiteLLM_PerformanceAlertState {
 
 export interface DB {
   LiteLLM_BudgetTable: LiteLLM_BudgetTable
+  LiteLLM_AppGroupTable: LiteLLM_AppGroupTable
+  LiteLLM_AppGroupCustomerOrgTable: LiteLLM_AppGroupCustomerOrgTable
+  LiteLLM_AppTable: LiteLLM_AppTable
+  LiteLLM_AppCustomerOrgTable: LiteLLM_AppCustomerOrgTable
+  LiteLLM_AppCustomerMemberTable: LiteLLM_AppCustomerMemberTable
   LiteLLM_CustomerOrganizationTable: LiteLLM_CustomerOrganizationTable
   LiteLLM_CustomerTeamTable: LiteLLM_CustomerTeamTable
   LiteLLM_CustomerMemberTable: LiteLLM_CustomerMemberTable
@@ -2033,6 +2138,7 @@ export interface DB {
   LiteLLM_WorkflowMessage: LiteLLM_WorkflowMessage
   LiteLLM_BackgroundInteractionSettlement: LiteLLM_BackgroundInteractionSettlement
   LiteLLM_BackgroundResponseSettlement: LiteLLM_BackgroundResponseSettlement
+  LiteLLM_BackgroundResponseCreator: LiteLLM_BackgroundResponseCreator
   LiteLLM_Lens: LiteLLM_Lens
   LiteLLM_LensRun: LiteLLM_LensRun
   LiteLLM_LensReview: LiteLLM_LensReview

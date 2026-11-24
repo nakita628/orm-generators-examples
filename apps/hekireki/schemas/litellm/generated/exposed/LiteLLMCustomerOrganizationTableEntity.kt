@@ -12,6 +12,8 @@ class LiteLLMCustomerOrganizationTableEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMCustomerOrganizationTableEntity>(LiteLLMCustomerOrganizationTableTable)
 
+    val appGroups by LiteLLMAppGroupCustomerOrgTableEntity referrersOn LiteLLMAppGroupCustomerOrgTableTable.customerOrgId
+    val apps by LiteLLMAppCustomerOrgTableEntity referrersOn LiteLLMAppCustomerOrgTableTable.customerOrgId
     var spend by LiteLLMCustomerOrganizationTableTable.spend
     var budgetTemplateIds by LiteLLMCustomerOrganizationTableTable.budgetTemplateIds
     var budgetId by LiteLLMCustomerOrganizationTableTable.budgetId

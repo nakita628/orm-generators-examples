@@ -21,6 +21,12 @@ pub struct Model {
     pub created_by: Option<String>,
     /// [WorkflowDefinition]
     pub definition: Json,
+    /// Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+    /// the editor can show the URL again. Never part of the definition, its versions or its copies.
+    #[sea_orm(column_name = "webhookTokenHash")]
+    pub webhook_token_hash: Option<String>,
+    #[sea_orm(column_name = "webhookTokenEncrypted")]
+    pub webhook_token_encrypted: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -43,6 +49,10 @@ pub enum Relation {
     Versions,
     #[sea_orm(has_many = "super::workflow_run::Entity")]
     Runs,
+    #[sea_orm(has_many = "super::workflow_secret::Entity")]
+    Secrets,
+    #[sea_orm(has_many = "super::workflow_sample::Entity")]
+    Samples,
 }
 
 impl Related<super::workspace::Entity> for Entity {
@@ -66,6 +76,18 @@ impl Related<super::workflow_version::Entity> for Entity {
 impl Related<super::workflow_run::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Runs.def()
+    }
+}
+
+impl Related<super::workflow_secret::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Secrets.def()
+    }
+}
+
+impl Related<super::workflow_sample::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Samples.def()
     }
 }
 

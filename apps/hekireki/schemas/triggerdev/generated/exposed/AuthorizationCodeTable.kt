@@ -2,6 +2,7 @@ package triggerdev.models
 
 import io.github.thibaultmeyer.cuid.CUID
 import org.jetbrains.exposed.v1.core.ReferenceOption
+import org.jetbrains.exposed.v1.core.TextColumnType
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -30,7 +31,26 @@ object AuthorizationCodeTable : IdTable<String>("\"AuthorizationCode\"") {
 
     /** sha256 of the approval code, which only the approving browser ever sees. */
     val approvalCodeHash = text("approvalCodeHash").nullable()
+    val oauthClientId =
+        optReference(
+            "oauthClientId",
+            OAuthClientTable,
+            onDelete = ReferenceOption.CASCADE,
+            onUpdate = ReferenceOption.CASCADE,
+            fkName = "\"AuthorizationCode_oauthClientId_fkey\"",
+        )
+    val redirectUri = text("redirectUri").nullable()
+    val scope = array("scope", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
+    val resource = text("resource").nullable()
+    val approvedByUserId = text("approvedByUserId").nullable()
+
+    /** The user who started the OAuth authorization. Only they can approve it. */
+    val requestedByUserId = text("requestedByUserId").nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"AuthorizationCode_pkey\"")
+
+    init {
+        index("\"AuthorizationCode_oauthClientId_idx\"", false, oauthClientId)
+    }
 }

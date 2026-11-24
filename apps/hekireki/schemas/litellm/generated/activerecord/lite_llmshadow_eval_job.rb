@@ -7,6 +7,7 @@ class LiteLLMShadowEvalJob < ApplicationRecord
   attribute :router_names, default: -> { [] }
   attribute :models, default: -> { [] }
   attribute :direction, default: "forward"
+  attribute :skip_same_model, default: false
 
   validates :group_id, presence: true
   validates :target_id, presence: true

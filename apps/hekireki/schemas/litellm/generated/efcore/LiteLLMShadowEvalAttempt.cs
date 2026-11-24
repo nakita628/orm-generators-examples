@@ -36,6 +36,10 @@ public partial class LiteLLMShadowEvalAttempt
 
     public bool RealCacheHit { get; set; } = false;
 
+    public int? RealGrade { get; set; }
+
+    public int? ShadowGrade { get; set; }
+
     public string? Error { get; set; }
 
     public DateTime CreatedAt { get; set; }

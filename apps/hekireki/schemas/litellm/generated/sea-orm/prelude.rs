@@ -4,6 +4,11 @@ pub use super::lite_llm_adaptive_router_state::Entity as LiteLLM_AdaptiveRouterS
 pub use super::lite_llm_agent_identity::Entity as LiteLLM_AgentIdentity;
 pub use super::lite_llm_agents_table::Entity as LiteLLM_AgentsTable;
 pub use super::lite_llm_alert::Entity as LiteLLM_Alert;
+pub use super::lite_llm_app_customer_member_table::Entity as LiteLLM_AppCustomerMemberTable;
+pub use super::lite_llm_app_customer_org_table::Entity as LiteLLM_AppCustomerOrgTable;
+pub use super::lite_llm_app_group_customer_org_table::Entity as LiteLLM_AppGroupCustomerOrgTable;
+pub use super::lite_llm_app_group_table::Entity as LiteLLM_AppGroupTable;
+pub use super::lite_llm_app_table::Entity as LiteLLM_AppTable;
 pub use super::lite_llm_audit_log::Entity as LiteLLM_AuditLog;
 pub use super::lite_llm_auto_router_baseline_comparison::Entity as LiteLLM_AutoRouterBaselineComparison;
 pub use super::lite_llm_auto_router_baseline_observation::Entity as LiteLLM_AutoRouterBaselineObservation;
@@ -11,6 +16,7 @@ pub use super::lite_llm_auto_router_daily_spend::Entity as LiteLLM_AutoRouterDai
 pub use super::lite_llm_auto_router_session::Entity as LiteLLM_AutoRouterSession;
 pub use super::lite_llm_auto_router_user_session::Entity as LiteLLM_AutoRouterUserSession;
 pub use super::lite_llm_background_interaction_settlement::Entity as LiteLLM_BackgroundInteractionSettlement;
+pub use super::lite_llm_background_response_creator::Entity as LiteLLM_BackgroundResponseCreator;
 pub use super::lite_llm_background_response_settlement::Entity as LiteLLM_BackgroundResponseSettlement;
 pub use super::lite_llm_budget_table::Entity as LiteLLM_BudgetTable;
 pub use super::lite_llm_budget_window_spend::Entity as LiteLLM_BudgetWindowSpend;

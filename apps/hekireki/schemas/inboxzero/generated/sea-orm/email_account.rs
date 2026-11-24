@@ -94,6 +94,9 @@ pub struct Model {
     /// Null until first turned on, which is when default bundles are chosen.
     #[sea_orm(column_name = "mailBundleInbox")]
     pub mail_bundle_inbox: Option<bool>,
+    /// Collapses the inbox's other mail from one sender into one row.
+    #[sea_orm(column_name = "mailGroupBySender", default_value = true)]
+    pub mail_group_by_sender: bool,
     #[sea_orm(column_name = "mailDefaultSplitId")]
     pub mail_default_split_id: Option<String>,
     #[sea_orm(column_name = "mailSetup", default_value = "PENDING")]

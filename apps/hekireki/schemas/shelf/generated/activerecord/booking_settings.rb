@@ -9,6 +9,8 @@ class BookingSettings < ApplicationRecord
   attribute :autoArchiveBookings, default: false
   attribute :autoArchiveDays, default: 2
   attribute :autoArchiveExpiredReservations, default: false
+  attribute :requireApprovalForBase, default: false
+  attribute :requireApprovalForSelfService, default: false
   attribute :requireExplicitCheckinForAdmin, default: false
   attribute :requireExplicitCheckinForSelfService, default: false
   attribute :requireExplicitCheckoutForAdmin, default: false

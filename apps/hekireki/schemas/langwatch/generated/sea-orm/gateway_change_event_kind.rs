@@ -38,4 +38,10 @@ pub enum GatewayChangeEventKind {
     RoutingPolicyUpdated,
     #[sea_orm(string_value = "ROUTING_POLICY_DELETED")]
     RoutingPolicyDeleted,
+    #[sea_orm(string_value = "A2A_TARGET_CREATED")]
+    A2aTargetCreated,
+    #[sea_orm(string_value = "A2A_TARGET_UPDATED")]
+    A2aTargetUpdated,
+    #[sea_orm(string_value = "A2A_TARGET_DELETED")]
+    A2aTargetDeleted,
 }

@@ -22,7 +22,7 @@ public partial class WorkerDeployment
     public string? RuntimeVersion { get; set; }
 
     /// <summary>
-    /// CLI version that initiated the deploy, stamped at initialization
+    /// CLI version that initiated the deploy, stamped at initialization or worker upload
     /// </summary>
     public string? CliVersion { get; set; }
 
@@ -83,6 +83,11 @@ public partial class WorkerDeployment
 
     public string? ExternalId { get; set; }
 
+    /// <summary>
+    /// The kind of credential that started the deployment. Null when unknown.
+    /// </summary>
+    public DeploymentInitiatedByCredential? InitiatedByCredential { get; set; }
+
     public DateTime? StartedAt { get; set; }
 
     public DateTime? InstalledAt { get; set; }
@@ -98,6 +103,11 @@ public partial class WorkerDeployment
     public DateTime? CanceledAt { get; set; }
 
     public string? CanceledReason { get; set; }
+
+    /// <summary>
+    /// The newer GitHub build that superseded this one while it was still queued
+    /// </summary>
+    public string? SupersededById { get; set; }
 
     public string? Git { get; set; }
 

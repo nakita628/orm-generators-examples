@@ -11,7 +11,8 @@ defmodule Trigger.EnvironmentVariable do
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Trigger.Project.t() | nil,
-          values: [Trigger.EnvironmentVariableValue.t()]
+          values: [Trigger.EnvironmentVariableValue.t()],
+          ignores: [Trigger.EnvironmentVariableIgnore.t()]
         }
 
   schema "EnvironmentVariable" do
@@ -21,6 +22,7 @@ defmodule Trigger.EnvironmentVariable do
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, Trigger.Project, foreign_key: :project_id, define_field: false, type: :string)
     has_many(:values, Trigger.EnvironmentVariableValue, foreign_key: :variable_id, references: :id)
+    has_many(:ignores, Trigger.EnvironmentVariableIgnore, foreign_key: :variable_id, references: :id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

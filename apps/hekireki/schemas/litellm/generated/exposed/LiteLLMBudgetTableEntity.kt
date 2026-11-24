@@ -12,6 +12,18 @@ class LiteLLMBudgetTableEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMBudgetTableEntity>(LiteLLMBudgetTableTable)
 
+    var rolloverMaxBudget by LiteLLMBudgetTableTable.rolloverMaxBudget
+    val apps by LiteLLMAppTableEntity optionalReferrersOn LiteLLMAppTableTable.budgetId
+    val appGroups by LiteLLMAppGroupTableEntity optionalReferrersOn LiteLLMAppGroupTableTable.budgetId
+    val appGroupOrgBudgets by LiteLLMAppGroupCustomerOrgTableEntity optionalReferrersOn LiteLLMAppGroupCustomerOrgTableTable.budgetId
+    val appDefaultTiers by LiteLLMAppTableEntity optionalReferrersOn LiteLLMAppTableTable.defaultTierBudgetId
+    val appDefaultMembers by LiteLLMAppTableEntity optionalReferrersOn LiteLLMAppTableTable.defaultCustomerMemberBudgetId
+    val appOrgTiers by LiteLLMAppCustomerOrgTableEntity optionalReferrersOn LiteLLMAppCustomerOrgTableTable.tierBudgetId
+    val appOrgBudgets by LiteLLMAppCustomerOrgTableEntity optionalReferrersOn LiteLLMAppCustomerOrgTableTable.budgetId
+    val appMemberBudgets by LiteLLMAppCustomerMemberTableEntity optionalReferrersOn LiteLLMAppCustomerMemberTableTable.budgetId
+    val appOrgOverrides by LiteLLMAppCustomerOrgTableEntity optionalReferrersOn LiteLLMAppCustomerOrgTableTable.budgetOverrideId
+    val appOrgMembers by LiteLLMAppCustomerOrgTableEntity optionalReferrersOn LiteLLMAppCustomerOrgTableTable.customerMemberBudgetId
+    val appMemberOverrides by LiteLLMAppCustomerMemberTableEntity optionalReferrersOn LiteLLMAppCustomerMemberTableTable.budgetOverrideId
     val customerOrganizationDefaults by LiteLLMCustomerOrganizationTableEntity optionalReferrersOn
         LiteLLMCustomerOrganizationTableTable.defaultBudgetTemplateId
     val customerOrganizations by LiteLLMCustomerOrganizationTableEntity optionalReferrersOn LiteLLMCustomerOrganizationTableTable.budgetId

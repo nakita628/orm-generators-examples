@@ -6,6 +6,7 @@ defmodule LiteLLM.LiteLLMShadowEvalFunnel do
   @type t :: %__MODULE__{
           job_id: String.t(),
           not_sampled: integer(),
+          same_model: integer(),
           unjudgeable: integer(),
           shed: integer(),
           withheld: integer()
@@ -14,6 +15,7 @@ defmodule LiteLLM.LiteLLMShadowEvalFunnel do
   schema "LiteLLM_ShadowEvalFunnel" do
     field(:job_id, :string, primary_key: true)
     field(:not_sampled, :integer, default: 0)
+    field(:same_model, :integer, default: 0)
     field(:unjudgeable, :integer, default: 0)
     field(:shed, :integer, default: 0)
     field(:withheld, :integer, default: 0)

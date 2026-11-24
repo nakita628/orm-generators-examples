@@ -53,12 +53,22 @@ object BookingTable : IdTable<String>("\"Booking\"") {
     val autoArchivedAt = pgTimestamptz("autoArchivedAt", 3).nullable()
     val archivedWithoutCheckin = bool("archivedWithoutCheckin").default(false)
     val cancellationReason = text("cancellationReason").nullable()
+    val approvedAt = pgTimestamptz("approvedAt", 3).nullable()
+    val approvedById =
+        optReference(
+            "approvedById",
+            UserTable,
+            onDelete = ReferenceOption.SET_NULL,
+            onUpdate = ReferenceOption.CASCADE,
+            fkName = "\"Booking_approvedById_fkey\"",
+        )
     override val primaryKey = PrimaryKey(id, name = "\"Booking_pkey\"")
 
     init {
         index("\"Booking_creatorId_idx\"", false, creatorId)
         index("\"Booking_custodianTeamMemberId_idx\"", false, custodianTeamMemberId)
         index("\"Booking_custodianUserId_idx\"", false, custodianUserId)
+        index("\"Booking_approvedById_idx\"", false, approvedById)
         index("\"Booking_organizationId_idx\"", false, organizationId)
         index("\"Booking_status_idx\"", false, status)
         index("\"Booking_organizationId_from_id_idx\"", false, organizationId, from, id)

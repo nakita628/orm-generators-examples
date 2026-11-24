@@ -54,6 +54,9 @@ pub struct Model {
     pub run_token: Option<String>,
     #[sea_orm(column_name = "archivedAt")]
     pub archived_at: Option<f64>,
+    /// Messages CI started on a pull request since the person last wrote.
+    #[sea_orm(column_name = "ciFollowUpsInARow", default_value = 0)]
+    pub ci_follow_ups_in_arow: i32,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: f64,
     #[sea_orm(column_name = "updatedAt")]

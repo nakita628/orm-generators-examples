@@ -46,6 +46,7 @@ defmodule InboxZero.EmailAccount do
           mail_layout: atom(),
           mail_expanded_preview: boolean(),
           mail_bundle_inbox: boolean() | nil,
+          mail_group_by_sender: boolean(),
           mail_default_split_id: String.t() | nil,
           mail_setup: atom(),
           include_in_all_accounts: boolean(),
@@ -161,6 +162,8 @@ defmodule InboxZero.EmailAccount do
     # Collapses threads from bundled splits into one row each in the inbox.
     # Null until first turned on, which is when default bundles are chosen.
     field(:mail_bundle_inbox, :boolean, source: :mailBundleInbox)
+    # Collapses the inbox's other mail from one sender into one row.
+    field(:mail_group_by_sender, :boolean, default: true, source: :mailGroupBySender)
     field(:mail_default_split_id, :string, source: :mailDefaultSplitId)
     field(:mail_setup, Ecto.Enum, values: [:PENDING, :SUGGESTED, :DONE], default: :PENDING, source: :mailSetup)
     field(:include_in_all_accounts, :boolean, default: true, source: :includeInAllAccounts)

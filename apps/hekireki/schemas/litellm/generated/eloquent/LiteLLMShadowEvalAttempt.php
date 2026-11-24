@@ -32,6 +32,8 @@ class LiteLLMShadowEvalAttempt extends Model
         'real_classifier_cost',
         'shadow_classifier_cost',
         'real_cache_hit',
+        'real_grade',
+        'shadow_grade',
         'error',
     ];
 
@@ -51,5 +53,7 @@ class LiteLLMShadowEvalAttempt extends Model
         'real_classifier_cost' => 'float',
         'shadow_classifier_cost' => 'float',
         'real_cache_hit' => 'boolean',
+        'real_grade' => 'integer',
+        'shadow_grade' => 'integer',
     ];
 }

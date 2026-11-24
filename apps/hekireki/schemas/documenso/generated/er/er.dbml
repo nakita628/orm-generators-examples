@@ -206,6 +206,12 @@ Enum EmailTransportType {
   MAILCHANNELS
 }
 
+Enum AdminRuleMode {
+  ENFORCE
+  MONITOR
+  DISABLED
+}
+
 Table User {
   id Int [pk, increment]
   name String
@@ -964,6 +970,52 @@ Table RateLimit {
   }
 }
 
+Table AdminRule {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  name String [not null]
+  description String
+  mode AdminRuleMode [not null]
+  trigger String [not null, note: '[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)']
+  definition Json [not null, note: '[AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)']
+  priority Int [not null]
+  stopOnMatch Boolean [not null]
+  exemptOrganisationIds String[] [not null, note: '''Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+organisation''']
+
+  Note: '@zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from \'@documenso/lib/types/admin-rules\';"])'
+}
+
+Table AdminRuleMatch {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  mode AdminRuleMode [not null]
+  trigger String [not null, note: '[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)']
+  organisationId String
+  envelopeId String
+  eventSnapshot Json [not null, note: '[AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)']
+  actionsRun Json [not null, note: '[AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)']
+  ruleId String [not null]
+  actorUserId Int
+
+  Note: '@zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from \'@documenso/lib/types/admin-rules\';"])'
+}
+
+Table AdminTag {
+  id String [pk]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  type String [not null, note: '[AdminTagType] @zod.custom.use(ZAdminTagTypeSchema)']
+  description String [not null]
+  userId Int
+  organisationId String
+  createdByUserId Int
+  adminRuleId String
+
+  Note: '@zod.import(["import { ZAdminTagTypeSchema } from \'@documenso/lib/types/admin-tags\';"])'
+}
+
 Ref User_avatarImageId_fk: User.avatarImageId > AvatarImage.id [delete: set null]
 
 Ref TeamProfile_teamId_fk: TeamProfile.teamId - Team.id [delete: cascade]
@@ -1097,3 +1149,15 @@ Ref OrganisationEmail_emailDomainId_fk: OrganisationEmail.emailDomainId > EmailD
 Ref OrganisationEmail_organisationId_fk: OrganisationEmail.organisationId > Organisation.id [delete: cascade]
 
 Ref EmbedSignature_organisationId_fk: EmbedSignature.organisationId > Organisation.id [delete: cascade]
+
+Ref AdminRuleMatch_ruleId_fk: AdminRuleMatch.ruleId > AdminRule.id [delete: cascade]
+
+Ref AdminRuleMatch_actorUserId_fk: AdminRuleMatch.actorUserId > User.id [delete: set null]
+
+Ref AdminTag_userId_fk: AdminTag.userId > User.id [delete: cascade]
+
+Ref AdminTag_organisationId_fk: AdminTag.organisationId > Organisation.id [delete: cascade]
+
+Ref AdminTag_createdByUserId_fk: AdminTag.createdByUserId > User.id [delete: set null]
+
+Ref AdminTag_adminRuleId_fk: AdminTag.adminRuleId > AdminRule.id [delete: set null]

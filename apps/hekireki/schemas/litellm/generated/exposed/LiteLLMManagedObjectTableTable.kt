@@ -21,6 +21,7 @@ object LiteLLMManagedObjectTableTable : IdTable<String>("\"LiteLLM_ManagedObject
     val apiKey = text("api_key").nullable()
     val requestTags = jsonb<String>("request_tags", { it }, { it }).nullable().default("[]")
     val endUserId = text("end_user_id").nullable()
+    val creatorBillingContext = jsonb<String>("creator_billing_context", { it }, { it }).nullable()
     val updatedAt = pgTimestamp("updated_at", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedBy = text("updated_by").nullable()
     override val primaryKey = PrimaryKey(id, name = "\"LiteLLM_ManagedObjectTable_pkey\"")

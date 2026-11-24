@@ -88,6 +88,11 @@ Enum vote_type {
   ifNeedBe
 }
 
+Enum space_usage_resource {
+  api_poll
+  email_invite
+}
+
 Enum SpaceMemberRole {
   ADMIN
   MEMBER
@@ -133,6 +138,9 @@ Table api_usage {
   indexes {
     (space_id, resource, period) [pk]
   }
+
+  Note: '''Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+deployments keep working during the switch, then dropped.'''
 }
 
 Table subscriptions {
@@ -539,6 +547,24 @@ Table sheet_slots {
   updated_at DateTime [not null]
 }
 
+Table space_usage {
+  space_id String [not null]
+  resource space_usage_resource [not null]
+  period DateTime [not null]
+  count Int [default: 0, not null]
+  near_limit_warned_at DateTime
+  at_limit_warned_at DateTime
+  updated_at DateTime [not null]
+
+  indexes {
+    (space_id, resource, period) [pk]
+  }
+
+  Note: '''Monthly counters for metered actions charged to a space, independent of
+the records they produce, so deleting a poll does not give back what it
+spent.'''
+}
+
 Table spaces {
   id String [pk]
   name String [not null]
@@ -785,6 +811,8 @@ Ref sheets_host_id_fk: sheets.host_id > users.id [delete: cascade]
 Ref sheet_slots_sheet_id_fk: sheet_slots.sheet_id > sheets.id [delete: cascade]
 
 Ref sheet_slots_event_type_id_fk: sheet_slots.event_type_id > event_types.id [delete: restrict]
+
+Ref space_usage_space_id_fk: space_usage.space_id > spaces.id [delete: cascade]
 
 Ref spaces_owner_id_fk: spaces.owner_id > users.id [delete: cascade]
 

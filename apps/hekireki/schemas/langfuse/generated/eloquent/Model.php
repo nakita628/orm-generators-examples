@@ -17,7 +17,9 @@ class Model extends \Illuminate\Database\Eloquent\Model
 
     protected $fillable = [
         'id',
+        'scope',
         'project_id',
+        'organization_id',
         'model_name',
         'match_pattern',
         'start_date',
@@ -30,6 +32,7 @@ class Model extends \Illuminate\Database\Eloquent\Model
     ];
 
     protected $casts = [
+        'scope' => ModelScope::class,
         'start_date' => 'datetime',
         'input_price' => AsDecimal::class,
         'output_price' => AsDecimal::class,
@@ -40,6 +43,11 @@ class Model extends \Illuminate\Database\Eloquent\Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id');
+    }
+
+    public function organization(): BelongsTo
+    {
+        return $this->belongsTo(Organization::class, 'organization_id');
     }
 
     public function Price(): HasMany

@@ -8,6 +8,9 @@ defmodule Trigger.ConnectedGithubRepository do
           id: String.t(),
           branch_tracking: map() | list() | String.t() | number() | boolean(),
           preview_deployments_enabled: boolean(),
+          supersede_production_builds: boolean(),
+          supersede_staging_builds: boolean(),
+          supersede_preview_builds: boolean(),
           build_filters: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -19,6 +22,10 @@ defmodule Trigger.ConnectedGithubRepository do
     field(:id, :string, primary_key: true)
     field(:branch_tracking, Trigger.PrismaJson, source: :branchTracking)
     field(:preview_deployments_enabled, :boolean, default: true, source: :previewDeploymentsEnabled)
+    # Skip queued builds once a newer commit is queued for the same environment or preview branch
+    field(:supersede_production_builds, :boolean, default: false, source: :supersedeProductionBuilds)
+    field(:supersede_staging_builds, :boolean, default: true, source: :supersedeStagingBuilds)
+    field(:supersede_preview_builds, :boolean, default: true, source: :supersedePreviewBuilds)
     field(:build_filters, Trigger.PrismaJson, source: :buildFilters)
     field(:project_id, :string, source: :projectId)
     field(:repository_id, :string, source: :repositoryId)

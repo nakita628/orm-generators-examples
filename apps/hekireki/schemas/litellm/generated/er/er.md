@@ -1,5 +1,23 @@
 ```mermaid
 erDiagram
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppGroupTable : "(budget_id) - (budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppGroupCustomerOrgTable : "(budget_id) - (budget_id)"
+    LiteLLM_AppGroupTable ||--o{ LiteLLM_AppGroupCustomerOrgTable : "(app_group_id) - (app_group_id)"
+    LiteLLM_CustomerOrganizationTable ||--o{ LiteLLM_AppGroupCustomerOrgTable : "(customer_org_id) - (customer_org_id)"
+    LiteLLM_AppGroupTable |o--o{ LiteLLM_AppTable : "(app_group_id) - (app_group_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppTable : "(budget_id) - (budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppTable : "(budget_id) - (default_tier_budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppTable : "(budget_id) - (default_customer_member_budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerOrgTable : "(budget_id) - (budget_id)"
+    LiteLLM_AppTable ||--o{ LiteLLM_AppCustomerOrgTable : "(app_id) - (app_id)"
+    LiteLLM_CustomerOrganizationTable ||--o{ LiteLLM_AppCustomerOrgTable : "(customer_org_id) - (customer_org_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerOrgTable : "(budget_id) - (tier_budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerOrgTable : "(budget_id) - (budget_override_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerOrgTable : "(budget_id) - (customer_member_budget_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerMemberTable : "(budget_id) - (budget_id)"
+    LiteLLM_AppTable ||--o{ LiteLLM_AppCustomerMemberTable : "(app_id) - (app_id)"
+    LiteLLM_CustomerMemberTable ||--o{ LiteLLM_AppCustomerMemberTable : "(customer_member_id) - (customer_member_id)"
+    LiteLLM_BudgetTable |o--o{ LiteLLM_AppCustomerMemberTable : "(budget_id) - (budget_override_id)"
     LiteLLM_BudgetTable |o--o{ LiteLLM_CustomerOrganizationTable : "(budget_id) - (budget_id)"
     LiteLLM_BudgetTable |o--o{ LiteLLM_CustomerOrganizationTable : "(budget_id) - (default_budget_template_id)"
     LiteLLM_CustomerOrganizationTable ||--o{ LiteLLM_CustomerTeamTable : "(customer_org_id) - (parent_org_id)"
@@ -46,6 +64,7 @@ erDiagram
     LiteLLM_WorkflowRun ||--o{ LiteLLM_WorkflowMessage : "(run_id) - (run_id)"
     LiteLLM_Lens ||--o{ LiteLLM_LensReview : "(id) - (lens_id)"
     LiteLLM_BudgetTable {
+        float rollover_max_budget
         string budget_id PK
         string name
         float max_budget
@@ -69,6 +88,64 @@ erDiagram
         string created_by
         datetime updated_at
         string updated_by
+    }
+    LiteLLM_AppGroupTable {
+        string app_group_id PK
+        string name UK
+        string description
+        json metadata
+        string budget_id FK
+        float spend
+        string spend_reset_window
+        datetime created_at
+        string created_by
+        datetime updated_at
+        string updated_by
+    }
+    LiteLLM_AppGroupCustomerOrgTable {
+        string app_group_id PK, FK
+        string customer_org_id PK, FK
+        string budget_id FK
+        float spend
+        string spend_reset_window
+    }
+    LiteLLM_AppTable {
+        string app_id PK
+        string app_group_id FK
+        string resource_type UK
+        string resource_id UK
+        string alias UK
+        float spend
+        string spend_reset_window
+        string budget_id FK
+        string default_tier_budget_id FK
+        string default_customer_member_budget_id FK
+        boolean auto_create_customers
+        float customer_margin
+        datetime created_at
+        string created_by
+        datetime updated_at
+        string updated_by
+    }
+    LiteLLM_AppCustomerOrgTable {
+        string app_id PK, FK
+        string customer_org_id PK, FK
+        float spend
+        string spend_reset_window
+        string tier_budget_id FK
+        string budget_id FK
+        string budget_override_id FK
+        datetime budget_override_expires_at
+        string customer_member_budget_id FK
+    }
+    LiteLLM_AppCustomerMemberTable {
+        string app_id PK, FK
+        string customer_member_id PK, FK
+        float spend
+        string spend_reset_window
+        string budget_override_id FK
+        string budget_id FK
+        datetime budget_override_expires_at
     }
     LiteLLM_CustomerOrganizationTable {
         float spend
@@ -316,6 +393,8 @@ erDiagram
         string litellm_changed_by
     }
     LiteLLM_UserTable {
+        float rollover_max_budget
+        float rollover_credit
         json budget_limits
         string user_id PK
         string user_alias
@@ -359,6 +438,7 @@ erDiagram
         string[] search_tools
         boolean mcp_tool_search_enabled
         string[] skills
+        string[] apps
     }
     LiteLLM_MCPServerTable {
         string server_id PK
@@ -412,6 +492,7 @@ erDiagram
         float timeout
         int max_concurrent_requests
         int rpm
+        json events
         string approval_status
         string submitted_by
         datetime submitted_at
@@ -466,6 +547,7 @@ erDiagram
         datetime updated_at
     }
     LiteLLM_VerificationToken {
+        string key_id UK
         string token PK
         string key_name
         string key_alias
@@ -536,6 +618,7 @@ erDiagram
         datetime created_at
     }
     LiteLLM_DeletedVerificationToken {
+        string key_id
         string id PK
         string token
         string key_name
@@ -695,6 +778,7 @@ erDiagram
         string status
     }
     LiteLLM_TeamMembership {
+        float rollover_credit
         string user_id PK
         string team_id PK
         float spend
@@ -752,6 +836,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -779,6 +864,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -808,6 +894,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -818,6 +905,8 @@ erDiagram
         datetime updated_at
     }
     LiteLLM_DailyCustomerMemberSpend {
+        string app_group_id
+        string app_id
         string id PK
         string date
         string customer_org_id
@@ -834,12 +923,15 @@ erDiagram
         bigint completion_tokens
         bigint cache_read_input_tokens
         bigint cache_creation_input_tokens
+        float cache_cost
+        bigint priced_cache_tokens
         bigint compression_saved_tokens
         float compression_savings_spend
         float prompt_caching_savings_spend
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         bigint api_requests
         bigint successful_requests
         bigint failed_requests
@@ -868,6 +960,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -897,6 +990,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -926,6 +1020,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -957,6 +1052,7 @@ erDiagram
         float gateway_injected_caching_savings_spend
         float autorouter_savings_spend
         float guardrail_spend
+        float customer_margin_spend
         float spend
         bigint api_requests
         bigint successful_requests
@@ -1021,6 +1117,7 @@ erDiagram
         string api_key
         json request_tags
         string end_user_id
+        json creator_billing_context
         datetime updated_at
         string updated_by
     }
@@ -1544,6 +1641,7 @@ erDiagram
         string[] models
         string direction
         string baseline_model
+        boolean skip_same_model
         string judge_model
         float shadow_percentage
         int max_turns
@@ -1553,6 +1651,8 @@ erDiagram
         datetime ends_at
         datetime stopped_at
         string stopped_by
+        string rubric
+        int rubric_version
     }
     LiteLLM_ShadowEvalAttempt {
         string id PK
@@ -1570,12 +1670,15 @@ erDiagram
         float real_classifier_cost
         float shadow_classifier_cost
         boolean real_cache_hit
+        int real_grade
+        int shadow_grade
         string error
         datetime created_at
     }
     LiteLLM_ShadowEvalFunnel {
         string job_id PK
         int not_sampled
+        int same_model
         int unjudgeable
         int shed
         int withheld
@@ -1623,6 +1726,13 @@ erDiagram
     LiteLLM_BackgroundResponseSettlement {
         string response_id PK
         datetime settled_at
+    }
+    LiteLLM_BackgroundResponseCreator {
+        string response_id PK
+        string upstream_url
+        json create_context
+        datetime created_at
+        datetime poll_lease_expires_at
     }
     LiteLLM_Lens {
         string id PK

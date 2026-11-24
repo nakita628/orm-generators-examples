@@ -45,6 +45,8 @@ pub enum Relation {
         on_delete = "Restrict"
     )]
     BudgetOverride,
+    #[sea_orm(has_many = "super::lite_llm_app_customer_member_table::Entity")]
+    Apps,
     #[sea_orm(has_many = "super::lite_llm_customer_budget_increase_request::Entity")]
     BudgetIncreaseRequests,
 }
@@ -58,6 +60,12 @@ impl Related<super::lite_llm_customer_organization_table::Entity> for Entity {
 impl Related<super::lite_llm_budget_table::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Budget.def()
+    }
+}
+
+impl Related<super::lite_llm_app_customer_member_table::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Apps.def()
     }
 }
 

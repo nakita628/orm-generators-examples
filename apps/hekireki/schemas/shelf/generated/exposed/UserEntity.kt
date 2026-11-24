@@ -56,6 +56,7 @@ class UserEntity(
     val userOrganizations by UserOrganizationEntity referrersOn UserOrganizationTable.userId
     val bookings by BookingEntity referrersOn BookingTable.creatorId
     val custodies by BookingEntity optionalReferrersOn BookingTable.custodianUserId
+    val approvedBookings by BookingEntity optionalReferrersOn BookingTable.approvedById
     val createdKits by KitEntity referrersOn KitTable.createdById
     var tierId by UserTable.tierId
     var tier by TierEntity referencedOn UserTable.tierId

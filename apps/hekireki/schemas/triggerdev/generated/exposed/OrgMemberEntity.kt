@@ -17,6 +17,12 @@ class OrgMemberEntity(
     var user by UserEntity referencedOn OrgMemberTable.userId
     var userId by OrgMemberTable.userId
     var role by OrgMemberTable.role
+
+    /** Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded. */
+    var invitedById by OrgMemberTable.invitedById
+
+    /** How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded. */
+    var joinMethod by OrgMemberTable.joinMethod
     var createdAt by OrgMemberTable.createdAt
     var updatedAt by OrgMemberTable.updatedAt
     val environments by RuntimeEnvironmentEntity optionalReferrersOn RuntimeEnvironmentTable.orgMemberId

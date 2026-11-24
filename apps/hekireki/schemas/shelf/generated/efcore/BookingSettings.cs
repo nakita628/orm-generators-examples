@@ -23,6 +23,10 @@ public partial class BookingSettings
 
     public bool AutoArchiveExpiredReservations { get; set; } = false;
 
+    public bool RequireApprovalForBase { get; set; } = false;
+
+    public bool RequireApprovalForSelfService { get; set; } = false;
+
     public bool RequireExplicitCheckinForAdmin { get; set; } = false;
 
     public bool RequireExplicitCheckinForSelfService { get; set; } = false;

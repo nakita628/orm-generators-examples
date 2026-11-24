@@ -401,6 +401,14 @@ class Response(Base):
     and surfacing that in the UI (v2) would have nothing to read.
     [ResponseIngestFlags]
     """
+    cal_bookings: Mapped[Optional[dict[str, Any]]] = mapped_column("cal_bookings_by_question_id", JSONB(none_as_null=True))
+    """What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+    keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+    every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+    `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+    never accepted as a field of its own.
+    [ResponseCalBookings]
+    """
     outcome: Mapped[Optional[str]] = mapped_column(Enum("lowQuality", name="ResponseOutcome"))
     """A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
     export by default and from Feedback Records, and nothing else: it is never deleted and every
@@ -935,6 +943,7 @@ class Workspace(Base):
     feedback_directory_workspaces: Mapped[list["FeedbackDirectoryWorkspace"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
     charts: Mapped[list["Chart"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
     dashboards: Mapped[list["Dashboard"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
+    embedded_field_labels: Mapped[list["EmbeddedFieldLabel"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
     creatives: Mapped[list["Creative"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="creatives,survey", back_populates="workspace")
     attachment_exports: Mapped[list["AttachmentExport"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="attachment_exports,survey", back_populates="workspace")
     surveys: Mapped[list["Survey"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
@@ -949,6 +958,7 @@ class Workspace(Base):
     feedback_sources: Mapped[list["FeedbackSource"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="feedback_directory_workspace,feedback_sources", back_populates="workspace")
     workflows: Mapped[list["Workflow"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
     workflow_runs: Mapped[list["WorkflowRun"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="runs,workflow", back_populates="workspace")
+    mcp_grants: Mapped[list["McpGrantWorkspace"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workspace")
 
 class Organization(Base):
     """Represents the top-level organizational hierarchy in Formbricks.
@@ -986,6 +996,7 @@ class Organization(Base):
     retention_exemptions: Mapped[list["RetentionExemption"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     retention_runs: Mapped[list["RetentionRun"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     retention_notices: Mapped[list["RetentionNotice"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
+    mcp_grants: Mapped[list["McpGrantOrganization"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     billing: Mapped[Optional["OrganizationBilling"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
 
 class OrganizationBilling(Base):
@@ -1346,6 +1357,7 @@ class OauthClient(Base):
     refresh_tokens: Mapped[list["OauthRefreshToken"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="client")
     consents: Mapped[list["OauthConsent"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="client")
     resources: Mapped[list["OauthClientResource"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="client")
+    mcp_grants: Mapped[list["McpGrant"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="client")
 
 class OauthAccessToken(Base):
     """Better Auth opaque access token records. The token column stores Better Auth's hashed lookup value.
@@ -1453,13 +1465,77 @@ class OauthConsent(Base):
     client: Mapped["OauthClient"] = relationship(back_populates="consents")
     user: Mapped[Optional["User"]] = relationship(back_populates="oauth_consents")
 
-class OauthResource(Base):
+class McpGrant(Base):
     """Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
     its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
     a token is now bound to the resource it was approved for instead of to a static allow-list.
     `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+    What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+    access and an access level per permission. One per OAuth connection, keyed by user and client rather
+    than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+    and settles them later. Every MCP request reads it; without one the request is refused. The client's
+    OAuth scopes stay on the consent and cap it.
     """
 
+    __tablename__ = "McpGrant"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
+    user_id: Mapped[str] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="McpGrant_userId_fkey"))
+    client_id: Mapped[str] = mapped_column("clientId", ForeignKey("oauthClient.clientId", ondelete="CASCADE", onupdate="CASCADE", name="McpGrant_clientId_fkey"))
+    access: Mapped[str] = mapped_column(Enum("all", "organizations", "workspaces", name="McpGrantAccess"), default="all", server_default=text("'all'"))
+    """Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+    in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+    `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
+    """
+    permissions: Mapped[dict[str, Any]] = mapped_column(JSONB, default=lambda: {}, server_default=text("'{}'"))
+    """The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+    A permission that is absent has No access.
+    """
+
+    __table_args__ = (
+        Index("McpGrant_clientId_idx", "clientId"),
+        Index("McpGrant_userId_clientId_key", "userId", "clientId", unique=True),
+    )
+
+    user: Mapped["User"] = relationship(back_populates="mcp_grants")
+    client: Mapped["OauthClient"] = relationship(back_populates="mcp_grants")
+    organizations: Mapped[list["McpGrantOrganization"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="grant")
+    """The selections behind `organizations` and `workspaces` access (ENG-7153)."""
+    workspaces: Mapped[list["McpGrantWorkspace"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="grant")
+
+class McpGrantOrganization(Base):
+    """An organization a grant with `organizations` access reaches, workspaces created there later included."""
+
+    __tablename__ = "McpGrantOrganization"
+
+    grant_id: Mapped[str] = mapped_column("grantId", ForeignKey("McpGrant.id", ondelete="CASCADE", onupdate="CASCADE", name="McpGrantOrganization_grantId_fkey"), primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="McpGrantOrganization_organizationId_fkey"), primary_key=True)
+
+    __table_args__ = (
+        Index("McpGrantOrganization_organizationId_idx", "organizationId"),
+    )
+
+    grant: Mapped["McpGrant"] = relationship(back_populates="organizations")
+    organization: Mapped["Organization"] = relationship(back_populates="mcp_grants")
+
+class McpGrantWorkspace(Base):
+    """A workspace a grant with `workspaces` access reaches."""
+
+    __tablename__ = "McpGrantWorkspace"
+
+    grant_id: Mapped[str] = mapped_column("grantId", ForeignKey("McpGrant.id", ondelete="CASCADE", onupdate="CASCADE", name="McpGrantWorkspace_grantId_fkey"), primary_key=True)
+    workspace_id: Mapped[str] = mapped_column("workspaceId", ForeignKey("Workspace.id", ondelete="CASCADE", onupdate="CASCADE", name="McpGrantWorkspace_workspaceId_fkey"), primary_key=True)
+
+    __table_args__ = (
+        Index("McpGrantWorkspace_workspaceId_idx", "workspaceId"),
+    )
+
+    grant: Mapped["McpGrant"] = relationship(back_populates="workspaces")
+    workspace: Mapped["Workspace"] = relationship(back_populates="mcp_grants")
+
+class OauthResource(Base):
     __tablename__ = "oauthResource"
 
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
@@ -1602,6 +1678,7 @@ class User(Base):
     oauth_access_tokens: Mapped[list["OauthAccessToken"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     oauth_refresh_tokens: Mapped[list["OauthRefreshToken"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     oauth_consents: Mapped[list["OauthConsent"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
+    mcp_grants: Mapped[list["McpGrant"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     invites_created: Mapped[list["Invite"]] = relationship(foreign_keys="Invite.creator_id", passive_deletes="all", back_populates="creator")
     invites_accepted: Mapped[list["Invite"]] = relationship(foreign_keys="Invite.acceptor_id", cascade="all, delete", passive_deletes=True, back_populates="acceptor")
     surveys: Mapped[list["Survey"]] = relationship(foreign_keys="Survey.created_by", back_populates="creator")
@@ -1905,6 +1982,31 @@ class Chart(Base):
     creator: Mapped[Optional["User"]] = relationship(back_populates="charts")
     feedback_directory: Mapped["FeedbackDirectory"] = relationship(back_populates="charts")
     widgets: Mapped[list["DashboardWidget"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="chart")
+
+class EmbeddedFieldLabel(Base):
+    """A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+    place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+    workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+    are never renamed here: they keep their translated names.
+
+    @property key - The embedded-data key exactly as collected, case included
+    @property label - The name shown for the key across the workspace
+    """
+
+    __tablename__ = "EmbeddedFieldLabel"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
+    workspace_id: Mapped[str] = mapped_column("workspaceId", ForeignKey("Workspace.id", ondelete="CASCADE", onupdate="CASCADE", name="EmbeddedFieldLabel_workspaceId_fkey"))
+    key: Mapped[str]
+    label: Mapped[str]
+
+    __table_args__ = (
+        Index("EmbeddedFieldLabel_workspaceId_key_key", "workspaceId", "key", unique=True),
+    )
+
+    workspace: Mapped["Workspace"] = relationship(back_populates="embedded_field_labels")
 
 class Dashboard(Base):
     """Represents a dashboard containing multiple charts.
@@ -2523,6 +2625,11 @@ class Workflow(Base):
     created_by: Mapped[Optional[str]] = mapped_column("createdBy", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Workflow_createdBy_fkey"))
     definition: Mapped[dict[str, Any]] = mapped_column(JSONB)
     """[WorkflowDefinition]"""
+    webhook_token_hash: Mapped[Optional[str]] = mapped_column("webhookTokenHash")
+    """Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+    the editor can show the URL again. Never part of the definition, its versions or its copies.
+    """
+    webhook_token_encrypted: Mapped[Optional[str]] = mapped_column("webhookTokenEncrypted")
 
     __table_args__ = (
         Index("Workflow_workspaceId_status_idx", "workspaceId", "status"),
@@ -2534,6 +2641,8 @@ class Workflow(Base):
     creator: Mapped[Optional["User"]] = relationship(back_populates="workflows")
     versions: Mapped[list["WorkflowVersion"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workflow")
     runs: Mapped[list["WorkflowRun"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="workflow_runs,workspace", back_populates="workflow")
+    secrets: Mapped[list["WorkflowSecret"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workflow")
+    samples: Mapped[list["WorkflowSample"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="workflow")
 
 class WorkflowVersion(Base):
     __tablename__ = "WorkflowVersion"
@@ -2584,6 +2693,20 @@ class WorkflowRun(Base):
     dispatched_at: Mapped[Optional[datetime]] = mapped_column("dispatchedAt")
     started_at: Mapped[Optional[datetime]] = mapped_column("startedAt")
     finished_at: Mapped[Optional[datetime]] = mapped_column("finishedAt")
+    caller_ip: Mapped[Optional[str]] = mapped_column("callerIp")
+    """The caller's IP for a run started by a Webhook Secret URL call; shown in run detail."""
+    content_deleted_at: Mapped[Optional[datetime]] = mapped_column("contentDeletedAt")
+    """When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+    input, output and errors, the run error and the caller IP. Null while the content is kept.
+    """
+    content_retention_days: Mapped[Optional[int]] = mapped_column("contentRetentionDays")
+    """The retention period in days that applied when the content was cleared ("Details deleted after N days")."""
+    test_run_definition: Mapped[Optional[dict[str, Any]]] = mapped_column("testRunDefinition", JSONB(none_as_null=True))
+    """The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+    changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+    existed. Configuration like a version's definition, not run content: retention leaves it alone.
+    [WorkflowExecutableDefinition]
+    """
 
     __table_args__ = (
         Index("WorkflowRun_workspaceId_created_at_idx", "workspaceId", "created_at"),
@@ -2591,7 +2714,9 @@ class WorkflowRun(Base):
         Index("WorkflowRun_status_created_at_idx", "status", "created_at"),
         Index("WorkflowRun_responseId_idx", "responseId"),
         Index("WorkflowRun_isDryRun_idx", "isDryRun"),
+        Index("WorkflowRun_isDryRun_created_at_idx", "isDryRun", "created_at"),
         Index("WorkflowRun_nextAttemptAt_idx", "nextAttemptAt"),
+        Index("WorkflowRun_contentDeletedAt_finishedAt_idx", "contentDeletedAt", "finishedAt"),
         Index("WorkflowRun_workflowId_idempotencyKey_key", "workflowId", "idempotencyKey", unique=True),
         ForeignKeyConstraint(["workflowId", "workspaceId"], ["Workflow.id", "Workflow.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="WorkflowRun_workflowId_workspaceId_fkey"),
     )
@@ -2601,6 +2726,34 @@ class WorkflowRun(Base):
     workflow_version: Mapped[Optional["WorkflowVersion"]] = relationship(back_populates="runs")
     response: Mapped[Optional["Response"]] = relationship(back_populates="workflow_runs")
     logs: Mapped[list["WorkflowRunLog"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="run")
+
+class WorkflowSample(Base):
+    """Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+    trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+    Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+    """
+
+    __tablename__ = "WorkflowSample"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
+    workflow_id: Mapped[str] = mapped_column("workflowId")
+    workspace_id: Mapped[str] = mapped_column("workspaceId")
+    source: Mapped[str]
+    sample: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    """[WorkflowSampleData]"""
+    last_called_at: Mapped[Optional[datetime]] = mapped_column("lastCalledAt")
+    last_caller_ip: Mapped[Optional[str]] = mapped_column("lastCallerIp")
+
+    __table_args__ = (
+        Index("WorkflowSample_workflowId_workspaceId_idx", "workflowId", "workspaceId"),
+        Index("WorkflowSample_updated_at_idx", "updated_at"),
+        Index("WorkflowSample_workflowId_source_key", "workflowId", "source", unique=True),
+        ForeignKeyConstraint(["workflowId", "workspaceId"], ["Workflow.id", "Workflow.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="WorkflowSample_workflowId_workspaceId_fkey"),
+    )
+
+    workflow: Mapped["Workflow"] = relationship(back_populates="samples")
 
 class WorkflowRunLog(Base):
     __tablename__ = "WorkflowRunLog"
@@ -2621,7 +2774,37 @@ class WorkflowRunLog(Base):
 
     __table_args__ = (
         Index("WorkflowRunLog_runId_sequence_idx", "runId", "sequence"),
+        Index("WorkflowRunLog_status_startedAt_idx", "status", "startedAt"),
         Index("WorkflowRunLog_runId_stepId_key", "runId", "stepId", unique=True),
     )
 
     run: Mapped["WorkflowRun"] = relationship(back_populates="logs")
+
+class WorkflowSecret(Base):
+    """Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+    store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+    version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+    with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+    """
+
+    __tablename__ = "WorkflowSecret"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid2.create_id())
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
+    workflow_id: Mapped[str] = mapped_column("workflowId")
+    workspace_id: Mapped[str] = mapped_column("workspaceId")
+    value: Mapped[str]
+    """`symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned."""
+    bound_origin: Mapped[Optional[str]] = mapped_column("boundOrigin")
+    """Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
+    sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
+    until it is set again.
+    """
+
+    __table_args__ = (
+        Index("WorkflowSecret_workflowId_workspaceId_idx", "workflowId", "workspaceId"),
+        ForeignKeyConstraint(["workflowId", "workspaceId"], ["Workflow.id", "Workflow.workspaceId"], ondelete="CASCADE", onupdate="CASCADE", name="WorkflowSecret_workflowId_workspaceId_fkey"),
+    )
+
+    workflow: Mapped["Workflow"] = relationship(back_populates="secrets")

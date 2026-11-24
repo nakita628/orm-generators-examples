@@ -10,13 +10,19 @@ CREATE SCHEMA IF NOT EXISTS "public";
 
 CREATE TYPE "ApiKeyScope" AS ENUM ('ORGANIZATION', 'PROJECT', 'USER');
 
-CREATE TYPE "SystemRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER', 'NONE', 'LEGACY_PROJECT_API_KEY', 'LEGACY_ORGANIZATION_API_KEY', 'SCORES_INGEST', 'INGEST', 'AI_GATEWAY');
+CREATE TYPE "SystemRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER', 'NONE', 'LEGACY_PROJECT_API_KEY', 'LEGACY_ORGANIZATION_API_KEY', 'SCORES_INGEST', 'INGEST', 'AI_GATEWAY', 'AI_GATEWAY_INFERENCE', 'APPLICATION');
 
 CREATE TYPE "GatewayIngestionMode" AS ENUM ('none', 'usage', 'full');
 
 CREATE TYPE "GatewayProvider" AS ENUM ('openai', 'anthropic', 'bedrock', 'openrouter', 'xai', 'vercel', 'azure', 'google_ai_studio', 'vertex');
 
 CREATE TYPE "GatewayConnectionStatus" AS ENUM ('enabled', 'disabled', 'error');
+
+CREATE TYPE "GatewaySpendLimitScope" AS ENUM ('API_KEY', 'USER', 'API_KEY_DEFAULT', 'USER_DEFAULT', 'ORGANIZATION');
+
+CREATE TYPE "GatewaySpendLimitInterval" AS ENUM ('DAILY', 'WEEKLY', 'MONTHLY', 'TOTAL');
+
+CREATE TYPE "GatewaySpendLimitAlertType" AS ENUM ('WARNING', 'EXCEEDED');
 
 CREATE TYPE "InAppAgentConversationVisibilityScope" AS ENUM ('PERSONAL', 'PROJECT');
 
@@ -35,6 +41,8 @@ CREATE TYPE "CommentObjectType" AS ENUM ('TRACE', 'OBSERVATION', 'SESSION', 'PRO
 CREATE TYPE "NotificationChannel" AS ENUM ('EMAIL');
 
 CREATE TYPE "NotificationType" AS ENUM ('COMMENT_MENTION');
+
+CREATE TYPE "ModelScope" AS ENUM ('LANGFUSE', 'ORGANIZATION', 'PROJECT');
 
 CREATE TYPE "AuditLogRecordType" AS ENUM ('USER', 'API_KEY');
 
@@ -73,6 +81,8 @@ CREATE TYPE "DashboardWidgetChartType" AS ENUM ('LINE_TIME_SERIES', 'AREA_TIME_S
 CREATE TYPE "SessionViewMode" AS ENUM ('conversational', 'list');
 
 CREATE TYPE "SessionUnmatchedTraces" AS ENUM ('show', 'hide');
+
+CREATE TYPE "SessionViewOwnership" AS ENUM ('PRIVATE', 'PROJECT');
 
 CREATE TYPE "ActionType" AS ENUM ('WEBHOOK', 'SLACK', 'GITHUB_DISPATCH', 'PAGERDUTY');
 
@@ -208,6 +218,8 @@ CREATE TABLE "role_assignments" (
     "api_key_id" TEXT,
     "role_id" TEXT NOT NULL,
     "system_role" "SystemRole" NOT NULL,
+    "expires_at" TIMESTAMP(3),
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "owner_org_id" TEXT,
@@ -255,6 +267,36 @@ CREATE TABLE "gateway_api_key_associations" (
     "allowed_models" JSONB,
 
     CONSTRAINT "gateway_api_key_associations_pkey" PRIMARY KEY ("api_key_id")
+);
+
+CREATE TABLE "gateway_spend_limits" (
+    "id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "scope" "GatewaySpendLimitScope" NOT NULL,
+    "api_key_id" TEXT,
+    "user_id" TEXT,
+    "interval" "GatewaySpendLimitInterval" NOT NULL,
+    "limit_usd" DECIMAL(65,30) NOT NULL,
+    "alert_thresholds" INTEGER[] DEFAULT ARRAY[100]::INTEGER[],
+    "counting_started_at" TIMESTAMP(3) NOT NULL,
+    "owner_user_id" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_spend_limits_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "gateway_spend_limit_alerts" (
+    "id" TEXT NOT NULL,
+    "spend_limit_id" TEXT NOT NULL,
+    "subject_id" TEXT NOT NULL DEFAULT '',
+    "type" "GatewaySpendLimitAlertType" NOT NULL,
+    "threshold_percent" INTEGER NOT NULL DEFAULT 100,
+    "counting_started_at" TIMESTAMP(3) NOT NULL,
+    "window_start" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_spend_limit_alerts_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "in_app_agent_conversations" (
@@ -347,6 +389,7 @@ CREATE TABLE "llm_api_keys" (
     "extra_headers" TEXT,
     "extra_header_keys" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "config" JSONB,
+    "external_id" TEXT,
     "project_id" TEXT,
     "organization_id" TEXT,
 
@@ -422,6 +465,7 @@ CREATE TABLE "annotation_queues" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "score_config_ids" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "session_view_id" TEXT,
     "project_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -646,7 +690,9 @@ CREATE TABLE "models" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "scope" "ModelScope" NOT NULL,
     "project_id" TEXT,
+    "organization_id" TEXT,
     "model_name" TEXT NOT NULL,
     "match_pattern" TEXT NOT NULL,
     "start_date" TIMESTAMP(3),
@@ -1204,6 +1250,7 @@ CREATE TABLE "table_view_presets" (
 );
 
 CREATE TABLE "session_views" (
+    "ownership" "SessionViewOwnership" NOT NULL DEFAULT 'PROJECT',
     "is_pinned_by_default_for_project" BOOLEAN NOT NULL DEFAULT false,
     "id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
@@ -1447,6 +1494,8 @@ CREATE INDEX "role_assignments_user_id_idx" ON "role_assignments"("user_id");
 
 CREATE INDEX "role_assignments_api_key_id_idx" ON "role_assignments"("api_key_id");
 
+CREATE INDEX "role_assignments_tags_idx" ON "role_assignments" USING GIN ("tags" array_ops);
+
 CREATE UNIQUE INDEX "role_assignments_user_org_role_key" ON "role_assignments"("principal_user_id", "owner_org_id", "system_role");
 
 CREATE UNIQUE INDEX "role_assignments_user_project_role_key" ON "role_assignments"("principal_user_id", "owner_project_id", "system_role");
@@ -1462,6 +1511,16 @@ CREATE INDEX "gateway_ai_conn_org_created_at_id_idx" ON "gateway_ai_connections"
 CREATE INDEX "gateway_ai_conn_org_status_created_at_id_idx" ON "gateway_ai_connections"("organization_id", "status", "created_at", "id");
 
 CREATE UNIQUE INDEX "gateway_ai_connections_organization_id_name_key" ON "gateway_ai_connections"("organization_id", "name");
+
+CREATE INDEX "gateway_spend_limits_organization_id_idx" ON "gateway_spend_limits"("organization_id");
+
+CREATE INDEX "gateway_spend_limits_user_id_idx" ON "gateway_spend_limits"("user_id");
+
+CREATE UNIQUE INDEX "gateway_spend_limits_api_key_id_interval_key" ON "gateway_spend_limits"("api_key_id", "interval");
+
+CREATE UNIQUE INDEX "gateway_spend_limits_organization_id_user_id_interval_key" ON "gateway_spend_limits"("organization_id", "user_id", "interval");
+
+CREATE UNIQUE INDEX "gateway_spend_limit_alerts_limit_type_counting_window_key" ON "gateway_spend_limit_alerts"("spend_limit_id", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start");
 
 CREATE INDEX "in_app_agent_conversations_project_user_list_idx" ON "in_app_agent_conversations"("project_id", "created_by_user_id", "deleted_at", "updated_at", "id");
 
@@ -1520,6 +1579,8 @@ CREATE UNIQUE INDEX "score_configs_id_project_id_key" ON "score_configs"("id", "
 CREATE INDEX "annotation_queues_id_project_id_idx" ON "annotation_queues"("id", "project_id");
 
 CREATE INDEX "annotation_queues_project_id_created_at_idx" ON "annotation_queues"("project_id", "created_at");
+
+CREATE INDEX "annotation_queues_project_id_session_view_id_idx" ON "annotation_queues"("project_id", "session_view_id");
 
 CREATE UNIQUE INDEX "annotation_queues_project_id_name_key" ON "annotation_queues"("project_id", "name");
 
@@ -1602,6 +1663,8 @@ CREATE UNIQUE INDEX "skill_files_project_id_skill_id_path_key" ON "skill_files"(
 CREATE UNIQUE INDEX "skill_blobs_project_id_sha_256_hash_key" ON "skill_blobs"("project_id", "sha_256_hash");
 
 CREATE INDEX "models_model_name_idx" ON "models"("model_name");
+
+CREATE INDEX "models_scope_idx" ON "models"("scope");
 
 CREATE UNIQUE INDEX "models_project_id_model_name_start_date_unit_key" ON "models"("project_id", "model_name", "start_date", "unit");
 
@@ -1709,8 +1772,6 @@ CREATE UNIQUE INDEX "llm_tools_project_id_name_key" ON "llm_tools"("project_id",
 
 CREATE UNIQUE INDEX "table_view_presets_project_id_table_name_name_key" ON "table_view_presets"("project_id", "table_name", "name");
 
-CREATE UNIQUE INDEX "session_views_project_id_name_key" ON "session_views"("project_id", "name");
-
 CREATE UNIQUE INDEX "session_views_project_id_id_key" ON "session_views"("project_id", "id");
 
 CREATE INDEX "session_view_pin_overrides_user_id_idx" ON "session_view_pin_overrides"("user_id");
@@ -1799,6 +1860,16 @@ ALTER TABLE "gateway_ai_connections" ADD CONSTRAINT "gateway_ai_connections_orga
 
 ALTER TABLE "gateway_api_key_associations" ADD CONSTRAINT "gateway_api_key_associations_api_key_id_fkey" FOREIGN KEY ("api_key_id") REFERENCES "api_keys"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_api_key_id_fkey" FOREIGN KEY ("api_key_id") REFERENCES "api_keys"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_owner_user_id_fkey" FOREIGN KEY ("owner_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limit_alerts" ADD CONSTRAINT "gateway_spend_limit_alerts_spend_limit_id_fkey" FOREIGN KEY ("spend_limit_id") REFERENCES "gateway_spend_limits"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "in_app_agent_conversations" ADD CONSTRAINT "in_app_agent_conversations_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "in_app_agent_conversations" ADD CONSTRAINT "in_app_agent_conversations_created_by_user_id_fkey" FOREIGN KEY ("created_by_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -1842,6 +1913,8 @@ ALTER TABLE "membership_invitations" ADD CONSTRAINT "membership_invitations_invi
 ALTER TABLE "trace_sessions" ADD CONSTRAINT "trace_sessions_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "score_configs" ADD CONSTRAINT "score_configs_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "annotation_queues" ADD CONSTRAINT "annotation_queues_project_id_session_view_id_fkey" FOREIGN KEY ("project_id", "session_view_id") REFERENCES "session_views"("project_id", "id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE "annotation_queues" ADD CONSTRAINT "annotation_queues_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1896,6 +1969,8 @@ ALTER TABLE "skill_files" ADD CONSTRAINT "skill_files_blob_id_fkey" FOREIGN KEY 
 ALTER TABLE "skill_blobs" ADD CONSTRAINT "skill_blobs_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "models" ADD CONSTRAINT "models_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "models" ADD CONSTRAINT "models_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "prices" ADD CONSTRAINT "prices_model_id_fkey" FOREIGN KEY ("model_id") REFERENCES "models"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -2050,93 +2125,95 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 
 ## Contents
 
-| Model                                                                         | Table                                   | Description |
-| ----------------------------------------------------------------------------- | --------------------------------------- | ----------- |
-| [Account](#model-Account)                                                     | `Account`                               |             |
-| [Session](#model-Session)                                                     | `Session`                               |             |
-| [User](#model-User)                                                           | `users`                                 |             |
-| [VerificationToken](#model-VerificationToken)                                 | `verification_tokens`                   |             |
-| [Organization](#model-Organization)                                           | `organizations`                         |             |
-| [Project](#model-Project)                                                     | `projects`                              |             |
-| [ApiKey](#model-ApiKey)                                                       | `api_keys`                              |             |
-| [RoleAssignment](#model-RoleAssignment)                                       | `role_assignments`                      |             |
-| [GatewayConfig](#model-GatewayConfig)                                         | `gateway_configs`                       |             |
-| [GatewayAiConnection](#model-GatewayAiConnection)                             | `gateway_ai_connections`                |             |
-| [GatewayApiKeyAssociation](#model-GatewayApiKeyAssociation)                   | `gateway_api_key_associations`          |             |
-| [InAppAgentConversation](#model-InAppAgentConversation)                       | `in_app_agent_conversations`            |             |
-| [InAppAgentEvent](#model-InAppAgentEvent)                                     | `in_app_agent_events`                   |             |
-| [InAppAgentRun](#model-InAppAgentRun)                                         | `in_app_agent_runs`                     |             |
-| [InAppAgentPendingToolApproval](#model-InAppAgentPendingToolApproval)         | `in_app_agent_pending_tool_approvals`   |             |
-| [BackgroundMigration](#model-BackgroundMigration)                             | `background_migrations`                 |             |
-| [LlmApiKeys](#model-LlmApiKeys)                                               | `llm_api_keys`                          |             |
-| [OrganizationMembership](#model-OrganizationMembership)                       | `organization_memberships`              |             |
-| [ProjectMembership](#model-ProjectMembership)                                 | `project_memberships`                   |             |
-| [MembershipInvitation](#model-MembershipInvitation)                           | `membership_invitations`                |             |
-| [TraceSession](#model-TraceSession)                                           | `trace_sessions`                        |             |
-| [ScoreConfig](#model-ScoreConfig)                                             | `score_configs`                         |             |
-| [AnnotationQueue](#model-AnnotationQueue)                                     | `annotation_queues`                     |             |
-| [AnnotationQueueItem](#model-AnnotationQueueItem)                             | `annotation_queue_items`                |             |
-| [AnnotationQueueAssignment](#model-AnnotationQueueAssignment)                 | `annotation_queue_assignments`          |             |
-| [CronJobs](#model-CronJobs)                                                   | `cron_jobs`                             |             |
-| [Dataset](#model-Dataset)                                                     | `datasets`                              |             |
-| [DatasetItem](#model-DatasetItem)                                             | `dataset_items`                         |             |
-| [DatasetRuns](#model-DatasetRuns)                                             | `dataset_runs`                          |             |
-| [Comment](#model-Comment)                                                     | `comments`                              |             |
-| [CommentReaction](#model-CommentReaction)                                     | `comment_reactions`                     |             |
-| [NotificationPreference](#model-NotificationPreference)                       | `notification_preferences`              |             |
-| [Prompt](#model-Prompt)                                                       | `prompts`                               |             |
-| [PromptDependency](#model-PromptDependency)                                   | `prompt_dependencies`                   |             |
-| [PromptProtectedLabels](#model-PromptProtectedLabels)                         | `prompt_protected_labels`               |             |
-| [Skill](#model-Skill)                                                         | `skills`                                |             |
-| [SkillFile](#model-SkillFile)                                                 | `skill_files`                           |             |
-| [SkillBlob](#model-SkillBlob)                                                 | `skill_blobs`                           |             |
-| [Model](#model-Model)                                                         | `models`                                |             |
-| [Price](#model-Price)                                                         | `prices`                                |             |
-| [PricingTier](#model-PricingTier)                                             | `pricing_tiers`                         |             |
-| [AuditLog](#model-AuditLog)                                                   | `audit_logs`                            |             |
-| [AuditLogStaging](#model-AuditLogStaging)                                     | `audit_log_staging`                     |             |
-| [EvalTemplate](#model-EvalTemplate)                                           | `eval_templates`                        |             |
-| [Evaluator](#model-Evaluator)                                                 | `evaluators`                            |             |
-| [EvaluatorVersion](#model-EvaluatorVersion)                                   | `evaluator_versions`                    |             |
-| [JobConfiguration](#model-JobConfiguration)                                   | `job_configurations`                    |             |
-| [EvaluationRule](#model-EvaluationRule)                                       | `evaluation_rules`                      |             |
-| [TracingReadinessSettings](#model-TracingReadinessSettings)                   | `tracing_readiness_settings`            |             |
-| [EvaluationRuleEvaluatorAssignment](#model-EvaluationRuleEvaluatorAssignment) | `evaluation_rule_evaluator_assignments` |             |
-| [JobExecution](#model-JobExecution)                                           | `job_executions`                        |             |
-| [DefaultLlmModel](#model-DefaultLlmModel)                                     | `default_llm_models`                    |             |
-| [TopicConfig](#model-TopicConfig)                                             | `topic_configs`                         |             |
-| [SsoConfig](#model-SsoConfig)                                                 | `sso_configs`                           |             |
-| [VerifiedDomain](#model-VerifiedDomain)                                       | `verified_domains`                      |             |
-| [PosthogIntegration](#model-PosthogIntegration)                               | `posthog_integrations`                  |             |
-| [MixpanelIntegration](#model-MixpanelIntegration)                             | `mixpanel_integrations`                 |             |
-| [BlobStorageIntegration](#model-BlobStorageIntegration)                       | `blob_storage_integrations`             |             |
-| [ExternalMediaStorageIntegration](#model-ExternalMediaStorageIntegration)     | `external_media_storage_integrations`   |             |
-| [WebCalloutEndpoint](#model-WebCalloutEndpoint)                               | `web_callout_endpoints`                 |             |
-| [BatchExport](#model-BatchExport)                                             | `batch_exports`                         |             |
-| [BatchAction](#model-BatchAction)                                             | `batch_actions`                         |             |
-| [Media](#model-Media)                                                         | `media`                                 |             |
-| [TraceMedia](#model-TraceMedia)                                               | `trace_media`                           |             |
-| [ObservationMedia](#model-ObservationMedia)                                   | `observation_media`                     |             |
-| [DatasetItemMedia](#model-DatasetItemMedia)                                   | `dataset_item_media`                    |             |
-| [BillingMeterBackup](#model-BillingMeterBackup)                               | `billing_meter_backups`                 |             |
-| [LlmSchema](#model-LlmSchema)                                                 | `llm_schemas`                           |             |
-| [LlmTool](#model-LlmTool)                                                     | `llm_tools`                             |             |
-| [Dashboard](#model-Dashboard)                                                 | `dashboards`                            |             |
-| [DashboardWidget](#model-DashboardWidget)                                     | `dashboard_widgets`                     |             |
-| [TableViewPreset](#model-TableViewPreset)                                     | `table_view_presets`                    |             |
-| [SessionView](#model-SessionView)                                             | `session_views`                         |             |
-| [SessionViewPinOverride](#model-SessionViewPinOverride)                       | `session_view_pin_overrides`            |             |
-| [DefaultView](#model-DefaultView)                                             | `default_views`                         |             |
-| [Action](#model-Action)                                                       | `actions`                               |             |
-| [Trigger](#model-Trigger)                                                     | `triggers`                              |             |
-| [Automation](#model-Automation)                                               | `automations`                           |             |
-| [AutomationExecution](#model-AutomationExecution)                             | `automation_executions`                 |             |
-| [Monitor](#model-Monitor)                                                     | `monitors`                              |             |
-| [SlackIntegration](#model-SlackIntegration)                                   | `slack_integrations`                    |             |
-| [PendingDeletion](#model-PendingDeletion)                                     | `pending_deletions`                     |             |
-| [Survey](#model-Survey)                                                       | `surveys`                               |             |
-| [CloudSpendAlert](#model-CloudSpendAlert)                                     | `cloud_spend_alerts`                    |             |
-| [TopicClusteringRun](#model-TopicClusteringRun)                               | `topic_clustering_runs`                 |             |
+| Model                                                                         | Table                                   | Description                                                                                                                                   |
+| ----------------------------------------------------------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Account](#model-Account)                                                     | `Account`                               |                                                                                                                                               |
+| [Session](#model-Session)                                                     | `Session`                               |                                                                                                                                               |
+| [User](#model-User)                                                           | `users`                                 |                                                                                                                                               |
+| [VerificationToken](#model-VerificationToken)                                 | `verification_tokens`                   |                                                                                                                                               |
+| [Organization](#model-Organization)                                           | `organizations`                         |                                                                                                                                               |
+| [Project](#model-Project)                                                     | `projects`                              |                                                                                                                                               |
+| [ApiKey](#model-ApiKey)                                                       | `api_keys`                              |                                                                                                                                               |
+| [RoleAssignment](#model-RoleAssignment)                                       | `role_assignments`                      |                                                                                                                                               |
+| [GatewayConfig](#model-GatewayConfig)                                         | `gateway_configs`                       |                                                                                                                                               |
+| [GatewayAiConnection](#model-GatewayAiConnection)                             | `gateway_ai_connections`                |                                                                                                                                               |
+| [GatewayApiKeyAssociation](#model-GatewayApiKeyAssociation)                   | `gateway_api_key_associations`          |                                                                                                                                               |
+| [GatewaySpendLimit](#model-GatewaySpendLimit)                                 | `gateway_spend_limits`                  |                                                                                                                                               |
+| [GatewaySpendLimitAlert](#model-GatewaySpendLimitAlert)                       | `gateway_spend_limit_alerts`            | One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times. |
+| [InAppAgentConversation](#model-InAppAgentConversation)                       | `in_app_agent_conversations`            |                                                                                                                                               |
+| [InAppAgentEvent](#model-InAppAgentEvent)                                     | `in_app_agent_events`                   |                                                                                                                                               |
+| [InAppAgentRun](#model-InAppAgentRun)                                         | `in_app_agent_runs`                     |                                                                                                                                               |
+| [InAppAgentPendingToolApproval](#model-InAppAgentPendingToolApproval)         | `in_app_agent_pending_tool_approvals`   |                                                                                                                                               |
+| [BackgroundMigration](#model-BackgroundMigration)                             | `background_migrations`                 |                                                                                                                                               |
+| [LlmApiKeys](#model-LlmApiKeys)                                               | `llm_api_keys`                          |                                                                                                                                               |
+| [OrganizationMembership](#model-OrganizationMembership)                       | `organization_memberships`              |                                                                                                                                               |
+| [ProjectMembership](#model-ProjectMembership)                                 | `project_memberships`                   |                                                                                                                                               |
+| [MembershipInvitation](#model-MembershipInvitation)                           | `membership_invitations`                |                                                                                                                                               |
+| [TraceSession](#model-TraceSession)                                           | `trace_sessions`                        |                                                                                                                                               |
+| [ScoreConfig](#model-ScoreConfig)                                             | `score_configs`                         |                                                                                                                                               |
+| [AnnotationQueue](#model-AnnotationQueue)                                     | `annotation_queues`                     |                                                                                                                                               |
+| [AnnotationQueueItem](#model-AnnotationQueueItem)                             | `annotation_queue_items`                |                                                                                                                                               |
+| [AnnotationQueueAssignment](#model-AnnotationQueueAssignment)                 | `annotation_queue_assignments`          |                                                                                                                                               |
+| [CronJobs](#model-CronJobs)                                                   | `cron_jobs`                             |                                                                                                                                               |
+| [Dataset](#model-Dataset)                                                     | `datasets`                              |                                                                                                                                               |
+| [DatasetItem](#model-DatasetItem)                                             | `dataset_items`                         |                                                                                                                                               |
+| [DatasetRuns](#model-DatasetRuns)                                             | `dataset_runs`                          |                                                                                                                                               |
+| [Comment](#model-Comment)                                                     | `comments`                              |                                                                                                                                               |
+| [CommentReaction](#model-CommentReaction)                                     | `comment_reactions`                     |                                                                                                                                               |
+| [NotificationPreference](#model-NotificationPreference)                       | `notification_preferences`              |                                                                                                                                               |
+| [Prompt](#model-Prompt)                                                       | `prompts`                               |                                                                                                                                               |
+| [PromptDependency](#model-PromptDependency)                                   | `prompt_dependencies`                   |                                                                                                                                               |
+| [PromptProtectedLabels](#model-PromptProtectedLabels)                         | `prompt_protected_labels`               |                                                                                                                                               |
+| [Skill](#model-Skill)                                                         | `skills`                                |                                                                                                                                               |
+| [SkillFile](#model-SkillFile)                                                 | `skill_files`                           |                                                                                                                                               |
+| [SkillBlob](#model-SkillBlob)                                                 | `skill_blobs`                           |                                                                                                                                               |
+| [Model](#model-Model)                                                         | `models`                                |                                                                                                                                               |
+| [Price](#model-Price)                                                         | `prices`                                |                                                                                                                                               |
+| [PricingTier](#model-PricingTier)                                             | `pricing_tiers`                         |                                                                                                                                               |
+| [AuditLog](#model-AuditLog)                                                   | `audit_logs`                            |                                                                                                                                               |
+| [AuditLogStaging](#model-AuditLogStaging)                                     | `audit_log_staging`                     |                                                                                                                                               |
+| [EvalTemplate](#model-EvalTemplate)                                           | `eval_templates`                        |                                                                                                                                               |
+| [Evaluator](#model-Evaluator)                                                 | `evaluators`                            |                                                                                                                                               |
+| [EvaluatorVersion](#model-EvaluatorVersion)                                   | `evaluator_versions`                    |                                                                                                                                               |
+| [JobConfiguration](#model-JobConfiguration)                                   | `job_configurations`                    |                                                                                                                                               |
+| [EvaluationRule](#model-EvaluationRule)                                       | `evaluation_rules`                      |                                                                                                                                               |
+| [TracingReadinessSettings](#model-TracingReadinessSettings)                   | `tracing_readiness_settings`            |                                                                                                                                               |
+| [EvaluationRuleEvaluatorAssignment](#model-EvaluationRuleEvaluatorAssignment) | `evaluation_rule_evaluator_assignments` |                                                                                                                                               |
+| [JobExecution](#model-JobExecution)                                           | `job_executions`                        |                                                                                                                                               |
+| [DefaultLlmModel](#model-DefaultLlmModel)                                     | `default_llm_models`                    |                                                                                                                                               |
+| [TopicConfig](#model-TopicConfig)                                             | `topic_configs`                         |                                                                                                                                               |
+| [SsoConfig](#model-SsoConfig)                                                 | `sso_configs`                           |                                                                                                                                               |
+| [VerifiedDomain](#model-VerifiedDomain)                                       | `verified_domains`                      |                                                                                                                                               |
+| [PosthogIntegration](#model-PosthogIntegration)                               | `posthog_integrations`                  |                                                                                                                                               |
+| [MixpanelIntegration](#model-MixpanelIntegration)                             | `mixpanel_integrations`                 |                                                                                                                                               |
+| [BlobStorageIntegration](#model-BlobStorageIntegration)                       | `blob_storage_integrations`             |                                                                                                                                               |
+| [ExternalMediaStorageIntegration](#model-ExternalMediaStorageIntegration)     | `external_media_storage_integrations`   |                                                                                                                                               |
+| [WebCalloutEndpoint](#model-WebCalloutEndpoint)                               | `web_callout_endpoints`                 |                                                                                                                                               |
+| [BatchExport](#model-BatchExport)                                             | `batch_exports`                         |                                                                                                                                               |
+| [BatchAction](#model-BatchAction)                                             | `batch_actions`                         |                                                                                                                                               |
+| [Media](#model-Media)                                                         | `media`                                 |                                                                                                                                               |
+| [TraceMedia](#model-TraceMedia)                                               | `trace_media`                           |                                                                                                                                               |
+| [ObservationMedia](#model-ObservationMedia)                                   | `observation_media`                     |                                                                                                                                               |
+| [DatasetItemMedia](#model-DatasetItemMedia)                                   | `dataset_item_media`                    |                                                                                                                                               |
+| [BillingMeterBackup](#model-BillingMeterBackup)                               | `billing_meter_backups`                 |                                                                                                                                               |
+| [LlmSchema](#model-LlmSchema)                                                 | `llm_schemas`                           |                                                                                                                                               |
+| [LlmTool](#model-LlmTool)                                                     | `llm_tools`                             |                                                                                                                                               |
+| [Dashboard](#model-Dashboard)                                                 | `dashboards`                            |                                                                                                                                               |
+| [DashboardWidget](#model-DashboardWidget)                                     | `dashboard_widgets`                     |                                                                                                                                               |
+| [TableViewPreset](#model-TableViewPreset)                                     | `table_view_presets`                    |                                                                                                                                               |
+| [SessionView](#model-SessionView)                                             | `session_views`                         |                                                                                                                                               |
+| [SessionViewPinOverride](#model-SessionViewPinOverride)                       | `session_view_pin_overrides`            |                                                                                                                                               |
+| [DefaultView](#model-DefaultView)                                             | `default_views`                         |                                                                                                                                               |
+| [Action](#model-Action)                                                       | `actions`                               |                                                                                                                                               |
+| [Trigger](#model-Trigger)                                                     | `triggers`                              |                                                                                                                                               |
+| [Automation](#model-Automation)                                               | `automations`                           |                                                                                                                                               |
+| [AutomationExecution](#model-AutomationExecution)                             | `automation_executions`                 |                                                                                                                                               |
+| [Monitor](#model-Monitor)                                                     | `monitors`                              |                                                                                                                                               |
+| [SlackIntegration](#model-SlackIntegration)                                   | `slack_integrations`                    |                                                                                                                                               |
+| [PendingDeletion](#model-PendingDeletion)                                     | `pending_deletions`                     |                                                                                                                                               |
+| [Survey](#model-Survey)                                                       | `surveys`                               |                                                                                                                                               |
+| [CloudSpendAlert](#model-CloudSpendAlert)                                     | `cloud_spend_alerts`                    |                                                                                                                                               |
+| [TopicClusteringRun](#model-TopicClusteringRun)                               | `topic_clustering_runs`                 |                                                                                                                                               |
 
 | Enum                                                                                 | Name in the database                    | Description |
 | ------------------------------------------------------------------------------------ | --------------------------------------- | ----------- |
@@ -2145,6 +2222,9 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 | [GatewayIngestionMode](#enum-GatewayIngestionMode)                                   | `GatewayIngestionMode`                  |             |
 | [GatewayProvider](#enum-GatewayProvider)                                             | `GatewayProvider`                       |             |
 | [GatewayConnectionStatus](#enum-GatewayConnectionStatus)                             | `GatewayConnectionStatus`               |             |
+| [GatewaySpendLimitScope](#enum-GatewaySpendLimitScope)                               | `GatewaySpendLimitScope`                |             |
+| [GatewaySpendLimitInterval](#enum-GatewaySpendLimitInterval)                         | `GatewaySpendLimitInterval`             |             |
+| [GatewaySpendLimitAlertType](#enum-GatewaySpendLimitAlertType)                       | `GatewaySpendLimitAlertType`            |             |
 | [InAppAgentConversationVisibilityScope](#enum-InAppAgentConversationVisibilityScope) | `InAppAgentConversationVisibilityScope` |             |
 | [Role](#enum-Role)                                                                   | `Role`                                  |             |
 | [ScoreConfigDataType](#enum-ScoreConfigDataType)                                     | `ScoreConfigDataType`                   |             |
@@ -2154,6 +2234,7 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 | [CommentObjectType](#enum-CommentObjectType)                                         | `CommentObjectType`                     |             |
 | [NotificationChannel](#enum-NotificationChannel)                                     | `NotificationChannel`                   |             |
 | [NotificationType](#enum-NotificationType)                                           | `NotificationType`                      |             |
+| [ModelScope](#enum-ModelScope)                                                       | `ModelScope`                            |             |
 | [AuditLogRecordType](#enum-AuditLogRecordType)                                       | `AuditLogRecordType`                    |             |
 | [EvalTemplateType](#enum-EvalTemplateType)                                           | `EvalTemplateType`                      |             |
 | [EvalTemplateSourceCodeLanguage](#enum-EvalTemplateSourceCodeLanguage)               | `EvalTemplateSourceCodeLanguage`        |             |
@@ -2173,6 +2254,7 @@ ALTER TABLE "topic_clustering_runs" ADD CONSTRAINT "topic_clustering_runs_facet_
 | [DashboardWidgetChartType](#enum-DashboardWidgetChartType)                           | `DashboardWidgetChartType`              |             |
 | [SessionViewMode](#enum-SessionViewMode)                                             | `SessionViewMode`                       |             |
 | [SessionUnmatchedTraces](#enum-SessionUnmatchedTraces)                               | `SessionUnmatchedTraces`                |             |
+| [SessionViewOwnership](#enum-SessionViewOwnership)                                   | `SessionViewOwnership`                  |             |
 | [ActionType](#enum-ActionType)                                                       | `ActionType`                            |             |
 | [ActionExecutionStatus](#enum-ActionExecutionStatus)                                 | `ActionExecutionStatus`                 |             |
 | [MonitorThresholdOperator](#enum-MonitorThresholdOperator)                           | `MonitorThresholdOperator`              |             |
@@ -2761,6 +2843,8 @@ Table `users`.
 - `id` ← [ApiKey.createdByUserId](#model-ApiKey) (one-to-many, on delete SetNull)
 - `id` ← [ApiKey.userId](#model-ApiKey) (one-to-many, on delete Cascade)
 - `id` ← [RoleAssignment.userId](#model-RoleAssignment) (one-to-many, on delete Cascade)
+- `id` ← [GatewaySpendLimit.userId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
+- `id` ← [GatewaySpendLimit.ownerUserId](#model-GatewaySpendLimit) (one-to-many, on delete SetNull)
 - `id` ← [InAppAgentConversation.createdByUserId](#model-InAppAgentConversation) (one-to-many, on delete SetNull)
 - `id` ← [InAppAgentRun.triggeredByUserId](#model-InAppAgentRun) (one-to-many, on delete SetNull)
 - `id` ← [OrganizationMembership.userId](#model-OrganizationMembership) (one-to-many, on delete Cascade)
@@ -2910,6 +2994,8 @@ await prisma.user.findMany({
     evaluatorsCreated: true,
     evaluatorVersionsCreated: true,
     evaluationRulesCreated: true,
+    gatewaySpendLimitsOwned: true,
+    gatewaySpendLimits: true,
   },
 });
 ```
@@ -3197,6 +3283,7 @@ OFFSET
 
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -3569,6 +3656,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -3644,6 +3733,48 @@ FROM
   "public"."evaluation_rules"
 WHERE
   "public"."evaluation_rules"."created_by_user_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  "public"."gateway_spend_limits"."owner_user_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  "public"."gateway_spend_limits"."user_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -3985,9 +4116,11 @@ Table `organizations`.
 - `id` ← [RoleAssignment.orgId](#model-RoleAssignment) (one-to-many, on delete Cascade)
 - `id` ← [GatewayConfig.organizationId](#model-GatewayConfig) (one-to-one, on delete Cascade)
 - `id` ← [GatewayAiConnection.organizationId](#model-GatewayAiConnection) (one-to-many, on delete Cascade)
+- `id` ← [GatewaySpendLimit.organizationId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
 - `id` ← [LlmApiKeys.organizationId](#model-LlmApiKeys) (one-to-many, on delete Cascade)
 - `id` ← [OrganizationMembership.orgId](#model-OrganizationMembership) (one-to-many, on delete Cascade)
 - `id` ← [MembershipInvitation.orgId](#model-MembershipInvitation) (one-to-many, on delete Cascade)
+- `id` ← [Model.organizationId](#model-Model) (one-to-many, on delete Cascade)
 - `id` ← [VerifiedDomain.organizationId](#model-VerifiedDomain) (one-to-many, on delete Cascade)
 - `id` ← [Survey.orgId](#model-Survey) (one-to-many, on delete Cascade)
 - `id` ← [CloudSpendAlert.orgId](#model-CloudSpendAlert) (one-to-many, on delete Cascade)
@@ -4088,7 +4221,9 @@ await prisma.organization.findMany({
     verifiedDomains: true,
     gatewayConfig: true,
     gatewayAiConnections: true,
+    gatewaySpendLimits: true,
     organizationLlmApiKeys: true,
+    models: true,
     roleAssignments: true,
   },
 });
@@ -4285,6 +4420,27 @@ OFFSET
 -- params: ["<id of the rows above>","0"]
 
 SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  "public"."gateway_spend_limits"."organization_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
   "public"."llm_api_keys"."id",
   "public"."llm_api_keys"."created_at",
   "public"."llm_api_keys"."updated_at",
@@ -4298,12 +4454,37 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
   "public"."llm_api_keys"
 WHERE
   "public"."llm_api_keys"."organization_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."models"."id",
+  "public"."models"."created_at",
+  "public"."models"."updated_at",
+  "public"."models"."scope"::text,
+  "public"."models"."project_id",
+  "public"."models"."organization_id",
+  "public"."models"."model_name",
+  "public"."models"."match_pattern",
+  "public"."models"."start_date",
+  "public"."models"."input_price",
+  "public"."models"."output_price",
+  "public"."models"."total_price",
+  "public"."models"."unit",
+  "public"."models"."tokenizer_id",
+  "public"."models"."tokenizer_config"
+FROM
+  "public"."models"
+WHERE
+  "public"."models"."organization_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -4318,6 +4499,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -4830,6 +5013,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -4978,7 +5163,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -5161,6 +5348,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -5396,6 +5584,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -5579,6 +5768,7 @@ OFFSET
 
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -6152,6 +6342,7 @@ Table `api_keys`.
 - `id` ← [ApiKey.createdByApiKeyId](#model-ApiKey) (one-to-many, on delete SetNull)
 - `id` ← [RoleAssignment.apiKeyId](#model-RoleAssignment) (one-to-many, on delete Cascade)
 - `id` ← [GatewayApiKeyAssociation.apiKeyId](#model-GatewayApiKeyAssociation) (one-to-one, on delete Cascade)
+- `id` ← [GatewaySpendLimit.apiKeyId](#model-GatewaySpendLimit) (one-to-many, on delete Cascade)
 
 #### Definition
 
@@ -6281,6 +6472,7 @@ await prisma.apiKey.findMany({
     createdByApiKey: true,
     apiKeysCreated: true,
     gatewayAssociation: true,
+    gatewaySpendLimits: true,
     roleAssignments: true,
   },
 });
@@ -6462,6 +6654,27 @@ OFFSET
 -- params: ["<id of the rows above>","0"]
 
 SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  "public"."gateway_spend_limits"."api_key_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
   "public"."role_assignments"."id",
   "public"."role_assignments"."owner_id",
   "public"."role_assignments"."project_id",
@@ -6471,6 +6684,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -6661,6 +6876,8 @@ Table `role_assignments`.
 | `apiKeyId` (`api_key_id`)      | `String`                         | NULL → [ApiKey.id](#model-ApiKey)                 |                      |             |
 | `roleId` (`role_id`)           | `String`                         | NOT NULL                                          |                      |             |
 | `systemRole` (`system_role`)   | [`SystemRole`](#enum-SystemRole) | NOT NULL                                          |                      |             |
+| `expiresAt` (`expires_at`)     | `DateTime`                       | NULL                                              |                      |             |
+| `tags`                         | `String[]`                       | NOT NULL                                          | `[]`                 |             |
 | `createdAt` (`created_at`)     | `DateTime`                       | NOT NULL                                          | `now()`              |             |
 | `updatedAt` (`updated_at`)     | `DateTime`                       | NOT NULL                                          | `now()` `@updatedAt` |             |
 
@@ -6673,6 +6890,7 @@ Table `role_assignments`.
 - `@@index([principalId])`
 - `@@index([userId])`
 - `@@index([apiKeyId])`
+- `@@index([tags])`
 - `@@unique([deprecatedPrincipalUserId, deprecatedOwnerOrgId, systemRole], map: "role_assignments_user_org_role_key")`
 - `@@unique([deprecatedPrincipalUserId, deprecatedOwnerProjectId, systemRole], map: "role_assignments_user_project_role_key")`
 - `@@unique([deprecatedPrincipalApiKeyId, deprecatedOwnerOrgId, systemRole], map: "role_assignments_api_key_org_role_key")`
@@ -6699,6 +6917,8 @@ CREATE TABLE "role_assignments" (
     "api_key_id" TEXT,
     "role_id" TEXT NOT NULL,
     "system_role" "SystemRole" NOT NULL,
+    "expires_at" TIMESTAMP(3),
+    "tags" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "owner_org_id" TEXT,
@@ -6722,6 +6942,8 @@ CREATE INDEX "role_assignments_principal_id_idx" ON "role_assignments"("principa
 CREATE INDEX "role_assignments_user_id_idx" ON "role_assignments"("user_id");
 
 CREATE INDEX "role_assignments_api_key_id_idx" ON "role_assignments"("api_key_id");
+
+CREATE INDEX "role_assignments_tags_idx" ON "role_assignments" USING GIN ("tags" array_ops);
 
 CREATE UNIQUE INDEX "role_assignments_user_org_role_key" ON "role_assignments"("principal_user_id", "owner_org_id", "system_role");
 
@@ -6770,6 +6992,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -6823,6 +7047,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -6941,6 +7167,8 @@ SELECT
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 FROM
@@ -6980,6 +7208,7 @@ INSERT INTO
     "principal_id",
     "role_id",
     "system_role",
+    "tags",
     "created_at",
     "updated_at"
   )
@@ -6992,7 +7221,8 @@ VALUES
     $5,
     CAST($6::text AS "public"."SystemRole"),
     $7,
-    $8
+    $8,
+    $9
   )
 RETURNING
   "public"."role_assignments"."id",
@@ -7004,9 +7234,11 @@ RETURNING
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
--- params: ["<cuid(1)>","example","example","example","example","OWNER","<now()>","<now()>"]
+-- params: ["<cuid(1)>","example","example","example","example","OWNER",[],"<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -7035,6 +7267,8 @@ RETURNING
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
@@ -7063,6 +7297,8 @@ RETURNING
   "public"."role_assignments"."api_key_id",
   "public"."role_assignments"."role_id",
   "public"."role_assignments"."system_role"::text,
+  "public"."role_assignments"."expires_at",
+  "public"."role_assignments"."tags",
   "public"."role_assignments"."created_at",
   "public"."role_assignments"."updated_at"
 -- params: ["example"]
@@ -7899,6 +8135,712 @@ RETURNING
   "public"."gateway_api_key_associations"."api_key_id",
   "public"."gateway_api_key_associations"."metadata",
   "public"."gateway_api_key_associations"."allowed_models"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-GatewaySpendLimit"></a>
+
+### GatewaySpendLimit
+
+Table `gateway_spend_limits`.
+
+![GatewaySpendLimit and the models it relates to](tables/GatewaySpendLimit.svg)
+
+| Field                                       | Type                                                           | Constraints                                       | Default              | Description |
+| ------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------- | -------------------- | ----------- |
+| `id`                                        | `String`                                                       | PK NOT NULL                                       | `cuid(1)`            |             |
+| `organizationId` (`organization_id`)        | `String`                                                       | NOT NULL → [Organization.id](#model-Organization) |                      |             |
+| `scope`                                     | [`GatewaySpendLimitScope`](#enum-GatewaySpendLimitScope)       | NOT NULL                                          |                      |             |
+| `apiKeyId` (`api_key_id`)                   | `String`                                                       | NULL → [ApiKey.id](#model-ApiKey)                 |                      |             |
+| `userId` (`user_id`)                        | `String`                                                       | NULL → [User.id](#model-User)                     |                      |             |
+| `interval`                                  | [`GatewaySpendLimitInterval`](#enum-GatewaySpendLimitInterval) | NOT NULL                                          |                      |             |
+| `limitUsd` (`limit_usd`)                    | `Decimal`                                                      | NOT NULL                                          |                      |             |
+| `alertThresholds` (`alert_thresholds`)      | `Int[]`                                                        | NOT NULL                                          | `[100]`              |             |
+| `countingStartedAt` (`counting_started_at`) | `DateTime`                                                     | NOT NULL                                          |                      |             |
+| `ownerUserId` (`owner_user_id`)             | `String`                                                       | NULL → [User.id](#model-User)                     |                      |             |
+| `createdAt` (`created_at`)                  | `DateTime`                                                     | NOT NULL                                          | `now()`              |             |
+| `updatedAt` (`updated_at`)                  | `DateTime`                                                     | NOT NULL                                          | `now()` `@updatedAt` |             |
+
+#### Indexes
+
+- `@@index([organizationId])`
+- `@@index([userId])`
+- `@@unique([apiKeyId, interval])`
+- `@@unique([organizationId, userId, interval])`
+
+#### References
+
+- `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade)
+- `apiKeyId` → [ApiKey.id](#model-ApiKey) (many-to-one, on delete Cascade)
+- `userId` → [User.id](#model-User) (many-to-one, on delete Cascade)
+- `ownerUserId` → [User.id](#model-User) (many-to-one, on delete SetNull)
+
+#### Referenced by
+
+- `id` ← [GatewaySpendLimitAlert.spendLimitId](#model-GatewaySpendLimitAlert) (one-to-many, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "gateway_spend_limits" (
+    "id" TEXT NOT NULL,
+    "organization_id" TEXT NOT NULL,
+    "scope" "GatewaySpendLimitScope" NOT NULL,
+    "api_key_id" TEXT,
+    "user_id" TEXT,
+    "interval" "GatewaySpendLimitInterval" NOT NULL,
+    "limit_usd" DECIMAL(65,30) NOT NULL,
+    "alert_thresholds" INTEGER[] DEFAULT ARRAY[100]::INTEGER[],
+    "counting_started_at" TIMESTAMP(3) NOT NULL,
+    "owner_user_id" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_spend_limits_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "gateway_spend_limits_organization_id_idx" ON "gateway_spend_limits"("organization_id");
+
+CREATE INDEX "gateway_spend_limits_user_id_idx" ON "gateway_spend_limits"("user_id");
+
+CREATE UNIQUE INDEX "gateway_spend_limits_api_key_id_interval_key" ON "gateway_spend_limits"("api_key_id", "interval");
+
+CREATE UNIQUE INDEX "gateway_spend_limits_organization_id_user_id_interval_key" ON "gateway_spend_limits"("organization_id", "user_id", "interval");
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_api_key_id_fkey" FOREIGN KEY ("api_key_id") REFERENCES "api_keys"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "gateway_spend_limits" ADD CONSTRAINT "gateway_spend_limits_owner_user_id_fkey" FOREIGN KEY ("owner_user_id") REFERENCES "users"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.gatewaySpendLimit.findMany();
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.gatewaySpendLimit.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."gateway_spend_limits"."id"
+    FROM
+      "public"."gateway_spend_limits"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.gatewaySpendLimit.findMany({
+  include: { organization: true, apiKey: true, user: true, ownerUser: true, alerts: true },
+});
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."organizations"."id",
+  "public"."organizations"."name",
+  "public"."organizations"."created_at",
+  "public"."organizations"."updated_at",
+  "public"."organizations"."cloud_config",
+  "public"."organizations"."metadata",
+  "public"."organizations"."cloud_billing_cycle_anchor",
+  "public"."organizations"."cloud_billing_cycle_updated_at",
+  "public"."organizations"."cloud_current_cycle_usage",
+  "public"."organizations"."cloud_free_tier_usage_threshold_state",
+  "public"."organizations"."ai_features_enabled",
+  "public"."organizations"."ai_telemetry_enabled",
+  "public"."organizations"."access_audit_log_enabled",
+  "public"."organizations"."feature_flag_org_defaults",
+  "public"."organizations"."sfdc_org_id"
+FROM
+  "public"."organizations"
+WHERE
+  "public"."organizations"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organizationId of the rows above>","0"]
+
+SELECT
+  "public"."api_keys"."id",
+  "public"."api_keys"."created_at",
+  "public"."api_keys"."note",
+  "public"."api_keys"."public_key",
+  "public"."api_keys"."hashed_secret_key",
+  "public"."api_keys"."fast_hashed_secret_key",
+  "public"."api_keys"."display_secret_key",
+  "public"."api_keys"."last_used_at",
+  "public"."api_keys"."expires_at",
+  "public"."api_keys"."is_in_app_agent_key",
+  "public"."api_keys"."project_id",
+  "public"."api_keys"."organization_id",
+  "public"."api_keys"."scope"::text,
+  "public"."api_keys"."created_by_user_id",
+  "public"."api_keys"."user_id",
+  "public"."api_keys"."created_by_api_key_id"
+FROM
+  "public"."api_keys"
+WHERE
+  "public"."api_keys"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<apiKeyId of the rows above>","0"]
+
+SELECT
+  "public"."users"."id",
+  "public"."users"."name",
+  "public"."users"."email",
+  "public"."users"."email_verified",
+  "public"."users"."password",
+  "public"."users"."sessions_expired_at",
+  "public"."users"."image",
+  "public"."users"."admin",
+  "public"."users"."v4_beta_enabled",
+  "public"."users"."support_access",
+  "public"."users"."created_at",
+  "public"."users"."updated_at",
+  "public"."users"."feature_flags"
+FROM
+  "public"."users"
+WHERE
+  "public"."users"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<userId of the rows above>","0"]
+
+SELECT
+  "public"."users"."id",
+  "public"."users"."name",
+  "public"."users"."email",
+  "public"."users"."email_verified",
+  "public"."users"."password",
+  "public"."users"."sessions_expired_at",
+  "public"."users"."image",
+  "public"."users"."admin",
+  "public"."users"."v4_beta_enabled",
+  "public"."users"."support_access",
+  "public"."users"."created_at",
+  "public"."users"."updated_at",
+  "public"."users"."feature_flags"
+FROM
+  "public"."users"
+WHERE
+  "public"."users"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<ownerUserId of the rows above>","0"]
+
+SELECT
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+FROM
+  "public"."gateway_spend_limit_alerts"
+WHERE
+  "public"."gateway_spend_limit_alerts"."spend_limit_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.gatewaySpendLimit.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  (
+    "public"."gateway_spend_limits"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.gatewaySpendLimit.create({
+  data: {
+    organizationId: "example",
+    scope: "API_KEY",
+    interval: "DAILY",
+    limitUsd: "9.99",
+    countingStartedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."gateway_spend_limits" (
+    "id",
+    "organization_id",
+    "scope",
+    "interval",
+    "limit_usd",
+    "alert_thresholds",
+    "counting_started_at",
+    "created_at",
+    "updated_at"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    CAST($3::text AS "public"."GatewaySpendLimitScope"),
+    CAST($4::text AS "public"."GatewaySpendLimitInterval"),
+    $5,
+    $6,
+    $7,
+    $8,
+    $9
+  )
+RETURNING
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+-- params: ["<cuid(1)>","example","API_KEY","DAILY","9.99",["100"],"2026-01-01T00:00:00.000Z","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.gatewaySpendLimit.update({ where: { id: "example" }, data: { scope: "API_KEY" } });
+```
+
+```sql
+UPDATE "public"."gateway_spend_limits"
+SET
+  "scope" = CAST($1::text AS "public"."GatewaySpendLimitScope"),
+  "updated_at" = $2
+WHERE
+  (
+    "public"."gateway_spend_limits"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+-- params: ["API_KEY",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.gatewaySpendLimit.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."gateway_spend_limits"
+WHERE
+  (
+    "public"."gateway_spend_limits"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-GatewaySpendLimitAlert"></a>
+
+### GatewaySpendLimitAlert
+
+Table `gateway_spend_limit_alerts`. One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times.
+
+![GatewaySpendLimitAlert and the models it relates to](tables/GatewaySpendLimitAlert.svg)
+
+| Field                                       | Type                                                             | Constraints                                                 | Default   | Description |
+| ------------------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------- | --------- | ----------- |
+| `id`                                        | `String`                                                         | PK NOT NULL                                                 | `cuid(1)` |             |
+| `spendLimitId` (`spend_limit_id`)           | `String`                                                         | NOT NULL → [GatewaySpendLimit.id](#model-GatewaySpendLimit) |           |             |
+| `subjectId` (`subject_id`)                  | `String`                                                         | NOT NULL                                                    | `""`      |             |
+| `type`                                      | [`GatewaySpendLimitAlertType`](#enum-GatewaySpendLimitAlertType) | NOT NULL                                                    |           |             |
+| `thresholdPercent` (`threshold_percent`)    | `Int`                                                            | NOT NULL                                                    | `100`     |             |
+| `countingStartedAt` (`counting_started_at`) | `DateTime`                                                       | NOT NULL                                                    |           |             |
+| `windowStart` (`window_start`)              | `DateTime`                                                       | NOT NULL                                                    |           |             |
+| `createdAt` (`created_at`)                  | `DateTime`                                                       | NOT NULL                                                    | `now()`   |             |
+
+#### Indexes
+
+- `@@unique([spendLimitId, subjectId, type, thresholdPercent, countingStartedAt, windowStart], map: "gateway_spend_limit_alerts_limit_type_counting_window_key")`
+
+#### References
+
+- `spendLimitId` → [GatewaySpendLimit.id](#model-GatewaySpendLimit) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "gateway_spend_limit_alerts" (
+    "id" TEXT NOT NULL,
+    "spend_limit_id" TEXT NOT NULL,
+    "subject_id" TEXT NOT NULL DEFAULT '',
+    "type" "GatewaySpendLimitAlertType" NOT NULL,
+    "threshold_percent" INTEGER NOT NULL DEFAULT 100,
+    "counting_started_at" TIMESTAMP(3) NOT NULL,
+    "window_start" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "gateway_spend_limit_alerts_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "gateway_spend_limit_alerts_limit_type_counting_window_key" ON "gateway_spend_limit_alerts"("spend_limit_id", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start");
+
+ALTER TABLE "gateway_spend_limit_alerts" ADD CONSTRAINT "gateway_spend_limit_alerts_spend_limit_id_fkey" FOREIGN KEY ("spend_limit_id") REFERENCES "gateway_spend_limits"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.gatewaySpendLimitAlert.findMany();
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+FROM
+  "public"."gateway_spend_limit_alerts"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.gatewaySpendLimitAlert.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."gateway_spend_limit_alerts"."id"
+    FROM
+      "public"."gateway_spend_limit_alerts"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.gatewaySpendLimitAlert.findMany({ include: { spendLimit: true } });
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+FROM
+  "public"."gateway_spend_limit_alerts"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."gateway_spend_limits"."id",
+  "public"."gateway_spend_limits"."organization_id",
+  "public"."gateway_spend_limits"."scope"::text,
+  "public"."gateway_spend_limits"."api_key_id",
+  "public"."gateway_spend_limits"."user_id",
+  "public"."gateway_spend_limits"."interval"::text,
+  "public"."gateway_spend_limits"."limit_usd",
+  "public"."gateway_spend_limits"."alert_thresholds",
+  "public"."gateway_spend_limits"."counting_started_at",
+  "public"."gateway_spend_limits"."owner_user_id",
+  "public"."gateway_spend_limits"."created_at",
+  "public"."gateway_spend_limits"."updated_at"
+FROM
+  "public"."gateway_spend_limits"
+WHERE
+  "public"."gateway_spend_limits"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<spendLimitId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.gatewaySpendLimitAlert.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+FROM
+  "public"."gateway_spend_limit_alerts"
+WHERE
+  (
+    "public"."gateway_spend_limit_alerts"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.gatewaySpendLimitAlert.create({
+  data: {
+    spendLimitId: "example",
+    type: "WARNING",
+    countingStartedAt: new Date("2026-01-01T00:00:00.000Z"),
+    windowStart: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."gateway_spend_limit_alerts" (
+    "id",
+    "spend_limit_id",
+    "subject_id",
+    "type",
+    "threshold_percent",
+    "counting_started_at",
+    "window_start",
+    "created_at"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    CAST($4::text AS "public"."GatewaySpendLimitAlertType"),
+    $5,
+    $6,
+    $7,
+    $8
+  )
+RETURNING
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+-- params: ["<cuid(1)>","example","","WARNING","100","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.gatewaySpendLimitAlert.update({
+  where: { id: "example" },
+  data: { subjectId: "example" },
+});
+```
+
+```sql
+UPDATE "public"."gateway_spend_limit_alerts"
+SET
+  "subject_id" = $1
+WHERE
+  (
+    "public"."gateway_spend_limit_alerts"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.gatewaySpendLimitAlert.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."gateway_spend_limit_alerts"
+WHERE
+  (
+    "public"."gateway_spend_limit_alerts"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."gateway_spend_limit_alerts"."id",
+  "public"."gateway_spend_limit_alerts"."spend_limit_id",
+  "public"."gateway_spend_limit_alerts"."subject_id",
+  "public"."gateway_spend_limit_alerts"."type"::text,
+  "public"."gateway_spend_limit_alerts"."threshold_percent",
+  "public"."gateway_spend_limit_alerts"."counting_started_at",
+  "public"."gateway_spend_limit_alerts"."window_start",
+  "public"."gateway_spend_limit_alerts"."created_at"
 -- params: ["example"]
 ```
 
@@ -9654,6 +10596,7 @@ Table `llm_api_keys`.
 | `extraHeaders` (`extra_headers`)            | `String`   | NULL                                          |                      |             |
 | `extraHeaderKeys` (`extra_header_keys`)     | `String[]` | NOT NULL                                      | `[]`                 |             |
 | `config`                                    | `Json`     | NULL                                          |                      |             |
+| `externalId` (`external_id`)                | `String`   | NULL                                          |                      |             |
 | `projectId` (`project_id`)                  | `String`   | NULL → [Project.id](#model-Project)           |                      |             |
 | `organizationId` (`organization_id`)        | `String`   | NULL → [Organization.id](#model-Organization) |                      |             |
 
@@ -9691,6 +10634,7 @@ CREATE TABLE "llm_api_keys" (
     "extra_headers" TEXT,
     "extra_header_keys" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "config" JSONB,
+    "external_id" TEXT,
     "project_id" TEXT,
     "organization_id" TEXT,
 
@@ -9732,6 +10676,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -9796,6 +10741,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -9967,6 +10913,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -10026,6 +10973,7 @@ RETURNING
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 -- params: ["<cuid(1)>","<now()>","<now()>","example","example","example","example",[],true,[]]
@@ -10064,6 +11012,7 @@ RETURNING
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 -- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
@@ -10096,6 +11045,7 @@ RETURNING
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 -- params: ["example"]
@@ -11659,24 +12609,27 @@ Table `annotation_queues`.
 
 ![AnnotationQueue and the models it relates to](tables/AnnotationQueue.svg)
 
-| Field                                 | Type       | Constraints                             | Default              | Description |
-| ------------------------------------- | ---------- | --------------------------------------- | -------------------- | ----------- |
-| `id`                                  | `String`   | PK NOT NULL                             | `cuid(1)`            |             |
-| `name`                                | `String`   | NOT NULL                                |                      |             |
-| `description`                         | `String`   | NULL                                    |                      |             |
-| `scoreConfigIds` (`score_config_ids`) | `String[]` | NOT NULL                                | `[]`                 |             |
-| `projectId` (`project_id`)            | `String`   | NOT NULL → [Project.id](#model-Project) |                      |             |
-| `createdAt` (`created_at`)            | `DateTime` | NOT NULL                                | `now()`              |             |
-| `updatedAt` (`updated_at`)            | `DateTime` | NOT NULL                                | `now()` `@updatedAt` |             |
+| Field                                 | Type       | Constraints                                            | Default              | Description |
+| ------------------------------------- | ---------- | ------------------------------------------------------ | -------------------- | ----------- |
+| `id`                                  | `String`   | PK NOT NULL                                            | `cuid(1)`            |             |
+| `name`                                | `String`   | NOT NULL                                               |                      |             |
+| `description`                         | `String`   | NULL                                                   |                      |             |
+| `scoreConfigIds` (`score_config_ids`) | `String[]` | NOT NULL                                               | `[]`                 |             |
+| `sessionViewId` (`session_view_id`)   | `String`   | NULL → [SessionView.id](#model-SessionView)            |                      |             |
+| `projectId` (`project_id`)            | `String`   | NOT NULL → [SessionView.projectId](#model-SessionView) |                      |             |
+| `createdAt` (`created_at`)            | `DateTime` | NOT NULL                                               | `now()`              |             |
+| `updatedAt` (`updated_at`)            | `DateTime` | NOT NULL                                               | `now()` `@updatedAt` |             |
 
 #### Indexes
 
 - `@@index([id, projectId])`
 - `@@index([projectId, createdAt])`
+- `@@index([projectId, sessionViewId])`
 - `@@unique([projectId, name])`
 
 #### References
 
+- `projectId` → [SessionView.projectId](#model-SessionView) (many-to-one, on delete NoAction)
 - `projectId` → [Project.id](#model-Project) (many-to-one, on delete Cascade)
 
 #### Referenced by
@@ -11692,6 +12645,7 @@ CREATE TABLE "annotation_queues" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "score_config_ids" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "session_view_id" TEXT,
     "project_id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -11703,7 +12657,11 @@ CREATE INDEX "annotation_queues_id_project_id_idx" ON "annotation_queues"("id", 
 
 CREATE INDEX "annotation_queues_project_id_created_at_idx" ON "annotation_queues"("project_id", "created_at");
 
+CREATE INDEX "annotation_queues_project_id_session_view_id_idx" ON "annotation_queues"("project_id", "session_view_id");
+
 CREATE UNIQUE INDEX "annotation_queues_project_id_name_key" ON "annotation_queues"("project_id", "name");
+
+ALTER TABLE "annotation_queues" ADD CONSTRAINT "annotation_queues_project_id_session_view_id_fkey" FOREIGN KEY ("project_id", "session_view_id") REFERENCES "session_views"("project_id", "id") ON DELETE NO ACTION ON UPDATE CASCADE;
 
 ALTER TABLE "annotation_queues" ADD CONSTRAINT "annotation_queues_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ```
@@ -11723,6 +12681,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -11762,7 +12721,12 @@ FROM
 
 ```ts
 await prisma.annotationQueue.findMany({
-  include: { project: true, annotationQueueItem: true, annotationQueueAssignment: true },
+  include: {
+    sessionView: true,
+    project: true,
+    annotationQueueItem: true,
+    annotationQueueAssignment: true,
+  },
 });
 ```
 
@@ -11772,6 +12736,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -11782,6 +12747,29 @@ WHERE
 OFFSET
   $1
 -- params: ["0"]
+
+SELECT
+  "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
+  "public"."session_views"."is_pinned_by_default_for_project",
+  "public"."session_views"."project_id",
+  "public"."session_views"."name",
+  "public"."session_views"."filters",
+  "public"."session_views"."view_mode"::text,
+  "public"."session_views"."unmatched_traces"::text,
+  "public"."session_views"."created_by",
+  "public"."session_views"."created_at",
+  "public"."session_views"."updated_at"
+FROM
+  "public"."session_views"
+WHERE
+  (
+    "public"."session_views"."id" IN ($1)
+    AND "public"."session_views"."project_id" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<sessionViewId of the rows above>","<projectId of the rows above>","0"]
 
 SELECT
   "public"."projects"."id",
@@ -11851,6 +12839,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -11891,6 +12880,7 @@ RETURNING
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -11918,6 +12908,7 @@ RETURNING
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -11942,6 +12933,7 @@ RETURNING
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -12117,6 +13109,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -12508,6 +13501,7 @@ SELECT
   "public"."annotation_queues"."name",
   "public"."annotation_queues"."description",
   "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
   "public"."annotation_queues"."project_id",
   "public"."annotation_queues"."created_at",
   "public"."annotation_queues"."updated_at"
@@ -16588,30 +17582,34 @@ Table `models`.
 
 ![Model and the models it relates to](tables/Model.svg)
 
-| Field                                  | Type       | Constraints                         | Default              | Description |
-| -------------------------------------- | ---------- | ----------------------------------- | -------------------- | ----------- |
-| `id`                                   | `String`   | PK NOT NULL                         | `cuid(1)`            |             |
-| `createdAt` (`created_at`)             | `DateTime` | NOT NULL                            | `now()`              |             |
-| `updatedAt` (`updated_at`)             | `DateTime` | NOT NULL                            | `now()` `@updatedAt` |             |
-| `projectId` (`project_id`)             | `String`   | NULL → [Project.id](#model-Project) |                      |             |
-| `modelName` (`model_name`)             | `String`   | NOT NULL                            |                      |             |
-| `matchPattern` (`match_pattern`)       | `String`   | NOT NULL                            |                      |             |
-| `startDate` (`start_date`)             | `DateTime` | NULL                                |                      |             |
-| `inputPrice` (`input_price`)           | `Decimal`  | NULL                                |                      |             |
-| `outputPrice` (`output_price`)         | `Decimal`  | NULL                                |                      |             |
-| `totalPrice` (`total_price`)           | `Decimal`  | NULL                                |                      |             |
-| `unit`                                 | `String`   | NULL                                |                      |             |
-| `tokenizerId` (`tokenizer_id`)         | `String`   | NULL                                |                      |             |
-| `tokenizerConfig` (`tokenizer_config`) | `Json`     | NULL                                |                      |             |
+| Field                                  | Type                             | Constraints                                   | Default              | Description |
+| -------------------------------------- | -------------------------------- | --------------------------------------------- | -------------------- | ----------- |
+| `id`                                   | `String`                         | PK NOT NULL                                   | `cuid(1)`            |             |
+| `createdAt` (`created_at`)             | `DateTime`                       | NOT NULL                                      | `now()`              |             |
+| `updatedAt` (`updated_at`)             | `DateTime`                       | NOT NULL                                      | `now()` `@updatedAt` |             |
+| `scope`                                | [`ModelScope`](#enum-ModelScope) | NOT NULL                                      |                      |             |
+| `projectId` (`project_id`)             | `String`                         | NULL → [Project.id](#model-Project)           |                      |             |
+| `organizationId` (`organization_id`)   | `String`                         | NULL → [Organization.id](#model-Organization) |                      |             |
+| `modelName` (`model_name`)             | `String`                         | NOT NULL                                      |                      |             |
+| `matchPattern` (`match_pattern`)       | `String`                         | NOT NULL                                      |                      |             |
+| `startDate` (`start_date`)             | `DateTime`                       | NULL                                          |                      |             |
+| `inputPrice` (`input_price`)           | `Decimal`                        | NULL                                          |                      |             |
+| `outputPrice` (`output_price`)         | `Decimal`                        | NULL                                          |                      |             |
+| `totalPrice` (`total_price`)           | `Decimal`                        | NULL                                          |                      |             |
+| `unit`                                 | `String`                         | NULL                                          |                      |             |
+| `tokenizerId` (`tokenizer_id`)         | `String`                         | NULL                                          |                      |             |
+| `tokenizerConfig` (`tokenizer_config`) | `Json`                           | NULL                                          |                      |             |
 
 #### Indexes
 
 - `@@index([modelName])`
+- `@@index([scope])`
 - `@@unique([projectId, modelName, startDate, unit])`
 
 #### References
 
 - `projectId` → [Project.id](#model-Project) (many-to-one, on delete Cascade)
+- `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade)
 
 #### Referenced by
 
@@ -16625,7 +17623,9 @@ CREATE TABLE "models" (
     "id" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "scope" "ModelScope" NOT NULL,
     "project_id" TEXT,
+    "organization_id" TEXT,
     "model_name" TEXT NOT NULL,
     "match_pattern" TEXT NOT NULL,
     "start_date" TIMESTAMP(3),
@@ -16641,9 +17641,13 @@ CREATE TABLE "models" (
 
 CREATE INDEX "models_model_name_idx" ON "models"("model_name");
 
+CREATE INDEX "models_scope_idx" ON "models"("scope");
+
 CREATE UNIQUE INDEX "models_project_id_model_name_start_date_unit_key" ON "models"("project_id", "model_name", "start_date", "unit");
 
 ALTER TABLE "models" ADD CONSTRAINT "models_project_id_fkey" FOREIGN KEY ("project_id") REFERENCES "projects"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "models" ADD CONSTRAINT "models_organization_id_fkey" FOREIGN KEY ("organization_id") REFERENCES "organizations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ```
 
 <details>
@@ -16660,7 +17664,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -16705,7 +17711,9 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.model.findMany({ include: { project: true, Price: true, pricingTiers: true } });
+await prisma.model.findMany({
+  include: { project: true, organization: true, Price: true, pricingTiers: true },
+});
 ```
 
 ```sql
@@ -16713,7 +17721,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -16749,6 +17759,30 @@ WHERE
 OFFSET
   $2
 -- params: ["<projectId of the rows above>","0"]
+
+SELECT
+  "public"."organizations"."id",
+  "public"."organizations"."name",
+  "public"."organizations"."created_at",
+  "public"."organizations"."updated_at",
+  "public"."organizations"."cloud_config",
+  "public"."organizations"."metadata",
+  "public"."organizations"."cloud_billing_cycle_anchor",
+  "public"."organizations"."cloud_billing_cycle_updated_at",
+  "public"."organizations"."cloud_current_cycle_usage",
+  "public"."organizations"."cloud_free_tier_usage_threshold_state",
+  "public"."organizations"."ai_features_enabled",
+  "public"."organizations"."ai_telemetry_enabled",
+  "public"."organizations"."access_audit_log_enabled",
+  "public"."organizations"."feature_flag_org_defaults",
+  "public"."organizations"."sfdc_org_id"
+FROM
+  "public"."organizations"
+WHERE
+  "public"."organizations"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organizationId of the rows above>","0"]
 
 SELECT
   "public"."prices"."id",
@@ -16796,7 +17830,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -16823,7 +17859,9 @@ OFFSET
 **create**: Create a row
 
 ```ts
-await prisma.model.create({ data: { modelName: "example", matchPattern: "example" } });
+await prisma.model.create({
+  data: { scope: "LANGFUSE", modelName: "example", matchPattern: "example" },
+});
 ```
 
 ```sql
@@ -16832,16 +17870,26 @@ INSERT INTO
     "id",
     "created_at",
     "updated_at",
+    "scope",
     "model_name",
     "match_pattern"
   )
 VALUES
-  ($1, $2, $3, $4, $5)
+  (
+    $1,
+    $2,
+    $3,
+    CAST($4::text AS "public"."ModelScope"),
+    $5,
+    $6
+  )
 RETURNING
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -16851,7 +17899,7 @@ RETURNING
   "public"."models"."unit",
   "public"."models"."tokenizer_id",
   "public"."models"."tokenizer_config"
--- params: ["<cuid(1)>","<now()>","<now()>","example","example"]
+-- params: ["<cuid(1)>","<now()>","<now()>","LANGFUSE","example","example"]
 ```
 
 **update**: Update a row
@@ -16877,7 +17925,9 @@ RETURNING
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -16907,7 +17957,9 @@ RETURNING
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -17058,7 +18110,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -17368,7 +18422,9 @@ SELECT
   "public"."models"."id",
   "public"."models"."created_at",
   "public"."models"."updated_at",
+  "public"."models"."scope"::text,
   "public"."models"."project_id",
+  "public"."models"."organization_id",
   "public"."models"."model_name",
   "public"."models"."match_pattern",
   "public"."models"."start_date",
@@ -20994,6 +22050,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -21405,6 +22462,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -21429,6 +22487,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -21453,6 +22512,7 @@ SELECT
   "public"."llm_api_keys"."extra_headers",
   "public"."llm_api_keys"."extra_header_keys",
   "public"."llm_api_keys"."config",
+  "public"."llm_api_keys"."external_id",
   "public"."llm_api_keys"."project_id",
   "public"."llm_api_keys"."organization_id"
 FROM
@@ -27293,6 +28353,7 @@ Table `session_views`.
 
 | Field                                                              | Type                                                     | Constraints                             | Default              | Description |
 | ------------------------------------------------------------------ | -------------------------------------------------------- | --------------------------------------- | -------------------- | ----------- |
+| `ownership`                                                        | [`SessionViewOwnership`](#enum-SessionViewOwnership)     | NOT NULL                                | `PROJECT`            |             |
 | `isPinnedByDefaultForProject` (`is_pinned_by_default_for_project`) | `Boolean`                                                | NOT NULL                                | `false`              |             |
 | `id`                                                               | `String`                                                 | PK NOT NULL                             | `cuid(1)`            |             |
 | `projectId` (`project_id`)                                         | `String`                                                 | NOT NULL → [Project.id](#model-Project) |                      |             |
@@ -27306,7 +28367,6 @@ Table `session_views`.
 
 #### Indexes
 
-- `@@unique([projectId, name])`
 - `@@unique([projectId, id])`
 
 #### References
@@ -27316,12 +28376,14 @@ Table `session_views`.
 
 #### Referenced by
 
+- `projectId` ← [AnnotationQueue.projectId](#model-AnnotationQueue) (one-to-many, on delete NoAction)
 - `projectId` ← [SessionViewPinOverride.projectId](#model-SessionViewPinOverride) (one-to-many, on delete Cascade)
 
 #### Definition
 
 ```sql
 CREATE TABLE "session_views" (
+    "ownership" "SessionViewOwnership" NOT NULL DEFAULT 'PROJECT',
     "is_pinned_by_default_for_project" BOOLEAN NOT NULL DEFAULT false,
     "id" TEXT NOT NULL,
     "project_id" TEXT NOT NULL,
@@ -27335,8 +28397,6 @@ CREATE TABLE "session_views" (
 
     CONSTRAINT "session_views_pkey" PRIMARY KEY ("id")
 );
-
-CREATE UNIQUE INDEX "session_views_project_id_name_key" ON "session_views"("project_id", "name");
 
 CREATE UNIQUE INDEX "session_views_project_id_id_key" ON "session_views"("project_id", "id");
 
@@ -27357,6 +28417,7 @@ await prisma.sessionView.findMany();
 ```sql
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27401,12 +28462,15 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.sessionView.findMany({ include: { pins: true, project: true, createdByUser: true } });
+await prisma.sessionView.findMany({
+  include: { annotationQueues: true, pins: true, project: true, createdByUser: true },
+});
 ```
 
 ```sql
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27423,6 +28487,26 @@ WHERE
 OFFSET
   $1
 -- params: ["0"]
+
+SELECT
+  "public"."annotation_queues"."id",
+  "public"."annotation_queues"."name",
+  "public"."annotation_queues"."description",
+  "public"."annotation_queues"."score_config_ids",
+  "public"."annotation_queues"."session_view_id",
+  "public"."annotation_queues"."project_id",
+  "public"."annotation_queues"."created_at",
+  "public"."annotation_queues"."updated_at"
+FROM
+  "public"."annotation_queues"
+WHERE
+  (
+    "public"."annotation_queues"."session_view_id" IN ($1)
+    AND "public"."annotation_queues"."project_id" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<id of the rows above>","<projectId of the rows above>","0"]
 
 SELECT
   "public"."session_view_pin_overrides"."id",
@@ -27493,6 +28577,7 @@ await prisma.sessionView.findUnique({ where: { id: "example" } });
 ```sql
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27533,6 +28618,7 @@ await prisma.sessionView.create({
 ```sql
 INSERT INTO
   "public"."session_views" (
+    "ownership",
     "is_pinned_by_default_for_project",
     "id",
     "project_id",
@@ -27545,18 +28631,20 @@ INSERT INTO
   )
 VALUES
   (
-    $1,
+    CAST($1::text AS "public"."SessionViewOwnership"),
     $2,
     $3,
     $4,
     $5,
-    CAST($6::text AS "public"."SessionViewMode"),
-    CAST($7::text AS "public"."SessionUnmatchedTraces"),
-    $8,
-    $9
+    $6,
+    CAST($7::text AS "public"."SessionViewMode"),
+    CAST($8::text AS "public"."SessionUnmatchedTraces"),
+    $9,
+    $10
   )
 RETURNING
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27566,22 +28654,19 @@ RETURNING
   "public"."session_views"."created_by",
   "public"."session_views"."created_at",
   "public"."session_views"."updated_at"
--- params: [false,"<cuid(1)>","example","example","{}","conversational","show","<now()>","<now()>"]
+-- params: ["PROJECT",false,"<cuid(1)>","example","example","{}","conversational","show","<now()>","<now()>"]
 ```
 
 **update**: Update a row
 
 ```ts
-await prisma.sessionView.update({
-  where: { id: "example" },
-  data: { isPinnedByDefaultForProject: true },
-});
+await prisma.sessionView.update({ where: { id: "example" }, data: { ownership: "PRIVATE" } });
 ```
 
 ```sql
 UPDATE "public"."session_views"
 SET
-  "is_pinned_by_default_for_project" = $1,
+  "ownership" = CAST($1::text AS "public"."SessionViewOwnership"),
   "updated_at" = $2
 WHERE
   (
@@ -27590,6 +28675,7 @@ WHERE
   )
 RETURNING
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27599,7 +28685,7 @@ RETURNING
   "public"."session_views"."created_by",
   "public"."session_views"."created_at",
   "public"."session_views"."updated_at"
--- params: [true,{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+-- params: ["PRIVATE",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
 **delete**: Delete a row
@@ -27617,6 +28703,7 @@ WHERE
   )
 RETURNING
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -27803,6 +28890,7 @@ OFFSET
 
 SELECT
   "public"."session_views"."id",
+  "public"."session_views"."ownership"::text,
   "public"."session_views"."is_pinned_by_default_for_project",
   "public"."session_views"."project_id",
   "public"."session_views"."name",
@@ -31504,11 +32592,13 @@ CREATE TYPE "ApiKeyScope" AS ENUM ('ORGANIZATION', 'PROJECT', 'USER');
 - `SCORES_INGEST`
 - `INGEST`
 - `AI_GATEWAY`
+- `AI_GATEWAY_INFERENCE`
+- `APPLICATION`
 
 #### Definition
 
 ```sql
-CREATE TYPE "SystemRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER', 'NONE', 'LEGACY_PROJECT_API_KEY', 'LEGACY_ORGANIZATION_API_KEY', 'SCORES_INGEST', 'INGEST', 'AI_GATEWAY');
+CREATE TYPE "SystemRole" AS ENUM ('OWNER', 'ADMIN', 'MEMBER', 'VIEWER', 'NONE', 'LEGACY_PROJECT_API_KEY', 'LEGACY_ORGANIZATION_API_KEY', 'SCORES_INGEST', 'INGEST', 'AI_GATEWAY', 'AI_GATEWAY_INFERENCE', 'APPLICATION');
 ```
 
 <a id="enum-GatewayIngestionMode"></a>
@@ -31557,6 +32647,50 @@ CREATE TYPE "GatewayProvider" AS ENUM ('openai', 'anthropic', 'bedrock', 'openro
 
 ```sql
 CREATE TYPE "GatewayConnectionStatus" AS ENUM ('enabled', 'disabled', 'error');
+```
+
+<a id="enum-GatewaySpendLimitScope"></a>
+
+### GatewaySpendLimitScope
+
+- `API_KEY`
+- `USER`
+- `API_KEY_DEFAULT`
+- `USER_DEFAULT`
+- `ORGANIZATION`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewaySpendLimitScope" AS ENUM ('API_KEY', 'USER', 'API_KEY_DEFAULT', 'USER_DEFAULT', 'ORGANIZATION');
+```
+
+<a id="enum-GatewaySpendLimitInterval"></a>
+
+### GatewaySpendLimitInterval
+
+- `DAILY`
+- `WEEKLY`
+- `MONTHLY`
+- `TOTAL`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewaySpendLimitInterval" AS ENUM ('DAILY', 'WEEKLY', 'MONTHLY', 'TOTAL');
+```
+
+<a id="enum-GatewaySpendLimitAlertType"></a>
+
+### GatewaySpendLimitAlertType
+
+- `WARNING`
+- `EXCEEDED`
+
+#### Definition
+
+```sql
+CREATE TYPE "GatewaySpendLimitAlertType" AS ENUM ('WARNING', 'EXCEEDED');
 ```
 
 <a id="enum-InAppAgentConversationVisibilityScope"></a>
@@ -31681,6 +32815,20 @@ CREATE TYPE "NotificationChannel" AS ENUM ('EMAIL');
 
 ```sql
 CREATE TYPE "NotificationType" AS ENUM ('COMMENT_MENTION');
+```
+
+<a id="enum-ModelScope"></a>
+
+### ModelScope
+
+- `LANGFUSE`
+- `ORGANIZATION`
+- `PROJECT`
+
+#### Definition
+
+```sql
+CREATE TYPE "ModelScope" AS ENUM ('LANGFUSE', 'ORGANIZATION', 'PROJECT');
 ```
 
 <a id="enum-AuditLogRecordType"></a>
@@ -31964,6 +33112,19 @@ CREATE TYPE "SessionViewMode" AS ENUM ('conversational', 'list');
 
 ```sql
 CREATE TYPE "SessionUnmatchedTraces" AS ENUM ('show', 'hide');
+```
+
+<a id="enum-SessionViewOwnership"></a>
+
+### SessionViewOwnership
+
+- `PRIVATE`
+- `PROJECT`
+
+#### Definition
+
+```sql
+CREATE TYPE "SessionViewOwnership" AS ENUM ('PRIVATE', 'PROJECT');
 ```
 
 <a id="enum-ActionType"></a>

@@ -23,4 +23,5 @@ class Space < ApplicationRecord
   has_many :nonprofit_applications, dependent: :destroy
   has_many :webhooks, class_name: "SpaceWebhook", inverse_of: :space, dependent: :destroy
   has_many :api_usage, dependent: :destroy
+  has_many :usage, class_name: "SpaceUsage", inverse_of: :space, dependent: :destroy
 end

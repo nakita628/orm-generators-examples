@@ -13,6 +13,7 @@ class LiteLLMObjectPermissionTable < ApplicationRecord
   attribute :mcp_toolsets, default: -> { [] }
   attribute :search_tools, default: -> { [] }
   attribute :skills, default: -> { [] }
+  attribute :apps, default: -> { [] }
 
   has_many :teams, class_name: "LiteLLMTeamTable", foreign_key: "object_permission_id", inverse_of: :object_permission,
                    dependent: :nullify

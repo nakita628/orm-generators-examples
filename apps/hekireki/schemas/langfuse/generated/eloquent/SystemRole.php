@@ -14,4 +14,6 @@ enum SystemRole: string
     case SCORES_INGEST = 'SCORES_INGEST';
     case INGEST = 'INGEST';
     case AI_GATEWAY = 'AI_GATEWAY';
+    case AI_GATEWAY_INFERENCE = 'AI_GATEWAY_INFERENCE';
+    case APPLICATION = 'APPLICATION';
 }

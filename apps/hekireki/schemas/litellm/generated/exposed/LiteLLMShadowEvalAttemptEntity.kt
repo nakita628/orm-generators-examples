@@ -23,6 +23,8 @@ class LiteLLMShadowEvalAttemptEntity(
     var realClassifierCost by LiteLLMShadowEvalAttemptTable.realClassifierCost
     var shadowClassifierCost by LiteLLMShadowEvalAttemptTable.shadowClassifierCost
     var realCacheHit by LiteLLMShadowEvalAttemptTable.realCacheHit
+    var realGrade by LiteLLMShadowEvalAttemptTable.realGrade
+    var shadowGrade by LiteLLMShadowEvalAttemptTable.shadowGrade
     var error by LiteLLMShadowEvalAttemptTable.error
     var createdAt by LiteLLMShadowEvalAttemptTable.createdAt
 }

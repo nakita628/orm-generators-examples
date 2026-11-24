@@ -5,6 +5,8 @@ defmodule LiteLLM.LiteLLMUserTable do
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          rollover_max_budget: float() | nil,
+          rollover_credit: float() | nil,
           budget_limits: map() | list() | String.t() | number() | boolean() | nil,
           user_id: String.t(),
           user_alias: String.t() | nil,
@@ -41,6 +43,8 @@ defmodule LiteLLM.LiteLLMUserTable do
         }
 
   schema "LiteLLM_UserTable" do
+    field(:rollover_max_budget, :float)
+    field(:rollover_credit, :float)
     field(:budget_limits, LiteLLM.PrismaJson)
     field(:user_id, :string, primary_key: true)
     field(:user_alias, :string)

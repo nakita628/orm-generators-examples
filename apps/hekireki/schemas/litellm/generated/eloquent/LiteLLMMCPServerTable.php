@@ -67,6 +67,7 @@ class LiteLLMMCPServerTable extends Model
         'timeout',
         'max_concurrent_requests',
         'rpm',
+        'events',
         'approval_status',
         'submitted_by',
         'submitted_at',
@@ -119,6 +120,7 @@ class LiteLLMMCPServerTable extends Model
         'timeout' => 'float',
         'max_concurrent_requests' => 'integer',
         'rpm' => 'integer',
+        'events' => 'array',
         'submitted_at' => 'datetime',
         'reviewed_at' => 'datetime',
     ];

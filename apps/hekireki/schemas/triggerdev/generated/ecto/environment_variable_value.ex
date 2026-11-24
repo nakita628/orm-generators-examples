@@ -7,6 +7,8 @@ defmodule Trigger.EnvironmentVariableValue do
   @type t :: %__MODULE__{
           id: String.t(),
           is_secret: boolean(),
+          is_proxy_only: boolean(),
+          proxy_config: map() | list() | String.t() | number() | boolean() | nil,
           version: integer(),
           last_updated_by: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
@@ -20,6 +22,8 @@ defmodule Trigger.EnvironmentVariableValue do
     field(:id, :string, primary_key: true)
     # If true, the value is secret and cannot be revealed
     field(:is_secret, :boolean, default: false, source: :isSecret)
+    field(:is_proxy_only, :boolean, default: false, source: :isProxyOnly)
+    field(:proxy_config, Trigger.PrismaJson, source: :proxyConfig)
     field(:version, :integer, default: 1)
     field(:last_updated_by, Trigger.PrismaJson, source: :lastUpdatedBy)
     field(:value_reference_id, :string, source: :valueReferenceId)

@@ -19,6 +19,10 @@ pub struct Model {
     pub simulator_model: Option<String>,
     #[sea_orm(column_name = "judgeModel")]
     pub judge_model: Option<String>,
+    #[sea_orm(column_name = "traceQuietPeriodMs")]
+    pub trace_quiet_period_ms: Option<i32>,
+    #[sea_orm(column_name = "traceWaitTimeoutMs")]
+    pub trace_wait_timeout_ms: Option<i32>,
     #[sea_orm(column_name = "maxTurns")]
     pub max_turns: Option<i32>,
     #[sea_orm(column_name = "minTurns")]
@@ -28,6 +32,12 @@ pub struct Model {
     pub caller_voice: Option<Json>,
     #[sea_orm(column_name = "testSuiteId")]
     pub test_suite_id: Option<String>,
+    #[sea_orm(default_value = "standard")]
+    pub kind: String,
+    #[sea_orm(column_name = "redTeam")]
+    pub red_team: Option<Json>,
+    #[sea_orm(column_name = "sourceTemplateId")]
+    pub source_template_id: Option<String>,
     #[sea_orm(default_value = 1)]
     pub version: i32,
     #[sea_orm(column_name = "lastUpdatedById")]

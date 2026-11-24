@@ -8,6 +8,8 @@ public partial class LiteLLMShadowEvalFunnel
 
     public int NotSampled { get; set; } = 0;
 
+    public int SameModel { get; set; } = 0;
+
     public int Unjudgeable { get; set; } = 0;
 
     public int Shed { get; set; } = 0;

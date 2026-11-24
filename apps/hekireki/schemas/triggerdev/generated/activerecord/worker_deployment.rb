@@ -1,9 +1,11 @@
-# cliVersion:: CLI version that initiated the deploy, stamped at initialization
+# cliVersion:: CLI version that initiated the deploy, stamped at initialization or worker upload
 # templateKey:: Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds
 # indexObjectKey:: Object key of the full index snapshot in the deployment index store. Set only after the upload succeeds.
 # indexSha256:: sha256 hex of the snapshot's uncompressed JSON
 # buildEnvVars:: Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an
 #   EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep.
+# initiatedByCredential:: The kind of credential that started the deployment. Null when unknown.
+# supersededById:: The newer GitHub build that superseded this one while it was still queued
 class WorkerDeployment < ApplicationRecord
   self.table_name = "WorkerDeployment"
   self.inheritance_column = nil
@@ -17,6 +19,8 @@ class WorkerDeployment < ApplicationRecord
   enum :status, { pending: "PENDING", installing: "INSTALLING", building: "BUILDING", deploying: "DEPLOYING", deployed: "DEPLOYED", failed: "FAILED", canceled: "CANCELED", timed_out: "TIMED_OUT" },
        default: :pending, validate: true
   enum :type, { managed: "MANAGED", unmanaged: "UNMANAGED", v1: "V1" }, default: :v1, validate: true
+  enum :initiatedByCredential, { root_api_key: "ROOT_API_KEY", scoped_api_key: "SCOPED_API_KEY", personal_access_token: "PERSONAL_ACCESS_TOKEN", organization_access_token: "ORGANIZATION_ACCESS_TOKEN", trusted_publishing: "TRUSTED_PUBLISHING" },
+       validate: { allow_nil: true }
 
   validates :contentHash, presence: true
   validates :friendlyId, presence: true, uniqueness: true

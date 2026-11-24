@@ -7,6 +7,10 @@ namespace Langfuse.Models;
 
 public partial class SessionView
 {
+    public SessionViewOwnership Ownership { get; set; } = SessionViewOwnership.Project;
+
+    public virtual ICollection<AnnotationQueue> AnnotationQueues { get; set; } = new List<AnnotationQueue>();
+
     public bool IsPinnedByDefaultForProject { get; set; } = false;
 
     public virtual ICollection<SessionViewPinOverride> Pins { get; set; } = new List<SessionViewPinOverride>();

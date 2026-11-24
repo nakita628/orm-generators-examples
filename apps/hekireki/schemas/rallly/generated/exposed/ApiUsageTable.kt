@@ -5,6 +5,10 @@ import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+/**
+ * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+ * deployments keep working during the switch, then dropped.
+ */
 object ApiUsageTable : CompositeIdTable("api_usage") {
     val spaceId =
         reference(

@@ -19,6 +19,7 @@ defmodule LiteLLM.LiteLLMCustomerMemberTable do
           parent_org: LiteLLM.LiteLLMCustomerOrganizationTable.t() | nil,
           budget: LiteLLM.LiteLLMBudgetTable.t() | nil,
           budget_override: LiteLLM.LiteLLMBudgetTable.t() | nil,
+          apps: [LiteLLM.LiteLLMAppCustomerMemberTable.t()],
           budget_increase_requests: [LiteLLM.LiteLLMCustomerBudgetIncreaseRequest.t()]
         }
 
@@ -33,6 +34,7 @@ defmodule LiteLLM.LiteLLMCustomerMemberTable do
     belongs_to(:parent_org, LiteLLM.LiteLLMCustomerOrganizationTable, foreign_key: :parent_org_id)
     belongs_to(:budget, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id)
     belongs_to(:budget_override, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_override_id)
+    has_many(:apps, LiteLLM.LiteLLMAppCustomerMemberTable, foreign_key: :customer_member_id)
     has_many(:budget_increase_requests, LiteLLM.LiteLLMCustomerBudgetIncreaseRequest, foreign_key: :customer_member_id)
     timestamps(inserted_at_source: :created_at)
   end

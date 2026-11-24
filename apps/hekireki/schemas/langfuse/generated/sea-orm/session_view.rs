@@ -1,5 +1,6 @@
 use super::session_unmatched_traces::SessionUnmatchedTraces;
 use super::session_view_mode::SessionViewMode;
+use super::session_view_ownership::SessionViewOwnership;
 use chrono::SubsecRound;
 use sea_orm::entity::prelude::*;
 use sea_orm::Set;
@@ -8,6 +9,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "session_views")]
 pub struct Model {
+    #[sea_orm(default_value = "PROJECT")]
+    pub ownership: SessionViewOwnership,
     #[sea_orm(default_value = false)]
     pub is_pinned_by_default_for_project: bool,
     #[sea_orm(primary_key, auto_increment = false)]
@@ -38,6 +41,8 @@ pub enum Relation {
         on_delete = "SetNull"
     )]
     CreatedByUser,
+    #[sea_orm(has_many = "super::annotation_queue::Entity")]
+    AnnotationQueues,
     #[sea_orm(has_many = "super::session_view_pin_override::Entity")]
     Pins,
 }
@@ -51,6 +56,12 @@ impl Related<super::project::Entity> for Entity {
 impl Related<super::user::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::CreatedByUser.def()
+    }
+}
+
+impl Related<super::annotation_queue::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AnnotationQueues.def()
     }
 }
 

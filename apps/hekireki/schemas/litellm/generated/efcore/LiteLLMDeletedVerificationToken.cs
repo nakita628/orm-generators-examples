@@ -7,6 +7,8 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMDeletedVerificationToken
 {
+    public string? KeyId { get; set; }
+
     public string Id { get; set; } = null!;
 
     public string Token { get; set; } = null!;

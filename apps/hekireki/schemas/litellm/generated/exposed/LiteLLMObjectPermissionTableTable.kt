@@ -19,5 +19,6 @@ object LiteLLMObjectPermissionTableTable : IdTable<String>("\"LiteLLM_ObjectPerm
     val searchTools = array("search_tools", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val mcpToolSearchEnabled = bool("mcp_tool_search_enabled").nullable()
     val skills = array("skills", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
+    val apps = array("apps", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     override val primaryKey = PrimaryKey(id, name = "\"LiteLLM_ObjectPermissionTable_pkey\"")
 }

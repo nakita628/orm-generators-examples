@@ -104,6 +104,7 @@ type User struct {
 	UserOrganizations          []UserOrganization       `gorm:"foreignKey:UserID;constraint:UserOrganization_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Bookings                   []Booking                `gorm:"foreignKey:CreatorID;constraint:Booking_creatorId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Custodies                  []Booking                `gorm:"foreignKey:CustodianUserID;constraint:Booking_custodianUserId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ApprovedBookings           []Booking                `gorm:"foreignKey:ApprovedByID;constraint:Booking_approvedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	CreatedKits                []Kit                    `gorm:"foreignKey:CreatedByID;constraint:Kit_createdById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	AssetReminders             []AssetReminder          `gorm:"foreignKey:CreatedByID;constraint:AssetReminder_createdById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	AuditsCreated              []AuditSession           `gorm:"foreignKey:CreatedByID;constraint:AuditSession_createdById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
@@ -1831,10 +1832,13 @@ type Booking struct {
 	AutoArchivedAt           *DateTime                `gorm:"column:autoArchivedAt;type:timestamptz(3)" json:"autoArchivedAt"`
 	ArchivedWithoutCheckin   bool                     `gorm:"column:archivedWithoutCheckin;default:false;not null" json:"archivedWithoutCheckin"`
 	CancellationReason       *string                  `gorm:"column:cancellationReason" json:"cancellationReason"`
+	ApprovedAt               *DateTime                `gorm:"column:approvedAt;type:timestamptz(3)" json:"approvedAt"`
+	ApprovedByID             *string                  `gorm:"column:approvedById;index:Booking_approvedById_idx" json:"approvedById"`
 	Creator                  *User                    `gorm:"foreignKey:CreatorID;belongsTo"`
 	CustodianUser            *User                    `gorm:"foreignKey:CustodianUserID;belongsTo"`
 	CustodianTeamMember      *TeamMember              `gorm:"foreignKey:CustodianTeamMemberID;belongsTo"`
 	Organization             *Organization            `gorm:"belongsTo"`
+	ApprovedBy               *User                    `gorm:"foreignKey:ApprovedByID;belongsTo"`
 	BookingAssets            []BookingAsset           `gorm:"foreignKey:BookingID;constraint:BookingAsset_bookingId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	ConsumptionLogs          []ConsumptionLog         `gorm:"foreignKey:BookingID;constraint:ConsumptionLog_bookingId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	Notes                    []BookingNote            `gorm:"foreignKey:BookingID;constraint:BookingNote_bookingId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1880,6 +1884,8 @@ type BookingSettings struct {
 	AutoArchiveBookings                   bool          `gorm:"column:autoArchiveBookings;default:false;not null" json:"autoArchiveBookings"`
 	AutoArchiveDays                       *int          `gorm:"column:autoArchiveDays;size:32;default:2;not null" json:"autoArchiveDays"`
 	AutoArchiveExpiredReservations        bool          `gorm:"column:autoArchiveExpiredReservations;default:false;not null" json:"autoArchiveExpiredReservations"`
+	RequireApprovalForBase                bool          `gorm:"column:requireApprovalForBase;default:false;not null" json:"requireApprovalForBase"`
+	RequireApprovalForSelfService         bool          `gorm:"column:requireApprovalForSelfService;default:false;not null" json:"requireApprovalForSelfService"`
 	RequireExplicitCheckinForAdmin        bool          `gorm:"column:requireExplicitCheckinForAdmin;default:false;not null" json:"requireExplicitCheckinForAdmin"`
 	RequireExplicitCheckinForSelfService  bool          `gorm:"column:requireExplicitCheckinForSelfService;default:false;not null" json:"requireExplicitCheckinForSelfService"`
 	RequireExplicitCheckoutForAdmin       bool          `gorm:"column:requireExplicitCheckoutForAdmin;default:false;not null" json:"requireExplicitCheckoutForAdmin"`

@@ -12,6 +12,7 @@ object AnnotationQueueTable : IdTable<String>("annotation_queues") {
     val name = text("name")
     val description = text("description").nullable()
     val scoreConfigIds = array("score_config_ids", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
+    val sessionViewId = text("session_view_id").nullable()
     val projectId =
         reference(
             "project_id",
@@ -27,6 +28,14 @@ object AnnotationQueueTable : IdTable<String>("annotation_queues") {
     init {
         index("annotation_queues_id_project_id_idx", false, id, projectId)
         index("annotation_queues_project_id_created_at_idx", false, projectId, createdAt)
+        index("annotation_queues_project_id_session_view_id_idx", false, projectId, sessionViewId)
         uniqueIndex("annotation_queues_project_id_name_key", projectId, name)
+        foreignKey(
+            projectId to SessionViewTable.projectId,
+            sessionViewId to SessionViewTable.id,
+            onDelete = ReferenceOption.NO_ACTION,
+            onUpdate = ReferenceOption.CASCADE,
+            name = "annotation_queues_project_id_session_view_id_fkey",
+        )
     }
 }

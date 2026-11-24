@@ -9,6 +9,8 @@ export type Timestamp = ColumnType<Date, Date | string, Date | string>
 
 export type AuthenticationMethod = 'GITHUB' | 'MAGIC_LINK' | 'GOOGLE' | 'SSO'
 
+export type OAuthClientKind = 'PREREGISTERED' | 'CIMD' | 'DCR'
+
 export type OrganizationAccessTokenType = 'USER' | 'SYSTEM'
 
 export type OrgMemberRole = 'ADMIN' | 'MEMBER'
@@ -31,6 +33,8 @@ export type OidcSigningKeyStatus = 'STAGED' | 'ACTIVE' | 'RETIRED'
 export type OidcSigningKeyPurpose = 'EXTERNAL_OIDC' | 'INTERNAL_RUN'
 
 export type TaskTriggerSource = 'STANDARD' | 'SCHEDULED' | 'AGENT' | 'WEBHOOK'
+
+export type TaskExecutionMode = 'STANDARD' | 'SANDBOX'
 
 export type WebhookEndpointStatus = 'ACTIVE' | 'INACTIVE' | 'DELETING'
 
@@ -124,11 +128,20 @@ export type BatchTaskRunStatus =
 
 export type BatchTaskRunItemStatus = 'PENDING' | 'FAILED' | 'CANCELED' | 'COMPLETED'
 
+export type EnvironmentVariableIgnoreReason = 'EMPTY' | 'MISSING' | 'OIDC'
+
 export type CheckpointType = 'DOCKER' | 'KUBERNETES'
 
 export type CheckpointRestoreEventType = 'CHECKPOINT' | 'RESTORE'
 
 export type WorkerDeploymentType = 'MANAGED' | 'UNMANAGED' | 'V1'
+
+export type DeploymentInitiatedByCredential =
+  | 'ROOT_API_KEY'
+  | 'SCOPED_API_KEY'
+  | 'PERSONAL_ACCESS_TOKEN'
+  | 'ORGANIZATION_ACCESS_TOKEN'
+  | 'TRUSTED_PUBLISHING'
 
 export type WorkerDeploymentStatus =
   | 'PENDING'
@@ -265,6 +278,13 @@ export interface AuthorizationCode {
   callbackPort: number | null
   /** sha256 of the approval code, which only the approving browser ever sees. */
   approvalCodeHash: string | null
+  oauthClientId: string | null
+  redirectUri: string | null
+  scope: Generated<string[]>
+  resource: string | null
+  approvedByUserId: string | null
+  /** The user who started the OAuth authorization. Only they can approve it. */
+  requestedByUserId: string | null
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
 }
@@ -295,6 +315,35 @@ export interface PersonalAccessToken {
   expiredNoticeSentAt: Timestamp | null
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
+  oauthClientId: string | null
+}
+
+export interface OAuthClient {
+  id: string
+  kind: OAuthClientKind
+  clientId: string
+  metadataUrl: string | null
+  displayName: string | null
+  selfReportedName: string | null
+  redirectUris: string[]
+  dedupeKey: string | null
+  metadataExpiresAt: Timestamp | null
+  lastUsedAt: Timestamp | null
+  createdAt: Generated<Timestamp>
+  updatedAt: Timestamp
+}
+
+export interface OAuthRefreshToken {
+  id: string
+  hashedToken: string
+  personalAccessTokenId: string
+  oauthClientId: string
+  scope: string[]
+  resource: string
+  usedAt: Timestamp | null
+  replacedById: string | null
+  idleExpiresAt: Timestamp
+  createdAt: Generated<Timestamp>
 }
 
 export interface OrganizationAccessToken {
@@ -363,6 +412,11 @@ export interface Organization {
   supportAccessMode: Generated<SupportAccessMode>
   supportAccessModeUpdatedAt: Timestamp | null
   supportAccessModeUpdatedById: string | null
+  /** When true, members without MFA are locked out of the dashboard and CLI until they set it up. */
+  mfaRequired: Generated<boolean>
+  /** Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp). */
+  mfaStepUpActions: Generated<string[]>
+  mfaStepUpWindowMinutes: Generated<number>
 }
 
 export interface OrgMember {
@@ -370,6 +424,10 @@ export interface OrgMember {
   organizationId: string
   userId: string
   role: Generated<OrgMemberRole>
+  /** Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded. */
+  invitedById: string | null
+  /** How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded. */
+  joinMethod: string | null
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
 }
@@ -403,6 +461,8 @@ export interface RuntimeEnvironment {
   apiKey: string
   /** Non-null prevents the root API key from being returned to users. */
   rootApiKeyHiddenAt: Timestamp | null
+  /** Non-null disables automatic root key injection into new deployed attempts. */
+  rootKeyInjectionDisabledAt: Timestamp | null
   /** @deprecated was for v2 */
   pkApiKey: string
   type: Generated<RuntimeEnvironmentType>
@@ -492,6 +552,8 @@ export interface Project {
   engine: Generated<RunEngineVersion>
   builderProjectId: string | null
   defaultWorkerGroupId: string | null
+  /** Newly triggered deployed runs require the secret proxy (pinned in their annotations). */
+  secretProxyEnabled: Generated<boolean>
   /** The master queues they are allowed to use (impacts what they can set as default and trigger runs with) */
   allowedMasterQueues: Generated<string[]>
   buildSettings: unknown
@@ -654,6 +716,9 @@ export interface BackgroundWorkerTask {
    * AGENT: { type: "ai-sdk-chat" }
    */
   config: unknown
+  executionMode: Generated<TaskExecutionMode>
+  /** RunExecutionPolicy from @trigger.dev/core. Null means the standard policy. */
+  executionPolicy: unknown
   payloadSchema: unknown
 }
 
@@ -1261,6 +1326,7 @@ export interface WorkerGroupToken {
   previousTokenValidUntil: Timestamp | null
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
+  workerGroupId: string | null
 }
 
 export interface TaskRunTag {
@@ -1524,10 +1590,26 @@ export interface EnvironmentVariableValue {
   environmentId: string
   /** If true, the value is secret and cannot be revealed */
   isSecret: Generated<boolean>
+  isProxyOnly: Generated<boolean>
+  proxyConfig: unknown
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
   version: Generated<number>
   lastUpdatedBy: unknown
+}
+
+/**
+ * A reason the environment variables "Needs attention" page shows a key in one environment, which
+ * the project's team chose to ignore. An ignored EMPTY goes when the value is next saved.
+ */
+export interface EnvironmentVariableIgnore {
+  id: string
+  projectId: string
+  environmentId: string
+  variableId: string
+  reason: EnvironmentVariableIgnoreReason
+  createdById: string | null
+  createdAt: Generated<Timestamp>
 }
 
 export interface Checkpoint {
@@ -1569,7 +1651,7 @@ export interface WorkerDeployment {
   version: string
   runtime: string | null
   runtimeVersion: string | null
-  /** CLI version that initiated the deploy, stamped at initialization */
+  /** CLI version that initiated the deploy, stamped at initialization or worker upload */
   cliVersion: string | null
   imageReference: string | null
   imagePlatform: Generated<string>
@@ -1596,6 +1678,8 @@ export interface WorkerDeployment {
   triggeredVia: string | null
   commitSHA: string | null
   externalId: string | null
+  /** The kind of credential that started the deployment. Null when unknown. */
+  initiatedByCredential: DeploymentInitiatedByCredential | null
   startedAt: Timestamp | null
   installedAt: Timestamp | null
   builtAt: Timestamp | null
@@ -1604,6 +1688,8 @@ export interface WorkerDeployment {
   errorData: unknown
   canceledAt: Timestamp | null
   canceledReason: string | null
+  /** The newer GitHub build that superseded this one while it was still queued */
+  supersededById: string | null
   git: unknown
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
@@ -1928,6 +2014,10 @@ export interface ConnectedGithubRepository {
   repositoryId: string
   branchTracking: unknown
   previewDeploymentsEnabled: Generated<boolean>
+  /** Skip queued builds once a newer commit is queued for the same environment or preview branch */
+  supersedeProductionBuilds: Generated<boolean>
+  supersedeStagingBuilds: Generated<boolean>
+  supersedePreviewBuilds: Generated<boolean>
   buildFilters: unknown
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
@@ -2239,6 +2329,8 @@ export interface DB {
   InvitationCode: InvitationCode
   AuthorizationCode: AuthorizationCode
   PersonalAccessToken: PersonalAccessToken
+  OAuthClient: OAuthClient
+  OAuthRefreshToken: OAuthRefreshToken
   OrganizationAccessToken: OrganizationAccessToken
   Organization: Organization
   OrgMember: OrgMember
@@ -2290,6 +2382,7 @@ export interface DB {
   BatchTaskRunError: BatchTaskRunError
   EnvironmentVariable: EnvironmentVariable
   EnvironmentVariableValue: EnvironmentVariableValue
+  EnvironmentVariableIgnore: EnvironmentVariableIgnore
   Checkpoint: Checkpoint
   CheckpointRestoreEvent: CheckpointRestoreEvent
   WorkerDeployment: WorkerDeployment

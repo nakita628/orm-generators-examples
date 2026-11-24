@@ -19,4 +19,8 @@ public partial class WorkerGroupToken
     public DateTime UpdatedAt { get; set; }
 
     public virtual WorkerInstanceGroup? WorkerGroup { get; set; }
+
+    public virtual WorkerInstanceGroup? ChildOf { get; set; }
+
+    public string? WorkerGroupId { get; set; }
 }

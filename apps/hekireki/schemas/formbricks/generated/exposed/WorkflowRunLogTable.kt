@@ -35,6 +35,7 @@ object WorkflowRunLogTable : IdTable<String>("\"WorkflowRunLog\"") {
 
     init {
         index("\"WorkflowRunLog_runId_sequence_idx\"", false, runId, sequence)
+        index("\"WorkflowRunLog_status_startedAt_idx\"", false, status, startedAt)
         uniqueIndex("\"WorkflowRunLog_runId_stepId_key\"", runId, stepId)
     }
 }

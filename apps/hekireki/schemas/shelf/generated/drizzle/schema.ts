@@ -444,6 +444,7 @@ export const activityActionEnum = pgEnum('ActivityAction', [
   'BOOKING_PARTIAL_CHECKOUT',
   'BOOKING_CANCELLED',
   'BOOKING_ARCHIVED',
+  'BOOKING_APPROVED',
   'BOOKING_MODEL_REQUESTED',
   'BOOKING_MODEL_REQUEST_CHANGED',
   'BOOKING_MODEL_REQUEST_REMOVED',
@@ -2198,11 +2199,14 @@ export const booking = pgTable(
     autoArchivedAt: timestamp('autoArchivedAt', { withTimezone: true, precision: 3 }),
     archivedWithoutCheckin: boolean('archivedWithoutCheckin').notNull().default(false),
     cancellationReason: text('cancellationReason'),
+    approvedAt: timestamp('approvedAt', { withTimezone: true, precision: 3 }),
+    approvedById: text('approvedById'),
   },
   (table) => [
     index('Booking_creatorId_idx').on(table.creatorId),
     index('Booking_custodianTeamMemberId_idx').on(table.custodianTeamMemberId),
     index('Booking_custodianUserId_idx').on(table.custodianUserId),
+    index('Booking_approvedById_idx').on(table.approvedById),
     index('Booking_organizationId_idx').on(table.organizationId),
     index('Booking_status_idx').on(table.status),
     index('Booking_organizationId_from_id_idx').on(table.organizationId, table.from, table.id),
@@ -2234,6 +2238,13 @@ export const booking = pgTable(
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
+    foreignKey({
+      name: 'Booking_approvedById_fkey',
+      columns: [table.approvedById],
+      foreignColumns: [user.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
   ],
 )
 
@@ -2252,6 +2263,10 @@ export const bookingSettings = pgTable(
     autoArchiveBookings: boolean('autoArchiveBookings').notNull().default(false),
     autoArchiveDays: integer('autoArchiveDays').notNull().default(2),
     autoArchiveExpiredReservations: boolean('autoArchiveExpiredReservations')
+      .notNull()
+      .default(false),
+    requireApprovalForBase: boolean('requireApprovalForBase').notNull().default(false),
+    requireApprovalForSelfService: boolean('requireApprovalForSelfService')
       .notNull()
       .default(false),
     requireExplicitCheckinForAdmin: boolean('requireExplicitCheckinForAdmin')
@@ -3770,6 +3785,7 @@ export const relations = defineRelations(
       userOrganizations: r.many.userOrganization(),
       bookings: r.many.booking({ alias: 'creator' }),
       custodies: r.many.booking({ alias: 'custodian' }),
+      approvedBookings: r.many.booking({ alias: 'bookingApprover' }),
       createdKits: r.many.kit(),
       tier: r.one.tier({ from: r.user.tierId, to: r.tier.id, optional: false }),
       assetReminders: r.many.assetReminder(),
@@ -4209,6 +4225,11 @@ export const relations = defineRelations(
       }),
       partialCheckins: r.many.partialBookingCheckin(),
       partialCheckouts: r.many.partialBookingCheckout(),
+      approvedBy: r.one.user({
+        from: r.booking.approvedById,
+        to: r.user.id,
+        alias: 'bookingApprover',
+      }),
       notificationRecipients: r.many.teamMember({
         from: r.booking.id.through(r.bookingNotificationRecipients.A),
         to: r.teamMember.id.through(r.bookingNotificationRecipients.B),

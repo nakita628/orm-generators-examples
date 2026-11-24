@@ -49,6 +49,16 @@ class LiteLLMCustomerOrganizationTable extends Model
         return $this->belongsTo(LiteLLMBudgetTable::class, 'default_budget_template_id');
     }
 
+    public function app_groups(): HasMany
+    {
+        return $this->hasMany(LiteLLMAppGroupCustomerOrgTable::class, 'customer_org_id');
+    }
+
+    public function apps(): HasMany
+    {
+        return $this->hasMany(LiteLLMAppCustomerOrgTable::class, 'customer_org_id');
+    }
+
     public function teams(): HasMany
     {
         return $this->hasMany(LiteLLMCustomerTeamTable::class, 'parent_org_id');

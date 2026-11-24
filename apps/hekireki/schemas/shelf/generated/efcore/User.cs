@@ -97,6 +97,8 @@ public partial class User
 
     public virtual ICollection<Booking> Custodies { get; set; } = new List<Booking>();
 
+    public virtual ICollection<Booking> ApprovedBookings { get; set; } = new List<Booking>();
+
     public virtual ICollection<Kit> CreatedKits { get; set; } = new List<Kit>();
 
     public TierId TierId { get; set; } = TierId.Free;

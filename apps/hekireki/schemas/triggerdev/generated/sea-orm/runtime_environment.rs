@@ -17,6 +17,9 @@ pub struct Model {
     /// Non-null prevents the root API key from being returned to users.
     #[sea_orm(column_name = "rootApiKeyHiddenAt")]
     pub root_api_key_hidden_at: Option<DateTime>,
+    /// Non-null disables automatic root key injection into new deployed attempts.
+    #[sea_orm(column_name = "rootKeyInjectionDisabledAt")]
+    pub root_key_injection_disabled_at: Option<DateTime>,
     /// @deprecated was for v2
     #[sea_orm(unique)]
     #[sea_orm(column_name = "pkApiKey")]
@@ -142,6 +145,8 @@ pub enum Relation {
     TaskQueues,
     #[sea_orm(has_many = "super::environment_variable_value::Entity")]
     EnvironmentVariableValues,
+    #[sea_orm(has_many = "super::environment_variable_ignore::Entity")]
+    EnvironmentVariableIgnores,
     #[sea_orm(has_many = "super::checkpoint::Entity")]
     Checkpoints,
     #[sea_orm(has_many = "super::worker_deployment::Entity")]
@@ -257,6 +262,12 @@ impl Related<super::task_queue::Entity> for Entity {
 impl Related<super::environment_variable_value::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::EnvironmentVariableValues.def()
+    }
+}
+
+impl Related<super::environment_variable_ignore::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EnvironmentVariableIgnores.def()
     }
 }
 

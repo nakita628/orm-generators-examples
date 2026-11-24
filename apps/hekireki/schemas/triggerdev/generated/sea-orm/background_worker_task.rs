@@ -1,3 +1,4 @@
+use super::task_execution_mode::TaskExecutionMode;
 use super::task_trigger_source::TaskTriggerSource;
 use chrono::SubsecRound;
 use sea_orm::entity::prelude::*;
@@ -49,6 +50,11 @@ pub struct Model {
     /// Extra task configuration JSON. Shape depends on triggerSource.
     /// AGENT: { type: "ai-sdk-chat" }
     pub config: Option<Json>,
+    #[sea_orm(column_name = "executionMode", default_value = "STANDARD")]
+    pub execution_mode: TaskExecutionMode,
+    /// RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.
+    #[sea_orm(column_name = "executionPolicy")]
+    pub execution_policy: Option<Json>,
     #[sea_orm(column_name = "payloadSchema")]
     pub payload_schema: Option<Json>,
 }

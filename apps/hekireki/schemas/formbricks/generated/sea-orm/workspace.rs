@@ -88,6 +88,8 @@ pub enum Relation {
     Charts,
     #[sea_orm(has_many = "super::dashboard::Entity")]
     Dashboards,
+    #[sea_orm(has_many = "super::embedded_field_label::Entity")]
+    EmbeddedFieldLabels,
     #[sea_orm(has_many = "super::creative::Entity")]
     Creatives,
     #[sea_orm(has_many = "super::attachment_export::Entity")]
@@ -116,6 +118,8 @@ pub enum Relation {
     Workflows,
     #[sea_orm(has_many = "super::workflow_run::Entity")]
     WorkflowRuns,
+    #[sea_orm(has_many = "super::mcp_grant_workspace::Entity")]
+    McpGrants,
 }
 
 impl Related<super::organization::Entity> for Entity {
@@ -157,6 +161,12 @@ impl Related<super::chart::Entity> for Entity {
 impl Related<super::dashboard::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Dashboards.def()
+    }
+}
+
+impl Related<super::embedded_field_label::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EmbeddedFieldLabels.def()
     }
 }
 
@@ -241,6 +251,12 @@ impl Related<super::workflow::Entity> for Entity {
 impl Related<super::workflow_run::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::WorkflowRuns.def()
+    }
+}
+
+impl Related<super::mcp_grant_workspace::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::McpGrants.def()
     }
 }
 

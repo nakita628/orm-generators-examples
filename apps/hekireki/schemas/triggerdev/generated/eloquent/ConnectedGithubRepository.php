@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/** @property bool $supersedeProductionBuilds Skip queued builds once a newer commit is queued for the same environment or preview branch */
 class ConnectedGithubRepository extends Model
 {
     use PrismaDates;
@@ -24,16 +25,25 @@ class ConnectedGithubRepository extends Model
         'repositoryId',
         'branchTracking',
         'previewDeploymentsEnabled',
+        'supersedeProductionBuilds',
+        'supersedeStagingBuilds',
+        'supersedePreviewBuilds',
         'buildFilters',
     ];
 
     protected $attributes = [
         'previewDeploymentsEnabled' => true,
+        'supersedeProductionBuilds' => false,
+        'supersedeStagingBuilds' => true,
+        'supersedePreviewBuilds' => true,
     ];
 
     protected $casts = [
         'branchTracking' => 'array',
         'previewDeploymentsEnabled' => 'boolean',
+        'supersedeProductionBuilds' => 'boolean',
+        'supersedeStagingBuilds' => 'boolean',
+        'supersedePreviewBuilds' => 'boolean',
         'buildFilters' => 'array',
     ];
 

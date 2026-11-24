@@ -80,6 +80,21 @@ class SubscriptionEntity(
     var seatLineLeaseToken by SubscriptionTable.seatLineLeaseToken
     var seatLineLeaseUntil by SubscriptionTable.seatLineLeaseUntil
 
+    /**
+     * An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+     * charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+     */
+    var paymentRecoveryInvoiceId by SubscriptionTable.paymentRecoveryInvoiceId
+    var paymentRecoveryStartedAt by SubscriptionTable.paymentRecoveryStartedAt
+    var paymentRecoveryNoticeDay by SubscriptionTable.paymentRecoveryNoticeDay
+
+    /**
+     * The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+     * organization is on Free with more members than Free allows; ended once that no longer holds.
+     */
+    var overPlanSince by SubscriptionTable.overPlanSince
+    var overPlanEndedAt by SubscriptionTable.overPlanEndedAt
+
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {
             if (!isWritten(SubscriptionTable.updatedAt)) {

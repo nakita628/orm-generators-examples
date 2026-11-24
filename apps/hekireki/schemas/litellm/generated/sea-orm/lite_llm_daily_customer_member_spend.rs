@@ -6,6 +6,10 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_DailyCustomerMemberSpend")]
 pub struct Model {
+    #[sea_orm(default_value = "")]
+    pub app_group_id: String,
+    #[sea_orm(default_value = "")]
+    pub app_id: String,
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
     pub date: String,
@@ -36,6 +40,10 @@ pub struct Model {
     pub cache_read_input_tokens: i64,
     #[sea_orm(default_value = "0")]
     pub cache_creation_input_tokens: i64,
+    #[sea_orm(default_value = 0)]
+    pub cache_cost: f64,
+    #[sea_orm(default_value = "0")]
+    pub priced_cache_tokens: i64,
     #[sea_orm(default_value = "0")]
     pub compression_saved_tokens: i64,
     #[sea_orm(default_value = 0)]
@@ -48,6 +56,8 @@ pub struct Model {
     pub autorouter_savings_spend: f64,
     #[sea_orm(default_value = 0)]
     pub guardrail_spend: f64,
+    #[sea_orm(default_value = 0)]
+    pub customer_margin_spend: f64,
     #[sea_orm(default_value = "0")]
     pub api_requests: i64,
     #[sea_orm(default_value = "0")]

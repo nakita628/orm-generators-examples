@@ -19,6 +19,16 @@ public partial class OrgMember
 
     public OrgMemberRole Role { get; set; } = OrgMemberRole.Member;
 
+    /// <summary>
+    /// Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.
+    /// </summary>
+    public string? InvitedById { get; set; }
+
+    /// <summary>
+    /// How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.
+    /// </summary>
+    public string? JoinMethod { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

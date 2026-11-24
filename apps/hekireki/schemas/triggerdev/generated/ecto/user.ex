@@ -46,7 +46,8 @@ defmodule Trigger.User do
           customer_queries: [Trigger.CustomerQuery.t()],
           metrics_dashboards: [Trigger.MetricsDashboard.t()],
           platform_notifications: [Trigger.PlatformNotification.t()],
-          platform_notification_interactions: [Trigger.PlatformNotificationInteraction.t()]
+          platform_notification_interactions: [Trigger.PlatformNotificationInteraction.t()],
+          environment_variable_ignores: [Trigger.EnvironmentVariableIgnore.t()]
         }
 
   schema "User" do
@@ -106,6 +107,7 @@ defmodule Trigger.User do
     has_many(:metrics_dashboards, Trigger.MetricsDashboard, foreign_key: :owner_id, references: :id)
     has_many(:platform_notifications, Trigger.PlatformNotification, foreign_key: :user_id, references: :id)
     has_many(:platform_notification_interactions, Trigger.PlatformNotificationInteraction, foreign_key: :user_id, references: :id)
+    has_many(:environment_variable_ignores, Trigger.EnvironmentVariableIgnore, foreign_key: :created_by_id, references: :id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

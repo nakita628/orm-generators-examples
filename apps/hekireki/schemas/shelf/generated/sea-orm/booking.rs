@@ -42,6 +42,10 @@ pub struct Model {
     pub archived_without_checkin: bool,
     #[sea_orm(column_name = "cancellationReason")]
     pub cancellation_reason: Option<String>,
+    #[sea_orm(column_name = "approvedAt", column_type = "TimestampWithTimeZone")]
+    pub approved_at: Option<DateTimeWithTimeZone>,
+    #[sea_orm(column_name = "approvedById")]
+    pub approved_by_id: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -78,6 +82,14 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Organization,
+    #[sea_orm(
+        belongs_to = "super::user::Entity",
+        from = "Column::ApprovedById",
+        to = "super::user::Column::Id",
+        on_update = "Cascade",
+        on_delete = "SetNull"
+    )]
+    ApprovedBy,
     #[sea_orm(has_many = "super::booking_asset::Entity")]
     BookingAssets,
     #[sea_orm(has_many = "super::consumption_log::Entity")]

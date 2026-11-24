@@ -15,6 +15,8 @@ Enum SystemRole {
   SCORES_INGEST
   INGEST
   AI_GATEWAY
+  AI_GATEWAY_INFERENCE
+  APPLICATION
 }
 
 Enum GatewayIngestionMode {
@@ -39,6 +41,26 @@ Enum GatewayConnectionStatus {
   enabled
   disabled
   error
+}
+
+Enum GatewaySpendLimitScope {
+  API_KEY
+  USER
+  API_KEY_DEFAULT
+  USER_DEFAULT
+  ORGANIZATION
+}
+
+Enum GatewaySpendLimitInterval {
+  DAILY
+  WEEKLY
+  MONTHLY
+  TOTAL
+}
+
+Enum GatewaySpendLimitAlertType {
+  WARNING
+  EXCEEDED
 }
 
 Enum InAppAgentConversationVisibilityScope {
@@ -91,6 +113,12 @@ Enum NotificationChannel {
 
 Enum NotificationType {
   COMMENT_MENTION
+}
+
+Enum ModelScope {
+  LANGFUSE
+  ORGANIZATION
+  PROJECT
 }
 
 Enum AuditLogRecordType {
@@ -214,6 +242,11 @@ Enum SessionViewMode {
 Enum SessionUnmatchedTraces {
   show
   hide
+}
+
+Enum SessionViewOwnership {
+  PRIVATE
+  PROJECT
 }
 
 Enum ActionType {
@@ -382,6 +415,8 @@ Table role_assignments {
   api_key_id String
   role_id String [not null]
   system_role SystemRole [not null]
+  expires_at DateTime
+  tags String[] [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [default: `now()`, not null]
 
@@ -429,6 +464,43 @@ Table gateway_api_key_associations {
   api_key_id String [pk]
   metadata Json [default: '{}', not null]
   allowed_models Json
+}
+
+Table gateway_spend_limits {
+  id String [pk]
+  organization_id String [not null]
+  scope GatewaySpendLimitScope [not null]
+  api_key_id String
+  user_id String
+  interval GatewaySpendLimitInterval [not null]
+  limit_usd Decimal [not null]
+  alert_thresholds Int[] [not null]
+  counting_started_at DateTime [not null]
+  owner_user_id String
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (api_key_id, interval) [unique]
+    (organization_id, user_id, interval) [unique]
+  }
+}
+
+Table gateway_spend_limit_alerts {
+  id String [pk]
+  spend_limit_id String [not null]
+  subject_id String [default: '', not null]
+  type GatewaySpendLimitAlertType [not null]
+  threshold_percent Int [default: 100, not null]
+  counting_started_at DateTime [not null]
+  window_start DateTime [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (spend_limit_id, subject_id, type, threshold_percent, counting_started_at, window_start) [unique]
+  }
+
+  Note: 'One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times.'
 }
 
 Table in_app_agent_conversations {
@@ -527,6 +599,7 @@ Table llm_api_keys {
   extra_headers String
   extra_header_keys String[] [not null]
   config Json
+  external_id String
   project_id String
   organization_id String
 
@@ -615,6 +688,7 @@ Table annotation_queues {
   name String [not null]
   description String
   score_config_ids String[] [not null]
+  session_view_id String
   project_id String [not null]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [default: `now()`, not null]
@@ -857,7 +931,9 @@ Table models {
   id String [pk]
   created_at DateTime [default: `now()`, not null]
   updated_at DateTime [default: `now()`, not null]
+  scope ModelScope [not null]
   project_id String
+  organization_id String
   model_name String [not null]
   match_pattern String [not null]
   start_date DateTime
@@ -1413,6 +1489,7 @@ Table table_view_presets {
 }
 
 Table session_views {
+  ownership SessionViewOwnership [default: 'PROJECT', not null]
   is_pinned_by_default_for_project Boolean [default: false, not null]
   id String [pk]
   project_id String [not null]
@@ -1425,7 +1502,6 @@ Table session_views {
   updated_at DateTime [default: `now()`, not null]
 
   indexes {
-    (project_id, name) [unique]
     (project_id, id) [unique]
   }
 }
@@ -1623,6 +1699,16 @@ Ref gateway_ai_connections_organization_id_fk: gateway_ai_connections.organizati
 
 Ref gateway_api_key_associations_api_key_id_fk: gateway_api_key_associations.api_key_id - api_keys.id [delete: cascade]
 
+Ref gateway_spend_limits_organization_id_fk: gateway_spend_limits.organization_id > organizations.id [delete: cascade]
+
+Ref gateway_spend_limits_api_key_id_fk: gateway_spend_limits.api_key_id > api_keys.id [delete: cascade]
+
+Ref gateway_spend_limits_user_id_fk: gateway_spend_limits.user_id > users.id [delete: cascade]
+
+Ref gateway_spend_limits_owner_user_id_fk: gateway_spend_limits.owner_user_id > users.id [delete: set null]
+
+Ref gateway_spend_limit_alerts_spend_limit_id_fk: gateway_spend_limit_alerts.spend_limit_id > gateway_spend_limits.id [delete: cascade]
+
 Ref in_app_agent_conversations_project_id_fk: in_app_agent_conversations.project_id > projects.id [delete: cascade]
 
 Ref in_app_agent_conversations_created_by_user_id_fk: in_app_agent_conversations.created_by_user_id > users.id [delete: set null]
@@ -1666,6 +1752,8 @@ Ref membership_invitations_invited_by_user_id_fk: membership_invitations.invited
 Ref trace_sessions_project_id_fk: trace_sessions.project_id > projects.id [delete: cascade]
 
 Ref score_configs_project_id_fk: score_configs.project_id > projects.id [delete: cascade]
+
+Ref annotation_queues_(project_id, session_view_id)_fk: annotation_queues.(project_id, session_view_id) > session_views.(project_id, id) [delete: no action]
 
 Ref annotation_queues_project_id_fk: annotation_queues.project_id > projects.id [delete: cascade]
 
@@ -1720,6 +1808,8 @@ Ref skill_files_blob_id_fk: skill_files.blob_id > skill_blobs.id [delete: restri
 Ref skill_blobs_project_id_fk: skill_blobs.project_id > projects.id [delete: cascade]
 
 Ref models_project_id_fk: models.project_id > projects.id [delete: cascade]
+
+Ref models_organization_id_fk: models.organization_id > organizations.id [delete: cascade]
 
 Ref prices_model_id_fk: prices.model_id > models.id [delete: cascade]
 

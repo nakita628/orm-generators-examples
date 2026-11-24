@@ -19,6 +19,8 @@ defmodule Trigger.BackgroundWorkerTask do
           ttl: String.t() | nil,
           trigger_source: atom(),
           config: map() | list() | String.t() | number() | boolean() | nil,
+          execution_mode: atom(),
+          execution_policy: map() | list() | String.t() | number() | boolean() | nil,
           payload_schema: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -50,6 +52,9 @@ defmodule Trigger.BackgroundWorkerTask do
     # Extra task configuration JSON. Shape depends on triggerSource.
     # AGENT: { type: "ai-sdk-chat" }
     field(:config, Trigger.PrismaJson)
+    field(:execution_mode, Ecto.Enum, values: [:STANDARD, :SANDBOX], default: :STANDARD, source: :executionMode)
+    # RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.
+    field(:execution_policy, Trigger.PrismaJson, source: :executionPolicy)
     field(:payload_schema, Trigger.PrismaJson, source: :payloadSchema)
     field(:worker_id, :string, source: :workerId)
     field(:project_id, :string, source: :projectId)

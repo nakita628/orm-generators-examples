@@ -9,6 +9,7 @@ class LiteLLMDeletedVerificationTokenEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMDeletedVerificationTokenEntity>(LiteLLMDeletedVerificationTokenTable)
 
+    var keyId by LiteLLMDeletedVerificationTokenTable.keyId
     var token by LiteLLMDeletedVerificationTokenTable.token
     var keyName by LiteLLMDeletedVerificationTokenTable.keyName
     var keyAlias by LiteLLMDeletedVerificationTokenTable.keyAlias

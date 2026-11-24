@@ -65,5 +65,11 @@ public partial class Booking
 
     public string? CancellationReason { get; set; }
 
+    public DateTime? ApprovedAt { get; set; }
+
+    public virtual User? ApprovedBy { get; set; }
+
+    public string? ApprovedById { get; set; }
+
     public virtual ICollection<TeamMember> NotificationRecipients { get; set; } = new List<TeamMember>();
 }

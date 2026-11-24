@@ -17,6 +17,9 @@ object RuntimeEnvironmentTable : IdTable<String>("\"RuntimeEnvironment\"") {
     /** Non-null prevents the root API key from being returned to users. */
     val rootApiKeyHiddenAt = pgTimestamp("rootApiKeyHiddenAt", 3).nullable()
 
+    /** Non-null disables automatic root key injection into new deployed attempts. */
+    val rootKeyInjectionDisabledAt = pgTimestamp("rootKeyInjectionDisabledAt", 3).nullable()
+
     /** @deprecated was for v2 */
     val pkApiKey = text("pkApiKey").uniqueIndex("\"RuntimeEnvironment_pkApiKey_key\"")
     val type =

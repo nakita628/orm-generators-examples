@@ -617,6 +617,8 @@ class EmailAccount(models.Model):
     """Collapses threads from bundled splits into one row each in the inbox.
     Null until first turned on, which is when default bundles are chosen.
     """
+    mail_group_by_sender = models.BooleanField(db_column="mailGroupBySender", default=True)
+    """Collapses the inbox's other mail from one sender into one row."""
     mail_default_split_id = models.TextField(null=True, db_column="mailDefaultSplitId")
     mail_setup = models.TextField(choices=MailSetupState.choices, db_column="mailSetup", default=MailSetupState.PENDING)
     include_in_all_accounts = models.BooleanField(db_column="includeInAllAccounts", default=True)

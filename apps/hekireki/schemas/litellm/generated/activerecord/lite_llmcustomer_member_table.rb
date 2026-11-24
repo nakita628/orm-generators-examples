@@ -13,6 +13,8 @@ class LiteLLMCustomerMemberTable < ApplicationRecord
   belongs_to :parent_org, class_name: "LiteLLMCustomerOrganizationTable", inverse_of: :members
   belongs_to :budget, class_name: "LiteLLMBudgetTable", optional: true, inverse_of: :customer_members
   belongs_to :budget_override, class_name: "LiteLLMBudgetTable", optional: true, inverse_of: :customer_member_overrides
+  has_many :apps, class_name: "LiteLLMAppCustomerMemberTable", foreign_key: "customer_member_id",
+                  inverse_of: :customer_member, dependent: :destroy
   has_many :budget_increase_requests, class_name: "LiteLLMCustomerBudgetIncreaseRequest",
                                       foreign_key: "customer_member_id", inverse_of: :customer_member,
                                       dependent: :destroy

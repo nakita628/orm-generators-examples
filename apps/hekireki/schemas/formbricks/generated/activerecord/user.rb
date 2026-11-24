@@ -44,6 +44,7 @@ class User < ApplicationRecord
   has_many :oauth_access_tokens, foreign_key: "userId", inverse_of: :user, dependent: :destroy
   has_many :oauth_refresh_tokens, foreign_key: "userId", inverse_of: :user, dependent: :destroy
   has_many :oauth_consents, foreign_key: "userId", inverse_of: :user, dependent: :destroy
+  has_many :mcp_grants, foreign_key: "userId", inverse_of: :user, dependent: :destroy
   has_many :invites_created, class_name: "Invite", foreign_key: "creatorId", inverse_of: :creator,
                              dependent: :restrict_with_error
   has_many :invites_accepted, class_name: "Invite", foreign_key: "acceptorId", inverse_of: :acceptor,

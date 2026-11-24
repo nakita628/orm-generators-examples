@@ -38,6 +38,9 @@ pub struct Model {
     pub builder_project_id: Option<String>,
     #[sea_orm(column_name = "defaultWorkerGroupId")]
     pub default_worker_group_id: Option<String>,
+    /// Newly triggered deployed runs require the secret proxy (pinned in their annotations).
+    #[sea_orm(column_name = "secretProxyEnabled", default_value = false)]
+    pub secret_proxy_enabled: bool,
     /// The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
     #[sea_orm(column_name = "allowedMasterQueues")]
     pub allowed_worker_queues: Vec<String>,
@@ -85,6 +88,8 @@ pub enum Relation {
     TaskQueues,
     #[sea_orm(has_many = "super::environment_variable::Entity")]
     EnvironmentVariables,
+    #[sea_orm(has_many = "super::environment_variable_ignore::Entity")]
+    EnvironmentVariableIgnores,
     #[sea_orm(has_many = "super::checkpoint::Entity")]
     Checkpoints,
     #[sea_orm(has_many = "super::worker_deployment::Entity")]
@@ -194,6 +199,12 @@ impl Related<super::task_queue::Entity> for Entity {
 impl Related<super::environment_variable::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::EnvironmentVariables.def()
+    }
+}
+
+impl Related<super::environment_variable_ignore::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EnvironmentVariableIgnores.def()
     }
 }
 

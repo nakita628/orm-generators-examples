@@ -10,6 +10,8 @@ defmodule Langfuse.RoleAssignment do
           principal_id: String.t(),
           role_id: String.t(),
           system_role: atom(),
+          expires_at: DateTime.t() | nil,
+          tags: [String.t()],
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -23,7 +25,9 @@ defmodule Langfuse.RoleAssignment do
     field(:owner_id, :string)
     field(:principal_id, :string)
     field(:role_id, :string)
-    field(:system_role, Ecto.Enum, values: [:OWNER, :ADMIN, :MEMBER, :VIEWER, :NONE, :LEGACY_PROJECT_API_KEY, :LEGACY_ORGANIZATION_API_KEY, :SCORES_INGEST, :INGEST, :AI_GATEWAY])
+    field(:system_role, Ecto.Enum, values: [:OWNER, :ADMIN, :MEMBER, :VIEWER, :NONE, :LEGACY_PROJECT_API_KEY, :LEGACY_ORGANIZATION_API_KEY, :SCORES_INGEST, :INGEST, :AI_GATEWAY, :AI_GATEWAY_INFERENCE, :APPLICATION])
+    field(:expires_at, Langfuse.PrismaDateTime)
+    field(:tags, {:array, :string})
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     belongs_to(:organization, Langfuse.Organization, foreign_key: :org_id, type: :string)
     belongs_to(:user, Langfuse.User, foreign_key: :user_id, type: :string)

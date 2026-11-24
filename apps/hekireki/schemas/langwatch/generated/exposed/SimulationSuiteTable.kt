@@ -18,10 +18,14 @@ object SimulationSuiteTable : IdTable<String>("\"SimulationSuite\"") {
     val labels = array("labels", TextColumnType()).nullable()
     val simulatorModel = text("simulatorModel").nullable()
     val judgeModel = text("judgeModel").nullable()
+    val traceQuietPeriodMs = integer("traceQuietPeriodMs").nullable()
+    val traceWaitTimeoutMs = integer("traceWaitTimeoutMs").nullable()
     val kind = text("kind").default("run_plan")
     val scope = jsonb<String>("scope", { it }, { it }).nullable()
     val fields1 = jsonb<String>("fields", { it }, { it }).nullable()
     val evaluators = jsonb<String>("evaluators", { it }, { it }).nullable()
+    val templateId = text("templateId").nullable()
+    val templateVersion = integer("templateVersion").nullable()
     val archivedAt = pgTimestamp("archivedAt", 3).nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }

@@ -87,6 +87,7 @@ erDiagram
     User |o--o{ Booking : "(id) - (custodianUserId)"
     TeamMember |o--o{ Booking : "(id) - (custodianTeamMemberId)"
     Organization ||--o{ Booking : "(id) - (organizationId)"
+    User |o--o{ Booking : "(id) - (approvedById)"
     Organization ||--o| BookingSettings : "(id) - (organizationId)"
     Booking ||--o{ PartialBookingCheckin : "(id) - (bookingId)"
     User ||--o{ PartialBookingCheckin : "(id) - (checkedInById)"
@@ -655,6 +656,8 @@ erDiagram
         datetime autoArchivedAt
         boolean archivedWithoutCheckin
         string cancellationReason
+        datetime approvedAt
+        string approvedById FK
     }
     BookingSettings {
         string id PK
@@ -665,6 +668,8 @@ erDiagram
         boolean autoArchiveBookings
         int autoArchiveDays
         boolean autoArchiveExpiredReservations
+        boolean requireApprovalForBase
+        boolean requireApprovalForSelfService
         boolean requireExplicitCheckinForAdmin
         boolean requireExplicitCheckinForSelfService
         boolean requireExplicitCheckoutForAdmin

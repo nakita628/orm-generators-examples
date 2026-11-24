@@ -7,6 +7,7 @@ defmodule LiteLLM.LiteLLMBudgetTable do
 
   @type t :: %__MODULE__{
           id: String.t(),
+          rollover_max_budget: float() | nil,
           name: String.t() | nil,
           max_budget: float() | nil,
           soft_budget: float() | nil,
@@ -29,6 +30,17 @@ defmodule LiteLLM.LiteLLMBudgetTable do
           updated_by: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
+          apps: [LiteLLM.LiteLLMAppTable.t()],
+          app_groups: [LiteLLM.LiteLLMAppGroupTable.t()],
+          app_group_org_budgets: [LiteLLM.LiteLLMAppGroupCustomerOrgTable.t()],
+          app_default_tiers: [LiteLLM.LiteLLMAppTable.t()],
+          app_default_members: [LiteLLM.LiteLLMAppTable.t()],
+          app_org_tiers: [LiteLLM.LiteLLMAppCustomerOrgTable.t()],
+          app_org_budgets: [LiteLLM.LiteLLMAppCustomerOrgTable.t()],
+          app_member_budgets: [LiteLLM.LiteLLMAppCustomerMemberTable.t()],
+          app_org_overrides: [LiteLLM.LiteLLMAppCustomerOrgTable.t()],
+          app_org_members: [LiteLLM.LiteLLMAppCustomerOrgTable.t()],
+          app_member_overrides: [LiteLLM.LiteLLMAppCustomerMemberTable.t()],
           customer_organization_defaults: [LiteLLM.LiteLLMCustomerOrganizationTable.t()],
           customer_organizations: [LiteLLM.LiteLLMCustomerOrganizationTable.t()],
           customer_teams: [LiteLLM.LiteLLMCustomerTeamTable.t()],
@@ -46,6 +58,7 @@ defmodule LiteLLM.LiteLLMBudgetTable do
         }
 
   schema "LiteLLM_BudgetTable" do
+    field(:rollover_max_budget, :float)
     field(:name, :string)
     field(:max_budget, :float)
     field(:soft_budget, :float)
@@ -66,6 +79,17 @@ defmodule LiteLLM.LiteLLMBudgetTable do
     field(:temp_budget_expiry, LiteLLM.PrismaDateTime)
     field(:created_by, :string)
     field(:updated_by, :string)
+    has_many(:apps, LiteLLM.LiteLLMAppTable, foreign_key: :budget_id)
+    has_many(:app_groups, LiteLLM.LiteLLMAppGroupTable, foreign_key: :budget_id)
+    has_many(:app_group_org_budgets, LiteLLM.LiteLLMAppGroupCustomerOrgTable, foreign_key: :budget_id)
+    has_many(:app_default_tiers, LiteLLM.LiteLLMAppTable, foreign_key: :default_tier_budget_id)
+    has_many(:app_default_members, LiteLLM.LiteLLMAppTable, foreign_key: :default_customer_member_budget_id)
+    has_many(:app_org_tiers, LiteLLM.LiteLLMAppCustomerOrgTable, foreign_key: :tier_budget_id)
+    has_many(:app_org_budgets, LiteLLM.LiteLLMAppCustomerOrgTable, foreign_key: :budget_id)
+    has_many(:app_member_budgets, LiteLLM.LiteLLMAppCustomerMemberTable, foreign_key: :budget_id)
+    has_many(:app_org_overrides, LiteLLM.LiteLLMAppCustomerOrgTable, foreign_key: :budget_override_id)
+    has_many(:app_org_members, LiteLLM.LiteLLMAppCustomerOrgTable, foreign_key: :customer_member_budget_id)
+    has_many(:app_member_overrides, LiteLLM.LiteLLMAppCustomerMemberTable, foreign_key: :budget_override_id)
     has_many(:customer_organization_defaults, LiteLLM.LiteLLMCustomerOrganizationTable, foreign_key: :default_budget_template_id)
     has_many(:customer_organizations, LiteLLM.LiteLLMCustomerOrganizationTable, foreign_key: :budget_id)
     has_many(:customer_teams, LiteLLM.LiteLLMCustomerTeamTable, foreign_key: :budget_id)

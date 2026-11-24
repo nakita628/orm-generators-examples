@@ -17,6 +17,10 @@ pub struct Model {
     /// If true, the value is secret and cannot be revealed
     #[sea_orm(column_name = "isSecret", default_value = false)]
     pub is_secret: bool,
+    #[sea_orm(column_name = "isProxyOnly", default_value = false)]
+    pub is_proxy_only: bool,
+    #[sea_orm(column_name = "proxyConfig")]
+    pub proxy_config: Option<Json>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]

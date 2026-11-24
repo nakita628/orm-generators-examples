@@ -74,6 +74,20 @@ pub enum Relation {
     SiteSettings,
     #[sea_orm(has_many = "super::passkey::Entity")]
     Passkeys,
+    #[sea_orm(has_many = "super::admin_rule_match::Entity")]
+    AdminRuleMatches,
+    #[sea_orm(
+        has_many = "super::admin_tag::Entity",
+        from = "Column::Id",
+        to = "super::admin_tag::Column::UserId"
+    )]
+    AdminTags,
+    #[sea_orm(
+        has_many = "super::admin_tag::Entity",
+        from = "Column::Id",
+        to = "super::admin_tag::Column::CreatedByUserId"
+    )]
+    CreatedAdminTags,
 }
 
 impl Related<super::avatar_image::Entity> for Entity {
@@ -157,6 +171,18 @@ impl Related<super::site_settings::Entity> for Entity {
 impl Related<super::passkey::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Passkeys.def()
+    }
+}
+
+impl Related<super::admin_rule_match::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AdminRuleMatches.def()
+    }
+}
+
+impl Related<super::admin_tag::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AdminTags.def()
     }
 }
 

@@ -329,6 +329,9 @@ export const gatewayChangeEventKindEnum = pgEnum('GatewayChangeEventKind', [
   'CACHE_RULE_DELETED',
   'ROUTING_POLICY_UPDATED',
   'ROUTING_POLICY_DELETED',
+  'A2A_TARGET_CREATED',
+  'A2A_TARGET_UPDATED',
+  'A2A_TARGET_DELETED',
 ])
 
 export const gatewayCacheRuleModeEnum = pgEnum('GatewayCacheRuleMode', [
@@ -4877,6 +4880,8 @@ export const langyConversationProjection = pgTable(
     /** Per-conversation HMAC key for worker stream frames; server-side only. */
     RunToken: text('runToken'),
     ArchivedAt: doublePrecision('archivedAt'),
+    /** Messages CI started on a pull request since the person last wrote. */
+    CiFollowUpsInARow: integer('ciFollowUpsInARow').notNull().default(0),
     CreatedAt: doublePrecision('createdAt').notNull(),
     UpdatedAt: doublePrecision('updatedAt').notNull(),
     /** Business time of the latest applied event. */
@@ -5031,6 +5036,38 @@ export const langyConversationTurnProjection = pgTable(
       table.projectId,
       table.ConversationId,
       table.TurnId,
+    ),
+  ],
+)
+
+/**
+ * One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished
+ * checks look it up by repository and number to wake the conversation; the daily pull request
+ * cap counts a person's rows by day. Rebuilt by a projection replay.
+ */
+export const langyPullRequest = pgTable(
+  'LangyPullRequest',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => nanoid()),
+    projectId: text('projectId').notNull(),
+    /** `owner/repo`, lowercased: GitHub matches repository names without case. */
+    RepositoryFullName: text('repositoryFullName').notNull(),
+    PrNumber: integer('prNumber').notNull(),
+    ConversationId: text('conversationId').notNull(),
+    /** The conversation's owner, who opened it through Langy. */
+    UserId: text('userId').notNull(),
+    /** When the answer that opened it was recorded (epoch ms). */
+    OpenedAt: doublePrecision('openedAt').notNull(),
+    /** The agent_responded event it came from. */
+    SourceEventId: text('sourceEventId').notNull(),
+  },
+  (table) => [
+    index('LangyPullRequest_userId_openedAt_idx').on(table.UserId, table.OpenedAt),
+    uniqueIndex('LangyPullRequest_repositoryFullName_prNumber_key').on(
+      table.RepositoryFullName,
+      table.PrNumber,
     ),
   ],
 )
@@ -5626,6 +5663,33 @@ export const retentionPolicy = pgTable(
       table.scopeType,
       table.scopeId,
       table.category,
+    ),
+  ],
+)
+
+export const retentionApplyStatus = pgTable(
+  'RetentionApplyStatus',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    scopeType: retentionPolicyScopeTypeEnum('scopeType').notNull(),
+    scopeId: text('scopeId').notNull(),
+    changedAt: doublePrecision('changedAt'),
+    appliedAt: doublePrecision('appliedAt'),
+    raisedAt: doublePrecision('raisedAt'),
+    shortenedAt: doublePrecision('shortenedAt'),
+    createdAt: doublePrecision('createdAt').notNull(),
+    updatedAt: doublePrecision('updatedAt').notNull(),
+    occurredAt: doublePrecision('occurredAt').notNull(),
+    acceptedAt: doublePrecision('acceptedAt').notNull(),
+    lastEventId: text('lastEventId').notNull(),
+    projectionVersion: text('projectionVersion').notNull(),
+  },
+  (table) => [
+    uniqueIndex('RetentionApplyStatus_organizationId_scopeType_scopeId_key').on(
+      table.organizationId,
+      table.scopeType,
+      table.scopeId,
     ),
   ],
 )
@@ -6460,11 +6524,16 @@ export const scenario = pgTable(
     parameters: jsonb('parameters'),
     simulatorModel: text('simulatorModel'),
     judgeModel: text('judgeModel'),
+    traceQuietPeriodMs: integer('traceQuietPeriodMs'),
+    traceWaitTimeoutMs: integer('traceWaitTimeoutMs'),
     maxTurns: integer('maxTurns'),
     minTurns: integer('minTurns'),
     fields: jsonb('fields'),
     callerVoice: jsonb('callerVoice'),
     testSuiteId: text('testSuiteId'),
+    kind: text('kind').notNull().default('standard'),
+    redTeam: jsonb('redTeam'),
+    sourceTemplateId: text('sourceTemplateId'),
     version: integer('version').notNull().default(1),
     lastUpdatedById: text('lastUpdatedById'),
     archivedAt: timestamp('archivedAt', { precision: 3 }),
@@ -6569,10 +6638,14 @@ export const simulationSuite = pgTable(
     labels: text('labels').array(),
     simulatorModel: text('simulatorModel'),
     judgeModel: text('judgeModel'),
+    traceQuietPeriodMs: integer('traceQuietPeriodMs'),
+    traceWaitTimeoutMs: integer('traceWaitTimeoutMs'),
     kind: text('kind').notNull().default('run_plan'),
     scope: jsonb('scope'),
     fields: jsonb('fields'),
     evaluators: jsonb('evaluators'),
+    templateId: text('templateId'),
+    templateVersion: integer('templateVersion'),
     archivedAt: timestamp('archivedAt', { precision: 3 }),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
@@ -6668,6 +6741,19 @@ export const subscription = pgTable(
     /** The lease a seat change or seat line repair holds while it reads and moves the seat line. */
     seatLineLeaseToken: text('seatLineLeaseToken'),
     seatLineLeaseUntil: timestamp('seatLineLeaseUntil', { precision: 3 }),
+    /**
+     * An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+     * charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+     */
+    paymentRecoveryInvoiceId: text('paymentRecoveryInvoiceId'),
+    paymentRecoveryStartedAt: timestamp('paymentRecoveryStartedAt', { precision: 3 }),
+    paymentRecoveryNoticeDay: integer('paymentRecoveryNoticeDay'),
+    /**
+     * The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+     * organization is on Free with more members than Free allows; ended once that no longer holds.
+     */
+    overPlanSince: timestamp('overPlanSince', { precision: 3 }),
+    overPlanEndedAt: timestamp('overPlanEndedAt', { precision: 3 }),
   },
   (table) => [
     uniqueIndex('Subscription_stripeSubscriptionId_key').on(table.stripeSubscriptionId),
@@ -6851,9 +6937,38 @@ export const authzEngineSwitch = pgTable('AuthzEngineSwitch', {
 export const authzOrganizationPolicy = pgTable('AuthzOrganizationPolicy', {
   organizationId: text('organizationId').primaryKey(),
   braidsOrganizationAdminsOnly: boolean('braidsOrganizationAdminsOnly').notNull().default(false),
+  braidsEnabled: boolean('braidsEnabled').notNull().default(false),
   updatedByUserId: text('updatedByUserId').notNull(),
   updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
 })
+
+export const authzBraidWrite = pgTable(
+  'AuthzBraidWrite',
+  {
+    organizationId: text('organizationId').notNull(),
+    commandId: text('commandId').notNull(),
+    grantId: text('grantId').notNull(),
+    readerProjectId: text('readerProjectId').notNull(),
+    ownerProjectId: text('ownerProjectId').notNull(),
+    termsKey: text('termsKey').notNull(),
+    condition: jsonb('condition').notNull(),
+    expiresAt: timestamp('expiresAt', { precision: 3 }),
+    replacesGrantId: text('replacesGrantId'),
+    createdByUserId: text('createdByUserId'),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    primaryKey({ name: 'AuthzBraidWrite_pkey', columns: [table.organizationId, table.commandId] }),
+    index('AuthzBraidWrite_organizationId_readerProjectId_createdAt_idx').on(
+      table.organizationId,
+      table.readerProjectId,
+      table.createdAt,
+    ),
+  ],
+)
 
 export const roleBinding = pgTable(
   'RoleBinding',
@@ -8252,6 +8367,37 @@ export const ingestionTemplate = pgTable(
   ],
 )
 
+export const gatewayA2ATarget = pgTable(
+  'GatewayA2ATarget',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    projectId: text('projectId'),
+    name: text('name').notNull(),
+    agentName: text('agentName').notNull(),
+    cardUrl: text('cardUrl').notNull(),
+    upstreamUrl: text('upstreamUrl').notNull(),
+    encryptedUpstreamHeaders: text('encryptedUpstreamHeaders'),
+    restrictToAllowList: boolean('restrictToAllowList').notNull().default(false),
+    allowedVirtualKeyIds: text('allowedVirtualKeyIds').array().default([]),
+    blocked: boolean('blocked').notNull().default(false),
+    blockReason: text('blockReason'),
+    createdById: text('createdById').notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+    archivedAt: timestamp('archivedAt', { precision: 3 }),
+  },
+  (table) => [
+    index('GatewayA2ATarget_organizationId_projectId_idx').on(
+      table.organizationId,
+      table.projectId,
+    ),
+  ],
+)
+
 export const gatewayConnectUpstream = pgTable('GatewayConnectUpstream', {
   organizationId: text('organizationId').primaryKey(),
   baseUrl: text('baseUrl').notNull(),
@@ -9423,6 +9569,179 @@ export const agentRegistryBaseline = pgTable('AgentRegistryBaseline', {
 })
 
 /**
+ * One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
+ * agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway
+ * virtual key. A plan write replaces every row of the agent at once.
+ */
+export const agentStopPlanTarget = pgTable(
+  'AgentStopPlanTarget',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    /** The AgentRegistryEntry the plan belongs to. */
+    agentId: text('agentId').notNull(),
+    position: integer('position').notNull(),
+    label: text('label').notNull(),
+    target: jsonb('target').notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    index('AgentStopPlanTarget_organizationId_agentId_idx').on(table.organizationId, table.agentId),
+  ],
+)
+
+/**
+ * One agent's stop plan version: bumped by every save, so a save over a plan someone else saved
+ * since it was read is refused. No row means the plan was never saved (version 0).
+ */
+export const agentStopPlan = pgTable(
+  'AgentStopPlan',
+  {
+    organizationId: text('organizationId').notNull(),
+    /** The AgentRegistryEntry the plan belongs to. */
+    agentId: text('agentId').notNull(),
+    version: integer('version').notNull(),
+    updatedAt: timestamp('updatedAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    primaryKey({ name: 'AgentStopPlan_pkey', columns: [table.organizationId, table.agentId] }),
+  ],
+)
+
+/**
+ * An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume,
+ * or both. The secret access key and the external id are stored sealed.
+ */
+export const governanceAwsConnection = pgTable(
+  'GovernanceAwsConnection',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    name: text('name').notNull(),
+    accessKeyId: text('accessKeyId'),
+    encryptedSecretAccessKey: text('encryptedSecretAccessKey'),
+    roleArn: text('roleArn'),
+    encryptedExternalId: text('encryptedExternalId'),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [index('GovernanceAwsConnection_organizationId_idx').on(table.organizationId)],
+)
+
+/**
+ * The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and
+ * every target's outcome, folded from the stop's events.
+ */
+export const agentStop = pgTable(
+  'AgentStop',
+  {
+    id: text('id').primaryKey(),
+    organizationId: text('organizationId').notNull(),
+    agentId: text('agentId').notNull(),
+    agentName: text('agentName').notNull(),
+    status: text('status').notNull(),
+    severity: text('severity').notNull(),
+    approval: text('approval').notNull(),
+    trigger: text('trigger').notNull(),
+    reason: text('reason').notNull(),
+    requestedByUserId: text('requestedByUserId'),
+    requestedByApiKeyId: text('requestedByApiKeyId'),
+    decidedByUserId: text('decidedByUserId'),
+    decidedByApiKeyId: text('decidedByApiKeyId'),
+    restoredByUserId: text('restoredByUserId'),
+    restoredByApiKeyId: text('restoredByApiKeyId'),
+    targets: jsonb('targets').notNull(),
+    requestedAt: timestamp('requestedAt', { precision: 3 }).notNull(),
+    decidedAt: timestamp('decidedAt', { precision: 3 }),
+    quarantinedAt: timestamp('quarantinedAt', { precision: 3 }),
+    restoreRequestedAt: timestamp('restoreRequestedAt', { precision: 3 }),
+    restoredAt: timestamp('restoredAt', { precision: 3 }),
+    lastAppliedEventId: text('lastAppliedEventId').notNull(),
+    lastAcceptedAt: bigint('lastAcceptedAt', { mode: 'bigint' }).notNull(),
+    lastOccurredAt: bigint('lastOccurredAt', { mode: 'bigint' }).notNull(),
+    projectionVersion: text('projectionVersion').notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    index('AgentStop_organizationId_agentId_idx').on(table.organizationId, table.agentId),
+    index('AgentStop_organizationId_status_idx').on(table.organizationId, table.status),
+  ],
+)
+
+/**
+ * The one open stop an agent may have: the api takes this row before it sends a stop's request,
+ * so two requests at once cannot both open one. A later request takes it over once the stop it
+ * names has closed.
+ * `sentAt` is set once the request command was sent: from then on the claim passes on only after
+ * its stop closed, never on age. `decision` is taken by the one approve or deny that wins.
+ * `decisionTakenAt` is set while that decision is in flight and cleared once its command was
+ * sent; a decision left in flight is taken over once abandoned.
+ */
+export const agentStopClaim = pgTable(
+  'AgentStopClaim',
+  {
+    organizationId: text('organizationId').notNull(),
+    agentId: text('agentId').notNull(),
+    stopId: text('stopId').notNull(),
+    claimedAt: timestamp('claimedAt', { precision: 3 }).notNull(),
+    sentAt: timestamp('sentAt', { precision: 3 }),
+    decision: text('decision'),
+    decisionTakenAt: timestamp('decisionTakenAt', { precision: 3 }),
+  },
+  (table) => [
+    primaryKey({ name: 'AgentStopClaim_pkey', columns: [table.organizationId, table.agentId] }),
+  ],
+)
+
+/**
+ * Whether a target was already stopped before a stop first touched it, recorded once before the
+ * stop's platform call, so a retried call after a success still knows the change is the stop's own.
+ */
+export const agentStopTargetPriorState = pgTable(
+  'AgentStopTargetPriorState',
+  {
+    organizationId: text('organizationId').notNull(),
+    stopId: text('stopId').notNull(),
+    targetId: text('targetId').notNull(),
+    wasStopped: boolean('wasStopped').notNull(),
+    recordedAt: timestamp('recordedAt', { precision: 3 }).notNull(),
+  },
+  (table) => [
+    primaryKey({
+      name: 'AgentStopTargetPriorState_pkey',
+      columns: [table.organizationId, table.stopId, table.targetId],
+    }),
+  ],
+)
+
+/**
  * The dated match table: "`user_abc123` on Anthropic is platform user #42,
  * valid from March 3", closed when it stops being true.
  *
@@ -10112,6 +10431,7 @@ export const relations = defineRelations(
     langyTurnRequest,
     langyActiveTurn,
     langyConversationTurnProjection,
+    langyPullRequest,
     langyMessageProjection,
     projectSecret,
     triggerSent,
@@ -10127,6 +10447,7 @@ export const relations = defineRelations(
     traceEditOverlay,
     traceIngestSourceBilling,
     retentionPolicy,
+    retentionApplyStatus,
     dataPrivacyPolicy,
     instantEvalJudgeProject,
     instantEvalJudgeUsageBilling,
@@ -10159,6 +10480,7 @@ export const relations = defineRelations(
     authzUserStanding,
     authzEngineSwitch,
     authzOrganizationPolicy,
+    authzBraidWrite,
     roleBinding,
     grant,
     grantUsage,
@@ -10188,6 +10510,7 @@ export const relations = defineRelations(
     aiToolEntryTeam,
     aiToolEntryDepartment,
     ingestionTemplate,
+    gatewayA2ATarget,
     gatewayConnectUpstream,
     gatewayTraceExportKey,
     gatewayBudget,
@@ -10218,6 +10541,12 @@ export const relations = defineRelations(
     agentRegistryEntry,
     agentRegistryEvent,
     agentRegistryBaseline,
+    agentStopPlanTarget,
+    agentStopPlan,
+    governanceAwsConnection,
+    agentStop,
+    agentStopClaim,
+    agentStopTargetPriorState,
     identityMatch,
     governanceTenantHistory,
     erasedIdentifierSuppression,

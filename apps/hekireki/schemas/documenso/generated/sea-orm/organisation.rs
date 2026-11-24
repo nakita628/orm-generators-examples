@@ -83,6 +83,8 @@ pub enum Relation {
     OrganisationEmails,
     #[sea_orm(has_many = "super::organisation_monthly_stat::Entity")]
     MonthlyStats,
+    #[sea_orm(has_many = "super::admin_tag::Entity")]
+    AdminTags,
     #[sea_orm(has_many = "super::embed_signature::Entity")]
     EmbedSignatures,
     #[sea_orm(has_one = "super::subscription::Entity")]
@@ -158,6 +160,12 @@ impl Related<super::organisation_email::Entity> for Entity {
 impl Related<super::organisation_monthly_stat::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::MonthlyStats.def()
+    }
+}
+
+impl Related<super::admin_tag::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::AdminTags.def()
     }
 }
 

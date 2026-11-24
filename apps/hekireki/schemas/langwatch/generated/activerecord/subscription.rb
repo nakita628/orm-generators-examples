@@ -10,6 +10,10 @@
 # seatRepairLiftedQuantity:: The quantity the change lifted the line to; the repair moves the line back only while Stripe still bills it.
 # seatRepairFlaggedAt:: Set once the seat line repair has failed often enough that Ops should look at it.
 # seatLineLeaseToken:: The lease a seat change or seat line repair holds while it reads and moves the seat line.
+# paymentRecoveryInvoiceId:: An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+#   charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+# overPlanSince:: The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+#   organization is on Free with more members than Free allows; ended once that no longer holds.
 class Subscription < ApplicationRecord
   self.table_name = "Subscription"
   self.implicit_order_column = "createdAt"

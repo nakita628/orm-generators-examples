@@ -17,6 +17,7 @@ class LiteLLMDeletedVerificationToken extends Model
     public $incrementing = false;
 
     protected $fillable = [
+        'key_id',
         'token',
         'key_name',
         'key_alias',

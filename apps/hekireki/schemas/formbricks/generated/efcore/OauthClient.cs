@@ -103,4 +103,6 @@ public partial class OauthClient
     public virtual ICollection<OauthConsent> Consents { get; set; } = new List<OauthConsent>();
 
     public virtual ICollection<OauthClientResource> Resources { get; set; } = new List<OauthClientResource>();
+
+    public virtual ICollection<McpGrant> McpGrants { get; set; } = new List<McpGrant>();
 }

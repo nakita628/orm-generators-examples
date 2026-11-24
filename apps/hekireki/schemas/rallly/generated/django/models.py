@@ -160,6 +160,11 @@ class VoteType(models.TextChoices):
     ifNeedBe = "ifNeedBe"
 
 
+class SpaceUsageResource(models.TextChoices):
+    api_poll = "api_poll"
+    email_invite = "email_invite"
+
+
 class SpaceMemberRole(models.TextChoices):
     ADMIN = "ADMIN"
     MEMBER = "MEMBER"
@@ -194,6 +199,10 @@ class UserRole(models.TextChoices):
 
 
 class ApiUsage(models.Model):
+    """Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+    deployments keep working during the switch, then dropped.
+    """
+
     pk = models.CompositePrimaryKey("space_id", "resource", "period")
     space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="api_usage", db_index=False)
     resource = models.TextField(choices=ApiUsageResource.choices)
@@ -798,6 +807,26 @@ class SheetSlot(models.Model):
             models.Index(fields=["sheet", "start_time"]),
             models.Index(fields=["event_type"]),
         ]
+
+
+class SpaceUsage(models.Model):
+    """Monthly counters for metered actions charged to a space, independent of
+    the records they produce, so deleting a poll does not give back what it
+    spent.
+    """
+
+    pk = models.CompositePrimaryKey("space_id", "resource", "period")
+    space = models.ForeignKey("Space", on_delete=models.CASCADE, related_name="usage", db_index=False)
+    resource = models.TextField(choices=SpaceUsageResource.choices)
+    period = models.DateField()
+    count = models.IntegerField(default=0)
+    near_limit_warned_at = UtcDateTimeField(null=True)
+    at_limit_warned_at = UtcDateTimeField(null=True)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "space_usage"
 
 
 class Space(models.Model):

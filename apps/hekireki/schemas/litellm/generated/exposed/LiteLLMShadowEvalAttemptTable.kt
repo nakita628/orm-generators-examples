@@ -21,6 +21,8 @@ object LiteLLMShadowEvalAttemptTable : IdTable<String>("\"LiteLLM_ShadowEvalAtte
     val realClassifierCost = double("real_classifier_cost").default(0.0)
     val shadowClassifierCost = double("shadow_classifier_cost").default(0.0)
     val realCacheHit = bool("real_cache_hit").default(false)
+    val realGrade = integer("real_grade").nullable()
+    val shadowGrade = integer("shadow_grade").nullable()
     val error = text("error").nullable()
     val createdAt = pgTimestamp("created_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"LiteLLM_ShadowEvalAttempt_pkey\"")

@@ -33,6 +33,13 @@ object WorkflowTable : IdTable<String>("\"Workflow\"") {
 
     /** [WorkflowDefinition] */
     val definition = jsonb<String>("definition", { it }, { it })
+
+    /**
+     * Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+     * the editor can show the URL again. Never part of the definition, its versions or its copies.
+     */
+    val webhookTokenHash = text("webhookTokenHash").nullable()
+    val webhookTokenEncrypted = text("webhookTokenEncrypted").nullable()
     override val primaryKey = PrimaryKey(id, name = "\"Workflow_pkey\"")
 
     init {

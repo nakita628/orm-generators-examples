@@ -8,6 +8,10 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 object SessionViewTable : IdTable<String>("session_views") {
+    val ownership =
+        pgEnum("ownership", "\"SessionViewOwnership\"", SessionViewOwnership.entries, SessionViewOwnership::dbName).default(
+            SessionViewOwnership.PROJECT,
+        )
     val isPinnedByDefaultForProject = bool("is_pinned_by_default_for_project").default(false)
     override val id = text("id").clientDefault { CUID.randomCUID1().toString() }.entityId()
     val projectId =
@@ -36,7 +40,6 @@ object SessionViewTable : IdTable<String>("session_views") {
     override val primaryKey = PrimaryKey(id, name = "session_views_pkey")
 
     init {
-        uniqueIndex("session_views_project_id_name_key", projectId, name)
         uniqueIndex("session_views_project_id_id_key", projectId, id)
     }
 }

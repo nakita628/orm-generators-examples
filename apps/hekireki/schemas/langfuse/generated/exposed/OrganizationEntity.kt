@@ -35,7 +35,9 @@ class OrganizationEntity(
     val verifiedDomains by VerifiedDomainEntity referrersOn VerifiedDomainTable.organizationId
     val gatewayConfig by GatewayConfigEntity optionalBackReferencedOn GatewayConfigTable.id
     val gatewayAiConnections by GatewayAiConnectionEntity referrersOn GatewayAiConnectionTable.organizationId
+    val gatewaySpendLimits by GatewaySpendLimitEntity referrersOn GatewaySpendLimitTable.organizationId
     val organizationLlmApiKeys by LlmApiKeysEntity optionalReferrersOn LlmApiKeysTable.organizationId
+    val models by ModelEntity optionalReferrersOn ModelTable.organizationId
     val roleAssignments by RoleAssignmentEntity referrersOn RoleAssignmentTable.orgId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {

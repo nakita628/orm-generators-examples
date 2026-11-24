@@ -10,6 +10,27 @@ class LiteLLMBudgetTable < ApplicationRecord
   validates :created_by, presence: true
   validates :updated_by, presence: true
 
+  has_many :apps, class_name: "LiteLLMAppTable", foreign_key: "budget_id", inverse_of: :budget, dependent: :nullify
+  has_many :app_groups, class_name: "LiteLLMAppGroupTable", foreign_key: "budget_id", inverse_of: :budget,
+                        dependent: :restrict_with_error
+  has_many :app_group_org_budgets, class_name: "LiteLLMAppGroupCustomerOrgTable", foreign_key: "budget_id",
+                                   inverse_of: :budget, dependent: :restrict_with_error
+  has_many :app_default_tiers, class_name: "LiteLLMAppTable", foreign_key: "default_tier_budget_id",
+                               inverse_of: :default_tier_budget, dependent: :nullify
+  has_many :app_default_members, class_name: "LiteLLMAppTable", foreign_key: "default_customer_member_budget_id",
+                                 inverse_of: :default_customer_member_budget, dependent: :nullify
+  has_many :app_org_tiers, class_name: "LiteLLMAppCustomerOrgTable", foreign_key: "tier_budget_id",
+                           inverse_of: :tier_budget, dependent: :nullify
+  has_many :app_org_budgets, class_name: "LiteLLMAppCustomerOrgTable", foreign_key: "budget_id", inverse_of: :budget,
+                             dependent: :restrict_with_error
+  has_many :app_member_budgets, class_name: "LiteLLMAppCustomerMemberTable", foreign_key: "budget_id",
+                                inverse_of: :budget, dependent: :restrict_with_error
+  has_many :app_org_overrides, class_name: "LiteLLMAppCustomerOrgTable", foreign_key: "budget_override_id",
+                               inverse_of: :budget_override, dependent: :nullify
+  has_many :app_org_members, class_name: "LiteLLMAppCustomerOrgTable", foreign_key: "customer_member_budget_id",
+                             inverse_of: :customer_member_budget, dependent: :nullify
+  has_many :app_member_overrides, class_name: "LiteLLMAppCustomerMemberTable", foreign_key: "budget_override_id",
+                                  inverse_of: :budget_override, dependent: :nullify
   has_many :customer_organization_defaults, class_name: "LiteLLMCustomerOrganizationTable",
                                             foreign_key: "default_budget_template_id",
                                             inverse_of: :default_budget_template, dependent: :nullify

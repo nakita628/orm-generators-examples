@@ -42,6 +42,7 @@ class UserEntity(
     val oauthAccessTokens by OauthAccessTokenEntity optionalReferrersOn OauthAccessTokenTable.userId
     val oauthRefreshTokens by OauthRefreshTokenEntity referrersOn OauthRefreshTokenTable.userId
     val oauthConsents by OauthConsentEntity optionalReferrersOn OauthConsentTable.userId
+    val mcpGrants by McpGrantEntity referrersOn McpGrantTable.userId
     val passwordResetToken by PasswordResetTokenEntity optionalBackReferencedOn PasswordResetTokenTable.userId
     var groupId by UserTable.groupId
     val invitesCreated by InviteEntity referrersOn InviteTable.creatorId

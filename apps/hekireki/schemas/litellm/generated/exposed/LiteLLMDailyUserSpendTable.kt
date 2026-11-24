@@ -25,6 +25,7 @@ object LiteLLMDailyUserSpendTable : IdTable<String>("\"LiteLLM_DailyUserSpend\""
     val gatewayInjectedCachingSavingsSpend = double("gateway_injected_caching_savings_spend").default(0.0)
     val autorouterSavingsSpend = double("autorouter_savings_spend").default(0.0)
     val guardrailSpend = double("guardrail_spend").default(0.0)
+    val customerMarginSpend = double("customer_margin_spend").default(0.0)
     val spend = double("spend").default(0.0)
     val apiRequests = long("api_requests").default(0L)
     val successfulRequests = long("successful_requests").default(0L)

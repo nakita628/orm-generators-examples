@@ -19,6 +19,7 @@ class EnvironmentVariableEntity(
     var createdAt by EnvironmentVariableTable.createdAt
     var updatedAt by EnvironmentVariableTable.updatedAt
     val values by EnvironmentVariableValueEntity referrersOn EnvironmentVariableValueTable.variableId
+    val ignores by EnvironmentVariableIgnoreEntity referrersOn EnvironmentVariableIgnoreTable.variableId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

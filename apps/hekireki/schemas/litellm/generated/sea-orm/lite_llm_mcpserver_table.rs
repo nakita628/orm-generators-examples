@@ -74,6 +74,7 @@ pub struct Model {
     pub timeout: Option<f64>,
     pub max_concurrent_requests: Option<i32>,
     pub rpm: Option<i32>,
+    pub events: Option<Json>,
     #[sea_orm(default_value = "active")]
     pub approval_status: Option<String>,
     pub submitted_by: Option<String>,

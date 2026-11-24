@@ -66,6 +66,8 @@ pub enum ActivityAction {
     BookingCancelled,
     #[sea_orm(string_value = "BOOKING_ARCHIVED")]
     BookingArchived,
+    #[sea_orm(string_value = "BOOKING_APPROVED")]
+    BookingApproved,
     #[sea_orm(string_value = "BOOKING_MODEL_REQUESTED")]
     BookingModelRequested,
     #[sea_orm(string_value = "BOOKING_MODEL_REQUEST_CHANGED")]

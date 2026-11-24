@@ -18,6 +18,8 @@ class Organization < ApplicationRecord
   has_many :cloud_spend_alerts, foreign_key: "org_id", inverse_of: :org, dependent: :destroy
   has_many :verified_domains, dependent: :destroy
   has_many :gateway_ai_connections, dependent: :destroy
+  has_many :gateway_spend_limits, dependent: :destroy
   has_many :organization_llm_api_keys, class_name: "LlmApiKeys", inverse_of: :organization, dependent: :destroy
+  has_many :models, dependent: :destroy
   has_many :role_assignments, foreign_key: "org_id", inverse_of: :organization, dependent: :destroy
 end

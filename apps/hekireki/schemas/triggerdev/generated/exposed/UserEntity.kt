@@ -81,6 +81,7 @@ class UserEntity(
     val metricsDashboards by MetricsDashboardEntity optionalReferrersOn MetricsDashboardTable.ownerId
     val platformNotifications by PlatformNotificationEntity optionalReferrersOn PlatformNotificationTable.userId
     val platformNotificationInteractions by PlatformNotificationInteractionEntity referrersOn PlatformNotificationInteractionTable.userId
+    val environmentVariableIgnores by EnvironmentVariableIgnoreEntity optionalReferrersOn EnvironmentVariableIgnoreTable.createdById
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

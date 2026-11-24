@@ -96,6 +96,12 @@ class AuthenticationMethod(models.TextChoices):
     SSO = "SSO"
 
 
+class OAuthClientKind(models.TextChoices):
+    PREREGISTERED = "PREREGISTERED"
+    CIMD = "CIMD"
+    DCR = "DCR"
+
+
 class OrganizationAccessTokenType(models.TextChoices):
     USER = "USER"
     SYSTEM = "SYSTEM"
@@ -156,6 +162,11 @@ class TaskTriggerSource(models.TextChoices):
     SCHEDULED = "SCHEDULED"
     AGENT = "AGENT"
     WEBHOOK = "WEBHOOK"
+
+
+class TaskExecutionMode(models.TextChoices):
+    STANDARD = "STANDARD"
+    SANDBOX = "SANDBOX"
 
 
 class WebhookEndpointStatus(models.TextChoices):
@@ -310,6 +321,12 @@ class BatchTaskRunItemStatus(models.TextChoices):
     COMPLETED = "COMPLETED"
 
 
+class EnvironmentVariableIgnoreReason(models.TextChoices):
+    EMPTY = "EMPTY"
+    MISSING = "MISSING"
+    OIDC = "OIDC"
+
+
 class CheckpointType(models.TextChoices):
     DOCKER = "DOCKER"
     KUBERNETES = "KUBERNETES"
@@ -324,6 +341,14 @@ class WorkerDeploymentType(models.TextChoices):
     MANAGED = "MANAGED"
     UNMANAGED = "UNMANAGED"
     V1 = "V1"
+
+
+class DeploymentInitiatedByCredential(models.TextChoices):
+    ROOT_API_KEY = "ROOT_API_KEY"
+    SCOPED_API_KEY = "SCOPED_API_KEY"
+    PERSONAL_ACCESS_TOKEN = "PERSONAL_ACCESS_TOKEN"
+    ORGANIZATION_ACCESS_TOKEN = "ORGANIZATION_ACCESS_TOKEN"
+    TRUSTED_PUBLISHING = "TRUSTED_PUBLISHING"
 
 
 class WorkerDeploymentStatus(models.TextChoices):
@@ -545,12 +570,22 @@ class AuthorizationCode(models.Model):
     """Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it."""
     approval_code_hash = models.TextField(null=True, db_column="approvalCodeHash")
     """sha256 of the approval code, which only the approving browser ever sees."""
+    oauth_client = models.ForeignKey("OAuthClient", on_delete=models.CASCADE, related_name="authorization_codes", db_column="oauthClientId", null=True, db_index=False)
+    redirect_uri = models.TextField(null=True, db_column="redirectUri")
+    scope = ArrayField(models.TextField(), default=list)
+    resource = models.TextField(null=True)
+    approved_by_user_id = models.TextField(null=True, db_column="approvedByUserId")
+    requested_by_user_id = models.TextField(null=True, db_column="requestedByUserId")
+    """The user who started the OAuth authorization. Only they can approve it."""
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
         db_table = "AuthorizationCode"
+        indexes = [
+            models.Index(fields=["oauth_client"]),
+        ]
 
 
 class PersonalAccessToken(models.Model):
@@ -578,12 +613,57 @@ class PersonalAccessToken(models.Model):
     """When the "has expired" email was sent. Set before sending, so it's sent at most once."""
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    oauth_client = models.ForeignKey("OAuthClient", on_delete=models.RESTRICT, related_name="personal_access_tokens", db_column="oauthClientId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
         db_table = "PersonalAccessToken"
         indexes = [
             models.Index(fields=["user"]),
+            models.Index(fields=["oauth_client", "user"]),
+        ]
+
+
+class OAuthClient(models.Model):
+    id = models.TextField(primary_key=True, default=cuid_str)
+    kind = models.TextField(choices=OAuthClientKind.choices)
+    client_id = models.TextField(unique=True, db_column="clientId")
+    metadata_url = models.TextField(null=True, db_column="metadataUrl")
+    display_name = models.TextField(null=True, db_column="displayName")
+    self_reported_name = models.TextField(null=True, db_column="selfReportedName")
+    redirect_uris = ArrayField(models.TextField(), db_column="redirectUris")
+    dedupe_key = models.TextField(null=True, unique=True, db_column="dedupeKey")
+    metadata_expires_at = UtcDateTimeField(null=True, db_column="metadataExpiresAt")
+    last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "OAuthClient"
+        indexes = [
+            models.Index(fields=["kind", "last_used_at"]),
+        ]
+
+
+class OAuthRefreshToken(models.Model):
+    id = models.TextField(primary_key=True, default=cuid_str)
+    hashed_token = models.TextField(unique=True, db_column="hashedToken")
+    personal_access_token = models.ForeignKey("PersonalAccessToken", on_delete=models.CASCADE, related_name="oauth_refresh_tokens", db_column="personalAccessTokenId", db_index=False)
+    oauth_client = models.ForeignKey("OAuthClient", on_delete=models.CASCADE, related_name="refresh_tokens", db_column="oauthClientId", db_index=False)
+    scope = ArrayField(models.TextField())
+    resource = models.TextField()
+    used_at = UtcDateTimeField(null=True, db_column="usedAt")
+    replaced_by_id = models.TextField(null=True, db_column="replacedById")
+    idle_expires_at = UtcDateTimeField(db_column="idleExpiresAt")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "OAuthRefreshToken"
+        indexes = [
+            models.Index(fields=["personal_access_token"]),
+            models.Index(fields=["oauth_client"]),
+            models.Index(fields=["idle_expires_at"]),
         ]
 
 
@@ -658,6 +738,11 @@ class Organization(models.Model):
     support_access_mode = models.TextField(choices=SupportAccessMode.choices, db_column="supportAccessMode", default=SupportAccessMode.ALLOW)
     support_access_mode_updated_at = UtcDateTimeField(null=True, db_column="supportAccessModeUpdatedAt")
     support_access_mode_updated_by_id = models.TextField(null=True, db_column="supportAccessModeUpdatedById")
+    mfa_required = models.BooleanField(db_column="mfaRequired", default=False)
+    """When true, members without MFA are locked out of the dashboard and CLI until they set it up."""
+    mfa_step_up_actions = ArrayField(models.TextField(), db_column="mfaStepUpActions", default=list)
+    """Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp)."""
+    mfa_step_up_window_minutes = models.IntegerField(db_column="mfaStepUpWindowMinutes", default=5)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -669,6 +754,10 @@ class OrgMember(models.Model):
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="members", db_column="organizationId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="org_memberships", db_column="userId", db_index=False)
     role = models.TextField(choices=OrgMemberRole.choices, default=OrgMemberRole.MEMBER)
+    invited_by_id = models.TextField(null=True, db_column="invitedById")
+    """Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded."""
+    join_method = models.TextField(null=True, db_column="joinMethod")
+    """How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded."""
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -718,6 +807,8 @@ class RuntimeEnvironment(models.Model):
     api_key = models.TextField(unique=True, db_column="apiKey")
     root_api_key_hidden_at = UtcDateTimeField(null=True, db_column="rootApiKeyHiddenAt")
     """Non-null prevents the root API key from being returned to users."""
+    root_key_injection_disabled_at = UtcDateTimeField(null=True, db_column="rootKeyInjectionDisabledAt")
+    """Non-null disables automatic root key injection into new deployed attempts."""
     pk_api_key = models.TextField(unique=True, db_column="pkApiKey")
     """@deprecated was for v2"""
     type = models.TextField(choices=RuntimeEnvironmentType.choices, default=RuntimeEnvironmentType.DEVELOPMENT)
@@ -834,6 +925,8 @@ class Project(models.Model):
     engine = models.TextField(choices=RunEngineVersion.choices, default=RunEngineVersion.V1)
     builder_project_id = models.TextField(null=True, db_column="builderProjectId")
     default_worker_group = models.ForeignKey("WorkerInstanceGroup", on_delete=models.SET_NULL, related_name="default_for_projects", db_column="defaultWorkerGroupId", null=True, db_index=False)
+    secret_proxy_enabled = models.BooleanField(db_column="secretProxyEnabled", default=False)
+    """Newly triggered deployed runs require the secret proxy (pinned in their annotations)."""
     allowed_worker_queues = ArrayField(models.TextField(), db_column="allowedMasterQueues", default=list)
     """The master queues they are allowed to use (impacts what they can set as default and trigger runs with)"""
     build_settings = models.JSONField(null=True, db_column="buildSettings")
@@ -1069,6 +1162,9 @@ class BackgroundWorkerTask(models.Model):
     """Extra task configuration JSON. Shape depends on triggerSource.
     AGENT: { type: "ai-sdk-chat" }
     """
+    execution_mode = models.TextField(choices=TaskExecutionMode.choices, db_column="executionMode", default=TaskExecutionMode.STANDARD)
+    execution_policy = models.JSONField(null=True, db_column="executionPolicy")
+    """RunExecutionPolicy from @trigger.dev/core. Null means the standard policy."""
     payload_schema = models.JSONField(null=True, db_column="payloadSchema")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1840,10 +1936,14 @@ class WorkerGroupToken(models.Model):
     previous_token_valid_until = UtcDateTimeField(null=True, db_column="previousTokenValidUntil")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    child_of = models.ForeignKey("WorkerInstanceGroup", on_delete=models.CASCADE, related_name="child_tokens", db_column="workerGroupId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
         db_table = "WorkerGroupToken"
+        indexes = [
+            models.Index(fields=["child_of"]),
+        ]
 
 
 class TaskRunTag(models.Model):
@@ -2204,6 +2304,8 @@ class EnvironmentVariableValue(models.Model):
     environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="environment_variable_values", db_column="environmentId", db_index=False)
     is_secret = models.BooleanField(db_column="isSecret", default=False)
     """If true, the value is secret and cannot be revealed"""
+    is_proxy_only = models.BooleanField(db_column="isProxyOnly", default=False)
+    proxy_config = models.JSONField(null=True, db_column="proxyConfig")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     version = models.IntegerField(default=1)
@@ -2219,6 +2321,32 @@ class EnvironmentVariableValue(models.Model):
             models.Index(fields=["environment"]),
             models.Index(fields=["value_reference"]),
             models.Index(fields=["environment", "-updated_at", "variable"]),
+        ]
+
+
+class EnvironmentVariableIgnore(models.Model):
+    """A reason the environment variables "Needs attention" page shows a key in one environment, which
+    the project's team chose to ignore. An ignored EMPTY goes when the value is next saved.
+    """
+
+    id = models.TextField(primary_key=True, default=cuid_str)
+    project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="environment_variable_ignores", db_column="projectId", db_index=False)
+    environment = models.ForeignKey("RuntimeEnvironment", on_delete=models.CASCADE, related_name="environment_variable_ignores", db_column="environmentId", db_index=False)
+    variable = models.ForeignKey("EnvironmentVariable", on_delete=models.CASCADE, related_name="ignores", db_column="variableId", db_index=False)
+    """For MISSING, a variable of the project with no value in this environment."""
+    reason = models.TextField(choices=EnvironmentVariableIgnoreReason.choices)
+    created_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="environment_variable_ignores", db_column="createdById", null=True, db_index=False)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "EnvironmentVariableIgnore"
+        constraints = [
+            models.UniqueConstraint(fields=["environment", "variable", "reason"], name="EnvironmentVariableIgnore_environmentId_variableId_reason_key"),
+        ]
+        indexes = [
+            models.Index(fields=["variable"]),
+            models.Index(fields=["project"]),
+            models.Index(fields=["created_by"]),
         ]
 
 
@@ -2278,7 +2406,7 @@ class WorkerDeployment(models.Model):
     runtime = models.TextField(null=True)
     runtime_version = models.TextField(null=True, db_column="runtimeVersion")
     cli_version = models.TextField(null=True, db_column="cliVersion")
-    """CLI version that initiated the deploy, stamped at initialization"""
+    """CLI version that initiated the deploy, stamped at initialization or worker upload"""
     image_reference = models.TextField(null=True, db_column="imageReference")
     image_platform = models.TextField(db_column="imagePlatform", default="linux/amd64")
     template_key = models.TextField(null=True, db_column="templateKey")
@@ -2303,6 +2431,8 @@ class WorkerDeployment(models.Model):
     triggered_via = models.TextField(null=True, db_column="triggeredVia")
     commit_sha = models.TextField(null=True, db_column="commitSHA")
     external_id = models.TextField(null=True, db_column="externalId")
+    initiated_by_credential = models.TextField(choices=DeploymentInitiatedByCredential.choices, null=True, db_column="initiatedByCredential")
+    """The kind of credential that started the deployment. Null when unknown."""
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     installed_at = UtcDateTimeField(null=True, db_column="installedAt")
     built_at = UtcDateTimeField(null=True, db_column="builtAt")
@@ -2311,6 +2441,8 @@ class WorkerDeployment(models.Model):
     error_data = models.JSONField(null=True, db_column="errorData")
     canceled_at = UtcDateTimeField(null=True, db_column="canceledAt")
     canceled_reason = models.TextField(null=True, db_column="canceledReason")
+    superseded_by_id = models.TextField(null=True, db_column="supersededById")
+    """The newer GitHub build that superseded this one while it was still queued"""
     git = models.JSONField(null=True)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -2603,6 +2735,9 @@ class BulkActionItem(models.Model):
 
     class Meta:
         db_table = "BulkActionItem"
+        indexes = [
+            models.Index(fields=["group_id", "created_at"]),
+        ]
 
 
 class RealtimeStreamChunk(models.Model):
@@ -2781,6 +2916,10 @@ class ConnectedGithubRepository(models.Model):
     repository = models.ForeignKey("GithubRepository", on_delete=models.CASCADE, related_name="connected_github_repository", db_column="repositoryId", db_index=False)
     branch_tracking = models.JSONField(db_column="branchTracking")
     preview_deployments_enabled = models.BooleanField(db_column="previewDeploymentsEnabled", default=True)
+    supersede_production_builds = models.BooleanField(db_column="supersedeProductionBuilds", default=False)
+    """Skip queued builds once a newer commit is queued for the same environment or preview branch"""
+    supersede_staging_builds = models.BooleanField(db_column="supersedeStagingBuilds", default=True)
+    supersede_preview_builds = models.BooleanField(db_column="supersedePreviewBuilds", default=True)
     build_filters = models.JSONField(null=True, db_column="buildFilters")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)

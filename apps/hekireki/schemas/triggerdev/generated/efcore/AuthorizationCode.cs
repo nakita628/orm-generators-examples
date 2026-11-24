@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 
 namespace Trigger.Models;
 
@@ -36,6 +37,23 @@ public partial class AuthorizationCode
     /// sha256 of the approval code, which only the approving browser ever sees.
     /// </summary>
     public string? ApprovalCodeHash { get; set; }
+
+    public virtual OAuthClient? OauthClient { get; set; }
+
+    public string? OauthClientId { get; set; }
+
+    public string? RedirectUri { get; set; }
+
+    public List<string>? Scope { get; set; } = new List<string>();
+
+    public string? Resource { get; set; }
+
+    public string? ApprovedByUserId { get; set; }
+
+    /// <summary>
+    /// The user who started the OAuth authorization. Only they can approve it.
+    /// </summary>
+    public string? RequestedByUserId { get; set; }
 
     public DateTime CreatedAt { get; set; }
 

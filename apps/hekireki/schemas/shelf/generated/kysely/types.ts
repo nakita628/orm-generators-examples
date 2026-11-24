@@ -348,6 +348,7 @@ export type ActivityAction =
   | 'BOOKING_PARTIAL_CHECKOUT'
   | 'BOOKING_CANCELLED'
   | 'BOOKING_ARCHIVED'
+  | 'BOOKING_APPROVED'
   | 'BOOKING_MODEL_REQUESTED'
   | 'BOOKING_MODEL_REQUEST_CHANGED'
   | 'BOOKING_MODEL_REQUEST_REMOVED'
@@ -1029,6 +1030,8 @@ export interface Booking {
   autoArchivedAt: Timestamp | null
   archivedWithoutCheckin: Generated<boolean>
   cancellationReason: string | null
+  approvedAt: Timestamp | null
+  approvedById: string | null
 }
 
 export interface BookingSettings {
@@ -1040,6 +1043,8 @@ export interface BookingSettings {
   autoArchiveBookings: Generated<boolean>
   autoArchiveDays: Generated<number>
   autoArchiveExpiredReservations: Generated<boolean>
+  requireApprovalForBase: Generated<boolean>
+  requireApprovalForSelfService: Generated<boolean>
   requireExplicitCheckinForAdmin: Generated<boolean>
   requireExplicitCheckinForSelfService: Generated<boolean>
   requireExplicitCheckoutForAdmin: Generated<boolean>

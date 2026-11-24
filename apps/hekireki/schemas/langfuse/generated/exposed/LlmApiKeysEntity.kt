@@ -24,6 +24,7 @@ class LlmApiKeysEntity(
     var extraHeaders by LlmApiKeysTable.extraHeaders
     var extraHeaderKeys by LlmApiKeysTable.extraHeaderKeys
     var config by LlmApiKeysTable.config
+    var externalId by LlmApiKeysTable.externalId
     var projectId by LlmApiKeysTable.projectId
     var project by ProjectEntity optionalReferencedOn LlmApiKeysTable.projectId
     var organizationId by LlmApiKeysTable.organizationId

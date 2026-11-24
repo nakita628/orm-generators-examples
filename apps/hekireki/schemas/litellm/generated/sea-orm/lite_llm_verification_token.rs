@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_VerificationToken")]
 pub struct Model {
+    #[sea_orm(unique)]
+    pub key_id: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub token: String,
     pub key_name: Option<String>,
@@ -132,6 +134,13 @@ impl Related<super::lite_llm_jwtkey_mapping::Entity> for Entity {
 
 #[async_trait::async_trait]
 impl ActiveModelBehavior for ActiveModel {
+    fn new() -> Self {
+        Self {
+            key_id: Set(Some(uuid::Uuid::new_v4().to_string())),
+            ..ActiveModelTrait::default()
+        }
+    }
+
     async fn before_save<C>(mut self, _db: &C, insert: bool) -> Result<Self, DbErr>
     where
         C: ConnectionTrait,

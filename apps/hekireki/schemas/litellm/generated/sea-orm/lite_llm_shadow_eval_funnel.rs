@@ -9,6 +9,8 @@ pub struct Model {
     #[sea_orm(default_value = 0)]
     pub not_sampled: i32,
     #[sea_orm(default_value = 0)]
+    pub same_model: i32,
+    #[sea_orm(default_value = 0)]
     pub unjudgeable: i32,
     #[sea_orm(default_value = 0)]
     pub shed: i32,

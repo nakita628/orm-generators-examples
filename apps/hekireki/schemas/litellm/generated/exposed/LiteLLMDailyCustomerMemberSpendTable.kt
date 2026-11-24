@@ -5,6 +5,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 object LiteLLMDailyCustomerMemberSpendTable : IdTable<String>("\"LiteLLM_DailyCustomerMemberSpend\"") {
+    val appGroupId = text("app_group_id").default("")
+    val appId = text("app_id").default("")
     override val id = text("id").entityId()
     val date = text("date")
     val customerOrgId = text("customer_org_id")
@@ -21,12 +23,15 @@ object LiteLLMDailyCustomerMemberSpendTable : IdTable<String>("\"LiteLLM_DailyCu
     val completionTokens = long("completion_tokens").default(0L)
     val cacheReadInputTokens = long("cache_read_input_tokens").default(0L)
     val cacheCreationInputTokens = long("cache_creation_input_tokens").default(0L)
+    val cacheCost = double("cache_cost").default(0.0)
+    val pricedCacheTokens = long("priced_cache_tokens").default(0L)
     val compressionSavedTokens = long("compression_saved_tokens").default(0L)
     val compressionSavingsSpend = double("compression_savings_spend").default(0.0)
     val promptCachingSavingsSpend = double("prompt_caching_savings_spend").default(0.0)
     val gatewayInjectedCachingSavingsSpend = double("gateway_injected_caching_savings_spend").default(0.0)
     val autorouterSavingsSpend = double("autorouter_savings_spend").default(0.0)
     val guardrailSpend = double("guardrail_spend").default(0.0)
+    val customerMarginSpend = double("customer_margin_spend").default(0.0)
     val apiRequests = long("api_requests").default(0L)
     val successfulRequests = long("successful_requests").default(0L)
     val failedRequests = long("failed_requests").default(0L)
@@ -37,6 +42,7 @@ object LiteLLMDailyCustomerMemberSpendTable : IdTable<String>("\"LiteLLM_DailyCu
     override val primaryKey = PrimaryKey(id, name = "\"LiteLLM_DailyCustomerMemberSpend_pkey\"")
 
     init {
+        index("LiteLLM_DailyCustomerMemberSpend_app_group_id_customer_org__idx", false, appGroupId, customerOrgId, date)
         index("\"LiteLLM_DailyCustomerMemberSpend_date_idx\"", false, date)
         index("\"LiteLLM_DailyCustomerMemberSpend_customer_org_id_date_idx\"", false, customerOrgId, date)
         index("\"LiteLLM_DailyCustomerMemberSpend_customer_team_id_date_idx\"", false, customerTeamId, date)

@@ -6,6 +6,7 @@ defmodule Langfuse.Model do
 
   @type t :: %__MODULE__{
           id: String.t(),
+          scope: atom(),
           model_name: String.t(),
           match_pattern: String.t(),
           start_date: DateTime.t() | nil,
@@ -18,12 +19,14 @@ defmodule Langfuse.Model do
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
+          organization: Langfuse.Organization.t() | nil,
           price: [Langfuse.Price.t()],
           pricing_tiers: [Langfuse.PricingTier.t()]
         }
 
   schema "models" do
     field(:id, :string, primary_key: true)
+    field(:scope, Ecto.Enum, values: [:LANGFUSE, :ORGANIZATION, :PROJECT])
     field(:model_name, :string)
     field(:match_pattern, :string)
     field(:start_date, Langfuse.PrismaDateTime)
@@ -34,6 +37,7 @@ defmodule Langfuse.Model do
     field(:tokenizer_id, :string)
     field(:tokenizer_config, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
+    belongs_to(:organization, Langfuse.Organization, foreign_key: :organization_id, type: :string)
     has_many(:price, Langfuse.Price, foreign_key: :model_id, references: :id)
     has_many(:pricing_tiers, Langfuse.PricingTier, foreign_key: :model_id, references: :id)
     timestamps(inserted_at_source: :created_at)

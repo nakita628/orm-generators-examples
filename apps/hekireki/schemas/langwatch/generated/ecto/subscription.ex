@@ -46,6 +46,11 @@ defmodule LangWatch.Subscription do
           seat_repair_flagged_at: DateTime.t() | nil,
           seat_line_lease_token: String.t() | nil,
           seat_line_lease_until: DateTime.t() | nil,
+          payment_recovery_invoice_id: String.t() | nil,
+          payment_recovery_started_at: DateTime.t() | nil,
+          payment_recovery_notice_day: integer() | nil,
+          over_plan_since: DateTime.t() | nil,
+          over_plan_ended_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: LangWatch.Organization.t() | nil,
@@ -106,6 +111,15 @@ defmodule LangWatch.Subscription do
     # The lease a seat change or seat line repair holds while it reads and moves the seat line.
     field(:seat_line_lease_token, :string, source: :seatLineLeaseToken)
     field(:seat_line_lease_until, LangWatch.PrismaDateTime, source: :seatLineLeaseUntil)
+    # An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+    # charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+    field(:payment_recovery_invoice_id, :string, source: :paymentRecoveryInvoiceId)
+    field(:payment_recovery_started_at, LangWatch.PrismaDateTime, source: :paymentRecoveryStartedAt)
+    field(:payment_recovery_notice_day, :integer, source: :paymentRecoveryNoticeDay)
+    # The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+    # organization is on Free with more members than Free allows; ended once that no longer holds.
+    field(:over_plan_since, LangWatch.PrismaDateTime, source: :overPlanSince)
+    field(:over_plan_ended_at, LangWatch.PrismaDateTime, source: :overPlanEndedAt)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, LangWatch.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     has_many(:invoices, LangWatch.Invoice, foreign_key: :subscription_id, references: :id)

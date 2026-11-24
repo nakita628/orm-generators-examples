@@ -40,6 +40,9 @@ class BookingEntity(
     var autoArchivedAt by BookingTable.autoArchivedAt
     var archivedWithoutCheckin by BookingTable.archivedWithoutCheckin
     var cancellationReason by BookingTable.cancellationReason
+    var approvedAt by BookingTable.approvedAt
+    var approvedBy by UserEntity optionalReferencedOn BookingTable.approvedById
+    var approvedById by BookingTable.approvedById
     var notificationRecipients by TeamMemberEntity via BookingNotificationRecipientsTable
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {

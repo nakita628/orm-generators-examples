@@ -766,6 +766,10 @@ public partial class InboxZeroContext : DbContext
                 .HasDefaultValue(false)
                 .HasColumnName("mailExpandedPreview");
             entity.Property(e => e.MailBundleInbox).HasColumnName("mailBundleInbox");
+            entity.Property(e => e.MailGroupBySender)
+                .ValueGeneratedNever()
+                .HasDefaultValue(true)
+                .HasColumnName("mailGroupBySender");
             entity.Property(e => e.MailDefaultSplitId).HasColumnName("mailDefaultSplitId");
             entity.Property(e => e.MailSetup)
                 .ValueGeneratedNever()

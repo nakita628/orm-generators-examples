@@ -25,6 +25,12 @@ object OrgMemberTable : IdTable<String>("\"OrgMember\"") {
             fkName = "\"OrgMember_userId_fkey\"",
         )
     val role = pgEnum("role", "\"OrgMemberRole\"", OrgMemberRole.entries, OrgMemberRole::dbName).default(OrgMemberRole.MEMBER)
+
+    /** Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded. */
+    val invitedById = text("invitedById").nullable()
+
+    /** How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded. */
+    val joinMethod = text("joinMethod").nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"OrgMember_pkey\"")

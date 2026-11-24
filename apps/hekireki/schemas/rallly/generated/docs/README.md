@@ -38,6 +38,8 @@ CREATE TYPE "poll_closed_reason" AS ENUM ('auto', 'manual');
 
 CREATE TYPE "vote_type" AS ENUM ('yes', 'no', 'ifNeedBe');
 
+CREATE TYPE "space_usage_resource" AS ENUM ('api_poll', 'email_invite');
+
 CREATE TYPE "SpaceMemberRole" AS ENUM ('ADMIN', 'MEMBER');
 
 CREATE TYPE "space_types" AS ENUM ('personal', 'work');
@@ -483,6 +485,18 @@ CREATE TABLE "sheet_slots" (
     CONSTRAINT "sheet_slots_pkey" PRIMARY KEY ("id")
 );
 
+CREATE TABLE "space_usage" (
+    "space_id" TEXT NOT NULL,
+    "resource" "space_usage_resource" NOT NULL,
+    "period" DATE NOT NULL,
+    "count" INTEGER NOT NULL DEFAULT 0,
+    "near_limit_warned_at" TIMESTAMP(3),
+    "at_limit_warned_at" TIMESTAMP(3),
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "space_usage_pkey" PRIMARY KEY ("space_id","resource","period")
+);
+
 CREATE TABLE "spaces" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -892,6 +906,8 @@ ALTER TABLE "sheet_slots" ADD CONSTRAINT "sheet_slots_sheet_id_fkey" FOREIGN KEY
 
 ALTER TABLE "sheet_slots" ADD CONSTRAINT "sheet_slots_event_type_id_fkey" FOREIGN KEY ("event_type_id") REFERENCES "event_types"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
+ALTER TABLE "space_usage" ADD CONSTRAINT "space_usage_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "spaces" ADD CONSTRAINT "spaces_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "space_members" ADD CONSTRAINT "space_members_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -921,46 +937,47 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 
 ## Contents
 
-| Model                                                             | Table                           | Description                                                                                                                              |
-| ----------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| [ApiUsage](#model-ApiUsage)                                       | `api_usage`                     |                                                                                                                                          |
-| [Subscription](#model-Subscription)                               | `subscriptions`                 |                                                                                                                                          |
-| [PaymentMethod](#model-PaymentMethod)                             | `payment_methods`               |                                                                                                                                          |
-| [NonprofitApplication](#model-NonprofitApplication)               | `nonprofit_applications`        |                                                                                                                                          |
-| [QueuedEmail](#model-QueuedEmail)                                 | `queued_emails`                 | An email waiting to be sent by the queue, one row per recipient. The email is built when it is sent, from the row its subject points at. |
-| [EventType](#model-EventType)                                     | `event_types`                   |                                                                                                                                          |
-| [ScheduledEvent](#model-ScheduledEvent)                           | `scheduled_events`              |                                                                                                                                          |
-| [RescheduledEventDate](#model-RescheduledEventDate)               | `rescheduled_event_dates`       |                                                                                                                                          |
-| [ScheduledEventInvite](#model-ScheduledEventInvite)               | `scheduled_event_invites`       |                                                                                                                                          |
-| [InstanceSettings](#model-InstanceSettings)                       | `instance_settings`             |                                                                                                                                          |
-| [Credential](#model-Credential)                                   | `credentials`                   |                                                                                                                                          |
-| [CalendarConnection](#model-CalendarConnection)                   | `calendar_connections`          |                                                                                                                                          |
-| [ProviderCalendar](#model-ProviderCalendar)                       | `provider_calendars`            |                                                                                                                                          |
-| [ConferencingConnection](#model-ConferencingConnection)           | `conferencing_connections`      |                                                                                                                                          |
-| [License](#model-License)                                         | `licenses`                      |                                                                                                                                          |
-| [LicenseValidation](#model-LicenseValidation)                     | `license_validations`           |                                                                                                                                          |
-| [InstanceLicense](#model-InstanceLicense)                         | `instance_licenses`             |                                                                                                                                          |
-| [UserNotificationPreferences](#model-UserNotificationPreferences) | `user_notification_preferences` |                                                                                                                                          |
-| [Poll](#model-Poll)                                               | `polls`                         |                                                                                                                                          |
-| [Participant](#model-Participant)                                 | `participants`                  |                                                                                                                                          |
-| [PollInvite](#model-PollInvite)                                   | `poll_invites`                  |                                                                                                                                          |
-| [PollActivity](#model-PollActivity)                               | `poll_activities`               |                                                                                                                                          |
-| [Option](#model-Option)                                           | `options`                       |                                                                                                                                          |
-| [Vote](#model-Vote)                                               | `votes`                         |                                                                                                                                          |
-| [Comment](#model-Comment)                                         | `comments`                      |                                                                                                                                          |
-| [RegisteredInstance](#model-RegisteredInstance)                   | `registered_instances`          |                                                                                                                                          |
-| [Sheet](#model-Sheet)                                             | `sheets`                        |                                                                                                                                          |
-| [SheetSlot](#model-SheetSlot)                                     | `sheet_slots`                   |                                                                                                                                          |
-| [Space](#model-Space)                                             | `spaces`                        |                                                                                                                                          |
-| [SpaceMember](#model-SpaceMember)                                 | `space_members`                 |                                                                                                                                          |
-| [SpaceMemberInvite](#model-SpaceMemberInvite)                     | `space_member_invites`          |                                                                                                                                          |
-| [SpaceApiKey](#model-SpaceApiKey)                                 | `space_api_keys`                |                                                                                                                                          |
-| [SpaceWebhook](#model-SpaceWebhook)                               | `space_webhooks`                |                                                                                                                                          |
-| [WebhookDelivery](#model-WebhookDelivery)                         | `webhook_deliveries`            |                                                                                                                                          |
-| [Account](#model-Account)                                         | `accounts`                      |                                                                                                                                          |
-| [User](#model-User)                                               | `users`                         |                                                                                                                                          |
-| [Session](#model-Session)                                         | `sessions`                      |                                                                                                                                          |
-| [Verification](#model-Verification)                               | `verifications`                 |                                                                                                                                          |
+| Model                                                             | Table                           | Description                                                                                                                                            |
+| ----------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [ApiUsage](#model-ApiUsage)                                       | `api_usage`                     | Superseded by SpaceUsage (resource api_poll). Unused; kept so old deployments keep working during the switch, then dropped.                            |
+| [Subscription](#model-Subscription)                               | `subscriptions`                 |                                                                                                                                                        |
+| [PaymentMethod](#model-PaymentMethod)                             | `payment_methods`               |                                                                                                                                                        |
+| [NonprofitApplication](#model-NonprofitApplication)               | `nonprofit_applications`        |                                                                                                                                                        |
+| [QueuedEmail](#model-QueuedEmail)                                 | `queued_emails`                 | An email waiting to be sent by the queue, one row per recipient. The email is built when it is sent, from the row its subject points at.               |
+| [EventType](#model-EventType)                                     | `event_types`                   |                                                                                                                                                        |
+| [ScheduledEvent](#model-ScheduledEvent)                           | `scheduled_events`              |                                                                                                                                                        |
+| [RescheduledEventDate](#model-RescheduledEventDate)               | `rescheduled_event_dates`       |                                                                                                                                                        |
+| [ScheduledEventInvite](#model-ScheduledEventInvite)               | `scheduled_event_invites`       |                                                                                                                                                        |
+| [InstanceSettings](#model-InstanceSettings)                       | `instance_settings`             |                                                                                                                                                        |
+| [Credential](#model-Credential)                                   | `credentials`                   |                                                                                                                                                        |
+| [CalendarConnection](#model-CalendarConnection)                   | `calendar_connections`          |                                                                                                                                                        |
+| [ProviderCalendar](#model-ProviderCalendar)                       | `provider_calendars`            |                                                                                                                                                        |
+| [ConferencingConnection](#model-ConferencingConnection)           | `conferencing_connections`      |                                                                                                                                                        |
+| [License](#model-License)                                         | `licenses`                      |                                                                                                                                                        |
+| [LicenseValidation](#model-LicenseValidation)                     | `license_validations`           |                                                                                                                                                        |
+| [InstanceLicense](#model-InstanceLicense)                         | `instance_licenses`             |                                                                                                                                                        |
+| [UserNotificationPreferences](#model-UserNotificationPreferences) | `user_notification_preferences` |                                                                                                                                                        |
+| [Poll](#model-Poll)                                               | `polls`                         |                                                                                                                                                        |
+| [Participant](#model-Participant)                                 | `participants`                  |                                                                                                                                                        |
+| [PollInvite](#model-PollInvite)                                   | `poll_invites`                  |                                                                                                                                                        |
+| [PollActivity](#model-PollActivity)                               | `poll_activities`               |                                                                                                                                                        |
+| [Option](#model-Option)                                           | `options`                       |                                                                                                                                                        |
+| [Vote](#model-Vote)                                               | `votes`                         |                                                                                                                                                        |
+| [Comment](#model-Comment)                                         | `comments`                      |                                                                                                                                                        |
+| [RegisteredInstance](#model-RegisteredInstance)                   | `registered_instances`          |                                                                                                                                                        |
+| [Sheet](#model-Sheet)                                             | `sheets`                        |                                                                                                                                                        |
+| [SheetSlot](#model-SheetSlot)                                     | `sheet_slots`                   |                                                                                                                                                        |
+| [SpaceUsage](#model-SpaceUsage)                                   | `space_usage`                   | Monthly counters for metered actions charged to a space, independent of the records they produce, so deleting a poll does not give back what it spent. |
+| [Space](#model-Space)                                             | `spaces`                        |                                                                                                                                                        |
+| [SpaceMember](#model-SpaceMember)                                 | `space_members`                 |                                                                                                                                                        |
+| [SpaceMemberInvite](#model-SpaceMemberInvite)                     | `space_member_invites`          |                                                                                                                                                        |
+| [SpaceApiKey](#model-SpaceApiKey)                                 | `space_api_keys`                |                                                                                                                                                        |
+| [SpaceWebhook](#model-SpaceWebhook)                               | `space_webhooks`                |                                                                                                                                                        |
+| [WebhookDelivery](#model-WebhookDelivery)                         | `webhook_deliveries`            |                                                                                                                                                        |
+| [Account](#model-Account)                                         | `accounts`                      |                                                                                                                                                        |
+| [User](#model-User)                                               | `users`                         |                                                                                                                                                        |
+| [Session](#model-Session)                                         | `sessions`                      |                                                                                                                                                        |
+| [Verification](#model-Verification)                               | `verifications`                 |                                                                                                                                                        |
 
 | Enum                                                           | Name in the database            | Description |
 | -------------------------------------------------------------- | ------------------------------- | ----------- |
@@ -979,6 +996,7 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 | [PollKind](#enum-PollKind)                                     | `poll_kind`                     |             |
 | [PollClosedReason](#enum-PollClosedReason)                     | `poll_closed_reason`            |             |
 | [VoteType](#enum-VoteType)                                     | `vote_type`                     |             |
+| [SpaceUsageResource](#enum-SpaceUsageResource)                 | `space_usage_resource`          |             |
 | [SpaceMemberRole](#enum-SpaceMemberRole)                       | `SpaceMemberRole`               |             |
 | [SpaceType](#enum-SpaceType)                                   | `space_types`                   |             |
 | [SpaceTier](#enum-SpaceTier)                                   | `space_tiers`                   |             |
@@ -992,7 +1010,8 @@ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_impersonated_by_fkey" FOREIGN KE
 
 ### ApiUsage
 
-Table `api_usage`.
+Table `api_usage`. Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+deployments keep working during the switch, then dropped.
 
 ![ApiUsage and the models it relates to](tables/ApiUsage.svg)
 
@@ -10201,6 +10220,307 @@ RETURNING
 
 </details>
 
+<a id="model-SpaceUsage"></a>
+
+### SpaceUsage
+
+Table `space_usage`. Monthly counters for metered actions charged to a space, independent of
+the records they produce, so deleting a poll does not give back what it
+spent.
+
+![SpaceUsage and the models it relates to](tables/SpaceUsage.svg)
+
+| Field                                        | Type                                             | Constraints                            | Default      | Description |
+| -------------------------------------------- | ------------------------------------------------ | -------------------------------------- | ------------ | ----------- |
+| `spaceId` (`space_id`)                       | `String`                                         | PK NOT NULL → [Space.id](#model-Space) |              |             |
+| `resource`                                   | [`SpaceUsageResource`](#enum-SpaceUsageResource) | PK NOT NULL                            |              |             |
+| `period`                                     | `DateTime` `@db.Date`                            | PK NOT NULL                            |              |             |
+| `count`                                      | `Int`                                            | NOT NULL                               | `0`          |             |
+| `nearLimitWarnedAt` (`near_limit_warned_at`) | `DateTime`                                       | NULL                                   |              |             |
+| `atLimitWarnedAt` (`at_limit_warned_at`)     | `DateTime`                                       | NULL                                   |              |             |
+| `updatedAt` (`updated_at`)                   | `DateTime`                                       | NOT NULL                               | `@updatedAt` |             |
+
+#### Indexes
+
+- `@@id([spaceId, resource, period])`
+
+#### References
+
+- `spaceId` → [Space.id](#model-Space) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "space_usage" (
+    "space_id" TEXT NOT NULL,
+    "resource" "space_usage_resource" NOT NULL,
+    "period" DATE NOT NULL,
+    "count" INTEGER NOT NULL DEFAULT 0,
+    "near_limit_warned_at" TIMESTAMP(3),
+    "at_limit_warned_at" TIMESTAMP(3),
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "space_usage_pkey" PRIMARY KEY ("space_id","resource","period")
+);
+
+ALTER TABLE "space_usage" ADD CONSTRAINT "space_usage_space_id_fkey" FOREIGN KEY ("space_id") REFERENCES "spaces"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.spaceUsage.findMany();
+```
+
+```sql
+SELECT
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+FROM
+  "public"."space_usage"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.spaceUsage.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."space_usage"."space_id",
+      "public"."space_usage"."resource",
+      "public"."space_usage"."period"
+    FROM
+      "public"."space_usage"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.spaceUsage.findMany({ include: { space: true } });
+```
+
+```sql
+SELECT
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+FROM
+  "public"."space_usage"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."spaces"."id",
+  "public"."spaces"."name",
+  "public"."spaces"."image",
+  "public"."spaces"."owner_id",
+  "public"."spaces"."tier"::text,
+  "public"."spaces"."space_type"::text,
+  "public"."spaces"."industry",
+  "public"."spaces"."primary_color",
+  "public"."spaces"."show_branding",
+  "public"."spaces"."hide_attribution",
+  "public"."spaces"."shared",
+  "public"."spaces"."nonprofit_discount_granted_at",
+  "public"."spaces"."api_poll_quota_override",
+  "public"."spaces"."created_at",
+  "public"."spaces"."updated_at"
+FROM
+  "public"."spaces"
+WHERE
+  "public"."spaces"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<spaceId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.spaceUsage.findUnique({
+  where: {
+    spaceId_resource_period: {
+      spaceId: "example",
+      resource: "api_poll",
+      period: new Date("2026-01-01T00:00:00.000Z"),
+    },
+  },
+});
+```
+
+```sql
+SELECT
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+FROM
+  "public"."space_usage"
+WHERE
+  (
+    (
+      "public"."space_usage"."space_id" = $1
+      AND "public"."space_usage"."resource" = CAST($2::text AS "public"."space_usage_resource")
+      AND "public"."space_usage"."period" = $3
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $4
+OFFSET
+  $5
+-- params: ["example","api_poll","2026-01-01T00:00:00.000Z","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.spaceUsage.create({
+  data: { spaceId: "example", resource: "api_poll", period: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."space_usage" (
+    "space_id",
+    "resource",
+    "period",
+    "count",
+    "updated_at"
+  )
+VALUES
+  (
+    $1,
+    CAST($2::text AS "public"."space_usage_resource"),
+    $3,
+    $4,
+    $5
+  )
+RETURNING
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+-- params: ["example","api_poll","2026-01-01T00:00:00.000Z","0","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.spaceUsage.update({
+  where: {
+    spaceId_resource_period: {
+      spaceId: "example",
+      resource: "api_poll",
+      period: new Date("2026-01-01T00:00:00.000Z"),
+    },
+  },
+  data: { count: 1 },
+});
+```
+
+```sql
+UPDATE "public"."space_usage"
+SET
+  "count" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    (
+      "public"."space_usage"."space_id" = $3
+      AND "public"."space_usage"."resource" = CAST($4::text AS "public"."space_usage_resource")
+      AND "public"."space_usage"."period" = $5
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+-- params: ["1",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example","api_poll","2026-01-01T00:00:00.000Z"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.spaceUsage.delete({
+  where: {
+    spaceId_resource_period: {
+      spaceId: "example",
+      resource: "api_poll",
+      period: new Date("2026-01-01T00:00:00.000Z"),
+    },
+  },
+});
+```
+
+```sql
+DELETE FROM "public"."space_usage"
+WHERE
+  (
+    (
+      "public"."space_usage"."space_id" = $1
+      AND "public"."space_usage"."resource" = CAST($2::text AS "public"."space_usage_resource")
+      AND "public"."space_usage"."period" = $3
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+-- params: ["example","api_poll","2026-01-01T00:00:00.000Z"]
+```
+
+</details>
+
 <a id="model-Space"></a>
 
 ### Space
@@ -10244,6 +10564,7 @@ Table `spaces`.
 - `id` ← [ScheduledEvent.spaceId](#model-ScheduledEvent) (one-to-many, on delete Cascade)
 - `id` ← [Poll.spaceId](#model-Poll) (one-to-many, on delete SetNull)
 - `id` ← [Sheet.spaceId](#model-Sheet) (one-to-many, on delete Cascade)
+- `id` ← [SpaceUsage.spaceId](#model-SpaceUsage) (one-to-many, on delete Cascade)
 - `id` ← [SpaceMember.spaceId](#model-SpaceMember) (one-to-many, on delete Cascade)
 - `id` ← [SpaceMemberInvite.spaceId](#model-SpaceMemberInvite) (one-to-many, on delete Cascade)
 - `id` ← [SpaceApiKey.spaceId](#model-SpaceApiKey) (one-to-many, on delete Cascade)
@@ -10352,6 +10673,7 @@ await prisma.space.findMany({
     nonprofitApplications: true,
     webhooks: true,
     apiUsage: true,
+    usage: true,
   },
 });
 ```
@@ -10653,6 +10975,22 @@ FROM
   "public"."api_usage"
 WHERE
   "public"."api_usage"."space_id" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."space_usage"."space_id",
+  "public"."space_usage"."resource"::text,
+  "public"."space_usage"."period",
+  "public"."space_usage"."count",
+  "public"."space_usage"."near_limit_warned_at",
+  "public"."space_usage"."at_limit_warned_at",
+  "public"."space_usage"."updated_at"
+FROM
+  "public"."space_usage"
+WHERE
+  "public"."space_usage"."space_id" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -14341,6 +14679,21 @@ Type `vote_type`.
 
 ```sql
 CREATE TYPE "vote_type" AS ENUM ('yes', 'no', 'ifNeedBe');
+```
+
+<a id="enum-SpaceUsageResource"></a>
+
+### SpaceUsageResource
+
+Type `space_usage_resource`.
+
+- `api_poll`
+- `email_invite`
+
+#### Definition
+
+```sql
+CREATE TYPE "space_usage_resource" AS ENUM ('api_poll', 'email_invite');
 ```
 
 <a id="enum-SpaceMemberRole"></a>

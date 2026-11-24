@@ -34,6 +34,9 @@ defmodule Trigger.Organization do
           support_access_mode: atom(),
           support_access_mode_updated_at: DateTime.t() | nil,
           support_access_mode_updated_by_id: String.t() | nil,
+          mfa_required: boolean(),
+          mfa_step_up_actions: [String.t()],
+          mfa_step_up_window_minutes: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           environments: [Trigger.RuntimeEnvironment.t()],
@@ -96,6 +99,11 @@ defmodule Trigger.Organization do
     field(:support_access_mode, Ecto.Enum, values: [:ALLOW, :REQUIRES_REQUEST], default: :ALLOW, source: :supportAccessMode)
     field(:support_access_mode_updated_at, Trigger.PrismaDateTime, source: :supportAccessModeUpdatedAt)
     field(:support_access_mode_updated_by_id, :string, source: :supportAccessModeUpdatedById)
+    # When true, members without MFA are locked out of the dashboard and CLI until they set it up.
+    field(:mfa_required, :boolean, default: false, source: :mfaRequired)
+    # Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
+    field(:mfa_step_up_actions, {:array, :string}, source: :mfaStepUpActions)
+    field(:mfa_step_up_window_minutes, :integer, default: 5, source: :mfaStepUpWindowMinutes)
     has_many(:environments, Trigger.RuntimeEnvironment, foreign_key: :organization_id, references: :id)
     has_many(:projects, Trigger.Project, foreign_key: :organization_id, references: :id)
     has_many(:members, Trigger.OrgMember, foreign_key: :organization_id, references: :id)

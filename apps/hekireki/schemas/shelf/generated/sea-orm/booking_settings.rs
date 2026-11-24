@@ -22,6 +22,10 @@ pub struct Model {
     pub auto_archive_days: i32,
     #[sea_orm(column_name = "autoArchiveExpiredReservations", default_value = false)]
     pub auto_archive_expired_reservations: bool,
+    #[sea_orm(column_name = "requireApprovalForBase", default_value = false)]
+    pub require_approval_for_base: bool,
+    #[sea_orm(column_name = "requireApprovalForSelfService", default_value = false)]
+    pub require_approval_for_self_service: bool,
     #[sea_orm(column_name = "requireExplicitCheckinForAdmin", default_value = false)]
     pub require_explicit_checkin_for_admin: bool,
     #[sea_orm(

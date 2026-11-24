@@ -18,6 +18,11 @@ class ConnectedGithubRepositoryEntity(
     var repositoryId by ConnectedGithubRepositoryTable.repositoryId
     var branchTracking by ConnectedGithubRepositoryTable.branchTracking
     var previewDeploymentsEnabled by ConnectedGithubRepositoryTable.previewDeploymentsEnabled
+
+    /** Skip queued builds once a newer commit is queued for the same environment or preview branch */
+    var supersedeProductionBuilds by ConnectedGithubRepositoryTable.supersedeProductionBuilds
+    var supersedeStagingBuilds by ConnectedGithubRepositoryTable.supersedeStagingBuilds
+    var supersedePreviewBuilds by ConnectedGithubRepositoryTable.supersedePreviewBuilds
     var buildFilters by ConnectedGithubRepositoryTable.buildFilters
     var createdAt by ConnectedGithubRepositoryTable.createdAt
     var updatedAt by ConnectedGithubRepositoryTable.updatedAt

@@ -237,7 +237,9 @@ type EmailAccount struct {
 	MailExpandedPreview            bool               `gorm:"column:mailExpandedPreview;default:false;not null" json:"mailExpandedPreview"`
 	// Collapses threads from bundled splits into one row each in the inbox.
 	// Null until first turned on, which is when default bundles are chosen.
-	MailBundleInbox                     *bool                    `gorm:"column:mailBundleInbox" json:"mailBundleInbox"`
+	MailBundleInbox *bool `gorm:"column:mailBundleInbox" json:"mailBundleInbox"`
+	// Collapses the inbox's other mail from one sender into one row.
+	MailGroupBySender                   *bool                    `gorm:"column:mailGroupBySender;default:true;not null" json:"mailGroupBySender"`
 	MailDefaultSplitID                  *string                  `gorm:"column:mailDefaultSplitId" json:"mailDefaultSplitId"`
 	MailSetup                           string                   `gorm:"column:mailSetup;default:'PENDING';not null" json:"mailSetup"`
 	IncludeInAllAccounts                *bool                    `gorm:"column:includeInAllAccounts;default:true;not null" json:"includeInAllAccounts"`

@@ -22,6 +22,7 @@ object LlmApiKeysTable : IdTable<String>("llm_api_keys") {
     val extraHeaders = text("extra_headers").nullable()
     val extraHeaderKeys = array("extra_header_keys", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val config = jsonb<String>("config", { it }, { it }).nullable()
+    val externalId = text("external_id").nullable()
     val projectId =
         optReference(
             "project_id",

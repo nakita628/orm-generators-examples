@@ -109,4 +109,9 @@ class Space extends Model
     {
         return $this->hasMany(ApiUsage::class, 'space_id');
     }
+
+    public function usage(): HasMany
+    {
+        return $this->hasMany(SpaceUsage::class, 'space_id');
+    }
 }

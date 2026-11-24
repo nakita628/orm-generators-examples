@@ -47,6 +47,7 @@ class Base(DeclarativeBase):
 class LiteLLMBudgetTable(Base):
     __tablename__ = "LiteLLM_BudgetTable"
 
+    rollover_max_budget: Mapped[Optional[float]]
     budget_id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid_mod.uuid4()))
     name: Mapped[Optional[str]]
     max_budget: Mapped[Optional[float]]
@@ -71,6 +72,17 @@ class LiteLLMBudgetTable(Base):
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
     updated_by: Mapped[str]
 
+    apps: Mapped[list["LiteLLMAppTable"]] = relationship(foreign_keys="LiteLLMAppTable.budget_id", back_populates="budget")
+    app_groups: Mapped[list["LiteLLMAppGroupTable"]] = relationship(passive_deletes="all", back_populates="budget")
+    app_group_org_budgets: Mapped[list["LiteLLMAppGroupCustomerOrgTable"]] = relationship(passive_deletes="all", back_populates="budget")
+    app_default_tiers: Mapped[list["LiteLLMAppTable"]] = relationship(foreign_keys="LiteLLMAppTable.default_tier_budget_id", back_populates="default_tier_budget")
+    app_default_members: Mapped[list["LiteLLMAppTable"]] = relationship(foreign_keys="LiteLLMAppTable.default_customer_member_budget_id", back_populates="default_customer_member_budget")
+    app_org_tiers: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(foreign_keys="LiteLLMAppCustomerOrgTable.tier_budget_id", back_populates="tier_budget")
+    app_org_budgets: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(foreign_keys="LiteLLMAppCustomerOrgTable.budget_id", passive_deletes="all", back_populates="budget")
+    app_member_budgets: Mapped[list["LiteLLMAppCustomerMemberTable"]] = relationship(foreign_keys="LiteLLMAppCustomerMemberTable.budget_id", passive_deletes="all", back_populates="budget")
+    app_org_overrides: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(foreign_keys="LiteLLMAppCustomerOrgTable.budget_override_id", back_populates="budget_override")
+    app_org_members: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(foreign_keys="LiteLLMAppCustomerOrgTable.customer_member_budget_id", back_populates="customer_member_budget")
+    app_member_overrides: Mapped[list["LiteLLMAppCustomerMemberTable"]] = relationship(foreign_keys="LiteLLMAppCustomerMemberTable.budget_override_id", back_populates="budget_override")
     customer_organization_defaults: Mapped[list["LiteLLMCustomerOrganizationTable"]] = relationship(foreign_keys="LiteLLMCustomerOrganizationTable.default_budget_template_id", back_populates="default_budget_template")
     customer_organizations: Mapped[list["LiteLLMCustomerOrganizationTable"]] = relationship(foreign_keys="LiteLLMCustomerOrganizationTable.budget_id", back_populates="budget")
     customer_teams: Mapped[list["LiteLLMCustomerTeamTable"]] = relationship(foreign_keys="LiteLLMCustomerTeamTable.budget_id", back_populates="budget")
@@ -85,6 +97,115 @@ class LiteLLMBudgetTable(Base):
     model_access_groups: Mapped[list["LiteLLMModelAccessGroupBudgetTable"]] = relationship(back_populates="litellm_budget_table")
     team_membership: Mapped[list["LiteLLMTeamMembership"]] = relationship(back_populates="litellm_budget_table")
     organization_membership: Mapped[list["LiteLLMOrganizationMembership"]] = relationship(back_populates="litellm_budget_table")
+
+class LiteLLMAppGroupTable(Base):
+    __tablename__ = "LiteLLM_AppGroupTable"
+
+    app_group_id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid_mod.uuid4()))
+    name: Mapped[str]
+    description: Mapped[Optional[str]]
+    metadata_: Mapped[Optional[dict[str, Any]]] = mapped_column("metadata", JSONB(none_as_null=True))
+    budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="RESTRICT", onupdate="CASCADE", name="LiteLLM_AppGroupTable_budget_id_fkey"))
+    spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    spend_reset_window: Mapped[Optional[str]]
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    created_by: Mapped[str]
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+    updated_by: Mapped[str]
+
+    __table_args__ = (
+        Index("LiteLLM_AppGroupTable_name_key", "name", unique=True),
+    )
+
+    budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(back_populates="app_groups")
+    apps: Mapped[list["LiteLLMAppTable"]] = relationship(passive_deletes="all", back_populates="app_group")
+    customer_organizations: Mapped[list["LiteLLMAppGroupCustomerOrgTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="app_group")
+
+class LiteLLMAppGroupCustomerOrgTable(Base):
+    __tablename__ = "LiteLLM_AppGroupCustomerOrgTable"
+
+    app_group_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_AppGroupTable.app_group_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppGroupCustomerOrgTable_app_group_id_fkey"), primary_key=True)
+    customer_org_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_CustomerOrganizationTable.customer_org_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppGroupCustomerOrgTable_customer_org_id_fkey"), primary_key=True)
+    budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="RESTRICT", onupdate="CASCADE", name="LiteLLM_AppGroupCustomerOrgTable_budget_id_fkey"))
+    spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    spend_reset_window: Mapped[Optional[str]]
+
+    __table_args__ = (
+        Index("LiteLLM_AppGroupCustomerOrgTable_customer_org_id_idx", "customer_org_id"),
+    )
+
+    budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(back_populates="app_group_org_budgets")
+    app_group: Mapped["LiteLLMAppGroupTable"] = relationship(back_populates="customer_organizations")
+    customer_org: Mapped["LiteLLMCustomerOrganizationTable"] = relationship(back_populates="app_groups")
+
+class LiteLLMAppTable(Base):
+    __tablename__ = "LiteLLM_AppTable"
+
+    app_id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid_mod.uuid4()))
+    app_group_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_AppGroupTable.app_group_id", ondelete="RESTRICT", onupdate="CASCADE", name="LiteLLM_AppTable_app_group_id_fkey"))
+    resource_type: Mapped[Optional[str]]
+    resource_id: Mapped[Optional[str]]
+    alias: Mapped[str]
+    spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    spend_reset_window: Mapped[Optional[str]]
+    budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppTable_budget_id_fkey"))
+    default_tier_budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppTable_default_tier_budget_id_fkey"))
+    default_customer_member_budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppTable_default_customer_member_budget_id_fkey"))
+    auto_create_customers: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
+    customer_margin: Mapped[Optional[float]]
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    created_by: Mapped[str]
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+    updated_by: Mapped[str]
+
+    __table_args__ = (
+        Index("LiteLLM_AppTable_alias_key", "alias", unique=True),
+        Index("LiteLLM_AppTable_app_group_id_idx", "app_group_id"),
+        Index("LiteLLM_AppTable_resource_type_resource_id_key", "resource_type", "resource_id", unique=True),
+    )
+
+    app_group: Mapped[Optional["LiteLLMAppGroupTable"]] = relationship(back_populates="apps")
+    budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_id], back_populates="apps")
+    default_tier_budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[default_tier_budget_id], back_populates="app_default_tiers")
+    default_customer_member_budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[default_customer_member_budget_id], back_populates="app_default_members")
+    customer_organizations: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="app")
+    customer_members: Mapped[list["LiteLLMAppCustomerMemberTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="app")
+
+class LiteLLMAppCustomerOrgTable(Base):
+    __tablename__ = "LiteLLM_AppCustomerOrgTable"
+
+    app_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_AppTable.app_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_app_id_fkey"), primary_key=True)
+    customer_org_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_CustomerOrganizationTable.customer_org_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_customer_org_id_fkey"), primary_key=True)
+    spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    spend_reset_window: Mapped[Optional[str]]
+    tier_budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_tier_budget_id_fkey"))
+    budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="RESTRICT", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_budget_id_fkey"))
+    budget_override_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_budget_override_id_fkey"))
+    budget_override_expires_at: Mapped[Optional[datetime]]
+    customer_member_budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppCustomerOrgTable_customer_member_budget_id_fkey"))
+
+    budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_id], back_populates="app_org_budgets")
+    app: Mapped["LiteLLMAppTable"] = relationship(back_populates="customer_organizations")
+    customer_org: Mapped["LiteLLMCustomerOrganizationTable"] = relationship(back_populates="apps")
+    tier_budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[tier_budget_id], back_populates="app_org_tiers")
+    budget_override: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_override_id], back_populates="app_org_overrides")
+    customer_member_budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[customer_member_budget_id], back_populates="app_org_members")
+
+class LiteLLMAppCustomerMemberTable(Base):
+    __tablename__ = "LiteLLM_AppCustomerMemberTable"
+
+    app_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_AppTable.app_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppCustomerMemberTable_app_id_fkey"), primary_key=True)
+    customer_member_id: Mapped[str] = mapped_column(ForeignKey("LiteLLM_CustomerMemberTable.customer_member_id", ondelete="CASCADE", onupdate="CASCADE", name="LiteLLM_AppCustomerMemberTable_customer_member_id_fkey"), primary_key=True)
+    spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    spend_reset_window: Mapped[Optional[str]]
+    budget_override_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="SET NULL", onupdate="CASCADE", name="LiteLLM_AppCustomerMemberTable_budget_override_id_fkey"))
+    budget_id: Mapped[Optional[str]] = mapped_column(ForeignKey("LiteLLM_BudgetTable.budget_id", ondelete="RESTRICT", onupdate="CASCADE", name="LiteLLM_AppCustomerMemberTable_budget_id_fkey"))
+    budget_override_expires_at: Mapped[Optional[datetime]]
+
+    budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_id], back_populates="app_member_budgets")
+    app: Mapped["LiteLLMAppTable"] = relationship(back_populates="customer_members")
+    customer_member: Mapped["LiteLLMCustomerMemberTable"] = relationship(back_populates="apps")
+    budget_override: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_override_id], back_populates="app_member_overrides")
 
 class LiteLLMCustomerOrganizationTable(Base):
     __tablename__ = "LiteLLM_CustomerOrganizationTable"
@@ -106,6 +227,8 @@ class LiteLLMCustomerOrganizationTable(Base):
 
     budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_id], back_populates="customer_organizations")
     default_budget_template: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[default_budget_template_id], back_populates="customer_organization_defaults")
+    app_groups: Mapped[list["LiteLLMAppGroupCustomerOrgTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="customer_org")
+    apps: Mapped[list["LiteLLMAppCustomerOrgTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="customer_org")
     teams: Mapped[list["LiteLLMCustomerTeamTable"]] = relationship(passive_deletes="all", back_populates="parent_org")
     members: Mapped[list["LiteLLMCustomerMemberTable"]] = relationship(passive_deletes="all", back_populates="parent_org")
 
@@ -127,6 +250,8 @@ class LiteLLMCustomerTeamTable(Base):
 
     __table_args__ = (
         Index("LiteLLM_CustomerTeamTable_parent_org_id_idx", "parent_org_id"),
+        Index("LiteLLM_CustomerTeamTable_budget_id_idx", "budget_id"),
+        Index("LiteLLM_CustomerTeamTable_budget_override_id_idx", "budget_override_id"),
         Index("LiteLLM_CustomerTeamTable_spend_idx", "spend"),
     )
 
@@ -153,12 +278,16 @@ class LiteLLMCustomerMemberTable(Base):
 
     __table_args__ = (
         Index("LiteLLM_CustomerMemberTable_parent_org_id_idx", "parent_org_id"),
+        Index("LiteLLM_CustomerMemberTable_parent_team_ids_idx", "parent_team_ids"),
+        Index("LiteLLM_CustomerMemberTable_budget_id_idx", "budget_id"),
+        Index("LiteLLM_CustomerMemberTable_budget_override_id_idx", "budget_override_id"),
         Index("LiteLLM_CustomerMemberTable_spend_idx", "spend"),
     )
 
     parent_org: Mapped["LiteLLMCustomerOrganizationTable"] = relationship(back_populates="members")
     budget: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_id], back_populates="customer_members")
     budget_override: Mapped[Optional["LiteLLMBudgetTable"]] = relationship(foreign_keys=[budget_override_id], back_populates="customer_member_overrides")
+    apps: Mapped[list["LiteLLMAppCustomerMemberTable"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="customer_member")
     budget_increase_requests: Mapped[list["LiteLLMCustomerBudgetIncreaseRequest"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="customer_member")
 
 class LiteLLMCustomerBudgetIncreaseRequest(Base):
@@ -467,6 +596,8 @@ class LiteLLMDeletedTeamTable(Base):
 class LiteLLMUserTable(Base):
     __tablename__ = "LiteLLM_UserTable"
 
+    rollover_max_budget: Mapped[Optional[float]]
+    rollover_credit: Mapped[Optional[float]]
     budget_limits: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     user_id: Mapped[str] = mapped_column(primary_key=True)
     user_alias: Mapped[Optional[str]]
@@ -524,6 +655,7 @@ class LiteLLMObjectPermissionTable(Base):
     search_tools: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
     mcp_tool_search_enabled: Mapped[Optional[bool]]
     skills: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
+    apps: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
 
     teams: Mapped[list["LiteLLMTeamTable"]] = relationship(back_populates="object_permission")
     projects: Mapped[list["LiteLLMProjectTable"]] = relationship(back_populates="object_permission")
@@ -587,6 +719,7 @@ class LiteLLMMCPServerTable(Base):
     timeout: Mapped[Optional[float]]
     max_concurrent_requests: Mapped[Optional[int]]
     rpm: Mapped[Optional[int]]
+    events: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     approval_status: Mapped[Optional[str]] = mapped_column(default="active", server_default=text("'active'"))
     submitted_by: Mapped[Optional[str]]
     submitted_at: Mapped[Optional[datetime]]
@@ -678,6 +811,7 @@ class LiteLLMSSOIdentityAssertion(Base):
 class LiteLLMVerificationToken(Base):
     __tablename__ = "LiteLLM_VerificationToken"
 
+    key_id: Mapped[Optional[str]] = mapped_column(default=lambda: str(uuid_mod.uuid4()))
     token: Mapped[str] = mapped_column(primary_key=True)
     key_name: Mapped[Optional[str]]
     key_alias: Mapped[Optional[str]]
@@ -728,6 +862,7 @@ class LiteLLMVerificationToken(Base):
     budget_limits: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
 
     __table_args__ = (
+        Index("LiteLLM_VerificationToken_key_id_key", "key_id", unique=True),
         Index("LiteLLM_VerificationToken_user_id_team_id_idx", "user_id", "team_id"),
         Index("LiteLLM_VerificationToken_team_id_idx", "team_id"),
         Index("LiteLLM_VerificationToken_budget_reset_at_expires_idx", "budget_reset_at", "expires"),
@@ -779,6 +914,7 @@ class LiteLLMDeprecatedVerificationToken(Base):
 class LiteLLMDeletedVerificationToken(Base):
     __tablename__ = "LiteLLM_DeletedVerificationToken"
 
+    key_id: Mapped[Optional[str]]
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid_mod.uuid4()))
     token: Mapped[str]
     key_name: Mapped[Optional[str]]
@@ -982,6 +1118,7 @@ class LiteLLMUserNotifications(Base):
 class LiteLLMTeamMembership(Base):
     __tablename__ = "LiteLLM_TeamMembership"
 
+    rollover_credit: Mapped[Optional[float]]
     user_id: Mapped[str] = mapped_column(primary_key=True)
     team_id: Mapped[str] = mapped_column(primary_key=True)
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
@@ -1061,6 +1198,7 @@ class LiteLLMDailyUserSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1101,6 +1239,7 @@ class LiteLLMDailyGlobalSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1137,6 +1276,7 @@ class LiteLLMDailyOrganizationSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1159,6 +1299,8 @@ class LiteLLMDailyOrganizationSpend(Base):
 class LiteLLMDailyCustomerMemberSpend(Base):
     __tablename__ = "LiteLLM_DailyCustomerMemberSpend"
 
+    app_group_id: Mapped[str] = mapped_column(default="", server_default=text("''"))
+    app_id: Mapped[str] = mapped_column(default="", server_default=text("''"))
     id: Mapped[str] = mapped_column(primary_key=True)
     date_: Mapped[str] = mapped_column("date")
     customer_org_id: Mapped[str]
@@ -1175,12 +1317,15 @@ class LiteLLMDailyCustomerMemberSpend(Base):
     completion_tokens: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     cache_read_input_tokens: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     cache_creation_input_tokens: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
+    cache_cost: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    priced_cache_tokens: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     compression_saved_tokens: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     compression_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     prompt_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     failed_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1190,6 +1335,7 @@ class LiteLLMDailyCustomerMemberSpend(Base):
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
 
     __table_args__ = (
+        Index("LiteLLM_DailyCustomerMemberSpend_app_group_id_customer_org__idx", "app_group_id", "customer_org_id", "date"),
         Index("LiteLLM_DailyCustomerMemberSpend_date_idx", "date"),
         Index("LiteLLM_DailyCustomerMemberSpend_customer_org_id_date_idx", "customer_org_id", "date"),
         Index("LiteLLM_DailyCustomerMemberSpend_customer_team_id_date_idx", "customer_team_id", "date"),
@@ -1220,6 +1366,7 @@ class LiteLLMDailyEndUserSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1261,6 +1408,7 @@ class LiteLLMDailyAgentSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1302,6 +1450,7 @@ class LiteLLMDailyTeamSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1345,6 +1494,7 @@ class LiteLLMDailyTagSpend(Base):
     gateway_injected_caching_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     autorouter_savings_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     guardrail_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
+    customer_margin_spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     spend: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     api_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     successful_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
@@ -1442,6 +1592,7 @@ class LiteLLMManagedObjectTable(Base):
     api_key: Mapped[Optional[str]]
     request_tags: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True), default=lambda: [], server_default=text("'[]'"))
     end_user_id: Mapped[Optional[str]]
+    creator_billing_context: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
     updated_by: Mapped[Optional[str]]
 
@@ -2208,6 +2359,7 @@ class LiteLLMShadowEvalJob(Base):
     models: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
     direction: Mapped[str] = mapped_column(default="forward", server_default=text("'forward'"))
     baseline_model: Mapped[Optional[str]]
+    skip_same_model: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     judge_model: Mapped[str]
     shadow_percentage: Mapped[float]
     max_turns: Mapped[int]
@@ -2217,6 +2369,8 @@ class LiteLLMShadowEvalJob(Base):
     ends_at: Mapped[datetime]
     stopped_at: Mapped[Optional[datetime]]
     stopped_by: Mapped[Optional[str]]
+    rubric: Mapped[Optional[str]]
+    rubric_version: Mapped[Optional[int]]
 
     __table_args__ = (
         Index("LiteLLM_ShadowEvalJob_group_id_idx", "group_id"),
@@ -2242,6 +2396,8 @@ class LiteLLMShadowEvalAttempt(Base):
     real_classifier_cost: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     shadow_classifier_cost: Mapped[float] = mapped_column(default=0, server_default=text("0"))
     real_cache_hit: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
+    real_grade: Mapped[Optional[int]]
+    shadow_grade: Mapped[Optional[int]]
     error: Mapped[Optional[str]]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
 
@@ -2254,6 +2410,7 @@ class LiteLLMShadowEvalFunnel(Base):
 
     job_id: Mapped[str] = mapped_column(primary_key=True)
     not_sampled: Mapped[int] = mapped_column(default=0, server_default=text("0"))
+    same_model: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     unjudgeable: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     shed: Mapped[int] = mapped_column(default=0, server_default=text("0"))
     withheld: Mapped[int] = mapped_column(default=0, server_default=text("0"))
@@ -2341,6 +2498,19 @@ class LiteLLMBackgroundResponseSettlement(Base):
 
     response_id: Mapped[str] = mapped_column(primary_key=True)
     settled_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+class LiteLLMBackgroundResponseCreator(Base):
+    __tablename__ = "LiteLLM_BackgroundResponseCreator"
+
+    response_id: Mapped[str] = mapped_column(primary_key=True)
+    upstream_url: Mapped[str]
+    create_context: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    poll_lease_expires_at: Mapped[Optional[datetime]]
+
+    __table_args__ = (
+        Index("idx_background_response_creator_created_at", "created_at"),
+    )
 
 class LiteLLMLens(Base):
     __tablename__ = "LiteLLM_Lens"
@@ -2437,7 +2607,7 @@ class LiteLLMTelemetryReport(Base):
 class LiteLLMSpendLogDelivery(Base):
     __tablename__ = "LiteLLM_SpendLogDelivery"
 
-    delivery_id: Mapped[str] = mapped_column(primary_key=True, server_default=text("(gen_random_uuid())::text"))
+    delivery_id: Mapped[str] = mapped_column(primary_key=True, default=lambda: str(uuid_mod.uuid4()))
     request_id: Mapped[str]
     state: Mapped[str] = mapped_column(Enum("pending", "applied", "parked", name="AccountingDeliveryState"), default="pending", server_default=text("'pending'"))
     accounting_payload: Mapped[dict[str, Any]] = mapped_column(JSONB)

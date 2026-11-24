@@ -45,6 +45,8 @@ pub mod space_member_invite;
 pub mod space_member_role;
 pub mod space_tier;
 pub mod space_type;
+pub mod space_usage;
+pub mod space_usage_resource;
 pub mod space_webhook;
 pub mod subscription;
 pub mod subscription_interval;

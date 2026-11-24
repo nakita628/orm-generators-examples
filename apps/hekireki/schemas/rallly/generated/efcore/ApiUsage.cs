@@ -4,6 +4,10 @@ using System;
 
 namespace Rallly.Models;
 
+/// <summary>
+/// Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+/// deployments keep working during the switch, then dropped.
+/// </summary>
 public partial class ApiUsage
 {
     public string SpaceId { get; set; } = null!;

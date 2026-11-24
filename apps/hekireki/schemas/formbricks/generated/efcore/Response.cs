@@ -69,6 +69,16 @@ public partial class Response
     public string? IngestFlags { get; set; }
 
     /// <summary>
+    /// What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+    /// keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+    /// every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+    /// `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+    /// never accepted as a field of its own.
+    /// [ResponseCalBookings]
+    /// </summary>
+    public string? CalBookings { get; set; }
+
+    /// <summary>
     /// A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
     /// export by default and from Feedback Records, and nothing else: it is never deleted and every
     /// count, list, webhook and integration still includes it (ENG-6780).

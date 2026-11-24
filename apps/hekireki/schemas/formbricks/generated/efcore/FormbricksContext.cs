@@ -106,6 +106,12 @@ public partial class FormbricksContext : DbContext
 
     public virtual DbSet<OauthConsent> OauthConsents { get; set; }
 
+    public virtual DbSet<McpGrant> McpGrants { get; set; }
+
+    public virtual DbSet<McpGrantOrganization> McpGrantOrganizations { get; set; }
+
+    public virtual DbSet<McpGrantWorkspace> McpGrantWorkspaces { get; set; }
+
     public virtual DbSet<OauthResource> OauthResources { get; set; }
 
     public virtual DbSet<OauthClientResource> OauthClientResources { get; set; }
@@ -133,6 +139,8 @@ public partial class FormbricksContext : DbContext
     public virtual DbSet<WorkspaceTeam> WorkspaceTeams { get; set; }
 
     public virtual DbSet<Chart> Charts { get; set; }
+
+    public virtual DbSet<EmbeddedFieldLabel> EmbeddedFieldLabels { get; set; }
 
     public virtual DbSet<Dashboard> Dashboards { get; set; }
 
@@ -176,7 +184,11 @@ public partial class FormbricksContext : DbContext
 
     public virtual DbSet<WorkflowRun> WorkflowRuns { get; set; }
 
+    public virtual DbSet<WorkflowSample> WorkflowSamples { get; set; }
+
     public virtual DbSet<WorkflowRunLog> WorkflowRunLogs { get; set; }
+
+    public virtual DbSet<WorkflowSecret> WorkflowSecrets { get; set; }
 
     public static void MapEnums(NpgsqlDbContextOptionsBuilder npgsql)
     {
@@ -206,6 +218,7 @@ public partial class FormbricksContext : DbContext
         npgsql.MapEnum<OrganizationRole>("OrganizationRole");
         npgsql.MapEnum<ApiKeyPermission>("ApiKeyPermission");
         npgsql.MapEnum<IdentityProvider>("IdentityProvider");
+        npgsql.MapEnum<McpGrantAccess>("McpGrantAccess");
         npgsql.MapEnum<EmbeddedDataSource>("EmbeddedDataSource");
         npgsql.MapEnum<EmbeddedDataType>("EmbeddedDataType");
         npgsql.MapEnum<TeamUserRole>("TeamUserRole");
@@ -272,6 +285,7 @@ public partial class FormbricksContext : DbContext
         dataSource.MapEnum<OrganizationRole>("OrganizationRole");
         dataSource.MapEnum<ApiKeyPermission>("ApiKeyPermission");
         dataSource.MapEnum<IdentityProvider>("IdentityProvider");
+        dataSource.MapEnum<McpGrantAccess>("McpGrantAccess");
         dataSource.MapEnum<EmbeddedDataSource>("EmbeddedDataSource");
         dataSource.MapEnum<EmbeddedDataType>("EmbeddedDataType");
         dataSource.MapEnum<TeamUserRole>("TeamUserRole");
@@ -336,6 +350,7 @@ public partial class FormbricksContext : DbContext
         modelBuilder.HasPostgresEnum<OrganizationRole>(name: "OrganizationRole");
         modelBuilder.HasPostgresEnum<ApiKeyPermission>(name: "ApiKeyPermission");
         modelBuilder.HasPostgresEnum<IdentityProvider>(name: "IdentityProvider");
+        modelBuilder.HasPostgresEnum<McpGrantAccess>(name: "McpGrantAccess");
         modelBuilder.HasPostgresEnum<EmbeddedDataSource>(name: "EmbeddedDataSource");
         modelBuilder.HasPostgresEnum<EmbeddedDataType>(name: "EmbeddedDataType");
         modelBuilder.HasPostgresEnum<TeamUserRole>(name: "TeamUserRole");
@@ -939,6 +954,9 @@ public partial class FormbricksContext : DbContext
             entity.Property(e => e.IngestFlags)
                 .HasColumnType("jsonb")
                 .HasColumnName("ingest_flags");
+            entity.Property(e => e.CalBookings)
+                .HasColumnType("jsonb")
+                .HasColumnName("cal_bookings_by_question_id");
             entity.Property(e => e.Outcome).HasColumnName("outcome");
             entity.Property(e => e.NotShown)
                 .HasColumnType("jsonb")
@@ -2306,6 +2324,97 @@ public partial class FormbricksContext : DbContext
                 .HasConstraintName("oauthConsent_userId_fkey");
         });
 
+        modelBuilder.Entity<McpGrant>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("McpGrant_pkey");
+
+            entity.ToTable("McpGrant");
+
+            entity.HasIndex(e => e.ClientId, "McpGrant_clientId_idx");
+
+            entity.HasIndex(e => new { e.UserId, e.ClientId }, "McpGrant_userId_clientId_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.ClientId).HasColumnName("clientId");
+            entity.Property(e => e.Access)
+                .ValueGeneratedNever()
+                .HasDefaultValue(McpGrantAccess.All)
+                .HasColumnName("access");
+            entity.Property(e => e.Permissions)
+                .ValueGeneratedNever()
+                .HasDefaultValue("{}")
+                .HasColumnType("jsonb")
+                .HasColumnName("permissions");
+
+            entity.HasOne(d => d.User).WithMany(p => p.McpGrants)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrant_userId_fkey");
+
+            entity.HasOne(d => d.Client).WithMany(p => p.McpGrants)
+                .HasPrincipalKey(p => p.ClientId)
+                .HasForeignKey(d => d.ClientId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrant_clientId_fkey");
+        });
+
+        modelBuilder.Entity<McpGrantOrganization>(entity =>
+        {
+            entity.HasKey(e => new { e.GrantId, e.OrganizationId }).HasName("McpGrantOrganization_pkey");
+
+            entity.ToTable("McpGrantOrganization");
+
+            entity.HasIndex(e => e.OrganizationId, "McpGrantOrganization_organizationId_idx");
+
+            entity.Property(e => e.GrantId).HasColumnName("grantId");
+            entity.Property(e => e.OrganizationId).HasColumnName("organizationId");
+
+            entity.HasOne(d => d.Grant).WithMany(p => p.Organizations)
+                .HasForeignKey(d => d.GrantId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrantOrganization_grantId_fkey");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.McpGrants)
+                .HasForeignKey(d => d.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrantOrganization_organizationId_fkey");
+        });
+
+        modelBuilder.Entity<McpGrantWorkspace>(entity =>
+        {
+            entity.HasKey(e => new { e.GrantId, e.WorkspaceId }).HasName("McpGrantWorkspace_pkey");
+
+            entity.ToTable("McpGrantWorkspace");
+
+            entity.HasIndex(e => e.WorkspaceId, "McpGrantWorkspace_workspaceId_idx");
+
+            entity.Property(e => e.GrantId).HasColumnName("grantId");
+            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
+
+            entity.HasOne(d => d.Grant).WithMany(p => p.Workspaces)
+                .HasForeignKey(d => d.GrantId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrantWorkspace_grantId_fkey");
+
+            entity.HasOne(d => d.Workspace).WithMany(p => p.McpGrants)
+                .HasForeignKey(d => d.WorkspaceId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("McpGrantWorkspace_workspaceId_fkey");
+        });
+
         modelBuilder.Entity<OauthResource>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("oauthResource_pkey");
@@ -2864,6 +2973,37 @@ public partial class FormbricksContext : DbContext
                 .HasForeignKey(d => d.FeedbackDirectoryId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("Chart_feedbackDirectoryId_fkey");
+        });
+
+        modelBuilder.Entity<EmbeddedFieldLabel>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("EmbeddedFieldLabel_pkey");
+
+            entity.ToTable("EmbeddedFieldLabel");
+
+            entity.HasIndex(e => new { e.WorkspaceId, e.Key }, "EmbeddedFieldLabel_workspaceId_key_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
+            entity.Property(e => e.Key).HasColumnName("key");
+            entity.Property(e => e.Label).HasColumnName("label");
+
+            entity.HasOne(d => d.Workspace).WithMany(p => p.EmbeddedFieldLabels)
+                .HasForeignKey(d => d.WorkspaceId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("EmbeddedFieldLabel_workspaceId_fkey");
         });
 
         modelBuilder.Entity<Dashboard>(entity =>
@@ -3745,6 +3885,8 @@ public partial class FormbricksContext : DbContext
             entity.Property(e => e.Definition)
                 .HasColumnType("jsonb")
                 .HasColumnName("definition");
+            entity.Property(e => e.WebhookTokenHash).HasColumnName("webhookTokenHash");
+            entity.Property(e => e.WebhookTokenEncrypted).HasColumnName("webhookTokenEncrypted");
 
             entity.HasOne(d => d.Workspace).WithMany(p => p.Workflows)
                 .HasForeignKey(d => d.WorkspaceId)
@@ -3814,7 +3956,11 @@ public partial class FormbricksContext : DbContext
 
             entity.HasIndex(e => e.IsDryRun, "WorkflowRun_isDryRun_idx");
 
+            entity.HasIndex(e => new { e.IsDryRun, e.CreatedAt }, "WorkflowRun_isDryRun_created_at_idx");
+
             entity.HasIndex(e => e.NextAttemptAt, "WorkflowRun_nextAttemptAt_idx");
+
+            entity.HasIndex(e => new { e.ContentDeletedAt, e.FinishedAt }, "WorkflowRun_contentDeletedAt_finishedAt_idx");
 
             entity.HasIndex(e => new { e.WorkflowId, e.IdempotencyKey }, "WorkflowRun_workflowId_idempotencyKey_key").IsUnique();
 
@@ -3879,6 +4025,15 @@ public partial class FormbricksContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("finishedAt");
+            entity.Property(e => e.CallerIp).HasColumnName("callerIp");
+            entity.Property(e => e.ContentDeletedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("contentDeletedAt");
+            entity.Property(e => e.ContentRetentionDays).HasColumnName("contentRetentionDays");
+            entity.Property(e => e.TestRunDefinition)
+                .HasColumnType("jsonb")
+                .HasColumnName("testRunDefinition");
 
             entity.HasOne(d => d.Workflow).WithMany(p => p.Runs)
                 .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
@@ -3902,6 +4057,50 @@ public partial class FormbricksContext : DbContext
                 .HasConstraintName("WorkflowRun_responseId_fkey");
         });
 
+        modelBuilder.Entity<WorkflowSample>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("WorkflowSample_pkey");
+
+            entity.ToTable("WorkflowSample");
+
+            entity.HasIndex(e => new { e.WorkflowId, e.WorkspaceId }, "WorkflowSample_workflowId_workspaceId_idx");
+
+            entity.HasIndex(e => e.UpdatedAt, "WorkflowSample_updated_at_idx");
+
+            entity.HasIndex(e => new { e.WorkflowId, e.Source }, "WorkflowSample_workflowId_source_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<Cuid2Generator>()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.WorkflowId).HasColumnName("workflowId");
+            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
+            entity.Property(e => e.Source).HasColumnName("source");
+            entity.Property(e => e.Sample)
+                .HasColumnType("jsonb")
+                .HasColumnName("sample");
+            entity.Property(e => e.LastCalledAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("lastCalledAt");
+            entity.Property(e => e.LastCallerIp).HasColumnName("lastCallerIp");
+
+            entity.HasOne(d => d.Workflow).WithMany(p => p.Samples)
+                .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
+                .HasForeignKey(d => new { d.WorkflowId, d.WorkspaceId })
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("WorkflowSample_workflowId_workspaceId_fkey");
+        });
+
         modelBuilder.Entity<WorkflowRunLog>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("WorkflowRunLog_pkey");
@@ -3909,6 +4108,8 @@ public partial class FormbricksContext : DbContext
             entity.ToTable("WorkflowRunLog");
 
             entity.HasIndex(e => new { e.RunId, e.Sequence }, "WorkflowRunLog_runId_sequence_idx");
+
+            entity.HasIndex(e => new { e.Status, e.StartedAt }, "WorkflowRunLog_status_startedAt_idx");
 
             entity.HasIndex(e => new { e.RunId, e.StepId }, "WorkflowRunLog_runId_stepId_key").IsUnique();
 
@@ -3947,6 +4148,39 @@ public partial class FormbricksContext : DbContext
                 .HasForeignKey(d => d.RunId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("WorkflowRunLog_runId_fkey");
+        });
+
+        modelBuilder.Entity<WorkflowSecret>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("WorkflowSecret_pkey");
+
+            entity.ToTable("WorkflowSecret");
+
+            entity.HasIndex(e => new { e.WorkflowId, e.WorkspaceId }, "WorkflowSecret_workflowId_workspaceId_idx");
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<Cuid2Generator>()
+                .HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+            entity.Property(e => e.WorkflowId).HasColumnName("workflowId");
+            entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
+            entity.Property(e => e.Value).HasColumnName("value");
+            entity.Property(e => e.BoundOrigin).HasColumnName("boundOrigin");
+
+            entity.HasOne(d => d.Workflow).WithMany(p => p.Secrets)
+                .HasPrincipalKey(p => new { p.Id, p.WorkspaceId })
+                .HasForeignKey(d => new { d.WorkflowId, d.WorkspaceId })
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("WorkflowSecret_workflowId_workspaceId_fkey");
         });
 
         OnModelCreatingPartial(modelBuilder);
@@ -4167,6 +4401,15 @@ public partial class FormbricksContext : DbContext
             }
         }
 
+        foreach (var entry in ChangeTracker.Entries<McpGrant>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
         foreach (var entry in ChangeTracker.Entries<PasswordResetToken>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
@@ -4240,6 +4483,15 @@ public partial class FormbricksContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<Chart>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<EmbeddedFieldLabel>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
@@ -4357,6 +4609,24 @@ public partial class FormbricksContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<WorkflowRun>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<WorkflowSample>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<WorkflowSecret>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

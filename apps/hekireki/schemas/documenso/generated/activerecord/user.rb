@@ -28,4 +28,8 @@ class User < ApplicationRecord
   has_many :site_settings, class_name: "SiteSettings", foreign_key: "lastModifiedByUserId",
                            inverse_of: :last_modified_by_user, dependent: :nullify
   has_many :passkeys, foreign_key: "userId", inverse_of: :user, dependent: :destroy
+  has_many :admin_rule_matches, foreign_key: "actorUserId", inverse_of: :actor_user, dependent: :nullify
+  has_many :admin_tags, foreign_key: "userId", inverse_of: :user, dependent: :destroy
+  has_many :created_admin_tags, class_name: "AdminTag", foreign_key: "createdByUserId", inverse_of: :created_by_user,
+                                dependent: :nullify
 end

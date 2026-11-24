@@ -190,6 +190,7 @@ class User(Base):
     user_organizations: Mapped[list["UserOrganization"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     bookings: Mapped[list["Booking"]] = relationship(foreign_keys="Booking.creator_id", cascade="all, delete", passive_deletes=True, back_populates="creator")
     custodies: Mapped[list["Booking"]] = relationship(foreign_keys="Booking.custodian_user_id", cascade="all, delete", passive_deletes=True, back_populates="custodian_user")
+    approved_bookings: Mapped[list["Booking"]] = relationship(foreign_keys="Booking.approved_by_id", back_populates="approved_by")
     created_kits: Mapped[list["Kit"]] = relationship(passive_deletes="all", back_populates="created_by")
     asset_reminders: Mapped[list["AssetReminder"]] = relationship(passive_deletes="all", back_populates="created_by")
     audits_created: Mapped[list["AuditSession"]] = relationship(passive_deletes="all", back_populates="created_by")
@@ -1290,11 +1291,14 @@ class Booking(Base):
     auto_archived_at: Mapped[Optional[datetime]] = mapped_column("autoArchivedAt", UtcDateTimeTz(precision=3))
     archived_without_checkin: Mapped[bool] = mapped_column("archivedWithoutCheckin", default=False, server_default=text("false"))
     cancellation_reason: Mapped[Optional[str]] = mapped_column("cancellationReason")
+    approved_at: Mapped[Optional[datetime]] = mapped_column("approvedAt", UtcDateTimeTz(precision=3))
+    approved_by_id: Mapped[Optional[str]] = mapped_column("approvedById", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Booking_approvedById_fkey"))
 
     __table_args__ = (
         Index("Booking_creatorId_idx", "creatorId"),
         Index("Booking_custodianTeamMemberId_idx", "custodianTeamMemberId"),
         Index("Booking_custodianUserId_idx", "custodianUserId"),
+        Index("Booking_approvedById_idx", "approvedById"),
         Index("Booking_organizationId_idx", "organizationId"),
         Index("Booking_status_idx", "status"),
         Index("Booking_organizationId_from_id_idx", "organizationId", "from", "id"),
@@ -1304,6 +1308,7 @@ class Booking(Base):
     custodian_user: Mapped[Optional["User"]] = relationship(foreign_keys=[custodian_user_id], back_populates="custodies")
     custodian_team_member: Mapped[Optional["TeamMember"]] = relationship(back_populates="bookings")
     organization: Mapped["Organization"] = relationship(back_populates="bookings")
+    approved_by: Mapped[Optional["User"]] = relationship(foreign_keys=[approved_by_id], back_populates="approved_bookings")
     booking_assets: Mapped[list["BookingAsset"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="booking")
     consumption_logs: Mapped[list["ConsumptionLog"]] = relationship(back_populates="booking")
     notes: Mapped[list["BookingNote"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="booking")
@@ -1324,6 +1329,8 @@ class BookingSettings(Base):
     auto_archive_bookings: Mapped[bool] = mapped_column("autoArchiveBookings", default=False, server_default=text("false"))
     auto_archive_days: Mapped[int] = mapped_column("autoArchiveDays", default=2, server_default=text("2"))
     auto_archive_expired_reservations: Mapped[bool] = mapped_column("autoArchiveExpiredReservations", default=False, server_default=text("false"))
+    require_approval_for_base: Mapped[bool] = mapped_column("requireApprovalForBase", default=False, server_default=text("false"))
+    require_approval_for_self_service: Mapped[bool] = mapped_column("requireApprovalForSelfService", default=False, server_default=text("false"))
     require_explicit_checkin_for_admin: Mapped[bool] = mapped_column("requireExplicitCheckinForAdmin", default=False, server_default=text("false"))
     require_explicit_checkin_for_self_service: Mapped[bool] = mapped_column("requireExplicitCheckinForSelfService", default=False, server_default=text("false"))
     require_explicit_checkout_for_admin: Mapped[bool] = mapped_column("requireExplicitCheckoutForAdmin", default=False, server_default=text("false"))
@@ -2034,7 +2041,7 @@ class ActivityEvent(Base):
     occurred_at: Mapped[datetime] = mapped_column("occurredAt", UtcDateTimeTz(precision=3), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     actor_user_id: Mapped[Optional[str]] = mapped_column("actorUserId")
     actor_snapshot: Mapped[Optional[dict[str, Any]]] = mapped_column("actorSnapshot", JSONB(none_as_null=True))
-    action: Mapped[str] = mapped_column(Enum("ASSET_CREATED", "ASSET_NAME_CHANGED", "ASSET_DESCRIPTION_CHANGED", "ASSET_CATEGORY_CHANGED", "ASSET_MODEL_CHANGED", "ASSET_KIT_CHANGED", "ASSET_LOCATION_CHANGED", "ASSET_TAGS_CHANGED", "ASSET_STATUS_CHANGED", "ASSET_VALUATION_CHANGED", "ASSET_QUANTITY_CHANGED", "ASSET_MIN_QUANTITY_CHANGED", "ASSET_CUSTOM_FIELD_CHANGED", "ASSET_PREFERRED_BARCODE_CHANGED", "ASSET_AVAILABLE_TO_BOOK_CHANGED", "ASSET_ARCHIVED", "ASSET_UNARCHIVED", "ASSET_DELETED", "CUSTODY_ASSIGNED", "CUSTODY_RELEASED", "BOOKING_CREATED", "BOOKING_STATUS_CHANGED", "BOOKING_DATES_CHANGED", "BOOKING_ASSETS_ADDED", "BOOKING_ASSETS_REMOVED", "BOOKING_CHECKED_OUT", "BOOKING_CHECKED_IN", "BOOKING_PARTIAL_CHECKIN", "BOOKING_PARTIAL_CHECKOUT", "BOOKING_CANCELLED", "BOOKING_ARCHIVED", "BOOKING_MODEL_REQUESTED", "BOOKING_MODEL_REQUEST_CHANGED", "BOOKING_MODEL_REQUEST_REMOVED", "BOOKING_MODEL_REQUEST_FULFILLED", "AUDIT_CREATED", "AUDIT_STARTED", "AUDIT_ASSETS_ADDED", "AUDIT_ASSETS_REMOVED", "AUDIT_ASSET_SCANNED", "AUDIT_ASSET_SCAN_REMOVED", "AUDIT_DUE_DATE_CHANGED", "AUDIT_ASSIGNEE_ADDED", "AUDIT_ASSIGNEE_REMOVED", "AUDIT_UPDATED", "AUDIT_COMPLETED", "AUDIT_CANCELLED", "AUDIT_ARCHIVED", "LOCATION_CREATED", "LOCATION_UPDATED", "KIT_CREATED", "KIT_UPDATED", "ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED", name="ActivityAction"))
+    action: Mapped[str] = mapped_column(Enum("ASSET_CREATED", "ASSET_NAME_CHANGED", "ASSET_DESCRIPTION_CHANGED", "ASSET_CATEGORY_CHANGED", "ASSET_MODEL_CHANGED", "ASSET_KIT_CHANGED", "ASSET_LOCATION_CHANGED", "ASSET_TAGS_CHANGED", "ASSET_STATUS_CHANGED", "ASSET_VALUATION_CHANGED", "ASSET_QUANTITY_CHANGED", "ASSET_MIN_QUANTITY_CHANGED", "ASSET_CUSTOM_FIELD_CHANGED", "ASSET_PREFERRED_BARCODE_CHANGED", "ASSET_AVAILABLE_TO_BOOK_CHANGED", "ASSET_ARCHIVED", "ASSET_UNARCHIVED", "ASSET_DELETED", "CUSTODY_ASSIGNED", "CUSTODY_RELEASED", "BOOKING_CREATED", "BOOKING_STATUS_CHANGED", "BOOKING_DATES_CHANGED", "BOOKING_ASSETS_ADDED", "BOOKING_ASSETS_REMOVED", "BOOKING_CHECKED_OUT", "BOOKING_CHECKED_IN", "BOOKING_PARTIAL_CHECKIN", "BOOKING_PARTIAL_CHECKOUT", "BOOKING_CANCELLED", "BOOKING_ARCHIVED", "BOOKING_APPROVED", "BOOKING_MODEL_REQUESTED", "BOOKING_MODEL_REQUEST_CHANGED", "BOOKING_MODEL_REQUEST_REMOVED", "BOOKING_MODEL_REQUEST_FULFILLED", "AUDIT_CREATED", "AUDIT_STARTED", "AUDIT_ASSETS_ADDED", "AUDIT_ASSETS_REMOVED", "AUDIT_ASSET_SCANNED", "AUDIT_ASSET_SCAN_REMOVED", "AUDIT_DUE_DATE_CHANGED", "AUDIT_ASSIGNEE_ADDED", "AUDIT_ASSIGNEE_REMOVED", "AUDIT_UPDATED", "AUDIT_COMPLETED", "AUDIT_CANCELLED", "AUDIT_ARCHIVED", "LOCATION_CREATED", "LOCATION_UPDATED", "KIT_CREATED", "KIT_UPDATED", "ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED", name="ActivityAction"))
     entity_type: Mapped[str] = mapped_column("entityType", Enum("ASSET", "BOOKING", "AUDIT", "KIT", "LOCATION", "TEAM_MEMBER", "CUSTODY", "USER", "ORGANIZATION", name="ActivityEntity"))
     entity_id: Mapped[str] = mapped_column("entityId")
     asset_id: Mapped[Optional[str]] = mapped_column("assetId")

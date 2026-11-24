@@ -53,5 +53,7 @@ public partial class ApiKey
 
     public virtual GatewayApiKeyAssociation? GatewayAssociation { get; set; }
 
+    public virtual ICollection<GatewaySpendLimit> GatewaySpendLimits { get; set; } = new List<GatewaySpendLimit>();
+
     public virtual ICollection<RoleAssignment> RoleAssignments { get; set; } = new List<RoleAssignment>();
 }

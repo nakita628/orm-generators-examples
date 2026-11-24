@@ -23,11 +23,19 @@ pub struct Model {
     pub simulator_model: Option<String>,
     #[sea_orm(column_name = "judgeModel")]
     pub judge_model: Option<String>,
+    #[sea_orm(column_name = "traceQuietPeriodMs")]
+    pub trace_quiet_period_ms: Option<i32>,
+    #[sea_orm(column_name = "traceWaitTimeoutMs")]
+    pub trace_wait_timeout_ms: Option<i32>,
     #[sea_orm(default_value = "run_plan")]
     pub kind: String,
     pub scope: Option<Json>,
     pub fields: Option<Json>,
     pub evaluators: Option<Json>,
+    #[sea_orm(column_name = "templateId")]
+    pub template_id: Option<String>,
+    #[sea_orm(column_name = "templateVersion")]
+    pub template_version: Option<i32>,
     #[sea_orm(column_name = "archivedAt")]
     pub archived_at: Option<DateTime>,
     #[sea_orm(column_name = "createdAt")]

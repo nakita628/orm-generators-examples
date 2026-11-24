@@ -29,6 +29,7 @@ class LiteLLMManagedObjectTable extends Model
         'api_key',
         'request_tags',
         'end_user_id',
+        'creator_billing_context',
         'updated_by',
     ];
 
@@ -41,5 +42,6 @@ class LiteLLMManagedObjectTable extends Model
         'file_object' => 'array',
         'batch_processed' => 'boolean',
         'request_tags' => 'array',
+        'creator_billing_context' => 'array',
     ];
 }

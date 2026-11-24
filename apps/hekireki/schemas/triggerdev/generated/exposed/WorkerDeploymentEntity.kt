@@ -19,7 +19,7 @@ class WorkerDeploymentEntity(
     var runtime by WorkerDeploymentTable.runtime
     var runtimeVersion by WorkerDeploymentTable.runtimeVersion
 
-    /** CLI version that initiated the deploy, stamped at initialization */
+    /** CLI version that initiated the deploy, stamped at initialization or worker upload */
     var cliVersion by WorkerDeploymentTable.cliVersion
     var imageReference by WorkerDeploymentTable.imageReference
     var imagePlatform by WorkerDeploymentTable.imagePlatform
@@ -54,6 +54,9 @@ class WorkerDeploymentEntity(
     var triggeredVia by WorkerDeploymentTable.triggeredVia
     var commitSHA by WorkerDeploymentTable.commitSHA
     var externalId by WorkerDeploymentTable.externalId
+
+    /** The kind of credential that started the deployment. Null when unknown. */
+    var initiatedByCredential by WorkerDeploymentTable.initiatedByCredential
     var startedAt by WorkerDeploymentTable.startedAt
     var installedAt by WorkerDeploymentTable.installedAt
     var builtAt by WorkerDeploymentTable.builtAt
@@ -62,6 +65,9 @@ class WorkerDeploymentEntity(
     var errorData by WorkerDeploymentTable.errorData
     var canceledAt by WorkerDeploymentTable.canceledAt
     var canceledReason by WorkerDeploymentTable.canceledReason
+
+    /** The newer GitHub build that superseded this one while it was still queued */
+    var supersededById by WorkerDeploymentTable.supersededById
     var git by WorkerDeploymentTable.git
     var createdAt by WorkerDeploymentTable.createdAt
     var updatedAt by WorkerDeploymentTable.updatedAt

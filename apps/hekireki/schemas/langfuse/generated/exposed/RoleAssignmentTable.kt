@@ -2,6 +2,7 @@ package langfuse.models
 
 import io.github.thibaultmeyer.cuid.CUID
 import org.jetbrains.exposed.v1.core.ReferenceOption
+import org.jetbrains.exposed.v1.core.TextColumnType
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -44,6 +45,8 @@ object RoleAssignmentTable : IdTable<String>("role_assignments") {
         )
     val roleId = text("role_id")
     val systemRole = pgEnum("system_role", "\"SystemRole\"", SystemRole.entries, SystemRole::dbName)
+    val expiresAt = pgTimestamp("expires_at", 3).nullable()
+    val tags = array("tags", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val createdAt = pgTimestamp("created_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updated_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "role_assignments_pkey")
@@ -54,6 +57,7 @@ object RoleAssignmentTable : IdTable<String>("role_assignments") {
         index("role_assignments_principal_id_idx", false, principalId)
         index("role_assignments_user_id_idx", false, userId)
         index("role_assignments_api_key_id_idx", false, apiKeyId)
+        index("role_assignments_tags_idx", false, functions = listOf(indexExpression("\"tags\" array_ops")), indexType = "gin")
         uniqueIndex("role_assignments_owner_id_principal_id_role_id_key", ownerId, principalId, roleId)
     }
 }

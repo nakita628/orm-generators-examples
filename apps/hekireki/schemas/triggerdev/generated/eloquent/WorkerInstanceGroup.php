@@ -75,6 +75,11 @@ class WorkerInstanceGroup extends Model
         return $this->belongsTo(Project::class, 'projectId');
     }
 
+    public function childTokens(): HasMany
+    {
+        return $this->hasMany(WorkerGroupToken::class, 'workerGroupId');
+    }
+
     public function workers(): HasMany
     {
         return $this->hasMany(WorkerInstance::class, 'workerGroupId');

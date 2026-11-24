@@ -10,6 +10,7 @@ class LiteLLMShadowEvalFunnelEntity(
     companion object : EntityClass<String, LiteLLMShadowEvalFunnelEntity>(LiteLLMShadowEvalFunnelTable)
 
     var notSampled by LiteLLMShadowEvalFunnelTable.notSampled
+    var sameModel by LiteLLMShadowEvalFunnelTable.sameModel
     var unjudgeable by LiteLLMShadowEvalFunnelTable.unjudgeable
     var shed by LiteLLMShadowEvalFunnelTable.shed
     var withheld by LiteLLMShadowEvalFunnelTable.withheld

@@ -6,6 +6,7 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
 
   @type t :: %__MODULE__{
           id: String.t(),
+          key_id: String.t() | nil,
           token: String.t(),
           key_name: String.t() | nil,
           key_alias: String.t() | nil,
@@ -60,6 +61,7 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
         }
 
   schema "LiteLLM_DeletedVerificationToken" do
+    field(:key_id, :string)
     field(:token, :string)
     field(:key_name, :string)
     field(:key_alias, :string)

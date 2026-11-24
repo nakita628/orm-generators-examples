@@ -20,6 +20,7 @@ class AnnotationQueue extends \Illuminate\Database\Eloquent\Model
         'name',
         'description',
         'score_config_ids',
+        'session_view_id',
         'project_id',
     ];
 

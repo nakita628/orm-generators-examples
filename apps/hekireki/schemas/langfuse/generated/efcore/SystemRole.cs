@@ -35,4 +35,10 @@ public enum SystemRole
 
     [PgName("AI_GATEWAY")]
     AiGateway,
+
+    [PgName("AI_GATEWAY_INFERENCE")]
+    AiGatewayInference,
+
+    [PgName("APPLICATION")]
+    Application,
 }

@@ -15,9 +15,15 @@ defmodule Trigger.AuthorizationCode do
           code_challenge: String.t() | nil,
           callback_port: integer() | nil,
           approval_code_hash: String.t() | nil,
+          redirect_uri: String.t() | nil,
+          scope: [String.t()],
+          resource: String.t() | nil,
+          approved_by_user_id: String.t() | nil,
+          requested_by_user_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
-          personal_access_token: Trigger.PersonalAccessToken.t() | nil
+          personal_access_token: Trigger.PersonalAccessToken.t() | nil,
+          oauth_client: Trigger.OAuthClient.t() | nil
         }
 
   schema "AuthorizationCode" do
@@ -31,8 +37,16 @@ defmodule Trigger.AuthorizationCode do
     field(:callback_port, :integer, source: :callbackPort)
     # sha256 of the approval code, which only the approving browser ever sees.
     field(:approval_code_hash, :string, source: :approvalCodeHash)
+    field(:redirect_uri, :string, source: :redirectUri)
+    field(:scope, {:array, :string})
+    field(:resource, :string)
+    field(:approved_by_user_id, :string, source: :approvedByUserId)
+    # The user who started the OAuth authorization. Only they can approve it.
+    field(:requested_by_user_id, :string, source: :requestedByUserId)
     field(:personal_access_token_id, :string, source: :personalAccessTokenId)
+    field(:oauth_client_id, :string, source: :oauthClientId)
     belongs_to(:personal_access_token, Trigger.PersonalAccessToken, foreign_key: :personal_access_token_id, define_field: false, type: :string)
+    belongs_to(:oauth_client, Trigger.OAuthClient, foreign_key: :oauth_client_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

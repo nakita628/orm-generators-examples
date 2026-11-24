@@ -32,6 +32,10 @@ public partial class TriggerContext : DbContext
 
     public virtual DbSet<PersonalAccessToken> PersonalAccessTokens { get; set; }
 
+    public virtual DbSet<OAuthClient> OAuthClients { get; set; }
+
+    public virtual DbSet<OAuthRefreshToken> OAuthRefreshTokens { get; set; }
+
     public virtual DbSet<OrganizationAccessToken> OrganizationAccessTokens { get; set; }
 
     public virtual DbSet<Organization> Organizations { get; set; }
@@ -134,6 +138,8 @@ public partial class TriggerContext : DbContext
 
     public virtual DbSet<EnvironmentVariableValue> EnvironmentVariableValues { get; set; }
 
+    public virtual DbSet<EnvironmentVariableIgnore> EnvironmentVariableIgnores { get; set; }
+
     public virtual DbSet<Checkpoint> Checkpoints { get; set; }
 
     public virtual DbSet<CheckpointRestoreEvent> CheckpointRestoreEvents { get; set; }
@@ -205,6 +211,7 @@ public partial class TriggerContext : DbContext
     public static void MapEnums(NpgsqlDbContextOptionsBuilder npgsql)
     {
         npgsql.MapEnum<AuthenticationMethod>("AuthenticationMethod");
+        npgsql.MapEnum<OAuthClientKind>("OAuthClientKind");
         npgsql.MapEnum<OrganizationAccessTokenType>("OrganizationAccessTokenType");
         npgsql.MapEnum<OrgMemberRole>("OrgMemberRole");
         npgsql.MapEnum<ApiKeyIssuer>("ApiKeyIssuer");
@@ -216,6 +223,7 @@ public partial class TriggerContext : DbContext
         npgsql.MapEnum<OidcSigningKeyStatus>("OidcSigningKeyStatus");
         npgsql.MapEnum<OidcSigningKeyPurpose>("OidcSigningKeyPurpose");
         npgsql.MapEnum<TaskTriggerSource>("TaskTriggerSource");
+        npgsql.MapEnum<TaskExecutionMode>("TaskExecutionMode");
         npgsql.MapEnum<WebhookEndpointStatus>("WebhookEndpointStatus");
         npgsql.MapEnum<WebhookDeliveryStatus>("WebhookDeliveryStatus");
         npgsql.MapEnum<TaskRunStatus>("TaskRunStatus");
@@ -236,9 +244,11 @@ public partial class TriggerContext : DbContext
         npgsql.MapEnum<TaskQueueRole>("TaskQueueRole");
         npgsql.MapEnum<BatchTaskRunStatus>("BatchTaskRunStatus");
         npgsql.MapEnum<BatchTaskRunItemStatus>("BatchTaskRunItemStatus");
+        npgsql.MapEnum<EnvironmentVariableIgnoreReason>("EnvironmentVariableIgnoreReason");
         npgsql.MapEnum<CheckpointType>("CheckpointType");
         npgsql.MapEnum<CheckpointRestoreEventType>("CheckpointRestoreEventType");
         npgsql.MapEnum<WorkerDeploymentType>("WorkerDeploymentType");
+        npgsql.MapEnum<DeploymentInitiatedByCredential>("DeploymentInitiatedByCredential");
         npgsql.MapEnum<WorkerDeploymentStatus>("WorkerDeploymentStatus");
         npgsql.MapEnum<ScheduleType>("ScheduleType");
         npgsql.MapEnum<ScheduleGeneratorType>("ScheduleGeneratorType");
@@ -266,6 +276,7 @@ public partial class TriggerContext : DbContext
     public static void MapEnums(NpgsqlDataSourceBuilder dataSource)
     {
         dataSource.MapEnum<AuthenticationMethod>("AuthenticationMethod");
+        dataSource.MapEnum<OAuthClientKind>("OAuthClientKind");
         dataSource.MapEnum<OrganizationAccessTokenType>("OrganizationAccessTokenType");
         dataSource.MapEnum<OrgMemberRole>("OrgMemberRole");
         dataSource.MapEnum<ApiKeyIssuer>("ApiKeyIssuer");
@@ -277,6 +288,7 @@ public partial class TriggerContext : DbContext
         dataSource.MapEnum<OidcSigningKeyStatus>("OidcSigningKeyStatus");
         dataSource.MapEnum<OidcSigningKeyPurpose>("OidcSigningKeyPurpose");
         dataSource.MapEnum<TaskTriggerSource>("TaskTriggerSource");
+        dataSource.MapEnum<TaskExecutionMode>("TaskExecutionMode");
         dataSource.MapEnum<WebhookEndpointStatus>("WebhookEndpointStatus");
         dataSource.MapEnum<WebhookDeliveryStatus>("WebhookDeliveryStatus");
         dataSource.MapEnum<TaskRunStatus>("TaskRunStatus");
@@ -297,9 +309,11 @@ public partial class TriggerContext : DbContext
         dataSource.MapEnum<TaskQueueRole>("TaskQueueRole");
         dataSource.MapEnum<BatchTaskRunStatus>("BatchTaskRunStatus");
         dataSource.MapEnum<BatchTaskRunItemStatus>("BatchTaskRunItemStatus");
+        dataSource.MapEnum<EnvironmentVariableIgnoreReason>("EnvironmentVariableIgnoreReason");
         dataSource.MapEnum<CheckpointType>("CheckpointType");
         dataSource.MapEnum<CheckpointRestoreEventType>("CheckpointRestoreEventType");
         dataSource.MapEnum<WorkerDeploymentType>("WorkerDeploymentType");
+        dataSource.MapEnum<DeploymentInitiatedByCredential>("DeploymentInitiatedByCredential");
         dataSource.MapEnum<WorkerDeploymentStatus>("WorkerDeploymentStatus");
         dataSource.MapEnum<ScheduleType>("ScheduleType");
         dataSource.MapEnum<ScheduleGeneratorType>("ScheduleGeneratorType");
@@ -335,6 +349,7 @@ public partial class TriggerContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasPostgresEnum<AuthenticationMethod>(name: "AuthenticationMethod");
+        modelBuilder.HasPostgresEnum<OAuthClientKind>(name: "OAuthClientKind");
         modelBuilder.HasPostgresEnum<OrganizationAccessTokenType>(name: "OrganizationAccessTokenType");
         modelBuilder.HasPostgresEnum<OrgMemberRole>(name: "OrgMemberRole");
         modelBuilder.HasPostgresEnum<ApiKeyIssuer>(name: "ApiKeyIssuer");
@@ -346,6 +361,7 @@ public partial class TriggerContext : DbContext
         modelBuilder.HasPostgresEnum<OidcSigningKeyStatus>(name: "OidcSigningKeyStatus");
         modelBuilder.HasPostgresEnum<OidcSigningKeyPurpose>(name: "OidcSigningKeyPurpose");
         modelBuilder.HasPostgresEnum<TaskTriggerSource>(name: "TaskTriggerSource");
+        modelBuilder.HasPostgresEnum<TaskExecutionMode>(name: "TaskExecutionMode");
         modelBuilder.HasPostgresEnum<WebhookEndpointStatus>(name: "WebhookEndpointStatus");
         modelBuilder.HasPostgresEnum<WebhookDeliveryStatus>(name: "WebhookDeliveryStatus");
         modelBuilder.HasPostgresEnum<TaskRunStatus>(name: "TaskRunStatus");
@@ -366,9 +382,11 @@ public partial class TriggerContext : DbContext
         modelBuilder.HasPostgresEnum<TaskQueueRole>(name: "TaskQueueRole");
         modelBuilder.HasPostgresEnum<BatchTaskRunStatus>(name: "BatchTaskRunStatus");
         modelBuilder.HasPostgresEnum<BatchTaskRunItemStatus>(name: "BatchTaskRunItemStatus");
+        modelBuilder.HasPostgresEnum<EnvironmentVariableIgnoreReason>(name: "EnvironmentVariableIgnoreReason");
         modelBuilder.HasPostgresEnum<CheckpointType>(name: "CheckpointType");
         modelBuilder.HasPostgresEnum<CheckpointRestoreEventType>(name: "CheckpointRestoreEventType");
         modelBuilder.HasPostgresEnum<WorkerDeploymentType>(name: "WorkerDeploymentType");
+        modelBuilder.HasPostgresEnum<DeploymentInitiatedByCredential>(name: "DeploymentInitiatedByCredential");
         modelBuilder.HasPostgresEnum<WorkerDeploymentStatus>(name: "WorkerDeploymentStatus");
         modelBuilder.HasPostgresEnum<ScheduleType>(name: "ScheduleType");
         modelBuilder.HasPostgresEnum<ScheduleGeneratorType>(name: "ScheduleGeneratorType");
@@ -548,6 +566,8 @@ public partial class TriggerContext : DbContext
 
             entity.HasIndex(e => e.Code, "AuthorizationCode_code_key").IsUnique();
 
+            entity.HasIndex(e => e.OauthClientId, "AuthorizationCode_oauthClientId_idx");
+
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
                 .HasColumnName("id");
@@ -557,6 +577,15 @@ public partial class TriggerContext : DbContext
             entity.Property(e => e.CodeChallenge).HasColumnName("codeChallenge");
             entity.Property(e => e.CallbackPort).HasColumnName("callbackPort");
             entity.Property(e => e.ApprovalCodeHash).HasColumnName("approvalCodeHash");
+            entity.Property(e => e.OauthClientId).HasColumnName("oauthClientId");
+            entity.Property(e => e.RedirectUri).HasColumnName("redirectUri");
+            entity.Property(e => e.Scope)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("scope");
+            entity.Property(e => e.Resource).HasColumnName("resource");
+            entity.Property(e => e.ApprovedByUserId).HasColumnName("approvedByUserId");
+            entity.Property(e => e.RequestedByUserId).HasColumnName("requestedByUserId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -572,6 +601,11 @@ public partial class TriggerContext : DbContext
                 .HasForeignKey(d => d.PersonalAccessTokenId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("AuthorizationCode_personalAccessTokenId_fkey");
+
+            entity.HasOne(d => d.OauthClient).WithMany(p => p.AuthorizationCodes)
+                .HasForeignKey(d => d.OauthClientId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("AuthorizationCode_oauthClientId_fkey");
         });
 
         modelBuilder.Entity<PersonalAccessToken>(entity =>
@@ -583,6 +617,8 @@ public partial class TriggerContext : DbContext
             entity.HasIndex(e => e.HashedToken, "PersonalAccessToken_hashedToken_key").IsUnique();
 
             entity.HasIndex(e => e.UserId, "PersonalAccessToken_userId_idx");
+
+            entity.HasIndex(e => new { e.OauthClientId, e.UserId }, "PersonalAccessToken_oauthClientId_userId_idx");
 
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
@@ -625,11 +661,108 @@ public partial class TriggerContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updatedAt");
+            entity.Property(e => e.OauthClientId).HasColumnName("oauthClientId");
 
             entity.HasOne(d => d.User).WithMany(p => p.PersonalAccessTokens)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("PersonalAccessToken_userId_fkey");
+
+            entity.HasOne(d => d.OauthClient).WithMany(p => p.PersonalAccessTokens)
+                .HasForeignKey(d => d.OauthClientId)
+                .OnDelete(DeleteBehavior.ClientNoAction)
+                .HasConstraintName("PersonalAccessToken_oauthClientId_fkey");
+        });
+
+        modelBuilder.Entity<OAuthClient>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("OAuthClient_pkey");
+
+            entity.ToTable("OAuthClient");
+
+            entity.HasIndex(e => e.ClientId, "OAuthClient_clientId_key").IsUnique();
+
+            entity.HasIndex(e => e.DedupeKey, "OAuthClient_dedupeKey_key").IsUnique();
+
+            entity.HasIndex(e => new { e.Kind, e.LastUsedAt }, "OAuthClient_kind_lastUsedAt_idx");
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.Kind).HasColumnName("kind");
+            entity.Property(e => e.ClientId).HasColumnName("clientId");
+            entity.Property(e => e.MetadataUrl).HasColumnName("metadataUrl");
+            entity.Property(e => e.DisplayName).HasColumnName("displayName");
+            entity.Property(e => e.SelfReportedName).HasColumnName("selfReportedName");
+            entity.Property(e => e.RedirectUris).HasColumnName("redirectUris");
+            entity.Property(e => e.DedupeKey).HasColumnName("dedupeKey");
+            entity.Property(e => e.MetadataExpiresAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("metadataExpiresAt");
+            entity.Property(e => e.LastUsedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("lastUsedAt");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+        });
+
+        modelBuilder.Entity<OAuthRefreshToken>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("OAuthRefreshToken_pkey");
+
+            entity.ToTable("OAuthRefreshToken");
+
+            entity.HasIndex(e => e.HashedToken, "OAuthRefreshToken_hashedToken_key").IsUnique();
+
+            entity.HasIndex(e => e.PersonalAccessTokenId, "OAuthRefreshToken_personalAccessTokenId_idx");
+
+            entity.HasIndex(e => e.OauthClientId, "OAuthRefreshToken_oauthClientId_idx");
+
+            entity.HasIndex(e => e.IdleExpiresAt, "OAuthRefreshToken_idleExpiresAt_idx");
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.HashedToken).HasColumnName("hashedToken");
+            entity.Property(e => e.PersonalAccessTokenId).HasColumnName("personalAccessTokenId");
+            entity.Property(e => e.OauthClientId).HasColumnName("oauthClientId");
+            entity.Property(e => e.Scope).HasColumnName("scope");
+            entity.Property(e => e.Resource).HasColumnName("resource");
+            entity.Property(e => e.UsedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("usedAt");
+            entity.Property(e => e.ReplacedById).HasColumnName("replacedById");
+            entity.Property(e => e.IdleExpiresAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("idleExpiresAt");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+
+            entity.HasOne(d => d.PersonalAccessToken).WithMany(p => p.OauthRefreshTokens)
+                .HasForeignKey(d => d.PersonalAccessTokenId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("OAuthRefreshToken_personalAccessTokenId_fkey");
+
+            entity.HasOne(d => d.OauthClient).WithMany(p => p.RefreshTokens)
+                .HasForeignKey(d => d.OauthClientId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("OAuthRefreshToken_oauthClientId_fkey");
         });
 
         modelBuilder.Entity<OrganizationAccessToken>(entity =>
@@ -782,6 +915,18 @@ public partial class TriggerContext : DbContext
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("supportAccessModeUpdatedAt");
             entity.Property(e => e.SupportAccessModeUpdatedById).HasColumnName("supportAccessModeUpdatedById");
+            entity.Property(e => e.MfaRequired)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("mfaRequired");
+            entity.Property(e => e.MfaStepUpActions)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("mfaStepUpActions");
+            entity.Property(e => e.MfaStepUpWindowMinutes)
+                .ValueGeneratedNever()
+                .HasDefaultValue(5)
+                .HasColumnName("mfaStepUpWindowMinutes");
         });
 
         modelBuilder.Entity<OrgMember>(entity =>
@@ -803,6 +948,8 @@ public partial class TriggerContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(OrgMemberRole.Member)
                 .HasColumnName("role");
+            entity.Property(e => e.InvitedById).HasColumnName("invitedById");
+            entity.Property(e => e.JoinMethod).HasColumnName("joinMethod");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -900,6 +1047,10 @@ public partial class TriggerContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("rootApiKeyHiddenAt");
+            entity.Property(e => e.RootKeyInjectionDisabledAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("rootKeyInjectionDisabledAt");
             entity.Property(e => e.PkApiKey).HasColumnName("pkApiKey");
             entity.Property(e => e.Type)
                 .ValueGeneratedNever()
@@ -1140,6 +1291,10 @@ public partial class TriggerContext : DbContext
                 .HasColumnName("engine");
             entity.Property(e => e.BuilderProjectId).HasColumnName("builderProjectId");
             entity.Property(e => e.DefaultWorkerGroupId).HasColumnName("defaultWorkerGroupId");
+            entity.Property(e => e.SecretProxyEnabled)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("secretProxyEnabled");
             entity.Property(e => e.AllowedWorkerQueues)
                 .ValueGeneratedNever()
                 .HasDefaultValue(new List<string>())
@@ -1683,6 +1838,13 @@ public partial class TriggerContext : DbContext
             entity.Property(e => e.Config)
                 .HasColumnType("jsonb")
                 .HasColumnName("config");
+            entity.Property(e => e.ExecutionMode)
+                .ValueGeneratedNever()
+                .HasDefaultValue(TaskExecutionMode.Standard)
+                .HasColumnName("executionMode");
+            entity.Property(e => e.ExecutionPolicy)
+                .HasColumnType("jsonb")
+                .HasColumnName("executionPolicy");
             entity.Property(e => e.PayloadSchema)
                 .HasColumnType("jsonb")
                 .HasColumnName("payloadSchema");
@@ -3024,6 +3186,8 @@ public partial class TriggerContext : DbContext
 
             entity.HasIndex(e => e.PreviousTokenHash, "WorkerGroupToken_previousTokenHash_key").IsUnique();
 
+            entity.HasIndex(e => e.WorkerGroupId, "WorkerGroupToken_workerGroupId_idx");
+
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
                 .HasColumnName("id");
@@ -3043,6 +3207,12 @@ public partial class TriggerContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updatedAt");
+            entity.Property(e => e.WorkerGroupId).HasColumnName("workerGroupId");
+
+            entity.HasOne(d => d.ChildOf).WithMany(p => p.ChildTokens)
+                .HasForeignKey(d => d.WorkerGroupId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("WorkerGroupToken_workerGroupId_fkey");
         });
 
         modelBuilder.Entity<TaskRunTag>(entity =>
@@ -3726,6 +3896,13 @@ public partial class TriggerContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("isSecret");
+            entity.Property(e => e.IsProxyOnly)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("isProxyOnly");
+            entity.Property(e => e.ProxyConfig)
+                .HasColumnType("jsonb")
+                .HasColumnName("proxyConfig");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -3758,6 +3935,56 @@ public partial class TriggerContext : DbContext
                 .HasForeignKey(d => d.EnvironmentId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("EnvironmentVariableValue_environmentId_fkey");
+        });
+
+        modelBuilder.Entity<EnvironmentVariableIgnore>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("EnvironmentVariableIgnore_pkey");
+
+            entity.ToTable("EnvironmentVariableIgnore");
+
+            entity.HasIndex(e => e.VariableId, "EnvironmentVariableIgnore_variableId_idx");
+
+            entity.HasIndex(e => e.ProjectId, "EnvironmentVariableIgnore_projectId_idx");
+
+            entity.HasIndex(e => e.CreatedById, "EnvironmentVariableIgnore_createdById_idx");
+
+            entity.HasIndex(e => new { e.EnvironmentId, e.VariableId, e.Reason }, "EnvironmentVariableIgnore_environmentId_variableId_reason_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.ProjectId).HasColumnName("projectId");
+            entity.Property(e => e.EnvironmentId).HasColumnName("environmentId");
+            entity.Property(e => e.VariableId).HasColumnName("variableId");
+            entity.Property(e => e.Reason).HasColumnName("reason");
+            entity.Property(e => e.CreatedById).HasColumnName("createdById");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+
+            entity.HasOne(d => d.Project).WithMany(p => p.EnvironmentVariableIgnores)
+                .HasForeignKey(d => d.ProjectId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("EnvironmentVariableIgnore_projectId_fkey");
+
+            entity.HasOne(d => d.Environment).WithMany(p => p.EnvironmentVariableIgnores)
+                .HasForeignKey(d => d.EnvironmentId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("EnvironmentVariableIgnore_environmentId_fkey");
+
+            entity.HasOne(d => d.Variable).WithMany(p => p.Ignores)
+                .HasForeignKey(d => d.VariableId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("EnvironmentVariableIgnore_variableId_fkey");
+
+            entity.HasOne(d => d.CreatedBy).WithMany(p => p.EnvironmentVariableIgnores)
+                .HasForeignKey(d => d.CreatedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("EnvironmentVariableIgnore_createdById_fkey");
         });
 
         modelBuilder.Entity<Checkpoint>(entity =>
@@ -3941,6 +4168,7 @@ public partial class TriggerContext : DbContext
             entity.Property(e => e.TriggeredVia).HasColumnName("triggeredVia");
             entity.Property(e => e.CommitSHA).HasColumnName("commitSHA");
             entity.Property(e => e.ExternalId).HasColumnName("externalId");
+            entity.Property(e => e.InitiatedByCredential).HasColumnName("initiatedByCredential");
             entity.Property(e => e.StartedAt)
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
@@ -3969,6 +4197,7 @@ public partial class TriggerContext : DbContext
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("canceledAt");
             entity.Property(e => e.CanceledReason).HasColumnName("canceledReason");
+            entity.Property(e => e.SupersededById).HasColumnName("supersededById");
             entity.Property(e => e.Git)
                 .HasColumnType("jsonb")
                 .HasColumnName("git");
@@ -4536,6 +4765,8 @@ public partial class TriggerContext : DbContext
 
             entity.ToTable("BulkActionItem");
 
+            entity.HasIndex(e => new { e.GroupId, e.CreatedAt }, "BulkActionItem_groupId_createdAt_idx");
+
             entity.Property(e => e.Id)
                 .HasValueGenerator<CuidGenerator>()
                 .HasColumnName("id");
@@ -4904,6 +5135,18 @@ public partial class TriggerContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(true)
                 .HasColumnName("previewDeploymentsEnabled");
+            entity.Property(e => e.SupersedeProductionBuilds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("supersedeProductionBuilds");
+            entity.Property(e => e.SupersedeStagingBuilds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(true)
+                .HasColumnName("supersedeStagingBuilds");
+            entity.Property(e => e.SupersedePreviewBuilds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(true)
+                .HasColumnName("supersedePreviewBuilds");
             entity.Property(e => e.BuildFilters)
                 .HasColumnType("jsonb")
                 .HasColumnName("buildFilters");
@@ -5633,6 +5876,15 @@ public partial class TriggerContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<PersonalAccessToken>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<OAuthClient>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

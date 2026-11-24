@@ -20,6 +20,9 @@ class RuntimeEnvironmentEntity(
     /** Non-null prevents the root API key from being returned to users. */
     var rootApiKeyHiddenAt by RuntimeEnvironmentTable.rootApiKeyHiddenAt
 
+    /** Non-null disables automatic root key injection into new deployed attempts. */
+    var rootKeyInjectionDisabledAt by RuntimeEnvironmentTable.rootKeyInjectionDisabledAt
+
     /** @deprecated was for v2 */
     var pkApiKey by RuntimeEnvironmentTable.pkApiKey
     var type by RuntimeEnvironmentTable.type
@@ -71,6 +74,7 @@ class RuntimeEnvironmentEntity(
     val taskRuns by TaskRunEntity referrersOn TaskRunTable.runtimeEnvironmentId
     val taskQueues by TaskQueueEntity referrersOn TaskQueueTable.runtimeEnvironmentId
     val environmentVariableValues by EnvironmentVariableValueEntity referrersOn EnvironmentVariableValueTable.environmentId
+    val environmentVariableIgnores by EnvironmentVariableIgnoreEntity referrersOn EnvironmentVariableIgnoreTable.environmentId
     val checkpoints by CheckpointEntity referrersOn CheckpointTable.runtimeEnvironmentId
     val workerDeployments by WorkerDeploymentEntity referrersOn WorkerDeploymentTable.environmentId
     val workerDeploymentPromotions by WorkerDeploymentPromotionEntity referrersOn WorkerDeploymentPromotionTable.environmentId

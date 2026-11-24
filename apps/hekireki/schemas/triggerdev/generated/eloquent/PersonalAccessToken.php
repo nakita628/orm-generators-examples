@@ -43,6 +43,7 @@ class PersonalAccessToken extends Model
         'idleTimeoutSeconds',
         'expiryReminderSentAt',
         'expiredNoticeSentAt',
+        'oauthClientId',
     ];
 
     protected $casts = [
@@ -60,8 +61,18 @@ class PersonalAccessToken extends Model
         return $this->belongsTo(User::class, 'userId');
     }
 
+    public function oauthClient(): BelongsTo
+    {
+        return $this->belongsTo(OAuthClient::class, 'oauthClientId');
+    }
+
     public function authorizationCodes(): HasMany
     {
         return $this->hasMany(AuthorizationCode::class, 'personalAccessTokenId');
+    }
+
+    public function oauthRefreshTokens(): HasMany
+    {
+        return $this->hasMany(OAuthRefreshToken::class, 'personalAccessTokenId');
     }
 }

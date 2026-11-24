@@ -7,6 +7,30 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMBudgetTable
 {
+    public double? RolloverMaxBudget { get; set; }
+
+    public virtual ICollection<LiteLLMAppTable> Apps { get; set; } = new List<LiteLLMAppTable>();
+
+    public virtual ICollection<LiteLLMAppGroupTable> AppGroups { get; set; } = new List<LiteLLMAppGroupTable>();
+
+    public virtual ICollection<LiteLLMAppGroupCustomerOrgTable> AppGroupOrgBudgets { get; set; } = new List<LiteLLMAppGroupCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppTable> AppDefaultTiers { get; set; } = new List<LiteLLMAppTable>();
+
+    public virtual ICollection<LiteLLMAppTable> AppDefaultMembers { get; set; } = new List<LiteLLMAppTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerOrgTable> AppOrgTiers { get; set; } = new List<LiteLLMAppCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerOrgTable> AppOrgBudgets { get; set; } = new List<LiteLLMAppCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerMemberTable> AppMemberBudgets { get; set; } = new List<LiteLLMAppCustomerMemberTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerOrgTable> AppOrgOverrides { get; set; } = new List<LiteLLMAppCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerOrgTable> AppOrgMembers { get; set; } = new List<LiteLLMAppCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerMemberTable> AppMemberOverrides { get; set; } = new List<LiteLLMAppCustomerMemberTable>();
+
     public virtual ICollection<LiteLLMCustomerOrganizationTable> CustomerOrganizationDefaults { get; set; } = new List<LiteLLMCustomerOrganizationTable>();
 
     public virtual ICollection<LiteLLMCustomerOrganizationTable> CustomerOrganizations { get; set; } = new List<LiteLLMCustomerOrganizationTable>();

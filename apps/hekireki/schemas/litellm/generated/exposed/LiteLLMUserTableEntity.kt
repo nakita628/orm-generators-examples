@@ -12,6 +12,8 @@ class LiteLLMUserTableEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMUserTableEntity>(LiteLLMUserTableTable)
 
+    var rolloverMaxBudget by LiteLLMUserTableTable.rolloverMaxBudget
+    var rolloverCredit by LiteLLMUserTableTable.rolloverCredit
     var budgetLimits by LiteLLMUserTableTable.budgetLimits
     val verifiedSubjects by LiteLLMVerifiedSubjectEntity optionalReferrersOn LiteLLMVerifiedSubjectTable.userId
     var userAlias by LiteLLMUserTableTable.userAlias

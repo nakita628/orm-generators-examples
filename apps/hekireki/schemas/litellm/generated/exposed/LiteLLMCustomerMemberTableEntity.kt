@@ -12,6 +12,7 @@ class LiteLLMCustomerMemberTableEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMCustomerMemberTableEntity>(LiteLLMCustomerMemberTableTable)
 
+    val apps by LiteLLMAppCustomerMemberTableEntity referrersOn LiteLLMAppCustomerMemberTableTable.customerMemberId
     var spend by LiteLLMCustomerMemberTableTable.spend
     var spendResetWindow by LiteLLMCustomerMemberTableTable.spendResetWindow
     var alias by LiteLLMCustomerMemberTableTable.alias

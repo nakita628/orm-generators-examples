@@ -67,6 +67,12 @@ erDiagram
     EmailDomain ||--o{ OrganisationEmail : "(id) - (emailDomainId)"
     Organisation ||--o{ OrganisationEmail : "(id) - (organisationId)"
     Organisation ||--o{ EmbedSignature : "(id) - (organisationId)"
+    AdminRule ||--o{ AdminRuleMatch : "(id) - (ruleId)"
+    User |o--o{ AdminRuleMatch : "(id) - (actorUserId)"
+    User |o--o{ AdminTag : "(id) - (userId)"
+    Organisation |o--o{ AdminTag : "(id) - (organisationId)"
+    User |o--o{ AdminTag : "(id) - (createdByUserId)"
+    AdminRule |o--o{ AdminTag : "(id) - (adminRuleId)"
     User {
         int id PK
         string name
@@ -691,5 +697,41 @@ erDiagram
         datetime bucket PK
         int count
         datetime createdAt
+    }
+    AdminRule {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string name
+        string description
+        adminrulemode mode
+        string trigger "[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"
+        json definition "[AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)"
+        int priority
+        boolean stopOnMatch
+        string[] exemptOrganisationIds "Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an organisation"
+    }
+    AdminRuleMatch {
+        string id PK
+        datetime createdAt
+        adminrulemode mode
+        string trigger "[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"
+        string organisationId
+        string envelopeId
+        json eventSnapshot "[AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)"
+        json actionsRun "[AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)"
+        string ruleId FK
+        int actorUserId FK
+    }
+    AdminTag {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string type "[AdminTagType] @zod.custom.use(ZAdminTagTypeSchema)"
+        string description
+        int userId FK
+        string organisationId FK
+        int createdByUserId FK
+        string adminRuleId FK
     }
 ```

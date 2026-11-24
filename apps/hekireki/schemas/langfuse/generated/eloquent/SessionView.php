@@ -16,6 +16,7 @@ class SessionView extends \Illuminate\Database\Eloquent\Model
 
     protected $fillable = [
         'id',
+        'ownership',
         'is_pinned_by_default_for_project',
         'project_id',
         'name',
@@ -26,10 +27,12 @@ class SessionView extends \Illuminate\Database\Eloquent\Model
     ];
 
     protected $attributes = [
+        'ownership' => 'PROJECT',
         'is_pinned_by_default_for_project' => false,
     ];
 
     protected $casts = [
+        'ownership' => SessionViewOwnership::class,
         'is_pinned_by_default_for_project' => 'boolean',
         'filters' => 'array',
         'view_mode' => SessionViewMode::class,

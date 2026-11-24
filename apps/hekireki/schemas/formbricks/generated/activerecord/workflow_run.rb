@@ -1,5 +1,13 @@
 # triggerPayload:: [WorkflowTriggerRunPayload]
 # data:: [WorkflowRunData]
+# callerIp:: The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.
+# contentDeletedAt:: When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+#   input, output and errors, the run error and the caller IP. Null while the content is kept.
+# contentRetentionDays:: The retention period in days that applied when the content was cleared ("Details deleted after N days").
+# testRunDefinition:: The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+#   changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+#   existed. Configuration like a version's definition, not run content: retention leaves it alone.
+#   [WorkflowExecutableDefinition]
 class WorkflowRun < ApplicationRecord
   self.table_name = "WorkflowRun"
   self.implicit_order_column = "created_at"

@@ -103,6 +103,11 @@ class Organisation extends Model
         return $this->hasMany(OrganisationMonthlyStat::class, 'organisationId');
     }
 
+    public function adminTags(): HasMany
+    {
+        return $this->hasMany(AdminTag::class, 'organisationId');
+    }
+
     public function embedSignatures(): HasMany
     {
         return $this->hasMany(EmbedSignature::class, 'organisationId');

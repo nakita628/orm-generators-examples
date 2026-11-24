@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class LiteLLMVerificationToken extends Model
 {
@@ -20,6 +21,7 @@ class LiteLLMVerificationToken extends Model
 
     protected $fillable = [
         'token',
+        'key_id',
         'key_name',
         'key_alias',
         'soft_budget_cooldown',
@@ -116,6 +118,17 @@ class LiteLLMVerificationToken extends Model
         'key_rotation_at' => 'datetime',
         'budget_limits' => 'array',
     ];
+
+    public function save(array $options = [])
+    {
+        if (! $this->exists) {
+            if (! array_key_exists('key_id', $this->attributes)) {
+                $this->setAttribute('key_id', (string) Str::orderedUuid());
+            }
+        }
+
+        return parent::save($options);
+    }
 
     public function litellm_budget_table(): BelongsTo
     {

@@ -159,6 +159,18 @@ pub enum Relation {
     EvaluatorVersionsCreated,
     #[sea_orm(has_many = "super::evaluation_rule::Entity")]
     EvaluationRulesCreated,
+    #[sea_orm(
+        has_many = "super::gateway_spend_limit::Entity",
+        from = "Column::Id",
+        to = "super::gateway_spend_limit::Column::OwnerUserId"
+    )]
+    GatewaySpendLimitsOwned,
+    #[sea_orm(
+        has_many = "super::gateway_spend_limit::Entity",
+        from = "Column::Id",
+        to = "super::gateway_spend_limit::Column::UserId"
+    )]
+    GatewaySpendLimits,
 }
 
 impl Related<super::account::Entity> for Entity {
@@ -314,6 +326,12 @@ impl Related<super::evaluator_version::Entity> for Entity {
 impl Related<super::evaluation_rule::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::EvaluationRulesCreated.def()
+    }
+}
+
+impl Related<super::gateway_spend_limit::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewaySpendLimitsOwned.def()
     }
 }
 

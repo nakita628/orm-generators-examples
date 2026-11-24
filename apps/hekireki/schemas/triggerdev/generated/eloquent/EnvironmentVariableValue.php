@@ -25,17 +25,22 @@ class EnvironmentVariableValue extends Model
         'variableId',
         'environmentId',
         'isSecret',
+        'isProxyOnly',
+        'proxyConfig',
         'version',
         'lastUpdatedBy',
     ];
 
     protected $attributes = [
         'isSecret' => false,
+        'isProxyOnly' => false,
         'version' => 1,
     ];
 
     protected $casts = [
         'isSecret' => 'boolean',
+        'isProxyOnly' => 'boolean',
+        'proxyConfig' => 'array',
         'version' => 'integer',
         'lastUpdatedBy' => 'array',
     ];

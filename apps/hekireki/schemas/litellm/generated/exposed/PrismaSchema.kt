@@ -14,6 +14,11 @@ object PrismaSchema {
     val tables: List<Table> =
         listOf(
             LiteLLMBudgetTableTable,
+            LiteLLMAppGroupTableTable,
+            LiteLLMAppGroupCustomerOrgTableTable,
+            LiteLLMAppTableTable,
+            LiteLLMAppCustomerOrgTableTable,
+            LiteLLMAppCustomerMemberTableTable,
             LiteLLMCustomerOrganizationTableTable,
             LiteLLMCustomerTeamTableTable,
             LiteLLMCustomerMemberTableTable,
@@ -116,6 +121,7 @@ object PrismaSchema {
             LiteLLMWorkflowMessageTable,
             LiteLLMBackgroundInteractionSettlementTable,
             LiteLLMBackgroundResponseSettlementTable,
+            LiteLLMBackgroundResponseCreatorTable,
             LiteLLMLensTable,
             LiteLLMLensRunTable,
             LiteLLMLensReviewTable,

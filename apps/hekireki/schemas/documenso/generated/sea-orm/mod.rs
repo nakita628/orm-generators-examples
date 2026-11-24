@@ -1,4 +1,8 @@
 pub mod account;
+pub mod admin_rule;
+pub mod admin_rule_match;
+pub mod admin_rule_mode;
+pub mod admin_tag;
 pub mod anonymous_verification_token;
 pub mod api_token;
 pub mod api_token_algorithm;

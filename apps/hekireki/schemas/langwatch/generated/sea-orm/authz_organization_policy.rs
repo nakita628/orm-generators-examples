@@ -12,6 +12,8 @@ pub struct Model {
     pub organization_id: String,
     #[sea_orm(column_name = "braidsOrganizationAdminsOnly", default_value = false)]
     pub braids_organization_admins_only: bool,
+    #[sea_orm(column_name = "braidsEnabled", default_value = false)]
+    pub braids_enabled: bool,
     #[sea_orm(column_name = "updatedByUserId")]
     pub updated_by_user_id: String,
     #[sea_orm(column_name = "updatedAt")]

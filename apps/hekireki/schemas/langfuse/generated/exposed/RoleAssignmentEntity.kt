@@ -24,6 +24,8 @@ class RoleAssignmentEntity(
     var apiKey by ApiKeyEntity optionalReferencedOn RoleAssignmentTable.apiKeyId
     var roleId by RoleAssignmentTable.roleId
     var systemRole by RoleAssignmentTable.systemRole
+    var expiresAt by RoleAssignmentTable.expiresAt
+    var tags by RoleAssignmentTable.tags
     var createdAt by RoleAssignmentTable.createdAt
     var updatedAt by RoleAssignmentTable.updatedAt
 

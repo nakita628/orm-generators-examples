@@ -19,6 +19,7 @@ defmodule LiteLLM.LiteLLMManagedObjectTable do
           api_key: String.t() | nil,
           request_tags: map() | list() | String.t() | number() | boolean() | nil,
           end_user_id: String.t() | nil,
+          creator_billing_context: map() | list() | String.t() | number() | boolean() | nil,
           updated_by: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -37,6 +38,7 @@ defmodule LiteLLM.LiteLLMManagedObjectTable do
     field(:api_key, :string)
     field(:request_tags, LiteLLM.PrismaJson, default: [])
     field(:end_user_id, :string)
+    field(:creator_billing_context, LiteLLM.PrismaJson)
     field(:updated_by, :string)
     timestamps(inserted_at_source: :created_at)
   end

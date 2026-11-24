@@ -81,6 +81,8 @@ pub enum Relation {
     OauthRefreshTokens,
     #[sea_orm(has_many = "super::oauth_consent::Entity")]
     OauthConsents,
+    #[sea_orm(has_many = "super::mcp_grant::Entity")]
+    McpGrants,
     #[sea_orm(
         has_many = "super::invite::Entity",
         from = "Column::Id",
@@ -182,6 +184,12 @@ impl Related<super::oauth_refresh_token::Entity> for Entity {
 impl Related<super::oauth_consent::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::OauthConsents.def()
+    }
+}
+
+impl Related<super::mcp_grant::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::McpGrants.def()
     }
 }
 

@@ -16,6 +16,8 @@ defmodule LiteLLM.LiteLLMCustomerOrganizationTable do
           updated_at: DateTime.t(),
           budget: LiteLLM.LiteLLMBudgetTable.t() | nil,
           default_budget_template: LiteLLM.LiteLLMBudgetTable.t() | nil,
+          app_groups: [LiteLLM.LiteLLMAppGroupCustomerOrgTable.t()],
+          apps: [LiteLLM.LiteLLMAppCustomerOrgTable.t()],
           teams: [LiteLLM.LiteLLMCustomerTeamTable.t()],
           members: [LiteLLM.LiteLLMCustomerMemberTable.t()]
         }
@@ -28,6 +30,8 @@ defmodule LiteLLM.LiteLLMCustomerOrganizationTable do
     field(:updated_by, :string)
     belongs_to(:budget, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id)
     belongs_to(:default_budget_template, LiteLLM.LiteLLMBudgetTable, foreign_key: :default_budget_template_id)
+    has_many(:app_groups, LiteLLM.LiteLLMAppGroupCustomerOrgTable, foreign_key: :customer_org_id)
+    has_many(:apps, LiteLLM.LiteLLMAppCustomerOrgTable, foreign_key: :customer_org_id)
     has_many(:teams, LiteLLM.LiteLLMCustomerTeamTable, foreign_key: :parent_org_id)
     has_many(:members, LiteLLM.LiteLLMCustomerMemberTable, foreign_key: :parent_org_id)
     timestamps(inserted_at_source: :created_at)

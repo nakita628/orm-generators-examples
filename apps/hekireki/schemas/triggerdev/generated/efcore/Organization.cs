@@ -125,4 +125,16 @@ public partial class Organization
     public string? SupportAccessModeUpdatedById { get; set; }
 
     public virtual ICollection<SupportAccessRequest> SupportAccessRequests { get; set; } = new List<SupportAccessRequest>();
+
+    /// <summary>
+    /// When true, members without MFA are locked out of the dashboard and CLI until they set it up.
+    /// </summary>
+    public bool MfaRequired { get; set; } = false;
+
+    /// <summary>
+    /// Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
+    /// </summary>
+    public List<string>? MfaStepUpActions { get; set; } = new List<string>();
+
+    public int MfaStepUpWindowMinutes { get; set; } = 5;
 }

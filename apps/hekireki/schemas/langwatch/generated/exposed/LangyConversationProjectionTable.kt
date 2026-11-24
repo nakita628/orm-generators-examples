@@ -46,6 +46,9 @@ object LangyConversationProjectionTable : IdTable<String>("\"LangyConversationPr
     /** Per-conversation HMAC key for worker stream frames; server-side only. */
     val runToken = text("runToken").nullable()
     val archivedAt = double("archivedAt").nullable()
+
+    /** Messages CI started on a pull request since the person last wrote. */
+    val ciFollowUpsInARow = integer("ciFollowUpsInARow").default(0)
     val createdAt = double("createdAt")
     val updatedAt = double("updatedAt")
 

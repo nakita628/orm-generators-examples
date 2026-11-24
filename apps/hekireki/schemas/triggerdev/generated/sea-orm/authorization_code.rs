@@ -25,6 +25,17 @@ pub struct Model {
     /// sha256 of the approval code, which only the approving browser ever sees.
     #[sea_orm(column_name = "approvalCodeHash")]
     pub approval_code_hash: Option<String>,
+    #[sea_orm(column_name = "oauthClientId")]
+    pub oauth_client_id: Option<String>,
+    #[sea_orm(column_name = "redirectUri")]
+    pub redirect_uri: Option<String>,
+    pub scope: Vec<String>,
+    pub resource: Option<String>,
+    #[sea_orm(column_name = "approvedByUserId")]
+    pub approved_by_user_id: Option<String>,
+    /// The user who started the OAuth authorization. Only they can approve it.
+    #[sea_orm(column_name = "requestedByUserId")]
+    pub requested_by_user_id: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
@@ -41,11 +52,24 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     PersonalAccessToken,
+    #[sea_orm(
+        belongs_to = "super::oauth_client::Entity",
+        from = "Column::OauthClientId",
+        to = "super::oauth_client::Column::Id",
+        on_delete = "Cascade"
+    )]
+    OauthClient,
 }
 
 impl Related<super::personal_access_token::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::PersonalAccessToken.def()
+    }
+}
+
+impl Related<super::oauth_client::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::OauthClient.def()
     }
 }
 

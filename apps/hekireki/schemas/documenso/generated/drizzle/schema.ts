@@ -196,6 +196,8 @@ export const emailTransportTypeEnum = pgEnum('EmailTransportType', [
   'MAILCHANNELS',
 ])
 
+export const adminRuleModeEnum = pgEnum('AdminRuleMode', ['ENFORCE', 'MONITOR', 'DISABLED'])
+
 export const user = pgTable(
   'User',
   {
@@ -1943,6 +1945,125 @@ export const rateLimit = pgTable(
   ],
 )
 
+/** @zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"]) */
+export const adminRule = pgTable(
+  'AdminRule',
+  {
+    id: text('id').primaryKey(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+    name: text('name').notNull(),
+    description: text('description'),
+    mode: adminRuleModeEnum('mode').notNull(),
+    /** [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema) */
+    trigger: text('trigger').notNull(),
+    /** [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema) */
+    definition: jsonb('definition').notNull(),
+    priority: integer('priority').notNull(),
+    stopOnMatch: boolean('stopOnMatch').notNull(),
+    /**
+     * Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+     * organisation
+     */
+    exemptOrganisationIds: text('exemptOrganisationIds').array().default([]),
+  },
+  (table) => [
+    index('AdminRule_trigger_mode_priority_idx').on(table.trigger, table.mode, table.priority),
+  ],
+)
+
+/** @zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"]) */
+export const adminRuleMatch = pgTable(
+  'AdminRuleMatch',
+  {
+    id: text('id').primaryKey(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    mode: adminRuleModeEnum('mode').notNull(),
+    /** [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema) */
+    trigger: text('trigger').notNull(),
+    organisationId: text('organisationId'),
+    envelopeId: text('envelopeId'),
+    /** [AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema) */
+    eventSnapshot: jsonb('eventSnapshot').notNull(),
+    /** [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema) */
+    actionsRun: jsonb('actionsRun').notNull(),
+    ruleId: text('ruleId').notNull(),
+    actorUserId: integer('actorUserId'),
+  },
+  (table) => [
+    index('AdminRuleMatch_ruleId_createdAt_idx').on(table.ruleId, table.createdAt),
+    index('AdminRuleMatch_createdAt_idx').on(table.createdAt),
+    foreignKey({
+      name: 'AdminRuleMatch_ruleId_fkey',
+      columns: [table.ruleId],
+      foreignColumns: [adminRule.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'AdminRuleMatch_actorUserId_fkey',
+      columns: [table.actorUserId],
+      foreignColumns: [user.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
+/** @zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"]) */
+export const adminTag = pgTable(
+  'AdminTag',
+  {
+    id: text('id').primaryKey(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+    /** [AdminTagType] @zod.custom.use(ZAdminTagTypeSchema) */
+    type: text('type').notNull(),
+    description: text('description').notNull(),
+    userId: integer('userId'),
+    organisationId: text('organisationId'),
+    createdByUserId: integer('createdByUserId'),
+    adminRuleId: text('adminRuleId'),
+  },
+  (table) => [
+    index('AdminTag_userId_idx').on(table.userId),
+    index('AdminTag_organisationId_idx').on(table.organisationId),
+    foreignKey({ name: 'AdminTag_userId_fkey', columns: [table.userId], foreignColumns: [user.id] })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'AdminTag_organisationId_fkey',
+      columns: [table.organisationId],
+      foreignColumns: [organisation.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'AdminTag_createdByUserId_fkey',
+      columns: [table.createdByUserId],
+      foreignColumns: [user.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'AdminTag_adminRuleId_fkey',
+      columns: [table.adminRuleId],
+      foreignColumns: [adminRule.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
 export const relations = defineRelations(
   {
     user,
@@ -2000,6 +2121,9 @@ export const relations = defineRelations(
     counter,
     embedSignature,
     rateLimit,
+    adminRule,
+    adminRuleMatch,
+    adminTag,
   },
   (r) => ({
     user: {
@@ -2017,6 +2141,9 @@ export const relations = defineRelations(
       siteSettings: r.many.siteSettings(),
       passkeys: r.many.passkey(),
       avatarImage: r.one.avatarImage({ from: r.user.avatarImageId, to: r.avatarImage.id }),
+      adminRuleMatches: r.many.adminRuleMatch(),
+      adminTags: r.many.adminTag({ alias: 'AdminTagSubject' }),
+      createdAdminTags: r.many.adminTag({ alias: 'AdminTagCreator' }),
     },
     teamProfile: { team: r.one.team({ from: r.teamProfile.teamId, to: r.team.id }) },
     userSecurityAuditLog: {
@@ -2222,6 +2349,7 @@ export const relations = defineRelations(
       emailDomains: r.many.emailDomain(),
       organisationEmails: r.many.organisationEmail(),
       monthlyStats: r.many.organisationMonthlyStat(),
+      adminTags: r.many.adminTag(),
       embedSignatures: r.many.embedSignature(),
       avatarImage: r.one.avatarImage({ from: r.organisation.avatarImageId, to: r.avatarImage.id }),
       owner: r.one.user({ from: r.organisation.ownerUserId, to: r.user.id, optional: false }),
@@ -2383,6 +2511,21 @@ export const relations = defineRelations(
         to: r.organisation.id,
         optional: false,
       }),
+    },
+    adminRule: { matches: r.many.adminRuleMatch(), adminTags: r.many.adminTag() },
+    adminRuleMatch: {
+      rule: r.one.adminRule({ from: r.adminRuleMatch.ruleId, to: r.adminRule.id, optional: false }),
+      actorUser: r.one.user({ from: r.adminRuleMatch.actorUserId, to: r.user.id }),
+    },
+    adminTag: {
+      user: r.one.user({ from: r.adminTag.userId, to: r.user.id, alias: 'AdminTagSubject' }),
+      organisation: r.one.organisation({ from: r.adminTag.organisationId, to: r.organisation.id }),
+      createdByUser: r.one.user({
+        from: r.adminTag.createdByUserId,
+        to: r.user.id,
+        alias: 'AdminTagCreator',
+      }),
+      adminRule: r.one.adminRule({ from: r.adminTag.adminRuleId, to: r.adminRule.id }),
     },
   }),
 )

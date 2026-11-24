@@ -446,6 +446,64 @@ class Field(models.Model):
         ]
 
 
+class DomainEventOutbox(models.Model):
+    id = models.TextField(primary_key=True, default=None)
+    base_id = models.TextField()
+    table_id = models.TextField(null=True)
+    message_name = models.TextField()
+    schema_version = models.IntegerField()
+    aggregate_id = models.TextField(null=True)
+    payload = models.JSONField()
+    payload_bytes = models.IntegerField()
+    catalog_generation = models.IntegerField()
+    required_consumers = models.JSONField()
+    binding_id = models.TextField(null=True)
+    storage_epoch = models.IntegerField(null=True)
+    unpublished = models.BooleanField(default=True)
+    settled = models.TextField(null=True)
+    settled_at = UtcDateTimeField(null=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+
+    class Meta:
+        db_table = "domain_event_outbox"
+        indexes = [
+            models.Index(fields=["base_id"]),
+        ]
+
+
+class DomainEventDelivery(models.Model):
+    id = models.TextField(primary_key=True, default=None)
+    event_id = models.TextField()
+    consumer_id = models.TextField()
+    status = models.TextField()
+    attempts = models.IntegerField(default=0)
+    max_attempts = models.IntegerField(default=12)
+    lease_token = models.TextField(null=True)
+    lease_expires_at = models.DateTimeField(null=True)
+    next_attempt_at = models.DateTimeField(default=now_milliseconds)
+    last_error = models.TextField(null=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+
+    class Meta:
+        db_table = "domain_event_delivery"
+        constraints = [
+            models.UniqueConstraint(fields=["event_id", "consumer_id"], name="domain_event_delivery_event_id_consumer_id_key"),
+        ]
+
+
+class DomainEventInbox(models.Model):
+    pk = models.CompositePrimaryKey("consumer_id", "event_id")
+    consumer_id = models.TextField()
+    event_id = models.TextField()
+    created_at = UtcDateTimeField(default=now_milliseconds)
+
+    class Meta:
+        db_table = "domain_event_inbox"
+        indexes = [
+            models.Index(fields=["event_id"]),
+        ]
+
+
 class ComputedUpdateOutbox(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     base_id = models.TextField()

@@ -97,6 +97,11 @@ public partial class EmailAccount
     /// </summary>
     public bool? MailBundleInbox { get; set; }
 
+    /// <summary>
+    /// Collapses the inbox's other mail from one sender into one row.
+    /// </summary>
+    public bool MailGroupBySender { get; set; } = true;
+
     public string? MailDefaultSplitId { get; set; }
 
     public MailSetupState MailSetup { get; set; } = MailSetupState.Pending;

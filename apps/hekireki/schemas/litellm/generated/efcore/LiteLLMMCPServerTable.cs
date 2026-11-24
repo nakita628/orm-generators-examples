@@ -109,6 +109,8 @@ public partial class LiteLLMMCPServerTable
 
     public int? Rpm { get; set; }
 
+    public string? Events { get; set; }
+
     public string? ApprovalStatus { get; set; } = "active";
 
     public string? SubmittedBy { get; set; }

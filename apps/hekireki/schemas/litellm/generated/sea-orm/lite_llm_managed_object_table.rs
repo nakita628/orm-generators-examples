@@ -25,6 +25,7 @@ pub struct Model {
     #[sea_orm(default_value = "[]")]
     pub request_tags: Option<Json>,
     pub end_user_id: Option<String>,
+    pub creator_billing_context: Option<Json>,
     pub updated_at: DateTime,
     pub updated_by: Option<String>,
 }

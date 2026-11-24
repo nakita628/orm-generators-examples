@@ -21,6 +21,10 @@ class PersonalAccessToken < ApplicationRecord
   validates :hashedToken, presence: true, uniqueness: true
 
   belongs_to :user, foreign_key: "userId", inverse_of: :personal_access_tokens
+  belongs_to :oauth_client, class_name: "OAuthClient", foreign_key: "oauthClientId", optional: true,
+                            inverse_of: :personal_access_tokens
   has_many :authorization_codes, foreign_key: "personalAccessTokenId", inverse_of: :personal_access_token,
                                  dependent: :destroy
+  has_many :oauth_refresh_tokens, class_name: "OAuthRefreshToken", foreign_key: "personalAccessTokenId",
+                                  inverse_of: :personal_access_token, dependent: :destroy
 end

@@ -361,6 +361,60 @@ class Field(Base):
 
     table: Mapped["TableMeta"] = relationship(back_populates="fields")
 
+class DomainEventOutbox(Base):
+    __tablename__ = "domain_event_outbox"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    base_id: Mapped[str]
+    table_id: Mapped[Optional[str]]
+    message_name: Mapped[str]
+    schema_version: Mapped[int]
+    aggregate_id: Mapped[Optional[str]]
+    payload: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    payload_bytes: Mapped[int]
+    catalog_generation: Mapped[int]
+    required_consumers: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    binding_id: Mapped[Optional[str]]
+    storage_epoch: Mapped[Optional[int]]
+    unpublished: Mapped[bool] = mapped_column(default=True, server_default=text("true"))
+    settled: Mapped[Optional[str]]
+    settled_at: Mapped[Optional[datetime]]
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("domain_event_outbox_base_id_idx", "base_id"),
+    )
+
+class DomainEventDelivery(Base):
+    __tablename__ = "domain_event_delivery"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    event_id: Mapped[str]
+    consumer_id: Mapped[str]
+    status: Mapped[str]
+    attempts: Mapped[int] = mapped_column(default=0, server_default=text("0"))
+    max_attempts: Mapped[int] = mapped_column(default=12, server_default=text("12"))
+    lease_token: Mapped[Optional[str]]
+    lease_expires_at: Mapped[Optional[datetime]] = mapped_column(UtcDateTimeTz(precision=3))
+    next_attempt_at: Mapped[datetime] = mapped_column(UtcDateTimeTz(precision=3), default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    last_error: Mapped[Optional[str]]
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("domain_event_delivery_event_id_consumer_id_key", "event_id", "consumer_id", unique=True),
+    )
+
+class DomainEventInbox(Base):
+    __tablename__ = "domain_event_inbox"
+
+    consumer_id: Mapped[str] = mapped_column(primary_key=True)
+    event_id: Mapped[str] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("domain_event_inbox_event_id_idx", "event_id"),
+    )
+
 class ComputedUpdateOutbox(Base):
     __tablename__ = "computed_update_outbox"
 

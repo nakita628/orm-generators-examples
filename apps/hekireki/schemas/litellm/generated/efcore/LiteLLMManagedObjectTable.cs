@@ -34,6 +34,8 @@ public partial class LiteLLMManagedObjectTable
 
     public string? EndUserId { get; set; }
 
+    public string? CreatorBillingContext { get; set; }
+
     public DateTime UpdatedAt { get; set; }
 
     public string? UpdatedBy { get; set; }

@@ -59,6 +59,12 @@ erDiagram
     User ||--o{ oauthRefreshToken : "(id) - (userId)"
     oauthClient ||--o{ oauthConsent : "(clientId) - (clientId)"
     User |o--o{ oauthConsent : "(id) - (userId)"
+    User ||--o{ McpGrant : "(id) - (userId)"
+    oauthClient ||--o{ McpGrant : "(clientId) - (clientId)"
+    McpGrant ||--o{ McpGrantOrganization : "(id) - (grantId)"
+    Organization ||--o{ McpGrantOrganization : "(id) - (organizationId)"
+    McpGrant ||--o{ McpGrantWorkspace : "(id) - (grantId)"
+    Workspace ||--o{ McpGrantWorkspace : "(id) - (workspaceId)"
     oauthClient ||--o{ oauthClientResource : "(clientId) - (clientId)"
     oauthResource ||--o{ oauthClientResource : "(identifier) - (resourceId)"
     User ||--o| PasswordResetToken : "(id) - (userId)"
@@ -78,6 +84,7 @@ erDiagram
     Workspace ||--o{ Chart : "(id) - (workspaceId)"
     User |o--o{ Chart : "(id) - (createdBy)"
     FeedbackDirectory ||--o{ Chart : "(id) - (feedbackDirectoryId)"
+    Workspace ||--o{ EmbeddedFieldLabel : "(id) - (workspaceId)"
     Workspace ||--o{ Dashboard : "(id) - (workspaceId)"
     User |o--o{ Dashboard : "(id) - (createdBy)"
     Dashboard ||--o{ DashboardWidget : "(id) - (dashboardId)"
@@ -115,7 +122,9 @@ erDiagram
     Workspace ||--o{ WorkflowRun : "(id) - (workspaceId)"
     WorkflowVersion |o--o{ WorkflowRun : "(id) - (workflowVersionId)"
     Response |o--o{ WorkflowRun : "(id) - (responseId)"
+    Workflow ||--o{ WorkflowSample : "(id) - (workflowId)"
     WorkflowRun ||--o{ WorkflowRunLog : "(id) - (runId)"
+    Workflow ||--o{ WorkflowSecret : "(id) - (workflowId)"
     Creative {
         string id PK
         datetime createdAt
@@ -261,6 +270,7 @@ erDiagram
         json ttc "[ResponseTtc]"
         json meta "[ResponseMeta]"
         json ingestFlags "Why a value in `data` will not read back as its declared Embedded Data type — a failed coercion or a truncated oversize value (ENG-1845). Server-computed on every ingest and never accepted from the client. Null means no ingest boundary has written it, which is not the same claim as an empty list: without this column a wrong-typed value is indistinguishable from an absent one, and surfacing that in the UI (v2) would have nothing to read. [ResponseIngestFlags]"
+        json calBookings "What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data` keeps the string #quot;booked#quot; for those questions, so this column is purely additive: it is omitted from every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`, never accepted as a field of its own. [ResponseCalBookings]"
         responseoutcome outcome "A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis export by default and from Feedback Records, and nothing else: it is never deleted and every count, list, webhook and integration still includes it (ENG-6780)."
         json notShown "What the respondent was not shown (ENG-6936, ADR 0029): the blocks and elements a show-if kept from them, and per element its options, matrix rows and columns, by stable ids. Written by the survey while they answer; null means unknown (older responses and bundles), read as before. Omitted from reads without a `select` (PRISMA_GLOBAL_OMIT), so it never reaches a v1/v2 payload, webhook or integration. [ResponseNotShown]"
         json contactAttributes "[ResponseContactAttributes]"
@@ -631,6 +641,23 @@ erDiagram
         string[] resources "Better Auth 1.7 (ENG-2343). /authorize compares the requested resources against these; without them every pre-existing connection is forced back through the consent screen."
         string[] requestedUserInfoClaims
     }
+    McpGrant {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string userId FK, UK
+        string clientId FK, UK
+        mcpgrantaccess access "Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations in `organizations` (and every workspace in them, later ones included), or only the workspaces in `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing."
+        json permissions "The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ #quot;surveys#quot;: #quot;write#quot; }`. A permission that is absent has No access."
+    }
+    McpGrantOrganization {
+        string grantId PK, FK
+        string organizationId PK, FK
+    }
+    McpGrantWorkspace {
+        string grantId PK, FK
+        string workspaceId PK, FK
+    }
     oauthResource {
         string id PK
         string identifier UK
@@ -767,6 +794,14 @@ erDiagram
         json config "[ChartConfig] - Visualization configuration (colors, labels, formatting)"
         string createdBy FK
         string feedbackDirectoryId FK
+    }
+    EmbeddedFieldLabel {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string workspaceId FK, UK
+        string key UK
+        string label
     }
     Dashboard {
         string id PK
@@ -988,6 +1023,8 @@ erDiagram
         string workspaceId FK, UK
         string createdBy FK
         json definition "[WorkflowDefinition]"
+        string webhookTokenHash "Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so the editor can show the URL again. Never part of the definition, its versions or its copies."
+        string webhookTokenEncrypted
     }
     WorkflowVersion {
         string id PK
@@ -1020,6 +1057,21 @@ erDiagram
         datetime dispatchedAt
         datetime startedAt
         datetime finishedAt
+        string callerIp "The caller's IP for a run started by a Webhook Secret URL call; shown in run detail."
+        datetime contentDeletedAt "When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step input, output and errors, the run error and the caller IP. Null while the content is kept."
+        int contentRetentionDays "The retention period in days that applied when the content was cleared (#quot;Details deleted after N days#quot;)."
+        json testRunDefinition "The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it existed. Configuration like a version's definition, not run content: retention leaves it alone. [WorkflowExecutableDefinition]"
+    }
+    WorkflowSample {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string workflowId FK, UK
+        string workspaceId FK
+        string source UK
+        json sample "[WorkflowSampleData]"
+        datetime lastCalledAt
+        string lastCallerIp
     }
     WorkflowRunLog {
         string id PK
@@ -1033,5 +1085,14 @@ erDiagram
         string error
         datetime startedAt
         datetime finishedAt
+    }
+    WorkflowSecret {
+        string id PK
+        datetime createdAt
+        datetime updatedAt
+        string workflowId FK
+        string workspaceId FK
+        string value "`symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned."
+        string boundOrigin "Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL until it is set again."
     }
 ```

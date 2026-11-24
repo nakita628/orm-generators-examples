@@ -1,4 +1,7 @@
 pub use super::account::Entity as Account;
+pub use super::admin_rule::Entity as AdminRule;
+pub use super::admin_rule_match::Entity as AdminRuleMatch;
+pub use super::admin_tag::Entity as AdminTag;
 pub use super::anonymous_verification_token::Entity as AnonymousVerificationToken;
 pub use super::api_token::Entity as ApiToken;
 pub use super::auth_handoff::Entity as AuthHandoff;

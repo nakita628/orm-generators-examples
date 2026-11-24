@@ -297,6 +297,12 @@ class EmailTransportType(models.TextChoices):
     MAILCHANNELS = "MAILCHANNELS"
 
 
+class AdminRuleMode(models.TextChoices):
+    ENFORCE = "ENFORCE"
+    MONITOR = "MONITOR"
+    DISABLED = "DISABLED"
+
+
 class User(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.TextField(null=True)
@@ -1384,4 +1390,80 @@ class RateLimit(models.Model):
         db_table = "RateLimit"
         indexes = [
             models.Index(fields=["created_at"]),
+        ]
+
+
+class AdminRule(models.Model):
+    """@zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])"""
+
+    id = models.TextField(primary_key=True, default=None)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    name = models.TextField()
+    description = models.TextField(null=True)
+    mode = models.TextField(choices=AdminRuleMode.choices)
+    trigger = models.TextField()
+    """[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"""
+    definition = models.JSONField()
+    """[AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)"""
+    priority = models.IntegerField()
+    stop_on_match = models.BooleanField(db_column="stopOnMatch")
+    exempt_organisation_ids = ArrayField(models.TextField(), db_column="exemptOrganisationIds", default=list)
+    """Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+    organisation
+    """
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AdminRule"
+        indexes = [
+            models.Index(fields=["trigger", "mode", "priority"]),
+        ]
+
+
+class AdminRuleMatch(models.Model):
+    """@zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])"""
+
+    id = models.TextField(primary_key=True, default=None)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    mode = models.TextField(choices=AdminRuleMode.choices)
+    trigger = models.TextField()
+    """[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"""
+    organisation_id = models.TextField(null=True, db_column="organisationId")
+    envelope_id = models.TextField(null=True, db_column="envelopeId")
+    event_snapshot = models.JSONField(db_column="eventSnapshot")
+    """[AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)"""
+    actions_run = models.JSONField(db_column="actionsRun")
+    """[AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)"""
+    rule = models.ForeignKey("AdminRule", on_delete=models.CASCADE, related_name="matches", db_column="ruleId", db_index=False)
+    actor_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="admin_rule_matches", db_column="actorUserId", null=True, db_index=False)
+
+    class Meta:
+        db_table = "AdminRuleMatch"
+        indexes = [
+            models.Index(fields=["rule", "created_at"]),
+            models.Index(fields=["created_at"]),
+        ]
+
+
+class AdminTag(models.Model):
+    """@zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"])"""
+
+    id = models.TextField(primary_key=True, default=None)
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    type = models.TextField()
+    """[AdminTagType] @zod.custom.use(ZAdminTagTypeSchema)"""
+    description = models.TextField()
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="admin_tags", db_column="userId", null=True, db_index=False)
+    organisation = models.ForeignKey("Organisation", on_delete=models.CASCADE, related_name="admin_tags", db_column="organisationId", null=True, db_index=False)
+    created_by_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="created_admin_tags", db_column="createdByUserId", null=True, db_index=False)
+    admin_rule = models.ForeignKey("AdminRule", on_delete=models.SET_NULL, related_name="admin_tags", db_column="adminRuleId", null=True, db_index=False)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AdminTag"
+        indexes = [
+            models.Index(fields=["user"]),
+            models.Index(fields=["organisation"]),
         ]

@@ -16,7 +16,7 @@ object WorkerDeploymentTable : IdTable<String>("\"WorkerDeployment\"") {
     val runtime = text("runtime").nullable()
     val runtimeVersion = text("runtimeVersion").nullable()
 
-    /** CLI version that initiated the deploy, stamped at initialization */
+    /** CLI version that initiated the deploy, stamped at initialization or worker upload */
     val cliVersion = text("cliVersion").nullable()
     val imageReference = text("imageReference").nullable()
     val imagePlatform = text("imagePlatform").default("linux/amd64")
@@ -81,6 +81,15 @@ object WorkerDeploymentTable : IdTable<String>("\"WorkerDeployment\"") {
     val triggeredVia = text("triggeredVia").nullable()
     val commitSHA = text("commitSHA").nullable()
     val externalId = text("externalId").nullable()
+
+    /** The kind of credential that started the deployment. Null when unknown. */
+    val initiatedByCredential =
+        pgEnum(
+            "initiatedByCredential",
+            "\"DeploymentInitiatedByCredential\"",
+            DeploymentInitiatedByCredential.entries,
+            DeploymentInitiatedByCredential::dbName,
+        ).nullable()
     val startedAt = pgTimestamp("startedAt", 3).nullable()
     val installedAt = pgTimestamp("installedAt", 3).nullable()
     val builtAt = pgTimestamp("builtAt", 3).nullable()
@@ -89,6 +98,9 @@ object WorkerDeploymentTable : IdTable<String>("\"WorkerDeployment\"") {
     val errorData = jsonb<String>("errorData", { it }, { it }).nullable()
     val canceledAt = pgTimestamp("canceledAt", 3).nullable()
     val canceledReason = text("canceledReason").nullable()
+
+    /** The newer GitHub build that superseded this one while it was still queued */
+    val supersededById = text("supersededById").nullable()
     val git = jsonb<String>("git", { it }, { it }).nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }

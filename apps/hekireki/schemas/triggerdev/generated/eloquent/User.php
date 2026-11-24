@@ -174,4 +174,9 @@ class User extends Model
     {
         return $this->hasMany(PlatformNotificationInteraction::class, 'userId');
     }
+
+    public function environmentVariableIgnores(): HasMany
+    {
+        return $this->hasMany(EnvironmentVariableIgnore::class, 'createdById');
+    }
 }

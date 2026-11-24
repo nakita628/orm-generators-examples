@@ -2440,6 +2440,8 @@ public partial class ShelfContext : DbContext
 
             entity.HasIndex(e => e.CustodianUserId, "Booking_custodianUserId_idx");
 
+            entity.HasIndex(e => e.ApprovedById, "Booking_approvedById_idx");
+
             entity.HasIndex(e => e.OrganizationId, "Booking_organizationId_idx");
 
             entity.HasIndex(e => e.Status, "Booking_status_idx");
@@ -2498,6 +2500,11 @@ public partial class ShelfContext : DbContext
                 .HasDefaultValue(false)
                 .HasColumnName("archivedWithoutCheckin");
             entity.Property(e => e.CancellationReason).HasColumnName("cancellationReason");
+            entity.Property(e => e.ApprovedAt)
+                .HasPrecision(3)
+                .HasConversion<UtcConverter>()
+                .HasColumnName("approvedAt");
+            entity.Property(e => e.ApprovedById).HasColumnName("approvedById");
 
             entity.HasOne(d => d.Creator).WithMany(p => p.Bookings)
                 .HasForeignKey(d => d.CreatorId)
@@ -2518,6 +2525,11 @@ public partial class ShelfContext : DbContext
                 .HasForeignKey(d => d.OrganizationId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("Booking_organizationId_fkey");
+
+            entity.HasOne(d => d.ApprovedBy).WithMany(p => p.ApprovedBookings)
+                .HasForeignKey(d => d.ApprovedById)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("Booking_approvedById_fkey");
 
             entity.HasMany(d => d.Tags).WithMany(p => p.Bookings)
                 .UsingEntity<Dictionary<string, object>>(
@@ -2594,6 +2606,14 @@ public partial class ShelfContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
                 .HasColumnName("autoArchiveExpiredReservations");
+            entity.Property(e => e.RequireApprovalForBase)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("requireApprovalForBase");
+            entity.Property(e => e.RequireApprovalForSelfService)
+                .ValueGeneratedNever()
+                .HasDefaultValue(false)
+                .HasColumnName("requireApprovalForSelfService");
             entity.Property(e => e.RequireExplicitCheckinForAdmin)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)

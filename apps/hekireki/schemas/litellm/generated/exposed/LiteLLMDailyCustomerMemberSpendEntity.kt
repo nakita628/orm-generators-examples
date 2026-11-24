@@ -12,6 +12,8 @@ class LiteLLMDailyCustomerMemberSpendEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMDailyCustomerMemberSpendEntity>(LiteLLMDailyCustomerMemberSpendTable)
 
+    var appGroupId by LiteLLMDailyCustomerMemberSpendTable.appGroupId
+    var appId by LiteLLMDailyCustomerMemberSpendTable.appId
     var date by LiteLLMDailyCustomerMemberSpendTable.date
     var customerOrgId by LiteLLMDailyCustomerMemberSpendTable.customerOrgId
     var customerTeamId by LiteLLMDailyCustomerMemberSpendTable.customerTeamId
@@ -27,12 +29,15 @@ class LiteLLMDailyCustomerMemberSpendEntity(
     var completionTokens by LiteLLMDailyCustomerMemberSpendTable.completionTokens
     var cacheReadInputTokens by LiteLLMDailyCustomerMemberSpendTable.cacheReadInputTokens
     var cacheCreationInputTokens by LiteLLMDailyCustomerMemberSpendTable.cacheCreationInputTokens
+    var cacheCost by LiteLLMDailyCustomerMemberSpendTable.cacheCost
+    var pricedCacheTokens by LiteLLMDailyCustomerMemberSpendTable.pricedCacheTokens
     var compressionSavedTokens by LiteLLMDailyCustomerMemberSpendTable.compressionSavedTokens
     var compressionSavingsSpend by LiteLLMDailyCustomerMemberSpendTable.compressionSavingsSpend
     var promptCachingSavingsSpend by LiteLLMDailyCustomerMemberSpendTable.promptCachingSavingsSpend
     var gatewayInjectedCachingSavingsSpend by LiteLLMDailyCustomerMemberSpendTable.gatewayInjectedCachingSavingsSpend
     var autorouterSavingsSpend by LiteLLMDailyCustomerMemberSpendTable.autorouterSavingsSpend
     var guardrailSpend by LiteLLMDailyCustomerMemberSpendTable.guardrailSpend
+    var customerMarginSpend by LiteLLMDailyCustomerMemberSpendTable.customerMarginSpend
     var apiRequests by LiteLLMDailyCustomerMemberSpendTable.apiRequests
     var successfulRequests by LiteLLMDailyCustomerMemberSpendTable.successfulRequests
     var failedRequests by LiteLLMDailyCustomerMemberSpendTable.failedRequests

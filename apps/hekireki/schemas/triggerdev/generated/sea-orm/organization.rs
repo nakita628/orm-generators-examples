@@ -80,6 +80,14 @@ pub struct Model {
     pub support_access_mode_updated_at: Option<DateTime>,
     #[sea_orm(column_name = "supportAccessModeUpdatedById")]
     pub support_access_mode_updated_by_id: Option<String>,
+    /// When true, members without MFA are locked out of the dashboard and CLI until they set it up.
+    #[sea_orm(column_name = "mfaRequired", default_value = false)]
+    pub mfa_required: bool,
+    /// Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
+    #[sea_orm(column_name = "mfaStepUpActions")]
+    pub mfa_step_up_actions: Vec<String>,
+    #[sea_orm(column_name = "mfaStepUpWindowMinutes", default_value = 5)]
+    pub mfa_step_up_window_minutes: i32,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

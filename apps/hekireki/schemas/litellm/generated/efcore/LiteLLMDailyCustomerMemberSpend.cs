@@ -6,6 +6,10 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMDailyCustomerMemberSpend
 {
+    public string AppGroupId { get; set; } = "";
+
+    public string AppId { get; set; } = "";
+
     public string Id { get; set; } = null!;
 
     public string Date { get; set; } = null!;
@@ -38,6 +42,10 @@ public partial class LiteLLMDailyCustomerMemberSpend
 
     public long CacheCreationInputTokens { get; set; } = 0L;
 
+    public double CacheCost { get; set; } = 0.0;
+
+    public long PricedCacheTokens { get; set; } = 0L;
+
     public long CompressionSavedTokens { get; set; } = 0L;
 
     public double CompressionSavingsSpend { get; set; } = 0.0;
@@ -49,6 +57,8 @@ public partial class LiteLLMDailyCustomerMemberSpend
     public double AutorouterSavingsSpend { get; set; } = 0.0;
 
     public double GuardrailSpend { get; set; } = 0.0;
+
+    public double CustomerMarginSpend { get; set; } = 0.0;
 
     public long ApiRequests { get; set; } = 0L;
 

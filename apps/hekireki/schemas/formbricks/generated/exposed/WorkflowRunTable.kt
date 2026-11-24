@@ -55,6 +55,26 @@ object WorkflowRunTable : IdTable<String>("\"WorkflowRun\"") {
     val dispatchedAt = pgTimestamp("dispatchedAt", 3).nullable()
     val startedAt = pgTimestamp("startedAt", 3).nullable()
     val finishedAt = pgTimestamp("finishedAt", 3).nullable()
+
+    /** The caller's IP for a run started by a Webhook Secret URL call; shown in run detail. */
+    val callerIp = text("callerIp").nullable()
+
+    /**
+     * When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+     * input, output and errors, the run error and the caller IP. Null while the content is kept.
+     */
+    val contentDeletedAt = pgTimestamp("contentDeletedAt", 3).nullable()
+
+    /** The retention period in days that applied when the content was cleared ("Details deleted after N days"). */
+    val contentRetentionDays = integer("contentRetentionDays").nullable()
+
+    /**
+     * The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+     * changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+     * existed. Configuration like a version's definition, not run content: retention leaves it alone.
+     * [WorkflowExecutableDefinition]
+     */
+    val testRunDefinition = jsonb<String>("testRunDefinition", { it }, { it }).nullable()
     override val primaryKey = PrimaryKey(id, name = "\"WorkflowRun_pkey\"")
 
     init {
@@ -63,7 +83,9 @@ object WorkflowRunTable : IdTable<String>("\"WorkflowRun\"") {
         index("\"WorkflowRun_status_created_at_idx\"", false, status, createdAt)
         index("\"WorkflowRun_responseId_idx\"", false, responseId)
         index("\"WorkflowRun_isDryRun_idx\"", false, isDryRun)
+        index("\"WorkflowRun_isDryRun_created_at_idx\"", false, isDryRun, createdAt)
         index("\"WorkflowRun_nextAttemptAt_idx\"", false, nextAttemptAt)
+        index("\"WorkflowRun_contentDeletedAt_finishedAt_idx\"", false, contentDeletedAt, finishedAt)
         uniqueIndex("\"WorkflowRun_workflowId_idempotencyKey_key\"", workflowId, idempotencyKey)
         foreignKey(
             workflowId to WorkflowTable.id,

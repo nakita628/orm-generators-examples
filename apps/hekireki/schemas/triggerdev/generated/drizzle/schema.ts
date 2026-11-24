@@ -44,6 +44,8 @@ export const authenticationMethodEnum = pgEnum('AuthenticationMethod', [
   'SSO',
 ])
 
+export const oauthClientKindEnum = pgEnum('OAuthClientKind', ['PREREGISTERED', 'CIMD', 'DCR'])
+
 export const organizationAccessTokenTypeEnum = pgEnum('OrganizationAccessTokenType', [
   'USER',
   'SYSTEM',
@@ -95,6 +97,8 @@ export const taskTriggerSourceEnum = pgEnum('TaskTriggerSource', [
   'AGENT',
   'WEBHOOK',
 ])
+
+export const taskExecutionModeEnum = pgEnum('TaskExecutionMode', ['STANDARD', 'SANDBOX'])
 
 export const webhookEndpointStatusEnum = pgEnum('WebhookEndpointStatus', [
   'ACTIVE',
@@ -222,6 +226,12 @@ export const batchTaskRunItemStatusEnum = pgEnum('BatchTaskRunItemStatus', [
   'COMPLETED',
 ])
 
+export const environmentVariableIgnoreReasonEnum = pgEnum('EnvironmentVariableIgnoreReason', [
+  'EMPTY',
+  'MISSING',
+  'OIDC',
+])
+
 export const checkpointTypeEnum = pgEnum('CheckpointType', ['DOCKER', 'KUBERNETES'])
 
 export const checkpointRestoreEventTypeEnum = pgEnum('CheckpointRestoreEventType', [
@@ -233,6 +243,14 @@ export const workerDeploymentTypeEnum = pgEnum('WorkerDeploymentType', [
   'MANAGED',
   'UNMANAGED',
   'V1',
+])
+
+export const deploymentInitiatedByCredentialEnum = pgEnum('DeploymentInitiatedByCredential', [
+  'ROOT_API_KEY',
+  'SCOPED_API_KEY',
+  'PERSONAL_ACCESS_TOKEN',
+  'ORGANIZATION_ACCESS_TOKEN',
+  'TRUSTED_PUBLISHING',
 ])
 
 export const workerDeploymentStatusEnum = pgEnum('WorkerDeploymentStatus', [
@@ -471,6 +489,13 @@ export const authorizationCode = pgTable(
     callbackPort: integer('callbackPort'),
     /** sha256 of the approval code, which only the approving browser ever sees. */
     approvalCodeHash: text('approvalCodeHash'),
+    oauthClientId: text('oauthClientId'),
+    redirectUri: text('redirectUri'),
+    scope: text('scope').array().default([]),
+    resource: text('resource'),
+    approvedByUserId: text('approvedByUserId'),
+    /** The user who started the OAuth authorization. Only they can approve it. */
+    requestedByUserId: text('requestedByUserId'),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -479,10 +504,18 @@ export const authorizationCode = pgTable(
   },
   (table) => [
     uniqueIndex('AuthorizationCode_code_key').on(table.code),
+    index('AuthorizationCode_oauthClientId_idx').on(table.oauthClientId),
     foreignKey({
       name: 'AuthorizationCode_personalAccessTokenId_fkey',
       columns: [table.personalAccessTokenId],
       foreignColumns: [personalAccessToken.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'AuthorizationCode_oauthClientId_fkey',
+      columns: [table.oauthClientId],
+      foreignColumns: [oAuthClient.id],
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -522,16 +555,94 @@ export const personalAccessToken = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow),
     updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+    oauthClientId: text('oauthClientId'),
   },
   (table) => [
     uniqueIndex('PersonalAccessToken_hashedToken_key').on(table.hashedToken),
     index('PersonalAccessToken_userId_idx').on(table.userId),
+    index('PersonalAccessToken_oauthClientId_userId_idx').on(table.oauthClientId, table.userId),
     foreignKey({
       name: 'PersonalAccessToken_userId_fkey',
       columns: [table.userId],
       foreignColumns: [user.id],
     })
       .onDelete('restrict')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'PersonalAccessToken_oauthClientId_fkey',
+      columns: [table.oauthClientId],
+      foreignColumns: [oAuthClient.id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const oAuthClient = pgTable(
+  'OAuthClient',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    kind: oauthClientKindEnum('kind').notNull(),
+    clientId: text('clientId').notNull(),
+    metadataUrl: text('metadataUrl'),
+    displayName: text('displayName'),
+    selfReportedName: text('selfReportedName'),
+    redirectUris: text('redirectUris').array(),
+    dedupeKey: text('dedupeKey'),
+    metadataExpiresAt: timestamp('metadataExpiresAt', { precision: 3 }),
+    lastUsedAt: timestamp('lastUsedAt', { precision: 3 }),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+  },
+  (table) => [
+    uniqueIndex('OAuthClient_clientId_key').on(table.clientId),
+    uniqueIndex('OAuthClient_dedupeKey_key').on(table.dedupeKey),
+    index('OAuthClient_kind_lastUsedAt_idx').on(table.kind, table.lastUsedAt),
+  ],
+)
+
+export const oAuthRefreshToken = pgTable(
+  'OAuthRefreshToken',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    hashedToken: text('hashedToken').notNull(),
+    personalAccessTokenId: text('personalAccessTokenId').notNull(),
+    oauthClientId: text('oauthClientId').notNull(),
+    scope: text('scope').array(),
+    resource: text('resource').notNull(),
+    usedAt: timestamp('usedAt', { precision: 3 }),
+    replacedById: text('replacedById'),
+    idleExpiresAt: timestamp('idleExpiresAt', { precision: 3 }).notNull(),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    uniqueIndex('OAuthRefreshToken_hashedToken_key').on(table.hashedToken),
+    index('OAuthRefreshToken_personalAccessTokenId_idx').on(table.personalAccessTokenId),
+    index('OAuthRefreshToken_oauthClientId_idx').on(table.oauthClientId),
+    index('OAuthRefreshToken_idleExpiresAt_idx').on(table.idleExpiresAt),
+    foreignKey({
+      name: 'OAuthRefreshToken_personalAccessTokenId_fkey',
+      columns: [table.personalAccessTokenId],
+      foreignColumns: [personalAccessToken.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'OAuthRefreshToken_oauthClientId_fkey',
+      columns: [table.oauthClientId],
+      foreignColumns: [oAuthClient.id],
+    })
+      .onDelete('cascade')
       .onUpdate('cascade'),
   ],
 )
@@ -634,6 +745,11 @@ export const organization = pgTable(
     supportAccessMode: supportAccessModeEnum('supportAccessMode').notNull().default('ALLOW'),
     supportAccessModeUpdatedAt: timestamp('supportAccessModeUpdatedAt', { precision: 3 }),
     supportAccessModeUpdatedById: text('supportAccessModeUpdatedById'),
+    /** When true, members without MFA are locked out of the dashboard and CLI until they set it up. */
+    mfaRequired: boolean('mfaRequired').notNull().default(false),
+    /** Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp). */
+    mfaStepUpActions: text('mfaStepUpActions').array().default([]),
+    mfaStepUpWindowMinutes: integer('mfaStepUpWindowMinutes').notNull().default(5),
   },
   (table) => [uniqueIndex('Organization_slug_key').on(table.slug)],
 )
@@ -647,6 +763,10 @@ export const orgMember = pgTable(
     organizationId: text('organizationId').notNull(),
     userId: text('userId').notNull(),
     role: orgMemberRoleEnum('role').notNull().default('MEMBER'),
+    /** Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded. */
+    invitedById: text('invitedById'),
+    /** How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded. */
+    joinMethod: text('joinMethod'),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -734,6 +854,8 @@ export const runtimeEnvironment = pgTable(
     apiKey: text('apiKey').notNull(),
     /** Non-null prevents the root API key from being returned to users. */
     rootApiKeyHiddenAt: timestamp('rootApiKeyHiddenAt', { precision: 3 }),
+    /** Non-null disables automatic root key injection into new deployed attempts. */
+    rootKeyInjectionDisabledAt: timestamp('rootKeyInjectionDisabledAt', { precision: 3 }),
     /** @deprecated was for v2 */
     pkApiKey: text('pkApiKey').notNull(),
     type: runtimeEnvironmentTypeEnum('type').notNull().default('DEVELOPMENT'),
@@ -943,6 +1065,8 @@ export const project = pgTable(
     engine: runEngineVersionEnum('engine').notNull().default('V1'),
     builderProjectId: text('builderProjectId'),
     defaultWorkerGroupId: text('defaultWorkerGroupId'),
+    /** Newly triggered deployed runs require the secret proxy (pinned in their annotations). */
+    secretProxyEnabled: boolean('secretProxyEnabled').notNull().default(false),
     /** The master queues they are allowed to use (impacts what they can set as default and trigger runs with) */
     allowedWorkerQueues: text('allowedMasterQueues').array().default([]),
     buildSettings: jsonb('buildSettings'),
@@ -1336,6 +1460,9 @@ export const backgroundWorkerTask = pgTable(
      * AGENT: { type: "ai-sdk-chat" }
      */
     config: jsonb('config'),
+    executionMode: taskExecutionModeEnum('executionMode').notNull().default('STANDARD'),
+    /** RunExecutionPolicy from @trigger.dev/core. Null means the standard policy. */
+    executionPolicy: jsonb('executionPolicy'),
     payloadSchema: jsonb('payloadSchema'),
   },
   (table) => [
@@ -2559,10 +2686,19 @@ export const workerGroupToken = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow),
     updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
+    workerGroupId: text('workerGroupId'),
   },
-  (table) => [
+  (table): PgTableExtraConfigValue[] => [
     uniqueIndex('WorkerGroupToken_tokenHash_key').on(table.tokenHash),
     uniqueIndex('WorkerGroupToken_previousTokenHash_key').on(table.previousTokenHash),
+    index('WorkerGroupToken_workerGroupId_idx').on(table.workerGroupId),
+    foreignKey({
+      name: 'WorkerGroupToken_workerGroupId_fkey',
+      columns: [table.workerGroupId],
+      foreignColumns: [workerInstanceGroup.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
   ],
 )
 
@@ -3123,6 +3259,8 @@ export const environmentVariableValue = pgTable(
     environmentId: text('environmentId').notNull(),
     /** If true, the value is secret and cannot be revealed */
     isSecret: boolean('isSecret').notNull().default(false),
+    isProxyOnly: boolean('isProxyOnly').notNull().default(false),
+    proxyConfig: jsonb('proxyConfig'),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -3163,6 +3301,66 @@ export const environmentVariableValue = pgTable(
       foreignColumns: [runtimeEnvironment.id],
     })
       .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+/**
+ * A reason the environment variables "Needs attention" page shows a key in one environment, which
+ * the project's team chose to ignore. An ignored EMPTY goes when the value is next saved.
+ */
+export const environmentVariableIgnore = pgTable(
+  'EnvironmentVariableIgnore',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    projectId: text('projectId').notNull(),
+    environmentId: text('environmentId').notNull(),
+    variableId: text('variableId').notNull(),
+    reason: environmentVariableIgnoreReasonEnum('reason').notNull(),
+    createdById: text('createdById'),
+    createdAt: timestamp('createdAt', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    index('EnvironmentVariableIgnore_variableId_idx').on(table.variableId),
+    index('EnvironmentVariableIgnore_projectId_idx').on(table.projectId),
+    index('EnvironmentVariableIgnore_createdById_idx').on(table.createdById),
+    uniqueIndex('EnvironmentVariableIgnore_environmentId_variableId_reason_key').on(
+      table.environmentId,
+      table.variableId,
+      table.reason,
+    ),
+    foreignKey({
+      name: 'EnvironmentVariableIgnore_projectId_fkey',
+      columns: [table.projectId],
+      foreignColumns: [project.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'EnvironmentVariableIgnore_environmentId_fkey',
+      columns: [table.environmentId],
+      foreignColumns: [runtimeEnvironment.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'EnvironmentVariableIgnore_variableId_fkey',
+      columns: [table.variableId],
+      foreignColumns: [environmentVariable.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'EnvironmentVariableIgnore_createdById_fkey',
+      columns: [table.createdById],
+      foreignColumns: [user.id],
+    })
+      .onDelete('set null')
       .onUpdate('cascade'),
   ],
 )
@@ -3298,7 +3496,7 @@ export const workerDeployment = pgTable(
     version: text('version').notNull(),
     runtime: text('runtime'),
     runtimeVersion: text('runtimeVersion'),
-    /** CLI version that initiated the deploy, stamped at initialization */
+    /** CLI version that initiated the deploy, stamped at initialization or worker upload */
     cliVersion: text('cliVersion'),
     imageReference: text('imageReference'),
     imagePlatform: text('imagePlatform').notNull().default('linux/amd64'),
@@ -3325,6 +3523,8 @@ export const workerDeployment = pgTable(
     triggeredVia: text('triggeredVia'),
     commitSHA: text('commitSHA'),
     externalId: text('externalId'),
+    /** The kind of credential that started the deployment. Null when unknown. */
+    initiatedByCredential: deploymentInitiatedByCredentialEnum('initiatedByCredential'),
     startedAt: timestamp('startedAt', { precision: 3 }),
     installedAt: timestamp('installedAt', { precision: 3 }),
     builtAt: timestamp('builtAt', { precision: 3 }),
@@ -3333,6 +3533,8 @@ export const workerDeployment = pgTable(
     errorData: jsonb('errorData'),
     canceledAt: timestamp('canceledAt', { precision: 3 }),
     canceledReason: text('canceledReason'),
+    /** The newer GitHub build that superseded this one while it was still queued */
+    supersededById: text('supersededById'),
     git: jsonb('git'),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
@@ -3891,6 +4093,7 @@ export const bulkActionItem = pgTable(
     updatedAt: timestamp('updatedAt', { precision: 3 }).notNull().$onUpdate(utcNow),
   },
   (table) => [
+    index('BulkActionItem_groupId_createdAt_idx').on(table.groupId, table.createdAt),
     foreignKey({
       name: 'BulkActionItem_sourceRunId_fkey',
       columns: [table.sourceRunId],
@@ -4158,6 +4361,10 @@ export const connectedGithubRepository = pgTable(
     repositoryId: text('repositoryId').notNull(),
     branchTracking: jsonb('branchTracking').notNull(),
     previewDeploymentsEnabled: boolean('previewDeploymentsEnabled').notNull().default(true),
+    /** Skip queued builds once a newer commit is queued for the same environment or preview branch */
+    supersedeProductionBuilds: boolean('supersedeProductionBuilds').notNull().default(false),
+    supersedeStagingBuilds: boolean('supersedeStagingBuilds').notNull().default(true),
+    supersedePreviewBuilds: boolean('supersedePreviewBuilds').notNull().default(true),
     buildFilters: jsonb('buildFilters'),
     createdAt: timestamp('createdAt', { precision: 3 })
       .notNull()
@@ -4949,6 +5156,8 @@ export const relations = defineRelations(
     invitationCode,
     authorizationCode,
     personalAccessToken,
+    oAuthClient,
+    oAuthRefreshToken,
     organizationAccessToken,
     organization,
     orgMember,
@@ -5000,6 +5209,7 @@ export const relations = defineRelations(
     batchTaskRunError,
     environmentVariable,
     environmentVariableValue,
+    environmentVariableIgnore,
     checkpoint,
     checkpointRestoreEvent,
     workerDeployment,
@@ -5066,6 +5276,7 @@ export const relations = defineRelations(
       metricsDashboards: r.many.metricsDashboard(),
       platformNotifications: r.many.platformNotification(),
       platformNotificationInteractions: r.many.platformNotificationInteraction(),
+      environmentVariableIgnores: r.many.environmentVariableIgnore(),
     },
     mfaBackupCode: {
       user: r.one.user({ from: r.mfaBackupCode.userId, to: r.user.id, optional: false }),
@@ -5076,10 +5287,36 @@ export const relations = defineRelations(
         from: r.authorizationCode.personalAccessTokenId,
         to: r.personalAccessToken.id,
       }),
+      oauthClient: r.one.oAuthClient({
+        from: r.authorizationCode.oauthClientId,
+        to: r.oAuthClient.id,
+      }),
     },
     personalAccessToken: {
       user: r.one.user({ from: r.personalAccessToken.userId, to: r.user.id, optional: false }),
       authorizationCodes: r.many.authorizationCode(),
+      oauthClient: r.one.oAuthClient({
+        from: r.personalAccessToken.oauthClientId,
+        to: r.oAuthClient.id,
+      }),
+      oauthRefreshTokens: r.many.oAuthRefreshToken(),
+    },
+    oAuthClient: {
+      authorizationCodes: r.many.authorizationCode(),
+      personalAccessTokens: r.many.personalAccessToken(),
+      refreshTokens: r.many.oAuthRefreshToken(),
+    },
+    oAuthRefreshToken: {
+      personalAccessToken: r.one.personalAccessToken({
+        from: r.oAuthRefreshToken.personalAccessTokenId,
+        to: r.personalAccessToken.id,
+        optional: false,
+      }),
+      oauthClient: r.one.oAuthClient({
+        from: r.oAuthRefreshToken.oauthClientId,
+        to: r.oAuthClient.id,
+        optional: false,
+      }),
     },
     organizationAccessToken: {
       organization: r.one.organization({
@@ -5150,6 +5387,7 @@ export const relations = defineRelations(
       taskRuns: r.many.taskRun(),
       taskQueues: r.many.taskQueue(),
       environmentVariableValues: r.many.environmentVariableValue(),
+      environmentVariableIgnores: r.many.environmentVariableIgnore(),
       checkpoints: r.many.checkpoint(),
       workerDeployments: r.many.workerDeployment(),
       workerDeploymentPromotions: r.many.workerDeploymentPromotion(),
@@ -5218,6 +5456,7 @@ export const relations = defineRelations(
       runTags: r.many.taskRunTag(),
       taskQueues: r.many.taskQueue(),
       environmentVariables: r.many.environmentVariable(),
+      environmentVariableIgnores: r.many.environmentVariableIgnore(),
       checkpoints: r.many.checkpoint(),
       WorkerDeployment: r.many.workerDeployment(),
       CheckpointRestoreEvent: r.many.checkpointRestoreEvent(),
@@ -5545,7 +5784,9 @@ export const relations = defineRelations(
         from: r.workerInstanceGroup.tokenId,
         to: r.workerGroupToken.id,
         optional: false,
+        alias: 'WorkerGroupPrimaryToken',
       }),
+      childTokens: r.many.workerGroupToken({ alias: 'WorkerGroupChildTokens' }),
       workers: r.many.workerInstance(),
       backgroundWorkers: r.many.backgroundWorker(),
       defaultForProjects: r.many.project({ alias: 'ProjectDefaultWorkerGroup' }),
@@ -5563,6 +5804,12 @@ export const relations = defineRelations(
       workerGroup: r.one.workerInstanceGroup({
         from: r.workerGroupToken.id,
         to: r.workerInstanceGroup.tokenId,
+        alias: 'WorkerGroupPrimaryToken',
+      }),
+      childOf: r.one.workerInstanceGroup({
+        from: r.workerGroupToken.workerGroupId,
+        to: r.workerInstanceGroup.id,
+        alias: 'WorkerGroupChildTokens',
       }),
     },
     taskRunTag: {
@@ -5688,6 +5935,7 @@ export const relations = defineRelations(
         optional: false,
       }),
       values: r.many.environmentVariableValue(),
+      ignores: r.many.environmentVariableIgnore(),
     },
     environmentVariableValue: {
       valueReference: r.one.secretReference({
@@ -5704,6 +5952,24 @@ export const relations = defineRelations(
         to: r.runtimeEnvironment.id,
         optional: false,
       }),
+    },
+    environmentVariableIgnore: {
+      project: r.one.project({
+        from: r.environmentVariableIgnore.projectId,
+        to: r.project.id,
+        optional: false,
+      }),
+      environment: r.one.runtimeEnvironment({
+        from: r.environmentVariableIgnore.environmentId,
+        to: r.runtimeEnvironment.id,
+        optional: false,
+      }),
+      variable: r.one.environmentVariable({
+        from: r.environmentVariableIgnore.variableId,
+        to: r.environmentVariable.id,
+        optional: false,
+      }),
+      createdBy: r.one.user({ from: r.environmentVariableIgnore.createdById, to: r.user.id }),
     },
     checkpoint: {
       events: r.many.checkpointRestoreEvent(),

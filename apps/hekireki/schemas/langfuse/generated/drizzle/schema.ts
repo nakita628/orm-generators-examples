@@ -49,6 +49,8 @@ export const systemRoleEnum = pgEnum('SystemRole', [
   'SCORES_INGEST',
   'INGEST',
   'AI_GATEWAY',
+  'AI_GATEWAY_INFERENCE',
+  'APPLICATION',
 ])
 
 export const gatewayIngestionModeEnum = pgEnum('GatewayIngestionMode', ['none', 'usage', 'full'])
@@ -69,6 +71,26 @@ export const gatewayConnectionStatusEnum = pgEnum('GatewayConnectionStatus', [
   'enabled',
   'disabled',
   'error',
+])
+
+export const gatewaySpendLimitScopeEnum = pgEnum('GatewaySpendLimitScope', [
+  'API_KEY',
+  'USER',
+  'API_KEY_DEFAULT',
+  'USER_DEFAULT',
+  'ORGANIZATION',
+])
+
+export const gatewaySpendLimitIntervalEnum = pgEnum('GatewaySpendLimitInterval', [
+  'DAILY',
+  'WEEKLY',
+  'MONTHLY',
+  'TOTAL',
+])
+
+export const gatewaySpendLimitAlertTypeEnum = pgEnum('GatewaySpendLimitAlertType', [
+  'WARNING',
+  'EXCEEDED',
 ])
 
 export const inAppAgentConversationVisibilityScopeEnum = pgEnum(
@@ -105,6 +127,8 @@ export const commentObjectTypeEnum = pgEnum('CommentObjectType', [
 export const notificationChannelEnum = pgEnum('NotificationChannel', ['EMAIL'])
 
 export const notificationTypeEnum = pgEnum('NotificationType', ['COMMENT_MENTION'])
+
+export const modelScopeEnum = pgEnum('ModelScope', ['LANGFUSE', 'ORGANIZATION', 'PROJECT'])
 
 export const auditLogRecordTypeEnum = pgEnum('AuditLogRecordType', ['USER', 'API_KEY'])
 
@@ -214,6 +238,8 @@ export const dashboardWidgetChartTypeEnum = pgEnum('DashboardWidgetChartType', [
 export const sessionViewModeEnum = pgEnum('SessionViewMode', ['conversational', 'list'])
 
 export const sessionUnmatchedTracesEnum = pgEnum('SessionUnmatchedTraces', ['show', 'hide'])
+
+export const sessionViewOwnershipEnum = pgEnum('SessionViewOwnership', ['PRIVATE', 'PROJECT'])
 
 export const actionTypeEnum = pgEnum('ActionType', [
   'WEBHOOK',
@@ -520,6 +546,8 @@ export const roleAssignments = pgTable(
     apiKeyId: text('api_key_id'),
     roleId: text('role_id').notNull(),
     systemRole: systemRoleEnum('system_role').notNull(),
+    expiresAt: timestamp('expires_at', { precision: 3 }),
+    tags: text('tags').array().default([]),
     createdAt: timestamp('created_at', { precision: 3 })
       .notNull()
       .default(sql`CURRENT_TIMESTAMP`)
@@ -536,6 +564,7 @@ export const roleAssignments = pgTable(
     index('role_assignments_principal_id_idx').on(table.principalId),
     index('role_assignments_user_id_idx').on(table.userId),
     index('role_assignments_api_key_id_idx').on(table.apiKeyId),
+    index('role_assignments_tags_idx').on(table.tags),
     uniqueIndex('role_assignments_owner_id_principal_id_role_id_key').on(
       table.ownerId,
       table.principalId,
@@ -673,6 +702,108 @@ export const gatewayApiKeyAssociations = pgTable(
       name: 'gateway_api_key_associations_api_key_id_fkey',
       columns: [table.apiKeyId],
       foreignColumns: [apiKeys.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const gatewaySpendLimits = pgTable(
+  'gateway_spend_limits',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    organizationId: text('organization_id').notNull(),
+    scope: gatewaySpendLimitScopeEnum('scope').notNull(),
+    apiKeyId: text('api_key_id'),
+    userId: text('user_id'),
+    interval: gatewaySpendLimitIntervalEnum('interval').notNull(),
+    limitUsd: numeric('limit_usd', { precision: 65, scale: 30 }).notNull(),
+    alertThresholds: integer('alert_thresholds').array().default([100]),
+    countingStartedAt: timestamp('counting_started_at', { precision: 3 }).notNull(),
+    ownerUserId: text('owner_user_id'),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+  },
+  (table) => [
+    index('gateway_spend_limits_organization_id_idx').on(table.organizationId),
+    index('gateway_spend_limits_user_id_idx').on(table.userId),
+    uniqueIndex('gateway_spend_limits_api_key_id_interval_key').on(table.apiKeyId, table.interval),
+    uniqueIndex('gateway_spend_limits_organization_id_user_id_interval_key').on(
+      table.organizationId,
+      table.userId,
+      table.interval,
+    ),
+    foreignKey({
+      name: 'gateway_spend_limits_organization_id_fkey',
+      columns: [table.organizationId],
+      foreignColumns: [organizations.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_spend_limits_api_key_id_fkey',
+      columns: [table.apiKeyId],
+      foreignColumns: [apiKeys.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_spend_limits_user_id_fkey',
+      columns: [table.userId],
+      foreignColumns: [users.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'gateway_spend_limits_owner_user_id_fkey',
+      columns: [table.ownerUserId],
+      foreignColumns: [users.id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
+/** One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times. */
+export const gatewaySpendLimitAlerts = pgTable(
+  'gateway_spend_limit_alerts',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    spendLimitId: text('spend_limit_id').notNull(),
+    subjectId: text('subject_id').notNull().default(''),
+    type: gatewaySpendLimitAlertTypeEnum('type').notNull(),
+    thresholdPercent: integer('threshold_percent').notNull().default(100),
+    countingStartedAt: timestamp('counting_started_at', { precision: 3 }).notNull(),
+    windowStart: timestamp('window_start', { precision: 3 }).notNull(),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    uniqueIndex('gateway_spend_limit_alerts_limit_type_counting_window_key').on(
+      table.spendLimitId,
+      table.subjectId,
+      table.type,
+      table.thresholdPercent,
+      table.countingStartedAt,
+      table.windowStart,
+    ),
+    foreignKey({
+      name: 'gateway_spend_limit_alerts_spend_limit_id_fkey',
+      columns: [table.spendLimitId],
+      foreignColumns: [gatewaySpendLimits.id],
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -917,6 +1048,7 @@ export const llmApiKeys = pgTable(
     extraHeaders: text('extra_headers'),
     extraHeaderKeys: text('extra_header_keys').array().default([]),
     config: jsonb('config'),
+    externalId: text('external_id'),
     projectId: text('project_id'),
     organizationId: text('organization_id'),
   },
@@ -1165,6 +1297,7 @@ export const annotationQueues = pgTable(
     name: text('name').notNull(),
     description: text('description'),
     scoreConfigIds: text('score_config_ids').array().default([]),
+    sessionViewId: text('session_view_id'),
     projectId: text('project_id').notNull(),
     createdAt: timestamp('created_at', { precision: 3 })
       .notNull()
@@ -1179,7 +1312,18 @@ export const annotationQueues = pgTable(
   (table) => [
     index('annotation_queues_id_project_id_idx').on(table.id, table.projectId),
     index('annotation_queues_project_id_created_at_idx').on(table.projectId, table.createdAt),
+    index('annotation_queues_project_id_session_view_id_idx').on(
+      table.projectId,
+      table.sessionViewId,
+    ),
     uniqueIndex('annotation_queues_project_id_name_key').on(table.projectId, table.name),
+    foreignKey({
+      name: 'annotation_queues_project_id_session_view_id_fkey',
+      columns: [table.projectId, table.sessionViewId],
+      foreignColumns: [sessionViews.projectId, sessionViews.id],
+    })
+      .onDelete('no action')
+      .onUpdate('cascade'),
     foreignKey({
       name: 'annotation_queues_project_id_fkey',
       columns: [table.projectId],
@@ -1846,7 +1990,9 @@ export const models = pgTable(
       .default(sql`CURRENT_TIMESTAMP`)
       .$defaultFn(utcNow)
       .$onUpdate(utcNow),
+    scope: modelScopeEnum('scope').notNull(),
     projectId: text('project_id'),
+    organizationId: text('organization_id'),
     modelName: text('model_name').notNull(),
     matchPattern: text('match_pattern').notNull(),
     startDate: timestamp('start_date', { precision: 3 }),
@@ -1859,6 +2005,7 @@ export const models = pgTable(
   },
   (table) => [
     index('models_model_name_idx').on(table.modelName),
+    index('models_scope_idx').on(table.scope),
     uniqueIndex('models_project_id_model_name_start_date_unit_key').on(
       table.projectId,
       table.modelName,
@@ -1869,6 +2016,13 @@ export const models = pgTable(
       name: 'models_project_id_fkey',
       columns: [table.projectId],
       foreignColumns: [projects.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'models_organization_id_fkey',
+      columns: [table.organizationId],
+      foreignColumns: [organizations.id],
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -3241,6 +3395,7 @@ export const tableViewPresets = pgTable(
 export const sessionViews = pgTable(
   'session_views',
   {
+    ownership: sessionViewOwnershipEnum('ownership').notNull().default('PROJECT'),
     isPinnedByDefaultForProject: boolean('is_pinned_by_default_for_project')
       .notNull()
       .default(false),
@@ -3264,7 +3419,6 @@ export const sessionViews = pgTable(
       .$onUpdate(utcNow),
   },
   (table) => [
-    uniqueIndex('session_views_project_id_name_key').on(table.projectId, table.name),
     unique('session_views_project_id_id_key').on(table.projectId, table.id),
     foreignKey({
       name: 'session_views_project_id_fkey',
@@ -3820,6 +3974,8 @@ export const relations = defineRelations(
     gatewayConfigs,
     gatewayAiConnections,
     gatewayApiKeyAssociations,
+    gatewaySpendLimits,
+    gatewaySpendLimitAlerts,
     inAppAgentConversations,
     inAppAgentEvents,
     inAppAgentRuns,
@@ -3933,6 +4089,8 @@ export const relations = defineRelations(
       evaluatorsCreated: r.many.evaluators(),
       evaluatorVersionsCreated: r.many.evaluatorVersions(),
       evaluationRulesCreated: r.many.evaluationRules(),
+      gatewaySpendLimitsOwned: r.many.gatewaySpendLimits({ alias: 'GatewaySpendLimitOwner' }),
+      gatewaySpendLimits: r.many.gatewaySpendLimits({ alias: 'GatewaySpendLimitUser' }),
     },
     organizations: {
       organizationMemberships: r.many.organizationMemberships(),
@@ -3947,7 +4105,9 @@ export const relations = defineRelations(
         to: r.gatewayConfigs.organizationId,
       }),
       gatewayAiConnections: r.many.gatewayAiConnections(),
+      gatewaySpendLimits: r.many.gatewaySpendLimits(),
       organizationLlmApiKeys: r.many.llmApiKeys(),
+      models: r.many.models(),
       roleAssignments: r.many.roleAssignments(),
     },
     projects: {
@@ -4050,6 +4210,7 @@ export const relations = defineRelations(
         from: r.apiKeys.id,
         to: r.gatewayApiKeyAssociations.apiKeyId,
       }),
+      gatewaySpendLimits: r.many.gatewaySpendLimits(),
       roleAssignments: r.many.roleAssignments(),
     },
     roleAssignments: {
@@ -4084,6 +4245,32 @@ export const relations = defineRelations(
       apiKey: r.one.apiKeys({
         from: r.gatewayApiKeyAssociations.apiKeyId,
         to: r.apiKeys.id,
+        optional: false,
+      }),
+    },
+    gatewaySpendLimits: {
+      organization: r.one.organizations({
+        from: r.gatewaySpendLimits.organizationId,
+        to: r.organizations.id,
+        optional: false,
+      }),
+      apiKey: r.one.apiKeys({ from: r.gatewaySpendLimits.apiKeyId, to: r.apiKeys.id }),
+      user: r.one.users({
+        from: r.gatewaySpendLimits.userId,
+        to: r.users.id,
+        alias: 'GatewaySpendLimitUser',
+      }),
+      ownerUser: r.one.users({
+        from: r.gatewaySpendLimits.ownerUserId,
+        to: r.users.id,
+        alias: 'GatewaySpendLimitOwner',
+      }),
+      alerts: r.many.gatewaySpendLimitAlerts(),
+    },
+    gatewaySpendLimitAlerts: {
+      spendLimit: r.one.gatewaySpendLimits({
+        from: r.gatewaySpendLimitAlerts.spendLimitId,
+        to: r.gatewaySpendLimits.id,
         optional: false,
       }),
     },
@@ -4208,6 +4395,10 @@ export const relations = defineRelations(
       }),
     },
     annotationQueues: {
+      sessionView: r.one.sessionViews({
+        from: [r.annotationQueues.projectId, r.annotationQueues.sessionViewId],
+        to: [r.sessionViews.projectId, r.sessionViews.id],
+      }),
       project: r.one.projects({
         from: r.annotationQueues.projectId,
         to: r.projects.id,
@@ -4341,6 +4532,7 @@ export const relations = defineRelations(
     },
     models: {
       project: r.one.projects({ from: r.models.projectId, to: r.projects.id }),
+      organization: r.one.organizations({ from: r.models.organizationId, to: r.organizations.id }),
       Price: r.many.prices(),
       pricingTiers: r.many.pricingTiers(),
     },
@@ -4595,6 +4787,7 @@ export const relations = defineRelations(
       }),
     },
     sessionViews: {
+      annotationQueues: r.many.annotationQueues(),
       pins: r.many.sessionViewPinOverrides(),
       project: r.one.projects({
         from: r.sessionViews.projectId,

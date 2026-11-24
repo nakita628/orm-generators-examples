@@ -20,11 +20,16 @@ class ScenarioEntity(
     var parameters by ScenarioTable.parameters
     var simulatorModel by ScenarioTable.simulatorModel
     var judgeModel by ScenarioTable.judgeModel
+    var traceQuietPeriodMs by ScenarioTable.traceQuietPeriodMs
+    var traceWaitTimeoutMs by ScenarioTable.traceWaitTimeoutMs
     var maxTurns by ScenarioTable.maxTurns
     var minTurns by ScenarioTable.minTurns
     var fields by ScenarioTable.fields1
     var callerVoice by ScenarioTable.callerVoice
     var testSuiteId by ScenarioTable.testSuiteId
+    var kind by ScenarioTable.kind
+    var redTeam by ScenarioTable.redTeam
+    var sourceTemplateId by ScenarioTable.sourceTemplateId
     var version by ScenarioTable.version
     var lastUpdatedById by ScenarioTable.lastUpdatedById
     var archivedAt by ScenarioTable.archivedAt

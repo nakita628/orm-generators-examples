@@ -59,4 +59,5 @@ class User < ApplicationRecord
   has_many :metrics_dashboards, foreign_key: "ownerId", inverse_of: :owner, dependent: :nullify
   has_many :platform_notifications, foreign_key: "userId", inverse_of: :user, dependent: :destroy
   has_many :platform_notification_interactions, foreign_key: "userId", inverse_of: :user, dependent: :destroy
+  has_many :environment_variable_ignores, foreign_key: "createdById", inverse_of: :created_by, dependent: :nullify
 end

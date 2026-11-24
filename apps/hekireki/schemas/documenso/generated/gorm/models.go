@@ -44,6 +44,9 @@ type User struct {
 	Webhooks             []Webhook              `gorm:"foreignKey:UserID;constraint:Webhook_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	SiteSettings         []SiteSettings         `gorm:"foreignKey:LastModifiedByUserID;constraint:SiteSettings_lastModifiedByUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	Passkeys             []Passkey              `gorm:"foreignKey:UserID;constraint:Passkey_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AdminRuleMatches     []AdminRuleMatch       `gorm:"foreignKey:ActorUserID;constraint:AdminRuleMatch_actorUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AdminTags            []AdminTag             `gorm:"foreignKey:UserID;constraint:AdminTag_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	CreatedAdminTags     []AdminTag             `gorm:"foreignKey:CreatedByUserID;constraint:AdminTag_createdByUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (User) TableName() string {
@@ -1129,6 +1132,7 @@ type Organisation struct {
 	EmailDomains                       []EmailDomain                     `gorm:"foreignKey:OrganisationID;constraint:EmailDomain_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	OrganisationEmails                 []OrganisationEmail               `gorm:"foreignKey:OrganisationID;constraint:OrganisationEmail_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	MonthlyStats                       []OrganisationMonthlyStat         `gorm:"foreignKey:OrganisationID;constraint:OrganisationMonthlyStat_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AdminTags                          []AdminTag                        `gorm:"foreignKey:OrganisationID;constraint:AdminTag_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	EmbedSignatures                    []EmbedSignature                  `gorm:"foreignKey:OrganisationID;constraint:EmbedSignature_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Subscription                       *Subscription                     `gorm:"foreignKey:OrganisationID;constraint:Subscription_organisationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -1743,6 +1747,122 @@ func (m *RateLimit) BeforeCreate(tx *gorm.DB) error {
 	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
 	if m.CreatedAt.IsZero() {
 		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+// @zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])
+type AdminRule struct {
+	ID          string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Name        string   `gorm:"column:name;not null" json:"name"`
+	Description *string  `gorm:"column:description" json:"description"`
+	Mode        string   `gorm:"column:mode;index:AdminRule_trigger_mode_priority_idx;not null" json:"mode"`
+	// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
+	Trigger string `gorm:"column:trigger;index:AdminRule_trigger_mode_priority_idx;not null" json:"trigger"`
+	// [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)
+	Definition  datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
+	Priority    int            `gorm:"column:priority;index:AdminRule_trigger_mode_priority_idx;size:32;not null" json:"priority"`
+	StopOnMatch bool           `gorm:"column:stopOnMatch;not null" json:"stopOnMatch"`
+	// Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+	// organisation
+	ExemptOrganisationIds ScalarList[string] `gorm:"column:exemptOrganisationIds;type:text[]" json:"exemptOrganisationIds"`
+	Matches               []AdminRuleMatch   `gorm:"foreignKey:RuleID;constraint:AdminRuleMatch_ruleId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AdminTags             []AdminTag         `gorm:"foreignKey:AdminRuleID;constraint:AdminTag_adminRuleId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+}
+
+func (AdminRule) TableName() string {
+	return "AdminRule"
+}
+
+func (m *AdminRule) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*AdminRule) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// @zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])
+type AdminRuleMatch struct {
+	ID        string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt DateTime `gorm:"column:createdAt;index:AdminRuleMatch_ruleId_createdAt_idx;index:AdminRuleMatch_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Mode      string   `gorm:"column:mode;not null" json:"mode"`
+	// [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)
+	Trigger        string  `gorm:"column:trigger;not null" json:"trigger"`
+	OrganisationID *string `gorm:"column:organisationId" json:"organisationId"`
+	EnvelopeID     *string `gorm:"column:envelopeId" json:"envelopeId"`
+	// [AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)
+	EventSnapshot datatypes.JSON `gorm:"column:eventSnapshot;not null" json:"eventSnapshot"`
+	// [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)
+	ActionsRun  datatypes.JSON `gorm:"column:actionsRun;not null" json:"actionsRun"`
+	RuleID      string         `gorm:"column:ruleId;index:AdminRuleMatch_ruleId_createdAt_idx;not null" json:"ruleId"`
+	ActorUserID *int           `gorm:"column:actorUserId;size:32" json:"actorUserId"`
+	Rule        *AdminRule     `gorm:"foreignKey:RuleID;belongsTo"`
+	ActorUser   *User          `gorm:"foreignKey:ActorUserID;belongsTo"`
+}
+
+func (AdminRuleMatch) TableName() string {
+	return "AdminRuleMatch"
+}
+
+func (m *AdminRuleMatch) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+// @zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"])
+type AdminTag struct {
+	ID        string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	// [AdminTagType] @zod.custom.use(ZAdminTagTypeSchema)
+	Type            string        `gorm:"column:type;not null" json:"type"`
+	Description     string        `gorm:"column:description;not null" json:"description"`
+	UserID          *int          `gorm:"column:userId;index:AdminTag_userId_idx;size:32" json:"userId"`
+	OrganisationID  *string       `gorm:"column:organisationId;index:AdminTag_organisationId_idx" json:"organisationId"`
+	CreatedByUserID *int          `gorm:"column:createdByUserId;size:32" json:"createdByUserId"`
+	AdminRuleID     *string       `gorm:"column:adminRuleId" json:"adminRuleId"`
+	User            *User         `gorm:"foreignKey:UserID;belongsTo"`
+	Organisation    *Organisation `gorm:"belongsTo"`
+	CreatedByUser   *User         `gorm:"foreignKey:CreatedByUserID;belongsTo"`
+	AdminRule       *AdminRule    `gorm:"belongsTo"`
+}
+
+func (AdminTag) TableName() string {
+	return "AdminTag"
+}
+
+func (m *AdminTag) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*AdminTag) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
 	}
 	return nil
 }

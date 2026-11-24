@@ -4,6 +4,7 @@ class AuthzOrganizationPolicy < ApplicationRecord
   self.primary_key = "organizationId"
 
   attribute :braidsOrganizationAdminsOnly, default: false
+  attribute :braidsEnabled, default: false
   alias_attribute :updated_at, :updatedAt
 
   validates :updatedByUserId, presence: true

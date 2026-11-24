@@ -187,6 +187,9 @@ export type GatewayChangeEventKind =
   | 'CACHE_RULE_DELETED'
   | 'ROUTING_POLICY_UPDATED'
   | 'ROUTING_POLICY_DELETED'
+  | 'A2A_TARGET_CREATED'
+  | 'A2A_TARGET_UPDATED'
+  | 'A2A_TARGET_DELETED'
 
 export type GatewayCacheRuleMode = 'RESPECT' | 'FORCE' | 'DISABLE'
 
@@ -3042,6 +3045,8 @@ export interface LangyConversationProjection {
   /** Per-conversation HMAC key for worker stream frames; server-side only. */
   runToken: string | null
   archivedAt: number | null
+  /** Messages CI started on a pull request since the person last wrote. */
+  ciFollowUpsInARow: Generated<number>
   createdAt: number
   updatedAt: number
   /** Business time of the latest applied event. */
@@ -3122,6 +3127,26 @@ export interface LangyConversationTurnProjection {
   acceptedAt: number
   lastEventId: string
   projectionVersion: string
+}
+
+/**
+ * One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished
+ * checks look it up by repository and number to wake the conversation; the daily pull request
+ * cap counts a person's rows by day. Rebuilt by a projection replay.
+ */
+export interface LangyPullRequest {
+  id: string
+  projectId: string
+  /** `owner/repo`, lowercased: GitHub matches repository names without case. */
+  repositoryFullName: string
+  prNumber: number
+  conversationId: string
+  /** The conversation's owner, who opened it through Langy. */
+  userId: string
+  /** When the answer that opened it was recorded (epoch ms). */
+  openedAt: number
+  /** The agent_responded event it came from. */
+  sourceEventId: string
 }
 
 /** Rebuildable operational message fact. One source event produces one row. */
@@ -3291,6 +3316,23 @@ export interface RetentionPolicy {
   retentionDays: number
   createdAt: Generated<Timestamp>
   updatedAt: Generated<Timestamp>
+}
+
+export interface RetentionApplyStatus {
+  id: string
+  organizationId: string
+  scopeType: RetentionPolicyScopeType
+  scopeId: string
+  changedAt: number | null
+  appliedAt: number | null
+  raisedAt: number | null
+  shortenedAt: number | null
+  createdAt: number
+  updatedAt: number
+  occurredAt: number
+  acceptedAt: number
+  lastEventId: string
+  projectionVersion: string
 }
 
 export interface DataPrivacyPolicy {
@@ -3592,11 +3634,16 @@ export interface Scenario {
   parameters: unknown
   simulatorModel: string | null
   judgeModel: string | null
+  traceQuietPeriodMs: number | null
+  traceWaitTimeoutMs: number | null
   maxTurns: number | null
   minTurns: number | null
   fields: unknown
   callerVoice: unknown
   testSuiteId: string | null
+  kind: Generated<string>
+  redTeam: unknown
+  sourceTemplateId: string | null
   version: Generated<number>
   lastUpdatedById: string | null
   archivedAt: Timestamp | null
@@ -3640,10 +3687,14 @@ export interface SimulationSuite {
   labels: string[]
   simulatorModel: string | null
   judgeModel: string | null
+  traceQuietPeriodMs: number | null
+  traceWaitTimeoutMs: number | null
   kind: Generated<string>
   scope: unknown
   fields: unknown
   evaluators: unknown
+  templateId: string | null
+  templateVersion: number | null
   archivedAt: Timestamp | null
   createdAt: Generated<Timestamp>
   updatedAt: Generated<Timestamp>
@@ -3708,6 +3759,19 @@ export interface Subscription {
   /** The lease a seat change or seat line repair holds while it reads and moves the seat line. */
   seatLineLeaseToken: string | null
   seatLineLeaseUntil: Timestamp | null
+  /**
+   * An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+   * charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+   */
+  paymentRecoveryInvoiceId: string | null
+  paymentRecoveryStartedAt: Timestamp | null
+  paymentRecoveryNoticeDay: number | null
+  /**
+   * The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+   * organization is on Free with more members than Free allows; ended once that no longer holds.
+   */
+  overPlanSince: Timestamp | null
+  overPlanEndedAt: Timestamp | null
 }
 
 export interface Invoice {
@@ -3778,8 +3842,23 @@ export interface AuthzEngineSwitch {
 export interface AuthzOrganizationPolicy {
   organizationId: string
   braidsOrganizationAdminsOnly: Generated<boolean>
+  braidsEnabled: Generated<boolean>
   updatedByUserId: string
   updatedAt: Timestamp
+}
+
+export interface AuthzBraidWrite {
+  organizationId: string
+  commandId: string
+  grantId: string
+  readerProjectId: string
+  ownerProjectId: string
+  termsKey: string
+  condition: unknown
+  expiresAt: Timestamp | null
+  replacesGrantId: string | null
+  createdByUserId: string | null
+  createdAt: Generated<Timestamp>
 }
 
 export interface RoleBinding {
@@ -4608,6 +4687,25 @@ export interface IngestionTemplate {
   updatedById: string | null
 }
 
+export interface GatewayA2ATarget {
+  id: string
+  organizationId: string
+  projectId: string | null
+  name: string
+  agentName: string
+  cardUrl: string
+  upstreamUrl: string
+  encryptedUpstreamHeaders: string | null
+  restrictToAllowList: Generated<boolean>
+  allowedVirtualKeyIds: Generated<string[]>
+  blocked: Generated<boolean>
+  blockReason: string | null
+  createdById: string
+  createdAt: Generated<Timestamp>
+  updatedAt: Timestamp
+  archivedAt: Timestamp | null
+}
+
 export interface GatewayConnectUpstream {
   organizationId: string
   baseUrl: string
@@ -5284,6 +5382,116 @@ export interface AgentRegistryBaseline {
 }
 
 /**
+ * One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
+ * agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway
+ * virtual key. A plan write replaces every row of the agent at once.
+ */
+export interface AgentStopPlanTarget {
+  id: string
+  organizationId: string
+  /** The AgentRegistryEntry the plan belongs to. */
+  agentId: string
+  position: number
+  label: string
+  target: unknown
+  createdAt: Generated<Timestamp>
+  updatedAt: Generated<Timestamp>
+}
+
+/**
+ * One agent's stop plan version: bumped by every save, so a save over a plan someone else saved
+ * since it was read is refused. No row means the plan was never saved (version 0).
+ */
+export interface AgentStopPlan {
+  organizationId: string
+  /** The AgentRegistryEntry the plan belongs to. */
+  agentId: string
+  version: number
+  updatedAt: Generated<Timestamp>
+}
+
+/**
+ * An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume,
+ * or both. The secret access key and the external id are stored sealed.
+ */
+export interface GovernanceAwsConnection {
+  id: string
+  organizationId: string
+  name: string
+  accessKeyId: string | null
+  encryptedSecretAccessKey: string | null
+  roleArn: string | null
+  encryptedExternalId: string | null
+  createdAt: Generated<Timestamp>
+  updatedAt: Generated<Timestamp>
+}
+
+/**
+ * The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and
+ * every target's outcome, folded from the stop's events.
+ */
+export interface AgentStop {
+  id: string
+  organizationId: string
+  agentId: string
+  agentName: string
+  status: string
+  severity: string
+  approval: string
+  trigger: string
+  reason: string
+  requestedByUserId: string | null
+  requestedByApiKeyId: string | null
+  decidedByUserId: string | null
+  decidedByApiKeyId: string | null
+  restoredByUserId: string | null
+  restoredByApiKeyId: string | null
+  targets: unknown
+  requestedAt: Timestamp
+  decidedAt: Timestamp | null
+  quarantinedAt: Timestamp | null
+  restoreRequestedAt: Timestamp | null
+  restoredAt: Timestamp | null
+  lastAppliedEventId: string
+  lastAcceptedAt: ColumnType<string, bigint | number | string, bigint | number | string>
+  lastOccurredAt: ColumnType<string, bigint | number | string, bigint | number | string>
+  projectionVersion: string
+  createdAt: Generated<Timestamp>
+  updatedAt: Generated<Timestamp>
+}
+
+/**
+ * The one open stop an agent may have: the api takes this row before it sends a stop's request,
+ * so two requests at once cannot both open one. A later request takes it over once the stop it
+ * names has closed.
+ * `sentAt` is set once the request command was sent: from then on the claim passes on only after
+ * its stop closed, never on age. `decision` is taken by the one approve or deny that wins.
+ * `decisionTakenAt` is set while that decision is in flight and cleared once its command was
+ * sent; a decision left in flight is taken over once abandoned.
+ */
+export interface AgentStopClaim {
+  organizationId: string
+  agentId: string
+  stopId: string
+  claimedAt: Timestamp
+  sentAt: Timestamp | null
+  decision: string | null
+  decisionTakenAt: Timestamp | null
+}
+
+/**
+ * Whether a target was already stopped before a stop first touched it, recorded once before the
+ * stop's platform call, so a retried call after a success still knows the change is the stop's own.
+ */
+export interface AgentStopTargetPriorState {
+  organizationId: string
+  stopId: string
+  targetId: string
+  wasStopped: boolean
+  recordedAt: Timestamp
+}
+
+/**
  * The dated match table: "`user_abc123` on Anthropic is platform user #42,
  * valid from March 3", closed when it stops being true.
  *
@@ -5823,6 +6031,7 @@ export interface DB {
   LangyTurnRequest: LangyTurnRequest
   LangyActiveTurn: LangyActiveTurn
   LangyConversationTurnProjection: LangyConversationTurnProjection
+  LangyPullRequest: LangyPullRequest
   LangyMessageProjection: LangyMessageProjection
   ProjectSecret: ProjectSecret
   TriggerSent: TriggerSent
@@ -5838,6 +6047,7 @@ export interface DB {
   TraceEditOverlay: TraceEditOverlay
   TraceIngestSourceBilling: TraceIngestSourceBilling
   RetentionPolicy: RetentionPolicy
+  RetentionApplyStatus: RetentionApplyStatus
   DataPrivacyPolicy: DataPrivacyPolicy
   InstantEvalJudgeProject: InstantEvalJudgeProject
   InstantEvalJudgeUsageBilling: InstantEvalJudgeUsageBilling
@@ -5870,6 +6080,7 @@ export interface DB {
   AuthzUserStanding: AuthzUserStanding
   AuthzEngineSwitch: AuthzEngineSwitch
   AuthzOrganizationPolicy: AuthzOrganizationPolicy
+  AuthzBraidWrite: AuthzBraidWrite
   RoleBinding: RoleBinding
   Grant: Grant
   GrantUsage: GrantUsage
@@ -5899,6 +6110,7 @@ export interface DB {
   AiToolEntryTeam: AiToolEntryTeam
   AiToolEntryDepartment: AiToolEntryDepartment
   IngestionTemplate: IngestionTemplate
+  GatewayA2ATarget: GatewayA2ATarget
   GatewayConnectUpstream: GatewayConnectUpstream
   GatewayTraceExportKey: GatewayTraceExportKey
   GatewayBudget: GatewayBudget
@@ -5929,6 +6141,12 @@ export interface DB {
   AgentRegistryEntry: AgentRegistryEntry
   AgentRegistryEvent: AgentRegistryEvent
   AgentRegistryBaseline: AgentRegistryBaseline
+  AgentStopPlanTarget: AgentStopPlanTarget
+  AgentStopPlan: AgentStopPlan
+  GovernanceAwsConnection: GovernanceAwsConnection
+  AgentStop: AgentStop
+  AgentStopClaim: AgentStopClaim
+  AgentStopTargetPriorState: AgentStopTargetPriorState
   IdentityMatch: IdentityMatch
   GovernanceTenantHistory: GovernanceTenantHistory
   ErasedIdentifierSuppression: ErasedIdentifierSuppression

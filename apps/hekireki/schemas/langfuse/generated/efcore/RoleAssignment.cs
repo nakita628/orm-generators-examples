@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 
 namespace Langfuse.Models;
 
@@ -31,6 +32,10 @@ public partial class RoleAssignment
     public string RoleId { get; set; } = null!;
 
     public SystemRole SystemRole { get; set; }
+
+    public DateTime? ExpiresAt { get; set; }
+
+    public List<string>? Tags { get; set; } = new List<string>();
 
     public DateTime CreatedAt { get; set; }
 

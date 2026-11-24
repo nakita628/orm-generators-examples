@@ -15,6 +15,7 @@ defmodule Trigger.Project do
           version: atom(),
           engine: atom(),
           builder_project_id: String.t() | nil,
+          secret_proxy_enabled: boolean(),
           allowed_worker_queues: [String.t()],
           build_settings: map() | list() | String.t() | number() | boolean() | nil,
           onboarding_data: map() | list() | String.t() | number() | boolean() | nil,
@@ -33,6 +34,7 @@ defmodule Trigger.Project do
           run_tags: [Trigger.TaskRunTag.t()],
           task_queues: [Trigger.TaskQueue.t()],
           environment_variables: [Trigger.EnvironmentVariable.t()],
+          environment_variable_ignores: [Trigger.EnvironmentVariableIgnore.t()],
           checkpoints: [Trigger.Checkpoint.t()],
           worker_deployment: [Trigger.WorkerDeployment.t()],
           checkpoint_restore_event: [Trigger.CheckpointRestoreEvent.t()],
@@ -71,6 +73,8 @@ defmodule Trigger.Project do
     field(:version, Ecto.Enum, values: [:V2, :V3], default: :V2)
     field(:engine, Ecto.Enum, values: [:V1, :V2], default: :V1)
     field(:builder_project_id, :string, source: :builderProjectId)
+    # Newly triggered deployed runs require the secret proxy (pinned in their annotations).
+    field(:secret_proxy_enabled, :boolean, default: false, source: :secretProxyEnabled)
     # The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
     field(:allowed_worker_queues, {:array, :string}, source: :allowedMasterQueues)
     field(:build_settings, Trigger.PrismaJson, source: :buildSettings)
@@ -90,6 +94,7 @@ defmodule Trigger.Project do
     has_many(:run_tags, Trigger.TaskRunTag, foreign_key: :project_id, references: :id)
     has_many(:task_queues, Trigger.TaskQueue, foreign_key: :project_id, references: :id)
     has_many(:environment_variables, Trigger.EnvironmentVariable, foreign_key: :project_id, references: :id)
+    has_many(:environment_variable_ignores, Trigger.EnvironmentVariableIgnore, foreign_key: :project_id, references: :id)
     has_many(:checkpoints, Trigger.Checkpoint, foreign_key: :project_id, references: :id)
     has_many(:worker_deployment, Trigger.WorkerDeployment, foreign_key: :project_id, references: :id)
     has_many(:checkpoint_restore_event, Trigger.CheckpointRestoreEvent, foreign_key: :project_id, references: :id)

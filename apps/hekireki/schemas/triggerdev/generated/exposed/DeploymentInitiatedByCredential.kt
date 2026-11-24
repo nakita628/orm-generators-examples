@@ -1,0 +1,11 @@
+package triggerdev.models
+
+enum class DeploymentInitiatedByCredential(
+    val dbName: String,
+) {
+    ROOT_API_KEY("ROOT_API_KEY"),
+    SCOPED_API_KEY("SCOPED_API_KEY"),
+    PERSONAL_ACCESS_TOKEN("PERSONAL_ACCESS_TOKEN"),
+    ORGANIZATION_ACCESS_TOKEN("ORGANIZATION_ACCESS_TOKEN"),
+    TRUSTED_PUBLISHING("TRUSTED_PUBLISHING"),
+}

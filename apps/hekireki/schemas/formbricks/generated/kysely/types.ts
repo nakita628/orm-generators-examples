@@ -89,6 +89,8 @@ export type ApiKeyPermission = 'read' | 'write' | 'manage'
 
 export type IdentityProvider = 'email' | 'github' | 'google' | 'azuread' | 'openid' | 'saml'
 
+export type McpGrantAccess = 'all' | 'organizations' | 'workspaces'
+
 /**
  * Where an Embedded Data field's value comes from.
  * `computed` is set by survey logic, `ingested` arrives from a URL param or the SDK, and
@@ -451,6 +453,15 @@ export interface Response {
    * [ResponseIngestFlags]
    */
   ingest_flags: unknown
+  /**
+   * What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+   * keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+   * every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+   * `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+   * never accepted as a field of its own.
+   * [ResponseCalBookings]
+   */
+  cal_bookings_by_question_id: unknown
   /**
    * A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
    * export by default and from Feedback Records, and nothing else: it is never deleted and every
@@ -1217,7 +1228,43 @@ export interface oauthConsent {
  * its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
  * a token is now bound to the resource it was approved for instead of to a static allow-list.
  * `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+ * What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+ * access and an access level per permission. One per OAuth connection, keyed by user and client rather
+ * than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+ * and settles them later. Every MCP request reads it; without one the request is refused. The client's
+ * OAuth scopes stay on the consent and cap it.
  */
+export interface McpGrant {
+  id: string
+  created_at: Generated<Timestamp>
+  updated_at: Timestamp
+  userId: string
+  clientId: string
+  /**
+   * Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+   * in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+   * `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
+   */
+  access: Generated<McpGrantAccess>
+  /**
+   * The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+   * A permission that is absent has No access.
+   */
+  permissions: Generated<unknown>
+}
+
+/** An organization a grant with `organizations` access reaches, workspaces created there later included. */
+export interface McpGrantOrganization {
+  grantId: string
+  organizationId: string
+}
+
+/** A workspace a grant with `workspaces` access reaches. */
+export interface McpGrantWorkspace {
+  grantId: string
+  workspaceId: string
+}
+
 export interface oauthResource {
   id: string
   identifier: string
@@ -1515,6 +1562,24 @@ export interface Chart {
   config: Generated<unknown>
   createdBy: string | null
   feedbackDirectoryId: string
+}
+
+/**
+ * A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+ * place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+ * workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+ * are never renamed here: they keep their translated names.
+ *
+ * @property key - The embedded-data key exactly as collected, case included
+ * @property label - The name shown for the key across the workspace
+ */
+export interface EmbeddedFieldLabel {
+  id: string
+  created_at: Generated<Timestamp>
+  updated_at: Timestamp
+  workspaceId: string
+  key: string
+  label: string
 }
 
 /**
@@ -1995,6 +2060,12 @@ export interface Workflow {
   createdBy: string | null
   /** [WorkflowDefinition] */
   definition: unknown
+  /**
+   * Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+   * the editor can show the URL again. Never part of the definition, its versions or its copies.
+   */
+  webhookTokenHash: string | null
+  webhookTokenEncrypted: string | null
 }
 
 export interface WorkflowVersion {
@@ -2032,6 +2103,40 @@ export interface WorkflowRun {
   dispatchedAt: Timestamp | null
   startedAt: Timestamp | null
   finishedAt: Timestamp | null
+  /** The caller's IP for a run started by a Webhook Secret URL call; shown in run detail. */
+  callerIp: string | null
+  /**
+   * When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+   * input, output and errors, the run error and the caller IP. Null while the content is kept.
+   */
+  contentDeletedAt: Timestamp | null
+  /** The retention period in days that applied when the content was cleared ("Details deleted after N days"). */
+  contentRetentionDays: number | null
+  /**
+   * The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+   * changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+   * existed. Configuration like a version's definition, not run content: retention leaves it alone.
+   * [WorkflowExecutableDefinition]
+   */
+  testRunDefinition: unknown
+}
+
+/**
+ * Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+ * trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+ * Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+ */
+export interface WorkflowSample {
+  id: string
+  created_at: Generated<Timestamp>
+  updated_at: Timestamp
+  workflowId: string
+  workspaceId: string
+  source: string
+  /** [WorkflowSampleData] */
+  sample: unknown
+  lastCalledAt: Timestamp | null
+  lastCallerIp: string | null
 }
 
 export interface WorkflowRunLog {
@@ -2048,6 +2153,28 @@ export interface WorkflowRunLog {
   error: string | null
   startedAt: Timestamp | null
   finishedAt: Timestamp | null
+}
+
+/**
+ * Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+ * store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+ * version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+ * with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+ */
+export interface WorkflowSecret {
+  id: string
+  created_at: Generated<Timestamp>
+  updated_at: Timestamp
+  workflowId: string
+  workspaceId: string
+  /** `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned. */
+  value: string
+  /**
+   * Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
+   * sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
+   * until it is set again.
+   */
+  boundOrigin: string | null
 }
 
 export interface DB {
@@ -2091,6 +2218,9 @@ export interface DB {
   oauthAccessToken: oauthAccessToken
   oauthRefreshToken: oauthRefreshToken
   oauthConsent: oauthConsent
+  McpGrant: McpGrant
+  McpGrantOrganization: McpGrantOrganization
+  McpGrantWorkspace: McpGrantWorkspace
   oauthResource: oauthResource
   oauthClientResource: oauthClientResource
   oauthClientAssertion: oauthClientAssertion
@@ -2105,6 +2235,7 @@ export interface DB {
   TeamUser: TeamUser
   WorkspaceTeam: WorkspaceTeam
   Chart: Chart
+  EmbeddedFieldLabel: EmbeddedFieldLabel
   Dashboard: Dashboard
   DashboardWidget: DashboardWidget
   DeletionCleanup: DeletionCleanup
@@ -2126,5 +2257,7 @@ export interface DB {
   Workflow: Workflow
   WorkflowVersion: WorkflowVersion
   WorkflowRun: WorkflowRun
+  WorkflowSample: WorkflowSample
   WorkflowRunLog: WorkflowRunLog
+  WorkflowSecret: WorkflowSecret
 }

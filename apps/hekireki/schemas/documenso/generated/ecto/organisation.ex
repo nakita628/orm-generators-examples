@@ -25,6 +25,7 @@ defmodule Documenso.Organisation do
           email_domains: [Documenso.EmailDomain.t()],
           organisation_emails: [Documenso.OrganisationEmail.t()],
           monthly_stats: [Documenso.OrganisationMonthlyStat.t()],
+          admin_tags: [Documenso.AdminTag.t()],
           embed_signatures: [Documenso.EmbedSignature.t()]
         }
 
@@ -52,6 +53,7 @@ defmodule Documenso.Organisation do
     has_many(:email_domains, Documenso.EmailDomain, foreign_key: :organisation_id, references: :id)
     has_many(:organisation_emails, Documenso.OrganisationEmail, foreign_key: :organisation_id, references: :id)
     has_many(:monthly_stats, Documenso.OrganisationMonthlyStat, foreign_key: :organisation_id, references: :id)
+    has_many(:admin_tags, Documenso.AdminTag, foreign_key: :organisation_id, references: :id)
     has_many(:embed_signatures, Documenso.EmbedSignature, foreign_key: :organisation_id, references: :id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

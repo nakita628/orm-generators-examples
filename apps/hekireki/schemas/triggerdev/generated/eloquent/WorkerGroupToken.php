@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class WorkerGroupToken extends Model
@@ -23,11 +24,17 @@ class WorkerGroupToken extends Model
         'tokenHash',
         'previousTokenHash',
         'previousTokenValidUntil',
+        'workerGroupId',
     ];
 
     protected $casts = [
         'previousTokenValidUntil' => 'datetime',
     ];
+
+    public function childOf(): BelongsTo
+    {
+        return $this->belongsTo(WorkerInstanceGroup::class, 'workerGroupId');
+    }
 
     public function workerGroup(): HasOne
     {

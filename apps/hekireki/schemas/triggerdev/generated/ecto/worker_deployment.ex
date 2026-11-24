@@ -27,6 +27,7 @@ defmodule Trigger.WorkerDeployment do
           triggered_via: String.t() | nil,
           commit_sha: String.t() | nil,
           external_id: String.t() | nil,
+          initiated_by_credential: atom() | nil,
           started_at: DateTime.t() | nil,
           installed_at: DateTime.t() | nil,
           built_at: DateTime.t() | nil,
@@ -35,6 +36,7 @@ defmodule Trigger.WorkerDeployment do
           error_data: map() | list() | String.t() | number() | boolean() | nil,
           canceled_at: DateTime.t() | nil,
           canceled_reason: String.t() | nil,
+          superseded_by_id: String.t() | nil,
           git: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -56,7 +58,7 @@ defmodule Trigger.WorkerDeployment do
     field(:version, :string)
     field(:runtime, :string)
     field(:runtime_version, :string, source: :runtimeVersion)
-    # CLI version that initiated the deploy, stamped at initialization
+    # CLI version that initiated the deploy, stamped at initialization or worker upload
     field(:cli_version, :string, source: :cliVersion)
     field(:image_reference, :string, source: :imageReference)
     field(:image_platform, :string, default: "linux/amd64", source: :imagePlatform)
@@ -77,6 +79,8 @@ defmodule Trigger.WorkerDeployment do
     field(:triggered_via, :string, source: :triggeredVia)
     field(:commit_sha, :string, source: :commitSHA)
     field(:external_id, :string, source: :externalId)
+    # The kind of credential that started the deployment. Null when unknown.
+    field(:initiated_by_credential, Ecto.Enum, values: [:ROOT_API_KEY, :SCOPED_API_KEY, :PERSONAL_ACCESS_TOKEN, :ORGANIZATION_ACCESS_TOKEN, :TRUSTED_PUBLISHING], source: :initiatedByCredential)
     field(:started_at, Trigger.PrismaDateTime, source: :startedAt)
     field(:installed_at, Trigger.PrismaDateTime, source: :installedAt)
     field(:built_at, Trigger.PrismaDateTime, source: :builtAt)
@@ -85,6 +89,8 @@ defmodule Trigger.WorkerDeployment do
     field(:error_data, Trigger.PrismaJson, source: :errorData)
     field(:canceled_at, Trigger.PrismaDateTime, source: :canceledAt)
     field(:canceled_reason, :string, source: :canceledReason)
+    # The newer GitHub build that superseded this one while it was still queued
+    field(:superseded_by_id, :string, source: :supersededById)
     field(:git, Trigger.PrismaJson)
     field(:project_id, :string, source: :projectId)
     field(:environment_id, :string, source: :environmentId)

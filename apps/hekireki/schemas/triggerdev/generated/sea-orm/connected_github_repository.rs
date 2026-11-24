@@ -17,6 +17,13 @@ pub struct Model {
     pub branch_tracking: Json,
     #[sea_orm(column_name = "previewDeploymentsEnabled", default_value = true)]
     pub preview_deployments_enabled: bool,
+    /// Skip queued builds once a newer commit is queued for the same environment or preview branch
+    #[sea_orm(column_name = "supersedeProductionBuilds", default_value = false)]
+    pub supersede_production_builds: bool,
+    #[sea_orm(column_name = "supersedeStagingBuilds", default_value = true)]
+    pub supersede_staging_builds: bool,
+    #[sea_orm(column_name = "supersedePreviewBuilds", default_value = true)]
+    pub supersede_preview_builds: bool,
     #[sea_orm(column_name = "buildFilters")]
     pub build_filters: Option<Json>,
     #[sea_orm(column_name = "createdAt")]

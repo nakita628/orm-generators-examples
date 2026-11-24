@@ -4,9 +4,10 @@ import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.json.jsonb
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 object LiteLLMSpendLogDeliveryTable : IdTable<String>("\"LiteLLM_SpendLogDelivery\"") {
-    override val id = text("delivery_id").databaseDefault("(gen_random_uuid())::text").entityId()
+    override val id = text("delivery_id").clientDefault { UUID.randomUUID().toString() }.entityId()
     val requestId = text("request_id")
     val state =
         pgEnum("state", "\"AccountingDeliveryState\"", AccountingDeliveryState.entries, AccountingDeliveryState::dbName).default(

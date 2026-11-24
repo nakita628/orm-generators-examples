@@ -443,6 +443,9 @@ class GatewayChangeEventKind(models.TextChoices):
     CACHE_RULE_DELETED = "CACHE_RULE_DELETED"
     ROUTING_POLICY_UPDATED = "ROUTING_POLICY_UPDATED"
     ROUTING_POLICY_DELETED = "ROUTING_POLICY_DELETED"
+    A2A_TARGET_CREATED = "A2A_TARGET_CREATED"
+    A2A_TARGET_UPDATED = "A2A_TARGET_UPDATED"
+    A2A_TARGET_DELETED = "A2A_TARGET_DELETED"
 
 
 class GatewayCacheRuleMode(models.TextChoices):
@@ -3916,6 +3919,8 @@ class LangyConversationProjection(models.Model):
     run_token = models.TextField(null=True, db_column="runToken")
     """Per-conversation HMAC key for worker stream frames; server-side only."""
     archived_at = models.FloatField(null=True, db_column="archivedAt")
+    ci_follow_ups_in_arow = models.IntegerField(db_column="ciFollowUpsInARow", default=0)
+    """Messages CI started on a pull request since the person last wrote."""
     created_at = models.FloatField(db_column="createdAt")
     updated_at = models.FloatField(db_column="updatedAt")
     occurred_at = models.FloatField(db_column="occurredAt")
@@ -4034,6 +4039,35 @@ class LangyConversationTurnProjection(models.Model):
         ]
         indexes = [
             models.Index(fields=["project_id", "conversation_id", "updated_at"]),
+        ]
+
+
+class LangyPullRequest(models.Model):
+    """One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished
+    checks look it up by repository and number to wake the conversation; the daily pull request
+    cap counts a person's rows by day. Rebuilt by a projection replay.
+    """
+
+    id = models.TextField(primary_key=True, default=nanoid_str)
+    project_id = models.TextField(db_column="projectId")
+    repository_full_name = models.TextField(db_column="repositoryFullName")
+    """`owner/repo`, lowercased: GitHub matches repository names without case."""
+    pr_number = models.IntegerField(db_column="prNumber")
+    conversation_id = models.TextField(db_column="conversationId")
+    user_id = models.TextField(db_column="userId")
+    """The conversation's owner, who opened it through Langy."""
+    opened_at = models.FloatField(db_column="openedAt")
+    """When the answer that opened it was recorded (epoch ms)."""
+    source_event_id = models.TextField(db_column="sourceEventId")
+    """The agent_responded event it came from."""
+
+    class Meta:
+        db_table = "LangyPullRequest"
+        constraints = [
+            models.UniqueConstraint(fields=["repository_full_name", "pr_number"], name="LangyPullRequest_repositoryFullName_prNumber_key"),
+        ]
+        indexes = [
+            models.Index(fields=["user_id", "opened_at"]),
         ]
 
 
@@ -4345,6 +4379,29 @@ class RetentionPolicy(models.Model):
         indexes = [
             models.Index(fields=["organization_id"]),
             models.Index(fields=["scope_type", "scope_id"]),
+        ]
+
+
+class RetentionApplyStatus(models.Model):
+    id = models.TextField(primary_key=True, default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    scope_type = models.TextField(choices=RetentionPolicyScopeType.choices, db_column="scopeType")
+    scope_id = models.TextField(db_column="scopeId")
+    changed_at = models.FloatField(null=True, db_column="changedAt")
+    applied_at = models.FloatField(null=True, db_column="appliedAt")
+    raised_at = models.FloatField(null=True, db_column="raisedAt")
+    shortened_at = models.FloatField(null=True, db_column="shortenedAt")
+    created_at = models.FloatField(db_column="createdAt")
+    updated_at = models.FloatField(db_column="updatedAt")
+    occurred_at = models.FloatField(db_column="occurredAt")
+    accepted_at = models.FloatField(db_column="acceptedAt")
+    last_event_id = models.TextField(db_column="lastEventId")
+    projection_version = models.TextField(db_column="projectionVersion")
+
+    class Meta:
+        db_table = "RetentionApplyStatus"
+        constraints = [
+            models.UniqueConstraint(fields=["organization_id", "scope_type", "scope_id"], name="RetentionApplyStatus_organizationId_scopeType_scopeId_key"),
         ]
 
 
@@ -4856,11 +4913,16 @@ class Scenario(models.Model):
     parameters = models.JSONField(null=True)
     simulator_model = models.TextField(null=True, db_column="simulatorModel")
     judge_model = models.TextField(null=True, db_column="judgeModel")
+    trace_quiet_period_ms = models.IntegerField(null=True, db_column="traceQuietPeriodMs")
+    trace_wait_timeout_ms = models.IntegerField(null=True, db_column="traceWaitTimeoutMs")
     max_turns = models.IntegerField(null=True, db_column="maxTurns")
     min_turns = models.IntegerField(null=True, db_column="minTurns")
     fields = models.JSONField(null=True)
     caller_voice = models.JSONField(null=True, db_column="callerVoice")
     test_suite = models.ForeignKey("SimulationSuite", on_delete=models.SET_NULL, related_name="test_suite_scenarios", db_column="testSuiteId", null=True, db_index=False)
+    kind = models.TextField(default="standard")
+    red_team = models.JSONField(null=True, db_column="redTeam")
+    source_template_id = models.TextField(null=True, db_column="sourceTemplateId")
     version = models.IntegerField(default=1)
     last_updated_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="scenarios", db_column="lastUpdatedById", null=True, db_index=False)
     archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
@@ -4924,10 +4986,14 @@ class SimulationSuite(models.Model):
     labels = ArrayField(models.TextField())
     simulator_model = models.TextField(null=True, db_column="simulatorModel")
     judge_model = models.TextField(null=True, db_column="judgeModel")
+    trace_quiet_period_ms = models.IntegerField(null=True, db_column="traceQuietPeriodMs")
+    trace_wait_timeout_ms = models.IntegerField(null=True, db_column="traceWaitTimeoutMs")
     kind = models.TextField(default="run_plan")
     scope = models.JSONField(null=True)
     fields = models.JSONField(null=True)
     evaluators = models.JSONField(null=True)
+    template_id = models.TextField(null=True, db_column="templateId")
+    template_version = models.IntegerField(null=True, db_column="templateVersion")
     archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -5002,6 +5068,17 @@ class Subscription(models.Model):
     seat_line_lease_token = models.TextField(null=True, db_column="seatLineLeaseToken")
     """The lease a seat change or seat line repair holds while it reads and moves the seat line."""
     seat_line_lease_until = UtcDateTimeField(null=True, db_column="seatLineLeaseUntil")
+    payment_recovery_invoice_id = models.TextField(null=True, db_column="paymentRecoveryInvoiceId")
+    """An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+    charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+    """
+    payment_recovery_started_at = UtcDateTimeField(null=True, db_column="paymentRecoveryStartedAt")
+    payment_recovery_notice_day = models.IntegerField(null=True, db_column="paymentRecoveryNoticeDay")
+    over_plan_since = UtcDateTimeField(null=True, db_column="overPlanSince")
+    """The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+    organization is on Free with more members than Free allows; ended once that no longer holds.
+    """
+    over_plan_ended_at = UtcDateTimeField(null=True, db_column="overPlanEndedAt")
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -5121,12 +5198,34 @@ class AuthzOrganizationPolicy(models.Model):
 
     organization_id = models.TextField(primary_key=True, db_column="organizationId", default=None)
     braids_organization_admins_only = models.BooleanField(db_column="braidsOrganizationAdminsOnly", default=False)
+    braids_enabled = models.BooleanField(db_column="braidsEnabled", default=False)
     updated_by_user_id = models.TextField(db_column="updatedByUserId")
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
         db_table = "AuthzOrganizationPolicy"
+
+
+class AuthzBraidWrite(models.Model):
+    pk = models.CompositePrimaryKey("organization_id", "command_id")
+    organization_id = models.TextField(db_column="organizationId")
+    command_id = models.TextField(db_column="commandId")
+    grant_id = models.TextField(db_column="grantId")
+    reader_project_id = models.TextField(db_column="readerProjectId")
+    owner_project_id = models.TextField(db_column="ownerProjectId")
+    terms_key = models.TextField(db_column="termsKey")
+    condition = models.JSONField()
+    expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
+    replaces_grant_id = models.TextField(null=True, db_column="replacesGrantId")
+    created_by_user_id = models.TextField(null=True, db_column="createdByUserId")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+
+    class Meta:
+        db_table = "AuthzBraidWrite"
+        indexes = [
+            models.Index(fields=["organization_id", "reader_project_id", "created_at"]),
+        ]
 
 
 class RoleBinding(models.Model):
@@ -6145,6 +6244,32 @@ class IngestionTemplate(models.Model):
         ]
 
 
+class GatewayA2ATarget(models.Model):
+    id = models.TextField(primary_key=True, default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    project_id = models.TextField(null=True, db_column="projectId")
+    name = models.TextField()
+    agent_name = models.TextField(db_column="agentName")
+    card_url = models.TextField(db_column="cardUrl")
+    upstream_url = models.TextField(db_column="upstreamUrl")
+    encrypted_upstream_headers = models.TextField(null=True, db_column="encryptedUpstreamHeaders")
+    restrict_to_allow_list = models.BooleanField(db_column="restrictToAllowList", default=False)
+    allowed_virtual_key_ids = ArrayField(models.TextField(), db_column="allowedVirtualKeyIds", default=list)
+    blocked = models.BooleanField(default=False)
+    block_reason = models.TextField(null=True, db_column="blockReason")
+    created_by_id = models.TextField(db_column="createdById")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    archived_at = UtcDateTimeField(null=True, db_column="archivedAt")
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "GatewayA2ATarget"
+        indexes = [
+            models.Index(fields=["organization_id", "project_id"]),
+        ]
+
+
 class GatewayConnectUpstream(models.Model):
     organization_id = models.TextField(primary_key=True, db_column="organizationId", default=None)
     base_url = models.TextField(db_column="baseUrl")
@@ -7048,6 +7173,151 @@ class AgentRegistryBaseline(models.Model):
 
     class Meta:
         db_table = "AgentRegistryBaseline"
+
+
+class AgentStopPlanTarget(models.Model):
+    """One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
+    agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway
+    virtual key. A plan write replaces every row of the agent at once.
+    """
+
+    id = models.TextField(primary_key=True, default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    agent_id = models.TextField(db_column="agentId")
+    """The AgentRegistryEntry the plan belongs to."""
+    position = models.IntegerField()
+    label = models.TextField()
+    target = models.JSONField()
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AgentStopPlanTarget"
+        indexes = [
+            models.Index(fields=["organization_id", "agent_id"]),
+        ]
+
+
+class AgentStopPlan(models.Model):
+    """One agent's stop plan version: bumped by every save, so a save over a plan someone else saved
+    since it was read is refused. No row means the plan was never saved (version 0).
+    """
+
+    pk = models.CompositePrimaryKey("organization_id", "agent_id")
+    organization_id = models.TextField(db_column="organizationId")
+    agent_id = models.TextField(db_column="agentId")
+    """The AgentRegistryEntry the plan belongs to."""
+    version = models.IntegerField()
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AgentStopPlan"
+
+
+class GovernanceAwsConnection(models.Model):
+    """An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume,
+    or both. The secret access key and the external id are stored sealed.
+    """
+
+    id = models.TextField(primary_key=True, default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    name = models.TextField()
+    access_key_id = models.TextField(null=True, db_column="accessKeyId")
+    encrypted_secret_access_key = models.TextField(null=True, db_column="encryptedSecretAccessKey")
+    role_arn = models.TextField(null=True, db_column="roleArn")
+    encrypted_external_id = models.TextField(null=True, db_column="encryptedExternalId")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "GovernanceAwsConnection"
+        indexes = [
+            models.Index(fields=["organization_id"]),
+        ]
+
+
+class AgentStop(models.Model):
+    """The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and
+    every target's outcome, folded from the stop's events.
+    """
+
+    id = models.TextField(primary_key=True, default=None)
+    organization_id = models.TextField(db_column="organizationId")
+    agent_id = models.TextField(db_column="agentId")
+    agent_name = models.TextField(db_column="agentName")
+    status = models.TextField()
+    severity = models.TextField()
+    approval = models.TextField()
+    trigger = models.TextField()
+    reason = models.TextField()
+    requested_by_user_id = models.TextField(null=True, db_column="requestedByUserId")
+    requested_by_api_key_id = models.TextField(null=True, db_column="requestedByApiKeyId")
+    decided_by_user_id = models.TextField(null=True, db_column="decidedByUserId")
+    decided_by_api_key_id = models.TextField(null=True, db_column="decidedByApiKeyId")
+    restored_by_user_id = models.TextField(null=True, db_column="restoredByUserId")
+    restored_by_api_key_id = models.TextField(null=True, db_column="restoredByApiKeyId")
+    targets = models.JSONField()
+    requested_at = UtcDateTimeField(db_column="requestedAt")
+    decided_at = UtcDateTimeField(null=True, db_column="decidedAt")
+    quarantined_at = UtcDateTimeField(null=True, db_column="quarantinedAt")
+    restore_requested_at = UtcDateTimeField(null=True, db_column="restoreRequestedAt")
+    restored_at = UtcDateTimeField(null=True, db_column="restoredAt")
+    last_applied_event_id = models.TextField(db_column="lastAppliedEventId")
+    last_accepted_at = models.BigIntegerField(db_column="lastAcceptedAt")
+    last_occurred_at = models.BigIntegerField(db_column="lastOccurredAt")
+    projection_version = models.TextField(db_column="projectionVersion")
+    created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "AgentStop"
+        indexes = [
+            models.Index(fields=["organization_id", "agent_id"]),
+            models.Index(fields=["organization_id", "status"]),
+        ]
+
+
+class AgentStopClaim(models.Model):
+    """The one open stop an agent may have: the api takes this row before it sends a stop's request,
+    so two requests at once cannot both open one. A later request takes it over once the stop it
+    names has closed.
+    `sentAt` is set once the request command was sent: from then on the claim passes on only after
+    its stop closed, never on age. `decision` is taken by the one approve or deny that wins.
+    `decisionTakenAt` is set while that decision is in flight and cleared once its command was
+    sent; a decision left in flight is taken over once abandoned.
+    """
+
+    pk = models.CompositePrimaryKey("organization_id", "agent_id")
+    organization_id = models.TextField(db_column="organizationId")
+    agent_id = models.TextField(db_column="agentId")
+    stop_id = models.TextField(db_column="stopId")
+    claimed_at = UtcDateTimeField(db_column="claimedAt")
+    sent_at = UtcDateTimeField(null=True, db_column="sentAt")
+    decision = models.TextField(null=True)
+    decision_taken_at = UtcDateTimeField(null=True, db_column="decisionTakenAt")
+
+    class Meta:
+        db_table = "AgentStopClaim"
+
+
+class AgentStopTargetPriorState(models.Model):
+    """Whether a target was already stopped before a stop first touched it, recorded once before the
+    stop's platform call, so a retried call after a success still knows the change is the stop's own.
+    """
+
+    pk = models.CompositePrimaryKey("organization_id", "stop_id", "target_id")
+    organization_id = models.TextField(db_column="organizationId")
+    stop_id = models.TextField(db_column="stopId")
+    target_id = models.TextField(db_column="targetId")
+    was_stopped = models.BooleanField(db_column="wasStopped")
+    recorded_at = UtcDateTimeField(db_column="recordedAt")
+
+    class Meta:
+        db_table = "AgentStopTargetPriorState"
 
 
 class IdentityMatch(models.Model):

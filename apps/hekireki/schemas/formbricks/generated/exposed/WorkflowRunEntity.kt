@@ -41,6 +41,26 @@ class WorkflowRunEntity(
     var finishedAt by WorkflowRunTable.finishedAt
     val logs by WorkflowRunLogEntity referrersOn WorkflowRunLogTable.runId
 
+    /** The caller's IP for a run started by a Webhook Secret URL call; shown in run detail. */
+    var callerIp by WorkflowRunTable.callerIp
+
+    /**
+     * When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+     * input, output and errors, the run error and the caller IP. Null while the content is kept.
+     */
+    var contentDeletedAt by WorkflowRunTable.contentDeletedAt
+
+    /** The retention period in days that applied when the content was cleared ("Details deleted after N days"). */
+    var contentRetentionDays by WorkflowRunTable.contentRetentionDays
+
+    /**
+     * The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+     * changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+     * existed. Configuration like a version's definition, not run content: retention leaves it alone.
+     * [WorkflowExecutableDefinition]
+     */
+    var testRunDefinition by WorkflowRunTable.testRunDefinition
+
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {
             if (!isWritten(WorkflowRunTable.updatedAt)) {

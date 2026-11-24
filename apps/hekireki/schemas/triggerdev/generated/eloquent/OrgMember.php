@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property string|null $invitedById Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.
+ * @property string|null $joinMethod How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.
+ */
 class OrgMember extends Model
 {
     use PrismaDates;
@@ -24,6 +28,8 @@ class OrgMember extends Model
         'organizationId',
         'userId',
         'role',
+        'invitedById',
+        'joinMethod',
     ];
 
     protected $attributes = [

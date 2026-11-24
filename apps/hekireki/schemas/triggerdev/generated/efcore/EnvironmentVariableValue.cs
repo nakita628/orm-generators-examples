@@ -25,6 +25,10 @@ public partial class EnvironmentVariableValue
     /// </summary>
     public bool IsSecret { get; set; } = false;
 
+    public bool IsProxyOnly { get; set; } = false;
+
+    public string? ProxyConfig { get; set; }
+
     public DateTime CreatedAt { get; set; }
 
     public DateTime UpdatedAt { get; set; }

@@ -67,6 +67,7 @@ class WorkspaceEntity(
     val feedbackDirectoryWorkspaces by FeedbackDirectoryWorkspaceEntity referrersOn FeedbackDirectoryWorkspaceTable.workspaceId
     val charts by ChartEntity referrersOn ChartTable.workspaceId
     val dashboards by DashboardEntity referrersOn DashboardTable.workspaceId
+    val embeddedFieldLabels by EmbeddedFieldLabelEntity referrersOn EmbeddedFieldLabelTable.workspaceId
     val creatives by CreativeEntity referrersOn CreativeTable.workspaceId
     val attachmentExports by AttachmentExportEntity referrersOn AttachmentExportTable.workspaceId
     val surveys by SurveyEntity referrersOn SurveyTable.workspaceId
@@ -81,6 +82,7 @@ class WorkspaceEntity(
     val feedbackSources by FeedbackSourceEntity referrersOn FeedbackSourceTable.workspaceId
     val workflows by WorkflowEntity referrersOn WorkflowTable.workspaceId
     val workflowRuns by WorkflowRunEntity referrersOn WorkflowRunTable.workspaceId
+    val mcpGrants by McpGrantWorkspaceEntity referrersOn McpGrantWorkspaceTable.workspaceId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

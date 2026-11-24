@@ -61,6 +61,7 @@ object LiteLLMMCPServerTableTable : IdTable<String>("\"LiteLLM_MCPServerTable\""
     val timeout = double("timeout").nullable()
     val maxConcurrentRequests = integer("max_concurrent_requests").nullable()
     val rpm = integer("rpm").nullable()
+    val events = jsonb<String>("events", { it }, { it }).nullable()
     val approvalStatus = text("approval_status").nullable().default("active")
     val submittedBy = text("submitted_by").nullable()
     val submittedAt = pgTimestamp("submitted_at", 3).nullable()

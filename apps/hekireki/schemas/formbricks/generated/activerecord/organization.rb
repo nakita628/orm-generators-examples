@@ -33,4 +33,6 @@ class Organization < ApplicationRecord
   has_many :retention_exemptions, foreign_key: "organizationId", inverse_of: :organization, dependent: :destroy
   has_many :retention_runs, foreign_key: "organizationId", inverse_of: :organization, dependent: :destroy
   has_many :retention_notices, foreign_key: "organizationId", inverse_of: :organization, dependent: :destroy
+  has_many :mcp_grants, class_name: "McpGrantOrganization", foreign_key: "organizationId", inverse_of: :organization,
+                        dependent: :destroy
 end

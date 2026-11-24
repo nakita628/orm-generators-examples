@@ -7,6 +7,8 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMCustomerMemberTable
 {
+    public virtual ICollection<LiteLLMAppCustomerMemberTable> Apps { get; set; } = new List<LiteLLMAppCustomerMemberTable>();
+
     public double Spend { get; set; } = 0.0;
 
     public string? SpendResetWindow { get; set; }

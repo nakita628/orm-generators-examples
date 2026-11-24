@@ -93,6 +93,8 @@ export const pollClosedReasonEnum = pgEnum('poll_closed_reason', ['auto', 'manua
 
 export const voteTypeEnum = pgEnum('vote_type', ['yes', 'no', 'ifNeedBe'])
 
+export const spaceUsageResourceEnum = pgEnum('space_usage_resource', ['api_poll', 'email_invite'])
+
 export const spaceMemberRoleEnum = pgEnum('SpaceMemberRole', ['ADMIN', 'MEMBER'])
 
 export const spaceTypeEnum = pgEnum('space_types', ['personal', 'work'])
@@ -111,6 +113,10 @@ export const timeFormatEnum = pgEnum('time_format', ['hours12', 'hours24'])
 
 export const userRoleEnum = pgEnum('user_role', ['admin', 'user'])
 
+/**
+ * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+ * deployments keep working during the switch, then dropped.
+ */
 export const apiUsage = pgTable(
   'api_usage',
   {
@@ -1167,6 +1173,37 @@ export const sheetSlots = pgTable(
   ],
 )
 
+/**
+ * Monthly counters for metered actions charged to a space, independent of
+ * the records they produce, so deleting a poll does not give back what it
+ * spent.
+ */
+export const spaceUsage = pgTable(
+  'space_usage',
+  {
+    spaceId: text('space_id').notNull(),
+    resource: spaceUsageResourceEnum('resource').notNull(),
+    period: utcDate('period').notNull(),
+    count: integer('count').notNull().default(0),
+    nearLimitWarnedAt: timestamp('near_limit_warned_at', { precision: 3 }),
+    atLimitWarnedAt: timestamp('at_limit_warned_at', { precision: 3 }),
+    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
+  },
+  (table) => [
+    primaryKey({
+      name: 'space_usage_pkey',
+      columns: [table.spaceId, table.resource, table.period],
+    }),
+    foreignKey({
+      name: 'space_usage_space_id_fkey',
+      columns: [table.spaceId],
+      foreignColumns: [spaces.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
 export const spaces = pgTable(
   'spaces',
   {
@@ -1572,6 +1609,7 @@ export const relations = defineRelations(
     registeredInstances,
     sheets,
     sheetSlots,
+    spaceUsage,
     spaces,
     spaceMembers,
     spaceMemberInvites,
@@ -1745,6 +1783,9 @@ export const relations = defineRelations(
         to: r.scheduledEvents.sheetSlotId,
       }),
     },
+    spaceUsage: {
+      space: r.one.spaces({ from: r.spaceUsage.spaceId, to: r.spaces.id, optional: false }),
+    },
     spaces: {
       owner: r.one.users({ from: r.spaces.ownerId, to: r.users.id, optional: false }),
       polls: r.many.polls(),
@@ -1758,6 +1799,7 @@ export const relations = defineRelations(
       nonprofitApplications: r.many.nonprofitApplications(),
       webhooks: r.many.spaceWebhooks(),
       apiUsage: r.many.apiUsage(),
+      usage: r.many.spaceUsage(),
     },
     spaceMembers: {
       space: r.one.spaces({ from: r.spaceMembers.spaceId, to: r.spaces.id, optional: false }),

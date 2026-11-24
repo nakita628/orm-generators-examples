@@ -5,6 +5,12 @@ Enum AuthenticationMethod {
   SSO
 }
 
+Enum OAuthClientKind {
+  PREREGISTERED
+  CIMD
+  DCR
+}
+
 Enum OrganizationAccessTokenType {
   USER
   SYSTEM
@@ -63,6 +69,11 @@ Enum TaskTriggerSource {
   SCHEDULED
   AGENT
   WEBHOOK
+}
+
+Enum TaskExecutionMode {
+  STANDARD
+  SANDBOX
 }
 
 Enum WebhookEndpointStatus {
@@ -217,6 +228,12 @@ Enum BatchTaskRunItemStatus {
   COMPLETED
 }
 
+Enum EnvironmentVariableIgnoreReason {
+  EMPTY
+  MISSING
+  OIDC
+}
+
 Enum CheckpointType {
   DOCKER
   KUBERNETES
@@ -231,6 +248,14 @@ Enum WorkerDeploymentType {
   MANAGED
   UNMANAGED
   V1
+}
+
+Enum DeploymentInitiatedByCredential {
+  ROOT_API_KEY
+  SCOPED_API_KEY
+  PERSONAL_ACCESS_TOKEN
+  ORGANIZATION_ACCESS_TOKEN
+  TRUSTED_PUBLISHING
 }
 
 Enum WorkerDeploymentStatus {
@@ -425,6 +450,12 @@ Table AuthorizationCode {
   codeChallenge String [note: 'S256 PKCE challenge from the client that minted the code. Null for codes minted by CLIs that predate it.']
   callbackPort Int [note: 'Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it.']
   approvalCodeHash String [note: 'sha256 of the approval code, which only the approving browser ever sees.']
+  oauthClientId String
+  redirectUri String
+  scope String[] [not null]
+  resource String
+  approvedByUserId String
+  requestedByUserId String [note: 'The user who started the OAuth authorization. Only they can approve it.']
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 
@@ -447,6 +478,35 @@ Table PersonalAccessToken {
   expiredNoticeSentAt DateTime [note: 'When the "has expired" email was sent. Set before sending, so it\'s sent at most once.']
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  oauthClientId String
+}
+
+Table OAuthClient {
+  id String [pk]
+  kind OAuthClientKind [not null]
+  clientId String [unique, not null]
+  metadataUrl String
+  displayName String
+  selfReportedName String
+  redirectUris String[] [not null]
+  dedupeKey String [unique]
+  metadataExpiresAt DateTime
+  lastUsedAt DateTime
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table OAuthRefreshToken {
+  id String [pk]
+  hashedToken String [unique, not null]
+  personalAccessTokenId String [not null]
+  oauthClientId String [not null]
+  scope String[] [not null]
+  resource String [not null]
+  usedAt DateTime
+  replacedById String
+  idleExpiresAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
 }
 
 Table OrganizationAccessToken {
@@ -500,6 +560,9 @@ when the org\'s plan changes.''']
   supportAccessMode SupportAccessMode [default: 'ALLOW', not null]
   supportAccessModeUpdatedAt DateTime
   supportAccessModeUpdatedById String
+  mfaRequired Boolean [default: false, not null, note: 'When true, members without MFA are locked out of the dashboard and CLI until they set it up.']
+  mfaStepUpActions String[] [not null, note: 'Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).']
+  mfaStepUpWindowMinutes Int [default: 5, not null]
 }
 
 Table OrgMember {
@@ -507,6 +570,8 @@ Table OrgMember {
   organizationId String [not null]
   userId String [not null]
   role OrgMemberRole [default: 'MEMBER', not null]
+  invitedById String [note: 'Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.']
+  joinMethod String [note: 'How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.']
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 
@@ -544,6 +609,7 @@ Table RuntimeEnvironment {
   slug String [not null]
   apiKey String [unique, not null]
   rootApiKeyHiddenAt DateTime [note: 'Non-null prevents the root API key from being returned to users.']
+  rootKeyInjectionDisabledAt DateTime [note: 'Non-null disables automatic root key injection into new deployed attempts.']
   pkApiKey String [unique, not null, note: '@deprecated was for v2']
   type RuntimeEnvironmentType [default: 'DEVELOPMENT', not null]
   isBranchableEnvironment Boolean [default: false, not null, note: '''If true, this environment has branches and is treated differently in the dashboard/API
@@ -624,6 +690,7 @@ Table Project {
   engine RunEngineVersion [default: 'V1', not null]
   builderProjectId String
   defaultWorkerGroupId String
+  secretProxyEnabled Boolean [default: false, not null, note: 'Newly triggered deployed runs require the secret proxy (pinned in their annotations).']
   allowedMasterQueues String[] [not null, note: 'The master queues they are allowed to use (impacts what they can set as default and trigger runs with)']
   buildSettings Json
   onboardingData Json
@@ -798,6 +865,8 @@ slot in while executing. Shape: [{ queue: string, concurrencyKey?: string }]''']
   triggerSource TaskTriggerSource [default: 'STANDARD', not null]
   config Json [note: '''Extra task configuration JSON. Shape depends on triggerSource.
 AGENT: { type: "ai-sdk-chat" }''']
+  executionMode TaskExecutionMode [default: 'STANDARD', not null]
+  executionPolicy Json [note: 'RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.']
   payloadSchema Json
 
   indexes {
@@ -1326,6 +1395,7 @@ Table WorkerGroupToken {
   previousTokenValidUntil DateTime
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  workerGroupId String
 }
 
 Table TaskRunTag {
@@ -1582,6 +1652,8 @@ Table EnvironmentVariableValue {
   variableId String [not null]
   environmentId String [not null]
   isSecret Boolean [default: false, not null, note: 'If true, the value is secret and cannot be revealed']
+  isProxyOnly Boolean [default: false, not null]
+  proxyConfig Json
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   version Int [default: 1, not null]
@@ -1590,6 +1662,23 @@ Table EnvironmentVariableValue {
   indexes {
     (variableId, environmentId) [unique]
   }
+}
+
+Table EnvironmentVariableIgnore {
+  id String [pk]
+  projectId String [not null]
+  environmentId String [not null]
+  variableId String [not null]
+  reason EnvironmentVariableIgnoreReason [not null]
+  createdById String
+  createdAt DateTime [default: `now()`, not null]
+
+  indexes {
+    (environmentId, variableId, reason) [unique]
+  }
+
+  Note: '''A reason the environment variables "Needs attention" page shows a key in one environment, which
+the project\'s team chose to ignore. An ignored EMPTY goes when the value is next saved.'''
 }
 
 Table Checkpoint {
@@ -1631,7 +1720,7 @@ Table WorkerDeployment {
   version String [not null]
   runtime String
   runtimeVersion String
-  cliVersion String [note: 'CLI version that initiated the deploy, stamped at initialization']
+  cliVersion String [note: 'CLI version that initiated the deploy, stamped at initialization or worker upload']
   imageReference String
   imagePlatform String [default: 'linux/amd64', not null]
   templateKey String [note: 'Key of the microVM template prebuilt from this deployment\'s image, set when the builder succeeds']
@@ -1651,6 +1740,7 @@ EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a s
   triggeredVia String
   commitSHA String
   externalId String
+  initiatedByCredential DeploymentInitiatedByCredential [note: 'The kind of credential that started the deployment. Null when unknown.']
   startedAt DateTime
   installedAt DateTime
   builtAt DateTime
@@ -1659,6 +1749,7 @@ EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a s
   errorData Json
   canceledAt DateTime
   canceledReason String
+  supersededById String [note: 'The newer GitHub build that superseded this one while it was still queued']
   git Json
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -1979,6 +2070,9 @@ Table ConnectedGithubRepository {
   repositoryId String [not null]
   branchTracking Json [not null]
   previewDeploymentsEnabled Boolean [default: true, not null]
+  supersedeProductionBuilds Boolean [default: false, not null, note: 'Skip queued builds once a newer commit is queued for the same environment or preview branch']
+  supersedeStagingBuilds Boolean [default: true, not null]
+  supersedePreviewBuilds Boolean [default: true, not null]
   buildFilters Json
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
@@ -2271,7 +2365,15 @@ Ref MfaBackupCode_userId_fk: MfaBackupCode.userId > User.id
 
 Ref AuthorizationCode_personalAccessTokenId_fk: AuthorizationCode.personalAccessTokenId > PersonalAccessToken.id [delete: cascade, update: cascade]
 
+Ref AuthorizationCode_oauthClientId_fk: AuthorizationCode.oauthClientId > OAuthClient.id [delete: cascade]
+
 Ref PersonalAccessToken_userId_fk: PersonalAccessToken.userId > User.id
+
+Ref PersonalAccessToken_oauthClientId_fk: PersonalAccessToken.oauthClientId > OAuthClient.id [delete: restrict]
+
+Ref OAuthRefreshToken_personalAccessTokenId_fk: OAuthRefreshToken.personalAccessTokenId > PersonalAccessToken.id [delete: cascade]
+
+Ref OAuthRefreshToken_oauthClientId_fk: OAuthRefreshToken.oauthClientId > OAuthClient.id [delete: cascade]
 
 Ref OrganizationAccessToken_organizationId_fk: OrganizationAccessToken.organizationId > Organization.id
 
@@ -2405,6 +2507,8 @@ Ref WorkerInstanceGroup_organizationId_fk: WorkerInstanceGroup.organizationId > 
 
 Ref WorkerInstanceGroup_projectId_fk: WorkerInstanceGroup.projectId > Project.id [delete: cascade, update: cascade]
 
+Ref WorkerGroupToken_workerGroupId_fk: WorkerGroupToken.workerGroupId > WorkerInstanceGroup.id [delete: cascade, update: cascade]
+
 Ref TaskRunTag_projectId_fk: TaskRunTag.projectId > Project.id [delete: cascade, update: cascade]
 
 Ref TaskRunDependency_taskRunId_fk: TaskRunDependency.taskRunId - TaskRun.id [delete: cascade, update: cascade]
@@ -2450,6 +2554,14 @@ Ref EnvironmentVariableValue_valueReferenceId_fk: EnvironmentVariableValue.value
 Ref EnvironmentVariableValue_variableId_fk: EnvironmentVariableValue.variableId > EnvironmentVariable.id [delete: cascade, update: cascade]
 
 Ref EnvironmentVariableValue_environmentId_fk: EnvironmentVariableValue.environmentId > RuntimeEnvironment.id [delete: cascade, update: cascade]
+
+Ref EnvironmentVariableIgnore_projectId_fk: EnvironmentVariableIgnore.projectId > Project.id [delete: cascade, update: cascade]
+
+Ref EnvironmentVariableIgnore_environmentId_fk: EnvironmentVariableIgnore.environmentId > RuntimeEnvironment.id [delete: cascade, update: cascade]
+
+Ref EnvironmentVariableIgnore_variableId_fk: EnvironmentVariableIgnore.variableId > EnvironmentVariable.id [delete: cascade, update: cascade]
+
+Ref EnvironmentVariableIgnore_createdById_fk: EnvironmentVariableIgnore.createdById > User.id [delete: set null, update: cascade]
 
 Ref Checkpoint_runId_fk: Checkpoint.runId > TaskRun.id [delete: cascade, update: cascade]
 

@@ -15,6 +15,10 @@ public partial class AnnotationQueue
 
     public List<string>? ScoreConfigIds { get; set; } = new List<string>();
 
+    public string? SessionViewId { get; set; }
+
+    public virtual SessionView? SessionView { get; set; }
+
     public string ProjectId { get; set; } = null!;
 
     public virtual Project Project { get; set; } = null!;

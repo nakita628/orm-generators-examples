@@ -22,10 +22,14 @@ class SimulationSuiteEntity(
     var labels by SimulationSuiteTable.labels
     var simulatorModel by SimulationSuiteTable.simulatorModel
     var judgeModel by SimulationSuiteTable.judgeModel
+    var traceQuietPeriodMs by SimulationSuiteTable.traceQuietPeriodMs
+    var traceWaitTimeoutMs by SimulationSuiteTable.traceWaitTimeoutMs
     var kind by SimulationSuiteTable.kind
     var scope by SimulationSuiteTable.scope
     var fields by SimulationSuiteTable.fields1
     var evaluators by SimulationSuiteTable.evaluators
+    var templateId by SimulationSuiteTable.templateId
+    var templateVersion by SimulationSuiteTable.templateVersion
     var archivedAt by SimulationSuiteTable.archivedAt
     var createdAt by SimulationSuiteTable.createdAt
     var updatedAt by SimulationSuiteTable.updatedAt

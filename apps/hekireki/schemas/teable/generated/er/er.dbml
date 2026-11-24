@@ -288,6 +288,53 @@ Table field {
   last_modified_by String
 }
 
+Table domain_event_outbox {
+  id String [pk]
+  base_id String [not null]
+  table_id String
+  message_name String [not null]
+  schema_version Int [not null]
+  aggregate_id String
+  payload Json [not null]
+  payload_bytes Int [not null]
+  catalog_generation Int [not null]
+  required_consumers Json [not null]
+  binding_id String
+  storage_epoch Int
+  unpublished Boolean [default: true, not null]
+  settled String
+  settled_at DateTime
+  created_at DateTime [default: `now()`, not null]
+}
+
+Table domain_event_delivery {
+  id String [pk]
+  event_id String [not null]
+  consumer_id String [not null]
+  status String [not null]
+  attempts Int [default: 0, not null]
+  max_attempts Int [default: 12, not null]
+  lease_token String
+  lease_expires_at DateTime
+  next_attempt_at DateTime [default: `now()`, not null]
+  last_error String
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (event_id, consumer_id) [unique]
+  }
+}
+
+Table domain_event_inbox {
+  consumer_id String [not null]
+  event_id String [not null]
+  created_at DateTime [default: `now()`, not null]
+
+  indexes {
+    (consumer_id, event_id) [pk]
+  }
+}
+
 Table computed_update_outbox {
   id String [pk]
   base_id String [not null]

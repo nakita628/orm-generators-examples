@@ -33,4 +33,5 @@ class OauthClient < ApplicationRecord
                       dependent: :destroy
   has_many :resources, class_name: "OauthClientResource", foreign_key: "clientId", primary_key: "clientId",
                        inverse_of: :client, dependent: :destroy
+  has_many :mcp_grants, foreign_key: "clientId", primary_key: "clientId", inverse_of: :client, dependent: :destroy
 end

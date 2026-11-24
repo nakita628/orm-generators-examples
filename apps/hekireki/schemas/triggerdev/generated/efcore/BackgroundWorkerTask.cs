@@ -71,5 +71,12 @@ public partial class BackgroundWorkerTask
     /// </summary>
     public string? Config { get; set; }
 
+    public TaskExecutionMode ExecutionMode { get; set; } = TaskExecutionMode.Standard;
+
+    /// <summary>
+    /// RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.
+    /// </summary>
+    public string? ExecutionPolicy { get; set; }
+
     public string? PayloadSchema { get; set; }
 }

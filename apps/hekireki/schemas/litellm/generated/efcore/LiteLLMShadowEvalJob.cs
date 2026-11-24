@@ -25,6 +25,8 @@ public partial class LiteLLMShadowEvalJob
 
     public string? BaselineModel { get; set; }
 
+    public bool SkipSameModel { get; set; } = false;
+
     public string JudgeModel { get; set; } = null!;
 
     public double ShadowPercentage { get; set; }
@@ -42,4 +44,8 @@ public partial class LiteLLMShadowEvalJob
     public DateTime? StoppedAt { get; set; }
 
     public string? StoppedBy { get; set; }
+
+    public string? Rubric { get; set; }
+
+    public int? RubricVersion { get; set; }
 }

@@ -5,12 +5,6 @@ import org.jetbrains.exposed.v1.core.TextColumnType
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.json.jsonb
 
-/**
- * Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
- * its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
- * a token is now bound to the resource it was approved for instead of to a static allow-list.
- * `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
- */
 object OauthResourceTable : IdTable<String>("\"oauthResource\"") {
     override val id = text("id").clientDefault { CUID.randomCUID1().toString() }.entityId()
     val identifier = text("identifier").uniqueIndex("\"oauthResource_identifier_key\"")

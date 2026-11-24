@@ -42,6 +42,9 @@ object ProjectTable : IdTable<String>("\"Project\"") {
             fkName = "\"Project_defaultWorkerGroupId_fkey\"",
         )
 
+    /** Newly triggered deployed runs require the secret proxy (pinned in their annotations). */
+    val secretProxyEnabled = bool("secretProxyEnabled").default(false)
+
     /** The master queues they are allowed to use (impacts what they can set as default and trigger runs with) */
     val allowedWorkerQueues = array("allowedMasterQueues", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val buildSettings = jsonb<String>("buildSettings", { it }, { it }).nullable()

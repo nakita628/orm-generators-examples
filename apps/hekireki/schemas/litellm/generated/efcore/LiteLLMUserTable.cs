@@ -7,6 +7,10 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMUserTable
 {
+    public double? RolloverMaxBudget { get; set; }
+
+    public double? RolloverCredit { get; set; }
+
     public string? BudgetLimits { get; set; }
 
     public virtual ICollection<LiteLLMVerifiedSubject> VerifiedSubjects { get; set; } = new List<LiteLLMVerifiedSubject>();

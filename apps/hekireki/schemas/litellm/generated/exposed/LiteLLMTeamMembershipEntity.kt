@@ -10,6 +10,7 @@ class LiteLLMTeamMembershipEntity(
 ) : CompositeEntity(id) {
     companion object : CompositeEntityClass<LiteLLMTeamMembershipEntity>(LiteLLMTeamMembershipTable)
 
+    var rolloverCredit by LiteLLMTeamMembershipTable.rolloverCredit
     val userId by LiteLLMTeamMembershipTable.userId
     val teamId by LiteLLMTeamMembershipTable.teamId
     var spend by LiteLLMTeamMembershipTable.spend

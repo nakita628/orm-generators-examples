@@ -553,6 +553,8 @@ export const emailAccount = pgTable(
      * Null until first turned on, which is when default bundles are chosen.
      */
     mailBundleInbox: boolean('mailBundleInbox'),
+    /** Collapses the inbox's other mail from one sender into one row. */
+    mailGroupBySender: boolean('mailGroupBySender').notNull().default(true),
     mailDefaultSplitId: text('mailDefaultSplitId'),
     mailSetup: mailSetupStateEnum('mailSetup').notNull().default('PENDING'),
     includeInAllAccounts: boolean('includeInAllAccounts').notNull().default(true),

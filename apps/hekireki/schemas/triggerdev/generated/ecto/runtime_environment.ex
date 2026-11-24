@@ -9,6 +9,7 @@ defmodule Trigger.RuntimeEnvironment do
           slug: String.t(),
           api_key: String.t(),
           root_api_key_hidden_at: DateTime.t() | nil,
+          root_key_injection_disabled_at: DateTime.t() | nil,
           pk_api_key: String.t(),
           type: atom(),
           is_branchable_environment: boolean(),
@@ -44,6 +45,7 @@ defmodule Trigger.RuntimeEnvironment do
           task_runs: [Trigger.TaskRun.t()],
           task_queues: [Trigger.TaskQueue.t()],
           environment_variable_values: [Trigger.EnvironmentVariableValue.t()],
+          environment_variable_ignores: [Trigger.EnvironmentVariableIgnore.t()],
           checkpoints: [Trigger.Checkpoint.t()],
           worker_deployments: [Trigger.WorkerDeployment.t()],
           worker_deployment_promotions: [Trigger.WorkerDeploymentPromotion.t()],
@@ -73,6 +75,8 @@ defmodule Trigger.RuntimeEnvironment do
     field(:api_key, :string, source: :apiKey)
     # Non-null prevents the root API key from being returned to users.
     field(:root_api_key_hidden_at, Trigger.PrismaDateTime, source: :rootApiKeyHiddenAt)
+    # Non-null disables automatic root key injection into new deployed attempts.
+    field(:root_key_injection_disabled_at, Trigger.PrismaDateTime, source: :rootKeyInjectionDisabledAt)
     # @deprecated was for v2
     field(:pk_api_key, :string, source: :pkApiKey)
     field(:type, Ecto.Enum, values: [:PRODUCTION, :STAGING, :DEVELOPMENT, :PREVIEW], default: :DEVELOPMENT)
@@ -119,6 +123,7 @@ defmodule Trigger.RuntimeEnvironment do
     has_many(:task_runs, Trigger.TaskRun, foreign_key: :runtime_environment_id, references: :id)
     has_many(:task_queues, Trigger.TaskQueue, foreign_key: :runtime_environment_id, references: :id)
     has_many(:environment_variable_values, Trigger.EnvironmentVariableValue, foreign_key: :environment_id, references: :id)
+    has_many(:environment_variable_ignores, Trigger.EnvironmentVariableIgnore, foreign_key: :environment_id, references: :id)
     has_many(:checkpoints, Trigger.Checkpoint, foreign_key: :runtime_environment_id, references: :id)
     has_many(:worker_deployments, Trigger.WorkerDeployment, foreign_key: :environment_id, references: :id)
     has_many(:worker_deployment_promotions, Trigger.WorkerDeploymentPromotion, foreign_key: :environment_id, references: :id)

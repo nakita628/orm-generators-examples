@@ -2,8 +2,9 @@ class RoleAssignment < ApplicationRecord
   self.implicit_order_column = "created_at"
 
   attribute :id, default: -> { Cuid.generate }
+  attribute :tags, default: -> { [] }
 
-  enum :system_role, { owner: "OWNER", admin: "ADMIN", member: "MEMBER", viewer: "VIEWER", none: "NONE", legacy_project_api_key: "LEGACY_PROJECT_API_KEY", legacy_organization_api_key: "LEGACY_ORGANIZATION_API_KEY", scores_ingest: "SCORES_INGEST", ingest: "INGEST", ai_gateway: "AI_GATEWAY" },
+  enum :system_role, { owner: "OWNER", admin: "ADMIN", member: "MEMBER", viewer: "VIEWER", none: "NONE", legacy_project_api_key: "LEGACY_PROJECT_API_KEY", legacy_organization_api_key: "LEGACY_ORGANIZATION_API_KEY", scores_ingest: "SCORES_INGEST", ingest: "INGEST", ai_gateway: "AI_GATEWAY", ai_gateway_inference: "AI_GATEWAY_INFERENCE", application: "APPLICATION" },
        prefix: true, validate: true
 
   validates :owner_id, presence: true, uniqueness: { scope: %i[principal_id role_id] }

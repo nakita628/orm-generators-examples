@@ -59,4 +59,6 @@ public partial class Organization
     public virtual ICollection<RetentionRun> RetentionRuns { get; set; } = new List<RetentionRun>();
 
     public virtual ICollection<RetentionNotice> RetentionNotices { get; set; } = new List<RetentionNotice>();
+
+    public virtual ICollection<McpGrantOrganization> McpGrants { get; set; } = new List<McpGrantOrganization>();
 }

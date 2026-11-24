@@ -184,6 +184,8 @@ export const identityProviderEnum = pgEnum('IdentityProvider', [
   'saml',
 ])
 
+export const mcpGrantAccessEnum = pgEnum('McpGrantAccess', ['all', 'organizations', 'workspaces'])
+
 /**
  * Where an Embedded Data field's value comes from.
  * `computed` is set by survey logic, `ingested` arrives from a URL param or the SDK, and
@@ -921,6 +923,15 @@ export const response = pgTable(
      * [ResponseIngestFlags]
      */
     ingestFlags: jsonb('ingest_flags'),
+    /**
+     * What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+     * keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+     * every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+     * `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+     * never accepted as a field of its own.
+     * [ResponseCalBookings]
+     */
+    calBookings: jsonb('cal_bookings_by_question_id'),
     /**
      * A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
      * export by default and from Feedback Records, and nothing else: it is never deleted and every
@@ -2288,7 +2299,104 @@ export const oauthConsent = pgTable(
  * its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
  * a token is now bound to the resource it was approved for instead of to a static allow-list.
  * `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+ * What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+ * access and an access level per permission. One per OAuth connection, keyed by user and client rather
+ * than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+ * and settles them later. Every MCP request reads it; without one the request is refused. The client's
+ * OAuth scopes stay on the consent and cap it.
  */
+export const mcpGrant = pgTable(
+  'McpGrant',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
+    userId: text('userId').notNull(),
+    clientId: text('clientId').notNull(),
+    /**
+     * Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+     * in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+     * `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
+     */
+    access: mcpGrantAccessEnum('access').notNull().default('all'),
+    /**
+     * The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+     * A permission that is absent has No access.
+     */
+    permissions: jsonb('permissions').notNull().default({}),
+  },
+  (table) => [
+    index('McpGrant_clientId_idx').on(table.clientId),
+    uniqueIndex('McpGrant_userId_clientId_key').on(table.userId, table.clientId),
+    foreignKey({ name: 'McpGrant_userId_fkey', columns: [table.userId], foreignColumns: [user.id] })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'McpGrant_clientId_fkey',
+      columns: [table.clientId],
+      foreignColumns: [oauthClient.clientId],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+/** An organization a grant with `organizations` access reaches, workspaces created there later included. */
+export const mcpGrantOrganization = pgTable(
+  'McpGrantOrganization',
+  { grantId: text('grantId').notNull(), organizationId: text('organizationId').notNull() },
+  (table) => [
+    primaryKey({
+      name: 'McpGrantOrganization_pkey',
+      columns: [table.grantId, table.organizationId],
+    }),
+    index('McpGrantOrganization_organizationId_idx').on(table.organizationId),
+    foreignKey({
+      name: 'McpGrantOrganization_grantId_fkey',
+      columns: [table.grantId],
+      foreignColumns: [mcpGrant.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'McpGrantOrganization_organizationId_fkey',
+      columns: [table.organizationId],
+      foreignColumns: [organization.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+/** A workspace a grant with `workspaces` access reaches. */
+export const mcpGrantWorkspace = pgTable(
+  'McpGrantWorkspace',
+  { grantId: text('grantId').notNull(), workspaceId: text('workspaceId').notNull() },
+  (table) => [
+    primaryKey({ name: 'McpGrantWorkspace_pkey', columns: [table.grantId, table.workspaceId] }),
+    index('McpGrantWorkspace_workspaceId_idx').on(table.workspaceId),
+    foreignKey({
+      name: 'McpGrantWorkspace_grantId_fkey',
+      columns: [table.grantId],
+      foreignColumns: [mcpGrant.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'McpGrantWorkspace_workspaceId_fkey',
+      columns: [table.workspaceId],
+      foreignColumns: [workspace.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
 export const oauthResource = pgTable(
   'oauthResource',
   {
@@ -2856,6 +2964,42 @@ export const chart = pgTable(
       foreignColumns: [feedbackDirectory.id],
     })
       .onDelete('restrict')
+      .onUpdate('cascade'),
+  ],
+)
+
+/**
+ * A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+ * place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+ * workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+ * are never renamed here: they keep their translated names.
+ *
+ * @property key - The embedded-data key exactly as collected, case included
+ * @property label - The name shown for the key across the workspace
+ */
+export const embeddedFieldLabel = pgTable(
+  'EmbeddedFieldLabel',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => cuid()),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
+    workspaceId: text('workspaceId').notNull(),
+    key: text('key').notNull(),
+    label: text('label').notNull(),
+  },
+  (table) => [
+    uniqueIndex('EmbeddedFieldLabel_workspaceId_key_key').on(table.workspaceId, table.key),
+    foreignKey({
+      name: 'EmbeddedFieldLabel_workspaceId_fkey',
+      columns: [table.workspaceId],
+      foreignColumns: [workspace.id],
+    })
+      .onDelete('cascade')
       .onUpdate('cascade'),
   ],
 )
@@ -3779,6 +3923,12 @@ export const workflow = pgTable(
     createdBy: text('createdBy'),
     /** [WorkflowDefinition] */
     definition: jsonb('definition').notNull(),
+    /**
+     * Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+     * the editor can show the URL again. Never part of the definition, its versions or its copies.
+     */
+    webhookTokenHash: text('webhookTokenHash'),
+    webhookTokenEncrypted: text('webhookTokenEncrypted'),
   },
   (table) => [
     index('Workflow_workspaceId_status_idx').on(table.workspaceId, table.status),
@@ -3870,6 +4020,22 @@ export const workflowRun = pgTable(
     dispatchedAt: timestamp('dispatchedAt', { precision: 3 }),
     startedAt: timestamp('startedAt', { precision: 3 }),
     finishedAt: timestamp('finishedAt', { precision: 3 }),
+    /** The caller's IP for a run started by a Webhook Secret URL call; shown in run detail. */
+    callerIp: text('callerIp'),
+    /**
+     * When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+     * input, output and errors, the run error and the caller IP. Null while the content is kept.
+     */
+    contentDeletedAt: timestamp('contentDeletedAt', { precision: 3 }),
+    /** The retention period in days that applied when the content was cleared ("Details deleted after N days"). */
+    contentRetentionDays: integer('contentRetentionDays'),
+    /**
+     * The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+     * changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+     * existed. Configuration like a version's definition, not run content: retention leaves it alone.
+     * [WorkflowExecutableDefinition]
+     */
+    testRunDefinition: jsonb('testRunDefinition'),
   },
   (table) => [
     index('WorkflowRun_workspaceId_created_at_idx').on(table.workspaceId, table.createdAt),
@@ -3881,7 +4047,12 @@ export const workflowRun = pgTable(
     index('WorkflowRun_status_created_at_idx').on(table.status, table.createdAt),
     index('WorkflowRun_responseId_idx').on(table.responseId),
     index('WorkflowRun_isDryRun_idx').on(table.isDryRun),
+    index('WorkflowRun_isDryRun_created_at_idx').on(table.isDryRun, table.createdAt),
     index('WorkflowRun_nextAttemptAt_idx').on(table.nextAttemptAt),
+    index('WorkflowRun_contentDeletedAt_finishedAt_idx').on(
+      table.contentDeletedAt,
+      table.finishedAt,
+    ),
     uniqueIndex('WorkflowRun_workflowId_idempotencyKey_key').on(
       table.workflowId,
       table.idempotencyKey,
@@ -3917,6 +4088,44 @@ export const workflowRun = pgTable(
   ],
 )
 
+/**
+ * Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+ * trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+ * Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+ */
+export const workflowSample = pgTable(
+  'WorkflowSample',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
+    workflowId: text('workflowId').notNull(),
+    workspaceId: text('workspaceId').notNull(),
+    source: text('source').notNull(),
+    /** [WorkflowSampleData] */
+    sample: jsonb('sample').notNull(),
+    lastCalledAt: timestamp('lastCalledAt', { precision: 3 }),
+    lastCallerIp: text('lastCallerIp'),
+  },
+  (table) => [
+    index('WorkflowSample_workflowId_workspaceId_idx').on(table.workflowId, table.workspaceId),
+    index('WorkflowSample_updated_at_idx').on(table.updatedAt),
+    uniqueIndex('WorkflowSample_workflowId_source_key').on(table.workflowId, table.source),
+    foreignKey({
+      name: 'WorkflowSample_workflowId_workspaceId_fkey',
+      columns: [table.workflowId, table.workspaceId],
+      foreignColumns: [workflow.id, workflow.workspaceId],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
 export const workflowRunLog = pgTable(
   'WorkflowRunLog',
   {
@@ -3938,11 +4147,52 @@ export const workflowRunLog = pgTable(
   },
   (table) => [
     index('WorkflowRunLog_runId_sequence_idx').on(table.runId, table.sequence),
+    index('WorkflowRunLog_status_startedAt_idx').on(table.status, table.startedAt),
     uniqueIndex('WorkflowRunLog_runId_stepId_key').on(table.runId, table.stepId),
     foreignKey({
       name: 'WorkflowRunLog_runId_fkey',
       columns: [table.runId],
       foreignColumns: [workflowRun.id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+/**
+ * Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+ * store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+ * version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+ * with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+ */
+export const workflowSecret = pgTable(
+  'WorkflowSecret',
+  {
+    id: text('id')
+      .primaryKey()
+      .$defaultFn(() => createId()),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    updatedAt: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
+    workflowId: text('workflowId').notNull(),
+    workspaceId: text('workspaceId').notNull(),
+    /** `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned. */
+    value: text('value').notNull(),
+    /**
+     * Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
+     * sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
+     * until it is set again.
+     */
+    boundOrigin: text('boundOrigin'),
+  },
+  (table) => [
+    index('WorkflowSecret_workflowId_workspaceId_idx').on(table.workflowId, table.workspaceId),
+    foreignKey({
+      name: 'WorkflowSecret_workflowId_workspaceId_fkey',
+      columns: [table.workflowId, table.workspaceId],
+      foreignColumns: [workflow.id, workflow.workspaceId],
     })
       .onDelete('cascade')
       .onUpdate('cascade'),
@@ -3991,6 +4241,9 @@ export const relations = defineRelations(
     oauthAccessToken,
     oauthRefreshToken,
     oauthConsent,
+    mcpGrant,
+    mcpGrantOrganization,
+    mcpGrantWorkspace,
     oauthResource,
     oauthClientResource,
     oauthClientAssertion,
@@ -4005,6 +4258,7 @@ export const relations = defineRelations(
     teamUser,
     workspaceTeam,
     chart,
+    embeddedFieldLabel,
     dashboard,
     dashboardWidget,
     deletionCleanup,
@@ -4026,7 +4280,9 @@ export const relations = defineRelations(
     workflow,
     workflowVersion,
     workflowRun,
+    workflowSample,
     workflowRunLog,
+    workflowSecret,
   },
   (r) => ({
     creative: {
@@ -4241,6 +4497,7 @@ export const relations = defineRelations(
       feedbackDirectoryWorkspaces: r.many.feedbackDirectoryWorkspace(),
       charts: r.many.chart(),
       dashboards: r.many.dashboard(),
+      embeddedFieldLabels: r.many.embeddedFieldLabel(),
       creatives: r.many.creative(),
       attachmentExports: r.many.attachmentExport(),
       surveys: r.many.survey(),
@@ -4255,6 +4512,7 @@ export const relations = defineRelations(
       feedbackSources: r.many.feedbackSource(),
       workflows: r.many.workflow(),
       workflowRuns: r.many.workflowRun(),
+      mcpGrants: r.many.mcpGrantWorkspace(),
     },
     organization: {
       memberships: r.many.membership(),
@@ -4271,6 +4529,7 @@ export const relations = defineRelations(
       retentionExemptions: r.many.retentionExemption(),
       retentionRuns: r.many.retentionRun(),
       retentionNotices: r.many.retentionNotice(),
+      mcpGrants: r.many.mcpGrantOrganization(),
     },
     organizationBilling: {
       organization: r.one.organization({
@@ -4330,6 +4589,7 @@ export const relations = defineRelations(
       refreshTokens: r.many.oauthRefreshToken(),
       consents: r.many.oauthConsent(),
       resources: r.many.oauthClientResource(),
+      mcpGrants: r.many.mcpGrant(),
     },
     oauthAccessToken: {
       client: r.one.oauthClient({
@@ -4362,6 +4622,40 @@ export const relations = defineRelations(
       }),
       user: r.one.user({ from: r.oauthConsent.userId, to: r.user.id }),
     },
+    mcpGrant: {
+      user: r.one.user({ from: r.mcpGrant.userId, to: r.user.id, optional: false }),
+      client: r.one.oauthClient({
+        from: r.mcpGrant.clientId,
+        to: r.oauthClient.clientId,
+        optional: false,
+      }),
+      organizations: r.many.mcpGrantOrganization(),
+      workspaces: r.many.mcpGrantWorkspace(),
+    },
+    mcpGrantOrganization: {
+      grant: r.one.mcpGrant({
+        from: r.mcpGrantOrganization.grantId,
+        to: r.mcpGrant.id,
+        optional: false,
+      }),
+      organization: r.one.organization({
+        from: r.mcpGrantOrganization.organizationId,
+        to: r.organization.id,
+        optional: false,
+      }),
+    },
+    mcpGrantWorkspace: {
+      grant: r.one.mcpGrant({
+        from: r.mcpGrantWorkspace.grantId,
+        to: r.mcpGrant.id,
+        optional: false,
+      }),
+      workspace: r.one.workspace({
+        from: r.mcpGrantWorkspace.workspaceId,
+        to: r.workspace.id,
+        optional: false,
+      }),
+    },
     oauthResource: { clients: r.many.oauthClientResource() },
     oauthClientResource: {
       client: r.one.oauthClient({
@@ -4387,6 +4681,7 @@ export const relations = defineRelations(
       oauthAccessTokens: r.many.oauthAccessToken(),
       oauthRefreshTokens: r.many.oauthRefreshToken(),
       oauthConsents: r.many.oauthConsent(),
+      mcpGrants: r.many.mcpGrant(),
       passwordResetToken: r.one.passwordResetToken({
         from: r.user.id,
         to: r.passwordResetToken.userId,
@@ -4491,6 +4786,13 @@ export const relations = defineRelations(
         optional: false,
       }),
       widgets: r.many.dashboardWidget(),
+    },
+    embeddedFieldLabel: {
+      workspace: r.one.workspace({
+        from: r.embeddedFieldLabel.workspaceId,
+        to: r.workspace.id,
+        optional: false,
+      }),
     },
     dashboard: {
       workspace: r.one.workspace({
@@ -4662,6 +4964,8 @@ export const relations = defineRelations(
       creator: r.one.user({ from: r.workflow.createdBy, to: r.user.id }),
       versions: r.many.workflowVersion(),
       runs: r.many.workflowRun(),
+      secrets: r.many.workflowSecret(),
+      samples: r.many.workflowSample(),
     },
     workflowVersion: {
       workflow: r.one.workflow({
@@ -4690,10 +4994,24 @@ export const relations = defineRelations(
       response: r.one.response({ from: r.workflowRun.responseId, to: r.response.id }),
       logs: r.many.workflowRunLog(),
     },
+    workflowSample: {
+      workflow: r.one.workflow({
+        from: [r.workflowSample.workflowId, r.workflowSample.workspaceId],
+        to: [r.workflow.id, r.workflow.workspaceId],
+        optional: false,
+      }),
+    },
     workflowRunLog: {
       run: r.one.workflowRun({
         from: r.workflowRunLog.runId,
         to: r.workflowRun.id,
+        optional: false,
+      }),
+    },
+    workflowSecret: {
+      workflow: r.one.workflow({
+        from: [r.workflowSecret.workflowId, r.workflowSecret.workspaceId],
+        to: [r.workflow.id, r.workflow.workspaceId],
         optional: false,
       }),
     },

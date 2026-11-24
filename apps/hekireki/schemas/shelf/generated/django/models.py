@@ -588,6 +588,7 @@ class ActivityAction(models.TextChoices):
     BOOKING_PARTIAL_CHECKOUT = "BOOKING_PARTIAL_CHECKOUT"
     BOOKING_CANCELLED = "BOOKING_CANCELLED"
     BOOKING_ARCHIVED = "BOOKING_ARCHIVED"
+    BOOKING_APPROVED = "BOOKING_APPROVED"
     BOOKING_MODEL_REQUESTED = "BOOKING_MODEL_REQUESTED"
     BOOKING_MODEL_REQUEST_CHANGED = "BOOKING_MODEL_REQUEST_CHANGED"
     BOOKING_MODEL_REQUEST_REMOVED = "BOOKING_MODEL_REQUEST_REMOVED"
@@ -1617,6 +1618,8 @@ class Booking(models.Model):
     auto_archived_at = models.DateTimeField(null=True, db_column="autoArchivedAt")
     archived_without_checkin = models.BooleanField(db_column="archivedWithoutCheckin", default=False)
     cancellation_reason = models.TextField(null=True, db_column="cancellationReason")
+    approved_at = models.DateTimeField(null=True, db_column="approvedAt")
+    approved_by = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="approved_bookings", db_column="approvedById", null=True, db_index=False)
     notification_recipients: "models.ManyToManyField[TeamMember, BookingNotificationRecipients]" = models.ManyToManyField("TeamMember", through="BookingNotificationRecipients", related_name="booking_notifications")
     objects = AutoNowQuerySet.as_manager()
 
@@ -1626,6 +1629,7 @@ class Booking(models.Model):
             models.Index(fields=["creator"]),
             models.Index(fields=["custodian_team_member"]),
             models.Index(fields=["custodian_user"]),
+            models.Index(fields=["approved_by"]),
             models.Index(fields=["organization"]),
             models.Index(fields=["status"]),
             models.Index(fields=["organization", "from_field", "id"]),
@@ -1641,6 +1645,8 @@ class BookingSettings(models.Model):
     auto_archive_bookings = models.BooleanField(db_column="autoArchiveBookings", default=False)
     auto_archive_days = models.IntegerField(db_column="autoArchiveDays", default=2)
     auto_archive_expired_reservations = models.BooleanField(db_column="autoArchiveExpiredReservations", default=False)
+    require_approval_for_base = models.BooleanField(db_column="requireApprovalForBase", default=False)
+    require_approval_for_self_service = models.BooleanField(db_column="requireApprovalForSelfService", default=False)
     require_explicit_checkin_for_admin = models.BooleanField(db_column="requireExplicitCheckinForAdmin", default=False)
     require_explicit_checkin_for_self_service = models.BooleanField(db_column="requireExplicitCheckinForSelfService", default=False)
     require_explicit_checkout_for_admin = models.BooleanField(db_column="requireExplicitCheckoutForAdmin", default=False)

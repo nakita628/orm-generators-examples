@@ -28,6 +28,7 @@ class LiteLLMDailyGlobalSpendEntity(
     var gatewayInjectedCachingSavingsSpend by LiteLLMDailyGlobalSpendTable.gatewayInjectedCachingSavingsSpend
     var autorouterSavingsSpend by LiteLLMDailyGlobalSpendTable.autorouterSavingsSpend
     var guardrailSpend by LiteLLMDailyGlobalSpendTable.guardrailSpend
+    var customerMarginSpend by LiteLLMDailyGlobalSpendTable.customerMarginSpend
     var spend by LiteLLMDailyGlobalSpendTable.spend
     var apiRequests by LiteLLMDailyGlobalSpendTable.apiRequests
     var successfulRequests by LiteLLMDailyGlobalSpendTable.successfulRequests

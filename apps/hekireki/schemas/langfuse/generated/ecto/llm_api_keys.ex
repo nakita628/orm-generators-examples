@@ -16,6 +16,7 @@ defmodule Langfuse.LlmApiKeys do
           extra_headers: String.t() | nil,
           extra_header_keys: [String.t()],
           config: map() | list() | String.t() | number() | boolean() | nil,
+          external_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -38,6 +39,7 @@ defmodule Langfuse.LlmApiKeys do
     field(:extra_headers, :string)
     field(:extra_header_keys, {:array, :string})
     field(:config, Langfuse.PrismaJson)
+    field(:external_id, :string)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     belongs_to(:organization, Langfuse.Organization, foreign_key: :organization_id, type: :string)
     has_many(:default_llm_model, Langfuse.DefaultLlmModel, foreign_key: :llm_api_key_id, references: :id)

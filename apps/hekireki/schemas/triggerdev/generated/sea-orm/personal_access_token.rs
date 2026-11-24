@@ -43,6 +43,8 @@ pub struct Model {
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
+    #[sea_orm(column_name = "oauthClientId")]
+    pub oauth_client_id: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -53,8 +55,17 @@ pub enum Relation {
         to = "super::user::Column::Id"
     )]
     User,
+    #[sea_orm(
+        belongs_to = "super::oauth_client::Entity",
+        from = "Column::OauthClientId",
+        to = "super::oauth_client::Column::Id",
+        on_delete = "Restrict"
+    )]
+    OauthClient,
     #[sea_orm(has_many = "super::authorization_code::Entity")]
     AuthorizationCodes,
+    #[sea_orm(has_many = "super::oauth_refresh_token::Entity")]
+    OauthRefreshTokens,
 }
 
 impl Related<super::user::Entity> for Entity {
@@ -63,9 +74,21 @@ impl Related<super::user::Entity> for Entity {
     }
 }
 
+impl Related<super::oauth_client::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::OauthClient.def()
+    }
+}
+
 impl Related<super::authorization_code::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::AuthorizationCodes.def()
+    }
+}
+
+impl Related<super::oauth_refresh_token::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::OauthRefreshTokens.def()
     }
 }
 

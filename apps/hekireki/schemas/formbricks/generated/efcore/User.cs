@@ -58,6 +58,8 @@ public partial class User
 
     public virtual ICollection<OauthConsent> OauthConsents { get; set; } = new List<OauthConsent>();
 
+    public virtual ICollection<McpGrant> McpGrants { get; set; } = new List<McpGrant>();
+
     public virtual PasswordResetToken? PasswordResetToken { get; set; }
 
     public string? GroupId { get; set; }

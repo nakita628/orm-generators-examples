@@ -61,6 +61,8 @@ pub enum Relation {
     Webhooks,
     #[sea_orm(has_many = "super::api_usage::Entity")]
     ApiUsage,
+    #[sea_orm(has_many = "super::space_usage::Entity")]
+    Usage,
 }
 
 impl Related<super::user::Entity> for Entity {
@@ -132,6 +134,12 @@ impl Related<super::space_webhook::Entity> for Entity {
 impl Related<super::api_usage::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::ApiUsage.def()
+    }
+}
+
+impl Related<super::space_usage::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Usage.def()
     }
 }
 

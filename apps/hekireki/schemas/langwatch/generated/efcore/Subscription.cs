@@ -127,6 +127,24 @@ public partial class Subscription
 
     public DateTime? SeatLineLeaseUntil { get; set; }
 
+    /// <summary>
+    /// An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+    /// charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+    /// </summary>
+    public string? PaymentRecoveryInvoiceId { get; set; }
+
+    public DateTime? PaymentRecoveryStartedAt { get; set; }
+
+    public int? PaymentRecoveryNoticeDay { get; set; }
+
+    /// <summary>
+    /// The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+    /// organization is on Free with more members than Free allows; ended once that no longer holds.
+    /// </summary>
+    public DateTime? OverPlanSince { get; set; }
+
+    public DateTime? OverPlanEndedAt { get; set; }
+
     public virtual Organization Organization { get; set; } = null!;
 
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();

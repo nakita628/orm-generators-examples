@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * slot in while executing. Shape: [{ queue: string, concurrencyKey?: string }]
  * @property mixed $config Extra task configuration JSON. Shape depends on triggerSource.
  * AGENT: { type: "ai-sdk-chat" }
+ * @property mixed $executionPolicy RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.
  */
 class BackgroundWorkerTask extends Model
 {
@@ -45,11 +46,14 @@ class BackgroundWorkerTask extends Model
         'ttl',
         'triggerSource',
         'config',
+        'executionMode',
+        'executionPolicy',
         'payloadSchema',
     ];
 
     protected $attributes = [
         'triggerSource' => 'STANDARD',
+        'executionMode' => 'STANDARD',
     ];
 
     protected $casts = [
@@ -60,6 +64,8 @@ class BackgroundWorkerTask extends Model
         'maxDurationInSeconds' => 'integer',
         'triggerSource' => TaskTriggerSource::class,
         'config' => 'array',
+        'executionMode' => TaskExecutionMode::class,
+        'executionPolicy' => 'array',
         'payloadSchema' => 'array',
     ];
 

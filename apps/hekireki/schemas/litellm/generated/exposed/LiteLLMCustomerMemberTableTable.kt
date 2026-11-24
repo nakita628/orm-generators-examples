@@ -46,6 +46,9 @@ object LiteLLMCustomerMemberTableTable : IdTable<String>("\"LiteLLM_CustomerMemb
 
     init {
         index("\"LiteLLM_CustomerMemberTable_parent_org_id_idx\"", false, parentOrgId)
+        index("\"LiteLLM_CustomerMemberTable_parent_team_ids_idx\"", false, parentTeamIds, indexType = "gin")
+        index("\"LiteLLM_CustomerMemberTable_budget_id_idx\"", false, budgetId)
+        index("\"LiteLLM_CustomerMemberTable_budget_override_id_idx\"", false, budgetOverrideId)
         index("\"LiteLLM_CustomerMemberTable_spend_idx\"", false, spend)
     }
 }

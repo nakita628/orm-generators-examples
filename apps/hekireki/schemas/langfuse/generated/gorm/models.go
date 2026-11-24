@@ -111,6 +111,8 @@ type User struct {
 	EvaluatorsCreated         []Evaluator                 `gorm:"foreignKey:CreatedByUserID;constraint:evaluators_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	EvaluatorVersionsCreated  []EvaluatorVersion          `gorm:"foreignKey:CreatedByUserID;constraint:evaluator_versions_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	EvaluationRulesCreated    []EvaluationRule            `gorm:"foreignKey:CreatedByUserID;constraint:evaluation_rules_created_by_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimitsOwned   []GatewaySpendLimit         `gorm:"foreignKey:OwnerUserID;constraint:gateway_spend_limits_owner_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimits        []GatewaySpendLimit         `gorm:"foreignKey:UserID;constraint:gateway_spend_limits_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (User) TableName() string {
@@ -173,7 +175,9 @@ type Organization struct {
 	CloudSpendAlerts                 []CloudSpendAlert        `gorm:"foreignKey:OrgID;constraint:cloud_spend_alerts_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	VerifiedDomains                  []VerifiedDomain         `gorm:"foreignKey:OrganizationID;constraint:verified_domains_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	GatewayAiConnections             []GatewayAiConnection    `gorm:"foreignKey:OrganizationID;constraint:gateway_ai_connections_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewaySpendLimits               []GatewaySpendLimit      `gorm:"foreignKey:OrganizationID;constraint:gateway_spend_limits_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	OrganizationLlmAPIKeys           []LlmAPIKeys             `gorm:"foreignKey:OrganizationID;constraint:llm_api_keys_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Models                           []Model                  `gorm:"foreignKey:OrganizationID;constraint:models_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	RoleAssignments                  []RoleAssignment         `gorm:"foreignKey:OrgID;constraint:role_assignments_org_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	GatewayConfig                    *GatewayConfig           `gorm:"foreignKey:OrganizationID;constraint:gateway_configs_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -331,6 +335,7 @@ type APIKey struct {
 	User                *User                     `gorm:"foreignKey:UserID;belongsTo"`
 	CreatedByAPIKey     *APIKey                   `gorm:"foreignKey:CreatedByAPIKeyID;belongsTo"`
 	APIKeysCreated      []APIKey                  `gorm:"foreignKey:CreatedByAPIKeyID;constraint:api_keys_created_by_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewaySpendLimits  []GatewaySpendLimit       `gorm:"foreignKey:APIKeyID;constraint:gateway_spend_limits_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	RoleAssignments     []RoleAssignment          `gorm:"foreignKey:APIKeyID;constraint:role_assignments_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	GatewayAssociation  *GatewayAPIKeyAssociation `gorm:"foreignKey:APIKeyID;constraint:gateway_api_key_associations_api_key_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -351,21 +356,23 @@ func (m *APIKey) BeforeCreate(tx *gorm.DB) error {
 }
 
 type RoleAssignment struct {
-	ID           string        `gorm:"column:id;primaryKey" json:"id"`
-	OwnerID      string        `gorm:"column:owner_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;not null" json:"owner_id"`
-	ProjectID    *string       `gorm:"column:project_id;index:role_assignments_project_id_idx" json:"project_id"`
-	OrgID        string        `gorm:"column:org_id;index:role_assignments_org_id_idx;not null" json:"org_id"`
-	PrincipalID  string        `gorm:"column:principal_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;index:role_assignments_principal_id_idx;not null" json:"principal_id"`
-	UserID       *string       `gorm:"column:user_id;index:role_assignments_user_id_idx" json:"user_id"`
-	APIKeyID     *string       `gorm:"column:api_key_id;index:role_assignments_api_key_id_idx" json:"api_key_id"`
-	RoleID       string        `gorm:"column:role_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;not null" json:"role_id"`
-	SystemRole   string        `gorm:"column:system_role;uniqueIndex:role_assignments_user_org_role_key;uniqueIndex:role_assignments_user_project_role_key;uniqueIndex:role_assignments_api_key_org_role_key;uniqueIndex:role_assignments_api_key_project_role_key;not null" json:"system_role"`
-	CreatedAt    DateTime      `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
-	UpdatedAt    DateTime      `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
-	Project      *Project      `gorm:"belongsTo"`
-	Organization *Organization `gorm:"foreignKey:OrgID;belongsTo"`
-	User         *User         `gorm:"belongsTo"`
-	APIKey       *APIKey       `gorm:"belongsTo"`
+	ID           string             `gorm:"column:id;primaryKey" json:"id"`
+	OwnerID      string             `gorm:"column:owner_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;not null" json:"owner_id"`
+	ProjectID    *string            `gorm:"column:project_id;index:role_assignments_project_id_idx" json:"project_id"`
+	OrgID        string             `gorm:"column:org_id;index:role_assignments_org_id_idx;not null" json:"org_id"`
+	PrincipalID  string             `gorm:"column:principal_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;index:role_assignments_principal_id_idx;not null" json:"principal_id"`
+	UserID       *string            `gorm:"column:user_id;index:role_assignments_user_id_idx" json:"user_id"`
+	APIKeyID     *string            `gorm:"column:api_key_id;index:role_assignments_api_key_id_idx" json:"api_key_id"`
+	RoleID       string             `gorm:"column:role_id;uniqueIndex:role_assignments_owner_id_principal_id_role_id_key;not null" json:"role_id"`
+	SystemRole   string             `gorm:"column:system_role;uniqueIndex:role_assignments_user_org_role_key;uniqueIndex:role_assignments_user_project_role_key;uniqueIndex:role_assignments_api_key_org_role_key;uniqueIndex:role_assignments_api_key_project_role_key;not null" json:"system_role"`
+	ExpiresAt    *DateTime          `gorm:"column:expires_at;type:timestamp(3)" json:"expires_at"`
+	Tags         ScalarList[string] `gorm:"column:tags;index:role_assignments_tags_idx;type:text[]" json:"tags"`
+	CreatedAt    DateTime           `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt    DateTime           `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	Project      *Project           `gorm:"belongsTo"`
+	Organization *Organization      `gorm:"foreignKey:OrgID;belongsTo"`
+	User         *User              `gorm:"belongsTo"`
+	APIKey       *APIKey            `gorm:"belongsTo"`
 }
 
 func (RoleAssignment) TableName() string {
@@ -482,6 +489,80 @@ type GatewayAPIKeyAssociation struct {
 
 func (GatewayAPIKeyAssociation) TableName() string {
 	return "gateway_api_key_associations"
+}
+
+type GatewaySpendLimit struct {
+	ID                string                   `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID    string                   `gorm:"column:organization_id;uniqueIndex:gateway_spend_limits_organization_id_user_id_interval_key;index:gateway_spend_limits_organization_id_idx;not null" json:"organization_id"`
+	Scope             string                   `gorm:"column:scope;not null" json:"scope"`
+	APIKeyID          *string                  `gorm:"column:api_key_id;uniqueIndex:gateway_spend_limits_api_key_id_interval_key" json:"api_key_id"`
+	UserID            *string                  `gorm:"column:user_id;uniqueIndex:gateway_spend_limits_organization_id_user_id_interval_key;index:gateway_spend_limits_user_id_idx" json:"user_id"`
+	Interval          string                   `gorm:"column:interval;uniqueIndex:gateway_spend_limits_api_key_id_interval_key;uniqueIndex:gateway_spend_limits_organization_id_user_id_interval_key;not null" json:"interval"`
+	LimitUsd          float64                  `gorm:"column:limit_usd;type:decimal(65,30);not null" json:"limit_usd"`
+	AlertThresholds   ScalarList[int]          `gorm:"column:alert_thresholds;type:integer[]" json:"alert_thresholds"`
+	CountingStartedAt DateTime                 `gorm:"column:counting_started_at;type:timestamp(3);not null" json:"counting_started_at"`
+	OwnerUserID       *string                  `gorm:"column:owner_user_id" json:"owner_user_id"`
+	CreatedAt         DateTime                 `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt         DateTime                 `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	Organization      *Organization            `gorm:"belongsTo"`
+	APIKey            *APIKey                  `gorm:"belongsTo"`
+	User              *User                    `gorm:"foreignKey:UserID;belongsTo"`
+	OwnerUser         *User                    `gorm:"foreignKey:OwnerUserID;belongsTo"`
+	Alerts            []GatewaySpendLimitAlert `gorm:"foreignKey:SpendLimitID;constraint:gateway_spend_limit_alerts_spend_limit_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+func (GatewaySpendLimit) TableName() string {
+	return "gateway_spend_limits"
+}
+
+func (m *GatewaySpendLimit) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*GatewaySpendLimit) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times.
+type GatewaySpendLimitAlert struct {
+	ID                string             `gorm:"column:id;primaryKey" json:"id"`
+	SpendLimitID      string             `gorm:"column:spend_limit_id;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;not null" json:"spend_limit_id"`
+	SubjectID         string             `gorm:"column:subject_id;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;default:'';not null" json:"subject_id"`
+	Type              string             `gorm:"column:type;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;not null" json:"type"`
+	ThresholdPercent  *int               `gorm:"column:threshold_percent;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;size:32;default:100;not null" json:"threshold_percent"`
+	CountingStartedAt DateTime           `gorm:"column:counting_started_at;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;type:timestamp(3);not null" json:"counting_started_at"`
+	WindowStart       DateTime           `gorm:"column:window_start;uniqueIndex:gateway_spend_limit_alerts_limit_type_counting_window_key;type:timestamp(3);not null" json:"window_start"`
+	CreatedAt         DateTime           `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	SpendLimit        *GatewaySpendLimit `gorm:"foreignKey:SpendLimitID;belongsTo"`
+}
+
+func (GatewaySpendLimitAlert) TableName() string {
+	return "gateway_spend_limit_alerts"
+}
+
+func (m *GatewaySpendLimitAlert) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
 }
 
 type InAppAgentConversation struct {
@@ -670,6 +751,7 @@ type LlmAPIKeys struct {
 	ExtraHeaders           *string            `gorm:"column:extra_headers" json:"extra_headers"`
 	ExtraHeaderKeys        ScalarList[string] `gorm:"column:extra_header_keys;type:text[]" json:"extra_header_keys"`
 	Config                 datatypes.JSON     `gorm:"column:config" json:"config"`
+	ExternalID             *string            `gorm:"column:external_id" json:"external_id"`
 	ProjectID              *string            `gorm:"column:project_id;uniqueIndex:llm_api_keys_project_id_provider_key" json:"project_id"`
 	OrganizationID         *string            `gorm:"column:organization_id;uniqueIndex:llm_api_keys_organization_id_provider_key" json:"organization_id"`
 	Project                *Project           `gorm:"belongsTo"`
@@ -903,9 +985,11 @@ type AnnotationQueue struct {
 	Name                      string                      `gorm:"column:name;uniqueIndex:annotation_queues_project_id_name_key;not null" json:"name"`
 	Description               *string                     `gorm:"column:description" json:"description"`
 	ScoreConfigIds            ScalarList[string]          `gorm:"column:score_config_ids;type:text[]" json:"score_config_ids"`
-	ProjectID                 string                      `gorm:"column:project_id;uniqueIndex:annotation_queues_project_id_name_key;index:annotation_queues_id_project_id_idx;index:annotation_queues_project_id_created_at_idx;not null" json:"project_id"`
+	SessionViewID             *string                     `gorm:"column:session_view_id;index:annotation_queues_project_id_session_view_id_idx" json:"session_view_id"`
+	ProjectID                 string                      `gorm:"column:project_id;uniqueIndex:annotation_queues_project_id_name_key;index:annotation_queues_id_project_id_idx;index:annotation_queues_project_id_created_at_idx;index:annotation_queues_project_id_session_view_id_idx;not null" json:"project_id"`
 	CreatedAt                 DateTime                    `gorm:"column:created_at;index:annotation_queues_project_id_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt                 DateTime                    `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	SessionView               *SessionView                `gorm:"foreignKey:ProjectID,SessionViewID;references:ProjectID,ID;belongsTo"`
 	Project                   *Project                    `gorm:"belongsTo"`
 	AnnotationQueueItem       []AnnotationQueueItem       `gorm:"foreignKey:QueueID;constraint:annotation_queue_items_queue_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	AnnotationQueueAssignment []AnnotationQueueAssignment `gorm:"foreignKey:QueueID;constraint:annotation_queue_assignments_queue_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1493,7 +1577,9 @@ type Model struct {
 	ID              string         `gorm:"column:id;primaryKey" json:"id"`
 	CreatedAt       DateTime       `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt       DateTime       `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
+	Scope           string         `gorm:"column:scope;index:models_scope_idx;not null" json:"scope"`
 	ProjectID       *string        `gorm:"column:project_id;uniqueIndex:models_project_id_model_name_start_date_unit_key" json:"project_id"`
+	OrganizationID  *string        `gorm:"column:organization_id" json:"organization_id"`
 	ModelName       string         `gorm:"column:model_name;uniqueIndex:models_project_id_model_name_start_date_unit_key;index:models_model_name_idx;not null" json:"model_name"`
 	MatchPattern    string         `gorm:"column:match_pattern;not null" json:"match_pattern"`
 	StartDate       *DateTime      `gorm:"column:start_date;uniqueIndex:models_project_id_model_name_start_date_unit_key;type:timestamp(3)" json:"start_date"`
@@ -1504,6 +1590,7 @@ type Model struct {
 	TokenizerID     *string        `gorm:"column:tokenizer_id" json:"tokenizer_id"`
 	TokenizerConfig datatypes.JSON `gorm:"column:tokenizer_config" json:"tokenizer_config"`
 	Project         *Project       `gorm:"belongsTo"`
+	Organization    *Organization  `gorm:"belongsTo"`
 	Price           []Price        `gorm:"foreignKey:ModelID;constraint:prices_model_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	PricingTiers    []PricingTier  `gorm:"foreignKey:ModelID;constraint:pricing_tiers_model_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
@@ -2864,10 +2951,11 @@ func (*TableViewPreset) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type SessionView struct {
+	Ownership                   string                   `gorm:"column:ownership;default:'PROJECT';not null" json:"ownership"`
 	IsPinnedByDefaultForProject bool                     `gorm:"column:is_pinned_by_default_for_project;default:false;not null" json:"is_pinned_by_default_for_project"`
 	ID                          string                   `gorm:"column:id;primaryKey;uniqueIndex:session_views_project_id_id_key" json:"id"`
-	ProjectID                   string                   `gorm:"column:project_id;uniqueIndex:session_views_project_id_name_key;uniqueIndex:session_views_project_id_id_key;not null" json:"project_id"`
-	Name                        string                   `gorm:"column:name;uniqueIndex:session_views_project_id_name_key;not null" json:"name"`
+	ProjectID                   string                   `gorm:"column:project_id;uniqueIndex:session_views_project_id_id_key;not null" json:"project_id"`
+	Name                        string                   `gorm:"column:name;not null" json:"name"`
 	Filters                     datatypes.JSON           `gorm:"column:filters;not null" json:"filters"`
 	ViewMode                    string                   `gorm:"column:view_mode;not null" json:"view_mode"`
 	UnmatchedTraces             string                   `gorm:"column:unmatched_traces;not null" json:"unmatched_traces"`
@@ -2876,6 +2964,7 @@ type SessionView struct {
 	UpdatedAt                   DateTime                 `gorm:"column:updated_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updated_at"`
 	Project                     *Project                 `gorm:"belongsTo"`
 	CreatedByUser               *User                    `gorm:"foreignKey:CreatedBy;belongsTo"`
+	AnnotationQueues            []AnnotationQueue        `gorm:"foreignKey:ProjectID,SessionViewID;references:ProjectID,ID;constraint:annotation_queues_project_id_session_view_id_fkey,OnUpdate:CASCADE,OnDelete:NO ACTION"`
 	Pins                        []SessionViewPinOverride `gorm:"foreignKey:ProjectID,ViewID;references:ProjectID,ID;constraint:session_view_pin_overrides_project_id_view_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 

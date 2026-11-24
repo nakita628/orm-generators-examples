@@ -205,6 +205,8 @@ class EmailAccount(Base):
     """Collapses threads from bundled splits into one row each in the inbox.
     Null until first turned on, which is when default bundles are chosen.
     """
+    mail_group_by_sender: Mapped[bool] = mapped_column("mailGroupBySender", default=True, server_default=text("true"))
+    """Collapses the inbox's other mail from one sender into one row."""
     mail_default_split_id: Mapped[Optional[str]] = mapped_column("mailDefaultSplitId")
     mail_setup: Mapped[str] = mapped_column("mailSetup", Enum("PENDING", "SUGGESTED", "DONE", name="MailSetupState"), default="PENDING", server_default=text("'PENDING'"))
     include_in_all_accounts: Mapped[bool] = mapped_column("includeInAllAccounts", default=True, server_default=text("true"))

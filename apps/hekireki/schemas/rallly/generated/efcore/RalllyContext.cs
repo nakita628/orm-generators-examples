@@ -77,6 +77,8 @@ public partial class RalllyContext : DbContext
 
     public virtual DbSet<SheetSlot> SheetSlots { get; set; }
 
+    public virtual DbSet<SpaceUsage> SpaceUsages { get; set; }
+
     public virtual DbSet<Space> Spaces { get; set; }
 
     public virtual DbSet<SpaceMember> SpaceMembers { get; set; }
@@ -114,6 +116,7 @@ public partial class RalllyContext : DbContext
         npgsql.MapEnum<PollKind>("poll_kind");
         npgsql.MapEnum<PollClosedReason>("poll_closed_reason");
         npgsql.MapEnum<VoteType>("vote_type");
+        npgsql.MapEnum<SpaceUsageResource>("space_usage_resource");
         npgsql.MapEnum<SpaceMemberRole>("SpaceMemberRole");
         npgsql.MapEnum<SpaceType>("space_types");
         npgsql.MapEnum<SpaceTier>("space_tiers");
@@ -139,6 +142,7 @@ public partial class RalllyContext : DbContext
         dataSource.MapEnum<PollKind>("poll_kind");
         dataSource.MapEnum<PollClosedReason>("poll_closed_reason");
         dataSource.MapEnum<VoteType>("vote_type");
+        dataSource.MapEnum<SpaceUsageResource>("space_usage_resource");
         dataSource.MapEnum<SpaceMemberRole>("SpaceMemberRole");
         dataSource.MapEnum<SpaceType>("space_types");
         dataSource.MapEnum<SpaceTier>("space_tiers");
@@ -172,6 +176,7 @@ public partial class RalllyContext : DbContext
         modelBuilder.HasPostgresEnum<PollKind>(name: "poll_kind");
         modelBuilder.HasPostgresEnum<PollClosedReason>(name: "poll_closed_reason");
         modelBuilder.HasPostgresEnum<VoteType>(name: "vote_type");
+        modelBuilder.HasPostgresEnum<SpaceUsageResource>(name: "space_usage_resource");
         modelBuilder.HasPostgresEnum<SpaceMemberRole>(name: "SpaceMemberRole");
         modelBuilder.HasPostgresEnum<SpaceType>(name: "space_types");
         modelBuilder.HasPostgresEnum<SpaceTier>(name: "space_tiers");
@@ -1483,6 +1488,38 @@ public partial class RalllyContext : DbContext
                 .HasConstraintName("sheet_slots_event_type_id_fkey");
         });
 
+        modelBuilder.Entity<SpaceUsage>(entity =>
+        {
+            entity.HasKey(e => new { e.SpaceId, e.Resource, e.Period }).HasName("space_usage_pkey");
+
+            entity.ToTable("space_usage");
+
+            entity.Property(e => e.SpaceId).HasColumnName("space_id");
+            entity.Property(e => e.Resource).HasColumnName("resource");
+            entity.Property(e => e.Period).HasColumnName("period");
+            entity.Property(e => e.Count)
+                .ValueGeneratedNever()
+                .HasDefaultValue(0)
+                .HasColumnName("count");
+            entity.Property(e => e.NearLimitWarnedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("near_limit_warned_at");
+            entity.Property(e => e.AtLimitWarnedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("at_limit_warned_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Space).WithMany(p => p.Usage)
+                .HasForeignKey(d => d.SpaceId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("space_usage_space_id_fkey");
+        });
+
         modelBuilder.Entity<Space>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("spaces_pkey");
@@ -2173,6 +2210,15 @@ public partial class RalllyContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<SheetSlot>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<SpaceUsage>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

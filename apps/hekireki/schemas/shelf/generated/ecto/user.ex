@@ -54,6 +54,7 @@ defmodule Shelf.User do
           user_organizations: [Shelf.UserOrganization.t()],
           bookings: [Shelf.Booking.t()],
           custodies: [Shelf.Booking.t()],
+          approved_bookings: [Shelf.Booking.t()],
           created_kits: [Shelf.Kit.t()],
           asset_reminders: [Shelf.AssetReminder.t()],
           audits_created: [Shelf.AuditSession.t()],
@@ -129,6 +130,7 @@ defmodule Shelf.User do
     has_many(:user_organizations, Shelf.UserOrganization, foreign_key: :user_id, references: :id)
     has_many(:bookings, Shelf.Booking, foreign_key: :creator_id, references: :id)
     has_many(:custodies, Shelf.Booking, foreign_key: :custodian_user_id, references: :id)
+    has_many(:approved_bookings, Shelf.Booking, foreign_key: :approved_by_id, references: :id)
     has_many(:created_kits, Shelf.Kit, foreign_key: :created_by_id, references: :id)
     has_many(:asset_reminders, Shelf.AssetReminder, foreign_key: :created_by_id, references: :id)
     has_many(:audits_created, Shelf.AuditSession, foreign_key: :created_by_id, references: :id)

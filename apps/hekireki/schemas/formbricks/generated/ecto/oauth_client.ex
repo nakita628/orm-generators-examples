@@ -49,7 +49,8 @@ defmodule Formbricks.OauthClient do
           access_tokens: [Formbricks.OauthAccessToken.t()],
           refresh_tokens: [Formbricks.OauthRefreshToken.t()],
           consents: [Formbricks.OauthConsent.t()],
-          resources: [Formbricks.OauthClientResource.t()]
+          resources: [Formbricks.OauthClientResource.t()],
+          mcp_grants: [Formbricks.McpGrant.t()]
         }
 
   schema "oauthClient" do
@@ -100,5 +101,6 @@ defmodule Formbricks.OauthClient do
     has_many(:refresh_tokens, Formbricks.OauthRefreshToken, foreign_key: :client_id, references: :client_id)
     has_many(:consents, Formbricks.OauthConsent, foreign_key: :client_id, references: :client_id)
     has_many(:resources, Formbricks.OauthClientResource, foreign_key: :client_id, references: :client_id)
+    has_many(:mcp_grants, Formbricks.McpGrant, foreign_key: :client_id, references: :client_id)
   end
 end

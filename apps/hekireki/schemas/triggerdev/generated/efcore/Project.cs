@@ -50,6 +50,11 @@ public partial class Project
     public string? DefaultWorkerGroupId { get; set; }
 
     /// <summary>
+    /// Newly triggered deployed runs require the secret proxy (pinned in their annotations).
+    /// </summary>
+    public bool SecretProxyEnabled { get; set; } = false;
+
+    /// <summary>
     /// The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
     /// </summary>
     public List<string>? AllowedWorkerQueues { get; set; } = new List<string>();
@@ -67,6 +72,8 @@ public partial class Project
     public virtual ICollection<TaskQueue> TaskQueues { get; set; } = new List<TaskQueue>();
 
     public virtual ICollection<EnvironmentVariable> EnvironmentVariables { get; set; } = new List<EnvironmentVariable>();
+
+    public virtual ICollection<EnvironmentVariableIgnore> EnvironmentVariableIgnores { get; set; } = new List<EnvironmentVariableIgnore>();
 
     public virtual ICollection<Checkpoint> Checkpoints { get; set; } = new List<Checkpoint>();
 

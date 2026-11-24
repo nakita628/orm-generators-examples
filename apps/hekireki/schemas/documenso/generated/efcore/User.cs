@@ -68,4 +68,10 @@ public partial class User
     public virtual ICollection<Passkey> Passkeys { get; set; } = new List<Passkey>();
 
     public virtual AvatarImage? AvatarImage { get; set; }
+
+    public virtual ICollection<AdminRuleMatch> AdminRuleMatches { get; set; } = new List<AdminRuleMatch>();
+
+    public virtual ICollection<AdminTag> AdminTags { get; set; } = new List<AdminTag>();
+
+    public virtual ICollection<AdminTag> CreatedAdminTags { get; set; } = new List<AdminTag>();
 }

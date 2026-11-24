@@ -20,6 +20,8 @@ class Booking < ApplicationRecord
   belongs_to :custodian_team_member, class_name: "TeamMember", foreign_key: "custodianTeamMemberId", optional: true,
                                      inverse_of: :bookings
   belongs_to :organization, foreign_key: "organizationId", inverse_of: :bookings
+  belongs_to :approved_by, class_name: "User", foreign_key: "approvedById", optional: true,
+                           inverse_of: :approved_bookings
   has_many :booking_assets, foreign_key: "bookingId", inverse_of: :booking, dependent: :destroy
   has_many :consumption_logs, foreign_key: "bookingId", inverse_of: :booking, dependent: :nullify
   has_many :notes, class_name: "BookingNote", foreign_key: "bookingId", inverse_of: :booking, dependent: :destroy

@@ -153,6 +153,12 @@ Enum IdentityProvider {
   saml
 }
 
+Enum McpGrantAccess {
+  all
+  organizations
+  workspaces
+}
+
 Enum EmbeddedDataSource {
   computed
   ingested
@@ -553,6 +559,12 @@ from the client. Null means no ingest boundary has written it, which is not the 
 an empty list: without this column a wrong-typed value is indistinguishable from an absent one,
 and surfacing that in the UI (v2) would have nothing to read.
 [ResponseIngestFlags]''']
+  cal_bookings_by_question_id Json [note: '''What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+`calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+never accepted as a field of its own.
+[ResponseCalBookings]''']
   outcome ResponseOutcome [note: '''A reviewer\'s verdict on the response; null means none. `lowQuality` hides it from the Analysis
 export by default and from Feedback Records, and nothing else: it is never deleted and every
 count, list, webhook and integration still includes it (ENG-6780).''']
@@ -1287,6 +1299,55 @@ them every pre-existing connection is forced back through the consent screen.'''
   Note: 'Better Auth OAuth user consent grants for delegated clients.'
 }
 
+Table McpGrant {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  userId String [not null]
+  clientId String [not null]
+  access McpGrantAccess [default: 'all', not null, note: '''Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+`workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.''']
+  permissions Json [default: '{}', not null, note: '''The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+A permission that is absent has No access.''']
+
+  indexes {
+    (userId, clientId) [unique]
+  }
+
+  Note: '''Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
+its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
+a token is now bound to the resource it was approved for instead of to a static allow-list.
+`identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+access and an access level per permission. One per OAuth connection, keyed by user and client rather
+than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+and settles them later. Every MCP request reads it; without one the request is refused. The client\'s
+OAuth scopes stay on the consent and cap it.'''
+}
+
+Table McpGrantOrganization {
+  grantId String [not null]
+  organizationId String [not null]
+
+  indexes {
+    (grantId, organizationId) [pk]
+  }
+
+  Note: 'An organization a grant with `organizations` access reaches, workspaces created there later included.'
+}
+
+Table McpGrantWorkspace {
+  grantId String [not null]
+  workspaceId String [not null]
+
+  indexes {
+    (grantId, workspaceId) [pk]
+  }
+
+  Note: 'A workspace a grant with `workspaces` access reaches.'
+}
+
 Table oauthResource {
   id String [pk]
   identifier String [unique, not null]
@@ -1303,11 +1364,6 @@ Table oauthResource {
   updatedAt DateTime
   policyVersion Int [default: 1]
   metadata Json
-
-  Note: '''Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
-its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
-a token is now bound to the resource it was approved for instead of to a static allow-list.
-`identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.'''
 }
 
 Table oauthClientResource {
@@ -1606,6 +1662,27 @@ Charts are reusable components that query analytics data.
 @property config - Chart-specific configuration (colors, labels, etc.)
 @property createdBy - User who created the chart
 @property dashboards - Dashboards that use this chart'''
+}
+
+Table EmbeddedFieldLabel {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  workspaceId String [not null]
+  key String [not null]
+  label String [not null]
+
+  indexes {
+    (workspaceId, key) [unique]
+  }
+
+  Note: '''A workspace\'s display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+place of the key in chart legends, headers and the chart builder\'s field pickers. One per key and
+workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+are never renamed here: they keep their translated names.
+
+@property key - The embedded-data key exactly as collected, case included
+@property label - The name shown for the key across the workspace'''
 }
 
 Table Dashboard {
@@ -2051,6 +2128,9 @@ Table Workflow {
   workspaceId String [not null]
   createdBy String
   definition Json [not null, note: '[WorkflowDefinition]']
+  webhookTokenHash String [note: '''Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+the editor can show the URL again. Never part of the definition, its versions or its copies.''']
+  webhookTokenEncrypted String
 
   indexes {
     (id, workspaceId) [unique]
@@ -2093,10 +2173,38 @@ Table WorkflowRun {
   dispatchedAt DateTime
   startedAt DateTime
   finishedAt DateTime
+  callerIp String [note: 'The caller\'s IP for a run started by a Webhook Secret URL call; shown in run detail.']
+  contentDeletedAt DateTime [note: '''When the run retention job cleared the run\'s content (ADR 0044): payload contents, run data, step
+input, output and errors, the run error and the caller IP. Null while the content is kept.''']
+  contentRetentionDays Int [note: 'The retention period in days that applied when the content was cleared ("Details deleted after N days").']
+  testRunDefinition Json [note: '''The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+existed. Configuration like a version\'s definition, not run content: retention leaves it alone.
+[WorkflowExecutableDefinition]''']
 
   indexes {
     (workflowId, idempotencyKey) [unique]
   }
+}
+
+Table WorkflowSample {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  workflowId String [not null]
+  workspaceId String [not null]
+  source String [not null]
+  sample Json [not null, note: '[WorkflowSampleData]']
+  lastCalledAt DateTime
+  lastCallerIp String
+
+  indexes {
+    (workflowId, source) [unique]
+  }
+
+  Note: '''Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+trigger\'s last payload (plus the last call\'s time and IP), or an HTTP request step id for its last
+Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.'''
 }
 
 Table WorkflowRunLog {
@@ -2115,6 +2223,23 @@ Table WorkflowRunLog {
   indexes {
     (runId, stepId) [unique]
   }
+}
+
+Table WorkflowSecret {
+  id String [pk]
+  created_at DateTime [default: `now()`, not null]
+  updated_at DateTime [not null]
+  workflowId String [not null]
+  workspaceId String [not null]
+  value String [not null, note: '`symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned.']
+  boundOrigin String [note: '''Origin (scheme, host, port) of the step\'s URL when the value was set or replaced; the value is only
+sent there (ADR 0051). Null for a value set before host binding: held to the step\'s saved URL
+until it is set again.''']
+
+  Note: '''Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+with the workflow. A value is only sent to the origin it was set for (ADR 0051).'''
 }
 
 Ref Creative_workspaceId_fk: Creative.workspaceId > Workspace.id [delete: cascade]
@@ -2235,6 +2360,18 @@ Ref oauthConsent_clientId_fk: oauthConsent.clientId > oauthClient.clientId [dele
 
 Ref oauthConsent_userId_fk: oauthConsent.userId > User.id [delete: cascade]
 
+Ref McpGrant_userId_fk: McpGrant.userId > User.id [delete: cascade]
+
+Ref McpGrant_clientId_fk: McpGrant.clientId > oauthClient.clientId [delete: cascade]
+
+Ref McpGrantOrganization_grantId_fk: McpGrantOrganization.grantId > McpGrant.id [delete: cascade]
+
+Ref McpGrantOrganization_organizationId_fk: McpGrantOrganization.organizationId > Organization.id [delete: cascade]
+
+Ref McpGrantWorkspace_grantId_fk: McpGrantWorkspace.grantId > McpGrant.id [delete: cascade]
+
+Ref McpGrantWorkspace_workspaceId_fk: McpGrantWorkspace.workspaceId > Workspace.id [delete: cascade]
+
 Ref oauthClientResource_clientId_fk: oauthClientResource.clientId > oauthClient.clientId [delete: cascade]
 
 Ref oauthClientResource_resourceId_fk: oauthClientResource.resourceId > oauthResource.identifier [delete: cascade]
@@ -2272,6 +2409,8 @@ Ref Chart_workspaceId_fk: Chart.workspaceId > Workspace.id [delete: cascade]
 Ref Chart_createdBy_fk: Chart.createdBy > User.id [delete: set null]
 
 Ref Chart_feedbackDirectoryId_fk: Chart.feedbackDirectoryId > FeedbackDirectory.id
+
+Ref EmbeddedFieldLabel_workspaceId_fk: EmbeddedFieldLabel.workspaceId > Workspace.id [delete: cascade]
 
 Ref Dashboard_workspaceId_fk: Dashboard.workspaceId > Workspace.id [delete: cascade]
 
@@ -2347,4 +2486,8 @@ Ref WorkflowRun_workflowVersionId_fk: WorkflowRun.workflowVersionId > WorkflowVe
 
 Ref WorkflowRun_responseId_fk: WorkflowRun.responseId > Response.id [delete: cascade]
 
+Ref WorkflowSample_(workflowId, workspaceId)_fk: WorkflowSample.(workflowId, workspaceId) > Workflow.(id, workspaceId) [delete: cascade]
+
 Ref WorkflowRunLog_runId_fk: WorkflowRunLog.runId > WorkflowRun.id [delete: cascade]
+
+Ref WorkflowSecret_(workflowId, workspaceId)_fk: WorkflowSecret.(workflowId, workspaceId) > Workflow.(id, workspaceId) [delete: cascade]

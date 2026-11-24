@@ -44,6 +44,8 @@ public partial class LiteLLMDailyEndUserSpend
 
     public double GuardrailSpend { get; set; } = 0.0;
 
+    public double CustomerMarginSpend { get; set; } = 0.0;
+
     public double Spend { get; set; } = 0.0;
 
     public long ApiRequests { get; set; } = 0L;

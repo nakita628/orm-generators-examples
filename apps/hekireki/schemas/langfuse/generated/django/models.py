@@ -79,6 +79,10 @@ def now_milliseconds() -> datetime:
     return now.replace(microsecond=now.microsecond // 1000 * 1000)
 
 
+def gateway_spend_limit_alert_thresholds_default() -> list[int]:
+    return [100]
+
+
 def job_configuration_time_scope_default() -> list[str]:
     return ["NEW"]
 
@@ -108,6 +112,8 @@ class SystemRole(models.TextChoices):
     SCORES_INGEST = "SCORES_INGEST"
     INGEST = "INGEST"
     AI_GATEWAY = "AI_GATEWAY"
+    AI_GATEWAY_INFERENCE = "AI_GATEWAY_INFERENCE"
+    APPLICATION = "APPLICATION"
 
 
 class GatewayIngestionMode(models.TextChoices):
@@ -132,6 +138,26 @@ class GatewayConnectionStatus(models.TextChoices):
     ENABLED = "enabled"
     DISABLED = "disabled"
     ERROR = "error"
+
+
+class GatewaySpendLimitScope(models.TextChoices):
+    API_KEY = "API_KEY"
+    USER = "USER"
+    API_KEY_DEFAULT = "API_KEY_DEFAULT"
+    USER_DEFAULT = "USER_DEFAULT"
+    ORGANIZATION = "ORGANIZATION"
+
+
+class GatewaySpendLimitInterval(models.TextChoices):
+    DAILY = "DAILY"
+    WEEKLY = "WEEKLY"
+    MONTHLY = "MONTHLY"
+    TOTAL = "TOTAL"
+
+
+class GatewaySpendLimitAlertType(models.TextChoices):
+    WARNING = "WARNING"
+    EXCEEDED = "EXCEEDED"
 
 
 class InAppAgentConversationVisibilityScope(models.TextChoices):
@@ -184,6 +210,12 @@ class NotificationChannel(models.TextChoices):
 
 class NotificationType(models.TextChoices):
     COMMENT_MENTION = "COMMENT_MENTION"
+
+
+class ModelScope(models.TextChoices):
+    LANGFUSE = "LANGFUSE"
+    ORGANIZATION = "ORGANIZATION"
+    PROJECT = "PROJECT"
 
 
 class AuditLogRecordType(models.TextChoices):
@@ -307,6 +339,11 @@ class SessionViewMode(models.TextChoices):
 class SessionUnmatchedTraces(models.TextChoices):
     show = "show"
     hide = "hide"
+
+
+class SessionViewOwnership(models.TextChoices):
+    PRIVATE = "PRIVATE"
+    PROJECT = "PROJECT"
 
 
 class ActionType(models.TextChoices):
@@ -512,6 +549,8 @@ class RoleAssignment(models.Model):
     api_key = models.ForeignKey("ApiKey", on_delete=models.CASCADE, related_name="role_assignments", null=True, db_index=False)
     role_id = models.TextField()
     system_role = models.TextField(choices=SystemRole.choices)
+    expires_at = UtcDateTimeField(null=True)
+    tags = ArrayField(models.TextField(), default=list)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -527,6 +566,7 @@ class RoleAssignment(models.Model):
             models.Index(fields=["principal_id"]),
             models.Index(fields=["user"]),
             models.Index(fields=["api_key"]),
+            GinIndex(fields=["tags"]),
         ]
 
 
@@ -579,6 +619,52 @@ class GatewayApiKeyAssociation(models.Model):
 
     class Meta:
         db_table = "gateway_api_key_associations"
+
+
+class GatewaySpendLimit(models.Model):
+    id = models.TextField(primary_key=True, default=cuid_str)
+    organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="gateway_spend_limits", db_index=False)
+    scope = models.TextField(choices=GatewaySpendLimitScope.choices)
+    api_key = models.ForeignKey("ApiKey", on_delete=models.CASCADE, related_name="gateway_spend_limits", null=True, db_index=False)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="gateway_spend_limits", null=True, db_index=False)
+    interval = models.TextField(choices=GatewaySpendLimitInterval.choices)
+    limit_usd = models.DecimalField(max_digits=65, decimal_places=30)
+    alert_thresholds = ArrayField(models.IntegerField(), default=gateway_spend_limit_alert_thresholds_default)
+    counting_started_at = UtcDateTimeField()
+    owner_user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="gateway_spend_limits_owned", null=True, db_index=False)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "gateway_spend_limits"
+        constraints = [
+            models.UniqueConstraint(fields=["api_key", "interval"], name="gateway_spend_limits_api_key_id_interval_key"),
+            models.UniqueConstraint(fields=["organization", "user", "interval"], name="gateway_spend_limits_organization_id_user_id_interval_key"),
+        ]
+        indexes = [
+            models.Index(fields=["organization"]),
+            models.Index(fields=["user"]),
+        ]
+
+
+class GatewaySpendLimitAlert(models.Model):
+    """One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times."""
+
+    id = models.TextField(primary_key=True, default=cuid_str)
+    spend_limit = models.ForeignKey("GatewaySpendLimit", on_delete=models.CASCADE, related_name="alerts", db_index=False)
+    subject_id = models.TextField(default="")
+    type = models.TextField(choices=GatewaySpendLimitAlertType.choices)
+    threshold_percent = models.IntegerField(default=100)
+    counting_started_at = UtcDateTimeField()
+    window_start = UtcDateTimeField()
+    created_at = UtcDateTimeField(default=now_milliseconds)
+
+    class Meta:
+        db_table = "gateway_spend_limit_alerts"
+        constraints = [
+            models.UniqueConstraint(fields=["spend_limit", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start"], name="gateway_spend_limit_alerts_limit_type_counting_window_key"),
+        ]
 
 
 class InAppAgentConversation(models.Model):
@@ -696,6 +782,7 @@ class LlmApiKeys(models.Model):
     extra_headers = models.TextField(null=True)
     extra_header_keys = ArrayField(models.TextField(), default=list)
     config = models.JSONField(null=True)
+    external_id = models.TextField(null=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="llm_api_keys", null=True, db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="organization_llm_api_keys", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()
@@ -822,6 +909,7 @@ class AnnotationQueue(models.Model):
     name = models.TextField()
     description = models.TextField(null=True)
     score_config_ids = ArrayField(models.TextField(), default=list)
+    session_view_id = models.TextField(null=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="annotation_queue", db_index=False)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
@@ -835,6 +923,7 @@ class AnnotationQueue(models.Model):
         indexes = [
             models.Index(fields=["id", "project"]),
             models.Index(fields=["project", "created_at"]),
+            models.Index(fields=["project", "session_view_id"]),
         ]
 
 
@@ -1161,7 +1250,9 @@ class Model(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    scope = models.TextField(choices=ModelScope.choices)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="model", null=True, db_index=False)
+    organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="models", null=True, db_index=False)
     model_name = models.TextField()
     match_pattern = models.TextField()
     start_date = UtcDateTimeField(null=True)
@@ -1180,6 +1271,7 @@ class Model(models.Model):
         ]
         indexes = [
             models.Index(fields=["model_name"]),
+            models.Index(fields=["scope"]),
         ]
 
 
@@ -1911,6 +2003,7 @@ class TableViewPreset(models.Model):
 
 
 class SessionView(models.Model):
+    ownership = models.TextField(choices=SessionViewOwnership.choices, default=SessionViewOwnership.PROJECT)
     is_pinned_by_default_for_project = models.BooleanField(default=False)
     id = models.TextField(primary_key=True, default=cuid_str)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="session_views", db_index=False)
@@ -1926,7 +2019,6 @@ class SessionView(models.Model):
     class Meta:
         db_table = "session_views"
         constraints = [
-            models.UniqueConstraint(fields=["project", "name"], name="session_views_project_id_name_key"),
             models.UniqueConstraint(fields=["project", "id"], name="session_views_project_id_id_key"),
         ]
 

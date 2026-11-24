@@ -23,6 +23,11 @@ public partial class RuntimeEnvironment
     public DateTime? RootApiKeyHiddenAt { get; set; }
 
     /// <summary>
+    /// Non-null disables automatic root key injection into new deployed attempts.
+    /// </summary>
+    public DateTime? RootKeyInjectionDisabledAt { get; set; }
+
+    /// <summary>
     /// @deprecated was for v2
     /// </summary>
     public string PkApiKey { get; set; } = null!;
@@ -113,6 +118,8 @@ public partial class RuntimeEnvironment
     public virtual ICollection<TaskQueue> TaskQueues { get; set; } = new List<TaskQueue>();
 
     public virtual ICollection<EnvironmentVariableValue> EnvironmentVariableValues { get; set; } = new List<EnvironmentVariableValue>();
+
+    public virtual ICollection<EnvironmentVariableIgnore> EnvironmentVariableIgnores { get; set; } = new List<EnvironmentVariableIgnore>();
 
     public virtual ICollection<Checkpoint> Checkpoints { get; set; } = new List<Checkpoint>();
 

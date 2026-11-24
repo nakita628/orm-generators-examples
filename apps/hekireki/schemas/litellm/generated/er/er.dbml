@@ -18,6 +18,7 @@ Enum AccountingDeliveryState {
 }
 
 Table LiteLLM_BudgetTable {
+  rollover_max_budget Float
   budget_id String [pk]
   name String
   max_budget Float
@@ -41,6 +42,85 @@ Table LiteLLM_BudgetTable {
   created_by String [not null]
   updated_at DateTime [default: `now()`, not null]
   updated_by String [not null]
+}
+
+Table LiteLLM_AppGroupTable {
+  app_group_id String [pk]
+  name String [unique, not null]
+  description String
+  metadata Json
+  budget_id String
+  spend Float [default: 0, not null]
+  spend_reset_window String
+  created_at DateTime [default: `now()`, not null]
+  created_by String [not null]
+  updated_at DateTime [default: `now()`, not null]
+  updated_by String [not null]
+}
+
+Table LiteLLM_AppGroupCustomerOrgTable {
+  app_group_id String [not null]
+  customer_org_id String [not null]
+  budget_id String
+  spend Float [default: 0, not null]
+  spend_reset_window String
+
+  indexes {
+    (app_group_id, customer_org_id) [pk]
+  }
+}
+
+Table LiteLLM_AppTable {
+  app_id String [pk]
+  app_group_id String
+  resource_type String
+  resource_id String
+  alias String [unique, not null]
+  spend Float [default: 0, not null]
+  spend_reset_window String
+  budget_id String
+  default_tier_budget_id String
+  default_customer_member_budget_id String
+  auto_create_customers Boolean [default: true, not null]
+  customer_margin Float
+  created_at DateTime [default: `now()`, not null]
+  created_by String [not null]
+  updated_at DateTime [default: `now()`, not null]
+  updated_by String [not null]
+
+  indexes {
+    (resource_type, resource_id) [unique]
+  }
+}
+
+Table LiteLLM_AppCustomerOrgTable {
+  app_id String [not null]
+  customer_org_id String [not null]
+  spend Float [default: 0, not null]
+  spend_reset_window String
+  tier_budget_id String
+  budget_id String
+  budget_override_id String
+  budget_override_expires_at DateTime
+  customer_member_budget_id String
+
+  indexes {
+    (app_id, customer_org_id) [pk]
+  }
+}
+
+Table LiteLLM_AppCustomerMemberTable {
+  app_id String [not null]
+  customer_member_id String [not null]
+  spend Float [default: 0, not null]
+  spend_reset_window String
+  budget_override_id String
+  budget_id String
+  budget_override_expires_at DateTime
+
+  indexes {
+    (app_id, customer_member_id) [pk]
+  }
 }
 
 Table LiteLLM_CustomerOrganizationTable {
@@ -318,6 +398,8 @@ Table LiteLLM_DeletedTeamTable {
 }
 
 Table LiteLLM_UserTable {
+  rollover_max_budget Float
+  rollover_credit Float
   budget_limits Json
   user_id String [pk]
   user_alias String
@@ -362,6 +444,7 @@ Table LiteLLM_ObjectPermissionTable {
   search_tools String[] [not null]
   mcp_tool_search_enabled Boolean
   skills String[] [not null]
+  apps String[] [not null]
 }
 
 Table LiteLLM_MCPServerTable {
@@ -416,6 +499,7 @@ Table LiteLLM_MCPServerTable {
   timeout Float
   max_concurrent_requests Int
   rpm Int
+  events Json
   approval_status String [default: 'active']
   submitted_by String
   submitted_at DateTime
@@ -489,6 +573,7 @@ Table LiteLLM_SSOIdentityAssertion {
 }
 
 Table LiteLLM_VerificationToken {
+  key_id String [unique]
   token String [pk]
   key_name String
   key_alias String
@@ -566,6 +651,7 @@ Table LiteLLM_DeprecatedVerificationToken {
 }
 
 Table LiteLLM_DeletedVerificationToken {
+  key_id String
   id String [pk]
   token String [not null]
   key_name String
@@ -738,6 +824,7 @@ Table LiteLLM_UserNotifications {
 }
 
 Table LiteLLM_TeamMembership {
+  rollover_credit Float
   user_id String [not null]
   team_id String [not null]
   spend Float [default: 0, not null]
@@ -808,6 +895,7 @@ Table LiteLLM_DailyUserSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -840,6 +928,7 @@ Table LiteLLM_DailyGlobalSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -874,6 +963,7 @@ Table LiteLLM_DailyOrganizationSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -889,6 +979,8 @@ Table LiteLLM_DailyOrganizationSpend {
 }
 
 Table LiteLLM_DailyCustomerMemberSpend {
+  app_group_id String [default: '', not null]
+  app_id String [default: '', not null]
   id String [pk]
   date String [not null]
   customer_org_id String [not null]
@@ -905,12 +997,15 @@ Table LiteLLM_DailyCustomerMemberSpend {
   completion_tokens BigInt [default: 0, not null]
   cache_read_input_tokens BigInt [default: 0, not null]
   cache_creation_input_tokens BigInt [default: 0, not null]
+  cache_cost Float [default: 0, not null]
+  priced_cache_tokens BigInt [default: 0, not null]
   compression_saved_tokens BigInt [default: 0, not null]
   compression_savings_spend Float [default: 0, not null]
   prompt_caching_savings_spend Float [default: 0, not null]
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
   failed_requests BigInt [default: 0, not null]
@@ -940,6 +1035,7 @@ Table LiteLLM_DailyEndUserSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -974,6 +1070,7 @@ Table LiteLLM_DailyAgentSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -1008,6 +1105,7 @@ Table LiteLLM_DailyTeamSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -1044,6 +1142,7 @@ Table LiteLLM_DailyTagSpend {
   gateway_injected_caching_savings_spend Float [default: 0, not null]
   autorouter_savings_spend Float [default: 0, not null]
   guardrail_spend Float [default: 0, not null]
+  customer_margin_spend Float [default: 0, not null]
   spend Float [default: 0, not null]
   api_requests BigInt [default: 0, not null]
   successful_requests BigInt [default: 0, not null]
@@ -1117,6 +1216,7 @@ Table LiteLLM_ManagedObjectTable {
   api_key String
   request_tags Json [default: '[]']
   end_user_id String
+  creator_billing_context Json
   updated_at DateTime [not null]
   updated_by String
 }
@@ -1753,6 +1853,7 @@ Table LiteLLM_ShadowEvalJob {
   models String[] [not null]
   direction String [default: 'forward', not null]
   baseline_model String
+  skip_same_model Boolean [default: false, not null]
   judge_model String [not null]
   shadow_percentage Float [not null]
   max_turns Int [not null]
@@ -1762,6 +1863,8 @@ Table LiteLLM_ShadowEvalJob {
   ends_at DateTime [not null]
   stopped_at DateTime
   stopped_by String
+  rubric String
+  rubric_version Int
 }
 
 Table LiteLLM_ShadowEvalAttempt {
@@ -1780,6 +1883,8 @@ Table LiteLLM_ShadowEvalAttempt {
   real_classifier_cost Float [default: 0, not null]
   shadow_classifier_cost Float [default: 0, not null]
   real_cache_hit Boolean [default: false, not null]
+  real_grade Int
+  shadow_grade Int
   error String
   created_at DateTime [default: `now()`, not null]
 }
@@ -1787,6 +1892,7 @@ Table LiteLLM_ShadowEvalAttempt {
 Table LiteLLM_ShadowEvalFunnel {
   job_id String [pk]
   not_sampled Int [default: 0, not null]
+  same_model Int [default: 0, not null]
   unjudgeable Int [default: 0, not null]
   shed Int [default: 0, not null]
   withheld Int [default: 0, not null]
@@ -1847,6 +1953,14 @@ Table LiteLLM_BackgroundInteractionSettlement {
 Table LiteLLM_BackgroundResponseSettlement {
   response_id String [pk]
   settled_at DateTime [default: `now()`, not null]
+}
+
+Table LiteLLM_BackgroundResponseCreator {
+  response_id String [pk]
+  upstream_url String [not null]
+  create_context Json [not null]
+  created_at DateTime [default: `now()`, not null]
+  poll_lease_expires_at DateTime
 }
 
 Table LiteLLM_Lens {
@@ -1986,6 +2100,42 @@ Table LiteLLM_PerformanceAlertState {
   completed_at DateTime
   updated_at DateTime [default: `now()`, not null]
 }
+
+Ref LiteLLM_AppGroupTable_budget_id_fk: LiteLLM_AppGroupTable.budget_id > LiteLLM_BudgetTable.budget_id [delete: restrict]
+
+Ref LiteLLM_AppGroupCustomerOrgTable_budget_id_fk: LiteLLM_AppGroupCustomerOrgTable.budget_id > LiteLLM_BudgetTable.budget_id [delete: restrict]
+
+Ref LiteLLM_AppGroupCustomerOrgTable_app_group_id_fk: LiteLLM_AppGroupCustomerOrgTable.app_group_id > LiteLLM_AppGroupTable.app_group_id [delete: cascade]
+
+Ref LiteLLM_AppGroupCustomerOrgTable_customer_org_id_fk: LiteLLM_AppGroupCustomerOrgTable.customer_org_id > LiteLLM_CustomerOrganizationTable.customer_org_id [delete: cascade]
+
+Ref LiteLLM_AppTable_app_group_id_fk: LiteLLM_AppTable.app_group_id > LiteLLM_AppGroupTable.app_group_id [delete: restrict]
+
+Ref LiteLLM_AppTable_budget_id_fk: LiteLLM_AppTable.budget_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppTable_default_tier_budget_id_fk: LiteLLM_AppTable.default_tier_budget_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppTable_default_customer_member_budget_id_fk: LiteLLM_AppTable.default_customer_member_budget_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppCustomerOrgTable_budget_id_fk: LiteLLM_AppCustomerOrgTable.budget_id > LiteLLM_BudgetTable.budget_id [delete: restrict]
+
+Ref LiteLLM_AppCustomerOrgTable_app_id_fk: LiteLLM_AppCustomerOrgTable.app_id > LiteLLM_AppTable.app_id [delete: cascade]
+
+Ref LiteLLM_AppCustomerOrgTable_customer_org_id_fk: LiteLLM_AppCustomerOrgTable.customer_org_id > LiteLLM_CustomerOrganizationTable.customer_org_id [delete: cascade]
+
+Ref LiteLLM_AppCustomerOrgTable_tier_budget_id_fk: LiteLLM_AppCustomerOrgTable.tier_budget_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppCustomerOrgTable_budget_override_id_fk: LiteLLM_AppCustomerOrgTable.budget_override_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppCustomerOrgTable_customer_member_budget_id_fk: LiteLLM_AppCustomerOrgTable.customer_member_budget_id > LiteLLM_BudgetTable.budget_id
+
+Ref LiteLLM_AppCustomerMemberTable_budget_id_fk: LiteLLM_AppCustomerMemberTable.budget_id > LiteLLM_BudgetTable.budget_id [delete: restrict]
+
+Ref LiteLLM_AppCustomerMemberTable_app_id_fk: LiteLLM_AppCustomerMemberTable.app_id > LiteLLM_AppTable.app_id [delete: cascade]
+
+Ref LiteLLM_AppCustomerMemberTable_customer_member_id_fk: LiteLLM_AppCustomerMemberTable.customer_member_id > LiteLLM_CustomerMemberTable.customer_member_id [delete: cascade]
+
+Ref LiteLLM_AppCustomerMemberTable_budget_override_id_fk: LiteLLM_AppCustomerMemberTable.budget_override_id > LiteLLM_BudgetTable.budget_id
 
 Ref LiteLLM_CustomerOrganizationTable_budget_id_fk: LiteLLM_CustomerOrganizationTable.budget_id > LiteLLM_BudgetTable.budget_id
 

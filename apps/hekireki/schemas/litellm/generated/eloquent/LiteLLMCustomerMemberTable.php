@@ -58,6 +58,11 @@ class LiteLLMCustomerMemberTable extends Model
         return $this->belongsTo(LiteLLMBudgetTable::class, 'budget_override_id');
     }
 
+    public function apps(): HasMany
+    {
+        return $this->hasMany(LiteLLMAppCustomerMemberTable::class, 'customer_member_id');
+    }
+
     public function budget_increase_requests(): HasMany
     {
         return $this->hasMany(LiteLLMCustomerBudgetIncreaseRequest::class, 'customer_member_id');

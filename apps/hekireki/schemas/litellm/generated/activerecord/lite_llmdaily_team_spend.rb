@@ -13,6 +13,7 @@ class LiteLLMDailyTeamSpend < ApplicationRecord
   attribute :gateway_injected_caching_savings_spend, default: 0
   attribute :autorouter_savings_spend, default: 0
   attribute :guardrail_spend, default: 0
+  attribute :customer_margin_spend, default: 0
   attribute :spend, default: 0
   attribute :api_requests, default: 0
   attribute :successful_requests, default: 0

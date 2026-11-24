@@ -77,6 +77,13 @@ object BackgroundWorkerTaskTable : IdTable<String>("\"BackgroundWorkerTask\"") {
      * AGENT: { type: "ai-sdk-chat" }
      */
     val config = jsonb<String>("config", { it }, { it }).nullable()
+    val executionMode =
+        pgEnum("executionMode", "\"TaskExecutionMode\"", TaskExecutionMode.entries, TaskExecutionMode::dbName).default(
+            TaskExecutionMode.STANDARD,
+        )
+
+    /** RunExecutionPolicy from @trigger.dev/core. Null means the standard policy. */
+    val executionPolicy = jsonb<String>("executionPolicy", { it }, { it }).nullable()
     val payloadSchema = jsonb<String>("payloadSchema", { it }, { it }).nullable()
     override val primaryKey = PrimaryKey(id, name = "\"BackgroundWorkerTask_pkey\"")
 

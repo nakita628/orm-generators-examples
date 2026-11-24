@@ -18,6 +18,7 @@ class LiteLLMTeamMembership extends Model
     public $timestamps = false;
 
     protected $fillable = [
+        'rollover_credit',
         'user_id',
         'team_id',
         'spend',
@@ -31,6 +32,7 @@ class LiteLLMTeamMembership extends Model
     ];
 
     protected $casts = [
+        'rollover_credit' => 'float',
         'spend' => 'float',
         'total_spend' => 'float',
     ];

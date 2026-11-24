@@ -252,6 +252,7 @@ erDiagram
         maillayout mailLayout
         boolean mailExpandedPreview
         boolean mailBundleInbox "Collapses threads from bundled splits into one row each in the inbox. Null until first turned on, which is when default bundles are chosen."
+        boolean mailGroupBySender "Collapses the inbox's other mail from one sender into one row."
         string mailDefaultSplitId
         mailsetupstate mailSetup
         boolean includeInAllAccounts

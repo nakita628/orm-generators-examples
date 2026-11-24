@@ -29,6 +29,7 @@ pub use super::space::Entity as Space;
 pub use super::space_api_key::Entity as SpaceApiKey;
 pub use super::space_member::Entity as SpaceMember;
 pub use super::space_member_invite::Entity as SpaceMemberInvite;
+pub use super::space_usage::Entity as SpaceUsage;
 pub use super::space_webhook::Entity as SpaceWebhook;
 pub use super::subscription::Entity as Subscription;
 pub use super::user::Entity as User;

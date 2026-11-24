@@ -43,6 +43,8 @@ public partial class Organisation
 
     public virtual ICollection<OrganisationMonthlyStat> MonthlyStats { get; set; } = new List<OrganisationMonthlyStat>();
 
+    public virtual ICollection<AdminTag> AdminTags { get; set; } = new List<AdminTag>();
+
     public virtual ICollection<EmbedSignature> EmbedSignatures { get; set; } = new List<EmbedSignature>();
 
     public virtual AvatarImage? AvatarImage { get; set; }

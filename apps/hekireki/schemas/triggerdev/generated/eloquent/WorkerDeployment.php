@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property string|null $cliVersion CLI version that initiated the deploy, stamped at initialization
+ * @property string|null $cliVersion CLI version that initiated the deploy, stamped at initialization or worker upload
  * @property string|null $templateKey Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds
  * @property string|null $indexObjectKey Object key of the full index snapshot in the deployment index store. Set only after the upload succeeds.
  * @property string|null $indexSha256 sha256 hex of the snapshot's uncompressed JSON
  * @property mixed $buildEnvVars Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an
  * EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep.
+ * @property DeploymentInitiatedByCredential|null $initiatedByCredential The kind of credential that started the deployment. Null when unknown.
+ * @property string|null $supersededById The newer GitHub build that superseded this one while it was still queued
  */
 class WorkerDeployment extends Model
 {
@@ -54,6 +56,7 @@ class WorkerDeployment extends Model
         'triggeredVia',
         'commitSHA',
         'externalId',
+        'initiatedByCredential',
         'startedAt',
         'installedAt',
         'builtAt',
@@ -62,6 +65,7 @@ class WorkerDeployment extends Model
         'errorData',
         'canceledAt',
         'canceledReason',
+        'supersededById',
         'git',
     ];
 
@@ -78,6 +82,7 @@ class WorkerDeployment extends Model
         'buildEnvVars' => 'array',
         'status' => WorkerDeploymentStatus::class,
         'type' => WorkerDeploymentType::class,
+        'initiatedByCredential' => DeploymentInitiatedByCredential::class,
         'startedAt' => 'datetime',
         'installedAt' => 'datetime',
         'builtAt' => 'datetime',

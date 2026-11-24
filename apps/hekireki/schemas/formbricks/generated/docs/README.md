@@ -62,6 +62,8 @@ CREATE TYPE "ApiKeyPermission" AS ENUM ('read', 'write', 'manage');
 
 CREATE TYPE "IdentityProvider" AS ENUM ('email', 'github', 'google', 'azuread', 'openid', 'saml');
 
+CREATE TYPE "McpGrantAccess" AS ENUM ('all', 'organizations', 'workspaces');
+
 CREATE TYPE "EmbeddedDataSource" AS ENUM ('computed', 'ingested', 'reserved');
 
 CREATE TYPE "EmbeddedDataType" AS ENUM ('string', 'number', 'boolean', 'date');
@@ -284,6 +286,7 @@ CREATE TABLE "Response" (
     "ttc" JSONB NOT NULL DEFAULT '{}',
     "meta" JSONB NOT NULL DEFAULT '{}',
     "ingest_flags" JSONB,
+    "cal_bookings_by_question_id" JSONB,
     "outcome" "ResponseOutcome",
     "not_shown" JSONB,
     "contactAttributes" JSONB,
@@ -740,6 +743,32 @@ CREATE TABLE "oauthConsent" (
     CONSTRAINT "oauthConsent_pkey" PRIMARY KEY ("id")
 );
 
+CREATE TABLE "McpGrant" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+    "clientId" TEXT NOT NULL,
+    "access" "McpGrantAccess" NOT NULL DEFAULT 'all',
+    "permissions" JSONB NOT NULL DEFAULT '{}',
+
+    CONSTRAINT "McpGrant_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "McpGrantOrganization" (
+    "grantId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+
+    CONSTRAINT "McpGrantOrganization_pkey" PRIMARY KEY ("grantId","organizationId")
+);
+
+CREATE TABLE "McpGrantWorkspace" (
+    "grantId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+
+    CONSTRAINT "McpGrantWorkspace_pkey" PRIMARY KEY ("grantId","workspaceId")
+);
+
 CREATE TABLE "oauthResource" (
     "id" TEXT NOT NULL,
     "identifier" TEXT NOT NULL,
@@ -918,6 +947,17 @@ CREATE TABLE "Chart" (
     "feedbackDirectoryId" TEXT NOT NULL,
 
     CONSTRAINT "Chart_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "EmbeddedFieldLabel" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "key" TEXT NOT NULL,
+    "label" TEXT NOT NULL,
+
+    CONSTRAINT "EmbeddedFieldLabel_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "Dashboard" (
@@ -1194,6 +1234,8 @@ CREATE TABLE "Workflow" (
     "workspaceId" TEXT NOT NULL,
     "createdBy" TEXT,
     "definition" JSONB NOT NULL,
+    "webhookTokenHash" TEXT,
+    "webhookTokenEncrypted" TEXT,
 
     CONSTRAINT "Workflow_pkey" PRIMARY KEY ("id")
 );
@@ -1232,8 +1274,26 @@ CREATE TABLE "WorkflowRun" (
     "dispatchedAt" TIMESTAMP(3),
     "startedAt" TIMESTAMP(3),
     "finishedAt" TIMESTAMP(3),
+    "callerIp" TEXT,
+    "contentDeletedAt" TIMESTAMP(3),
+    "contentRetentionDays" INTEGER,
+    "testRunDefinition" JSONB,
 
     CONSTRAINT "WorkflowRun_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "WorkflowSample" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workflowId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "sample" JSONB NOT NULL,
+    "lastCalledAt" TIMESTAMP(3),
+    "lastCallerIp" TEXT,
+
+    CONSTRAINT "WorkflowSample_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "WorkflowRunLog" (
@@ -1250,6 +1310,18 @@ CREATE TABLE "WorkflowRunLog" (
     "finishedAt" TIMESTAMP(3),
 
     CONSTRAINT "WorkflowRunLog_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "WorkflowSecret" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workflowId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "boundOrigin" TEXT,
+
+    CONSTRAINT "WorkflowSecret_pkey" PRIMARY KEY ("id")
 );
 
 CREATE INDEX "Creative_workspaceId_updated_at_idx" ON "Creative"("workspaceId", "updated_at");
@@ -1450,6 +1522,14 @@ CREATE INDEX "oauthConsent_clientId_idx" ON "oauthConsent"("clientId");
 
 CREATE INDEX "oauthConsent_userId_idx" ON "oauthConsent"("userId");
 
+CREATE INDEX "McpGrant_clientId_idx" ON "McpGrant"("clientId");
+
+CREATE UNIQUE INDEX "McpGrant_userId_clientId_key" ON "McpGrant"("userId", "clientId");
+
+CREATE INDEX "McpGrantOrganization_organizationId_idx" ON "McpGrantOrganization"("organizationId");
+
+CREATE INDEX "McpGrantWorkspace_workspaceId_idx" ON "McpGrantWorkspace"("workspaceId");
+
 CREATE UNIQUE INDEX "oauthResource_identifier_key" ON "oauthResource"("identifier");
 
 CREATE INDEX "oauthClientResource_resourceId_idx" ON "oauthClientResource"("resourceId");
@@ -1501,6 +1581,8 @@ CREATE INDEX "Chart_workspaceId_created_at_idx" ON "Chart"("workspaceId", "creat
 CREATE INDEX "Chart_feedbackDirectoryId_idx" ON "Chart"("feedbackDirectoryId");
 
 CREATE UNIQUE INDEX "Chart_workspaceId_name_key" ON "Chart"("workspaceId", "name");
+
+CREATE UNIQUE INDEX "EmbeddedFieldLabel_workspaceId_key_key" ON "EmbeddedFieldLabel"("workspaceId", "key");
 
 CREATE INDEX "Dashboard_workspaceId_created_at_idx" ON "Dashboard"("workspaceId", "created_at");
 
@@ -1588,13 +1670,27 @@ CREATE INDEX "WorkflowRun_responseId_idx" ON "WorkflowRun"("responseId");
 
 CREATE INDEX "WorkflowRun_isDryRun_idx" ON "WorkflowRun"("isDryRun");
 
+CREATE INDEX "WorkflowRun_isDryRun_created_at_idx" ON "WorkflowRun"("isDryRun", "created_at");
+
 CREATE INDEX "WorkflowRun_nextAttemptAt_idx" ON "WorkflowRun"("nextAttemptAt");
+
+CREATE INDEX "WorkflowRun_contentDeletedAt_finishedAt_idx" ON "WorkflowRun"("contentDeletedAt", "finishedAt");
 
 CREATE UNIQUE INDEX "WorkflowRun_workflowId_idempotencyKey_key" ON "WorkflowRun"("workflowId", "idempotencyKey");
 
+CREATE INDEX "WorkflowSample_workflowId_workspaceId_idx" ON "WorkflowSample"("workflowId", "workspaceId");
+
+CREATE INDEX "WorkflowSample_updated_at_idx" ON "WorkflowSample"("updated_at");
+
+CREATE UNIQUE INDEX "WorkflowSample_workflowId_source_key" ON "WorkflowSample"("workflowId", "source");
+
 CREATE INDEX "WorkflowRunLog_runId_sequence_idx" ON "WorkflowRunLog"("runId", "sequence");
 
+CREATE INDEX "WorkflowRunLog_status_startedAt_idx" ON "WorkflowRunLog"("status", "startedAt");
+
 CREATE UNIQUE INDEX "WorkflowRunLog_runId_stepId_key" ON "WorkflowRunLog"("runId", "stepId");
+
+CREATE INDEX "WorkflowSecret_workflowId_workspaceId_idx" ON "WorkflowSecret"("workflowId", "workspaceId");
 
 ALTER TABLE "Creative" ADD CONSTRAINT "Creative_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1714,6 +1810,18 @@ ALTER TABLE "oauthConsent" ADD CONSTRAINT "oauthConsent_clientId_fkey" FOREIGN K
 
 ALTER TABLE "oauthConsent" ADD CONSTRAINT "oauthConsent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "McpGrant" ADD CONSTRAINT "McpGrant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrant" ADD CONSTRAINT "McpGrant_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "oauthClient"("clientId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantOrganization" ADD CONSTRAINT "McpGrantOrganization_grantId_fkey" FOREIGN KEY ("grantId") REFERENCES "McpGrant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantOrganization" ADD CONSTRAINT "McpGrantOrganization_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantWorkspace" ADD CONSTRAINT "McpGrantWorkspace_grantId_fkey" FOREIGN KEY ("grantId") REFERENCES "McpGrant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantWorkspace" ADD CONSTRAINT "McpGrantWorkspace_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "oauthClientResource" ADD CONSTRAINT "oauthClientResource_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "oauthClient"("clientId") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "oauthClientResource" ADD CONSTRAINT "oauthClientResource_resourceId_fkey" FOREIGN KEY ("resourceId") REFERENCES "oauthResource"("identifier") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1751,6 +1859,8 @@ ALTER TABLE "Chart" ADD CONSTRAINT "Chart_workspaceId_fkey" FOREIGN KEY ("worksp
 ALTER TABLE "Chart" ADD CONSTRAINT "Chart_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "Chart" ADD CONSTRAINT "Chart_feedbackDirectoryId_fkey" FOREIGN KEY ("feedbackDirectoryId") REFERENCES "FeedbackDirectory"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "EmbeddedFieldLabel" ADD CONSTRAINT "EmbeddedFieldLabel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "Dashboard" ADD CONSTRAINT "Dashboard_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1826,7 +1936,11 @@ ALTER TABLE "WorkflowRun" ADD CONSTRAINT "WorkflowRun_workflowVersionId_fkey" FO
 
 ALTER TABLE "WorkflowRun" ADD CONSTRAINT "WorkflowRun_responseId_fkey" FOREIGN KEY ("responseId") REFERENCES "Response"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "WorkflowSample" ADD CONSTRAINT "WorkflowSample_workflowId_workspaceId_fkey" FOREIGN KEY ("workflowId", "workspaceId") REFERENCES "Workflow"("id", "workspaceId") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "WorkflowRunLog" ADD CONSTRAINT "WorkflowRunLog_runId_fkey" FOREIGN KEY ("runId") REFERENCES "WorkflowRun"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "WorkflowSecret" ADD CONSTRAINT "WorkflowSecret_workflowId_workspaceId_fkey" FOREIGN KEY ("workflowId", "workspaceId") REFERENCES "Workflow"("id", "workspaceId") ON DELETE CASCADE ON UPDATE CASCADE;
 ```
 
 </details>
@@ -1875,7 +1989,10 @@ ALTER TABLE "WorkflowRunLog" ADD CONSTRAINT "WorkflowRunLog_runId_fkey" FOREIGN 
 | [oauthAccessToken](#model-oauthAccessToken)                               | `oauthAccessToken`                | Better Auth opaque access token records. The token column stores Better Auth's hashed lookup value. JWT access tokens are verified through JWKS and bounded by the configured short lifetime.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [oauthRefreshToken](#model-oauthRefreshToken)                             | `oauthRefreshToken`               | Better Auth OAuth refresh tokens used by delegated MCP clients. The token column stores a hashed lookup value.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | [oauthConsent](#model-oauthConsent)                                       | `oauthConsent`                    | Better Auth OAuth user consent grants for delegated clients.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
-| [oauthResource](#model-oauthResource)                                     | `oauthResource`                   | Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option — a token is now bound to the resource it was approved for instead of to a static allow-list. `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [McpGrant](#model-McpGrant)                                               | `McpGrant`                        | Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option — a token is now bound to the resource it was approved for instead of to a static allow-list. `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at. What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace access and an access level per permission. One per OAuth connection, keyed by user and client rather than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection and settles them later. Every MCP request reads it; without one the request is refused. The client's OAuth scopes stay on the consent and cap it.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [McpGrantOrganization](#model-McpGrantOrganization)                       | `McpGrantOrganization`            | An organization a grant with `organizations` access reaches, workspaces created there later included.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [McpGrantWorkspace](#model-McpGrantWorkspace)                             | `McpGrantWorkspace`               | A workspace a grant with `workspaces` access reaches.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [oauthResource](#model-oauthResource)                                     | `oauthResource`                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [oauthClientResource](#model-oauthClientResource)                         | `oauthClientResource`             | Better Auth 1.7 (ENG-2343): links a client to the resources it may request tokens for. With `enforcePerClientResources` (the default) a missing row means `invalid_target` at the token endpoint, which is why the migration backfills one row per existing client. Both sides reference natural keys, matching the other oauth child tables.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [oauthClientAssertion](#model-oauthClientAssertion)                       | `oauthClientAssertion`            | Better Auth 1.7 (ENG-2343): replay store for `private_key_jwt` client assertions (the row id is the assertion jti). We use no private_key_jwt client authentication today, but the plugin declares the table, so omitting it risks an adapter error on a code path we do not control.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [PasswordResetToken](#model-PasswordResetToken)                           | `PasswordResetToken`              | Stores the active password reset token for a user. Tokens are opaque, hashed at rest, revocable, and single-use.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
@@ -1889,6 +2006,7 @@ ALTER TABLE "WorkflowRunLog" ADD CONSTRAINT "WorkflowRunLog_runId_fkey" FOREIGN 
 | [TeamUser](#model-TeamUser)                                               | `TeamUser`                        | Links users to teams with specific roles. Manages team membership and permissions. @property team - The associated team @property user - The team member @property role - User's role within the team                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [WorkspaceTeam](#model-WorkspaceTeam)                                     | `WorkspaceTeam`                   | Defines team access to specific workspaces. Manages workspace-level permissions for teams. @property workspace - The accessed workspace @property team - The team receiving access @property permission - Level of access granted                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | [Chart](#model-Chart)                                                     | `Chart`                           | Represents a chart/visualization that can be used in multiple dashboards. Charts are reusable components that query analytics data. @property id - Unique identifier for the chart @property name - Display name of the chart @property type - Type of visualization (bar, line, pie, etc.) @property workspace - The workspace this chart belongs to @property query - Cube.js query configuration (JSON) @property config - Chart-specific configuration (colors, labels, etc.) @property createdBy - User who created the chart @property dashboards - Dashboards that use this chart                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [EmbeddedFieldLabel](#model-EmbeddedFieldLabel)                           | `EmbeddedFieldLabel`              | A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in place of the key in chart legends, headers and the chart builder's field pickers. One per key and workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields are never renamed here: they keep their translated names. @property key - The embedded-data key exactly as collected, case included @property label - The name shown for the key across the workspace                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | [Dashboard](#model-Dashboard)                                             | `Dashboard`                       | Represents a dashboard containing multiple charts. Dashboards aggregate analytics insights at the workspace level. @property id - Unique identifier for the dashboard @property name - Display name of the dashboard @property workspace - The workspace this dashboard belongs to @property widgets - Charts on this dashboard @property filters - The dashboard filters pinned to its top bar, in order: `{ id, field, operator, label }`, at most 10 (ADR-0026). Each viewer's picks live in their own browser, not here. @property createdBy - User who created the dashboard                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | [DashboardWidget](#model-DashboardWidget)                                 | `DashboardWidget`                 | Represents a chart widget on a dashboard. Widgets are positioned using a grid layout system. @property id - Unique identifier for the widget @property dashboard - The dashboard this widget belongs to @property chart - The chart displayed in this widget (chart name is used for display) @property layout - Grid layout configuration (x, y, width, height) @property order - Display order within the dashboard                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [DeletionCleanup](#model-DeletionCleanup)                                 | `DeletionCleanup`                 | Work left over after a delete commits (ENG-3612, ENG-3614: deleted means deleted): Hub records and storage files that can't be removed inside the database transaction. A row is written in the same transaction as the delete, so a delete that commits always gets its cleanup and one that rolls back queues nothing. A worker drains it with retries, never giving up, and deletes each row once done.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -1910,7 +2028,9 @@ ALTER TABLE "WorkflowRunLog" ADD CONSTRAINT "WorkflowRunLog_runId_fkey" FOREIGN 
 | [Workflow](#model-Workflow)                                               | `Workflow`                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [WorkflowVersion](#model-WorkflowVersion)                                 | `WorkflowVersion`                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | [WorkflowRun](#model-WorkflowRun)                                         | `WorkflowRun`                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [WorkflowSample](#model-WorkflowSample)                                   | `WorkflowSample`                  | Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | [WorkflowRunLog](#model-WorkflowRunLog)                                   | `WorkflowRunLog`                  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [WorkflowSecret](#model-WorkflowSecret)                                   | `WorkflowSecret`                  | Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted with the workflow. A value is only sent to the origin it was set for (ADR 0051).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 
 | Enum                                                                   | Name in the database             | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1940,6 +2060,7 @@ ALTER TABLE "WorkflowRunLog" ADD CONSTRAINT "WorkflowRunLog_runId_fkey" FOREIGN 
 | [OrganizationRole](#enum-OrganizationRole)                             | `OrganizationRole`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [ApiKeyPermission](#enum-ApiKeyPermission)                             | `ApiKeyPermission`               | Defines permission levels for API keys. Controls what operations an API key can perform.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | [IdentityProvider](#enum-IdentityProvider)                             | `IdentityProvider`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [McpGrantAccess](#enum-McpGrantAccess)                                 | `McpGrantAccess`                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | [EmbeddedDataSource](#enum-EmbeddedDataSource)                         | `EmbeddedDataSource`             | Where an Embedded Data field's value comes from. `computed` is set by survey logic, `ingested` arrives from a URL param or the SDK, and `reserved` is auto-captured system metadata. Reserved fields are never stored as rows — they are a static catalog in code — but the value exists so every layer shares one type.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | [EmbeddedDataType](#enum-EmbeddedDataType)                             | `EmbeddedDataType`               | The declared type of an Embedded Data field's value.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | [TeamUserRole](#enum-TeamUserRole)                                     | `TeamUserRole`                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
@@ -5432,6 +5553,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -5592,26 +5714,27 @@ Each response is linked to a specific survey and optionally to a contact.
 
 ![Response and the models it relates to](tables/Response.svg)
 
-| Field                          | Type                                       | Constraints                                | Default              | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| ------------------------------ | ------------------------------------------ | ------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                           | `String`                                   | PK NOT NULL                                | `cuid(1)`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `createdAt` (`created_at`)     | `DateTime`                                 | NOT NULL                                   | `now()`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `updatedAt` (`updated_at`)     | `DateTime`                                 | NOT NULL                                   | `now()` `@updatedAt` |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `finished`                     | `Boolean`                                  | NOT NULL                                   | `false`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `surveyId`                     | `String`                                   | NOT NULL → [Survey.id](#model-Survey)      |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `contactId`                    | `String`                                   | NULL → [Contact.id](#model-Contact)        |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `endingId`                     | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `data`                         | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseData]                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `variables`                    | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseVariables]                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| `ttc`                          | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseTtc]                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
-| `meta`                         | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseMeta]                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `ingestFlags` (`ingest_flags`) | `Json`                                     | NULL                                       |                      | Why a value in `data` will not read back as its declared Embedded Data type — a failed coercion or a truncated oversize value (ENG-1845). Server-computed on every ingest and never accepted from the client. Null means no ingest boundary has written it, which is not the same claim as an empty list: without this column a wrong-typed value is indistinguishable from an absent one, and surfacing that in the UI (v2) would have nothing to read. [ResponseIngestFlags] |
-| `outcome`                      | [`ResponseOutcome`](#enum-ResponseOutcome) | NULL                                       |                      | A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis export by default and from Feedback Records, and nothing else: it is never deleted and every count, list, webhook and integration still includes it (ENG-6780).                                                                                                                                                                                                                 |
-| `notShown` (`not_shown`)       | `Json`                                     | NULL                                       |                      | What the respondent was not shown (ENG-6936, ADR 0029): the blocks and elements a show-if kept from them, and per element its options, matrix rows and columns, by stable ids. Written by the survey while they answer; null means unknown (older responses and bundles), read as before. Omitted from reads without a `select` (PRISMA_GLOBAL_OMIT), so it never reaches a v1/v2 payload, webhook or integration. [ResponseNotShown]                                          |
-| `contactAttributes`            | `Json`                                     | NULL                                       |                      | [ResponseContactAttributes]                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
-| `singleUseId`                  | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `language`                     | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
-| `displayId`                    | `String`                                   | UNIQUE NULL → [Display.id](#model-Display) |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| Field                                         | Type                                       | Constraints                                | Default              | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --------------------------------------------- | ------------------------------------------ | ------------------------------------------ | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                                          | `String`                                   | PK NOT NULL                                | `cuid(1)`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `createdAt` (`created_at`)                    | `DateTime`                                 | NOT NULL                                   | `now()`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `updatedAt` (`updated_at`)                    | `DateTime`                                 | NOT NULL                                   | `now()` `@updatedAt` |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `finished`                                    | `Boolean`                                  | NOT NULL                                   | `false`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `surveyId`                                    | `String`                                   | NOT NULL → [Survey.id](#model-Survey)      |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `contactId`                                   | `String`                                   | NULL → [Contact.id](#model-Contact)        |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `endingId`                                    | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `data`                                        | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseData]                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `variables`                                   | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseVariables]                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `ttc`                                         | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseTtc]                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `meta`                                        | `Json`                                     | NOT NULL                                   | `"{}"`               | [ResponseMeta]                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `ingestFlags` (`ingest_flags`)                | `Json`                                     | NULL                                       |                      | Why a value in `data` will not read back as its declared Embedded Data type — a failed coercion or a truncated oversize value (ENG-1845). Server-computed on every ingest and never accepted from the client. Null means no ingest boundary has written it, which is not the same claim as an empty list: without this column a wrong-typed value is indistinguishable from an absent one, and surfacing that in the UI (v2) would have nothing to read. [ResponseIngestFlags] |
+| `calBookings` (`cal_bookings_by_question_id`) | `Json`                                     | NULL                                       |                      | What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data` keeps the string "booked" for those questions, so this column is purely additive: it is omitted from every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`, never accepted as a field of its own. [ResponseCalBookings]                  |
+| `outcome`                                     | [`ResponseOutcome`](#enum-ResponseOutcome) | NULL                                       |                      | A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis export by default and from Feedback Records, and nothing else: it is never deleted and every count, list, webhook and integration still includes it (ENG-6780).                                                                                                                                                                                                                 |
+| `notShown` (`not_shown`)                      | `Json`                                     | NULL                                       |                      | What the respondent was not shown (ENG-6936, ADR 0029): the blocks and elements a show-if kept from them, and per element its options, matrix rows and columns, by stable ids. Written by the survey while they answer; null means unknown (older responses and bundles), read as before. Omitted from reads without a `select` (PRISMA_GLOBAL_OMIT), so it never reaches a v1/v2 payload, webhook or integration. [ResponseNotShown]                                          |
+| `contactAttributes`                           | `Json`                                     | NULL                                       |                      | [ResponseContactAttributes]                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `singleUseId`                                 | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `language`                                    | `String`                                   | NULL                                       |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `displayId`                                   | `String`                                   | UNIQUE NULL → [Display.id](#model-Display) |                      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 
 #### Indexes
 
@@ -5652,6 +5775,7 @@ CREATE TABLE "Response" (
     "ttc" JSONB NOT NULL DEFAULT '{}',
     "meta" JSONB NOT NULL DEFAULT '{}',
     "ingest_flags" JSONB,
+    "cal_bookings_by_question_id" JSONB,
     "outcome" "ResponseOutcome",
     "not_shown" JSONB,
     "contactAttributes" JSONB,
@@ -5710,6 +5834,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -5777,6 +5902,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -5928,7 +6054,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -5958,6 +6088,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -6012,6 +6143,7 @@ RETURNING
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -6053,6 +6185,7 @@ RETURNING
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -6088,6 +6221,7 @@ RETURNING
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -6488,6 +6622,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -6812,6 +6947,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -8085,6 +8221,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -9237,6 +9374,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -10515,11 +10653,13 @@ Each organization can have multiple workspaces to separate different application
 - `id` ← [ActionClass.workspaceId](#model-ActionClass) (one-to-many, on delete Cascade)
 - `id` ← [Integration.workspaceId](#model-Integration) (one-to-many, on delete Cascade)
 - `id` ← [ApiKeyWorkspace.workspaceId](#model-ApiKeyWorkspace) (one-to-many, on delete Cascade)
+- `id` ← [McpGrantWorkspace.workspaceId](#model-McpGrantWorkspace) (one-to-many, on delete Cascade)
 - `id` ← [Segment.workspaceId](#model-Segment) (one-to-many, on delete Cascade)
 - `id` ← [Language.workspaceId](#model-Language) (one-to-many, on delete Cascade)
 - `id` ← [EmbeddedData.workspaceId](#model-EmbeddedData) (one-to-many, on delete Cascade)
 - `id` ← [WorkspaceTeam.workspaceId](#model-WorkspaceTeam) (one-to-many, on delete Cascade)
 - `id` ← [Chart.workspaceId](#model-Chart) (one-to-many, on delete Cascade)
+- `id` ← [EmbeddedFieldLabel.workspaceId](#model-EmbeddedFieldLabel) (one-to-many, on delete Cascade)
 - `id` ← [Dashboard.workspaceId](#model-Dashboard) (one-to-many, on delete Cascade)
 - `id` ← [AttachmentExport.workspaceId](#model-AttachmentExport) (one-to-many, on delete Cascade)
 - `id` ← [FeedbackSource.workspaceId](#model-FeedbackSource) (one-to-many, on delete Cascade)
@@ -10639,6 +10779,7 @@ await prisma.workspace.findMany({
     feedbackDirectoryWorkspaces: true,
     charts: true,
     dashboards: true,
+    embeddedFieldLabels: true,
     creatives: true,
     attachmentExports: true,
     surveys: true,
@@ -10653,6 +10794,7 @@ await prisma.workspace.findMany({
     feedbackSources: true,
     workflows: true,
     workflowRuns: true,
+    mcpGrants: true,
   },
 });
 ```
@@ -10798,6 +10940,21 @@ FROM
   "public"."Dashboard"
 WHERE
   "public"."Dashboard"."workspaceId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+FROM
+  "public"."EmbeddedFieldLabel"
+WHERE
+  "public"."EmbeddedFieldLabel"."workspaceId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -11083,7 +11240,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -11113,11 +11272,26 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
   "public"."WorkflowRun"."workspaceId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+FROM
+  "public"."McpGrantWorkspace"
+WHERE
+  "public"."McpGrantWorkspace"."workspaceId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -11352,6 +11526,7 @@ supports multiple organizations with multi-tenancy.
 - `id` ← [Membership.organizationId](#model-Membership) (one-to-many, on delete Cascade)
 - `id` ← [Invite.organizationId](#model-Invite) (one-to-many, on delete Cascade)
 - `id` ← [ApiKey.organizationId](#model-ApiKey) (one-to-many, on delete Cascade)
+- `id` ← [McpGrantOrganization.organizationId](#model-McpGrantOrganization) (one-to-many, on delete Cascade)
 - `id` ← [Team.organizationId](#model-Team) (one-to-many, on delete Cascade)
 - `id` ← [FeedbackDirectory.organizationId](#model-FeedbackDirectory) (one-to-many, on delete Cascade)
 - `id` ← [RetentionPolicy.organizationId](#model-RetentionPolicy) (one-to-many, on delete Cascade)
@@ -11441,6 +11616,7 @@ await prisma.organization.findMany({
     retentionExemptions: true,
     retentionRuns: true,
     retentionNotices: true,
+    mcpGrants: true,
   },
 });
 ```
@@ -11664,6 +11840,17 @@ FROM
   "public"."RetentionNotice"
 WHERE
   "public"."RetentionNotice"."organizationId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+FROM
+  "public"."McpGrantOrganization"
+WHERE
+  "public"."McpGrantOrganization"."organizationId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -14681,6 +14868,7 @@ Better Auth OAuth 2.1 client registrations for MCP and future OAuth clients.
 - `clientId` ← [oauthAccessToken.clientId](#model-oauthAccessToken) (one-to-many, on delete Cascade)
 - `clientId` ← [oauthRefreshToken.clientId](#model-oauthRefreshToken) (one-to-many, on delete Cascade)
 - `clientId` ← [oauthConsent.clientId](#model-oauthConsent) (one-to-many, on delete Cascade)
+- `clientId` ← [McpGrant.clientId](#model-McpGrant) (one-to-many, on delete Cascade)
 - `clientId` ← [oauthClientResource.clientId](#model-oauthClientResource) (one-to-many, on delete Cascade)
 
 #### Definition
@@ -14821,7 +15009,14 @@ FROM
 
 ```ts
 await prisma.oauthClient.findMany({
-  include: { user: true, accessTokens: true, refreshTokens: true, consents: true, resources: true },
+  include: {
+    user: true,
+    accessTokens: true,
+    refreshTokens: true,
+    consents: true,
+    resources: true,
+    mcpGrants: true,
+  },
 });
 ```
 
@@ -14981,6 +15176,22 @@ FROM
   "public"."oauthClientResource"
 WHERE
   "public"."oauthClientResource"."clientId" IN ($1)
+OFFSET
+  $2
+-- params: ["<clientId of the rows above>","0"]
+
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  "public"."McpGrant"."clientId" IN ($1)
 OFFSET
   $2
 -- params: ["<clientId of the rows above>","0"]
@@ -16481,14 +16692,805 @@ RETURNING
 
 </details>
 
-<a id="model-oauthResource"></a>
+<a id="model-McpGrant"></a>
 
-### oauthResource
+### McpGrant
 
 Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
 its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
 a token is now bound to the resource it was approved for instead of to a static allow-list.
 `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+access and an access level per permission. One per OAuth connection, keyed by user and client rather
+than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+and settles them later. Every MCP request reads it; without one the request is refused. The client's
+OAuth scopes stay on the consent and cap it.
+
+![McpGrant and the models it relates to](tables/McpGrant.svg)
+
+| Field                      | Type                                     | Constraints                                           | Default      | Description                                                                                                                                                                                                                                                                                              |
+| -------------------------- | ---------------------------------------- | ----------------------------------------------------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                       | `String`                                 | PK NOT NULL                                           | `cuid(1)`    |                                                                                                                                                                                                                                                                                                          |
+| `createdAt` (`created_at`) | `DateTime`                               | NOT NULL                                              | `now()`      |                                                                                                                                                                                                                                                                                                          |
+| `updatedAt` (`updated_at`) | `DateTime`                               | NOT NULL                                              | `@updatedAt` |                                                                                                                                                                                                                                                                                                          |
+| `userId`                   | `String`                                 | NOT NULL → [User.id](#model-User)                     |              |                                                                                                                                                                                                                                                                                                          |
+| `clientId`                 | `String`                                 | NOT NULL → [oauthClient.clientId](#model-oauthClient) |              |                                                                                                                                                                                                                                                                                                          |
+| `access`                   | [`McpGrantAccess`](#enum-McpGrantAccess) | NOT NULL                                              | `all`        | Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations in `organizations` (and every workspace in them, later ones included), or only the workspaces in `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing. |
+| `permissions`              | `Json`                                   | NOT NULL                                              | `"{}"`       | The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`. A permission that is absent has No access.                                                                                                                                                           |
+
+#### Indexes
+
+- `@@index([clientId])`
+- `@@unique([userId, clientId])`
+
+#### References
+
+- `userId` → [User.id](#model-User) (many-to-one, on delete Cascade)
+- `clientId` → [oauthClient.clientId](#model-oauthClient) (many-to-one, on delete Cascade)
+
+#### Referenced by
+
+- `id` ← [McpGrantOrganization.grantId](#model-McpGrantOrganization) (one-to-many, on delete Cascade)
+- `id` ← [McpGrantWorkspace.grantId](#model-McpGrantWorkspace) (one-to-many, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "McpGrant" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+    "clientId" TEXT NOT NULL,
+    "access" "McpGrantAccess" NOT NULL DEFAULT 'all',
+    "permissions" JSONB NOT NULL DEFAULT '{}',
+
+    CONSTRAINT "McpGrant_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "McpGrant_clientId_idx" ON "McpGrant"("clientId");
+
+CREATE UNIQUE INDEX "McpGrant_userId_clientId_key" ON "McpGrant"("userId", "clientId");
+
+ALTER TABLE "McpGrant" ADD CONSTRAINT "McpGrant_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrant" ADD CONSTRAINT "McpGrant_clientId_fkey" FOREIGN KEY ("clientId") REFERENCES "oauthClient"("clientId") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.mcpGrant.findMany();
+```
+
+```sql
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.mcpGrant.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."McpGrant"."id"
+    FROM
+      "public"."McpGrant"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.mcpGrant.findMany({
+  include: { user: true, client: true, organizations: true, workspaces: true },
+});
+```
+
+```sql
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."User"."id",
+  "public"."User"."created_at",
+  "public"."User"."updated_at",
+  "public"."User"."name",
+  "public"."User"."email",
+  "public"."User"."email_verified",
+  "public"."User"."twoFactorSecret",
+  "public"."User"."twoFactorEnabled",
+  "public"."User"."backupCodes",
+  "public"."User"."password",
+  "public"."User"."identityProvider"::text,
+  "public"."User"."identityProviderAccountId",
+  "public"."User"."groupId",
+  "public"."User"."notificationSettings",
+  "public"."User"."locale",
+  "public"."User"."lastLoginAt",
+  "public"."User"."isActive",
+  "public"."User"."reactivatedAt",
+  "public"."User"."lastActiveAt",
+  "public"."User"."isBootstrapAdmin"::text
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<userId of the rows above>","0"]
+
+SELECT
+  "public"."oauthClient"."id",
+  "public"."oauthClient"."clientId",
+  "public"."oauthClient"."clientSecret",
+  "public"."oauthClient"."disabled",
+  "public"."oauthClient"."skipConsent",
+  "public"."oauthClient"."enableEndSession",
+  "public"."oauthClient"."subjectType",
+  "public"."oauthClient"."scopes",
+  "public"."oauthClient"."userId",
+  "public"."oauthClient"."createdAt",
+  "public"."oauthClient"."updatedAt",
+  "public"."oauthClient"."name",
+  "public"."oauthClient"."uri",
+  "public"."oauthClient"."icon",
+  "public"."oauthClient"."contacts",
+  "public"."oauthClient"."tos",
+  "public"."oauthClient"."policy",
+  "public"."oauthClient"."softwareId",
+  "public"."oauthClient"."softwareVersion",
+  "public"."oauthClient"."softwareStatement",
+  "public"."oauthClient"."redirectUris",
+  "public"."oauthClient"."postLogoutRedirectUris",
+  "public"."oauthClient"."tokenEndpointAuthMethod",
+  "public"."oauthClient"."grantTypes",
+  "public"."oauthClient"."responseTypes",
+  "public"."oauthClient"."public",
+  "public"."oauthClient"."type",
+  "public"."oauthClient"."requirePKCE",
+  "public"."oauthClient"."referenceId",
+  "public"."oauthClient"."metadata",
+  "public"."oauthClient"."clientDiscoveryId",
+  "public"."oauthClient"."clientCredentialsScopes",
+  "public"."oauthClient"."backchannelLogoutUri",
+  "public"."oauthClient"."backchannelLogoutSessionRequired",
+  "public"."oauthClient"."applicationType",
+  "public"."oauthClient"."jwks",
+  "public"."oauthClient"."jwksUri",
+  "public"."oauthClient"."dpopBoundAccessTokens"
+FROM
+  "public"."oauthClient"
+WHERE
+  "public"."oauthClient"."clientId" IN ($1)
+OFFSET
+  $2
+-- params: ["<clientId of the rows above>","0"]
+
+SELECT
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+FROM
+  "public"."McpGrantOrganization"
+WHERE
+  "public"."McpGrantOrganization"."grantId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+FROM
+  "public"."McpGrantWorkspace"
+WHERE
+  "public"."McpGrantWorkspace"."grantId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.mcpGrant.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  (
+    "public"."McpGrant"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.mcpGrant.create({ data: { userId: "example", clientId: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."McpGrant" (
+    "id",
+    "created_at",
+    "updated_at",
+    "userId",
+    "clientId",
+    "access",
+    "permissions"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    CAST($6::text AS "public"."McpGrantAccess"),
+    $7
+  )
+RETURNING
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+-- params: ["<cuid(1)>","<now()>","<now()>","example","example","all","{}"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.mcpGrant.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."McpGrant"
+SET
+  "created_at" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    "public"."McpGrant"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.mcpGrant.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."McpGrant"
+WHERE
+  (
+    "public"."McpGrant"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-McpGrantOrganization"></a>
+
+### McpGrantOrganization
+
+An organization a grant with `organizations` access reaches, workspaces created there later included.
+
+![McpGrantOrganization and the models it relates to](tables/McpGrantOrganization.svg)
+
+| Field            | Type     | Constraints                                          | Default | Description |
+| ---------------- | -------- | ---------------------------------------------------- | ------- | ----------- |
+| `grantId`        | `String` | PK NOT NULL → [McpGrant.id](#model-McpGrant)         |         |             |
+| `organizationId` | `String` | PK NOT NULL → [Organization.id](#model-Organization) |         |             |
+
+#### Indexes
+
+- `@@id([grantId, organizationId])`
+- `@@index([organizationId])`
+
+#### References
+
+- `grantId` → [McpGrant.id](#model-McpGrant) (many-to-one, on delete Cascade)
+- `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "McpGrantOrganization" (
+    "grantId" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+
+    CONSTRAINT "McpGrantOrganization_pkey" PRIMARY KEY ("grantId","organizationId")
+);
+
+CREATE INDEX "McpGrantOrganization_organizationId_idx" ON "McpGrantOrganization"("organizationId");
+
+ALTER TABLE "McpGrantOrganization" ADD CONSTRAINT "McpGrantOrganization_grantId_fkey" FOREIGN KEY ("grantId") REFERENCES "McpGrant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantOrganization" ADD CONSTRAINT "McpGrantOrganization_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.mcpGrantOrganization.findMany();
+```
+
+```sql
+SELECT
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+FROM
+  "public"."McpGrantOrganization"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.mcpGrantOrganization.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."McpGrantOrganization"."grantId",
+      "public"."McpGrantOrganization"."organizationId"
+    FROM
+      "public"."McpGrantOrganization"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.mcpGrantOrganization.findMany({ include: { grant: true, organization: true } });
+```
+
+```sql
+SELECT
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+FROM
+  "public"."McpGrantOrganization"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  "public"."McpGrant"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<grantId of the rows above>","0"]
+
+SELECT
+  "public"."Organization"."id",
+  "public"."Organization"."created_at",
+  "public"."Organization"."updated_at",
+  "public"."Organization"."name",
+  "public"."Organization"."whitelabel",
+  "public"."Organization"."isAISmartToolsEnabled",
+  "public"."Organization"."displayTimeZone"
+FROM
+  "public"."Organization"
+WHERE
+  "public"."Organization"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organizationId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.mcpGrantOrganization.findUnique({
+  where: { grantId_organizationId: { grantId: "example", organizationId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+FROM
+  "public"."McpGrantOrganization"
+WHERE
+  (
+    (
+      "public"."McpGrantOrganization"."grantId" = $1
+      AND "public"."McpGrantOrganization"."organizationId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.mcpGrantOrganization.create({
+  data: { grantId: "example", organizationId: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."McpGrantOrganization" ("grantId", "organizationId")
+VALUES
+  ($1, $2)
+RETURNING
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.mcpGrantOrganization.delete({
+  where: { grantId_organizationId: { grantId: "example", organizationId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."McpGrantOrganization"
+WHERE
+  (
+    (
+      "public"."McpGrantOrganization"."grantId" = $1
+      AND "public"."McpGrantOrganization"."organizationId" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."McpGrantOrganization"."grantId",
+  "public"."McpGrantOrganization"."organizationId"
+-- params: ["example","example"]
+```
+
+</details>
+
+<a id="model-McpGrantWorkspace"></a>
+
+### McpGrantWorkspace
+
+A workspace a grant with `workspaces` access reaches.
+
+![McpGrantWorkspace and the models it relates to](tables/McpGrantWorkspace.svg)
+
+| Field         | Type     | Constraints                                    | Default | Description |
+| ------------- | -------- | ---------------------------------------------- | ------- | ----------- |
+| `grantId`     | `String` | PK NOT NULL → [McpGrant.id](#model-McpGrant)   |         |             |
+| `workspaceId` | `String` | PK NOT NULL → [Workspace.id](#model-Workspace) |         |             |
+
+#### Indexes
+
+- `@@id([grantId, workspaceId])`
+- `@@index([workspaceId])`
+
+#### References
+
+- `grantId` → [McpGrant.id](#model-McpGrant) (many-to-one, on delete Cascade)
+- `workspaceId` → [Workspace.id](#model-Workspace) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "McpGrantWorkspace" (
+    "grantId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+
+    CONSTRAINT "McpGrantWorkspace_pkey" PRIMARY KEY ("grantId","workspaceId")
+);
+
+CREATE INDEX "McpGrantWorkspace_workspaceId_idx" ON "McpGrantWorkspace"("workspaceId");
+
+ALTER TABLE "McpGrantWorkspace" ADD CONSTRAINT "McpGrantWorkspace_grantId_fkey" FOREIGN KEY ("grantId") REFERENCES "McpGrant"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "McpGrantWorkspace" ADD CONSTRAINT "McpGrantWorkspace_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.mcpGrantWorkspace.findMany();
+```
+
+```sql
+SELECT
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+FROM
+  "public"."McpGrantWorkspace"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.mcpGrantWorkspace.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."McpGrantWorkspace"."grantId",
+      "public"."McpGrantWorkspace"."workspaceId"
+    FROM
+      "public"."McpGrantWorkspace"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.mcpGrantWorkspace.findMany({ include: { grant: true, workspace: true } });
+```
+
+```sql
+SELECT
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+FROM
+  "public"."McpGrantWorkspace"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  "public"."McpGrant"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<grantId of the rows above>","0"]
+
+SELECT
+  "public"."Workspace"."id",
+  "public"."Workspace"."created_at",
+  "public"."Workspace"."updated_at",
+  "public"."Workspace"."name",
+  "public"."Workspace"."legacyEnvironmentId",
+  "public"."Workspace"."organizationId",
+  "public"."Workspace"."styling",
+  "public"."Workspace"."config",
+  "public"."Workspace"."recontactDays",
+  "public"."Workspace"."linkSurveyBranding",
+  "public"."Workspace"."inAppSurveyBranding",
+  "public"."Workspace"."placement"::text,
+  "public"."Workspace"."clickOutsideClose",
+  "public"."Workspace"."overlay"::text,
+  "public"."Workspace"."overlayColor",
+  "public"."Workspace"."overlayOpacity",
+  "public"."Workspace"."logo",
+  "public"."Workspace"."appSetupCompleted",
+  "public"."Workspace"."customHeadScripts",
+  "public"."Workspace"."customCss",
+  "public"."Workspace"."customCssPrevious"
+FROM
+  "public"."Workspace"
+WHERE
+  "public"."Workspace"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<workspaceId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.mcpGrantWorkspace.findUnique({
+  where: { grantId_workspaceId: { grantId: "example", workspaceId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+FROM
+  "public"."McpGrantWorkspace"
+WHERE
+  (
+    (
+      "public"."McpGrantWorkspace"."grantId" = $1
+      AND "public"."McpGrantWorkspace"."workspaceId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.mcpGrantWorkspace.create({ data: { grantId: "example", workspaceId: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."McpGrantWorkspace" ("grantId", "workspaceId")
+VALUES
+  ($1, $2)
+RETURNING
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.mcpGrantWorkspace.delete({
+  where: { grantId_workspaceId: { grantId: "example", workspaceId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."McpGrantWorkspace"
+WHERE
+  (
+    (
+      "public"."McpGrantWorkspace"."grantId" = $1
+      AND "public"."McpGrantWorkspace"."workspaceId" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."McpGrantWorkspace"."grantId",
+  "public"."McpGrantWorkspace"."workspaceId"
+-- params: ["example","example"]
+```
+
+</details>
+
+<a id="model-oauthResource"></a>
+
+### oauthResource
 
 ![oauthResource and the models it relates to](tables/oauthResource.svg)
 
@@ -17557,6 +18559,7 @@ Central model for user authentication and profile management.
 - `id` ← [oauthAccessToken.userId](#model-oauthAccessToken) (one-to-many, on delete Cascade)
 - `id` ← [oauthRefreshToken.userId](#model-oauthRefreshToken) (one-to-many, on delete Cascade)
 - `id` ← [oauthConsent.userId](#model-oauthConsent) (one-to-many, on delete Cascade)
+- `id` ← [McpGrant.userId](#model-McpGrant) (one-to-many, on delete Cascade)
 - `id` ← [PasswordResetToken.userId](#model-PasswordResetToken) (one-to-one, on delete Cascade)
 - `id` ← [TeamUser.userId](#model-TeamUser) (one-to-many, on delete Cascade)
 - `id` ← [Chart.createdBy](#model-Chart) (one-to-many, on delete SetNull)
@@ -17680,6 +18683,7 @@ await prisma.user.findMany({
     oauthAccessTokens: true,
     oauthRefreshTokens: true,
     oauthConsents: true,
+    mcpGrants: true,
     passwordResetToken: true,
     invitesCreated: true,
     invitesAccepted: true,
@@ -17917,6 +18921,22 @@ FROM
   "public"."oauthConsent"
 WHERE
   "public"."oauthConsent"."userId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."McpGrant"."id",
+  "public"."McpGrant"."created_at",
+  "public"."McpGrant"."updated_at",
+  "public"."McpGrant"."userId",
+  "public"."McpGrant"."clientId",
+  "public"."McpGrant"."access"::text,
+  "public"."McpGrant"."permissions"
+FROM
+  "public"."McpGrant"
+WHERE
+  "public"."McpGrant"."userId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -18212,7 +19232,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -21509,6 +22531,270 @@ RETURNING
   "public"."Chart"."config",
   "public"."Chart"."createdBy",
   "public"."Chart"."feedbackDirectoryId"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-EmbeddedFieldLabel"></a>
+
+### EmbeddedFieldLabel
+
+A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+are never renamed here: they keep their translated names.
+
+@property key - The embedded-data key exactly as collected, case included
+@property label - The name shown for the key across the workspace
+
+![EmbeddedFieldLabel and the models it relates to](tables/EmbeddedFieldLabel.svg)
+
+| Field                      | Type       | Constraints                                 | Default      | Description |
+| -------------------------- | ---------- | ------------------------------------------- | ------------ | ----------- |
+| `id`                       | `String`   | PK NOT NULL                                 | `cuid(1)`    |             |
+| `createdAt` (`created_at`) | `DateTime` | NOT NULL                                    | `now()`      |             |
+| `updatedAt` (`updated_at`) | `DateTime` | NOT NULL                                    | `@updatedAt` |             |
+| `workspaceId`              | `String`   | NOT NULL → [Workspace.id](#model-Workspace) |              |             |
+| `key`                      | `String`   | NOT NULL                                    |              |             |
+| `label`                    | `String`   | NOT NULL                                    |              |             |
+
+#### Indexes
+
+- `@@unique([workspaceId, key])`
+
+#### References
+
+- `workspaceId` → [Workspace.id](#model-Workspace) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "EmbeddedFieldLabel" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "key" TEXT NOT NULL,
+    "label" TEXT NOT NULL,
+
+    CONSTRAINT "EmbeddedFieldLabel_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "EmbeddedFieldLabel_workspaceId_key_key" ON "EmbeddedFieldLabel"("workspaceId", "key");
+
+ALTER TABLE "EmbeddedFieldLabel" ADD CONSTRAINT "EmbeddedFieldLabel_workspaceId_fkey" FOREIGN KEY ("workspaceId") REFERENCES "Workspace"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.embeddedFieldLabel.findMany();
+```
+
+```sql
+SELECT
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+FROM
+  "public"."EmbeddedFieldLabel"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.embeddedFieldLabel.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."EmbeddedFieldLabel"."id"
+    FROM
+      "public"."EmbeddedFieldLabel"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.embeddedFieldLabel.findMany({ include: { workspace: true } });
+```
+
+```sql
+SELECT
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+FROM
+  "public"."EmbeddedFieldLabel"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."Workspace"."id",
+  "public"."Workspace"."created_at",
+  "public"."Workspace"."updated_at",
+  "public"."Workspace"."name",
+  "public"."Workspace"."legacyEnvironmentId",
+  "public"."Workspace"."organizationId",
+  "public"."Workspace"."styling",
+  "public"."Workspace"."config",
+  "public"."Workspace"."recontactDays",
+  "public"."Workspace"."linkSurveyBranding",
+  "public"."Workspace"."inAppSurveyBranding",
+  "public"."Workspace"."placement"::text,
+  "public"."Workspace"."clickOutsideClose",
+  "public"."Workspace"."overlay"::text,
+  "public"."Workspace"."overlayColor",
+  "public"."Workspace"."overlayOpacity",
+  "public"."Workspace"."logo",
+  "public"."Workspace"."appSetupCompleted",
+  "public"."Workspace"."customHeadScripts",
+  "public"."Workspace"."customCss",
+  "public"."Workspace"."customCssPrevious"
+FROM
+  "public"."Workspace"
+WHERE
+  "public"."Workspace"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<workspaceId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.embeddedFieldLabel.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+FROM
+  "public"."EmbeddedFieldLabel"
+WHERE
+  (
+    "public"."EmbeddedFieldLabel"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.embeddedFieldLabel.create({
+  data: { workspaceId: "example", key: "example", label: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."EmbeddedFieldLabel" (
+    "id",
+    "created_at",
+    "updated_at",
+    "workspaceId",
+    "key",
+    "label"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6)
+RETURNING
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+-- params: ["<cuid(1)>","<now()>","<now()>","example","example","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.embeddedFieldLabel.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."EmbeddedFieldLabel"
+SET
+  "created_at" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    "public"."EmbeddedFieldLabel"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.embeddedFieldLabel.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."EmbeddedFieldLabel"
+WHERE
+  (
+    "public"."EmbeddedFieldLabel"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."EmbeddedFieldLabel"."id",
+  "public"."EmbeddedFieldLabel"."created_at",
+  "public"."EmbeddedFieldLabel"."updated_at",
+  "public"."EmbeddedFieldLabel"."workspaceId",
+  "public"."EmbeddedFieldLabel"."key",
+  "public"."EmbeddedFieldLabel"."label"
 -- params: ["example"]
 ```
 
@@ -27391,17 +28677,19 @@ RETURNING
 
 ![Workflow and the models it relates to](tables/Workflow.svg)
 
-| Field                      | Type                                     | Constraints                                 | Default      | Description          |
-| -------------------------- | ---------------------------------------- | ------------------------------------------- | ------------ | -------------------- |
-| `id`                       | `String`                                 | PK NOT NULL                                 | `cuid(2)`    |                      |
-| `createdAt` (`created_at`) | `DateTime`                               | NOT NULL                                    | `now()`      |                      |
-| `updatedAt` (`updated_at`) | `DateTime`                               | NOT NULL                                    | `@updatedAt` |                      |
-| `name`                     | `String`                                 | NOT NULL                                    |              |                      |
-| `description`              | `String`                                 | NULL                                        |              |                      |
-| `status`                   | [`WorkflowStatus`](#enum-WorkflowStatus) | NOT NULL                                    | `draft`      |                      |
-| `workspaceId`              | `String`                                 | NOT NULL → [Workspace.id](#model-Workspace) |              |                      |
-| `createdBy`                | `String`                                 | NULL → [User.id](#model-User)               |              |                      |
-| `definition`               | `Json`                                   | NOT NULL                                    |              | [WorkflowDefinition] |
+| Field                      | Type                                     | Constraints                                 | Default      | Description                                                                                                                                                                                    |
+| -------------------------- | ---------------------------------------- | ------------------------------------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                       | `String`                                 | PK NOT NULL                                 | `cuid(2)`    |                                                                                                                                                                                                |
+| `createdAt` (`created_at`) | `DateTime`                               | NOT NULL                                    | `now()`      |                                                                                                                                                                                                |
+| `updatedAt` (`updated_at`) | `DateTime`                               | NOT NULL                                    | `@updatedAt` |                                                                                                                                                                                                |
+| `name`                     | `String`                                 | NOT NULL                                    |              |                                                                                                                                                                                                |
+| `description`              | `String`                                 | NULL                                        |              |                                                                                                                                                                                                |
+| `status`                   | [`WorkflowStatus`](#enum-WorkflowStatus) | NOT NULL                                    | `draft`      |                                                                                                                                                                                                |
+| `workspaceId`              | `String`                                 | NOT NULL → [Workspace.id](#model-Workspace) |              |                                                                                                                                                                                                |
+| `createdBy`                | `String`                                 | NULL → [User.id](#model-User)               |              |                                                                                                                                                                                                |
+| `definition`               | `Json`                                   | NOT NULL                                    |              | [WorkflowDefinition]                                                                                                                                                                           |
+| `webhookTokenHash`         | `String`                                 | NULL                                        |              | Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so the editor can show the URL again. Never part of the definition, its versions or its copies. |
+| `webhookTokenEncrypted`    | `String`                                 | NULL                                        |              |                                                                                                                                                                                                |
 
 #### Indexes
 
@@ -27418,6 +28706,8 @@ RETURNING
 
 - `id` ← [WorkflowVersion.workflowId](#model-WorkflowVersion) (one-to-many, on delete Cascade)
 - `id` ← [WorkflowRun.workflowId](#model-WorkflowRun) (one-to-many, on delete Cascade)
+- `id` ← [WorkflowSample.workflowId](#model-WorkflowSample) (one-to-many, on delete Cascade)
+- `id` ← [WorkflowSecret.workflowId](#model-WorkflowSecret) (one-to-many, on delete Cascade)
 
 #### Definition
 
@@ -27432,6 +28722,8 @@ CREATE TABLE "Workflow" (
     "workspaceId" TEXT NOT NULL,
     "createdBy" TEXT,
     "definition" JSONB NOT NULL,
+    "webhookTokenHash" TEXT,
+    "webhookTokenEncrypted" TEXT,
 
     CONSTRAINT "Workflow_pkey" PRIMARY KEY ("id")
 );
@@ -27466,7 +28758,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -27503,7 +28797,14 @@ FROM
 
 ```ts
 await prisma.workflow.findMany({
-  include: { workspace: true, creator: true, versions: true, runs: true },
+  include: {
+    workspace: true,
+    creator: true,
+    versions: true,
+    runs: true,
+    secrets: true,
+    samples: true,
+  },
 });
 ```
 
@@ -27517,7 +28818,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -27625,13 +28928,57 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
   (
     "public"."WorkflowRun"."workflowId" IN ($1)
     AND "public"."WorkflowRun"."workspaceId" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<id of the rows above>","<workspaceId of the rows above>","0"]
+
+SELECT
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+FROM
+  "public"."WorkflowSecret"
+WHERE
+  (
+    "public"."WorkflowSecret"."workflowId" IN ($1)
+    AND "public"."WorkflowSecret"."workspaceId" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<id of the rows above>","<workspaceId of the rows above>","0"]
+
+SELECT
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+FROM
+  "public"."WorkflowSample"
+WHERE
+  (
+    "public"."WorkflowSample"."workflowId" IN ($1)
+    AND "public"."WorkflowSample"."workspaceId" IN ($2)
   )
 OFFSET
   $3
@@ -27654,7 +29001,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -27705,7 +29054,9 @@ RETURNING
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 -- params: ["<cuid(2)>","<now()>","<now()>","example","draft","example","{}"]
 ```
 
@@ -27737,7 +29088,9 @@ RETURNING
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 -- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -27763,7 +29116,9 @@ RETURNING
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 -- params: ["example"]
 ```
 
@@ -27908,7 +29263,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -27970,7 +29327,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -28098,29 +29459,33 @@ RETURNING
 
 ![WorkflowRun and the models it relates to](tables/WorkflowRun.svg)
 
-| Field                      | Type                                           | Constraints                                         | Default      | Description                 |
-| -------------------------- | ---------------------------------------------- | --------------------------------------------------- | ------------ | --------------------------- |
-| `id`                       | `String`                                       | PK NOT NULL                                         | `cuid(2)`    |                             |
-| `createdAt` (`created_at`) | `DateTime`                                     | NOT NULL                                            | `now()`      |                             |
-| `updatedAt` (`updated_at`) | `DateTime`                                     | NOT NULL                                            | `@updatedAt` |                             |
-| `workflowId`               | `String`                                       | NOT NULL → [Workflow.id](#model-Workflow)           |              |                             |
-| `workspaceId`              | `String`                                       | NOT NULL → [Workflow.workspaceId](#model-Workflow)  |              |                             |
-| `workflowVersionId`        | `String`                                       | NULL → [WorkflowVersion.id](#model-WorkflowVersion) |              |                             |
-| `responseId`               | `String`                                       | NULL → [Response.id](#model-Response)               |              |                             |
-| `status`                   | [`WorkflowRunStatus`](#enum-WorkflowRunStatus) | NOT NULL                                            | `queued`     |                             |
-| `triggerType`              | `String`                                       | NOT NULL                                            |              |                             |
-| `surveyId`                 | `String`                                       | NULL                                                |              |                             |
-| `isDryRun`                 | `Boolean`                                      | NOT NULL                                            | `false`      |                             |
-| `idempotencyKey`           | `String`                                       | NULL                                                |              |                             |
-| `attempt`                  | `Int`                                          | NOT NULL                                            | `0`          |                             |
-| `nextAttemptAt`            | `DateTime`                                     | NULL                                                |              |                             |
-| `lastErrorAt`              | `DateTime`                                     | NULL                                                |              |                             |
-| `triggerPayload`           | `Json`                                         | NOT NULL                                            |              | [WorkflowTriggerRunPayload] |
-| `data`                     | `Json`                                         | NOT NULL                                            | `"{}"`       | [WorkflowRunData]           |
-| `error`                    | `String`                                       | NULL                                                |              |                             |
-| `dispatchedAt`             | `DateTime`                                     | NULL                                                |              |                             |
-| `startedAt`                | `DateTime`                                     | NULL                                                |              |                             |
-| `finishedAt`               | `DateTime`                                     | NULL                                                |              |                             |
+| Field                      | Type                                           | Constraints                                         | Default      | Description                                                                                                                                                                                                                                                                                                                     |
+| -------------------------- | ---------------------------------------------- | --------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                       | `String`                                       | PK NOT NULL                                         | `cuid(2)`    |                                                                                                                                                                                                                                                                                                                                 |
+| `createdAt` (`created_at`) | `DateTime`                                     | NOT NULL                                            | `now()`      |                                                                                                                                                                                                                                                                                                                                 |
+| `updatedAt` (`updated_at`) | `DateTime`                                     | NOT NULL                                            | `@updatedAt` |                                                                                                                                                                                                                                                                                                                                 |
+| `workflowId`               | `String`                                       | NOT NULL → [Workflow.id](#model-Workflow)           |              |                                                                                                                                                                                                                                                                                                                                 |
+| `workspaceId`              | `String`                                       | NOT NULL → [Workflow.workspaceId](#model-Workflow)  |              |                                                                                                                                                                                                                                                                                                                                 |
+| `workflowVersionId`        | `String`                                       | NULL → [WorkflowVersion.id](#model-WorkflowVersion) |              |                                                                                                                                                                                                                                                                                                                                 |
+| `responseId`               | `String`                                       | NULL → [Response.id](#model-Response)               |              |                                                                                                                                                                                                                                                                                                                                 |
+| `status`                   | [`WorkflowRunStatus`](#enum-WorkflowRunStatus) | NOT NULL                                            | `queued`     |                                                                                                                                                                                                                                                                                                                                 |
+| `triggerType`              | `String`                                       | NOT NULL                                            |              |                                                                                                                                                                                                                                                                                                                                 |
+| `surveyId`                 | `String`                                       | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `isDryRun`                 | `Boolean`                                      | NOT NULL                                            | `false`      |                                                                                                                                                                                                                                                                                                                                 |
+| `idempotencyKey`           | `String`                                       | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `attempt`                  | `Int`                                          | NOT NULL                                            | `0`          |                                                                                                                                                                                                                                                                                                                                 |
+| `nextAttemptAt`            | `DateTime`                                     | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `lastErrorAt`              | `DateTime`                                     | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `triggerPayload`           | `Json`                                         | NOT NULL                                            |              | [WorkflowTriggerRunPayload]                                                                                                                                                                                                                                                                                                     |
+| `data`                     | `Json`                                         | NOT NULL                                            | `"{}"`       | [WorkflowRunData]                                                                                                                                                                                                                                                                                                               |
+| `error`                    | `String`                                       | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `dispatchedAt`             | `DateTime`                                     | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `startedAt`                | `DateTime`                                     | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `finishedAt`               | `DateTime`                                     | NULL                                                |              |                                                                                                                                                                                                                                                                                                                                 |
+| `callerIp`                 | `String`                                       | NULL                                                |              | The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.                                                                                                                                                                                                                                            |
+| `contentDeletedAt`         | `DateTime`                                     | NULL                                                |              | When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step input, output and errors, the run error and the caller IP. Null while the content is kept.                                                                                                                                    |
+| `contentRetentionDays`     | `Int`                                          | NULL                                                |              | The retention period in days that applied when the content was cleared ("Details deleted after N days").                                                                                                                                                                                                                        |
+| `testRunDefinition`        | `Json`                                         | NULL                                                |              | The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it existed. Configuration like a version's definition, not run content: retention leaves it alone. [WorkflowExecutableDefinition] |
 
 #### Indexes
 
@@ -28129,7 +29494,9 @@ RETURNING
 - `@@index([status, createdAt])`
 - `@@index([responseId])`
 - `@@index([isDryRun])`
+- `@@index([isDryRun, createdAt])`
 - `@@index([nextAttemptAt])`
+- `@@index([contentDeletedAt, finishedAt])`
 - `@@unique([workflowId, idempotencyKey])`
 
 #### References
@@ -28168,6 +29535,10 @@ CREATE TABLE "WorkflowRun" (
     "dispatchedAt" TIMESTAMP(3),
     "startedAt" TIMESTAMP(3),
     "finishedAt" TIMESTAMP(3),
+    "callerIp" TEXT,
+    "contentDeletedAt" TIMESTAMP(3),
+    "contentRetentionDays" INTEGER,
+    "testRunDefinition" JSONB,
 
     CONSTRAINT "WorkflowRun_pkey" PRIMARY KEY ("id")
 );
@@ -28182,7 +29553,11 @@ CREATE INDEX "WorkflowRun_responseId_idx" ON "WorkflowRun"("responseId");
 
 CREATE INDEX "WorkflowRun_isDryRun_idx" ON "WorkflowRun"("isDryRun");
 
+CREATE INDEX "WorkflowRun_isDryRun_created_at_idx" ON "WorkflowRun"("isDryRun", "created_at");
+
 CREATE INDEX "WorkflowRun_nextAttemptAt_idx" ON "WorkflowRun"("nextAttemptAt");
+
+CREATE INDEX "WorkflowRun_contentDeletedAt_finishedAt_idx" ON "WorkflowRun"("contentDeletedAt", "finishedAt");
 
 CREATE UNIQUE INDEX "WorkflowRun_workflowId_idempotencyKey_key" ON "WorkflowRun"("workflowId", "idempotencyKey");
 
@@ -28226,7 +29601,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -28289,7 +29668,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -28307,7 +29690,9 @@ SELECT
   "public"."Workflow"."status"::text,
   "public"."Workflow"."workspaceId",
   "public"."Workflow"."createdBy",
-  "public"."Workflow"."definition"
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
 FROM
   "public"."Workflow"
 WHERE
@@ -28378,6 +29763,7 @@ SELECT
   "public"."Response"."ttc",
   "public"."Response"."meta",
   "public"."Response"."ingest_flags",
+  "public"."Response"."cal_bookings_by_question_id",
   "public"."Response"."outcome"::text,
   "public"."Response"."not_shown",
   "public"."Response"."contactAttributes",
@@ -28441,7 +29827,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -28519,7 +29909,11 @@ RETURNING
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 -- params: ["<cuid(2)>","<now()>","<now()>","example","example","queued","example",false,"0","{}","{}"]
 ```
 
@@ -28563,7 +29957,11 @@ RETURNING
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 -- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -28601,7 +29999,295 @@ RETURNING
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-WorkflowSample"></a>
+
+### WorkflowSample
+
+Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+
+![WorkflowSample and the models it relates to](tables/WorkflowSample.svg)
+
+| Field                      | Type       | Constraints                                        | Default      | Description          |
+| -------------------------- | ---------- | -------------------------------------------------- | ------------ | -------------------- |
+| `id`                       | `String`   | PK NOT NULL                                        | `cuid(2)`    |                      |
+| `createdAt` (`created_at`) | `DateTime` | NOT NULL                                           | `now()`      |                      |
+| `updatedAt` (`updated_at`) | `DateTime` | NOT NULL                                           | `@updatedAt` |                      |
+| `workflowId`               | `String`   | NOT NULL → [Workflow.id](#model-Workflow)          |              |                      |
+| `workspaceId`              | `String`   | NOT NULL → [Workflow.workspaceId](#model-Workflow) |              |                      |
+| `source`                   | `String`   | NOT NULL                                           |              |                      |
+| `sample`                   | `Json`     | NOT NULL                                           |              | [WorkflowSampleData] |
+| `lastCalledAt`             | `DateTime` | NULL                                               |              |                      |
+| `lastCallerIp`             | `String`   | NULL                                               |              |                      |
+
+#### Indexes
+
+- `@@index([workflowId, workspaceId])`
+- `@@index([updatedAt])`
+- `@@unique([workflowId, source])`
+
+#### References
+
+- `workflowId` → [Workflow.id](#model-Workflow) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "WorkflowSample" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workflowId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "source" TEXT NOT NULL,
+    "sample" JSONB NOT NULL,
+    "lastCalledAt" TIMESTAMP(3),
+    "lastCallerIp" TEXT,
+
+    CONSTRAINT "WorkflowSample_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "WorkflowSample_workflowId_workspaceId_idx" ON "WorkflowSample"("workflowId", "workspaceId");
+
+CREATE INDEX "WorkflowSample_updated_at_idx" ON "WorkflowSample"("updated_at");
+
+CREATE UNIQUE INDEX "WorkflowSample_workflowId_source_key" ON "WorkflowSample"("workflowId", "source");
+
+ALTER TABLE "WorkflowSample" ADD CONSTRAINT "WorkflowSample_workflowId_workspaceId_fkey" FOREIGN KEY ("workflowId", "workspaceId") REFERENCES "Workflow"("id", "workspaceId") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.workflowSample.findMany();
+```
+
+```sql
+SELECT
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+FROM
+  "public"."WorkflowSample"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.workflowSample.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."WorkflowSample"."id"
+    FROM
+      "public"."WorkflowSample"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.workflowSample.findMany({ include: { workflow: true } });
+```
+
+```sql
+SELECT
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+FROM
+  "public"."WorkflowSample"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."Workflow"."id",
+  "public"."Workflow"."created_at",
+  "public"."Workflow"."updated_at",
+  "public"."Workflow"."name",
+  "public"."Workflow"."description",
+  "public"."Workflow"."status"::text,
+  "public"."Workflow"."workspaceId",
+  "public"."Workflow"."createdBy",
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
+FROM
+  "public"."Workflow"
+WHERE
+  (
+    "public"."Workflow"."id" IN ($1)
+    AND "public"."Workflow"."workspaceId" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<workflowId of the rows above>","<workspaceId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.workflowSample.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+FROM
+  "public"."WorkflowSample"
+WHERE
+  (
+    "public"."WorkflowSample"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.workflowSample.create({
+  data: { workflowId: "example", workspaceId: "example", source: "example", sample: {} },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."WorkflowSample" (
+    "id",
+    "created_at",
+    "updated_at",
+    "workflowId",
+    "workspaceId",
+    "source",
+    "sample"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7)
+RETURNING
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+-- params: ["<cuid(2)>","<now()>","<now()>","example","example","example","{}"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.workflowSample.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."WorkflowSample"
+SET
+  "created_at" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    "public"."WorkflowSample"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.workflowSample.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."WorkflowSample"
+WHERE
+  (
+    "public"."WorkflowSample"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."WorkflowSample"."id",
+  "public"."WorkflowSample"."created_at",
+  "public"."WorkflowSample"."updated_at",
+  "public"."WorkflowSample"."workflowId",
+  "public"."WorkflowSample"."workspaceId",
+  "public"."WorkflowSample"."source",
+  "public"."WorkflowSample"."sample",
+  "public"."WorkflowSample"."lastCalledAt",
+  "public"."WorkflowSample"."lastCallerIp"
 -- params: ["example"]
 ```
 
@@ -28630,6 +30316,7 @@ RETURNING
 #### Indexes
 
 - `@@index([runId, sequence])`
+- `@@index([status, startedAt])`
 - `@@unique([runId, stepId])`
 
 #### References
@@ -28656,6 +30343,8 @@ CREATE TABLE "WorkflowRunLog" (
 );
 
 CREATE INDEX "WorkflowRunLog_runId_sequence_idx" ON "WorkflowRunLog"("runId", "sequence");
+
+CREATE INDEX "WorkflowRunLog_status_startedAt_idx" ON "WorkflowRunLog"("status", "startedAt");
 
 CREATE UNIQUE INDEX "WorkflowRunLog_runId_stepId_key" ON "WorkflowRunLog"("runId", "stepId");
 
@@ -28764,7 +30453,11 @@ SELECT
   "public"."WorkflowRun"."error",
   "public"."WorkflowRun"."dispatchedAt",
   "public"."WorkflowRun"."startedAt",
-  "public"."WorkflowRun"."finishedAt"
+  "public"."WorkflowRun"."finishedAt",
+  "public"."WorkflowRun"."callerIp",
+  "public"."WorkflowRun"."contentDeletedAt",
+  "public"."WorkflowRun"."contentRetentionDays",
+  "public"."WorkflowRun"."testRunDefinition"
 FROM
   "public"."WorkflowRun"
 WHERE
@@ -28908,6 +30601,268 @@ RETURNING
   "public"."WorkflowRunLog"."error",
   "public"."WorkflowRunLog"."startedAt",
   "public"."WorkflowRunLog"."finishedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-WorkflowSecret"></a>
+
+### WorkflowSecret
+
+Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+
+![WorkflowSecret and the models it relates to](tables/WorkflowSecret.svg)
+
+| Field                      | Type       | Constraints                                        | Default      | Description                                                                                                                                                                                                              |
+| -------------------------- | ---------- | -------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                       | `String`   | PK NOT NULL                                        | `cuid(2)`    |                                                                                                                                                                                                                          |
+| `createdAt` (`created_at`) | `DateTime` | NOT NULL                                           | `now()`      |                                                                                                                                                                                                                          |
+| `updatedAt` (`updated_at`) | `DateTime` | NOT NULL                                           | `@updatedAt` |                                                                                                                                                                                                                          |
+| `workflowId`               | `String`   | NOT NULL → [Workflow.id](#model-Workflow)          |              |                                                                                                                                                                                                                          |
+| `workspaceId`              | `String`   | NOT NULL → [Workflow.workspaceId](#model-Workflow) |              |                                                                                                                                                                                                                          |
+| `value`                    | `String`   | NOT NULL                                           |              | `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned.                                                                                                                                               |
+| `boundOrigin`              | `String`   | NULL                                               |              | Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL until it is set again. |
+
+#### Indexes
+
+- `@@index([workflowId, workspaceId])`
+
+#### References
+
+- `workflowId` → [Workflow.id](#model-Workflow) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "WorkflowSecret" (
+    "id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "workflowId" TEXT NOT NULL,
+    "workspaceId" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "boundOrigin" TEXT,
+
+    CONSTRAINT "WorkflowSecret_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "WorkflowSecret_workflowId_workspaceId_idx" ON "WorkflowSecret"("workflowId", "workspaceId");
+
+ALTER TABLE "WorkflowSecret" ADD CONSTRAINT "WorkflowSecret_workflowId_workspaceId_fkey" FOREIGN KEY ("workflowId", "workspaceId") REFERENCES "Workflow"("id", "workspaceId") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.workflowSecret.findMany();
+```
+
+```sql
+SELECT
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+FROM
+  "public"."WorkflowSecret"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.workflowSecret.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."WorkflowSecret"."id"
+    FROM
+      "public"."WorkflowSecret"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.workflowSecret.findMany({ include: { workflow: true } });
+```
+
+```sql
+SELECT
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+FROM
+  "public"."WorkflowSecret"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."Workflow"."id",
+  "public"."Workflow"."created_at",
+  "public"."Workflow"."updated_at",
+  "public"."Workflow"."name",
+  "public"."Workflow"."description",
+  "public"."Workflow"."status"::text,
+  "public"."Workflow"."workspaceId",
+  "public"."Workflow"."createdBy",
+  "public"."Workflow"."definition",
+  "public"."Workflow"."webhookTokenHash",
+  "public"."Workflow"."webhookTokenEncrypted"
+FROM
+  "public"."Workflow"
+WHERE
+  (
+    "public"."Workflow"."id" IN ($1)
+    AND "public"."Workflow"."workspaceId" IN ($2)
+  )
+OFFSET
+  $3
+-- params: ["<workflowId of the rows above>","<workspaceId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.workflowSecret.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+FROM
+  "public"."WorkflowSecret"
+WHERE
+  (
+    "public"."WorkflowSecret"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.workflowSecret.create({
+  data: { workflowId: "example", workspaceId: "example", value: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."WorkflowSecret" (
+    "id",
+    "created_at",
+    "updated_at",
+    "workflowId",
+    "workspaceId",
+    "value"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6)
+RETURNING
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+-- params: ["<cuid(2)>","<now()>","<now()>","example","example","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.workflowSecret.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."WorkflowSecret"
+SET
+  "created_at" = $1,
+  "updated_at" = $2
+WHERE
+  (
+    "public"."WorkflowSecret"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.workflowSecret.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."WorkflowSecret"
+WHERE
+  (
+    "public"."WorkflowSecret"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."WorkflowSecret"."id",
+  "public"."WorkflowSecret"."created_at",
+  "public"."WorkflowSecret"."updated_at",
+  "public"."WorkflowSecret"."workflowId",
+  "public"."WorkflowSecret"."workspaceId",
+  "public"."WorkflowSecret"."value",
+  "public"."WorkflowSecret"."boundOrigin"
 -- params: ["example"]
 ```
 
@@ -29302,6 +31257,20 @@ CREATE TYPE "ApiKeyPermission" AS ENUM ('read', 'write', 'manage');
 
 ```sql
 CREATE TYPE "IdentityProvider" AS ENUM ('email', 'github', 'google', 'azuread', 'openid', 'saml');
+```
+
+<a id="enum-McpGrantAccess"></a>
+
+### McpGrantAccess
+
+- `all`
+- `organizations`
+- `workspaces`
+
+#### Definition
+
+```sql
+CREATE TYPE "McpGrantAccess" AS ENUM ('all', 'organizations', 'workspaces');
 ```
 
 <a id="enum-EmbeddedDataSource"></a>

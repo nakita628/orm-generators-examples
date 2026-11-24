@@ -37,6 +37,7 @@ object PrismaSchema {
             "CREATE TYPE \"BackgroundJobTaskStatus\" AS ENUM ('PENDING', 'COMPLETED', 'FAILED')",
             "CREATE TYPE \"EmailDomainStatus\" AS ENUM ('PENDING', 'ACTIVE')",
             "CREATE TYPE \"EmailTransportType\" AS ENUM ('SMTP_AUTH', 'SMTP_API', 'RESEND', 'MAILCHANNELS')",
+            "CREATE TYPE \"AdminRuleMode\" AS ENUM ('ENFORCE', 'MONITOR', 'DISABLED')",
         )
     val tables: List<Table> =
         listOf(
@@ -95,5 +96,8 @@ object PrismaSchema {
             CounterTable,
             EmbedSignatureTable,
             RateLimitTable,
+            AdminRuleTable,
+            AdminRuleMatchTable,
+            AdminTagTable,
         )
 }

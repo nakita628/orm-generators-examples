@@ -45,6 +45,7 @@ class OrganizationEntity(
     val retentionExemptions by RetentionExemptionEntity referrersOn RetentionExemptionTable.organizationId
     val retentionRuns by RetentionRunEntity referrersOn RetentionRunTable.organizationId
     val retentionNotices by RetentionNoticeEntity referrersOn RetentionNoticeTable.organizationId
+    val mcpGrants by McpGrantOrganizationEntity referrersOn McpGrantOrganizationTable.organizationId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

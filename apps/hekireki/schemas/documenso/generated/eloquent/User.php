@@ -127,4 +127,19 @@ class User extends Model
     {
         return $this->hasMany(Passkey::class, 'userId');
     }
+
+    public function adminRuleMatches(): HasMany
+    {
+        return $this->hasMany(AdminRuleMatch::class, 'actorUserId');
+    }
+
+    public function adminTags(): HasMany
+    {
+        return $this->hasMany(AdminTag::class, 'userId');
+    }
+
+    public function createdAdminTags(): HasMany
+    {
+        return $this->hasMany(AdminTag::class, 'createdByUserId');
+    }
 }

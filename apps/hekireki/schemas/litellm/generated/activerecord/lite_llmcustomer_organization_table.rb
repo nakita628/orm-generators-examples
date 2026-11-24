@@ -13,6 +13,10 @@ class LiteLLMCustomerOrganizationTable < ApplicationRecord
   belongs_to :budget, class_name: "LiteLLMBudgetTable", optional: true, inverse_of: :customer_organizations
   belongs_to :default_budget_template, class_name: "LiteLLMBudgetTable", optional: true,
                                        inverse_of: :customer_organization_defaults
+  has_many :app_groups, class_name: "LiteLLMAppGroupCustomerOrgTable", foreign_key: "customer_org_id",
+                        inverse_of: :customer_org, dependent: :destroy
+  has_many :apps, class_name: "LiteLLMAppCustomerOrgTable", foreign_key: "customer_org_id", inverse_of: :customer_org,
+                  dependent: :destroy
   has_many :teams, class_name: "LiteLLMCustomerTeamTable", foreign_key: "parent_org_id", inverse_of: :parent_org,
                    dependent: :restrict_with_error
   has_many :members, class_name: "LiteLLMCustomerMemberTable", foreign_key: "parent_org_id", inverse_of: :parent_org,

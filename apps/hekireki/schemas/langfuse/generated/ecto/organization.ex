@@ -29,7 +29,9 @@ defmodule Langfuse.Organization do
           cloud_spend_alerts: [Langfuse.CloudSpendAlert.t()],
           verified_domains: [Langfuse.VerifiedDomain.t()],
           gateway_ai_connections: [Langfuse.GatewayAiConnection.t()],
+          gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()],
           organization_llm_api_keys: [Langfuse.LlmApiKeys.t()],
+          models: [Langfuse.Model.t()],
           role_assignments: [Langfuse.RoleAssignment.t()]
         }
 
@@ -56,7 +58,9 @@ defmodule Langfuse.Organization do
     has_many(:cloud_spend_alerts, Langfuse.CloudSpendAlert, foreign_key: :org_id, references: :id)
     has_many(:verified_domains, Langfuse.VerifiedDomain, foreign_key: :organization_id, references: :id)
     has_many(:gateway_ai_connections, Langfuse.GatewayAiConnection, foreign_key: :organization_id, references: :id)
+    has_many(:gateway_spend_limits, Langfuse.GatewaySpendLimit, foreign_key: :organization_id, references: :id)
     has_many(:organization_llm_api_keys, Langfuse.LlmApiKeys, foreign_key: :organization_id, references: :id)
+    has_many(:models, Langfuse.Model, foreign_key: :organization_id, references: :id)
     has_many(:role_assignments, Langfuse.RoleAssignment, foreign_key: :org_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end

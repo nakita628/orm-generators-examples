@@ -28,6 +28,7 @@ class WorkerInstanceGroupEntity(
     var hidden by WorkerInstanceGroupTable.hidden
     var token by WorkerGroupTokenEntity referencedOn WorkerInstanceGroupTable.tokenId
     var tokenId by WorkerInstanceGroupTable.tokenId
+    val childTokens by WorkerGroupTokenEntity optionalReferrersOn WorkerGroupTokenTable.workerGroupId
     val workers by WorkerInstanceEntity referrersOn WorkerInstanceTable.workerGroupId
     val backgroundWorkers by BackgroundWorkerEntity optionalReferrersOn BackgroundWorkerTable.workerGroupId
     val defaultForProjects by ProjectEntity optionalReferrersOn ProjectTable.defaultWorkerGroupId

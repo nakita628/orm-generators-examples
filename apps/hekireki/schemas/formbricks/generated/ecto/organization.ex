@@ -37,7 +37,8 @@ defmodule Formbricks.Organization do
           retention_policies: [Formbricks.RetentionPolicy.t()],
           retention_exemptions: [Formbricks.RetentionExemption.t()],
           retention_runs: [Formbricks.RetentionRun.t()],
-          retention_notices: [Formbricks.RetentionNotice.t()]
+          retention_notices: [Formbricks.RetentionNotice.t()],
+          mcp_grants: [Formbricks.McpGrantOrganization.t()]
         }
 
   schema "Organization" do
@@ -58,6 +59,7 @@ defmodule Formbricks.Organization do
     has_many(:retention_exemptions, Formbricks.RetentionExemption, foreign_key: :organization_id, references: :id)
     has_many(:retention_runs, Formbricks.RetentionRun, foreign_key: :organization_id, references: :id)
     has_many(:retention_notices, Formbricks.RetentionNotice, foreign_key: :organization_id, references: :id)
+    has_many(:mcp_grants, Formbricks.McpGrantOrganization, foreign_key: :organization_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end
 end

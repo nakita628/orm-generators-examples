@@ -19,6 +19,8 @@ class BookingSettingsEntity(
     var autoArchiveBookings by BookingSettingsTable.autoArchiveBookings
     var autoArchiveDays by BookingSettingsTable.autoArchiveDays
     var autoArchiveExpiredReservations by BookingSettingsTable.autoArchiveExpiredReservations
+    var requireApprovalForBase by BookingSettingsTable.requireApprovalForBase
+    var requireApprovalForSelfService by BookingSettingsTable.requireApprovalForSelfService
     var requireExplicitCheckinForAdmin by BookingSettingsTable.requireExplicitCheckinForAdmin
     var requireExplicitCheckinForSelfService by BookingSettingsTable.requireExplicitCheckinForSelfService
     var requireExplicitCheckoutForAdmin by BookingSettingsTable.requireExplicitCheckoutForAdmin

@@ -21,6 +21,7 @@ class LiteLLMObjectPermissionTableEntity(
     var searchTools by LiteLLMObjectPermissionTableTable.searchTools
     var mcpToolSearchEnabled by LiteLLMObjectPermissionTableTable.mcpToolSearchEnabled
     var skills by LiteLLMObjectPermissionTableTable.skills
+    var apps by LiteLLMObjectPermissionTableTable.apps
     val teams by LiteLLMTeamTableEntity optionalReferrersOn LiteLLMTeamTableTable.objectPermissionId
     val projects by LiteLLMProjectTableEntity optionalReferrersOn LiteLLMProjectTableTable.objectPermissionId
     val verificationTokens by LiteLLMVerificationTokenEntity optionalReferrersOn LiteLLMVerificationTokenTable.objectPermissionId

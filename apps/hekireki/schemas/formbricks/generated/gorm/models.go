@@ -484,6 +484,13 @@ type Response struct {
 	// and surfacing that in the UI (v2) would have nothing to read.
 	// [ResponseIngestFlags]
 	IngestFlags datatypes.JSON `gorm:"column:ingest_flags" json:"ingest_flags"`
+	// What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+	// keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+	// every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+	// `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+	// never accepted as a field of its own.
+	// [ResponseCalBookings]
+	CalBookings datatypes.JSON `gorm:"column:cal_bookings_by_question_id" json:"cal_bookings_by_question_id"`
 	// A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
 	// export by default and from Feedback Records, and nothing else: it is never deleted and every
 	// count, list, webhook and integration still includes it (ENG-6780).
@@ -1154,6 +1161,7 @@ type Workspace struct {
 	FeedbackDirectoryWorkspaces []FeedbackDirectoryWorkspace `gorm:"foreignKey:WorkspaceID;constraint:FeedbackDirectoryWorkspace_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Charts                      []Chart                      `gorm:"foreignKey:WorkspaceID;constraint:Chart_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Dashboards                  []Dashboard                  `gorm:"foreignKey:WorkspaceID;constraint:Dashboard_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	EmbeddedFieldLabels         []EmbeddedFieldLabel         `gorm:"foreignKey:WorkspaceID;constraint:EmbeddedFieldLabel_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Creatives                   []Creative                   `gorm:"foreignKey:WorkspaceID;constraint:Creative_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	AttachmentExports           []AttachmentExport           `gorm:"foreignKey:WorkspaceID;constraint:AttachmentExport_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Surveys                     []Survey                     `gorm:"foreignKey:WorkspaceID;constraint:Survey_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
@@ -1168,6 +1176,7 @@ type Workspace struct {
 	FeedbackSources             []FeedbackSource             `gorm:"foreignKey:WorkspaceID;constraint:FeedbackSource_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Workflows                   []Workflow                   `gorm:"foreignKey:WorkspaceID;constraint:Workflow_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	WorkflowRuns                []WorkflowRun                `gorm:"foreignKey:WorkspaceID;constraint:WorkflowRun_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	McpGrants                   []McpGrantWorkspace          `gorm:"foreignKey:WorkspaceID;constraint:McpGrantWorkspace_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Workspace) TableName() string {
@@ -1214,20 +1223,21 @@ type Organization struct {
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	Name      string   `gorm:"column:name;not null" json:"name"`
 	// [OrganizationWhitelabel]
-	Whitelabel            datatypes.JSON       `gorm:"column:whitelabel;default:'{}';not null" json:"whitelabel"`
-	IsAISmartToolsEnabled bool                 `gorm:"column:isAISmartToolsEnabled;default:false;not null" json:"isAISmartToolsEnabled"`
-	DisplayTimeZone       *string              `gorm:"column:displayTimeZone" json:"displayTimeZone"`
-	Memberships           []Membership         `gorm:"foreignKey:OrganizationID;constraint:Membership_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Workspaces            []Workspace          `gorm:"foreignKey:OrganizationID;constraint:Workspace_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Invites               []Invite             `gorm:"foreignKey:OrganizationID;constraint:Invite_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Teams                 []Team               `gorm:"foreignKey:OrganizationID;constraint:Team_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	APIKeys               []APIKey             `gorm:"foreignKey:OrganizationID;constraint:ApiKey_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	FeedbackDirectories   []FeedbackDirectory  `gorm:"foreignKey:OrganizationID;constraint:FeedbackDirectory_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RetentionPolicies     []RetentionPolicy    `gorm:"foreignKey:OrganizationID;constraint:RetentionPolicy_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RetentionExemptions   []RetentionExemption `gorm:"foreignKey:OrganizationID;constraint:RetentionExemption_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RetentionRuns         []RetentionRun       `gorm:"foreignKey:OrganizationID;constraint:RetentionRun_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	RetentionNotices      []RetentionNotice    `gorm:"foreignKey:OrganizationID;constraint:RetentionNotice_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Billing               *OrganizationBilling `gorm:"foreignKey:OrganizationID;constraint:OrganizationBilling_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Whitelabel            datatypes.JSON         `gorm:"column:whitelabel;default:'{}';not null" json:"whitelabel"`
+	IsAISmartToolsEnabled bool                   `gorm:"column:isAISmartToolsEnabled;default:false;not null" json:"isAISmartToolsEnabled"`
+	DisplayTimeZone       *string                `gorm:"column:displayTimeZone" json:"displayTimeZone"`
+	Memberships           []Membership           `gorm:"foreignKey:OrganizationID;constraint:Membership_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Workspaces            []Workspace            `gorm:"foreignKey:OrganizationID;constraint:Workspace_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Invites               []Invite               `gorm:"foreignKey:OrganizationID;constraint:Invite_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Teams                 []Team                 `gorm:"foreignKey:OrganizationID;constraint:Team_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIKeys               []APIKey               `gorm:"foreignKey:OrganizationID;constraint:ApiKey_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	FeedbackDirectories   []FeedbackDirectory    `gorm:"foreignKey:OrganizationID;constraint:FeedbackDirectory_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RetentionPolicies     []RetentionPolicy      `gorm:"foreignKey:OrganizationID;constraint:RetentionPolicy_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RetentionExemptions   []RetentionExemption   `gorm:"foreignKey:OrganizationID;constraint:RetentionExemption_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RetentionRuns         []RetentionRun         `gorm:"foreignKey:OrganizationID;constraint:RetentionRun_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RetentionNotices      []RetentionNotice      `gorm:"foreignKey:OrganizationID;constraint:RetentionNotice_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	McpGrants             []McpGrantOrganization `gorm:"foreignKey:OrganizationID;constraint:McpGrantOrganization_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Billing               *OrganizationBilling   `gorm:"foreignKey:OrganizationID;constraint:OrganizationBilling_organization_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Organization) TableName() string {
@@ -1682,6 +1692,7 @@ type OauthClient struct {
 	RefreshTokens                    []OauthRefreshToken   `gorm:"foreignKey:ClientID;references:ClientID;constraint:oauthRefreshToken_clientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Consents                         []OauthConsent        `gorm:"foreignKey:ClientID;references:ClientID;constraint:oauthConsent_clientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Resources                        []OauthClientResource `gorm:"foreignKey:ClientID;references:ClientID;constraint:oauthClientResource_clientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	McpGrants                        []McpGrant            `gorm:"foreignKey:ClientID;references:ClientID;constraint:McpGrant_clientId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (OauthClient) TableName() string {
@@ -1803,6 +1814,81 @@ func (m *OauthConsent) BeforeCreate(_ *gorm.DB) error {
 // its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
 // a token is now bound to the resource it was approved for instead of to a static allow-list.
 // `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+// What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+// access and an access level per permission. One per OAuth connection, keyed by user and client rather
+// than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+// and settles them later. Every MCP request reads it; without one the request is refused. The client's
+// OAuth scopes stay on the consent and cap it.
+type McpGrant struct {
+	ID        string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	UserID    string   `gorm:"column:userId;uniqueIndex:McpGrant_userId_clientId_key;not null" json:"userId"`
+	ClientID  string   `gorm:"column:clientId;uniqueIndex:McpGrant_userId_clientId_key;index:McpGrant_clientId_idx;not null" json:"clientId"`
+	// Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+	// in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+	// `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
+	Access string `gorm:"column:access;default:'all';not null" json:"access"`
+	// The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+	// A permission that is absent has No access.
+	Permissions datatypes.JSON `gorm:"column:permissions;default:'{}';not null" json:"permissions"`
+	User        *User          `gorm:"belongsTo"`
+	Client      *OauthClient   `gorm:"foreignKey:ClientID;references:ClientID;belongsTo"`
+	// The selections behind `organizations` and `workspaces` access (ENG-7153).
+	Organizations []McpGrantOrganization `gorm:"foreignKey:GrantID;constraint:McpGrantOrganization_grantId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Workspaces    []McpGrantWorkspace    `gorm:"foreignKey:GrantID;constraint:McpGrantWorkspace_grantId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+}
+
+func (McpGrant) TableName() string {
+	return "McpGrant"
+}
+
+func (m *McpGrant) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*McpGrant) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// An organization a grant with `organizations` access reaches, workspaces created there later included.
+type McpGrantOrganization struct {
+	GrantID        string        `gorm:"column:grantId;primaryKey" json:"grantId"`
+	OrganizationID string        `gorm:"column:organizationId;primaryKey;index:McpGrantOrganization_organizationId_idx" json:"organizationId"`
+	Grant          *McpGrant     `gorm:"foreignKey:GrantID;belongsTo"`
+	Organization   *Organization `gorm:"belongsTo"`
+}
+
+func (McpGrantOrganization) TableName() string {
+	return "McpGrantOrganization"
+}
+
+// A workspace a grant with `workspaces` access reaches.
+type McpGrantWorkspace struct {
+	GrantID     string     `gorm:"column:grantId;primaryKey" json:"grantId"`
+	WorkspaceID string     `gorm:"column:workspaceId;primaryKey;index:McpGrantWorkspace_workspaceId_idx" json:"workspaceId"`
+	Grant       *McpGrant  `gorm:"foreignKey:GrantID;belongsTo"`
+	Workspace   *Workspace `gorm:"belongsTo"`
+}
+
+func (McpGrantWorkspace) TableName() string {
+	return "McpGrantWorkspace"
+}
+
 type OauthResource struct {
 	ID                            string                `gorm:"column:id;primaryKey" json:"id"`
 	Identifier                    string                `gorm:"column:identifier;uniqueIndex:oauthResource_identifier_key;not null" json:"identifier"`
@@ -1961,6 +2047,7 @@ type User struct {
 	OauthAccessTokens         []OauthAccessToken   `gorm:"foreignKey:UserID;constraint:oauthAccessToken_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	OauthRefreshTokens        []OauthRefreshToken  `gorm:"foreignKey:UserID;constraint:oauthRefreshToken_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	OauthConsents             []OauthConsent       `gorm:"foreignKey:UserID;constraint:oauthConsent_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	McpGrants                 []McpGrant           `gorm:"foreignKey:UserID;constraint:McpGrant_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	InvitesCreated            []Invite             `gorm:"foreignKey:CreatorID;constraint:Invite_creatorId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	InvitesAccepted           []Invite             `gorm:"foreignKey:AcceptorID;constraint:Invite_acceptorId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Surveys                   []Survey             `gorm:"foreignKey:CreatedBy;constraint:Survey_createdBy_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
@@ -2393,6 +2480,49 @@ func (m *Chart) BeforeCreate(tx *gorm.DB) error {
 }
 
 func (*Chart) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
+// A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+// place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+// workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+// are never renamed here: they keep their translated names.
+//
+// @property key - The embedded-data key exactly as collected, case included
+// @property label - The name shown for the key across the workspace
+type EmbeddedFieldLabel struct {
+	ID          string     `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt   DateTime   `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt   DateTime   `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	WorkspaceID string     `gorm:"column:workspaceId;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key;not null" json:"workspaceId"`
+	Key         string     `gorm:"column:key;uniqueIndex:EmbeddedFieldLabel_workspaceId_key_key;not null" json:"key"`
+	Label       string     `gorm:"column:label;not null" json:"label"`
+	Workspace   *Workspace `gorm:"belongsTo"`
+}
+
+func (EmbeddedFieldLabel) TableName() string {
+	return "EmbeddedFieldLabel"
+}
+
+func (m *EmbeddedFieldLabel) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid.New()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*EmbeddedFieldLabel) BeforeUpdate(tx *gorm.DB) error {
 	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
 	if !tx.Statement.Changed("UpdatedAt") {
 		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
@@ -3225,11 +3355,17 @@ type Workflow struct {
 	WorkspaceID string   `gorm:"column:workspaceId;uniqueIndex:Workflow_id_workspaceId_key;index:Workflow_workspaceId_status_idx;index:Workflow_workspaceId_updated_at_idx;not null" json:"workspaceId"`
 	CreatedBy   *string  `gorm:"column:createdBy" json:"createdBy"`
 	// [WorkflowDefinition]
-	Definition datatypes.JSON    `gorm:"column:definition;not null" json:"definition"`
-	Workspace  *Workspace        `gorm:"belongsTo"`
-	Creator    *User             `gorm:"foreignKey:CreatedBy;belongsTo"`
-	Versions   []WorkflowVersion `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowVersion_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Runs       []WorkflowRun     `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowRun_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Definition datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
+	// Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+	// the editor can show the URL again. Never part of the definition, its versions or its copies.
+	WebhookTokenHash      *string           `gorm:"column:webhookTokenHash" json:"webhookTokenHash"`
+	WebhookTokenEncrypted *string           `gorm:"column:webhookTokenEncrypted" json:"webhookTokenEncrypted"`
+	Workspace             *Workspace        `gorm:"belongsTo"`
+	Creator               *User             `gorm:"foreignKey:CreatedBy;belongsTo"`
+	Versions              []WorkflowVersion `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowVersion_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Runs                  []WorkflowRun     `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowRun_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Secrets               []WorkflowSecret  `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowSecret_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Samples               []WorkflowSample  `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;constraint:WorkflowSample_workflowId_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Workflow) TableName() string {
@@ -3289,7 +3425,7 @@ func (m *WorkflowVersion) BeforeCreate(tx *gorm.DB) error {
 
 type WorkflowRun struct {
 	ID                string    `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt         DateTime  `gorm:"column:created_at;index:WorkflowRun_workspaceId_created_at_idx;index:WorkflowRun_workflowId_workspaceId_created_at_idx;index:WorkflowRun_status_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt         DateTime  `gorm:"column:created_at;index:WorkflowRun_workspaceId_created_at_idx;index:WorkflowRun_workflowId_workspaceId_created_at_idx;index:WorkflowRun_status_created_at_idx;index:WorkflowRun_isDryRun_created_at_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt         DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
 	WorkflowID        string    `gorm:"column:workflowId;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key;index:WorkflowRun_workflowId_workspaceId_created_at_idx;not null" json:"workflowId"`
 	WorkspaceID       string    `gorm:"column:workspaceId;index:WorkflowRun_workspaceId_created_at_idx;index:WorkflowRun_workflowId_workspaceId_created_at_idx;not null" json:"workspaceId"`
@@ -3298,7 +3434,7 @@ type WorkflowRun struct {
 	Status            string    `gorm:"column:status;index:WorkflowRun_status_created_at_idx;default:'queued';not null" json:"status"`
 	TriggerType       string    `gorm:"column:triggerType;not null" json:"triggerType"`
 	SurveyID          *string   `gorm:"column:surveyId" json:"surveyId"`
-	IsDryRun          bool      `gorm:"column:isDryRun;index:WorkflowRun_isDryRun_idx;default:false;not null" json:"isDryRun"`
+	IsDryRun          bool      `gorm:"column:isDryRun;index:WorkflowRun_isDryRun_idx;index:WorkflowRun_isDryRun_created_at_idx;default:false;not null" json:"isDryRun"`
 	IdempotencyKey    *string   `gorm:"column:idempotencyKey;uniqueIndex:WorkflowRun_workflowId_idempotencyKey_key" json:"idempotencyKey"`
 	Attempt           int       `gorm:"column:attempt;size:32;default:0;not null" json:"attempt"`
 	NextAttemptAt     *DateTime `gorm:"column:nextAttemptAt;index:WorkflowRun_nextAttemptAt_idx;type:timestamp(3)" json:"nextAttemptAt"`
@@ -3306,16 +3442,28 @@ type WorkflowRun struct {
 	// [WorkflowTriggerRunPayload]
 	TriggerPayload datatypes.JSON `gorm:"column:triggerPayload;not null" json:"triggerPayload"`
 	// [WorkflowRunData]
-	Data            datatypes.JSON   `gorm:"column:data;default:'{}';not null" json:"data"`
-	Error           *string          `gorm:"column:error" json:"error"`
-	DispatchedAt    *DateTime        `gorm:"column:dispatchedAt;type:timestamp(3)" json:"dispatchedAt"`
-	StartedAt       *DateTime        `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
-	FinishedAt      *DateTime        `gorm:"column:finishedAt;type:timestamp(3)" json:"finishedAt"`
-	Workflow        *Workflow        `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
-	Workspace       *Workspace       `gorm:"belongsTo"`
-	WorkflowVersion *WorkflowVersion `gorm:"belongsTo"`
-	Response        *Response        `gorm:"belongsTo"`
-	Logs            []WorkflowRunLog `gorm:"foreignKey:RunID;constraint:WorkflowRunLog_runId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Data         datatypes.JSON `gorm:"column:data;default:'{}';not null" json:"data"`
+	Error        *string        `gorm:"column:error" json:"error"`
+	DispatchedAt *DateTime      `gorm:"column:dispatchedAt;type:timestamp(3)" json:"dispatchedAt"`
+	StartedAt    *DateTime      `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
+	FinishedAt   *DateTime      `gorm:"column:finishedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx;type:timestamp(3)" json:"finishedAt"`
+	// The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.
+	CallerIP *string `gorm:"column:callerIp" json:"callerIp"`
+	// When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+	// input, output and errors, the run error and the caller IP. Null while the content is kept.
+	ContentDeletedAt *DateTime `gorm:"column:contentDeletedAt;index:WorkflowRun_contentDeletedAt_finishedAt_idx;type:timestamp(3)" json:"contentDeletedAt"`
+	// The retention period in days that applied when the content was cleared ("Details deleted after N days").
+	ContentRetentionDays *int `gorm:"column:contentRetentionDays;size:32" json:"contentRetentionDays"`
+	// The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+	// changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+	// existed. Configuration like a version's definition, not run content: retention leaves it alone.
+	// [WorkflowExecutableDefinition]
+	TestRunDefinition datatypes.JSON   `gorm:"column:testRunDefinition" json:"testRunDefinition"`
+	Workflow          *Workflow        `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
+	Workspace         *Workspace       `gorm:"belongsTo"`
+	WorkflowVersion   *WorkflowVersion `gorm:"belongsTo"`
+	Response          *Response        `gorm:"belongsTo"`
+	Logs              []WorkflowRunLog `gorm:"foreignKey:RunID;constraint:WorkflowRunLog_runId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WorkflowRun) TableName() string {
@@ -3344,19 +3492,62 @@ func (*WorkflowRun) BeforeUpdate(tx *gorm.DB) error {
 	return nil
 }
 
+// Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+// trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+// Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+type WorkflowSample struct {
+	ID          string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt   DateTime `gorm:"column:updated_at;index:WorkflowSample_updated_at_idx;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	WorkflowID  string   `gorm:"column:workflowId;uniqueIndex:WorkflowSample_workflowId_source_key;index:WorkflowSample_workflowId_workspaceId_idx;not null" json:"workflowId"`
+	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSample_workflowId_workspaceId_idx;not null" json:"workspaceId"`
+	Source      string   `gorm:"column:source;uniqueIndex:WorkflowSample_workflowId_source_key;not null" json:"source"`
+	// [WorkflowSampleData]
+	Sample       datatypes.JSON `gorm:"column:sample;not null" json:"sample"`
+	LastCalledAt *DateTime      `gorm:"column:lastCalledAt;type:timestamp(3)" json:"lastCalledAt"`
+	LastCallerIP *string        `gorm:"column:lastCallerIp" json:"lastCallerIp"`
+	Workflow     *Workflow      `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
+}
+
+func (WorkflowSample) TableName() string {
+	return "WorkflowSample"
+}
+
+func (m *WorkflowSample) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid2.Generate()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*WorkflowSample) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
 type WorkflowRunLog struct {
 	ID       string `gorm:"column:id;primaryKey" json:"id"`
 	RunID    string `gorm:"column:runId;uniqueIndex:WorkflowRunLog_runId_stepId_key;index:WorkflowRunLog_runId_sequence_idx;not null" json:"runId"`
 	Sequence int    `gorm:"column:sequence;index:WorkflowRunLog_runId_sequence_idx;size:32;not null" json:"sequence"`
 	StepID   string `gorm:"column:stepId;uniqueIndex:WorkflowRunLog_runId_stepId_key;not null" json:"stepId"`
 	StepType string `gorm:"column:stepType;not null" json:"stepType"`
-	Status   string `gorm:"column:status;default:'pending';not null" json:"status"`
+	Status   string `gorm:"column:status;index:WorkflowRunLog_status_startedAt_idx;default:'pending';not null" json:"status"`
 	// [WorkflowRunLogInput]
 	Input datatypes.JSON `gorm:"column:input;default:'{}';not null" json:"input"`
 	// [WorkflowRunLogOutput]
 	Output     datatypes.JSON `gorm:"column:output;default:'{}';not null" json:"output"`
 	Error      *string        `gorm:"column:error" json:"error"`
-	StartedAt  *DateTime      `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
+	StartedAt  *DateTime      `gorm:"column:startedAt;index:WorkflowRunLog_status_startedAt_idx;type:timestamp(3)" json:"startedAt"`
 	FinishedAt *DateTime      `gorm:"column:finishedAt;type:timestamp(3)" json:"finishedAt"`
 	Run        *WorkflowRun   `gorm:"foreignKey:RunID;belongsTo"`
 }
@@ -3368,6 +3559,51 @@ func (WorkflowRunLog) TableName() string {
 func (m *WorkflowRunLog) BeforeCreate(_ *gorm.DB) error {
 	if m.ID == "" {
 		m.ID = cuid2.Generate()
+	}
+	return nil
+}
+
+// Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+// store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+// version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+// with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+type WorkflowSecret struct {
+	ID          string   `gorm:"column:id;primaryKey" json:"id"`
+	CreatedAt   DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	UpdatedAt   DateTime `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	WorkflowID  string   `gorm:"column:workflowId;index:WorkflowSecret_workflowId_workspaceId_idx;not null" json:"workflowId"`
+	WorkspaceID string   `gorm:"column:workspaceId;index:WorkflowSecret_workflowId_workspaceId_idx;not null" json:"workspaceId"`
+	// `symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned.
+	Value string `gorm:"column:value;not null" json:"value"`
+	// Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
+	// sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
+	// until it is set again.
+	BoundOrigin *string   `gorm:"column:boundOrigin" json:"boundOrigin"`
+	Workflow    *Workflow `gorm:"foreignKey:WorkflowID,WorkspaceID;references:ID,WorkspaceID;belongsTo"`
+}
+
+func (WorkflowSecret) TableName() string {
+	return "WorkflowSecret"
+}
+
+func (m *WorkflowSecret) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.ID == "" {
+		m.ID = cuid2.Generate()
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*WorkflowSecret) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
 	}
 	return nil
 }

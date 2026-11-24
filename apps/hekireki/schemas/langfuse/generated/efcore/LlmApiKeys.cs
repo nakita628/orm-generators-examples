@@ -33,6 +33,8 @@ public partial class LlmApiKeys
 
     public string? Config { get; set; }
 
+    public string? ExternalId { get; set; }
+
     public string? ProjectId { get; set; }
 
     public virtual Project? Project { get; set; }

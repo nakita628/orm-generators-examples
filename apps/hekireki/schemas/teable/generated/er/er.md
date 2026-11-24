@@ -230,6 +230,42 @@ erDiagram
         string createdBy
         string lastModifiedBy
     }
+    domain_event_outbox {
+        string id PK
+        string baseId
+        string tableId
+        string messageName
+        int schemaVersion
+        string aggregateId
+        json payload
+        int payloadBytes
+        int catalogGeneration
+        json requiredConsumers
+        string bindingId
+        int storageEpoch
+        boolean unpublished
+        string settled
+        datetime settledAt
+        datetime createdAt
+    }
+    domain_event_delivery {
+        string id PK
+        string eventId UK
+        string consumerId UK
+        string status
+        int attempts
+        int maxAttempts
+        string leaseToken
+        datetime leaseExpiresAt
+        datetime nextAttemptAt
+        string lastError
+        datetime createdAt
+    }
+    domain_event_inbox {
+        string consumerId PK
+        string eventId PK
+        datetime createdAt
+    }
     computed_update_outbox {
         string id PK
         string baseId

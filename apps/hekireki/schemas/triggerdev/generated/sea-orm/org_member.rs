@@ -15,6 +15,12 @@ pub struct Model {
     pub user_id: String,
     #[sea_orm(default_value = "MEMBER")]
     pub role: OrgMemberRole,
+    /// Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded.
+    #[sea_orm(column_name = "invitedById")]
+    pub invited_by_id: Option<String>,
+    /// How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.
+    #[sea_orm(column_name = "joinMethod")]
+    pub join_method: Option<String>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]

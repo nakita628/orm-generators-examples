@@ -6,6 +6,8 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_UserTable")]
 pub struct Model {
+    pub rollover_max_budget: Option<f64>,
+    pub rollover_credit: Option<f64>,
     pub budget_limits: Option<Json>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub user_id: String,

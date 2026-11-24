@@ -34,6 +34,8 @@ pub use super::external_media_storage_integration::Entity as ExternalMediaStorag
 pub use super::gateway_ai_connection::Entity as GatewayAiConnection;
 pub use super::gateway_api_key_association::Entity as GatewayApiKeyAssociation;
 pub use super::gateway_config::Entity as GatewayConfig;
+pub use super::gateway_spend_limit::Entity as GatewaySpendLimit;
+pub use super::gateway_spend_limit_alert::Entity as GatewaySpendLimitAlert;
 pub use super::in_app_agent_conversation::Entity as InAppAgentConversation;
 pub use super::in_app_agent_event::Entity as InAppAgentEvent;
 pub use super::in_app_agent_pending_tool_approval::Entity as InAppAgentPendingToolApproval;

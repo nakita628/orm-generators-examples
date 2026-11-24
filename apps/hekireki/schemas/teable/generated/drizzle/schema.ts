@@ -522,6 +522,77 @@ export const field = pgTable(
   ],
 )
 
+export const domainEventOutbox = pgTable(
+  'domain_event_outbox',
+  {
+    id: text('id').primaryKey(),
+    baseId: text('base_id').notNull(),
+    tableId: text('table_id'),
+    messageName: text('message_name').notNull(),
+    schemaVersion: integer('schema_version').notNull(),
+    aggregateId: text('aggregate_id'),
+    payload: jsonb('payload').notNull(),
+    payloadBytes: integer('payload_bytes').notNull(),
+    catalogGeneration: integer('catalog_generation').notNull(),
+    requiredConsumers: jsonb('required_consumers').notNull(),
+    bindingId: text('binding_id'),
+    storageEpoch: integer('storage_epoch'),
+    unpublished: boolean('unpublished').notNull().default(true),
+    settled: text('settled'),
+    settledAt: timestamp('settled_at', { precision: 3 }),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [index('domain_event_outbox_base_id_idx').on(table.baseId)],
+)
+
+export const domainEventDelivery = pgTable(
+  'domain_event_delivery',
+  {
+    id: text('id').primaryKey(),
+    eventId: text('event_id').notNull(),
+    consumerId: text('consumer_id').notNull(),
+    status: text('status').notNull(),
+    attempts: integer('attempts').notNull().default(0),
+    maxAttempts: integer('max_attempts').notNull().default(12),
+    leaseToken: text('lease_token'),
+    leaseExpiresAt: timestamp('lease_expires_at', { withTimezone: true, precision: 3 }),
+    nextAttemptAt: timestamp('next_attempt_at', { withTimezone: true, precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    lastError: text('last_error'),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    uniqueIndex('domain_event_delivery_event_id_consumer_id_key').on(
+      table.eventId,
+      table.consumerId,
+    ),
+  ],
+)
+
+export const domainEventInbox = pgTable(
+  'domain_event_inbox',
+  {
+    consumerId: text('consumer_id').notNull(),
+    eventId: text('event_id').notNull(),
+    createdAt: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+  },
+  (table) => [
+    primaryKey({ name: 'domain_event_inbox_pkey', columns: [table.consumerId, table.eventId] }),
+    index('domain_event_inbox_event_id_idx').on(table.eventId),
+  ],
+)
+
 export const computedUpdateOutbox = pgTable(
   'computed_update_outbox',
   {
@@ -2023,6 +2094,9 @@ export const relations = defineRelations(
     tableQueryObservationShard,
     schemaOperation,
     field,
+    domainEventOutbox,
+    domainEventDelivery,
+    domainEventInbox,
     computedUpdateOutbox,
     computedUpdateOutboxSeed,
     computedUpdateChangeFrontier,

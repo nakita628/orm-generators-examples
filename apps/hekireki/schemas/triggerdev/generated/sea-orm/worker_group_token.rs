@@ -20,17 +20,31 @@ pub struct Model {
     pub created_at: DateTime,
     #[sea_orm(column_name = "updatedAt")]
     pub updated_at: DateTime,
+    #[sea_orm(column_name = "workerGroupId")]
+    pub worker_group_id: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
-    #[sea_orm(has_one = "super::worker_instance_group::Entity")]
+    #[sea_orm(
+        belongs_to = "super::worker_instance_group::Entity",
+        from = "Column::WorkerGroupId",
+        to = "super::worker_instance_group::Column::Id",
+        on_update = "Cascade",
+        on_delete = "Cascade"
+    )]
+    ChildOf,
+    #[sea_orm(
+        has_one = "super::worker_instance_group::Entity",
+        from = "Column::Id",
+        to = "super::worker_instance_group::Column::TokenId"
+    )]
     WorkerGroup,
 }
 
 impl Related<super::worker_instance_group::Entity> for Entity {
     fn to() -> RelationDef {
-        Relation::WorkerGroup.def()
+        Relation::ChildOf.def()
     }
 }
 

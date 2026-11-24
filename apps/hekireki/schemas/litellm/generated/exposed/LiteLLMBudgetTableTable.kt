@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 object LiteLLMBudgetTableTable : IdTable<String>("\"LiteLLM_BudgetTable\"") {
+    val rolloverMaxBudget = double("rollover_max_budget").nullable()
     override val id = text("budget_id").clientDefault { UUID.randomUUID().toString() }.entityId()
     val name = text("name").nullable()
     val maxBudget = double("max_budget").nullable()

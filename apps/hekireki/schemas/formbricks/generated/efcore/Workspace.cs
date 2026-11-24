@@ -95,6 +95,8 @@ public partial class Workspace
 
     public virtual ICollection<Dashboard> Dashboards { get; set; } = new List<Dashboard>();
 
+    public virtual ICollection<EmbeddedFieldLabel> EmbeddedFieldLabels { get; set; } = new List<EmbeddedFieldLabel>();
+
     public virtual ICollection<Creative> Creatives { get; set; } = new List<Creative>();
 
     public virtual ICollection<AttachmentExport> AttachmentExports { get; set; } = new List<AttachmentExport>();
@@ -122,4 +124,6 @@ public partial class Workspace
     public virtual ICollection<Workflow> Workflows { get; set; } = new List<Workflow>();
 
     public virtual ICollection<WorkflowRun> WorkflowRuns { get; set; } = new List<WorkflowRun>();
+
+    public virtual ICollection<McpGrantWorkspace> McpGrants { get; set; } = new List<McpGrantWorkspace>();
 }

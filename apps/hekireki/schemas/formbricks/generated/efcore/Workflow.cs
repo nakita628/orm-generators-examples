@@ -35,4 +35,16 @@ public partial class Workflow
     public virtual ICollection<WorkflowVersion> Versions { get; set; } = new List<WorkflowVersion>();
 
     public virtual ICollection<WorkflowRun> Runs { get; set; } = new List<WorkflowRun>();
+
+    public virtual ICollection<WorkflowSecret> Secrets { get; set; } = new List<WorkflowSecret>();
+
+    public virtual ICollection<WorkflowSample> Samples { get; set; } = new List<WorkflowSample>();
+
+    /// <summary>
+    /// Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+    /// the editor can show the URL again. Never part of the definition, its versions or its copies.
+    /// </summary>
+    public string? WebhookTokenHash { get; set; }
+
+    public string? WebhookTokenEncrypted { get; set; }
 }

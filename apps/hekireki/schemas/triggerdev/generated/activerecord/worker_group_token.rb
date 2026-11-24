@@ -9,6 +9,8 @@ class WorkerGroupToken < ApplicationRecord
   validates :tokenHash, presence: true, uniqueness: true
   validates :previousTokenHash, uniqueness: { allow_nil: true }
 
+  belongs_to :child_of, class_name: "WorkerInstanceGroup", foreign_key: "workerGroupId", optional: true,
+                        inverse_of: :child_tokens
   has_one :worker_group, class_name: "WorkerInstanceGroup", foreign_key: "tokenId", inverse_of: :token,
                          dependent: :destroy
 end

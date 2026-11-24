@@ -20,6 +20,8 @@ export type SystemRole =
   | 'SCORES_INGEST'
   | 'INGEST'
   | 'AI_GATEWAY'
+  | 'AI_GATEWAY_INFERENCE'
+  | 'APPLICATION'
 
 export type GatewayIngestionMode = 'none' | 'usage' | 'full'
 
@@ -35,6 +37,17 @@ export type GatewayProvider =
   | 'vertex'
 
 export type GatewayConnectionStatus = 'enabled' | 'disabled' | 'error'
+
+export type GatewaySpendLimitScope =
+  | 'API_KEY'
+  | 'USER'
+  | 'API_KEY_DEFAULT'
+  | 'USER_DEFAULT'
+  | 'ORGANIZATION'
+
+export type GatewaySpendLimitInterval = 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'TOTAL'
+
+export type GatewaySpendLimitAlertType = 'WARNING' | 'EXCEEDED'
 
 export type InAppAgentConversationVisibilityScope = 'PERSONAL' | 'PROJECT'
 
@@ -53,6 +66,8 @@ export type CommentObjectType = 'TRACE' | 'OBSERVATION' | 'SESSION' | 'PROMPT'
 export type NotificationChannel = 'EMAIL'
 
 export type NotificationType = 'COMMENT_MENTION'
+
+export type ModelScope = 'LANGFUSE' | 'ORGANIZATION' | 'PROJECT'
 
 export type AuditLogRecordType = 'USER' | 'API_KEY'
 
@@ -124,6 +139,8 @@ export type DashboardWidgetChartType =
 export type SessionViewMode = 'conversational' | 'list'
 
 export type SessionUnmatchedTraces = 'show' | 'hide'
+
+export type SessionViewOwnership = 'PRIVATE' | 'PROJECT'
 
 export type ActionType = 'WEBHOOK' | 'SLACK' | 'GITHUB_DISPATCH' | 'PAGERDUTY'
 
@@ -251,6 +268,8 @@ export interface RoleAssignment {
   api_key_id: string | null
   role_id: string
   system_role: SystemRole
+  expires_at: Timestamp | null
+  tags: Generated<string[]>
   created_at: Generated<Timestamp>
   updated_at: Generated<Timestamp>
 }
@@ -286,6 +305,33 @@ export interface GatewayApiKeyAssociation {
   api_key_id: string
   metadata: Generated<unknown>
   allowed_models: unknown
+}
+
+export interface GatewaySpendLimit {
+  id: string
+  organization_id: string
+  scope: GatewaySpendLimitScope
+  api_key_id: string | null
+  user_id: string | null
+  interval: GatewaySpendLimitInterval
+  limit_usd: string
+  alert_thresholds: Generated<number[]>
+  counting_started_at: Timestamp
+  owner_user_id: string | null
+  created_at: Generated<Timestamp>
+  updated_at: Generated<Timestamp>
+}
+
+/** One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times. */
+export interface GatewaySpendLimitAlert {
+  id: string
+  spend_limit_id: string
+  subject_id: Generated<string>
+  type: GatewaySpendLimitAlertType
+  threshold_percent: Generated<number>
+  counting_started_at: Timestamp
+  window_start: Timestamp
+  created_at: Generated<Timestamp>
 }
 
 export interface InAppAgentConversation {
@@ -368,6 +414,7 @@ export interface LlmApiKeys {
   extra_headers: string | null
   extra_header_keys: Generated<string[]>
   config: unknown
+  external_id: string | null
   project_id: string | null
   organization_id: string | null
 }
@@ -431,6 +478,7 @@ export interface AnnotationQueue {
   name: string
   description: string | null
   score_config_ids: Generated<string[]>
+  session_view_id: string | null
   project_id: string
   created_at: Generated<Timestamp>
   updated_at: Generated<Timestamp>
@@ -623,7 +671,9 @@ export interface Model {
   id: string
   created_at: Generated<Timestamp>
   updated_at: Generated<Timestamp>
+  scope: ModelScope
   project_id: string | null
+  organization_id: string | null
   model_name: string
   match_pattern: string
   start_date: Timestamp | null
@@ -1117,6 +1167,7 @@ export interface TableViewPreset {
 }
 
 export interface SessionView {
+  ownership: Generated<SessionViewOwnership>
   is_pinned_by_default_for_project: Generated<boolean>
   id: string
   project_id: string
@@ -1297,6 +1348,8 @@ export interface DB {
   gateway_configs: GatewayConfig
   gateway_ai_connections: GatewayAiConnection
   gateway_api_key_associations: GatewayApiKeyAssociation
+  gateway_spend_limits: GatewaySpendLimit
+  gateway_spend_limit_alerts: GatewaySpendLimitAlert
   in_app_agent_conversations: InAppAgentConversation
   in_app_agent_events: InAppAgentEvent
   in_app_agent_runs: InAppAgentRun

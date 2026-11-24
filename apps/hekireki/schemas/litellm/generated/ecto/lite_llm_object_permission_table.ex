@@ -18,6 +18,7 @@ defmodule LiteLLM.LiteLLMObjectPermissionTable do
           search_tools: [String.t()],
           mcp_tool_search_enabled: boolean() | nil,
           skills: [String.t()],
+          apps: [String.t()],
           teams: [LiteLLM.LiteLLMTeamTable.t()],
           projects: [LiteLLM.LiteLLMProjectTable.t()],
           verification_tokens: [LiteLLM.LiteLLMVerificationToken.t()],
@@ -40,6 +41,7 @@ defmodule LiteLLM.LiteLLMObjectPermissionTable do
     field(:search_tools, {:array, :string})
     field(:mcp_tool_search_enabled, :boolean)
     field(:skills, {:array, :string})
+    field(:apps, {:array, :string})
     has_many(:teams, LiteLLM.LiteLLMTeamTable, foreign_key: :object_permission_id)
     has_many(:projects, LiteLLM.LiteLLMProjectTable, foreign_key: :object_permission_id)
     has_many(:verification_tokens, LiteLLM.LiteLLMVerificationToken, foreign_key: :object_permission_id)

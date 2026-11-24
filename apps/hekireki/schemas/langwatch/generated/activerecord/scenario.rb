@@ -5,6 +5,7 @@ class Scenario < ApplicationRecord
   attribute :id, default: -> { Nanoid.generate }
   attribute :criteria, default: -> { [] }
   attribute :labels, default: -> { [] }
+  attribute :kind, default: "standard"
   attribute :version, default: 1
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

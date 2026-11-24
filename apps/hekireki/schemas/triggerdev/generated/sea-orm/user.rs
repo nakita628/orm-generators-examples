@@ -137,6 +137,8 @@ pub enum Relation {
     PlatformNotifications,
     #[sea_orm(has_many = "super::platform_notification_interaction::Entity")]
     PlatformNotificationInteractions,
+    #[sea_orm(has_many = "super::environment_variable_ignore::Entity")]
+    EnvironmentVariableIgnores,
 }
 
 impl Related<super::secret_reference::Entity> for Entity {
@@ -226,6 +228,12 @@ impl Related<super::platform_notification::Entity> for Entity {
 impl Related<super::platform_notification_interaction::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::PlatformNotificationInteractions.def()
+    }
+}
+
+impl Related<super::environment_variable_ignore::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::EnvironmentVariableIgnores.def()
     }
 }
 

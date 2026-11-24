@@ -12,6 +12,7 @@ class LiteLLMVerificationTokenEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, LiteLLMVerificationTokenEntity>(LiteLLMVerificationTokenTable)
 
+    var keyId by LiteLLMVerificationTokenTable.keyId
     var keyName by LiteLLMVerificationTokenTable.keyName
     var keyAlias by LiteLLMVerificationTokenTable.keyAlias
     var softBudgetCooldown by LiteLLMVerificationTokenTable.softBudgetCooldown

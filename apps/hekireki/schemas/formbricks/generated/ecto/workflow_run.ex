@@ -21,6 +21,10 @@ defmodule Formbricks.WorkflowRun do
           dispatched_at: DateTime.t() | nil,
           started_at: DateTime.t() | nil,
           finished_at: DateTime.t() | nil,
+          caller_ip: String.t() | nil,
+          content_deleted_at: DateTime.t() | nil,
+          content_retention_days: integer() | nil,
+          test_run_definition: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -48,6 +52,18 @@ defmodule Formbricks.WorkflowRun do
     field(:dispatched_at, Formbricks.PrismaDateTime, source: :dispatchedAt)
     field(:started_at, Formbricks.PrismaDateTime, source: :startedAt)
     field(:finished_at, Formbricks.PrismaDateTime, source: :finishedAt)
+    # The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.
+    field(:caller_ip, :string, source: :callerIp)
+    # When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+    # input, output and errors, the run error and the caller IP. Null while the content is kept.
+    field(:content_deleted_at, Formbricks.PrismaDateTime, source: :contentDeletedAt)
+    # The retention period in days that applied when the content was cleared ("Details deleted after N days").
+    field(:content_retention_days, :integer, source: :contentRetentionDays)
+    # The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+    # changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+    # existed. Configuration like a version's definition, not run content: retention leaves it alone.
+    # [WorkflowExecutableDefinition]
+    field(:test_run_definition, Formbricks.PrismaJson, source: :testRunDefinition)
     field(:workspace_id, :string, source: :workspaceId)
     field(:workflow_version_id, :string, source: :workflowVersionId)
     field(:response_id, :string, source: :responseId)

@@ -49,6 +49,10 @@ class BackgroundWorkerTaskEntity(
      * AGENT: { type: "ai-sdk-chat" }
      */
     var config by BackgroundWorkerTaskTable.config
+    var executionMode by BackgroundWorkerTaskTable.executionMode
+
+    /** RunExecutionPolicy from @trigger.dev/core. Null means the standard policy. */
+    var executionPolicy by BackgroundWorkerTaskTable.executionPolicy
     var payloadSchema by BackgroundWorkerTaskTable.payloadSchema
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {

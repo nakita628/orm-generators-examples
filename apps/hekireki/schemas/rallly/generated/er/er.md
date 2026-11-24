@@ -42,6 +42,7 @@ erDiagram
     users ||--o{ sheets : "(id) - (hostId)"
     sheets ||--o{ sheet_slots : "(id) - (sheetId)"
     event_types ||--o{ sheet_slots : "(id) - (eventTypeId)"
+    spaces ||--o{ space_usage : "(id) - (spaceId)"
     users ||--o{ spaces : "(id) - (ownerId)"
     spaces ||--o{ space_members : "(id) - (spaceId)"
     users ||--o{ space_members : "(id) - (userId)"
@@ -401,6 +402,15 @@ erDiagram
         string eventTypeId FK
         datetime startTime
         datetime createdAt
+        datetime updatedAt
+    }
+    space_usage {
+        string spaceId PK, FK
+        spaceusageresource resource PK
+        datetime period PK
+        int count
+        datetime nearLimitWarnedAt
+        datetime atLimitWarnedAt
         datetime updatedAt
     }
     spaces {

@@ -28,6 +28,15 @@ class AuthorizationCodeEntity(
 
     /** sha256 of the approval code, which only the approving browser ever sees. */
     var approvalCodeHash by AuthorizationCodeTable.approvalCodeHash
+    var oauthClient by OAuthClientEntity optionalReferencedOn AuthorizationCodeTable.oauthClientId
+    var oauthClientId by AuthorizationCodeTable.oauthClientId
+    var redirectUri by AuthorizationCodeTable.redirectUri
+    var scope by AuthorizationCodeTable.scope
+    var resource by AuthorizationCodeTable.resource
+    var approvedByUserId by AuthorizationCodeTable.approvedByUserId
+
+    /** The user who started the OAuth authorization. Only they can approve it. */
+    var requestedByUserId by AuthorizationCodeTable.requestedByUserId
     var createdAt by AuthorizationCodeTable.createdAt
     var updatedAt by AuthorizationCodeTable.updatedAt
 

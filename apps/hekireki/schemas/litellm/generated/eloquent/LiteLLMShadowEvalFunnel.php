@@ -19,6 +19,7 @@ class LiteLLMShadowEvalFunnel extends Model
     protected $fillable = [
         'job_id',
         'not_sampled',
+        'same_model',
         'unjudgeable',
         'shed',
         'withheld',
@@ -26,6 +27,7 @@ class LiteLLMShadowEvalFunnel extends Model
 
     protected $attributes = [
         'not_sampled' => 0,
+        'same_model' => 0,
         'unjudgeable' => 0,
         'shed' => 0,
         'withheld' => 0,
@@ -33,6 +35,7 @@ class LiteLLMShadowEvalFunnel extends Model
 
     protected $casts = [
         'not_sampled' => 'integer',
+        'same_model' => 'integer',
         'unjudgeable' => 'integer',
         'shed' => 'integer',
         'withheld' => 'integer',

@@ -1,3 +1,4 @@
+use super::deployment_initiated_by_credential::DeploymentInitiatedByCredential;
 use super::worker_deployment_status::WorkerDeploymentStatus;
 use super::worker_deployment_type::WorkerDeploymentType;
 use chrono::SubsecRound;
@@ -21,7 +22,7 @@ pub struct Model {
     pub runtime: Option<String>,
     #[sea_orm(column_name = "runtimeVersion")]
     pub runtime_version: Option<String>,
-    /// CLI version that initiated the deploy, stamped at initialization
+    /// CLI version that initiated the deploy, stamped at initialization or worker upload
     #[sea_orm(column_name = "cliVersion")]
     pub cli_version: Option<String>,
     #[sea_orm(column_name = "imageReference")]
@@ -66,6 +67,9 @@ pub struct Model {
     pub commit_sha: Option<String>,
     #[sea_orm(column_name = "externalId")]
     pub external_id: Option<String>,
+    /// The kind of credential that started the deployment. Null when unknown.
+    #[sea_orm(column_name = "initiatedByCredential")]
+    pub initiated_by_credential: Option<DeploymentInitiatedByCredential>,
     #[sea_orm(column_name = "startedAt")]
     pub started_at: Option<DateTime>,
     #[sea_orm(column_name = "installedAt")]
@@ -82,6 +86,9 @@ pub struct Model {
     pub canceled_at: Option<DateTime>,
     #[sea_orm(column_name = "canceledReason")]
     pub canceled_reason: Option<String>,
+    /// The newer GitHub build that superseded this one while it was still queued
+    #[sea_orm(column_name = "supersededById")]
+    pub superseded_by_id: Option<String>,
     pub git: Option<Json>,
     #[sea_orm(column_name = "createdAt")]
     pub created_at: DateTime,

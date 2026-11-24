@@ -270,6 +270,45 @@ export interface Field {
   last_modified_by: string | null
 }
 
+export interface DomainEventOutbox {
+  id: string
+  base_id: string
+  table_id: string | null
+  message_name: string
+  schema_version: number
+  aggregate_id: string | null
+  payload: unknown
+  payload_bytes: number
+  catalog_generation: number
+  required_consumers: unknown
+  binding_id: string | null
+  storage_epoch: number | null
+  unpublished: Generated<boolean>
+  settled: string | null
+  settled_at: Timestamp | null
+  created_at: Generated<Timestamp>
+}
+
+export interface DomainEventDelivery {
+  id: string
+  event_id: string
+  consumer_id: string
+  status: string
+  attempts: Generated<number>
+  max_attempts: Generated<number>
+  lease_token: string | null
+  lease_expires_at: Timestamp | null
+  next_attempt_at: Generated<Timestamp>
+  last_error: string | null
+  created_at: Generated<Timestamp>
+}
+
+export interface DomainEventInbox {
+  consumer_id: string
+  event_id: string
+  created_at: Generated<Timestamp>
+}
+
 export interface ComputedUpdateOutbox {
   id: string
   base_id: string
@@ -1022,6 +1061,9 @@ export interface DB {
   table_query_observation_shard: TableQueryObservationShard
   schema_operation: SchemaOperation
   field: Field
+  domain_event_outbox: DomainEventOutbox
+  domain_event_delivery: DomainEventDelivery
+  domain_event_inbox: DomainEventInbox
   computed_update_outbox: ComputedUpdateOutbox
   computed_update_outbox_seed: ComputedUpdateOutboxSeed
   computed_update_change_frontier: ComputedUpdateChangeFrontier

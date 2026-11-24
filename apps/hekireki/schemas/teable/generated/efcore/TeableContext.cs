@@ -43,6 +43,12 @@ public partial class TeableContext : DbContext
 
     public virtual DbSet<Field> Fields { get; set; }
 
+    public virtual DbSet<DomainEventOutbox> DomainEventOutboxes { get; set; }
+
+    public virtual DbSet<DomainEventDelivery> DomainEventDeliveries { get; set; }
+
+    public virtual DbSet<DomainEventInbox> DomainEventInboxes { get; set; }
+
     public virtual DbSet<ComputedUpdateOutbox> ComputedUpdateOutboxes { get; set; }
 
     public virtual DbSet<ComputedUpdateOutboxSeed> ComputedUpdateOutboxSeeds { get; set; }
@@ -796,6 +802,105 @@ public partial class TeableContext : DbContext
                 .HasForeignKey(d => d.TableId)
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("field_table_id_fkey");
+        });
+
+        modelBuilder.Entity<DomainEventOutbox>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("domain_event_outbox_pkey");
+
+            entity.ToTable("domain_event_outbox");
+
+            entity.HasIndex(e => e.BaseId, "domain_event_outbox_base_id_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.BaseId).HasColumnName("base_id");
+            entity.Property(e => e.TableId).HasColumnName("table_id");
+            entity.Property(e => e.MessageName).HasColumnName("message_name");
+            entity.Property(e => e.SchemaVersion).HasColumnName("schema_version");
+            entity.Property(e => e.AggregateId).HasColumnName("aggregate_id");
+            entity.Property(e => e.Payload)
+                .HasColumnType("jsonb")
+                .HasColumnName("payload");
+            entity.Property(e => e.PayloadBytes).HasColumnName("payload_bytes");
+            entity.Property(e => e.CatalogGeneration).HasColumnName("catalog_generation");
+            entity.Property(e => e.RequiredConsumers)
+                .HasColumnType("jsonb")
+                .HasColumnName("required_consumers");
+            entity.Property(e => e.BindingId).HasColumnName("binding_id");
+            entity.Property(e => e.StorageEpoch).HasColumnName("storage_epoch");
+            entity.Property(e => e.Unpublished)
+                .ValueGeneratedNever()
+                .HasDefaultValue(true)
+                .HasColumnName("unpublished");
+            entity.Property(e => e.Settled).HasColumnName("settled");
+            entity.Property(e => e.SettledAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("settled_at");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+        });
+
+        modelBuilder.Entity<DomainEventDelivery>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("domain_event_delivery_pkey");
+
+            entity.ToTable("domain_event_delivery");
+
+            entity.HasIndex(e => new { e.EventId, e.ConsumerId }, "domain_event_delivery_event_id_consumer_id_key").IsUnique();
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.EventId).HasColumnName("event_id");
+            entity.Property(e => e.ConsumerId).HasColumnName("consumer_id");
+            entity.Property(e => e.Status).HasColumnName("status");
+            entity.Property(e => e.Attempts)
+                .ValueGeneratedNever()
+                .HasDefaultValue(0)
+                .HasColumnName("attempts");
+            entity.Property(e => e.MaxAttempts)
+                .ValueGeneratedNever()
+                .HasDefaultValue(12)
+                .HasColumnName("max_attempts");
+            entity.Property(e => e.LeaseToken).HasColumnName("lease_token");
+            entity.Property(e => e.LeaseExpiresAt)
+                .HasPrecision(3)
+                .HasConversion<UtcConverter>()
+                .HasColumnName("lease_expires_at");
+            entity.Property(e => e.NextAttemptAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasPrecision(3)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcConverter>()
+                .HasColumnName("next_attempt_at");
+            entity.Property(e => e.LastError).HasColumnName("last_error");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+        });
+
+        modelBuilder.Entity<DomainEventInbox>(entity =>
+        {
+            entity.HasKey(e => new { e.ConsumerId, e.EventId }).HasName("domain_event_inbox_pkey");
+
+            entity.ToTable("domain_event_inbox");
+
+            entity.HasIndex(e => e.EventId, "domain_event_inbox_event_id_idx");
+
+            entity.Property(e => e.ConsumerId).HasColumnName("consumer_id");
+            entity.Property(e => e.EventId).HasColumnName("event_id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
         });
 
         modelBuilder.Entity<ComputedUpdateOutbox>(entity =>

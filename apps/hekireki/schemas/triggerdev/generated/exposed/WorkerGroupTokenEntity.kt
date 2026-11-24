@@ -18,6 +18,8 @@ class WorkerGroupTokenEntity(
     var createdAt by WorkerGroupTokenTable.createdAt
     var updatedAt by WorkerGroupTokenTable.updatedAt
     val workerGroup by WorkerInstanceGroupEntity optionalBackReferencedOn WorkerInstanceGroupTable.tokenId
+    var childOf by WorkerInstanceGroupEntity optionalReferencedOn WorkerGroupTokenTable.workerGroupId
+    var workerGroupId by WorkerGroupTokenTable.workerGroupId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

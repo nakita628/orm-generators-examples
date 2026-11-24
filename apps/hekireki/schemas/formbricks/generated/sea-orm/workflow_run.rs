@@ -48,6 +48,22 @@ pub struct Model {
     pub started_at: Option<DateTime>,
     #[sea_orm(column_name = "finishedAt")]
     pub finished_at: Option<DateTime>,
+    /// The caller's IP for a run started by a Webhook Secret URL call; shown in run detail.
+    #[sea_orm(column_name = "callerIp")]
+    pub caller_ip: Option<String>,
+    /// When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+    /// input, output and errors, the run error and the caller IP. Null while the content is kept.
+    #[sea_orm(column_name = "contentDeletedAt")]
+    pub content_deleted_at: Option<DateTime>,
+    /// The retention period in days that applied when the content was cleared ("Details deleted after N days").
+    #[sea_orm(column_name = "contentRetentionDays")]
+    pub content_retention_days: Option<i32>,
+    /// The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+    /// changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+    /// existed. Configuration like a version's definition, not run content: retention leaves it alone.
+    /// [WorkflowExecutableDefinition]
+    #[sea_orm(column_name = "testRunDefinition")]
+    pub test_run_definition: Option<Json>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

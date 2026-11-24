@@ -15,6 +15,8 @@ object BookingSettingsTable : IdTable<String>("\"BookingSettings\"") {
     val autoArchiveBookings = bool("autoArchiveBookings").default(false)
     val autoArchiveDays = integer("autoArchiveDays").default(2)
     val autoArchiveExpiredReservations = bool("autoArchiveExpiredReservations").default(false)
+    val requireApprovalForBase = bool("requireApprovalForBase").default(false)
+    val requireApprovalForSelfService = bool("requireApprovalForSelfService").default(false)
     val requireExplicitCheckinForAdmin = bool("requireExplicitCheckinForAdmin").default(false)
     val requireExplicitCheckinForSelfService = bool("requireExplicitCheckinForSelfService").default(false)
     val requireExplicitCheckoutForAdmin = bool("requireExplicitCheckoutForAdmin").default(false)

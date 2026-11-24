@@ -27,6 +27,8 @@ class WorkerInstanceGroup < ApplicationRecord
   belongs_to :token, class_name: "WorkerGroupToken", foreign_key: "tokenId", inverse_of: :worker_group
   belongs_to :organization, foreign_key: "organizationId", optional: true, inverse_of: :worker_groups
   belongs_to :project, foreign_key: "projectId", optional: true, inverse_of: :worker_groups
+  has_many :child_tokens, class_name: "WorkerGroupToken", foreign_key: "workerGroupId", inverse_of: :child_of,
+                          dependent: :destroy
   has_many :workers, class_name: "WorkerInstance", foreign_key: "workerGroupId", inverse_of: :worker_group,
                      dependent: :restrict_with_error
   has_many :background_workers, foreign_key: "workerGroupId", inverse_of: :worker_group, dependent: :nullify

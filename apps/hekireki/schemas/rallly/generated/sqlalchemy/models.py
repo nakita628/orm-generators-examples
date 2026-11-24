@@ -31,6 +31,10 @@ class Base(DeclarativeBase):
 
 
 class ApiUsage(Base):
+    """Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+    deployments keep working during the switch, then dropped.
+    """
+
     __tablename__ = "api_usage"
 
     space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="api_usage_space_id_fkey"), primary_key=True)
@@ -692,6 +696,24 @@ class SheetSlot(Base):
     event_type: Mapped["EventType"] = relationship(back_populates="slots")
     scheduled_event: Mapped[Optional["ScheduledEvent"]] = relationship(back_populates="sheet_slot")
 
+class SpaceUsage(Base):
+    """Monthly counters for metered actions charged to a space, independent of
+    the records they produce, so deleting a poll does not give back what it
+    spent.
+    """
+
+    __tablename__ = "space_usage"
+
+    space_id: Mapped[str] = mapped_column(ForeignKey("spaces.id", ondelete="CASCADE", onupdate="CASCADE", name="space_usage_space_id_fkey"), primary_key=True)
+    resource: Mapped[str] = mapped_column(Enum("api_poll", "email_invite", name="space_usage_resource"), primary_key=True)
+    period: Mapped[date] = mapped_column(Date, primary_key=True)
+    count: Mapped[int] = mapped_column(default=0, server_default=text("0"))
+    near_limit_warned_at: Mapped[Optional[datetime]]
+    at_limit_warned_at: Mapped[Optional[datetime]]
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
+
+    space: Mapped["Space"] = relationship(back_populates="usage")
+
 class Space(Base):
     __tablename__ = "spaces"
 
@@ -727,6 +749,7 @@ class Space(Base):
     nonprofit_applications: Mapped[list["NonprofitApplication"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="space")
     webhooks: Mapped[list["SpaceWebhook"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="space")
     api_usage: Mapped[list["ApiUsage"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="space")
+    usage: Mapped[list["SpaceUsage"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="space")
 
 class SpaceMember(Base):
     __tablename__ = "space_members"

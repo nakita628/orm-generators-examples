@@ -20,6 +20,8 @@ defmodule LiteLLM.LiteLLMShadowEvalAttempt do
           real_classifier_cost: float(),
           shadow_classifier_cost: float(),
           real_cache_hit: boolean(),
+          real_grade: integer() | nil,
+          shadow_grade: integer() | nil,
           error: String.t() | nil,
           inserted_at: DateTime.t()
         }
@@ -40,6 +42,8 @@ defmodule LiteLLM.LiteLLMShadowEvalAttempt do
     field(:real_classifier_cost, :float, default: 0.0)
     field(:shadow_classifier_cost, :float, default: 0.0)
     field(:real_cache_hit, :boolean, default: false)
+    field(:real_grade, :integer)
+    field(:shadow_grade, :integer)
     field(:error, :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end

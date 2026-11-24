@@ -48,6 +48,10 @@ public partial class LangfuseContext : DbContext
 
     public virtual DbSet<GatewayApiKeyAssociation> GatewayApiKeyAssociations { get; set; }
 
+    public virtual DbSet<GatewaySpendLimit> GatewaySpendLimits { get; set; }
+
+    public virtual DbSet<GatewaySpendLimitAlert> GatewaySpendLimitAlerts { get; set; }
+
     public virtual DbSet<InAppAgentConversation> InAppAgentConversations { get; set; }
 
     public virtual DbSet<InAppAgentEvent> InAppAgentEvents { get; set; }
@@ -203,6 +207,9 @@ public partial class LangfuseContext : DbContext
         npgsql.MapEnum<GatewayIngestionMode>("GatewayIngestionMode");
         npgsql.MapEnum<GatewayProvider>("GatewayProvider");
         npgsql.MapEnum<GatewayConnectionStatus>("GatewayConnectionStatus");
+        npgsql.MapEnum<GatewaySpendLimitScope>("GatewaySpendLimitScope");
+        npgsql.MapEnum<GatewaySpendLimitInterval>("GatewaySpendLimitInterval");
+        npgsql.MapEnum<GatewaySpendLimitAlertType>("GatewaySpendLimitAlertType");
         npgsql.MapEnum<InAppAgentConversationVisibilityScope>("InAppAgentConversationVisibilityScope");
         npgsql.MapEnum<Role>("Role");
         npgsql.MapEnum<ScoreConfigDataType>("ScoreConfigDataType");
@@ -212,6 +219,7 @@ public partial class LangfuseContext : DbContext
         npgsql.MapEnum<CommentObjectType>("CommentObjectType");
         npgsql.MapEnum<NotificationChannel>("NotificationChannel");
         npgsql.MapEnum<NotificationType>("NotificationType");
+        npgsql.MapEnum<ModelScope>("ModelScope");
         npgsql.MapEnum<AuditLogRecordType>("AuditLogRecordType");
         npgsql.MapEnum<EvalTemplateType>("EvalTemplateType");
         npgsql.MapEnum<EvalTemplateSourceCodeLanguage>("EvalTemplateSourceCodeLanguage");
@@ -231,6 +239,7 @@ public partial class LangfuseContext : DbContext
         npgsql.MapEnum<DashboardWidgetChartType>("DashboardWidgetChartType");
         npgsql.MapEnum<SessionViewMode>("SessionViewMode");
         npgsql.MapEnum<SessionUnmatchedTraces>("SessionUnmatchedTraces");
+        npgsql.MapEnum<SessionViewOwnership>("SessionViewOwnership");
         npgsql.MapEnum<ActionType>("ActionType");
         npgsql.MapEnum<ActionExecutionStatus>("ActionExecutionStatus");
         npgsql.MapEnum<MonitorThresholdOperator>("MonitorThresholdOperator");
@@ -261,6 +270,9 @@ public partial class LangfuseContext : DbContext
         dataSource.MapEnum<GatewayIngestionMode>("GatewayIngestionMode");
         dataSource.MapEnum<GatewayProvider>("GatewayProvider");
         dataSource.MapEnum<GatewayConnectionStatus>("GatewayConnectionStatus");
+        dataSource.MapEnum<GatewaySpendLimitScope>("GatewaySpendLimitScope");
+        dataSource.MapEnum<GatewaySpendLimitInterval>("GatewaySpendLimitInterval");
+        dataSource.MapEnum<GatewaySpendLimitAlertType>("GatewaySpendLimitAlertType");
         dataSource.MapEnum<InAppAgentConversationVisibilityScope>("InAppAgentConversationVisibilityScope");
         dataSource.MapEnum<Role>("Role");
         dataSource.MapEnum<ScoreConfigDataType>("ScoreConfigDataType");
@@ -270,6 +282,7 @@ public partial class LangfuseContext : DbContext
         dataSource.MapEnum<CommentObjectType>("CommentObjectType");
         dataSource.MapEnum<NotificationChannel>("NotificationChannel");
         dataSource.MapEnum<NotificationType>("NotificationType");
+        dataSource.MapEnum<ModelScope>("ModelScope");
         dataSource.MapEnum<AuditLogRecordType>("AuditLogRecordType");
         dataSource.MapEnum<EvalTemplateType>("EvalTemplateType");
         dataSource.MapEnum<EvalTemplateSourceCodeLanguage>("EvalTemplateSourceCodeLanguage");
@@ -289,6 +302,7 @@ public partial class LangfuseContext : DbContext
         dataSource.MapEnum<DashboardWidgetChartType>("DashboardWidgetChartType");
         dataSource.MapEnum<SessionViewMode>("SessionViewMode");
         dataSource.MapEnum<SessionUnmatchedTraces>("SessionUnmatchedTraces");
+        dataSource.MapEnum<SessionViewOwnership>("SessionViewOwnership");
         dataSource.MapEnum<ActionType>("ActionType");
         dataSource.MapEnum<ActionExecutionStatus>("ActionExecutionStatus");
         dataSource.MapEnum<MonitorThresholdOperator>("MonitorThresholdOperator");
@@ -317,6 +331,9 @@ public partial class LangfuseContext : DbContext
         modelBuilder.HasPostgresEnum<GatewayIngestionMode>(name: "GatewayIngestionMode");
         modelBuilder.HasPostgresEnum<GatewayProvider>(name: "GatewayProvider");
         modelBuilder.HasPostgresEnum<GatewayConnectionStatus>(name: "GatewayConnectionStatus");
+        modelBuilder.HasPostgresEnum<GatewaySpendLimitScope>(name: "GatewaySpendLimitScope");
+        modelBuilder.HasPostgresEnum<GatewaySpendLimitInterval>(name: "GatewaySpendLimitInterval");
+        modelBuilder.HasPostgresEnum<GatewaySpendLimitAlertType>(name: "GatewaySpendLimitAlertType");
         modelBuilder.HasPostgresEnum<InAppAgentConversationVisibilityScope>(name: "InAppAgentConversationVisibilityScope");
         modelBuilder.HasPostgresEnum<Role>(name: "Role");
         modelBuilder.HasPostgresEnum<ScoreConfigDataType>(name: "ScoreConfigDataType");
@@ -326,6 +343,7 @@ public partial class LangfuseContext : DbContext
         modelBuilder.HasPostgresEnum<CommentObjectType>(name: "CommentObjectType");
         modelBuilder.HasPostgresEnum<NotificationChannel>(name: "NotificationChannel");
         modelBuilder.HasPostgresEnum<NotificationType>(name: "NotificationType");
+        modelBuilder.HasPostgresEnum<ModelScope>(name: "ModelScope");
         modelBuilder.HasPostgresEnum<AuditLogRecordType>(name: "AuditLogRecordType");
         modelBuilder.HasPostgresEnum<EvalTemplateType>(name: "EvalTemplateType");
         modelBuilder.HasPostgresEnum<EvalTemplateSourceCodeLanguage>(name: "EvalTemplateSourceCodeLanguage");
@@ -345,6 +363,7 @@ public partial class LangfuseContext : DbContext
         modelBuilder.HasPostgresEnum<DashboardWidgetChartType>(name: "DashboardWidgetChartType");
         modelBuilder.HasPostgresEnum<SessionViewMode>(name: "SessionViewMode");
         modelBuilder.HasPostgresEnum<SessionUnmatchedTraces>(name: "SessionUnmatchedTraces");
+        modelBuilder.HasPostgresEnum<SessionViewOwnership>(name: "SessionViewOwnership");
         modelBuilder.HasPostgresEnum<ActionType>(name: "ActionType");
         modelBuilder.HasPostgresEnum<ActionExecutionStatus>(name: "ActionExecutionStatus");
         modelBuilder.HasPostgresEnum<MonitorThresholdOperator>(name: "MonitorThresholdOperator");
@@ -695,6 +714,10 @@ public partial class LangfuseContext : DbContext
 
             entity.HasIndex(e => e.ApiKeyId, "role_assignments_api_key_id_idx");
 
+            entity.HasIndex(e => e.Tags, "role_assignments_tags_idx")
+                .HasMethod("gin")
+                .HasOperators("array_ops");
+
             entity.HasIndex(e => new { e.OwnerId, e.PrincipalId, e.RoleId }, "role_assignments_owner_id_principal_id_role_id_key").IsUnique();
 
             entity.Property(e => e.Id)
@@ -708,6 +731,14 @@ public partial class LangfuseContext : DbContext
             entity.Property(e => e.ApiKeyId).HasColumnName("api_key_id");
             entity.Property(e => e.RoleId).HasColumnName("role_id");
             entity.Property(e => e.SystemRole).HasColumnName("system_role");
+            entity.Property(e => e.ExpiresAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("expires_at");
+            entity.Property(e => e.Tags)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("tags");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -859,6 +890,116 @@ public partial class LangfuseContext : DbContext
                 .HasForeignKey<GatewayApiKeyAssociation>(d => d.ApiKeyId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("gateway_api_key_associations_api_key_id_fkey");
+        });
+
+        modelBuilder.Entity<GatewaySpendLimit>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gateway_spend_limits_pkey");
+
+            entity.ToTable("gateway_spend_limits");
+
+            entity.HasIndex(e => e.OrganizationId, "gateway_spend_limits_organization_id_idx");
+
+            entity.HasIndex(e => e.UserId, "gateway_spend_limits_user_id_idx");
+
+            entity.HasIndex(e => new { e.ApiKeyId, e.Interval }, "gateway_spend_limits_api_key_id_interval_key").IsUnique();
+
+            entity.HasIndex(e => new { e.OrganizationId, e.UserId, e.Interval }, "gateway_spend_limits_organization_id_user_id_interval_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
+            entity.Property(e => e.Scope).HasColumnName("scope");
+            entity.Property(e => e.ApiKeyId).HasColumnName("api_key_id");
+            entity.Property(e => e.UserId).HasColumnName("user_id");
+            entity.Property(e => e.Interval).HasColumnName("interval");
+            entity.Property(e => e.LimitUsd)
+                .HasPrecision(65, 30)
+                .HasColumnName("limit_usd");
+            entity.Property(e => e.AlertThresholds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<int> { 100 })
+                .HasColumnName("alert_thresholds");
+            entity.Property(e => e.CountingStartedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("counting_started_at");
+            entity.Property(e => e.OwnerUserId).HasColumnName("owner_user_id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+            entity.Property(e => e.UpdatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.GatewaySpendLimits)
+                .HasForeignKey(d => d.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_spend_limits_organization_id_fkey");
+
+            entity.HasOne(d => d.ApiKey).WithMany(p => p.GatewaySpendLimits)
+                .HasForeignKey(d => d.ApiKeyId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_spend_limits_api_key_id_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.GatewaySpendLimits)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_spend_limits_user_id_fkey");
+
+            entity.HasOne(d => d.OwnerUser).WithMany(p => p.GatewaySpendLimitsOwned)
+                .HasForeignKey(d => d.OwnerUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("gateway_spend_limits_owner_user_id_fkey");
+        });
+
+        modelBuilder.Entity<GatewaySpendLimitAlert>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("gateway_spend_limit_alerts_pkey");
+
+            entity.ToTable("gateway_spend_limit_alerts");
+
+            entity.HasIndex(e => new { e.SpendLimitId, e.SubjectId, e.Type, e.ThresholdPercent, e.CountingStartedAt, e.WindowStart }, "gateway_spend_limit_alerts_limit_type_counting_window_key").IsUnique();
+
+            entity.Property(e => e.Id)
+                .HasValueGenerator<CuidGenerator>()
+                .HasColumnName("id");
+            entity.Property(e => e.SpendLimitId).HasColumnName("spend_limit_id");
+            entity.Property(e => e.SubjectId)
+                .ValueGeneratedNever()
+                .HasDefaultValue("")
+                .HasColumnName("subject_id");
+            entity.Property(e => e.Type).HasColumnName("type");
+            entity.Property(e => e.ThresholdPercent)
+                .ValueGeneratedNever()
+                .HasDefaultValue(100)
+                .HasColumnName("threshold_percent");
+            entity.Property(e => e.CountingStartedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("counting_started_at");
+            entity.Property(e => e.WindowStart)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("window_start");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("created_at");
+
+            entity.HasOne(d => d.SpendLimit).WithMany(p => p.Alerts)
+                .HasForeignKey(d => d.SpendLimitId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("gateway_spend_limit_alerts_spend_limit_id_fkey");
         });
 
         modelBuilder.Entity<InAppAgentConversation>(entity =>
@@ -1145,6 +1286,7 @@ public partial class LangfuseContext : DbContext
             entity.Property(e => e.Config)
                 .HasColumnType("jsonb")
                 .HasColumnName("config");
+            entity.Property(e => e.ExternalId).HasColumnName("external_id");
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
 
@@ -1406,6 +1548,8 @@ public partial class LangfuseContext : DbContext
 
             entity.HasIndex(e => new { e.ProjectId, e.CreatedAt }, "annotation_queues_project_id_created_at_idx");
 
+            entity.HasIndex(e => new { e.ProjectId, e.SessionViewId }, "annotation_queues_project_id_session_view_id_idx");
+
             entity.HasIndex(e => new { e.ProjectId, e.Name }, "annotation_queues_project_id_name_key").IsUnique();
 
             entity.Property(e => e.Id)
@@ -1417,6 +1561,7 @@ public partial class LangfuseContext : DbContext
                 .ValueGeneratedNever()
                 .HasDefaultValue(new List<string>())
                 .HasColumnName("score_config_ids");
+            entity.Property(e => e.SessionViewId).HasColumnName("session_view_id");
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
@@ -1430,6 +1575,12 @@ public partial class LangfuseContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updated_at");
+
+            entity.HasOne(d => d.SessionView).WithMany(p => p.AnnotationQueues)
+                .HasPrincipalKey(p => new { p.ProjectId, p.Id })
+                .HasForeignKey(d => new { d.ProjectId, d.SessionViewId })
+                .OnDelete(DeleteBehavior.ClientNoAction)
+                .HasConstraintName("annotation_queues_project_id_session_view_id_fkey");
 
             entity.HasOne(d => d.Project).WithMany(p => p.AnnotationQueue)
                 .HasForeignKey(d => d.ProjectId)
@@ -2157,6 +2308,8 @@ public partial class LangfuseContext : DbContext
 
             entity.HasIndex(e => e.ModelName, "models_model_name_idx");
 
+            entity.HasIndex(e => e.Scope, "models_scope_idx");
+
             entity.HasIndex(e => new { e.ProjectId, e.ModelName, e.StartDate, e.Unit }, "models_project_id_model_name_start_date_unit_key").IsUnique();
 
             entity.Property(e => e.Id)
@@ -2174,7 +2327,9 @@ public partial class LangfuseContext : DbContext
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("timestamp(3) without time zone")
                 .HasColumnName("updated_at");
+            entity.Property(e => e.Scope).HasColumnName("scope");
             entity.Property(e => e.ProjectId).HasColumnName("project_id");
+            entity.Property(e => e.OrganizationId).HasColumnName("organization_id");
             entity.Property(e => e.ModelName).HasColumnName("model_name");
             entity.Property(e => e.MatchPattern).HasColumnName("match_pattern");
             entity.Property(e => e.StartDate)
@@ -2200,6 +2355,11 @@ public partial class LangfuseContext : DbContext
                 .HasForeignKey(d => d.ProjectId)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("models_project_id_fkey");
+
+            entity.HasOne(d => d.Organization).WithMany(p => p.Models)
+                .HasForeignKey(d => d.OrganizationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("models_organization_id_fkey");
         });
 
         modelBuilder.Entity<Price>(entity =>
@@ -3805,10 +3965,12 @@ public partial class LangfuseContext : DbContext
 
             entity.ToTable("session_views");
 
-            entity.HasIndex(e => new { e.ProjectId, e.Name }, "session_views_project_id_name_key").IsUnique();
-
             entity.HasAlternateKey(e => new { e.ProjectId, e.Id }).HasName("session_views_project_id_id_key");
 
+            entity.Property(e => e.Ownership)
+                .ValueGeneratedNever()
+                .HasDefaultValue(SessionViewOwnership.Project)
+                .HasColumnName("ownership");
             entity.Property(e => e.IsPinnedByDefaultForProject)
                 .ValueGeneratedNever()
                 .HasDefaultValue(false)
@@ -4505,6 +4667,15 @@ public partial class LangfuseContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<GatewayAiConnection>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<GatewaySpendLimit>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

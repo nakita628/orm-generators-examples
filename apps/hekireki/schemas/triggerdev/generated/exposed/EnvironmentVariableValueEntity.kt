@@ -21,6 +21,8 @@ class EnvironmentVariableValueEntity(
 
     /** If true, the value is secret and cannot be revealed */
     var isSecret by EnvironmentVariableValueTable.isSecret
+    var isProxyOnly by EnvironmentVariableValueTable.isProxyOnly
+    var proxyConfig by EnvironmentVariableValueTable.proxyConfig
     var createdAt by EnvironmentVariableValueTable.createdAt
     var updatedAt by EnvironmentVariableValueTable.updatedAt
     var version by EnvironmentVariableValueTable.version

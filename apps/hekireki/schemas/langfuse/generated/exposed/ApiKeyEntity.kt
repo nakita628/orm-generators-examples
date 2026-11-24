@@ -31,5 +31,6 @@ class ApiKeyEntity(
     var createdByApiKey by ApiKeyEntity optionalReferencedOn ApiKeyTable.createdByApiKeyId
     val apiKeysCreated by ApiKeyEntity optionalReferrersOn ApiKeyTable.createdByApiKeyId
     val gatewayAssociation by GatewayApiKeyAssociationEntity optionalBackReferencedOn GatewayApiKeyAssociationTable.id
+    val gatewaySpendLimits by GatewaySpendLimitEntity optionalReferrersOn GatewaySpendLimitTable.apiKeyId
     val roleAssignments by RoleAssignmentEntity optionalReferrersOn RoleAssignmentTable.apiKeyId
 }

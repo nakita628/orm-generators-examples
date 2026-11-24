@@ -27,6 +27,8 @@ pub struct Model {
     pub shadow_classifier_cost: f64,
     #[sea_orm(default_value = false)]
     pub real_cache_hit: bool,
+    pub real_grade: Option<i32>,
+    pub shadow_grade: Option<i32>,
     pub error: Option<String>,
     pub created_at: DateTime,
 }

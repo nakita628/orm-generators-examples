@@ -304,6 +304,12 @@ class IdentityProvider(models.TextChoices):
     saml = "saml"
 
 
+class McpGrantAccess(models.TextChoices):
+    all = "all"
+    organizations = "organizations"
+    workspaces = "workspaces"
+
+
 class EmbeddedDataSource(models.TextChoices):
     """Where an Embedded Data field's value comes from.
     `computed` is set by survey logic, `ingested` arrives from a URL param or the SDK, and
@@ -859,6 +865,14 @@ class Response(models.Model):
     an empty list: without this column a wrong-typed value is indistinguishable from an absent one,
     and surfacing that in the UI (v2) would have nothing to read.
     [ResponseIngestFlags]
+    """
+    cal_bookings = models.JSONField(null=True, db_column="cal_bookings_by_question_id")
+    """What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+    keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+    every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+    `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+    never accepted as a field of its own.
+    [ResponseCalBookings]
     """
     outcome = models.TextField(choices=ResponseOutcome.choices, null=True)
     """A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
@@ -1831,13 +1845,73 @@ class OauthConsent(models.Model):
         ]
 
 
-class OauthResource(models.Model):
+class McpGrant(models.Model):
     """Better Auth 1.7 (ENG-2343): a protected resource the authorization server issues tokens for, with
     its own token lifetimes, scope allow-list and claims. Replaces the flat `validAudiences` option —
     a token is now bound to the resource it was approved for instead of to a static allow-list.
     `identifier` is the RFC 8707 `resource` value and is the natural key other rows point at.
+    What one user allows one MCP client to do (GLOSSARY.md "Grant", ADR-0041): its organization & workspace
+    access and an access level per permission. One per OAuth connection, keyed by user and client rather
+    than by `oauthConsent` row, because the provider can write duplicate consent rows for one connection
+    and settles them later. Every MCP request reads it; without one the request is refused. The client's
+    OAuth scopes stay on the consent and cap it.
     """
 
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="mcp_grants", db_column="userId", db_index=False)
+    client = models.ForeignKey("OauthClient", on_delete=models.CASCADE, related_name="mcp_grants", to_field="client_id", db_column="clientId", db_index=False)
+    access = models.TextField(choices=McpGrantAccess.choices, default=McpGrantAccess.all)
+    """Which organizations and workspaces the grant reaches (ENG-7153): All access, only the organizations
+    in `organizations` (and every workspace in them, later ones included), or only the workspaces in
+    `workspaces`. Enforced in SpiceDB through `can()` (ADR-0042); a value no row backs reaches nothing.
+    """
+    permissions = models.JSONField(default=dict)
+    """The access level per permission of `apps/web/modules/mcp/permissions.ts`: `{ "surveys": "write" }`.
+    A permission that is absent has No access.
+    """
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "McpGrant"
+        constraints = [
+            models.UniqueConstraint(fields=["user", "client"], name="McpGrant_userId_clientId_key"),
+        ]
+        indexes = [
+            models.Index(fields=["client"]),
+        ]
+
+
+class McpGrantOrganization(models.Model):
+    """An organization a grant with `organizations` access reaches, workspaces created there later included."""
+
+    pk = models.CompositePrimaryKey("grant_id", "organization_id")
+    grant = models.ForeignKey("McpGrant", on_delete=models.CASCADE, related_name="organizations", db_column="grantId", db_index=False)
+    organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="mcp_grants", db_column="organizationId", db_index=False)
+
+    class Meta:
+        db_table = "McpGrantOrganization"
+        indexes = [
+            models.Index(fields=["organization"]),
+        ]
+
+
+class McpGrantWorkspace(models.Model):
+    """A workspace a grant with `workspaces` access reaches."""
+
+    pk = models.CompositePrimaryKey("grant_id", "workspace_id")
+    grant = models.ForeignKey("McpGrant", on_delete=models.CASCADE, related_name="workspaces", db_column="grantId", db_index=False)
+    workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="mcp_grants", db_column="workspaceId", db_index=False)
+
+    class Meta:
+        db_table = "McpGrantWorkspace"
+        indexes = [
+            models.Index(fields=["workspace"]),
+        ]
+
+
+class OauthResource(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     identifier = models.TextField(unique=True)
     name = models.TextField()
@@ -2240,6 +2314,31 @@ class Chart(models.Model):
         indexes = [
             models.Index(fields=["workspace", "created_at"]),
             models.Index(fields=["feedback_directory"]),
+        ]
+
+
+class EmbeddedFieldLabel(models.Model):
+    """A workspace's display name for an imported (embedded-data) key of its Feedback Datasets, shown in
+    place of the key in chart legends, headers and the chart builder's field pickers. One per key and
+    workspace; clearing the name deletes the row, and the key shows as collected again. Built-in fields
+    are never renamed here: they keep their translated names.
+
+    @property key - The embedded-data key exactly as collected, case included
+    @property label - The name shown for the key across the workspace
+    """
+
+    id = models.TextField(primary_key=True, default=cuid_str)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="embedded_field_labels", db_column="workspaceId", db_index=False)
+    key = models.TextField()
+    label = models.TextField()
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "EmbeddedFieldLabel"
+        constraints = [
+            models.UniqueConstraint(fields=["workspace", "key"], name="EmbeddedFieldLabel_workspaceId_key_key"),
         ]
 
 
@@ -2848,6 +2947,11 @@ class Workflow(models.Model):
     creator = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="workflows", db_column="createdBy", null=True, db_index=False)
     definition = models.JSONField()
     """[WorkflowDefinition]"""
+    webhook_token_hash = models.TextField(null=True, db_column="webhookTokenHash")
+    """Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+    the editor can show the URL again. Never part of the definition, its versions or its copies.
+    """
+    webhook_token_encrypted = models.TextField(null=True, db_column="webhookTokenEncrypted")
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2906,6 +3010,20 @@ class WorkflowRun(models.Model):
     dispatched_at = UtcDateTimeField(null=True, db_column="dispatchedAt")
     started_at = UtcDateTimeField(null=True, db_column="startedAt")
     finished_at = UtcDateTimeField(null=True, db_column="finishedAt")
+    caller_ip = models.TextField(null=True, db_column="callerIp")
+    """The caller's IP for a run started by a Webhook Secret URL call; shown in run detail."""
+    content_deleted_at = UtcDateTimeField(null=True, db_column="contentDeletedAt")
+    """When the run retention job cleared the run's content (ADR 0044): payload contents, run data, step
+    input, output and errors, the run error and the caller IP. Null while the content is kept.
+    """
+    content_retention_days = models.IntegerField(null=True, db_column="contentRetentionDays")
+    """The retention period in days that applied when the content was cleared ("Details deleted after N days")."""
+    test_run_definition = models.JSONField(null=True, db_column="testRunDefinition")
+    """The draft definition a Test run executed (ADR 0049), so its graph can be drawn after the draft
+    changes. Null for live runs (they point at `workflowVersionId`) and for Test runs saved before it
+    existed. Configuration like a version's definition, not run content: retention leaves it alone.
+    [WorkflowExecutableDefinition]
+    """
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -2919,7 +3037,38 @@ class WorkflowRun(models.Model):
             models.Index(fields=["status", "created_at"]),
             models.Index(fields=["response"]),
             models.Index(fields=["is_dry_run"]),
+            models.Index(fields=["is_dry_run", "created_at"]),
             models.Index(fields=["next_attempt_at"]),
+            models.Index(fields=["content_deleted_at", "finished_at"]),
+        ]
+
+
+class WorkflowSample(models.Model):
+    """Per-call data kept beside a workflow (ADR 0048): one row per source, `trigger` for the Webhook
+    trigger's last payload (plus the last call's time and IP), or an HTTP request step id for its last
+    Test request response. Written on every call, so it lives here and never bumps `Workflow.updatedAt`.
+    """
+
+    id = models.TextField(primary_key=True, default=cuid2_str)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    workflow_id = models.TextField(db_column="workflowId")
+    workspace_id = models.TextField(db_column="workspaceId")
+    source = models.TextField()
+    sample = models.JSONField()
+    """[WorkflowSampleData]"""
+    last_called_at = UtcDateTimeField(null=True, db_column="lastCalledAt")
+    last_caller_ip = models.TextField(null=True, db_column="lastCallerIp")
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "WorkflowSample"
+        constraints = [
+            models.UniqueConstraint(fields=["workflow_id", "source"], name="WorkflowSample_workflowId_source_key"),
+        ]
+        indexes = [
+            models.Index(fields=["workflow_id", "workspace_id"]),
+            models.Index(fields=["updated_at"]),
         ]
 
 
@@ -2945,4 +3094,33 @@ class WorkflowRunLog(models.Model):
         ]
         indexes = [
             models.Index(fields=["run", "sequence"]),
+            models.Index(fields=["status", "started_at"]),
+        ]
+
+
+class WorkflowSecret(models.Model):
+    """Encrypted value of an HTTP request secret header (ENG-7168, ADR 0043). The definition and every version
+    store only `{name, secret: true, secretId}`; Replace overwrites this row in place, so the enabled
+    version uses the new value at once. Rows nothing references are deleted on Enable; all are deleted
+    with the workflow. A value is only sent to the origin it was set for (ADR 0051).
+    """
+
+    id = models.TextField(primary_key=True, default=cuid2_str)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    workflow_id = models.TextField(db_column="workflowId")
+    workspace_id = models.TextField(db_column="workspaceId")
+    value = models.TextField()
+    """`symmetricEncrypt` ciphertext (AES-256-GCM). Never logged, never returned."""
+    bound_origin = models.TextField(null=True, db_column="boundOrigin")
+    """Origin (scheme, host, port) of the step's URL when the value was set or replaced; the value is only
+    sent there (ADR 0051). Null for a value set before host binding: held to the step's saved URL
+    until it is set again.
+    """
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "WorkflowSecret"
+        indexes = [
+            models.Index(fields=["workflow_id", "workspace_id"]),
         ]

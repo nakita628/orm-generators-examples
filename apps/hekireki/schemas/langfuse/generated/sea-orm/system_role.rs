@@ -24,4 +24,8 @@ pub enum SystemRole {
     Ingest,
     #[sea_orm(string_value = "AI_GATEWAY")]
     AiGateway,
+    #[sea_orm(string_value = "AI_GATEWAY_INFERENCE")]
+    AiGatewayInference,
+    #[sea_orm(string_value = "APPLICATION")]
+    Application,
 }

@@ -20,6 +20,8 @@ class LiteLLMUserTable extends Model
 
     protected $fillable = [
         'user_id',
+        'rollover_max_budget',
+        'rollover_credit',
         'budget_limits',
         'user_alias',
         'team_id',
@@ -55,6 +57,8 @@ class LiteLLMUserTable extends Model
     ];
 
     protected $casts = [
+        'rollover_max_budget' => 'float',
+        'rollover_credit' => 'float',
         'budget_limits' => 'array',
         'password_reset_required' => 'boolean',
         'last_breach_check_at' => 'datetime',

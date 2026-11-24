@@ -11,6 +11,7 @@ object ModelTable : IdTable<String>("models") {
     override val id = text("id").clientDefault { CUID.randomCUID1().toString() }.entityId()
     val createdAt = pgTimestamp("created_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updated_at", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
+    val scope = pgEnum("scope", "\"ModelScope\"", ModelScope.entries, ModelScope::dbName)
     val projectId =
         optReference(
             "project_id",
@@ -18,6 +19,14 @@ object ModelTable : IdTable<String>("models") {
             onDelete = ReferenceOption.CASCADE,
             onUpdate = ReferenceOption.CASCADE,
             fkName = "models_project_id_fkey",
+        )
+    val organizationId =
+        optReference(
+            "organization_id",
+            OrganizationTable,
+            onDelete = ReferenceOption.CASCADE,
+            onUpdate = ReferenceOption.CASCADE,
+            fkName = "models_organization_id_fkey",
         )
     val modelName = text("model_name")
     val matchPattern = text("match_pattern")
@@ -32,6 +41,7 @@ object ModelTable : IdTable<String>("models") {
 
     init {
         index("models_model_name_idx", false, modelName)
+        index("models_scope_idx", false, scope)
         uniqueIndex("models_project_id_model_name_start_date_unit_key", projectId, modelName, startDate, unit)
     }
 }

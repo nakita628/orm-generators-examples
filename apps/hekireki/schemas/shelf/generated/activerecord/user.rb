@@ -54,6 +54,8 @@ class User < ApplicationRecord
   has_many :bookings, foreign_key: "creatorId", inverse_of: :creator, dependent: :destroy
   has_many :custodies, class_name: "Booking", foreign_key: "custodianUserId", inverse_of: :custodian_user,
                        dependent: :destroy
+  has_many :approved_bookings, class_name: "Booking", foreign_key: "approvedById", inverse_of: :approved_by,
+                               dependent: :nullify
   has_many :created_kits, class_name: "Kit", foreign_key: "createdById", inverse_of: :created_by,
                           dependent: :restrict_with_error
   has_many :asset_reminders, foreign_key: "createdById", inverse_of: :created_by, dependent: :restrict_with_error

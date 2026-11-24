@@ -10,6 +10,7 @@
 # lastModel:: The model the latest accepted turn ran on; reopening seeds the picker from it.
 # pendingHandoffToken:: ADR-048 shutdown-handoff resume token (opaque, worker-authored).
 # runToken:: Per-conversation HMAC key for worker stream frames; server-side only.
+# ciFollowUpsInARow:: Messages CI started on a pull request since the person last wrote.
 # occurredAt:: Business time of the latest applied event.
 # acceptedAt:: Event-log acceptance time. Together with lastEventId this is the cursor.
 class LangyConversationProjection < ApplicationRecord
@@ -19,6 +20,7 @@ class LangyConversationProjection < ApplicationRecord
   attribute :origin, default: "interactive"
   attribute :isShared, default: false
   attribute :messageCount, default: 0
+  attribute :ciFollowUpsInARow, default: 0
 
   enum :titleSource, { derived: "derived", auto: "auto", user: "user" }, validate: true
 

@@ -18,6 +18,8 @@ pub struct Model {
     #[sea_orm(default_value = "forward")]
     pub direction: String,
     pub baseline_model: Option<String>,
+    #[sea_orm(default_value = false)]
+    pub skip_same_model: bool,
     pub judge_model: String,
     pub shadow_percentage: f64,
     pub max_turns: i32,
@@ -27,6 +29,8 @@ pub struct Model {
     pub ends_at: DateTime,
     pub stopped_at: Option<DateTime>,
     pub stopped_by: Option<String>,
+    pub rubric: Option<String>,
+    pub rubric_version: Option<i32>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

@@ -14,6 +14,7 @@ defmodule LiteLLM.LiteLLMShadowEvalJob do
           models: [String.t()],
           direction: String.t(),
           baseline_model: String.t() | nil,
+          skip_same_model: boolean(),
           judge_model: String.t(),
           shadow_percentage: float(),
           max_turns: integer(),
@@ -22,6 +23,8 @@ defmodule LiteLLM.LiteLLMShadowEvalJob do
           ends_at: DateTime.t(),
           stopped_at: DateTime.t() | nil,
           stopped_by: String.t() | nil,
+          rubric: String.t() | nil,
+          rubric_version: integer() | nil,
           inserted_at: DateTime.t()
         }
 
@@ -35,6 +38,7 @@ defmodule LiteLLM.LiteLLMShadowEvalJob do
     field(:models, {:array, :string})
     field(:direction, :string, default: "forward")
     field(:baseline_model, :string)
+    field(:skip_same_model, :boolean, default: false)
     field(:judge_model, :string)
     field(:shadow_percentage, :float)
     field(:max_turns, :integer)
@@ -43,6 +47,8 @@ defmodule LiteLLM.LiteLLMShadowEvalJob do
     field(:ends_at, LiteLLM.PrismaDateTime)
     field(:stopped_at, LiteLLM.PrismaDateTime)
     field(:stopped_by, :string)
+    field(:rubric, :string)
+    field(:rubric_version, :integer)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end
 end

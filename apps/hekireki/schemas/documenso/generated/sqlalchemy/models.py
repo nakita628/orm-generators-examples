@@ -70,6 +70,9 @@ class User(Base):
     webhooks: Mapped[list["Webhook"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
     site_settings: Mapped[list["SiteSettings"]] = relationship(back_populates="last_modified_by_user")
     passkeys: Mapped[list["Passkey"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="user")
+    admin_rule_matches: Mapped[list["AdminRuleMatch"]] = relationship(back_populates="actor_user")
+    admin_tags: Mapped[list["AdminTag"]] = relationship(foreign_keys="AdminTag.user_id", cascade="all, delete", passive_deletes=True, back_populates="user")
+    created_admin_tags: Mapped[list["AdminTag"]] = relationship(foreign_keys="AdminTag.created_by_user_id", back_populates="created_by_user")
 
 class TeamProfile(Base):
     __tablename__ = "TeamProfile"
@@ -846,6 +849,7 @@ class Organisation(Base):
     email_domains: Mapped[list["EmailDomain"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
     organisation_emails: Mapped[list["OrganisationEmail"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
     monthly_stats: Mapped[list["OrganisationMonthlyStat"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
+    admin_tags: Mapped[list["AdminTag"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
     embed_signatures: Mapped[list["EmbedSignature"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
     subscription: Mapped[Optional["Subscription"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organisation")
 
@@ -1262,3 +1266,85 @@ class RateLimit(Base):
     __table_args__ = (
         Index("RateLimit_createdAt_idx", "createdAt"),
     )
+
+class AdminRule(Base):
+    """@zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])"""
+
+    __tablename__ = "AdminRule"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
+    name: Mapped[str]
+    description: Mapped[Optional[str]]
+    mode: Mapped[str] = mapped_column(Enum("ENFORCE", "MONITOR", "DISABLED", name="AdminRuleMode"))
+    trigger: Mapped[str]
+    """[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"""
+    definition: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    """[AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)"""
+    priority: Mapped[int]
+    stop_on_match: Mapped[bool] = mapped_column("stopOnMatch")
+    exempt_organisation_ids: Mapped[list[str]] = mapped_column("exemptOrganisationIds", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
+    """Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+    organisation
+    """
+
+    __table_args__ = (
+        Index("AdminRule_trigger_mode_priority_idx", "trigger", "mode", "priority"),
+    )
+
+    matches: Mapped[list["AdminRuleMatch"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="rule")
+    admin_tags: Mapped[list["AdminTag"]] = relationship(back_populates="admin_rule")
+
+class AdminRuleMatch(Base):
+    """@zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])"""
+
+    __tablename__ = "AdminRuleMatch"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    mode: Mapped[str] = mapped_column(Enum("ENFORCE", "MONITOR", "DISABLED", name="AdminRuleMode"))
+    trigger: Mapped[str]
+    """[AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)"""
+    organisation_id: Mapped[Optional[str]] = mapped_column("organisationId")
+    envelope_id: Mapped[Optional[str]] = mapped_column("envelopeId")
+    event_snapshot: Mapped[dict[str, Any]] = mapped_column("eventSnapshot", JSONB)
+    """[AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)"""
+    actions_run: Mapped[dict[str, Any]] = mapped_column("actionsRun", JSONB)
+    """[AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema)"""
+    rule_id: Mapped[str] = mapped_column("ruleId", ForeignKey("AdminRule.id", ondelete="CASCADE", onupdate="CASCADE", name="AdminRuleMatch_ruleId_fkey"))
+    actor_user_id: Mapped[Optional[int]] = mapped_column("actorUserId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="AdminRuleMatch_actorUserId_fkey"))
+
+    __table_args__ = (
+        Index("AdminRuleMatch_ruleId_createdAt_idx", "ruleId", "createdAt"),
+        Index("AdminRuleMatch_createdAt_idx", "createdAt"),
+    )
+
+    rule: Mapped["AdminRule"] = relationship(back_populates="matches")
+    actor_user: Mapped[Optional["User"]] = relationship(back_populates="admin_rule_matches")
+
+class AdminTag(Base):
+    """@zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"])"""
+
+    __tablename__ = "AdminTag"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
+    type: Mapped[str]
+    """[AdminTagType] @zod.custom.use(ZAdminTagTypeSchema)"""
+    description: Mapped[str]
+    user_id: Mapped[Optional[int]] = mapped_column("userId", ForeignKey("User.id", ondelete="CASCADE", onupdate="CASCADE", name="AdminTag_userId_fkey"))
+    organisation_id: Mapped[Optional[str]] = mapped_column("organisationId", ForeignKey("Organisation.id", ondelete="CASCADE", onupdate="CASCADE", name="AdminTag_organisationId_fkey"))
+    created_by_user_id: Mapped[Optional[int]] = mapped_column("createdByUserId", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="AdminTag_createdByUserId_fkey"))
+    admin_rule_id: Mapped[Optional[str]] = mapped_column("adminRuleId", ForeignKey("AdminRule.id", ondelete="SET NULL", onupdate="CASCADE", name="AdminTag_adminRuleId_fkey"))
+
+    __table_args__ = (
+        Index("AdminTag_userId_idx", "userId"),
+        Index("AdminTag_organisationId_idx", "organisationId"),
+    )
+
+    user: Mapped[Optional["User"]] = relationship(foreign_keys=[user_id], back_populates="admin_tags")
+    organisation: Mapped[Optional["Organisation"]] = relationship(back_populates="admin_tags")
+    created_by_user: Mapped[Optional["User"]] = relationship(foreign_keys=[created_by_user_id], back_populates="created_admin_tags")
+    admin_rule: Mapped[Optional["AdminRule"]] = relationship(back_populates="admin_tags")

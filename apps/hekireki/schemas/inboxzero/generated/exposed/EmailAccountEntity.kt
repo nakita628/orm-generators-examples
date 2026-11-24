@@ -59,6 +59,9 @@ class EmailAccountEntity(
      * Null until first turned on, which is when default bundles are chosen.
      */
     var mailBundleInbox by EmailAccountTable.mailBundleInbox
+
+    /** Collapses the inbox's other mail from one sender into one row. */
+    var mailGroupBySender by EmailAccountTable.mailGroupBySender
     var mailDefaultSplitId by EmailAccountTable.mailDefaultSplitId
     var mailSetup by EmailAccountTable.mailSetup
     var includeInAllAccounts by EmailAccountTable.includeInAllAccounts

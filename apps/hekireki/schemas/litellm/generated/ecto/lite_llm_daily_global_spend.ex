@@ -23,6 +23,7 @@ defmodule LiteLLM.LiteLLMDailyGlobalSpend do
           gateway_injected_caching_savings_spend: float(),
           autorouter_savings_spend: float(),
           guardrail_spend: float(),
+          customer_margin_spend: float(),
           spend: float(),
           api_requests: integer(),
           successful_requests: integer(),
@@ -50,6 +51,7 @@ defmodule LiteLLM.LiteLLMDailyGlobalSpend do
     field(:gateway_injected_caching_savings_spend, :float, default: 0.0)
     field(:autorouter_savings_spend, :float, default: 0.0)
     field(:guardrail_spend, :float, default: 0.0)
+    field(:customer_margin_spend, :float, default: 0.0)
     field(:spend, :float, default: 0.0)
     field(:api_requests, :integer, default: 0)
     field(:successful_requests, :integer, default: 0)

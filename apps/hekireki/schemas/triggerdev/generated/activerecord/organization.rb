@@ -11,6 +11,8 @@
 #   it null forever; reads fall back to the global basin env var).
 #   Set once at provisioning time; retention is reconfigured in-place
 #   when the org's plan changes.
+# mfaRequired:: When true, members without MFA are locked out of the dashboard and CLI until they set it up.
+# mfaStepUpActions:: Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
 class Organization < ApplicationRecord
   self.table_name = "Organization"
   self.implicit_order_column = "createdAt"
@@ -25,6 +27,9 @@ class Organization < ApplicationRecord
   attribute :v2MarqsEnabled, default: false
   attribute :hasRequestedV3, default: false
   attribute :maximumProjectCount, default: 25
+  attribute :mfaRequired, default: false
+  attribute :mfaStepUpActions, default: -> { [] }
+  attribute :mfaStepUpWindowMinutes, default: 5
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
 

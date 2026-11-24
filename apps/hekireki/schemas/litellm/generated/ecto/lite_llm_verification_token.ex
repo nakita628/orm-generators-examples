@@ -5,6 +5,7 @@ defmodule LiteLLM.LiteLLMVerificationToken do
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          key_id: String.t() | nil,
           token: String.t(),
           key_name: String.t() | nil,
           key_alias: String.t() | nil,
@@ -57,6 +58,7 @@ defmodule LiteLLM.LiteLLMVerificationToken do
         }
 
   schema "LiteLLM_VerificationToken" do
+    field(:key_id, :string, autogenerate: {Ecto.UUID, :generate, []})
     field(:token, :string, primary_key: true)
     field(:key_name, :string)
     field(:key_alias, :string)

@@ -34,6 +34,9 @@ class ProjectEntity(
     var defaultWorkerGroup by WorkerInstanceGroupEntity optionalReferencedOn ProjectTable.defaultWorkerGroupId
     var defaultWorkerGroupId by ProjectTable.defaultWorkerGroupId
 
+    /** Newly triggered deployed runs require the secret proxy (pinned in their annotations). */
+    var secretProxyEnabled by ProjectTable.secretProxyEnabled
+
     /** The master queues they are allowed to use (impacts what they can set as default and trigger runs with) */
     var allowedWorkerQueues by ProjectTable.allowedWorkerQueues
     val environments by RuntimeEnvironmentEntity referrersOn RuntimeEnvironmentTable.projectId
@@ -43,6 +46,7 @@ class ProjectEntity(
     val runTags by TaskRunTagEntity referrersOn TaskRunTagTable.projectId
     val taskQueues by TaskQueueEntity referrersOn TaskQueueTable.projectId
     val environmentVariables by EnvironmentVariableEntity referrersOn EnvironmentVariableTable.projectId
+    val environmentVariableIgnores by EnvironmentVariableIgnoreEntity referrersOn EnvironmentVariableIgnoreTable.projectId
     val checkpoints by CheckpointEntity referrersOn CheckpointTable.projectId
     val workerDeployment by WorkerDeploymentEntity referrersOn WorkerDeploymentTable.projectId
     val checkpointRestoreEvent by CheckpointRestoreEventEntity referrersOn CheckpointRestoreEventTable.projectId

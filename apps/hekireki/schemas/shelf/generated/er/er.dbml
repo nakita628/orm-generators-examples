@@ -441,6 +441,7 @@ Enum ActivityAction {
   BOOKING_PARTIAL_CHECKOUT
   BOOKING_CANCELLED
   BOOKING_ARCHIVED
+  BOOKING_APPROVED
   BOOKING_MODEL_REQUESTED
   BOOKING_MODEL_REQUEST_CHANGED
   BOOKING_MODEL_REQUEST_REMOVED
@@ -1130,6 +1131,8 @@ Table Booking {
   autoArchivedAt DateTime
   archivedWithoutCheckin Boolean [default: false, not null]
   cancellationReason String
+  approvedAt DateTime
+  approvedById String
 }
 
 Table BookingSettings {
@@ -1141,6 +1144,8 @@ Table BookingSettings {
   autoArchiveBookings Boolean [default: false, not null]
   autoArchiveDays Int [default: 2, not null]
   autoArchiveExpiredReservations Boolean [default: false, not null]
+  requireApprovalForBase Boolean [default: false, not null]
+  requireApprovalForSelfService Boolean [default: false, not null]
   requireExplicitCheckinForAdmin Boolean [default: false, not null]
   requireExplicitCheckinForSelfService Boolean [default: false, not null]
   requireExplicitCheckoutForAdmin Boolean [default: false, not null]
@@ -1830,6 +1835,8 @@ Ref Booking_custodianUserId_fk: Booking.custodianUserId > User.id [delete: casca
 Ref Booking_custodianTeamMemberId_fk: Booking.custodianTeamMemberId > TeamMember.id [delete: cascade, update: cascade]
 
 Ref Booking_organizationId_fk: Booking.organizationId > Organization.id [delete: cascade, update: cascade]
+
+Ref Booking_approvedById_fk: Booking.approvedById > User.id [delete: set null, update: cascade]
 
 Ref BookingSettings_organizationId_fk: BookingSettings.organizationId - Organization.id [delete: cascade, update: cascade]
 

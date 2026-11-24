@@ -27,6 +27,10 @@ public partial class Scenario
 
     public string? JudgeModel { get; set; }
 
+    public int? TraceQuietPeriodMs { get; set; }
+
+    public int? TraceWaitTimeoutMs { get; set; }
+
     public int? MaxTurns { get; set; }
 
     public int? MinTurns { get; set; }
@@ -38,6 +42,12 @@ public partial class Scenario
     public string? TestSuiteId { get; set; }
 
     public virtual SimulationSuite? TestSuite { get; set; }
+
+    public string Kind { get; set; } = "standard";
+
+    public string? RedTeam { get; set; }
+
+    public string? SourceTemplateId { get; set; }
 
     public int Version { get; set; } = 1;
 

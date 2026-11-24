@@ -110,6 +110,8 @@ export type EmailDomainStatus = 'PENDING' | 'ACTIVE'
 
 export type EmailTransportType = 'SMTP_AUTH' | 'SMTP_API' | 'RESEND' | 'MAILCHANNELS'
 
+export type AdminRuleMode = 'ENFORCE' | 'MONITOR' | 'DISABLED'
+
 export interface User {
   id: Generated<number>
   name: string | null
@@ -899,6 +901,58 @@ export interface RateLimit {
   createdAt: Generated<Timestamp>
 }
 
+/** @zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"]) */
+export interface AdminRule {
+  id: string
+  createdAt: Generated<Timestamp>
+  updatedAt: Timestamp
+  name: string
+  description: string | null
+  mode: AdminRuleMode
+  /** [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema) */
+  trigger: string
+  /** [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema) */
+  definition: unknown
+  priority: number
+  stopOnMatch: boolean
+  /**
+   * Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an
+   * organisation
+   */
+  exemptOrganisationIds: Generated<string[]>
+}
+
+/** @zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"]) */
+export interface AdminRuleMatch {
+  id: string
+  createdAt: Generated<Timestamp>
+  mode: AdminRuleMode
+  /** [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema) */
+  trigger: string
+  organisationId: string | null
+  envelopeId: string | null
+  /** [AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema) */
+  eventSnapshot: unknown
+  /** [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema) */
+  actionsRun: unknown
+  ruleId: string
+  actorUserId: number | null
+}
+
+/** @zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"]) */
+export interface AdminTag {
+  id: string
+  createdAt: Generated<Timestamp>
+  updatedAt: Timestamp
+  /** [AdminTagType] @zod.custom.use(ZAdminTagTypeSchema) */
+  type: string
+  description: string
+  userId: number | null
+  organisationId: string | null
+  createdByUserId: number | null
+  adminRuleId: string | null
+}
+
 export interface DB {
   User: User
   TeamProfile: TeamProfile
@@ -955,4 +1009,7 @@ export interface DB {
   Counter: Counter
   EmbedSignature: EmbedSignature
   RateLimit: RateLimit
+  AdminRule: AdminRule
+  AdminRuleMatch: AdminRuleMatch
+  AdminTag: AdminTag
 }

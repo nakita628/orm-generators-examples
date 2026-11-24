@@ -13,6 +13,8 @@ public partial class AuthzOrganizationPolicy
 
     public bool BraidsOrganizationAdminsOnly { get; set; } = false;
 
+    public bool BraidsEnabled { get; set; } = false;
+
     public string UpdatedByUserId { get; set; } = null!;
 
     public DateTime UpdatedAt { get; set; }

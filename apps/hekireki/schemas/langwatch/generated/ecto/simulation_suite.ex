@@ -15,10 +15,14 @@ defmodule LangWatch.SimulationSuite do
           labels: [String.t()],
           simulator_model: String.t() | nil,
           judge_model: String.t() | nil,
+          trace_quiet_period_ms: integer() | nil,
+          trace_wait_timeout_ms: integer() | nil,
           kind: String.t(),
           scope: map() | list() | String.t() | number() | boolean() | nil,
           fields: map() | list() | String.t() | number() | boolean() | nil,
           evaluators: map() | list() | String.t() | number() | boolean() | nil,
+          template_id: String.t() | nil,
+          template_version: integer() | nil,
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -37,10 +41,14 @@ defmodule LangWatch.SimulationSuite do
     field(:labels, {:array, :string})
     field(:simulator_model, :string, source: :simulatorModel)
     field(:judge_model, :string, source: :judgeModel)
+    field(:trace_quiet_period_ms, :integer, source: :traceQuietPeriodMs)
+    field(:trace_wait_timeout_ms, :integer, source: :traceWaitTimeoutMs)
     field(:kind, :string, default: "run_plan")
     field(:scope, LangWatch.PrismaJson)
     field(:fields, LangWatch.PrismaJson)
     field(:evaluators, LangWatch.PrismaJson)
+    field(:template_id, :string, source: :templateId)
+    field(:template_version, :integer, source: :templateVersion)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, LangWatch.Project, foreign_key: :project_id, define_field: false, type: :string)

@@ -2,6 +2,7 @@ class LiteLLMVerificationToken < ApplicationRecord
   self.table_name = "LiteLLM_VerificationToken"
   self.primary_key = "token"
 
+  attribute :key_id, default: -> { SecureRandom.uuid }
   attribute :soft_budget_cooldown, default: false
   attribute :spend, default: 0
   attribute :total_spend, default: 0
@@ -20,6 +21,8 @@ class LiteLLMVerificationToken < ApplicationRecord
   attribute :budget_fallbacks, default: -> { JSON.parse("{}") }
   attribute :rotation_count, default: 0
   attribute :auto_rotate, default: false
+
+  validates :key_id, uniqueness: { allow_nil: true }
 
   belongs_to :litellm_budget_table, class_name: "LiteLLMBudgetTable", foreign_key: "budget_id", optional: true,
                                     inverse_of: :keys

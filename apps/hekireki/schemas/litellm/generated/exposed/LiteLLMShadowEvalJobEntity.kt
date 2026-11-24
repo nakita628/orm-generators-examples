@@ -17,6 +17,7 @@ class LiteLLMShadowEvalJobEntity(
     var models by LiteLLMShadowEvalJobTable.models
     var direction by LiteLLMShadowEvalJobTable.direction
     var baselineModel by LiteLLMShadowEvalJobTable.baselineModel
+    var skipSameModel by LiteLLMShadowEvalJobTable.skipSameModel
     var judgeModel by LiteLLMShadowEvalJobTable.judgeModel
     var shadowPercentage by LiteLLMShadowEvalJobTable.shadowPercentage
     var maxTurns by LiteLLMShadowEvalJobTable.maxTurns
@@ -26,4 +27,6 @@ class LiteLLMShadowEvalJobEntity(
     var endsAt by LiteLLMShadowEvalJobTable.endsAt
     var stoppedAt by LiteLLMShadowEvalJobTable.stoppedAt
     var stoppedBy by LiteLLMShadowEvalJobTable.stoppedBy
+    var rubric by LiteLLMShadowEvalJobTable.rubric
+    var rubricVersion by LiteLLMShadowEvalJobTable.rubricVersion
 }

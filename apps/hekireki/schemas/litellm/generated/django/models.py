@@ -94,6 +94,7 @@ class AccountingDeliveryState(models.TextChoices):
 
 
 class LiteLLMBudgetTable(models.Model):
+    rollover_max_budget = models.FloatField(null=True)
     budget_id = models.TextField(primary_key=True, default=uuid4_str)
     name = models.TextField(null=True)
     max_budget = models.FloatField(null=True)
@@ -121,6 +122,98 @@ class LiteLLMBudgetTable(models.Model):
 
     class Meta:
         db_table = "LiteLLM_BudgetTable"
+
+
+class LiteLLMAppGroupTable(models.Model):
+    app_group_id = models.TextField(primary_key=True, default=uuid4_str)
+    name = models.TextField(unique=True)
+    description = models.TextField(null=True)
+    metadata = models.JSONField(null=True)
+    budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="app_groups", null=True, db_index=False)
+    spend = models.FloatField(default=0)
+    spend_reset_window = models.TextField(null=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    created_by = models.TextField()
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    updated_by = models.TextField()
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "LiteLLM_AppGroupTable"
+
+
+class LiteLLMAppGroupCustomerOrgTable(models.Model):
+    pk = models.CompositePrimaryKey("app_group_id", "customer_org_id")
+    app_group = models.ForeignKey("LiteLLMAppGroupTable", on_delete=models.CASCADE, related_name="customer_organizations", db_index=False)
+    customer_org = models.ForeignKey("LiteLLMCustomerOrganizationTable", on_delete=models.CASCADE, related_name="app_groups", db_index=False)
+    budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="app_group_org_budgets", null=True, db_index=False)
+    spend = models.FloatField(default=0)
+    spend_reset_window = models.TextField(null=True)
+
+    class Meta:
+        db_table = "LiteLLM_AppGroupCustomerOrgTable"
+        indexes = [
+            models.Index(fields=["customer_org"]),
+        ]
+
+
+class LiteLLMAppTable(models.Model):
+    app_id = models.TextField(primary_key=True, default=uuid4_str)
+    app_group = models.ForeignKey("LiteLLMAppGroupTable", on_delete=models.RESTRICT, related_name="apps", null=True, db_index=False)
+    resource_type = models.TextField(null=True)
+    resource_id = models.TextField(null=True)
+    alias = models.TextField(unique=True)
+    spend = models.FloatField(default=0)
+    spend_reset_window = models.TextField(null=True)
+    budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="apps", null=True, db_index=False)
+    default_tier_budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_default_tiers", null=True, db_index=False)
+    default_customer_member_budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_default_members", null=True, db_index=False)
+    auto_create_customers = models.BooleanField(default=True)
+    customer_margin = models.FloatField(null=True)
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    created_by = models.TextField()
+    updated_at = UtcAutoNowDateTimeField(auto_now=True)
+    updated_by = models.TextField()
+    objects = AutoNowQuerySet.as_manager()
+
+    class Meta:
+        db_table = "LiteLLM_AppTable"
+        constraints = [
+            models.UniqueConstraint(fields=["resource_type", "resource_id"], name="LiteLLM_AppTable_resource_type_resource_id_key"),
+        ]
+        indexes = [
+            models.Index(fields=["app_group"]),
+        ]
+
+
+class LiteLLMAppCustomerOrgTable(models.Model):
+    pk = models.CompositePrimaryKey("app_id", "customer_org_id")
+    app = models.ForeignKey("LiteLLMAppTable", on_delete=models.CASCADE, related_name="customer_organizations", db_index=False)
+    customer_org = models.ForeignKey("LiteLLMCustomerOrganizationTable", on_delete=models.CASCADE, related_name="apps", db_index=False)
+    spend = models.FloatField(default=0)
+    spend_reset_window = models.TextField(null=True)
+    tier_budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_org_tiers", null=True, db_index=False)
+    budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="app_org_budgets", null=True, db_index=False)
+    budget_override = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_org_overrides", null=True, db_index=False)
+    budget_override_expires_at = UtcDateTimeField(null=True)
+    customer_member_budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_org_members", null=True, db_index=False)
+
+    class Meta:
+        db_table = "LiteLLM_AppCustomerOrgTable"
+
+
+class LiteLLMAppCustomerMemberTable(models.Model):
+    pk = models.CompositePrimaryKey("app_id", "customer_member_id")
+    app = models.ForeignKey("LiteLLMAppTable", on_delete=models.CASCADE, related_name="customer_members", db_index=False)
+    customer_member = models.ForeignKey("LiteLLMCustomerMemberTable", on_delete=models.CASCADE, related_name="apps", db_index=False)
+    spend = models.FloatField(default=0)
+    spend_reset_window = models.TextField(null=True)
+    budget_override = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.SET_NULL, related_name="app_member_overrides", null=True, db_index=False)
+    budget = models.ForeignKey("LiteLLMBudgetTable", on_delete=models.RESTRICT, related_name="app_member_budgets", null=True, db_index=False)
+    budget_override_expires_at = UtcDateTimeField(null=True)
+
+    class Meta:
+        db_table = "LiteLLM_AppCustomerMemberTable"
 
 
 class LiteLLMCustomerOrganizationTable(models.Model):
@@ -162,6 +255,8 @@ class LiteLLMCustomerTeamTable(models.Model):
         db_table = "LiteLLM_CustomerTeamTable"
         indexes = [
             models.Index(fields=["parent_org"]),
+            models.Index(fields=["budget"]),
+            models.Index(fields=["budget_override"]),
             models.Index(fields=["spend"]),
         ]
 
@@ -186,6 +281,9 @@ class LiteLLMCustomerMemberTable(models.Model):
         db_table = "LiteLLM_CustomerMemberTable"
         indexes = [
             models.Index(fields=["parent_org"]),
+            GinIndex(fields=["parent_team_ids"]),
+            models.Index(fields=["budget"]),
+            models.Index(fields=["budget_override"]),
             models.Index(fields=["spend"]),
         ]
 
@@ -483,6 +581,8 @@ class LiteLLMDeletedTeamTable(models.Model):
 
 
 class LiteLLMUserTable(models.Model):
+    rollover_max_budget = models.FloatField(null=True)
+    rollover_credit = models.FloatField(null=True)
     budget_limits = models.JSONField(null=True)
     user_id = models.TextField(primary_key=True, default=None)
     user_alias = models.TextField(null=True)
@@ -531,6 +631,7 @@ class LiteLLMObjectPermissionTable(models.Model):
     search_tools = ArrayField(models.TextField(), default=list)
     mcp_tool_search_enabled = models.BooleanField(null=True)
     skills = ArrayField(models.TextField(), default=list)
+    apps = ArrayField(models.TextField(), default=list)
 
     class Meta:
         db_table = "LiteLLM_ObjectPermissionTable"
@@ -588,6 +689,7 @@ class LiteLLMMCPServerTable(models.Model):
     timeout = models.FloatField(null=True)
     max_concurrent_requests = models.IntegerField(null=True)
     rpm = models.IntegerField(null=True)
+    events = models.JSONField(null=True)
     approval_status = models.TextField(null=True, default="active")
     submitted_by = models.TextField(null=True)
     submitted_at = UtcDateTimeField(null=True)
@@ -696,6 +798,7 @@ class LiteLLMSSOIdentityAssertion(models.Model):
 
 
 class LiteLLMVerificationToken(models.Model):
+    key_id = models.TextField(null=True, unique=True, default=uuid4_str)
     token = models.TextField(primary_key=True, default=None)
     key_name = models.TextField(null=True)
     key_alias = models.TextField(null=True)
@@ -798,6 +901,7 @@ class LiteLLMDeprecatedVerificationToken(models.Model):
 
 
 class LiteLLMDeletedVerificationToken(models.Model):
+    key_id = models.TextField(null=True)
     id = models.TextField(primary_key=True, default=uuid4_str)
     token = models.TextField()
     key_name = models.TextField(null=True)
@@ -1016,6 +1120,7 @@ class LiteLLMUserNotifications(models.Model):
 
 class LiteLLMTeamMembership(models.Model):
     pk = models.CompositePrimaryKey("user_id", "team_id")
+    rollover_credit = models.FloatField(null=True)
     user_id = models.TextField()
     team_id = models.TextField()
     spend = models.FloatField(default=0)
@@ -1094,6 +1199,7 @@ class LiteLLMDailyUserSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1138,6 +1244,7 @@ class LiteLLMDailyGlobalSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1178,6 +1285,7 @@ class LiteLLMDailyOrganizationSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1204,6 +1312,8 @@ class LiteLLMDailyOrganizationSpend(models.Model):
 
 
 class LiteLLMDailyCustomerMemberSpend(models.Model):
+    app_group_id = models.TextField(default="")
+    app_id = models.TextField(default="")
     id = models.TextField(primary_key=True, default=None)
     date = models.TextField()
     customer_org_id = models.TextField()
@@ -1220,12 +1330,15 @@ class LiteLLMDailyCustomerMemberSpend(models.Model):
     completion_tokens = models.BigIntegerField(default=0)
     cache_read_input_tokens = models.BigIntegerField(default=0)
     cache_creation_input_tokens = models.BigIntegerField(default=0)
+    cache_cost = models.FloatField(default=0)
+    priced_cache_tokens = models.BigIntegerField(default=0)
     compression_saved_tokens = models.BigIntegerField(default=0)
     compression_savings_spend = models.FloatField(default=0)
     prompt_caching_savings_spend = models.FloatField(default=0)
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
     failed_requests = models.BigIntegerField(default=0)
@@ -1238,6 +1351,7 @@ class LiteLLMDailyCustomerMemberSpend(models.Model):
     class Meta:
         db_table = "LiteLLM_DailyCustomerMemberSpend"
         indexes = [
+            models.Index(fields=["app_group_id", "customer_org_id", "date"]),
             models.Index(fields=["date"]),
             models.Index(fields=["customer_org_id", "date"]),
             models.Index(fields=["customer_team_id", "date"]),
@@ -1267,6 +1381,7 @@ class LiteLLMDailyEndUserSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1312,6 +1427,7 @@ class LiteLLMDailyAgentSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1357,6 +1473,7 @@ class LiteLLMDailyTeamSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1404,6 +1521,7 @@ class LiteLLMDailyTagSpend(models.Model):
     gateway_injected_caching_savings_spend = models.FloatField(default=0)
     autorouter_savings_spend = models.FloatField(default=0)
     guardrail_spend = models.FloatField(default=0)
+    customer_margin_spend = models.FloatField(default=0)
     spend = models.FloatField(default=0)
     api_requests = models.BigIntegerField(default=0)
     successful_requests = models.BigIntegerField(default=0)
@@ -1511,6 +1629,7 @@ class LiteLLMManagedObjectTable(models.Model):
     api_key = models.TextField(null=True)
     request_tags = models.JSONField(null=True, default=list)
     end_user_id = models.TextField(null=True)
+    creator_billing_context = models.JSONField(null=True)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
     updated_by = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -2351,6 +2470,7 @@ class LiteLLMShadowEvalJob(models.Model):
     models_field = ArrayField(models.TextField(), db_column="models", default=list)
     direction = models.TextField(default="forward")
     baseline_model = models.TextField(null=True)
+    skip_same_model = models.BooleanField(default=False)
     judge_model = models.TextField()
     shadow_percentage = models.FloatField()
     max_turns = models.IntegerField()
@@ -2360,6 +2480,8 @@ class LiteLLMShadowEvalJob(models.Model):
     ends_at = UtcDateTimeField()
     stopped_at = UtcDateTimeField(null=True)
     stopped_by = models.TextField(null=True)
+    rubric = models.TextField(null=True)
+    rubric_version = models.IntegerField(null=True)
 
     class Meta:
         db_table = "LiteLLM_ShadowEvalJob"
@@ -2386,6 +2508,8 @@ class LiteLLMShadowEvalAttempt(models.Model):
     real_classifier_cost = models.FloatField(default=0)
     shadow_classifier_cost = models.FloatField(default=0)
     real_cache_hit = models.BooleanField(default=False)
+    real_grade = models.IntegerField(null=True)
+    shadow_grade = models.IntegerField(null=True)
     error = models.TextField(null=True)
     created_at = UtcDateTimeField(default=now_milliseconds)
 
@@ -2399,6 +2523,7 @@ class LiteLLMShadowEvalAttempt(models.Model):
 class LiteLLMShadowEvalFunnel(models.Model):
     job_id = models.TextField(primary_key=True, default=None)
     not_sampled = models.IntegerField(default=0)
+    same_model = models.IntegerField(default=0)
     unjudgeable = models.IntegerField(default=0)
     shed = models.IntegerField(default=0)
     withheld = models.IntegerField(default=0)
@@ -2492,6 +2617,20 @@ class LiteLLMBackgroundResponseSettlement(models.Model):
 
     class Meta:
         db_table = "LiteLLM_BackgroundResponseSettlement"
+
+
+class LiteLLMBackgroundResponseCreator(models.Model):
+    response_id = models.TextField(primary_key=True, default=None)
+    upstream_url = models.TextField()
+    create_context = models.JSONField()
+    created_at = UtcDateTimeField(default=now_milliseconds)
+    poll_lease_expires_at = UtcDateTimeField(null=True)
+
+    class Meta:
+        db_table = "LiteLLM_BackgroundResponseCreator"
+        indexes = [
+            models.Index(fields=["created_at"]),
+        ]
 
 
 class LiteLLMLens(models.Model):
@@ -2597,7 +2736,7 @@ class LiteLLMTelemetryReport(models.Model):
 
 
 class LiteLLMSpendLogDelivery(models.Model):
-    delivery_id = models.TextField(primary_key=True, db_default=RawSQL("(gen_random_uuid())::text", []))
+    delivery_id = models.TextField(primary_key=True, default=uuid4_str)
     request_id = models.TextField()
     state = models.TextField(choices=AccountingDeliveryState.choices, default=AccountingDeliveryState.pending)
     accounting_payload = models.JSONField()

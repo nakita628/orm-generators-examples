@@ -1,11 +1,12 @@
 defmodule LiteLLM.LiteLLMSpendLogDelivery do
   use Ecto.Schema
 
-  @primary_key false
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :delivery_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          delivery_id: String.t(),
+          id: String.t(),
           request_id: String.t(),
           state: atom(),
           accounting_payload: map() | list() | String.t() | number() | boolean(),
@@ -18,7 +19,6 @@ defmodule LiteLLM.LiteLLMSpendLogDelivery do
         }
 
   schema "LiteLLM_SpendLogDelivery" do
-    field(:delivery_id, :string, primary_key: true, read_after_writes: true)
     field(:request_id, :string)
     field(:state, Ecto.Enum, values: [:pending, :applied, :parked], default: :pending)
     field(:accounting_payload, LiteLLM.PrismaJson)

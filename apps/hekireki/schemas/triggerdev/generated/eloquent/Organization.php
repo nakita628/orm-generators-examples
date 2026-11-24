@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * it null forever; reads fall back to the global basin env var).
  * Set once at provisioning time; retention is reconfigured in-place
  * when the org's plan changes.
+ * @property bool $mfaRequired When true, members without MFA are locked out of the dashboard and CLI until they set it up.
+ * @property list<string> $mfaStepUpActions Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).
  */
 class Organization extends Model
 {
@@ -63,6 +65,9 @@ class Organization extends Model
         'supportAccessMode',
         'supportAccessModeUpdatedAt',
         'supportAccessModeUpdatedById',
+        'mfaRequired',
+        'mfaStepUpActions',
+        'mfaStepUpWindowMinutes',
     ];
 
     protected $attributes = [
@@ -76,6 +81,8 @@ class Organization extends Model
         'hasRequestedV3' => false,
         'maximumProjectCount' => 25,
         'supportAccessMode' => 'ALLOW',
+        'mfaRequired' => false,
+        'mfaStepUpWindowMinutes' => 5,
     ];
 
     protected $casts = [
@@ -102,6 +109,9 @@ class Organization extends Model
         'maxSessionDuration' => 'integer',
         'supportAccessMode' => SupportAccessMode::class,
         'supportAccessModeUpdatedAt' => 'datetime',
+        'mfaRequired' => 'boolean',
+        'mfaStepUpActions' => AsPrismaList::class,
+        'mfaStepUpWindowMinutes' => 'integer',
     ];
 
     public function environments(): HasMany

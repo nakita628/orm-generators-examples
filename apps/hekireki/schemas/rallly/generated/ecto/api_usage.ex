@@ -1,4 +1,9 @@
 defmodule Rallly.ApiUsage do
+  @moduledoc """
+  Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+  deployments keep working during the switch, then dropped.
+  """
+
   use Ecto.Schema
 
   @primary_key false

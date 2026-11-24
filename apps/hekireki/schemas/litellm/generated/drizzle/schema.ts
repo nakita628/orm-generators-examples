@@ -55,6 +55,7 @@ export const accountingDeliveryStateEnum = pgEnum('AccountingDeliveryState', [
 ])
 
 export const liteLLMBudgetTable = pgTable('LiteLLM_BudgetTable', {
+  rollover_max_budget: doublePrecision('rollover_max_budget'),
   budget_id: text('budget_id')
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -88,6 +89,258 @@ export const liteLLMBudgetTable = pgTable('LiteLLM_BudgetTable', {
     .$onUpdate(utcNow),
   updated_by: text('updated_by').notNull(),
 })
+
+export const liteLLMAppGroupTable = pgTable(
+  'LiteLLM_AppGroupTable',
+  {
+    app_group_id: text('app_group_id')
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    name: text('name').notNull(),
+    description: text('description'),
+    metadata: jsonb('metadata'),
+    budget_id: text('budget_id'),
+    spend: doublePrecision('spend').notNull().default(0),
+    spend_reset_window: text('spend_reset_window'),
+    created_at: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    created_by: text('created_by').notNull(),
+    updated_at: timestamp('updated_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+    updated_by: text('updated_by').notNull(),
+  },
+  (table) => [
+    uniqueIndex('LiteLLM_AppGroupTable_name_key').on(table.name),
+    foreignKey({
+      name: 'LiteLLM_AppGroupTable_budget_id_fkey',
+      columns: [table.budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const liteLLMAppGroupCustomerOrgTable = pgTable(
+  'LiteLLM_AppGroupCustomerOrgTable',
+  {
+    app_group_id: text('app_group_id').notNull(),
+    customer_org_id: text('customer_org_id').notNull(),
+    budget_id: text('budget_id'),
+    spend: doublePrecision('spend').notNull().default(0),
+    spend_reset_window: text('spend_reset_window'),
+  },
+  (table) => [
+    primaryKey({
+      name: 'LiteLLM_AppGroupCustomerOrgTable_pkey',
+      columns: [table.app_group_id, table.customer_org_id],
+    }),
+    index('LiteLLM_AppGroupCustomerOrgTable_customer_org_id_idx').on(table.customer_org_id),
+    foreignKey({
+      name: 'LiteLLM_AppGroupCustomerOrgTable_budget_id_fkey',
+      columns: [table.budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppGroupCustomerOrgTable_app_group_id_fkey',
+      columns: [table.app_group_id],
+      foreignColumns: [liteLLMAppGroupTable.app_group_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppGroupCustomerOrgTable_customer_org_id_fkey',
+      columns: [table.customer_org_id],
+      foreignColumns: [liteLLMCustomerOrganizationTable.customer_org_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const liteLLMAppTable = pgTable(
+  'LiteLLM_AppTable',
+  {
+    app_id: text('app_id')
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    app_group_id: text('app_group_id'),
+    resource_type: text('resource_type'),
+    resource_id: text('resource_id'),
+    alias: text('alias').notNull(),
+    spend: doublePrecision('spend').notNull().default(0),
+    spend_reset_window: text('spend_reset_window'),
+    budget_id: text('budget_id'),
+    default_tier_budget_id: text('default_tier_budget_id'),
+    default_customer_member_budget_id: text('default_customer_member_budget_id'),
+    auto_create_customers: boolean('auto_create_customers').notNull().default(true),
+    customer_margin: doublePrecision('customer_margin'),
+    created_at: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    created_by: text('created_by').notNull(),
+    updated_at: timestamp('updated_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow)
+      .$onUpdate(utcNow),
+    updated_by: text('updated_by').notNull(),
+  },
+  (table) => [
+    uniqueIndex('LiteLLM_AppTable_alias_key').on(table.alias),
+    index('LiteLLM_AppTable_app_group_id_idx').on(table.app_group_id),
+    uniqueIndex('LiteLLM_AppTable_resource_type_resource_id_key').on(
+      table.resource_type,
+      table.resource_id,
+    ),
+    foreignKey({
+      name: 'LiteLLM_AppTable_app_group_id_fkey',
+      columns: [table.app_group_id],
+      foreignColumns: [liteLLMAppGroupTable.app_group_id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppTable_budget_id_fkey',
+      columns: [table.budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppTable_default_tier_budget_id_fkey',
+      columns: [table.default_tier_budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppTable_default_customer_member_budget_id_fkey',
+      columns: [table.default_customer_member_budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const liteLLMAppCustomerOrgTable = pgTable(
+  'LiteLLM_AppCustomerOrgTable',
+  {
+    app_id: text('app_id').notNull(),
+    customer_org_id: text('customer_org_id').notNull(),
+    spend: doublePrecision('spend').notNull().default(0),
+    spend_reset_window: text('spend_reset_window'),
+    tier_budget_id: text('tier_budget_id'),
+    budget_id: text('budget_id'),
+    budget_override_id: text('budget_override_id'),
+    budget_override_expires_at: timestamp('budget_override_expires_at', { precision: 3 }),
+    customer_member_budget_id: text('customer_member_budget_id'),
+  },
+  (table) => [
+    primaryKey({
+      name: 'LiteLLM_AppCustomerOrgTable_pkey',
+      columns: [table.app_id, table.customer_org_id],
+    }),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_budget_id_fkey',
+      columns: [table.budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_app_id_fkey',
+      columns: [table.app_id],
+      foreignColumns: [liteLLMAppTable.app_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_customer_org_id_fkey',
+      columns: [table.customer_org_id],
+      foreignColumns: [liteLLMCustomerOrganizationTable.customer_org_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_tier_budget_id_fkey',
+      columns: [table.tier_budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_budget_override_id_fkey',
+      columns: [table.budget_override_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerOrgTable_customer_member_budget_id_fkey',
+      columns: [table.customer_member_budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
+
+export const liteLLMAppCustomerMemberTable = pgTable(
+  'LiteLLM_AppCustomerMemberTable',
+  {
+    app_id: text('app_id').notNull(),
+    customer_member_id: text('customer_member_id').notNull(),
+    spend: doublePrecision('spend').notNull().default(0),
+    spend_reset_window: text('spend_reset_window'),
+    budget_override_id: text('budget_override_id'),
+    budget_id: text('budget_id'),
+    budget_override_expires_at: timestamp('budget_override_expires_at', { precision: 3 }),
+  },
+  (table) => [
+    primaryKey({
+      name: 'LiteLLM_AppCustomerMemberTable_pkey',
+      columns: [table.app_id, table.customer_member_id],
+    }),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerMemberTable_budget_id_fkey',
+      columns: [table.budget_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('restrict')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerMemberTable_app_id_fkey',
+      columns: [table.app_id],
+      foreignColumns: [liteLLMAppTable.app_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerMemberTable_customer_member_id_fkey',
+      columns: [table.customer_member_id],
+      foreignColumns: [liteLLMCustomerMemberTable.customer_member_id],
+    })
+      .onDelete('cascade')
+      .onUpdate('cascade'),
+    foreignKey({
+      name: 'LiteLLM_AppCustomerMemberTable_budget_override_id_fkey',
+      columns: [table.budget_override_id],
+      foreignColumns: [liteLLMBudgetTable.budget_id],
+    })
+      .onDelete('set null')
+      .onUpdate('cascade'),
+  ],
+)
 
 export const liteLLMCustomerOrganizationTable = pgTable(
   'LiteLLM_CustomerOrganizationTable',
@@ -158,6 +411,8 @@ export const liteLLMCustomerTeamTable = pgTable(
   },
   (table) => [
     index('LiteLLM_CustomerTeamTable_parent_org_id_idx').on(table.parent_org_id),
+    index('LiteLLM_CustomerTeamTable_budget_id_idx').on(table.budget_id),
+    index('LiteLLM_CustomerTeamTable_budget_override_id_idx').on(table.budget_override_id),
     index('LiteLLM_CustomerTeamTable_spend_idx').on(table.spend),
     foreignKey({
       name: 'LiteLLM_CustomerTeamTable_parent_org_id_fkey',
@@ -211,6 +466,9 @@ export const liteLLMCustomerMemberTable = pgTable(
   },
   (table) => [
     index('LiteLLM_CustomerMemberTable_parent_org_id_idx').on(table.parent_org_id),
+    index('LiteLLM_CustomerMemberTable_parent_team_ids_idx').on(table.parent_team_ids),
+    index('LiteLLM_CustomerMemberTable_budget_id_idx').on(table.budget_id),
+    index('LiteLLM_CustomerMemberTable_budget_override_id_idx').on(table.budget_override_id),
     index('LiteLLM_CustomerMemberTable_spend_idx').on(table.spend),
     foreignKey({
       name: 'LiteLLM_CustomerMemberTable_parent_org_id_fkey',
@@ -715,6 +973,8 @@ export const liteLLMDeletedTeamTable = pgTable(
 export const liteLLMUserTable = pgTable(
   'LiteLLM_UserTable',
   {
+    rollover_max_budget: doublePrecision('rollover_max_budget'),
+    rollover_credit: doublePrecision('rollover_credit'),
     budget_limits: jsonb('budget_limits'),
     user_id: text('user_id').primaryKey(),
     user_alias: text('user_alias'),
@@ -784,6 +1044,7 @@ export const liteLLMObjectPermissionTable = pgTable('LiteLLM_ObjectPermissionTab
   search_tools: text('search_tools').array().default([]),
   mcp_tool_search_enabled: boolean('mcp_tool_search_enabled'),
   skills: text('skills').array().default([]),
+  apps: text('apps').array().default([]),
 })
 
 export const liteLLMMCPServerTable = pgTable(
@@ -847,6 +1108,7 @@ export const liteLLMMCPServerTable = pgTable(
     timeout: doublePrecision('timeout'),
     max_concurrent_requests: integer('max_concurrent_requests'),
     rpm: integer('rpm'),
+    events: jsonb('events'),
     approval_status: text('approval_status').default('active'),
     submitted_by: text('submitted_by'),
     submitted_at: timestamp('submitted_at', { precision: 3 }),
@@ -993,6 +1255,7 @@ export const liteLLMSSOIdentityAssertion = pgTable('LiteLLM_SSOIdentityAssertion
 export const liteLLMVerificationToken = pgTable(
   'LiteLLM_VerificationToken',
   {
+    key_id: text('key_id').$defaultFn(() => crypto.randomUUID()),
     token: text('token').primaryKey(),
     key_name: text('key_name'),
     key_alias: text('key_alias'),
@@ -1048,6 +1311,7 @@ export const liteLLMVerificationToken = pgTable(
     budget_limits: jsonb('budget_limits'),
   },
   (table) => [
+    uniqueIndex('LiteLLM_VerificationToken_key_id_key').on(table.key_id),
     index('LiteLLM_VerificationToken_user_id_team_id_idx').on(table.user_id, table.team_id),
     index('LiteLLM_VerificationToken_team_id_idx').on(table.team_id),
     index('LiteLLM_VerificationToken_budget_reset_at_expires_idx').on(
@@ -1158,6 +1422,7 @@ export const liteLLMDeprecatedVerificationToken = pgTable(
 export const liteLLMDeletedVerificationToken = pgTable(
   'LiteLLM_DeletedVerificationToken',
   {
+    key_id: text('key_id'),
     id: text('id')
       .primaryKey()
       .$defaultFn(() => crypto.randomUUID()),
@@ -1434,6 +1699,7 @@ export const liteLLMUserNotifications = pgTable('LiteLLM_UserNotifications', {
 export const liteLLMTeamMembership = pgTable(
   'LiteLLM_TeamMembership',
   {
+    rollover_credit: doublePrecision('rollover_credit'),
     user_id: text('user_id').notNull(),
     team_id: text('team_id').notNull(),
     spend: doublePrecision('spend').notNull().default(0),
@@ -1598,6 +1864,7 @@ export const liteLLMDailyUserSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -1678,6 +1945,7 @@ export const liteLLMDailyGlobalSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -1753,6 +2021,7 @@ export const liteLLMDailyOrganizationSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -1802,6 +2071,8 @@ export const liteLLMDailyOrganizationSpend = pgTable(
 export const liteLLMDailyCustomerMemberSpend = pgTable(
   'LiteLLM_DailyCustomerMemberSpend',
   {
+    app_group_id: text('app_group_id').notNull().default(''),
+    app_id: text('app_id').notNull().default(''),
     id: text('id').primaryKey(),
     date: text('date').notNull(),
     customer_org_id: text('customer_org_id').notNull(),
@@ -1826,6 +2097,10 @@ export const liteLLMDailyCustomerMemberSpend = pgTable(
     cache_creation_input_tokens: bigint('cache_creation_input_tokens', { mode: 'bigint' })
       .notNull()
       .default(sql`0`),
+    cache_cost: doublePrecision('cache_cost').notNull().default(0),
+    priced_cache_tokens: bigint('priced_cache_tokens', { mode: 'bigint' })
+      .notNull()
+      .default(sql`0`),
     compression_saved_tokens: bigint('compression_saved_tokens', { mode: 'bigint' })
       .notNull()
       .default(sql`0`),
@@ -1840,6 +2115,7 @@ export const liteLLMDailyCustomerMemberSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
       .default(sql`0`),
@@ -1862,6 +2138,11 @@ export const liteLLMDailyCustomerMemberSpend = pgTable(
     updated_at: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
   },
   (table) => [
+    index('LiteLLM_DailyCustomerMemberSpend_app_group_id_customer_org__idx').on(
+      table.app_group_id,
+      table.customer_org_id,
+      table.date,
+    ),
     index('LiteLLM_DailyCustomerMemberSpend_date_idx').on(table.date),
     index('LiteLLM_DailyCustomerMemberSpend_customer_org_id_date_idx').on(
       table.customer_org_id,
@@ -1920,6 +2201,7 @@ export const liteLLMDailyEndUserSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -2003,6 +2285,7 @@ export const liteLLMDailyAgentSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -2086,6 +2369,7 @@ export const liteLLMDailyTeamSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -2169,6 +2453,7 @@ export const liteLLMDailyTagSpend = pgTable(
       .default(0),
     autorouter_savings_spend: doublePrecision('autorouter_savings_spend').notNull().default(0),
     guardrail_spend: doublePrecision('guardrail_spend').notNull().default(0),
+    customer_margin_spend: doublePrecision('customer_margin_spend').notNull().default(0),
     spend: doublePrecision('spend').notNull().default(0),
     api_requests: bigint('api_requests', { mode: 'bigint' })
       .notNull()
@@ -2317,6 +2602,7 @@ export const liteLLMManagedObjectTable = pgTable(
     api_key: text('api_key'),
     request_tags: jsonb('request_tags').default([]),
     end_user_id: text('end_user_id'),
+    creator_billing_context: jsonb('creator_billing_context'),
     updated_at: timestamp('updated_at', { precision: 3 }).notNull().$onUpdate(utcNow),
     updated_by: text('updated_by'),
   },
@@ -3485,6 +3771,7 @@ export const liteLLMShadowEvalJob = pgTable(
     models: text('models').array().default([]),
     direction: text('direction').notNull().default('forward'),
     baseline_model: text('baseline_model'),
+    skip_same_model: boolean('skip_same_model').notNull().default(false),
     judge_model: text('judge_model').notNull(),
     shadow_percentage: doublePrecision('shadow_percentage').notNull(),
     max_turns: integer('max_turns').notNull(),
@@ -3497,6 +3784,8 @@ export const liteLLMShadowEvalJob = pgTable(
     ends_at: timestamp('ends_at', { precision: 3 }).notNull(),
     stopped_at: timestamp('stopped_at', { precision: 3 }),
     stopped_by: text('stopped_by'),
+    rubric: text('rubric'),
+    rubric_version: integer('rubric_version'),
   },
   (table) => [
     index('LiteLLM_ShadowEvalJob_group_id_idx').on(table.group_id),
@@ -3525,6 +3814,8 @@ export const liteLLMShadowEvalAttempt = pgTable(
     real_classifier_cost: doublePrecision('real_classifier_cost').notNull().default(0),
     shadow_classifier_cost: doublePrecision('shadow_classifier_cost').notNull().default(0),
     real_cache_hit: boolean('real_cache_hit').notNull().default(false),
+    real_grade: integer('real_grade'),
+    shadow_grade: integer('shadow_grade'),
     error: text('error'),
     created_at: timestamp('created_at', { precision: 3 })
       .notNull()
@@ -3537,6 +3828,7 @@ export const liteLLMShadowEvalAttempt = pgTable(
 export const liteLLMShadowEvalFunnel = pgTable('LiteLLM_ShadowEvalFunnel', {
   job_id: text('job_id').primaryKey(),
   not_sampled: integer('not_sampled').notNull().default(0),
+  same_model: integer('same_model').notNull().default(0),
   unjudgeable: integer('unjudgeable').notNull().default(0),
   shed: integer('shed').notNull().default(0),
   withheld: integer('withheld').notNull().default(0),
@@ -3665,6 +3957,21 @@ export const liteLLMBackgroundResponseSettlement = pgTable('LiteLLM_BackgroundRe
     .$defaultFn(utcNow),
 })
 
+export const liteLLMBackgroundResponseCreator = pgTable(
+  'LiteLLM_BackgroundResponseCreator',
+  {
+    response_id: text('response_id').primaryKey(),
+    upstream_url: text('upstream_url').notNull(),
+    create_context: jsonb('create_context').notNull(),
+    created_at: timestamp('created_at', { precision: 3 })
+      .notNull()
+      .default(sql`CURRENT_TIMESTAMP`)
+      .$defaultFn(utcNow),
+    poll_lease_expires_at: timestamp('poll_lease_expires_at', { precision: 3 }),
+  },
+  (table) => [index('idx_background_response_creator_created_at').on(table.created_at)],
+)
+
 export const liteLLMLens = pgTable(
   'LiteLLM_Lens',
   {
@@ -3787,7 +4094,7 @@ export const liteLLMSpendLogDelivery = pgTable(
   {
     delivery_id: text('delivery_id')
       .primaryKey()
-      .default(sql`(gen_random_uuid())::text`),
+      .$defaultFn(() => crypto.randomUUID()),
     request_id: text('request_id').notNull(),
     state: accountingDeliveryStateEnum('state').notNull().default('pending'),
     accounting_payload: jsonb('accounting_payload').notNull(),
@@ -3900,6 +4207,11 @@ export const liteLLMPerformanceAlertState = pgTable('LiteLLM_PerformanceAlertSta
 export const relations = defineRelations(
   {
     liteLLMBudgetTable,
+    liteLLMAppGroupTable,
+    liteLLMAppGroupCustomerOrgTable,
+    liteLLMAppTable,
+    liteLLMAppCustomerOrgTable,
+    liteLLMAppCustomerMemberTable,
     liteLLMCustomerOrganizationTable,
     liteLLMCustomerTeamTable,
     liteLLMCustomerMemberTable,
@@ -4002,6 +4314,7 @@ export const relations = defineRelations(
     liteLLMWorkflowMessage,
     liteLLMBackgroundInteractionSettlement,
     liteLLMBackgroundResponseSettlement,
+    liteLLMBackgroundResponseCreator,
     liteLLMLens,
     liteLLMLensRun,
     liteLLMLensReview,
@@ -4018,6 +4331,17 @@ export const relations = defineRelations(
   },
   (r) => ({
     liteLLMBudgetTable: {
+      apps: r.many.liteLLMAppTable({ alias: 'AppBudget' }),
+      app_groups: r.many.liteLLMAppGroupTable(),
+      app_group_org_budgets: r.many.liteLLMAppGroupCustomerOrgTable(),
+      app_default_tiers: r.many.liteLLMAppTable({ alias: 'AppDefaultTier' }),
+      app_default_members: r.many.liteLLMAppTable({ alias: 'AppDefaultMember' }),
+      app_org_tiers: r.many.liteLLMAppCustomerOrgTable({ alias: 'AppOrgTier' }),
+      app_org_budgets: r.many.liteLLMAppCustomerOrgTable({ alias: 'AppOrgBudget' }),
+      app_member_budgets: r.many.liteLLMAppCustomerMemberTable({ alias: 'AppMemberBudget' }),
+      app_org_overrides: r.many.liteLLMAppCustomerOrgTable({ alias: 'AppOrgOverride' }),
+      app_org_members: r.many.liteLLMAppCustomerOrgTable({ alias: 'AppOrgMember' }),
+      app_member_overrides: r.many.liteLLMAppCustomerMemberTable({ alias: 'AppMemberOverride' }),
       customer_organization_defaults: r.many.liteLLMCustomerOrganizationTable({
         alias: 'CustomerOrganizationDefaultBudget',
       }),
@@ -4041,7 +4365,110 @@ export const relations = defineRelations(
       team_membership: r.many.liteLLMTeamMembership(),
       organization_membership: r.many.liteLLMOrganizationMembership(),
     },
+    liteLLMAppGroupTable: {
+      budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppGroupTable.budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+      }),
+      apps: r.many.liteLLMAppTable(),
+      customer_organizations: r.many.liteLLMAppGroupCustomerOrgTable(),
+    },
+    liteLLMAppGroupCustomerOrgTable: {
+      budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppGroupCustomerOrgTable.budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+      }),
+      app_group: r.one.liteLLMAppGroupTable({
+        from: r.liteLLMAppGroupCustomerOrgTable.app_group_id,
+        to: r.liteLLMAppGroupTable.app_group_id,
+        optional: false,
+      }),
+      customer_org: r.one.liteLLMCustomerOrganizationTable({
+        from: r.liteLLMAppGroupCustomerOrgTable.customer_org_id,
+        to: r.liteLLMCustomerOrganizationTable.customer_org_id,
+        optional: false,
+      }),
+    },
+    liteLLMAppTable: {
+      app_group: r.one.liteLLMAppGroupTable({
+        from: r.liteLLMAppTable.app_group_id,
+        to: r.liteLLMAppGroupTable.app_group_id,
+      }),
+      budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppTable.budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppBudget',
+      }),
+      default_tier_budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppTable.default_tier_budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppDefaultTier',
+      }),
+      default_customer_member_budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppTable.default_customer_member_budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppDefaultMember',
+      }),
+      customer_organizations: r.many.liteLLMAppCustomerOrgTable(),
+      customer_members: r.many.liteLLMAppCustomerMemberTable(),
+    },
+    liteLLMAppCustomerOrgTable: {
+      budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerOrgTable.budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppOrgBudget',
+      }),
+      app: r.one.liteLLMAppTable({
+        from: r.liteLLMAppCustomerOrgTable.app_id,
+        to: r.liteLLMAppTable.app_id,
+        optional: false,
+      }),
+      customer_org: r.one.liteLLMCustomerOrganizationTable({
+        from: r.liteLLMAppCustomerOrgTable.customer_org_id,
+        to: r.liteLLMCustomerOrganizationTable.customer_org_id,
+        optional: false,
+      }),
+      tier_budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerOrgTable.tier_budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppOrgTier',
+      }),
+      budget_override: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerOrgTable.budget_override_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppOrgOverride',
+      }),
+      customer_member_budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerOrgTable.customer_member_budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppOrgMember',
+      }),
+    },
+    liteLLMAppCustomerMemberTable: {
+      budget: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerMemberTable.budget_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppMemberBudget',
+      }),
+      app: r.one.liteLLMAppTable({
+        from: r.liteLLMAppCustomerMemberTable.app_id,
+        to: r.liteLLMAppTable.app_id,
+        optional: false,
+      }),
+      customer_member: r.one.liteLLMCustomerMemberTable({
+        from: r.liteLLMAppCustomerMemberTable.customer_member_id,
+        to: r.liteLLMCustomerMemberTable.customer_member_id,
+        optional: false,
+      }),
+      budget_override: r.one.liteLLMBudgetTable({
+        from: r.liteLLMAppCustomerMemberTable.budget_override_id,
+        to: r.liteLLMBudgetTable.budget_id,
+        alias: 'AppMemberOverride',
+      }),
+    },
     liteLLMCustomerOrganizationTable: {
+      app_groups: r.many.liteLLMAppGroupCustomerOrgTable(),
+      apps: r.many.liteLLMAppCustomerOrgTable(),
       budget: r.one.liteLLMBudgetTable({
         from: r.liteLLMCustomerOrganizationTable.budget_id,
         to: r.liteLLMBudgetTable.budget_id,
@@ -4073,6 +4500,7 @@ export const relations = defineRelations(
       }),
     },
     liteLLMCustomerMemberTable: {
+      apps: r.many.liteLLMAppCustomerMemberTable(),
       parent_org: r.one.liteLLMCustomerOrganizationTable({
         from: r.liteLLMCustomerMemberTable.parent_org_id,
         to: r.liteLLMCustomerOrganizationTable.customer_org_id,

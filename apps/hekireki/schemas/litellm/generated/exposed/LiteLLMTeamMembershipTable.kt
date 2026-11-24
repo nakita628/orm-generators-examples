@@ -4,6 +4,7 @@ import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.dao.id.CompositeIdTable
 
 object LiteLLMTeamMembershipTable : CompositeIdTable("\"LiteLLM_TeamMembership\"") {
+    val rolloverCredit = double("rollover_credit").nullable()
     val userId = text("user_id").entityId()
     val teamId = text("team_id").entityId()
     val spend = double("spend").default(0.0)

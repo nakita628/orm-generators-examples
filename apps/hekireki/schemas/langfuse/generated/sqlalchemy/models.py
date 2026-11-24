@@ -141,6 +141,8 @@ class User(Base):
     evaluators_created: Mapped[list["Evaluator"]] = relationship(back_populates="created_by_user")
     evaluator_versions_created: Mapped[list["EvaluatorVersion"]] = relationship(back_populates="created_by_user")
     evaluation_rules_created: Mapped[list["EvaluationRule"]] = relationship(back_populates="created_by_user")
+    gateway_spend_limits_owned: Mapped[list["GatewaySpendLimit"]] = relationship(foreign_keys="GatewaySpendLimit.owner_user_id", back_populates="owner_user")
+    gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(foreign_keys="GatewaySpendLimit.user_id", cascade="all, delete", passive_deletes=True, back_populates="user")
 
 class VerificationToken(Base):
     __tablename__ = "verification_tokens"
@@ -183,7 +185,9 @@ class Organization(Base):
     cloud_spend_alerts: Mapped[list["CloudSpendAlert"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="org")
     verified_domains: Mapped[list["VerifiedDomain"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     gateway_ai_connections: Mapped[list["GatewayAiConnection"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
+    gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     organization_llm_api_keys: Mapped[list["LlmApiKeys"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
+    models: Mapped[list["Model"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     role_assignments: Mapped[list["RoleAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
     gateway_config: Mapped[Optional["GatewayConfig"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="organization")
 
@@ -234,7 +238,7 @@ class Project(Base):
     batch_action: Mapped[list["BatchAction"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
     comment: Mapped[list["Comment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
     comment_reactions: Mapped[list["CommentReaction"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
-    annotation_queue: Mapped[list["AnnotationQueue"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
+    annotation_queue: Mapped[list["AnnotationQueue"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="annotation_queues,session_view", back_populates="project")
     annotation_queue_item: Mapped[list["AnnotationQueueItem"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
     media: Mapped[list["Media"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
     prompt_dependency: Mapped[list["PromptDependency"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="project")
@@ -308,6 +312,7 @@ class ApiKey(Base):
     user: Mapped[Optional["User"]] = relationship(foreign_keys=[user_id], back_populates="api_keys")
     created_by_api_key: Mapped[Optional["ApiKey"]] = relationship(remote_side=[id], back_populates="api_keys_created")
     api_keys_created: Mapped[list["ApiKey"]] = relationship(back_populates="created_by_api_key")
+    gateway_spend_limits: Mapped[list["GatewaySpendLimit"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
     role_assignments: Mapped[list["RoleAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
     gateway_association: Mapped[Optional["GatewayApiKeyAssociation"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="api_key")
 
@@ -322,7 +327,9 @@ class RoleAssignment(Base):
     user_id: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="role_assignments_user_id_fkey"))
     api_key_id: Mapped[Optional[str]] = mapped_column(ForeignKey("api_keys.id", ondelete="CASCADE", onupdate="CASCADE", name="role_assignments_api_key_id_fkey"))
     role_id: Mapped[str]
-    system_role: Mapped[str] = mapped_column(Enum("OWNER", "ADMIN", "MEMBER", "VIEWER", "NONE", "LEGACY_PROJECT_API_KEY", "LEGACY_ORGANIZATION_API_KEY", "SCORES_INGEST", "INGEST", "AI_GATEWAY", name="SystemRole"))
+    system_role: Mapped[str] = mapped_column(Enum("OWNER", "ADMIN", "MEMBER", "VIEWER", "NONE", "LEGACY_PROJECT_API_KEY", "LEGACY_ORGANIZATION_API_KEY", "SCORES_INGEST", "INGEST", "AI_GATEWAY", "AI_GATEWAY_INFERENCE", "APPLICATION", name="SystemRole"))
+    expires_at: Mapped[Optional[datetime]]
+    tags: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
@@ -332,6 +339,7 @@ class RoleAssignment(Base):
         Index("role_assignments_principal_id_idx", "principal_id"),
         Index("role_assignments_user_id_idx", "user_id"),
         Index("role_assignments_api_key_id_idx", "api_key_id"),
+        Index("role_assignments_tags_idx", "tags"),
         Index("role_assignments_owner_id_principal_id_role_id_key", "owner_id", "principal_id", "role_id", unique=True),
     )
 
@@ -388,6 +396,55 @@ class GatewayApiKeyAssociation(Base):
     allowed_models: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
 
     api_key: Mapped["ApiKey"] = relationship(back_populates="gateway_association")
+
+class GatewaySpendLimit(Base):
+    __tablename__ = "gateway_spend_limits"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    organization_id: Mapped[str] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_spend_limits_organization_id_fkey"))
+    scope: Mapped[str] = mapped_column(Enum("API_KEY", "USER", "API_KEY_DEFAULT", "USER_DEFAULT", "ORGANIZATION", name="GatewaySpendLimitScope"))
+    api_key_id: Mapped[Optional[str]] = mapped_column(ForeignKey("api_keys.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_spend_limits_api_key_id_fkey"))
+    user_id: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_spend_limits_user_id_fkey"))
+    interval: Mapped[str] = mapped_column(Enum("DAILY", "WEEKLY", "MONTHLY", "TOTAL", name="GatewaySpendLimitInterval"))
+    limit_usd: Mapped[DecimalType]
+    alert_thresholds: Mapped[list[int]] = mapped_column(ARRAY(Integer), nullable=True, default=lambda: [100], server_default=text("ARRAY[100]"))
+    counting_started_at: Mapped[datetime]
+    owner_user_id: Mapped[Optional[str]] = mapped_column(ForeignKey("users.id", ondelete="SET NULL", onupdate="CASCADE", name="gateway_spend_limits_owner_user_id_fkey"))
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("gateway_spend_limits_organization_id_idx", "organization_id"),
+        Index("gateway_spend_limits_user_id_idx", "user_id"),
+        Index("gateway_spend_limits_api_key_id_interval_key", "api_key_id", "interval", unique=True),
+        Index("gateway_spend_limits_organization_id_user_id_interval_key", "organization_id", "user_id", "interval", unique=True),
+    )
+
+    organization: Mapped["Organization"] = relationship(back_populates="gateway_spend_limits")
+    api_key: Mapped[Optional["ApiKey"]] = relationship(back_populates="gateway_spend_limits")
+    user: Mapped[Optional["User"]] = relationship(foreign_keys=[user_id], back_populates="gateway_spend_limits")
+    owner_user: Mapped[Optional["User"]] = relationship(foreign_keys=[owner_user_id], back_populates="gateway_spend_limits_owned")
+    alerts: Mapped[list["GatewaySpendLimitAlert"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="spend_limit")
+
+class GatewaySpendLimitAlert(Base):
+    """One notification per limit, subject, alert type, threshold, counting start and window, so the gateway may report a limit any number of times."""
+
+    __tablename__ = "gateway_spend_limit_alerts"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
+    spend_limit_id: Mapped[str] = mapped_column(ForeignKey("gateway_spend_limits.id", ondelete="CASCADE", onupdate="CASCADE", name="gateway_spend_limit_alerts_spend_limit_id_fkey"))
+    subject_id: Mapped[str] = mapped_column(default="", server_default=text("''"))
+    type: Mapped[str] = mapped_column(Enum("WARNING", "EXCEEDED", name="GatewaySpendLimitAlertType"))
+    threshold_percent: Mapped[int] = mapped_column(default=100, server_default=text("100"))
+    counting_started_at: Mapped[datetime]
+    window_start: Mapped[datetime]
+    created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("gateway_spend_limit_alerts_limit_type_counting_window_key", "spend_limit_id", "subject_id", "type", "threshold_percent", "counting_started_at", "window_start", unique=True),
+    )
+
+    spend_limit: Mapped["GatewaySpendLimit"] = relationship(back_populates="alerts")
 
 class InAppAgentConversation(Base):
     __tablename__ = "in_app_agent_conversations"
@@ -519,6 +576,7 @@ class LlmApiKeys(Base):
     extra_headers: Mapped[Optional[str]]
     extra_header_keys: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
     config: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
+    external_id: Mapped[Optional[str]]
     project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="llm_api_keys_project_id_fkey"))
     organization_id: Mapped[Optional[str]] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="llm_api_keys_organization_id_fkey"))
 
@@ -650,17 +708,21 @@ class AnnotationQueue(Base):
     name: Mapped[str]
     description: Mapped[Optional[str]]
     score_config_ids: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
-    project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="annotation_queues_project_id_fkey"))
+    session_view_id: Mapped[Optional[str]]
+    project_id: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
     __table_args__ = (
         Index("annotation_queues_id_project_id_idx", "id", "project_id"),
         Index("annotation_queues_project_id_created_at_idx", "project_id", "created_at"),
+        Index("annotation_queues_project_id_session_view_id_idx", "project_id", "session_view_id"),
         Index("annotation_queues_project_id_name_key", "project_id", "name", unique=True),
+        ForeignKeyConstraint(["project_id", "session_view_id"], ["session_views.project_id", "session_views.id"], ondelete="NO ACTION", onupdate="CASCADE", name="annotation_queues_project_id_session_view_id_fkey"),
     )
 
-    project: Mapped["Project"] = relationship(back_populates="annotation_queue")
+    session_view: Mapped[Optional["SessionView"]] = relationship(overlaps="annotation_queue,project", back_populates="annotation_queues")
+    project: Mapped["Project"] = relationship(overlaps="annotation_queues,session_view", back_populates="annotation_queue")
     annotation_queue_item: Mapped[list["AnnotationQueueItem"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="queue")
     annotation_queue_assignment: Mapped[list["AnnotationQueueAssignment"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="queue")
 
@@ -996,7 +1058,9 @@ class Model(Base):
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+    scope: Mapped[str] = mapped_column(Enum("LANGFUSE", "ORGANIZATION", "PROJECT", name="ModelScope"))
     project_id: Mapped[Optional[str]] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="models_project_id_fkey"))
+    organization_id: Mapped[Optional[str]] = mapped_column(ForeignKey("organizations.id", ondelete="CASCADE", onupdate="CASCADE", name="models_organization_id_fkey"))
     model_name: Mapped[str]
     match_pattern: Mapped[str]
     start_date: Mapped[Optional[datetime]]
@@ -1009,10 +1073,12 @@ class Model(Base):
 
     __table_args__ = (
         Index("models_model_name_idx", "model_name"),
+        Index("models_scope_idx", "scope"),
         Index("models_project_id_model_name_start_date_unit_key", "project_id", "model_name", "start_date", "unit", unique=True),
     )
 
     project: Mapped[Optional["Project"]] = relationship(back_populates="model")
+    organization: Mapped[Optional["Organization"]] = relationship(back_populates="models")
     price: Mapped[list["Price"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="model")
     pricing_tiers: Mapped[list["PricingTier"]] = relationship(cascade="all, delete", passive_deletes=True, back_populates="model")
 
@@ -1742,6 +1808,7 @@ class TableViewPreset(Base):
 class SessionView(Base):
     __tablename__ = "session_views"
 
+    ownership: Mapped[str] = mapped_column(Enum("PRIVATE", "PROJECT", name="SessionViewOwnership"), default="PROJECT", server_default=text("'PROJECT'"))
     is_pinned_by_default_for_project: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     id: Mapped[str] = mapped_column(primary_key=True, default=lambda: cuid.cuid())
     project_id: Mapped[str] = mapped_column(ForeignKey("projects.id", ondelete="CASCADE", onupdate="CASCADE", name="session_views_project_id_fkey"))
@@ -1754,12 +1821,12 @@ class SessionView(Base):
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
 
     __table_args__ = (
-        Index("session_views_project_id_name_key", "project_id", "name", unique=True),
         Index("session_views_project_id_id_key", "project_id", "id", unique=True),
     )
 
     project: Mapped["Project"] = relationship(back_populates="session_views")
     created_by_user: Mapped[Optional["User"]] = relationship(back_populates="session_views_created")
+    annotation_queues: Mapped[list["AnnotationQueue"]] = relationship(passive_deletes="all", overlaps="annotation_queue,project", back_populates="session_view")
     pins: Mapped[list["SessionViewPinOverride"]] = relationship(cascade="all, delete", passive_deletes=True, overlaps="project,session_view_pin_overrides", back_populates="view")
 
 class SessionViewPinOverride(Base):

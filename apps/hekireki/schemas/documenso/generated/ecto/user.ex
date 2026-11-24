@@ -34,7 +34,10 @@ defmodule Documenso.User do
           security_audit_logs: [Documenso.UserSecurityAuditLog.t()],
           webhooks: [Documenso.Webhook.t()],
           site_settings: [Documenso.SiteSettings.t()],
-          passkeys: [Documenso.Passkey.t()]
+          passkeys: [Documenso.Passkey.t()],
+          admin_rule_matches: [Documenso.AdminRuleMatch.t()],
+          admin_tags: [Documenso.AdminTag.t()],
+          created_admin_tags: [Documenso.AdminTag.t()]
         }
 
   schema "User" do
@@ -66,6 +69,9 @@ defmodule Documenso.User do
     has_many(:webhooks, Documenso.Webhook, foreign_key: :user_id)
     has_many(:site_settings, Documenso.SiteSettings, foreign_key: :last_modified_by_user_id)
     has_many(:passkeys, Documenso.Passkey, foreign_key: :user_id)
+    has_many(:admin_rule_matches, Documenso.AdminRuleMatch, foreign_key: :actor_user_id)
+    has_many(:admin_tags, Documenso.AdminTag, foreign_key: :user_id)
+    has_many(:created_admin_tags, Documenso.AdminTag, foreign_key: :created_by_user_id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

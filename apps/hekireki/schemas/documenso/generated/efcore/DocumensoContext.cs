@@ -136,6 +136,12 @@ public partial class DocumensoContext : DbContext
 
     public virtual DbSet<RateLimit> RateLimits { get; set; }
 
+    public virtual DbSet<AdminRule> AdminRules { get; set; }
+
+    public virtual DbSet<AdminRuleMatch> AdminRuleMatches { get; set; }
+
+    public virtual DbSet<AdminTag> AdminTags { get; set; }
+
     public static void MapEnums(NpgsqlDbContextOptionsBuilder npgsql)
     {
         npgsql.MapEnum<IdentityProvider>("IdentityProvider");
@@ -168,6 +174,7 @@ public partial class DocumensoContext : DbContext
         npgsql.MapEnum<BackgroundJobTaskStatus>("BackgroundJobTaskStatus");
         npgsql.MapEnum<EmailDomainStatus>("EmailDomainStatus");
         npgsql.MapEnum<EmailTransportType>("EmailTransportType");
+        npgsql.MapEnum<AdminRuleMode>("AdminRuleMode");
         // Reads a numeric of more than 28 decimal places, such as numeric(65,30), into a decimal.
         // An NpgsqlDataSource passed to UseNpgsql is given the converter by the other MapEnums.
         foreach (var extension in ((IRelationalDbContextOptionsBuilderInfrastructure)npgsql).OptionsBuilder.Options.Extensions)
@@ -216,6 +223,7 @@ public partial class DocumensoContext : DbContext
         dataSource.MapEnum<BackgroundJobTaskStatus>("BackgroundJobTaskStatus");
         dataSource.MapEnum<EmailDomainStatus>("EmailDomainStatus");
         dataSource.MapEnum<EmailTransportType>("EmailTransportType");
+        dataSource.MapEnum<AdminRuleMode>("AdminRuleMode");
         // Reads a numeric of more than 28 decimal places, such as numeric(65,30), into a decimal.
 #pragma warning disable NPG9001
         dataSource.AddTypeInfoResolverFactory(new WideNumericResolverFactory());
@@ -262,6 +270,7 @@ public partial class DocumensoContext : DbContext
         modelBuilder.HasPostgresEnum<BackgroundJobTaskStatus>(name: "BackgroundJobTaskStatus");
         modelBuilder.HasPostgresEnum<EmailDomainStatus>(name: "EmailDomainStatus");
         modelBuilder.HasPostgresEnum<EmailTransportType>(name: "EmailTransportType");
+        modelBuilder.HasPostgresEnum<AdminRuleMode>(name: "AdminRuleMode");
 
         modelBuilder.Entity<User>(entity =>
         {
@@ -2478,6 +2487,130 @@ public partial class DocumensoContext : DbContext
                 .HasColumnName("createdAt");
         });
 
+        modelBuilder.Entity<AdminRule>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AdminRule_pkey");
+
+            entity.ToTable("AdminRule");
+
+            entity.HasIndex(e => new { e.Trigger, e.Mode, e.Priority }, "AdminRule_trigger_mode_priority_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Mode).HasColumnName("mode");
+            entity.Property(e => e.Trigger).HasColumnName("trigger");
+            entity.Property(e => e.Definition)
+                .HasColumnType("jsonb")
+                .HasColumnName("definition");
+            entity.Property(e => e.Priority).HasColumnName("priority");
+            entity.Property(e => e.StopOnMatch).HasColumnName("stopOnMatch");
+            entity.Property(e => e.ExemptOrganisationIds)
+                .ValueGeneratedNever()
+                .HasDefaultValue(new List<string>())
+                .HasColumnName("exemptOrganisationIds");
+        });
+
+        modelBuilder.Entity<AdminRuleMatch>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AdminRuleMatch_pkey");
+
+            entity.ToTable("AdminRuleMatch");
+
+            entity.HasIndex(e => new { e.RuleId, e.CreatedAt }, "AdminRuleMatch_ruleId_createdAt_idx");
+
+            entity.HasIndex(e => e.CreatedAt, "AdminRuleMatch_createdAt_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.Mode).HasColumnName("mode");
+            entity.Property(e => e.Trigger).HasColumnName("trigger");
+            entity.Property(e => e.OrganisationId).HasColumnName("organisationId");
+            entity.Property(e => e.EnvelopeId).HasColumnName("envelopeId");
+            entity.Property(e => e.EventSnapshot)
+                .HasColumnType("jsonb")
+                .HasColumnName("eventSnapshot");
+            entity.Property(e => e.ActionsRun)
+                .HasColumnType("jsonb")
+                .HasColumnName("actionsRun");
+            entity.Property(e => e.RuleId).HasColumnName("ruleId");
+            entity.Property(e => e.ActorUserId).HasColumnName("actorUserId");
+
+            entity.HasOne(d => d.Rule).WithMany(p => p.Matches)
+                .HasForeignKey(d => d.RuleId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("AdminRuleMatch_ruleId_fkey");
+
+            entity.HasOne(d => d.ActorUser).WithMany(p => p.AdminRuleMatches)
+                .HasForeignKey(d => d.ActorUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("AdminRuleMatch_actorUserId_fkey");
+        });
+
+        modelBuilder.Entity<AdminTag>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("AdminTag_pkey");
+
+            entity.ToTable("AdminTag");
+
+            entity.HasIndex(e => e.UserId, "AdminTag_userId_idx");
+
+            entity.HasIndex(e => e.OrganisationId, "AdminTag_organisationId_idx");
+
+            entity.Property(e => e.Id).HasColumnName("id");
+            entity.Property(e => e.CreatedAt)
+                .HasValueGenerator<UtcNowGenerator>()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.UpdatedAt)
+                .HasConversion<UtcClockConverter>()
+                .HasColumnType("timestamp(3) without time zone")
+                .HasColumnName("updatedAt");
+            entity.Property(e => e.Type).HasColumnName("type");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.UserId).HasColumnName("userId");
+            entity.Property(e => e.OrganisationId).HasColumnName("organisationId");
+            entity.Property(e => e.CreatedByUserId).HasColumnName("createdByUserId");
+            entity.Property(e => e.AdminRuleId).HasColumnName("adminRuleId");
+
+            entity.HasOne(d => d.User).WithMany(p => p.AdminTags)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("AdminTag_userId_fkey");
+
+            entity.HasOne(d => d.Organisation).WithMany(p => p.AdminTags)
+                .HasForeignKey(d => d.OrganisationId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("AdminTag_organisationId_fkey");
+
+            entity.HasOne(d => d.CreatedByUser).WithMany(p => p.CreatedAdminTags)
+                .HasForeignKey(d => d.CreatedByUserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("AdminTag_createdByUserId_fkey");
+
+            entity.HasOne(d => d.AdminRule).WithMany(p => p.AdminTags)
+                .HasForeignKey(d => d.AdminRuleId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("AdminTag_adminRuleId_fkey");
+        });
+
         OnModelCreatingPartial(modelBuilder);
     }
 
@@ -2670,6 +2803,24 @@ public partial class DocumensoContext : DbContext
         }
 
         foreach (var entry in ChangeTracker.Entries<EmbedSignature>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<AdminRule>())
+        {
+            if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
+                || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))
+            {
+                entry.Entity.UpdatedAt = now;
+            }
+        }
+
+        foreach (var entry in ChangeTracker.Entries<AdminTag>())
         {
             if ((entry.State == EntityState.Added && entry.Entity.UpdatedAt == default)
                 || (entry.State == EntityState.Modified && !entry.Property(e => e.UpdatedAt).IsModified))

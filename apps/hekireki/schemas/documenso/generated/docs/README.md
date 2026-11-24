@@ -68,6 +68,8 @@ CREATE TYPE "EmailDomainStatus" AS ENUM ('PENDING', 'ACTIVE');
 
 CREATE TYPE "EmailTransportType" AS ENUM ('SMTP_AUTH', 'SMTP_API', 'RESEND', 'MAILCHANNELS');
 
+CREATE TYPE "AdminRuleMode" AS ENUM ('ENFORCE', 'MONITOR', 'DISABLED');
+
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
     "name" TEXT,
@@ -858,6 +860,51 @@ CREATE TABLE "RateLimit" (
     CONSTRAINT "RateLimit_pkey" PRIMARY KEY ("key","action","bucket")
 );
 
+CREATE TABLE "AdminRule" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "mode" "AdminRuleMode" NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "definition" JSONB NOT NULL,
+    "priority" INTEGER NOT NULL,
+    "stopOnMatch" BOOLEAN NOT NULL,
+    "exemptOrganisationIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+
+    CONSTRAINT "AdminRule_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AdminRuleMatch" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "mode" "AdminRuleMode" NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "organisationId" TEXT,
+    "envelopeId" TEXT,
+    "eventSnapshot" JSONB NOT NULL,
+    "actionsRun" JSONB NOT NULL,
+    "ruleId" TEXT NOT NULL,
+    "actorUserId" INTEGER,
+
+    CONSTRAINT "AdminRuleMatch_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AdminTag" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "type" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "userId" INTEGER,
+    "organisationId" TEXT,
+    "createdByUserId" INTEGER,
+    "adminRuleId" TEXT,
+
+    CONSTRAINT "AdminTag_pkey" PRIMARY KEY ("id")
+);
+
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 CREATE INDEX "User_email_idx" ON "User"("email");
@@ -1042,6 +1089,16 @@ CREATE INDEX "EmbedSignature_recipientId_idx" ON "EmbedSignature"("recipientId")
 
 CREATE INDEX "RateLimit_createdAt_idx" ON "RateLimit"("createdAt");
 
+CREATE INDEX "AdminRule_trigger_mode_priority_idx" ON "AdminRule"("trigger", "mode", "priority");
+
+CREATE INDEX "AdminRuleMatch_ruleId_createdAt_idx" ON "AdminRuleMatch"("ruleId", "createdAt");
+
+CREATE INDEX "AdminRuleMatch_createdAt_idx" ON "AdminRuleMatch"("createdAt");
+
+CREATE INDEX "AdminTag_userId_idx" ON "AdminTag"("userId");
+
+CREATE INDEX "AdminTag_organisationId_idx" ON "AdminTag"("organisationId");
+
 ALTER TABLE "User" ADD CONSTRAINT "User_avatarImageId_fkey" FOREIGN KEY ("avatarImageId") REFERENCES "AvatarImage"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "TeamProfile" ADD CONSTRAINT "TeamProfile_teamId_fkey" FOREIGN KEY ("teamId") REFERENCES "Team"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -1175,6 +1232,18 @@ ALTER TABLE "OrganisationEmail" ADD CONSTRAINT "OrganisationEmail_emailDomainId_
 ALTER TABLE "OrganisationEmail" ADD CONSTRAINT "OrganisationEmail_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "EmbedSignature" ADD CONSTRAINT "EmbedSignature_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminRuleMatch" ADD CONSTRAINT "AdminRuleMatch_ruleId_fkey" FOREIGN KEY ("ruleId") REFERENCES "AdminRule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminRuleMatch" ADD CONSTRAINT "AdminRuleMatch_actorUserId_fkey" FOREIGN KEY ("actorUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_adminRuleId_fkey" FOREIGN KEY ("adminRuleId") REFERENCES "AdminRule"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 ```
 
 </details>
@@ -1238,6 +1307,9 @@ ALTER TABLE "EmbedSignature" ADD CONSTRAINT "EmbedSignature_organisationId_fkey"
 | [Counter](#model-Counter)                                                   | `Counter`                          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [EmbedSignature](#model-EmbedSignature)                                     | `EmbedSignature`                   | `key` is sha256(organisationId:lower(recipientEmail):clientUserId) so neither the recipient email nor the embedder's identifier is stored in plaintext.                                                                                                                                                                                                                                                                                                                                                                      |
 | [RateLimit](#model-RateLimit)                                               | `RateLimit`                        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [AdminRule](#model-AdminRule)                                               | `AdminRule`                        | @zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [AdminRuleMatch](#model-AdminRuleMatch)                                     | `AdminRuleMatch`                   | @zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])                                                                                                                                                                                                                                                                                                                                                                            |
+| [AdminTag](#model-AdminTag)                                                 | `AdminTag`                         | @zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"])                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 | Enum                                                                   | Name in the database             | Description |
 | ---------------------------------------------------------------------- | -------------------------------- | ----------- |
@@ -1271,6 +1343,7 @@ ALTER TABLE "EmbedSignature" ADD CONSTRAINT "EmbedSignature_organisationId_fkey"
 | [BackgroundJobTaskStatus](#enum-BackgroundJobTaskStatus)               | `BackgroundJobTaskStatus`        |             |
 | [EmailDomainStatus](#enum-EmailDomainStatus)                           | `EmailDomainStatus`              |             |
 | [EmailTransportType](#enum-EmailTransportType)                         | `EmailTransportType`             |             |
+| [AdminRuleMode](#enum-AdminRuleMode)                                   | `AdminRuleMode`                  |             |
 
 ## Models
 
@@ -1323,6 +1396,9 @@ ALTER TABLE "EmbedSignature" ADD CONSTRAINT "EmbedSignature_organisationId_fkey"
 - `id` ← [Organisation.ownerUserId](#model-Organisation) (one-to-many, on delete Cascade)
 - `id` ← [OrganisationMember.userId](#model-OrganisationMember) (one-to-many, on delete Cascade)
 - `id` ← [SiteSettings.lastModifiedByUserId](#model-SiteSettings) (one-to-many, on delete SetNull)
+- `id` ← [AdminRuleMatch.actorUserId](#model-AdminRuleMatch) (one-to-many, on delete SetNull)
+- `id` ← [AdminTag.userId](#model-AdminTag) (one-to-many, on delete Cascade)
+- `id` ← [AdminTag.createdByUserId](#model-AdminTag) (one-to-many, on delete SetNull)
 
 #### Definition
 
@@ -1435,6 +1511,9 @@ await prisma.user.findMany({
     siteSettings: true,
     passkeys: true,
     avatarImage: true,
+    adminRuleMatches: true,
+    adminTags: true,
+    createdAdminTags: true,
   },
 });
 ```
@@ -1726,6 +1805,61 @@ WHERE
 OFFSET
   $2
 -- params: ["<avatarImageId of the rows above>","0"]
+
+SELECT
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+FROM
+  "public"."AdminRuleMatch"
+WHERE
+  "public"."AdminRuleMatch"."actorUserId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  "public"."AdminTag"."userId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  "public"."AdminTag"."createdByUserId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
 ```
 
 **findUnique**: One row by what is unique to it
@@ -11531,6 +11665,7 @@ RETURNING
 - `id` ← [EmailDomain.organisationId](#model-EmailDomain) (one-to-many, on delete Cascade)
 - `id` ← [OrganisationEmail.organisationId](#model-OrganisationEmail) (one-to-many, on delete Cascade)
 - `id` ← [EmbedSignature.organisationId](#model-EmbedSignature) (one-to-many, on delete Cascade)
+- `id` ← [AdminTag.organisationId](#model-AdminTag) (one-to-many, on delete Cascade)
 
 #### Definition
 
@@ -11646,6 +11781,7 @@ await prisma.organisation.findMany({
     emailDomains: true,
     organisationEmails: true,
     monthlyStats: true,
+    adminTags: true,
     embedSignatures: true,
     avatarImage: true,
     owner: true,
@@ -11832,6 +11968,24 @@ FROM
   "public"."OrganisationMonthlyStat"
 WHERE
   "public"."OrganisationMonthlyStat"."organisationId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  "public"."AdminTag"."organisationId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -18349,6 +18503,1016 @@ RETURNING
 
 </details>
 
+<a id="model-AdminRule"></a>
+
+### AdminRule
+
+@zod.import(["import { ZAdminRuleDefinitionSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])
+
+![AdminRule and the models it relates to](tables/AdminRule.svg)
+
+| Field                   | Type                                   | Constraints | Default      | Description                                                                                                 |
+| ----------------------- | -------------------------------------- | ----------- | ------------ | ----------------------------------------------------------------------------------------------------------- |
+| `id`                    | `String`                               | PK NOT NULL |              |                                                                                                             |
+| `createdAt`             | `DateTime`                             | NOT NULL    | `now()`      |                                                                                                             |
+| `updatedAt`             | `DateTime`                             | NOT NULL    | `@updatedAt` |                                                                                                             |
+| `name`                  | `String`                               | NOT NULL    |              |                                                                                                             |
+| `description`           | `String`                               | NULL        |              |                                                                                                             |
+| `mode`                  | [`AdminRuleMode`](#enum-AdminRuleMode) | NOT NULL    |              |                                                                                                             |
+| `trigger`               | `String`                               | NOT NULL    |              | [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)                                                 |
+| `definition`            | `Json`                                 | NOT NULL    |              | [AdminRuleDefinition] @zod.custom.use(ZAdminRuleDefinitionSchema)                                           |
+| `priority`              | `Int`                                  | NOT NULL    |              |                                                                                                             |
+| `stopOnMatch`           | `Boolean`                              | NOT NULL    |              |                                                                                                             |
+| `exemptOrganisationIds` | `String[]`                             | NOT NULL    | `[]`         | Escape hatch: organisations this rule is skipped for. Only meaningful on triggers that have an organisation |
+
+#### Indexes
+
+- `@@index([trigger, mode, priority])`
+
+#### Referenced by
+
+- `id` ← [AdminRuleMatch.ruleId](#model-AdminRuleMatch) (one-to-many, on delete Cascade)
+- `id` ← [AdminTag.adminRuleId](#model-AdminTag) (one-to-many, on delete SetNull)
+
+#### Definition
+
+```sql
+CREATE TABLE "AdminRule" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "mode" "AdminRuleMode" NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "definition" JSONB NOT NULL,
+    "priority" INTEGER NOT NULL,
+    "stopOnMatch" BOOLEAN NOT NULL,
+    "exemptOrganisationIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+
+    CONSTRAINT "AdminRule_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "AdminRule_trigger_mode_priority_idx" ON "AdminRule"("trigger", "mode", "priority");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.adminRule.findMany();
+```
+
+```sql
+SELECT
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+FROM
+  "public"."AdminRule"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.adminRule.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AdminRule"."id"
+    FROM
+      "public"."AdminRule"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.adminRule.findMany({ include: { matches: true, adminTags: true } });
+```
+
+```sql
+SELECT
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+FROM
+  "public"."AdminRule"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+FROM
+  "public"."AdminRuleMatch"
+WHERE
+  "public"."AdminRuleMatch"."ruleId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  "public"."AdminTag"."adminRuleId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.adminRule.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+FROM
+  "public"."AdminRule"
+WHERE
+  (
+    "public"."AdminRule"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.adminRule.create({
+  data: {
+    id: "example",
+    name: "example",
+    mode: "ENFORCE",
+    trigger: "example",
+    definition: {},
+    priority: 1,
+    stopOnMatch: true,
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AdminRule" (
+    "id",
+    "createdAt",
+    "updatedAt",
+    "name",
+    "mode",
+    "trigger",
+    "definition",
+    "priority",
+    "stopOnMatch",
+    "exemptOrganisationIds"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    CAST($5::text AS "public"."AdminRuleMode"),
+    $6,
+    $7,
+    $8,
+    $9,
+    $10
+  )
+RETURNING
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+-- params: ["example","<now()>","<now()>","example","ENFORCE","example","{}","1",true,[]]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.adminRule.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."AdminRule"
+SET
+  "createdAt" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."AdminRule"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.adminRule.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AdminRule"
+WHERE
+  (
+    "public"."AdminRule"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AdminRuleMatch"></a>
+
+### AdminRuleMatch
+
+@zod.import(["import { ZAdminRuleContextSchema, ZAdminRuleActionRunsSchema, ZAdminRuleTriggerSchema } from '@documenso/lib/types/admin-rules';"])
+
+![AdminRuleMatch and the models it relates to](tables/AdminRuleMatch.svg)
+
+| Field            | Type                                   | Constraints                                 | Default | Description                                                       |
+| ---------------- | -------------------------------------- | ------------------------------------------- | ------- | ----------------------------------------------------------------- |
+| `id`             | `String`                               | PK NOT NULL                                 |         |                                                                   |
+| `createdAt`      | `DateTime`                             | NOT NULL                                    | `now()` |                                                                   |
+| `mode`           | [`AdminRuleMode`](#enum-AdminRuleMode) | NOT NULL                                    |         |                                                                   |
+| `trigger`        | `String`                               | NOT NULL                                    |         | [AdminRuleTrigger] @zod.custom.use(ZAdminRuleTriggerSchema)       |
+| `organisationId` | `String`                               | NULL                                        |         |                                                                   |
+| `envelopeId`     | `String`                               | NULL                                        |         |                                                                   |
+| `eventSnapshot`  | `Json`                                 | NOT NULL                                    |         | [AdminRuleContext] @zod.custom.use(ZAdminRuleContextSchema)       |
+| `actionsRun`     | `Json`                                 | NOT NULL                                    |         | [AdminRuleActionRuns] @zod.custom.use(ZAdminRuleActionRunsSchema) |
+| `ruleId`         | `String`                               | NOT NULL → [AdminRule.id](#model-AdminRule) |         |                                                                   |
+| `actorUserId`    | `Int`                                  | NULL → [User.id](#model-User)               |         |                                                                   |
+
+#### Indexes
+
+- `@@index([ruleId, createdAt])`
+- `@@index([createdAt])`
+
+#### References
+
+- `ruleId` → [AdminRule.id](#model-AdminRule) (many-to-one, on delete Cascade)
+- `actorUserId` → [User.id](#model-User) (many-to-one, on delete SetNull)
+
+#### Definition
+
+```sql
+CREATE TABLE "AdminRuleMatch" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "mode" "AdminRuleMode" NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "organisationId" TEXT,
+    "envelopeId" TEXT,
+    "eventSnapshot" JSONB NOT NULL,
+    "actionsRun" JSONB NOT NULL,
+    "ruleId" TEXT NOT NULL,
+    "actorUserId" INTEGER,
+
+    CONSTRAINT "AdminRuleMatch_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "AdminRuleMatch_ruleId_createdAt_idx" ON "AdminRuleMatch"("ruleId", "createdAt");
+
+CREATE INDEX "AdminRuleMatch_createdAt_idx" ON "AdminRuleMatch"("createdAt");
+
+ALTER TABLE "AdminRuleMatch" ADD CONSTRAINT "AdminRuleMatch_ruleId_fkey" FOREIGN KEY ("ruleId") REFERENCES "AdminRule"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminRuleMatch" ADD CONSTRAINT "AdminRuleMatch_actorUserId_fkey" FOREIGN KEY ("actorUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.adminRuleMatch.findMany();
+```
+
+```sql
+SELECT
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+FROM
+  "public"."AdminRuleMatch"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.adminRuleMatch.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AdminRuleMatch"."id"
+    FROM
+      "public"."AdminRuleMatch"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.adminRuleMatch.findMany({ include: { rule: true, actorUser: true } });
+```
+
+```sql
+SELECT
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+FROM
+  "public"."AdminRuleMatch"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+FROM
+  "public"."AdminRule"
+WHERE
+  "public"."AdminRule"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<ruleId of the rows above>","0"]
+
+SELECT
+  "public"."User"."id",
+  "public"."User"."name",
+  "public"."User"."email",
+  "public"."User"."emailVerified",
+  "public"."User"."password",
+  "public"."User"."source",
+  "public"."User"."signature",
+  "public"."User"."createdAt",
+  "public"."User"."updatedAt",
+  "public"."User"."lastSignedIn",
+  "public"."User"."roles"::text[],
+  "public"."User"."identityProvider"::text,
+  "public"."User"."avatarImageId",
+  "public"."User"."disabled",
+  "public"."User"."twoFactorSecret",
+  "public"."User"."twoFactorEnabled",
+  "public"."User"."twoFactorBackupCodes"
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<actorUserId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.adminRuleMatch.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+FROM
+  "public"."AdminRuleMatch"
+WHERE
+  (
+    "public"."AdminRuleMatch"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.adminRuleMatch.create({
+  data: {
+    id: "example",
+    mode: "ENFORCE",
+    trigger: "example",
+    eventSnapshot: {},
+    actionsRun: {},
+    ruleId: "example",
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AdminRuleMatch" (
+    "id",
+    "createdAt",
+    "mode",
+    "trigger",
+    "eventSnapshot",
+    "actionsRun",
+    "ruleId"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    CAST($3::text AS "public"."AdminRuleMode"),
+    $4,
+    $5,
+    $6,
+    $7
+  )
+RETURNING
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+-- params: ["example","<now()>","ENFORCE","example","{}","{}","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.adminRuleMatch.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."AdminRuleMatch"
+SET
+  "createdAt" = $1
+WHERE
+  (
+    "public"."AdminRuleMatch"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+-- params: ["2026-01-01T00:00:00.000Z","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.adminRuleMatch.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AdminRuleMatch"
+WHERE
+  (
+    "public"."AdminRuleMatch"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminRuleMatch"."id",
+  "public"."AdminRuleMatch"."createdAt",
+  "public"."AdminRuleMatch"."mode"::text,
+  "public"."AdminRuleMatch"."trigger",
+  "public"."AdminRuleMatch"."organisationId",
+  "public"."AdminRuleMatch"."envelopeId",
+  "public"."AdminRuleMatch"."eventSnapshot",
+  "public"."AdminRuleMatch"."actionsRun",
+  "public"."AdminRuleMatch"."ruleId",
+  "public"."AdminRuleMatch"."actorUserId"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AdminTag"></a>
+
+### AdminTag
+
+@zod.import(["import { ZAdminTagTypeSchema } from '@documenso/lib/types/admin-tags';"])
+
+![AdminTag and the models it relates to](tables/AdminTag.svg)
+
+| Field             | Type       | Constraints                                   | Default      | Description                                         |
+| ----------------- | ---------- | --------------------------------------------- | ------------ | --------------------------------------------------- |
+| `id`              | `String`   | PK NOT NULL                                   |              |                                                     |
+| `createdAt`       | `DateTime` | NOT NULL                                      | `now()`      |                                                     |
+| `updatedAt`       | `DateTime` | NOT NULL                                      | `@updatedAt` |                                                     |
+| `type`            | `String`   | NOT NULL                                      |              | [AdminTagType] @zod.custom.use(ZAdminTagTypeSchema) |
+| `description`     | `String`   | NOT NULL                                      |              |                                                     |
+| `userId`          | `Int`      | NULL → [User.id](#model-User)                 |              |                                                     |
+| `organisationId`  | `String`   | NULL → [Organisation.id](#model-Organisation) |              |                                                     |
+| `createdByUserId` | `Int`      | NULL → [User.id](#model-User)                 |              |                                                     |
+| `adminRuleId`     | `String`   | NULL → [AdminRule.id](#model-AdminRule)       |              |                                                     |
+
+#### Indexes
+
+- `@@index([userId])`
+- `@@index([organisationId])`
+
+#### References
+
+- `userId` → [User.id](#model-User) (many-to-one, on delete Cascade)
+- `organisationId` → [Organisation.id](#model-Organisation) (many-to-one, on delete Cascade)
+- `createdByUserId` → [User.id](#model-User) (many-to-one, on delete SetNull)
+- `adminRuleId` → [AdminRule.id](#model-AdminRule) (many-to-one, on delete SetNull)
+
+#### Definition
+
+```sql
+CREATE TABLE "AdminTag" (
+    "id" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "type" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "userId" INTEGER,
+    "organisationId" TEXT,
+    "createdByUserId" INTEGER,
+    "adminRuleId" TEXT,
+
+    CONSTRAINT "AdminTag_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "AdminTag_userId_idx" ON "AdminTag"("userId");
+
+CREATE INDEX "AdminTag_organisationId_idx" ON "AdminTag"("organisationId");
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_organisationId_fkey" FOREIGN KEY ("organisationId") REFERENCES "Organisation"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_createdByUserId_fkey" FOREIGN KEY ("createdByUserId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE "AdminTag" ADD CONSTRAINT "AdminTag_adminRuleId_fkey" FOREIGN KEY ("adminRuleId") REFERENCES "AdminRule"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.adminTag.findMany();
+```
+
+```sql
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.adminTag.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AdminTag"."id"
+    FROM
+      "public"."AdminTag"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.adminTag.findMany({
+  include: { user: true, organisation: true, createdByUser: true, adminRule: true },
+});
+```
+
+```sql
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."User"."id",
+  "public"."User"."name",
+  "public"."User"."email",
+  "public"."User"."emailVerified",
+  "public"."User"."password",
+  "public"."User"."source",
+  "public"."User"."signature",
+  "public"."User"."createdAt",
+  "public"."User"."updatedAt",
+  "public"."User"."lastSignedIn",
+  "public"."User"."roles"::text[],
+  "public"."User"."identityProvider"::text,
+  "public"."User"."avatarImageId",
+  "public"."User"."disabled",
+  "public"."User"."twoFactorSecret",
+  "public"."User"."twoFactorEnabled",
+  "public"."User"."twoFactorBackupCodes"
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<userId of the rows above>","0"]
+
+SELECT
+  "public"."Organisation"."id",
+  "public"."Organisation"."createdAt",
+  "public"."Organisation"."updatedAt",
+  "public"."Organisation"."type"::text,
+  "public"."Organisation"."name",
+  "public"."Organisation"."url",
+  "public"."Organisation"."avatarImageId",
+  "public"."Organisation"."customerId",
+  "public"."Organisation"."organisationClaimId",
+  "public"."Organisation"."ownerUserId",
+  "public"."Organisation"."organisationGlobalSettingsId",
+  "public"."Organisation"."organisationAuthenticationPortalId"
+FROM
+  "public"."Organisation"
+WHERE
+  "public"."Organisation"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<organisationId of the rows above>","0"]
+
+SELECT
+  "public"."User"."id",
+  "public"."User"."name",
+  "public"."User"."email",
+  "public"."User"."emailVerified",
+  "public"."User"."password",
+  "public"."User"."source",
+  "public"."User"."signature",
+  "public"."User"."createdAt",
+  "public"."User"."updatedAt",
+  "public"."User"."lastSignedIn",
+  "public"."User"."roles"::text[],
+  "public"."User"."identityProvider"::text,
+  "public"."User"."avatarImageId",
+  "public"."User"."disabled",
+  "public"."User"."twoFactorSecret",
+  "public"."User"."twoFactorEnabled",
+  "public"."User"."twoFactorBackupCodes"
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<createdByUserId of the rows above>","0"]
+
+SELECT
+  "public"."AdminRule"."id",
+  "public"."AdminRule"."createdAt",
+  "public"."AdminRule"."updatedAt",
+  "public"."AdminRule"."name",
+  "public"."AdminRule"."description",
+  "public"."AdminRule"."mode"::text,
+  "public"."AdminRule"."trigger",
+  "public"."AdminRule"."definition",
+  "public"."AdminRule"."priority",
+  "public"."AdminRule"."stopOnMatch",
+  "public"."AdminRule"."exemptOrganisationIds"
+FROM
+  "public"."AdminRule"
+WHERE
+  "public"."AdminRule"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<adminRuleId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.adminTag.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+FROM
+  "public"."AdminTag"
+WHERE
+  (
+    "public"."AdminTag"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.adminTag.create({ data: { id: "example", type: "example", description: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."AdminTag" (
+    "id",
+    "createdAt",
+    "updatedAt",
+    "type",
+    "description"
+  )
+VALUES
+  ($1, $2, $3, $4, $5)
+RETURNING
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+-- params: ["example","<now()>","<now()>","example","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.adminTag.update({
+  where: { id: "example" },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."AdminTag"
+SET
+  "createdAt" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."AdminTag"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+-- params: ["2026-01-01T00:00:00.000Z",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.adminTag.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AdminTag"
+WHERE
+  (
+    "public"."AdminTag"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AdminTag"."id",
+  "public"."AdminTag"."createdAt",
+  "public"."AdminTag"."updatedAt",
+  "public"."AdminTag"."type",
+  "public"."AdminTag"."description",
+  "public"."AdminTag"."userId",
+  "public"."AdminTag"."organisationId",
+  "public"."AdminTag"."createdByUserId",
+  "public"."AdminTag"."adminRuleId"
+-- params: ["example"]
+```
+
+</details>
+
 ## Enums
 
 <a id="enum-IdentityProvider"></a>
@@ -18797,4 +19961,18 @@ CREATE TYPE "EmailDomainStatus" AS ENUM ('PENDING', 'ACTIVE');
 
 ```sql
 CREATE TYPE "EmailTransportType" AS ENUM ('SMTP_AUTH', 'SMTP_API', 'RESEND', 'MAILCHANNELS');
+```
+
+<a id="enum-AdminRuleMode"></a>
+
+### AdminRuleMode
+
+- `ENFORCE`
+- `MONITOR`
+- `DISABLED`
+
+#### Definition
+
+```sql
+CREATE TYPE "AdminRuleMode" AS ENUM ('ENFORCE', 'MONITOR', 'DISABLED');
 ```

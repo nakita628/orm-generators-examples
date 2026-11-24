@@ -55,6 +55,7 @@ defmodule LiteLLM.LiteLLMMCPServerTable do
           timeout: float() | nil,
           max_concurrent_requests: integer() | nil,
           rpm: integer() | nil,
+          events: map() | list() | String.t() | number() | boolean() | nil,
           approval_status: String.t() | nil,
           submitted_by: String.t() | nil,
           submitted_at: DateTime.t() | nil,
@@ -113,6 +114,7 @@ defmodule LiteLLM.LiteLLMMCPServerTable do
     field(:timeout, :float)
     field(:max_concurrent_requests, :integer)
     field(:rpm, :integer)
+    field(:events, LiteLLM.PrismaJson)
     field(:approval_status, :string, default: "active")
     field(:submitted_by, :string)
     field(:submitted_at, LiteLLM.PrismaDateTime)

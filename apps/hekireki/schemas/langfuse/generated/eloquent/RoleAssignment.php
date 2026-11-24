@@ -24,10 +24,14 @@ class RoleAssignment extends \Illuminate\Database\Eloquent\Model
         'api_key_id',
         'role_id',
         'system_role',
+        'expires_at',
+        'tags',
     ];
 
     protected $casts = [
         'system_role' => SystemRole::class,
+        'expires_at' => 'datetime',
+        'tags' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

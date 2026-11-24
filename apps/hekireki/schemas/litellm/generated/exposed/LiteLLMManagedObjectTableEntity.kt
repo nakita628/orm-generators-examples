@@ -25,6 +25,7 @@ class LiteLLMManagedObjectTableEntity(
     var apiKey by LiteLLMManagedObjectTableTable.apiKey
     var requestTags by LiteLLMManagedObjectTableTable.requestTags
     var endUserId by LiteLLMManagedObjectTableTable.endUserId
+    var creatorBillingContext by LiteLLMManagedObjectTableTable.creatorBillingContext
     var updatedAt by LiteLLMManagedObjectTableTable.updatedAt
     var updatedBy by LiteLLMManagedObjectTableTable.updatedBy
 

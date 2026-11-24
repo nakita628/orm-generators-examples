@@ -46,6 +46,7 @@ defmodule Formbricks.Workspace do
           feedback_directory_workspaces: [Formbricks.FeedbackDirectoryWorkspace.t()],
           charts: [Formbricks.Chart.t()],
           dashboards: [Formbricks.Dashboard.t()],
+          embedded_field_labels: [Formbricks.EmbeddedFieldLabel.t()],
           creatives: [Formbricks.Creative.t()],
           attachment_exports: [Formbricks.AttachmentExport.t()],
           surveys: [Formbricks.Survey.t()],
@@ -59,7 +60,8 @@ defmodule Formbricks.Workspace do
           api_key_workspaces: [Formbricks.ApiKeyWorkspace.t()],
           feedback_sources: [Formbricks.FeedbackSource.t()],
           workflows: [Formbricks.Workflow.t()],
-          workflow_runs: [Formbricks.WorkflowRun.t()]
+          workflow_runs: [Formbricks.WorkflowRun.t()],
+          mcp_grants: [Formbricks.McpGrantWorkspace.t()]
         }
 
   schema "Workspace" do
@@ -96,6 +98,7 @@ defmodule Formbricks.Workspace do
     has_many(:feedback_directory_workspaces, Formbricks.FeedbackDirectoryWorkspace, foreign_key: :workspace_id, references: :id)
     has_many(:charts, Formbricks.Chart, foreign_key: :workspace_id, references: :id)
     has_many(:dashboards, Formbricks.Dashboard, foreign_key: :workspace_id, references: :id)
+    has_many(:embedded_field_labels, Formbricks.EmbeddedFieldLabel, foreign_key: :workspace_id, references: :id)
     has_many(:creatives, Formbricks.Creative, foreign_key: :workspace_id, references: :id)
     has_many(:attachment_exports, Formbricks.AttachmentExport, foreign_key: :workspace_id, references: :id)
     has_many(:surveys, Formbricks.Survey, foreign_key: :workspace_id, references: :id)
@@ -110,6 +113,7 @@ defmodule Formbricks.Workspace do
     has_many(:feedback_sources, Formbricks.FeedbackSource, foreign_key: :workspace_id, references: :id)
     has_many(:workflows, Formbricks.Workflow, foreign_key: :workspace_id, references: :id)
     has_many(:workflow_runs, Formbricks.WorkflowRun, foreign_key: :workspace_id, references: :id)
+    has_many(:mcp_grants, Formbricks.McpGrantWorkspace, foreign_key: :workspace_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end
 end

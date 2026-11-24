@@ -29,6 +29,7 @@ class OrganisationEntity(
     val emailDomains by EmailDomainEntity referrersOn EmailDomainTable.organisationId
     val organisationEmails by OrganisationEmailEntity referrersOn OrganisationEmailTable.organisationId
     val monthlyStats by OrganisationMonthlyStatEntity referrersOn OrganisationMonthlyStatTable.organisationId
+    val adminTags by AdminTagEntity optionalReferrersOn AdminTagTable.organisationId
     val embedSignatures by EmbedSignatureEntity referrersOn EmbedSignatureTable.organisationId
     var avatarImage by AvatarImageEntity optionalReferencedOn OrganisationTable.avatarImageId
     var ownerUserId by OrganisationTable.ownerUserId

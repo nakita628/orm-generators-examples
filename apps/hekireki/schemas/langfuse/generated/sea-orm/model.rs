@@ -1,3 +1,4 @@
+use super::model_scope::ModelScope;
 use chrono::SubsecRound;
 use sea_orm::entity::prelude::*;
 use sea_orm::Set;
@@ -10,7 +11,9 @@ pub struct Model {
     pub id: String,
     pub created_at: DateTime,
     pub updated_at: DateTime,
+    pub scope: ModelScope,
     pub project_id: Option<String>,
+    pub organization_id: Option<String>,
     pub model_name: String,
     pub match_pattern: String,
     pub start_date: Option<DateTime>,
@@ -31,6 +34,13 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Project,
+    #[sea_orm(
+        belongs_to = "super::organization::Entity",
+        from = "Column::OrganizationId",
+        to = "super::organization::Column::Id",
+        on_delete = "Cascade"
+    )]
+    Organization,
     #[sea_orm(has_many = "super::price::Entity")]
     Price,
     #[sea_orm(has_many = "super::pricing_tier::Entity")]
@@ -40,6 +50,12 @@ pub enum Relation {
 impl Related<super::project::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Project.def()
+    }
+}
+
+impl Related<super::organization::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Organization.def()
     }
 }
 

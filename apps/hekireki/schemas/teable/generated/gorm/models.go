@@ -508,6 +508,84 @@ func (*Field) BeforeUpdate(tx *gorm.DB) error {
 	return nil
 }
 
+type DomainEventOutbox struct {
+	ID                string         `gorm:"column:id;primaryKey" json:"id"`
+	BaseID            string         `gorm:"column:base_id;index:domain_event_outbox_base_id_idx;not null" json:"base_id"`
+	TableID           *string        `gorm:"column:table_id" json:"table_id"`
+	MessageName       string         `gorm:"column:message_name;not null" json:"message_name"`
+	SchemaVersion     int            `gorm:"column:schema_version;size:32;not null" json:"schema_version"`
+	AggregateID       *string        `gorm:"column:aggregate_id" json:"aggregate_id"`
+	Payload           datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
+	PayloadBytes      int            `gorm:"column:payload_bytes;size:32;not null" json:"payload_bytes"`
+	CatalogGeneration int            `gorm:"column:catalog_generation;size:32;not null" json:"catalog_generation"`
+	RequiredConsumers datatypes.JSON `gorm:"column:required_consumers;not null" json:"required_consumers"`
+	BindingID         *string        `gorm:"column:binding_id" json:"binding_id"`
+	StorageEpoch      *int           `gorm:"column:storage_epoch;size:32" json:"storage_epoch"`
+	Unpublished       *bool          `gorm:"column:unpublished;default:true;not null" json:"unpublished"`
+	Settled           *string        `gorm:"column:settled" json:"settled"`
+	SettledAt         *DateTime      `gorm:"column:settled_at;type:timestamp(3)" json:"settled_at"`
+	CreatedAt         DateTime       `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+}
+
+func (DomainEventOutbox) TableName() string {
+	return "domain_event_outbox"
+}
+
+func (m *DomainEventOutbox) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+type DomainEventDelivery struct {
+	ID             string    `gorm:"column:id;primaryKey" json:"id"`
+	EventID        string    `gorm:"column:event_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key;not null" json:"event_id"`
+	ConsumerID     string    `gorm:"column:consumer_id;uniqueIndex:domain_event_delivery_event_id_consumer_id_key;not null" json:"consumer_id"`
+	Status         string    `gorm:"column:status;not null" json:"status"`
+	Attempts       int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
+	MaxAttempts    *int      `gorm:"column:max_attempts;size:32;default:12;not null" json:"max_attempts"`
+	LeaseToken     *string   `gorm:"column:lease_token" json:"lease_token"`
+	LeaseExpiresAt *DateTime `gorm:"column:lease_expires_at;type:timestamptz(3)" json:"lease_expires_at"`
+	NextAttemptAt  DateTime  `gorm:"column:next_attempt_at;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"next_attempt_at"`
+	LastError      *string   `gorm:"column:last_error" json:"last_error"`
+	CreatedAt      DateTime  `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+}
+
+func (DomainEventDelivery) TableName() string {
+	return "domain_event_delivery"
+}
+
+func (m *DomainEventDelivery) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.NextAttemptAt.IsZero() {
+		m.NextAttemptAt = DateTime{Time: now}
+	}
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+type DomainEventInbox struct {
+	ConsumerID string   `gorm:"column:consumer_id;primaryKey" json:"consumer_id"`
+	EventID    string   `gorm:"column:event_id;primaryKey;index:domain_event_inbox_event_id_idx" json:"event_id"`
+	CreatedAt  DateTime `gorm:"column:created_at;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+}
+
+func (DomainEventInbox) TableName() string {
+	return "domain_event_inbox"
+}
+
+func (m *DomainEventInbox) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.CreatedAt.IsZero() {
+		m.CreatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
 type ComputedUpdateOutbox struct {
 	ID                      string                     `gorm:"column:id;primaryKey" json:"id"`
 	BaseID                  string                     `gorm:"column:base_id;index:computed_update_outbox_base_id_seed_table_id_idx;not null" json:"base_id"`

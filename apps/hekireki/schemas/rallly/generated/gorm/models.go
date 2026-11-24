@@ -13,6 +13,8 @@ import (
 	"gorm.io/gorm"
 )
 
+// Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+// deployments keep working during the switch, then dropped.
 type APIUsage struct {
 	SpaceID           string    `gorm:"column:space_id;primaryKey" json:"space_id"`
 	Resource          string    `gorm:"column:resource;primaryKey" json:"resource"`
@@ -1104,6 +1106,40 @@ func (*SheetSlot) BeforeUpdate(tx *gorm.DB) error {
 	return nil
 }
 
+// Monthly counters for metered actions charged to a space, independent of
+// the records they produce, so deleting a poll does not give back what it
+// spent.
+type SpaceUsage struct {
+	SpaceID           string    `gorm:"column:space_id;primaryKey" json:"space_id"`
+	Resource          string    `gorm:"column:resource;primaryKey" json:"resource"`
+	Period            Date      `gorm:"column:period;primaryKey;type:date" json:"period"`
+	Count             int       `gorm:"column:count;size:32;default:0;not null" json:"count"`
+	NearLimitWarnedAt *DateTime `gorm:"column:near_limit_warned_at;type:timestamp(3)" json:"near_limit_warned_at"`
+	AtLimitWarnedAt   *DateTime `gorm:"column:at_limit_warned_at;type:timestamp(3)" json:"at_limit_warned_at"`
+	UpdatedAt         DateTime  `gorm:"column:updated_at;type:timestamp(3);autoUpdateTime:false;not null" json:"updated_at"`
+	Space             *Space    `gorm:"belongsTo"`
+}
+
+func (SpaceUsage) TableName() string {
+	return "space_usage"
+}
+
+func (m *SpaceUsage) BeforeCreate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if m.UpdatedAt.IsZero() {
+		m.UpdatedAt = DateTime{Time: now}
+	}
+	return nil
+}
+
+func (*SpaceUsage) BeforeUpdate(tx *gorm.DB) error {
+	now := tx.NowFunc().UTC().Truncate(time.Millisecond)
+	if !tx.Statement.Changed("UpdatedAt") {
+		tx.Statement.SetColumn("UpdatedAt", DateTime{Time: now})
+	}
+	return nil
+}
+
 type Space struct {
 	ID                         string                 `gorm:"column:id;primaryKey" json:"id"`
 	Name                       string                 `gorm:"column:name;not null" json:"name"`
@@ -1132,6 +1168,7 @@ type Space struct {
 	NonprofitApplications      []NonprofitApplication `gorm:"foreignKey:SpaceID;constraint:nonprofit_applications_space_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Webhooks                   []SpaceWebhook         `gorm:"foreignKey:SpaceID;constraint:space_webhooks_space_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	APIUsage                   []APIUsage             `gorm:"foreignKey:SpaceID;constraint:api_usage_space_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Usage                      []SpaceUsage           `gorm:"foreignKey:SpaceID;constraint:space_usage_space_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Space) TableName() string {

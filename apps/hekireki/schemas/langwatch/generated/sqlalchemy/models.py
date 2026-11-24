@@ -3503,6 +3503,8 @@ class LangyConversationProjection(Base):
     run_token: Mapped[Optional[str]] = mapped_column("runToken")
     """Per-conversation HMAC key for worker stream frames; server-side only."""
     archived_at: Mapped[Optional[float]] = mapped_column("archivedAt")
+    ci_follow_ups_in_arow: Mapped[int] = mapped_column("ciFollowUpsInARow", default=0, server_default=text("0"))
+    """Messages CI started on a pull request since the person last wrote."""
     created_at: Mapped[float] = mapped_column("createdAt")
     updated_at: Mapped[float] = mapped_column("updatedAt")
     occurred_at: Mapped[float] = mapped_column("occurredAt")
@@ -3606,6 +3608,32 @@ class LangyConversationTurnProjection(Base):
     __table_args__ = (
         Index("LangyConversationTurnProjection_projectId_conversationId_up_idx", "projectId", "conversationId", "updatedAt"),
         Index("LangyConversationTurnProjection_projectId_conversationId_tu_key", "projectId", "conversationId", "turnId", unique=True),
+    )
+
+class LangyPullRequest(Base):
+    """One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished
+    checks look it up by repository and number to wake the conversation; the daily pull request
+    cap counts a person's rows by day. Rebuilt by a projection replay.
+    """
+
+    __tablename__ = "LangyPullRequest"
+
+    id: Mapped[str] = mapped_column(primary_key=True, default=lambda: nanoid.generate())
+    project_id: Mapped[str] = mapped_column("projectId")
+    repository_full_name: Mapped[str] = mapped_column("repositoryFullName")
+    """`owner/repo`, lowercased: GitHub matches repository names without case."""
+    pr_number: Mapped[int] = mapped_column("prNumber")
+    conversation_id: Mapped[str] = mapped_column("conversationId")
+    user_id: Mapped[str] = mapped_column("userId")
+    """The conversation's owner, who opened it through Langy."""
+    opened_at: Mapped[float] = mapped_column("openedAt")
+    """When the answer that opened it was recorded (epoch ms)."""
+    source_event_id: Mapped[str] = mapped_column("sourceEventId")
+    """The agent_responded event it came from."""
+
+    __table_args__ = (
+        Index("LangyPullRequest_userId_openedAt_idx", "userId", "openedAt"),
+        Index("LangyPullRequest_repositoryFullName_prNumber_key", "repositoryFullName", "prNumber", unique=True),
     )
 
 class LangyMessageProjection(Base):
@@ -3913,6 +3941,28 @@ class RetentionPolicy(Base):
         Index("RetentionPolicy_organizationId_idx", "organizationId"),
         Index("RetentionPolicy_scopeType_scopeId_idx", "scopeType", "scopeId"),
         Index("RetentionPolicy_scopeType_scopeId_category_key", "scopeType", "scopeId", "category", unique=True),
+    )
+
+class RetentionApplyStatus(Base):
+    __tablename__ = "RetentionApplyStatus"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    scope_type: Mapped[str] = mapped_column("scopeType", Enum("ORGANIZATION", "TEAM", "PROJECT", name="RetentionPolicyScopeType"))
+    scope_id: Mapped[str] = mapped_column("scopeId")
+    changed_at: Mapped[Optional[float]] = mapped_column("changedAt")
+    applied_at: Mapped[Optional[float]] = mapped_column("appliedAt")
+    raised_at: Mapped[Optional[float]] = mapped_column("raisedAt")
+    shortened_at: Mapped[Optional[float]] = mapped_column("shortenedAt")
+    created_at: Mapped[float] = mapped_column("createdAt")
+    updated_at: Mapped[float] = mapped_column("updatedAt")
+    occurred_at: Mapped[float] = mapped_column("occurredAt")
+    accepted_at: Mapped[float] = mapped_column("acceptedAt")
+    last_event_id: Mapped[str] = mapped_column("lastEventId")
+    projection_version: Mapped[str] = mapped_column("projectionVersion")
+
+    __table_args__ = (
+        Index("RetentionApplyStatus_organizationId_scopeType_scopeId_key", "organizationId", "scopeType", "scopeId", unique=True),
     )
 
 class DataPrivacyPolicy(Base):
@@ -4423,11 +4473,16 @@ class Scenario(Base):
     parameters: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     simulator_model: Mapped[Optional[str]] = mapped_column("simulatorModel")
     judge_model: Mapped[Optional[str]] = mapped_column("judgeModel")
+    trace_quiet_period_ms: Mapped[Optional[int]] = mapped_column("traceQuietPeriodMs")
+    trace_wait_timeout_ms: Mapped[Optional[int]] = mapped_column("traceWaitTimeoutMs")
     max_turns: Mapped[Optional[int]] = mapped_column("maxTurns")
     min_turns: Mapped[Optional[int]] = mapped_column("minTurns")
     fields: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     caller_voice: Mapped[Optional[dict[str, Any]]] = mapped_column("callerVoice", JSONB(none_as_null=True))
     test_suite_id: Mapped[Optional[str]] = mapped_column("testSuiteId", ForeignKey("SimulationSuite.id", ondelete="SET NULL", onupdate="CASCADE", name="Scenario_testSuiteId_fkey"))
+    kind: Mapped[str] = mapped_column(default="standard", server_default=text("'standard'"))
+    red_team: Mapped[Optional[dict[str, Any]]] = mapped_column("redTeam", JSONB(none_as_null=True))
+    source_template_id: Mapped[Optional[str]] = mapped_column("sourceTemplateId")
     version: Mapped[int] = mapped_column(default=1, server_default=text("1"))
     last_updated_by_id: Mapped[Optional[str]] = mapped_column("lastUpdatedById", ForeignKey("User.id", ondelete="SET NULL", onupdate="CASCADE", name="Scenario_lastUpdatedById_fkey"))
     archived_at: Mapped[Optional[datetime]] = mapped_column("archivedAt")
@@ -4493,10 +4548,14 @@ class SimulationSuite(Base):
     labels: Mapped[list[str]] = mapped_column(ARRAY(Text), nullable=True)
     simulator_model: Mapped[Optional[str]] = mapped_column("simulatorModel")
     judge_model: Mapped[Optional[str]] = mapped_column("judgeModel")
+    trace_quiet_period_ms: Mapped[Optional[int]] = mapped_column("traceQuietPeriodMs")
+    trace_wait_timeout_ms: Mapped[Optional[int]] = mapped_column("traceWaitTimeoutMs")
     kind: Mapped[str] = mapped_column(default="run_plan", server_default=text("'run_plan'"))
     scope: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     fields: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
     evaluators: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
+    template_id: Mapped[Optional[str]] = mapped_column("templateId")
+    template_version: Mapped[Optional[int]] = mapped_column("templateVersion")
     archived_at: Mapped[Optional[datetime]] = mapped_column("archivedAt")
     created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
@@ -4570,6 +4629,17 @@ class Subscription(Base):
     seat_line_lease_token: Mapped[Optional[str]] = mapped_column("seatLineLeaseToken")
     """The lease a seat change or seat line repair holds while it reads and moves the seat line."""
     seat_line_lease_until: Mapped[Optional[datetime]] = mapped_column("seatLineLeaseUntil")
+    payment_recovery_invoice_id: Mapped[Optional[str]] = mapped_column("paymentRecoveryInvoiceId")
+    """An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+    charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+    """
+    payment_recovery_started_at: Mapped[Optional[datetime]] = mapped_column("paymentRecoveryStartedAt")
+    payment_recovery_notice_day: Mapped[Optional[int]] = mapped_column("paymentRecoveryNoticeDay")
+    over_plan_since: Mapped[Optional[datetime]] = mapped_column("overPlanSince")
+    """The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+    organization is on Free with more members than Free allows; ended once that no longer holds.
+    """
+    over_plan_ended_at: Mapped[Optional[datetime]] = mapped_column("overPlanEndedAt")
 
     __table_args__ = (
         Index("Subscription_stripeSubscriptionId_key", "stripeSubscriptionId", unique=True),
@@ -4688,8 +4758,28 @@ class AuthzOrganizationPolicy(Base):
 
     organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
     braids_organization_admins_only: Mapped[bool] = mapped_column("braidsOrganizationAdminsOnly", default=False, server_default=text("false"))
+    braids_enabled: Mapped[bool] = mapped_column("braidsEnabled", default=False, server_default=text("false"))
     updated_by_user_id: Mapped[str] = mapped_column("updatedByUserId")
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
+
+class AuthzBraidWrite(Base):
+    __tablename__ = "AuthzBraidWrite"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    command_id: Mapped[str] = mapped_column("commandId", primary_key=True)
+    grant_id: Mapped[str] = mapped_column("grantId")
+    reader_project_id: Mapped[str] = mapped_column("readerProjectId")
+    owner_project_id: Mapped[str] = mapped_column("ownerProjectId")
+    terms_key: Mapped[str] = mapped_column("termsKey")
+    condition: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    expires_at: Mapped[Optional[datetime]] = mapped_column("expiresAt")
+    replaces_grant_id: Mapped[Optional[str]] = mapped_column("replacesGrantId")
+    created_by_user_id: Mapped[Optional[str]] = mapped_column("createdByUserId")
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+
+    __table_args__ = (
+        Index("AuthzBraidWrite_organizationId_readerProjectId_createdAt_idx", "organizationId", "readerProjectId", "createdAt"),
+    )
 
 class RoleBinding(Base):
     __tablename__ = "RoleBinding"
@@ -5705,6 +5795,30 @@ class IngestionTemplate(Base):
 
     organization: Mapped[Optional["Organization"]] = relationship(back_populates="ingestion_templates")
 
+class GatewayA2ATarget(Base):
+    __tablename__ = "GatewayA2ATarget"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    project_id: Mapped[Optional[str]] = mapped_column("projectId")
+    name: Mapped[str]
+    agent_name: Mapped[str] = mapped_column("agentName")
+    card_url: Mapped[str] = mapped_column("cardUrl")
+    upstream_url: Mapped[str] = mapped_column("upstreamUrl")
+    encrypted_upstream_headers: Mapped[Optional[str]] = mapped_column("encryptedUpstreamHeaders")
+    restrict_to_allow_list: Mapped[bool] = mapped_column("restrictToAllowList", default=False, server_default=text("false"))
+    allowed_virtual_key_ids: Mapped[list[str]] = mapped_column("allowedVirtualKeyIds", ARRAY(Text), nullable=True, default=lambda: [], server_default=text("ARRAY[]::text[]"))
+    blocked: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
+    block_reason: Mapped[Optional[str]] = mapped_column("blockReason")
+    created_by_id: Mapped[str] = mapped_column("createdById")
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
+    archived_at: Mapped[Optional[datetime]] = mapped_column("archivedAt")
+
+    __table_args__ = (
+        Index("GatewayA2ATarget_organizationId_projectId_idx", "organizationId", "projectId"),
+    )
+
 class GatewayConnectUpstream(Base):
     __tablename__ = "GatewayConnectUpstream"
 
@@ -5813,7 +5927,7 @@ class GatewayChangeEvent(Base):
 
     revision: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=True)
     organization_id: Mapped[str] = mapped_column("organizationId", ForeignKey("Organization.id", ondelete="CASCADE", onupdate="CASCADE", name="GatewayChangeEvent_organizationId_fkey"))
-    kind: Mapped[str] = mapped_column(Enum("VK_CREATED", "VK_CONFIG_UPDATED", "VK_REVOKED", "VK_ROTATED", "VK_DISABLED", "VK_ENABLED", "BUDGET_CREATED", "BUDGET_UPDATED", "BUDGET_DELETED", "MODEL_PROVIDER_UPDATED", "CACHE_RULE_CREATED", "CACHE_RULE_UPDATED", "CACHE_RULE_DELETED", "ROUTING_POLICY_UPDATED", "ROUTING_POLICY_DELETED", name="GatewayChangeEventKind"))
+    kind: Mapped[str] = mapped_column(Enum("VK_CREATED", "VK_CONFIG_UPDATED", "VK_REVOKED", "VK_ROTATED", "VK_DISABLED", "VK_ENABLED", "BUDGET_CREATED", "BUDGET_UPDATED", "BUDGET_DELETED", "MODEL_PROVIDER_UPDATED", "CACHE_RULE_CREATED", "CACHE_RULE_UPDATED", "CACHE_RULE_DELETED", "ROUTING_POLICY_UPDATED", "ROUTING_POLICY_DELETED", "A2A_TARGET_CREATED", "A2A_TARGET_UPDATED", "A2A_TARGET_DELETED", name="GatewayChangeEventKind"))
     virtual_key_id: Mapped[Optional[str]] = mapped_column("virtualKeyId")
     budget_id: Mapped[Optional[str]] = mapped_column("budgetId")
     model_provider_id: Mapped[Optional[str]] = mapped_column("modelProviderId")
@@ -6548,6 +6662,135 @@ class AgentRegistryBaseline(Base):
 
     organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
     baselined_at: Mapped[datetime] = mapped_column("baselinedAt")
+
+class AgentStopPlanTarget(Base):
+    """One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
+    agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway
+    virtual key. A plan write replaces every row of the agent at once.
+    """
+
+    __tablename__ = "AgentStopPlanTarget"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    agent_id: Mapped[str] = mapped_column("agentId")
+    """The AgentRegistryEntry the plan belongs to."""
+    position: Mapped[int]
+    label: Mapped[str]
+    target: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("AgentStopPlanTarget_organizationId_agentId_idx", "organizationId", "agentId"),
+    )
+
+class AgentStopPlan(Base):
+    """One agent's stop plan version: bumped by every save, so a save over a plan someone else saved
+    since it was read is refused. No row means the plan was never saved (version 0).
+    """
+
+    __tablename__ = "AgentStopPlan"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    agent_id: Mapped[str] = mapped_column("agentId", primary_key=True)
+    """The AgentRegistryEntry the plan belongs to."""
+    version: Mapped[int]
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+class GovernanceAwsConnection(Base):
+    """An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume,
+    or both. The secret access key and the external id are stored sealed.
+    """
+
+    __tablename__ = "GovernanceAwsConnection"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    name: Mapped[str]
+    access_key_id: Mapped[Optional[str]] = mapped_column("accessKeyId")
+    encrypted_secret_access_key: Mapped[Optional[str]] = mapped_column("encryptedSecretAccessKey")
+    role_arn: Mapped[Optional[str]] = mapped_column("roleArn")
+    encrypted_external_id: Mapped[Optional[str]] = mapped_column("encryptedExternalId")
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("GovernanceAwsConnection_organizationId_idx", "organizationId"),
+    )
+
+class AgentStop(Base):
+    """The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and
+    every target's outcome, folded from the stop's events.
+    """
+
+    __tablename__ = "AgentStop"
+
+    id: Mapped[str] = mapped_column(primary_key=True)
+    organization_id: Mapped[str] = mapped_column("organizationId")
+    agent_id: Mapped[str] = mapped_column("agentId")
+    agent_name: Mapped[str] = mapped_column("agentName")
+    status: Mapped[str]
+    severity: Mapped[str]
+    approval: Mapped[str]
+    trigger: Mapped[str]
+    reason: Mapped[str]
+    requested_by_user_id: Mapped[Optional[str]] = mapped_column("requestedByUserId")
+    requested_by_api_key_id: Mapped[Optional[str]] = mapped_column("requestedByApiKeyId")
+    decided_by_user_id: Mapped[Optional[str]] = mapped_column("decidedByUserId")
+    decided_by_api_key_id: Mapped[Optional[str]] = mapped_column("decidedByApiKeyId")
+    restored_by_user_id: Mapped[Optional[str]] = mapped_column("restoredByUserId")
+    restored_by_api_key_id: Mapped[Optional[str]] = mapped_column("restoredByApiKeyId")
+    targets: Mapped[dict[str, Any]] = mapped_column(JSONB)
+    requested_at: Mapped[datetime] = mapped_column("requestedAt")
+    decided_at: Mapped[Optional[datetime]] = mapped_column("decidedAt")
+    quarantined_at: Mapped[Optional[datetime]] = mapped_column("quarantinedAt")
+    restore_requested_at: Mapped[Optional[datetime]] = mapped_column("restoreRequestedAt")
+    restored_at: Mapped[Optional[datetime]] = mapped_column("restoredAt")
+    last_applied_event_id: Mapped[str] = mapped_column("lastAppliedEventId")
+    last_accepted_at: Mapped[int] = mapped_column("lastAcceptedAt", BigInteger)
+    last_occurred_at: Mapped[int] = mapped_column("lastOccurredAt", BigInteger)
+    projection_version: Mapped[str] = mapped_column("projectionVersion")
+    created_at: Mapped[datetime] = mapped_column("createdAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
+    updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, server_default=text("CURRENT_TIMESTAMP"), onupdate=utc_now)
+
+    __table_args__ = (
+        Index("AgentStop_organizationId_agentId_idx", "organizationId", "agentId"),
+        Index("AgentStop_organizationId_status_idx", "organizationId", "status"),
+    )
+
+class AgentStopClaim(Base):
+    """The one open stop an agent may have: the api takes this row before it sends a stop's request,
+    so two requests at once cannot both open one. A later request takes it over once the stop it
+    names has closed.
+    `sentAt` is set once the request command was sent: from then on the claim passes on only after
+    its stop closed, never on age. `decision` is taken by the one approve or deny that wins.
+    `decisionTakenAt` is set while that decision is in flight and cleared once its command was
+    sent; a decision left in flight is taken over once abandoned.
+    """
+
+    __tablename__ = "AgentStopClaim"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    agent_id: Mapped[str] = mapped_column("agentId", primary_key=True)
+    stop_id: Mapped[str] = mapped_column("stopId")
+    claimed_at: Mapped[datetime] = mapped_column("claimedAt")
+    sent_at: Mapped[Optional[datetime]] = mapped_column("sentAt")
+    decision: Mapped[Optional[str]]
+    decision_taken_at: Mapped[Optional[datetime]] = mapped_column("decisionTakenAt")
+
+class AgentStopTargetPriorState(Base):
+    """Whether a target was already stopped before a stop first touched it, recorded once before the
+    stop's platform call, so a retried call after a success still knows the change is the stop's own.
+    """
+
+    __tablename__ = "AgentStopTargetPriorState"
+
+    organization_id: Mapped[str] = mapped_column("organizationId", primary_key=True)
+    stop_id: Mapped[str] = mapped_column("stopId", primary_key=True)
+    target_id: Mapped[str] = mapped_column("targetId", primary_key=True)
+    was_stopped: Mapped[bool] = mapped_column("wasStopped")
+    recorded_at: Mapped[datetime] = mapped_column("recordedAt")
 
 class IdentityMatch(Base):
     """The dated match table: "`user_abc123` on Anthropic is platform user #42,

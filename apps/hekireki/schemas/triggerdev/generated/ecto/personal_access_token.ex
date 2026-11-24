@@ -19,7 +19,9 @@ defmodule Trigger.PersonalAccessToken do
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: Trigger.User.t() | nil,
-          authorization_codes: [Trigger.AuthorizationCode.t()]
+          oauth_client: Trigger.OAuthClient.t() | nil,
+          authorization_codes: [Trigger.AuthorizationCode.t()],
+          oauth_refresh_tokens: [Trigger.OAuthRefreshToken.t()]
         }
 
   schema "PersonalAccessToken" do
@@ -44,8 +46,11 @@ defmodule Trigger.PersonalAccessToken do
     # When the "has expired" email was sent. Set before sending, so it's sent at most once.
     field(:expired_notice_sent_at, Trigger.PrismaDateTime, source: :expiredNoticeSentAt)
     field(:user_id, :string, source: :userId)
+    field(:oauth_client_id, :string, source: :oauthClientId)
     belongs_to(:user, Trigger.User, foreign_key: :user_id, define_field: false, type: :string)
+    belongs_to(:oauth_client, Trigger.OAuthClient, foreign_key: :oauth_client_id, define_field: false, type: :string)
     has_many(:authorization_codes, Trigger.AuthorizationCode, foreign_key: :personal_access_token_id, references: :id)
+    has_many(:oauth_refresh_tokens, Trigger.OAuthRefreshToken, foreign_key: :personal_access_token_id, references: :id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

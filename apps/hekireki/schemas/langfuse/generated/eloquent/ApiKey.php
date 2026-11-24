@@ -83,6 +83,11 @@ class ApiKey extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(ApiKey::class, 'created_by_api_key_id');
     }
 
+    public function gatewaySpendLimits(): HasMany
+    {
+        return $this->hasMany(GatewaySpendLimit::class, 'api_key_id');
+    }
+
     public function roleAssignments(): HasMany
     {
         return $this->hasMany(RoleAssignment::class, 'api_key_id');

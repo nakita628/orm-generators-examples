@@ -105,9 +105,19 @@ class Organization extends \Illuminate\Database\Eloquent\Model
         return $this->hasMany(GatewayAiConnection::class, 'organization_id');
     }
 
+    public function gatewaySpendLimits(): HasMany
+    {
+        return $this->hasMany(GatewaySpendLimit::class, 'organization_id');
+    }
+
     public function organizationLlmApiKeys(): HasMany
     {
         return $this->hasMany(LlmApiKeys::class, 'organization_id');
+    }
+
+    public function models(): HasMany
+    {
+        return $this->hasMany(Model::class, 'organization_id');
     }
 
     public function roleAssignments(): HasMany

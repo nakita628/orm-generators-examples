@@ -1,4 +1,5 @@
 # rootApiKeyHiddenAt:: Non-null prevents the root API key from being returned to users.
+# rootKeyInjectionDisabledAt:: Non-null disables automatic root key injection into new deployed attempts.
 # pkApiKey:: @deprecated was for v2
 # isBranchableEnvironment:: If true, this environment has branches and is treated differently in the dashboard/API
 #   NB: this flag is NOT used for Development branches, instead (type, parentEnvironmentId) = (DEVELOPMENT, NULL) is used
@@ -54,6 +55,7 @@ class RuntimeEnvironment < ApplicationRecord
   has_many :task_runs, foreign_key: "runtimeEnvironmentId", inverse_of: :runtime_environment, dependent: :destroy
   has_many :task_queues, foreign_key: "runtimeEnvironmentId", inverse_of: :runtime_environment, dependent: :destroy
   has_many :environment_variable_values, foreign_key: "environmentId", inverse_of: :environment, dependent: :destroy
+  has_many :environment_variable_ignores, foreign_key: "environmentId", inverse_of: :environment, dependent: :destroy
   has_many :checkpoints, foreign_key: "runtimeEnvironmentId", inverse_of: :runtime_environment, dependent: :destroy
   has_many :worker_deployments, foreign_key: "environmentId", inverse_of: :environment, dependent: :destroy
   has_many :worker_deployment_promotions, foreign_key: "environmentId", inverse_of: :environment, dependent: :destroy

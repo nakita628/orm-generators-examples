@@ -51,7 +51,9 @@ defmodule Langfuse.User do
           role_assignments: [Langfuse.RoleAssignment.t()],
           evaluators_created: [Langfuse.Evaluator.t()],
           evaluator_versions_created: [Langfuse.EvaluatorVersion.t()],
-          evaluation_rules_created: [Langfuse.EvaluationRule.t()]
+          evaluation_rules_created: [Langfuse.EvaluationRule.t()],
+          gateway_spend_limits_owned: [Langfuse.GatewaySpendLimit.t()],
+          gateway_spend_limits: [Langfuse.GatewaySpendLimit.t()]
         }
 
   schema "users" do
@@ -100,6 +102,8 @@ defmodule Langfuse.User do
     has_many(:evaluators_created, Langfuse.Evaluator, foreign_key: :created_by_user_id, references: :id)
     has_many(:evaluator_versions_created, Langfuse.EvaluatorVersion, foreign_key: :created_by_user_id, references: :id)
     has_many(:evaluation_rules_created, Langfuse.EvaluationRule, foreign_key: :created_by_user_id, references: :id)
+    has_many(:gateway_spend_limits_owned, Langfuse.GatewaySpendLimit, foreign_key: :owner_user_id, references: :id)
+    has_many(:gateway_spend_limits, Langfuse.GatewaySpendLimit, foreign_key: :user_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end
 end

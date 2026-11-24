@@ -107,6 +107,20 @@ pub struct Model {
     pub seat_line_lease_token: Option<String>,
     #[sea_orm(column_name = "seatLineLeaseUntil")]
     pub seat_line_lease_until: Option<DateTime>,
+    /// An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed
+    /// charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.
+    #[sea_orm(column_name = "paymentRecoveryInvoiceId")]
+    pub payment_recovery_invoice_id: Option<String>,
+    #[sea_orm(column_name = "paymentRecoveryStartedAt")]
+    pub payment_recovery_started_at: Option<DateTime>,
+    #[sea_orm(column_name = "paymentRecoveryNoticeDay")]
+    pub payment_recovery_notice_day: Option<i32>,
+    /// The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the
+    /// organization is on Free with more members than Free allows; ended once that no longer holds.
+    #[sea_orm(column_name = "overPlanSince")]
+    pub over_plan_since: Option<DateTime>,
+    #[sea_orm(column_name = "overPlanEndedAt")]
+    pub over_plan_ended_at: Option<DateTime>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

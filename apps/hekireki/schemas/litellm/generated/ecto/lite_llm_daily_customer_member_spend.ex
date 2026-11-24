@@ -5,6 +5,8 @@ defmodule LiteLLM.LiteLLMDailyCustomerMemberSpend do
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          app_group_id: String.t(),
+          app_id: String.t(),
           id: String.t(),
           date: String.t(),
           customer_org_id: String.t(),
@@ -21,12 +23,15 @@ defmodule LiteLLM.LiteLLMDailyCustomerMemberSpend do
           completion_tokens: integer(),
           cache_read_input_tokens: integer(),
           cache_creation_input_tokens: integer(),
+          cache_cost: float(),
+          priced_cache_tokens: integer(),
           compression_saved_tokens: integer(),
           compression_savings_spend: float(),
           prompt_caching_savings_spend: float(),
           gateway_injected_caching_savings_spend: float(),
           autorouter_savings_spend: float(),
           guardrail_spend: float(),
+          customer_margin_spend: float(),
           api_requests: integer(),
           successful_requests: integer(),
           failed_requests: integer(),
@@ -37,6 +42,8 @@ defmodule LiteLLM.LiteLLMDailyCustomerMemberSpend do
         }
 
   schema "LiteLLM_DailyCustomerMemberSpend" do
+    field(:app_group_id, :string, default: "")
+    field(:app_id, :string, default: "")
     field(:id, :string, primary_key: true)
     field(:date, :string)
     field(:customer_org_id, :string)
@@ -53,12 +60,15 @@ defmodule LiteLLM.LiteLLMDailyCustomerMemberSpend do
     field(:completion_tokens, :integer, default: 0)
     field(:cache_read_input_tokens, :integer, default: 0)
     field(:cache_creation_input_tokens, :integer, default: 0)
+    field(:cache_cost, :float, default: 0.0)
+    field(:priced_cache_tokens, :integer, default: 0)
     field(:compression_saved_tokens, :integer, default: 0)
     field(:compression_savings_spend, :float, default: 0.0)
     field(:prompt_caching_savings_spend, :float, default: 0.0)
     field(:gateway_injected_caching_savings_spend, :float, default: 0.0)
     field(:autorouter_savings_spend, :float, default: 0.0)
     field(:guardrail_spend, :float, default: 0.0)
+    field(:customer_margin_spend, :float, default: 0.0)
     field(:api_requests, :integer, default: 0)
     field(:successful_requests, :integer, default: 0)
     field(:failed_requests, :integer, default: 0)

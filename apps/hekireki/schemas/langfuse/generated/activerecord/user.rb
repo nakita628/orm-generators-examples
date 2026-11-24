@@ -63,4 +63,7 @@ class User < ApplicationRecord
                                         inverse_of: :created_by_user, dependent: :nullify
   has_many :evaluation_rules_created, class_name: "EvaluationRule", foreign_key: "created_by_user_id",
                                       inverse_of: :created_by_user, dependent: :nullify
+  has_many :gateway_spend_limits_owned, class_name: "GatewaySpendLimit", foreign_key: "owner_user_id",
+                                        inverse_of: :owner_user, dependent: :nullify
+  has_many :gateway_spend_limits, dependent: :destroy
 end

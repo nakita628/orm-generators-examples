@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Model;
 
 class LiteLLMSpendLogDelivery extends Model
 {
+    use HasVersion4Uuids;
     use PrismaDates;
 
     const UPDATED_AT = null;
@@ -19,7 +21,6 @@ class LiteLLMSpendLogDelivery extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'delivery_id',
         'request_id',
         'state',
         'accounting_payload',

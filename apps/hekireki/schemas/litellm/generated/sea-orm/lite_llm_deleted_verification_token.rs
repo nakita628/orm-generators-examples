@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, PartialEq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "LiteLLM_DeletedVerificationToken")]
 pub struct Model {
+    pub key_id: Option<String>,
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
     pub token: String,

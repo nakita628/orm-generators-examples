@@ -14,6 +14,7 @@ class AuthzOrganizationPolicyEntity(
     companion object : EntityClass<String, AuthzOrganizationPolicyEntity>(AuthzOrganizationPolicyTable)
 
     var braidsOrganizationAdminsOnly by AuthzOrganizationPolicyTable.braidsOrganizationAdminsOnly
+    var braidsEnabled by AuthzOrganizationPolicyTable.braidsEnabled
     var updatedByUserId by AuthzOrganizationPolicyTable.updatedByUserId
     var updatedAt by AuthzOrganizationPolicyTable.updatedAt
 

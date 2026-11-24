@@ -36,6 +36,8 @@ object EnvironmentVariableValueTable : IdTable<String>("\"EnvironmentVariableVal
 
     /** If true, the value is secret and cannot be revealed */
     val isSecret = bool("isSecret").default(false)
+    val isProxyOnly = bool("isProxyOnly").default(false)
+    val proxyConfig = jsonb<String>("proxyConfig", { it }, { it }).nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val version = integer("version").default(1)

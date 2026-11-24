@@ -27,6 +27,7 @@ class LlmApiKeys extends \Illuminate\Database\Eloquent\Model
         'extra_headers',
         'extra_header_keys',
         'config',
+        'external_id',
         'project_id',
         'organization_id',
     ];

@@ -1,7 +1,9 @@
 class LiteLLMSpendLogDelivery < ApplicationRecord
   self.table_name = "LiteLLM_SpendLogDelivery"
   self.primary_key = "delivery_id"
+  self.implicit_order_column = "created_at"
 
+  attribute :delivery_id, default: -> { SecureRandom.uuid }
   attribute :attempts, default: 0
 
   enum :state, { pending: "pending", applied: "applied", parked: "parked" }, default: :pending, validate: true

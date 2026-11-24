@@ -138,6 +138,12 @@ pub enum Relation {
         to = "super::booking::Column::CustodianUserId"
     )]
     Custodies,
+    #[sea_orm(
+        has_many = "super::booking::Entity",
+        from = "Column::Id",
+        to = "super::booking::Column::ApprovedById"
+    )]
+    ApprovedBookings,
     #[sea_orm(has_many = "super::kit::Entity")]
     CreatedKits,
     #[sea_orm(has_many = "super::asset_reminder::Entity")]

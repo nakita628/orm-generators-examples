@@ -14,8 +14,11 @@ class ModelEntity(
 
     var createdAt by ModelTable.createdAt
     var updatedAt by ModelTable.updatedAt
+    var scope by ModelTable.scope
     var projectId by ModelTable.projectId
     var project by ProjectEntity optionalReferencedOn ModelTable.projectId
+    var organizationId by ModelTable.organizationId
+    var organization by OrganizationEntity optionalReferencedOn ModelTable.organizationId
     var modelName by ModelTable.modelName
     var matchPattern by ModelTable.matchPattern
     var startDate by ModelTable.startDate

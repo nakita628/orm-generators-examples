@@ -1,9 +1,13 @@
+# supersedeProductionBuilds:: Skip queued builds once a newer commit is queued for the same environment or preview branch
 class ConnectedGithubRepository < ApplicationRecord
   self.table_name = "ConnectedGithubRepository"
   self.implicit_order_column = "createdAt"
 
   attribute :id, default: -> { Cuid.generate }
   attribute :previewDeploymentsEnabled, default: true
+  attribute :supersedeProductionBuilds, default: false
+  attribute :supersedeStagingBuilds, default: true
+  attribute :supersedePreviewBuilds, default: true
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
 

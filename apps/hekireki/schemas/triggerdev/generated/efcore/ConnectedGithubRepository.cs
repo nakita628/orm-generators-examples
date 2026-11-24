@@ -20,6 +20,15 @@ public partial class ConnectedGithubRepository
 
     public bool PreviewDeploymentsEnabled { get; set; } = true;
 
+    /// <summary>
+    /// Skip queued builds once a newer commit is queued for the same environment or preview branch
+    /// </summary>
+    public bool SupersedeProductionBuilds { get; set; } = false;
+
+    public bool SupersedeStagingBuilds { get; set; } = true;
+
+    public bool SupersedePreviewBuilds { get; set; } = true;
+
     public string? BuildFilters { get; set; }
 
     public DateTime CreatedAt { get; set; }

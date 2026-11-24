@@ -6,8 +6,11 @@ import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.json.jsonb
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 object LiteLLMVerificationTokenTable : IdTable<String>("\"LiteLLM_VerificationToken\"") {
+    val keyId =
+        text("key_id").nullable().clientDefault { UUID.randomUUID().toString() }.uniqueIndex("\"LiteLLM_VerificationToken_key_id_key\"")
     override val id = text("token").entityId()
     val keyName = text("key_name").nullable()
     val keyAlias = text("key_alias").nullable()

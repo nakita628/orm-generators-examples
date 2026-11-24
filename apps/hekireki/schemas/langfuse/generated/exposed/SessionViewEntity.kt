@@ -12,6 +12,7 @@ class SessionViewEntity(
 ) : Entity<String>(id) {
     companion object : EntityClass<String, SessionViewEntity>(SessionViewTable)
 
+    var ownership by SessionViewTable.ownership
     var isPinnedByDefaultForProject by SessionViewTable.isPinnedByDefaultForProject
     var projectId by SessionViewTable.projectId
     var project by ProjectEntity referencedOn SessionViewTable.projectId

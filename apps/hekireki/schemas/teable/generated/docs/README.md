@@ -261,6 +261,51 @@ CREATE TABLE "field" (
     CONSTRAINT "field_pkey" PRIMARY KEY ("id")
 );
 
+CREATE TABLE "domain_event_outbox" (
+    "id" TEXT NOT NULL,
+    "base_id" TEXT NOT NULL,
+    "table_id" TEXT,
+    "message_name" TEXT NOT NULL,
+    "schema_version" INTEGER NOT NULL,
+    "aggregate_id" TEXT,
+    "payload" JSONB NOT NULL,
+    "payload_bytes" INTEGER NOT NULL,
+    "catalog_generation" INTEGER NOT NULL,
+    "required_consumers" JSONB NOT NULL,
+    "binding_id" TEXT,
+    "storage_epoch" INTEGER,
+    "unpublished" BOOLEAN NOT NULL DEFAULT true,
+    "settled" TEXT,
+    "settled_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_outbox_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "domain_event_delivery" (
+    "id" TEXT NOT NULL,
+    "event_id" TEXT NOT NULL,
+    "consumer_id" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "max_attempts" INTEGER NOT NULL DEFAULT 12,
+    "lease_token" TEXT,
+    "lease_expires_at" TIMESTAMPTZ(3),
+    "next_attempt_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_error" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_delivery_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "domain_event_inbox" (
+    "consumer_id" TEXT NOT NULL,
+    "event_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_inbox_pkey" PRIMARY KEY ("consumer_id","event_id")
+);
+
 CREATE TABLE "computed_update_outbox" (
     "id" TEXT NOT NULL,
     "base_id" TEXT NOT NULL,
@@ -1125,6 +1170,12 @@ CREATE INDEX "field_lookup_linked_field_id_idx" ON "field"("lookup_linked_field_
 
 CREATE INDEX "field_table_id_deleted_time_idx" ON "field"("table_id", "deleted_time");
 
+CREATE INDEX "domain_event_outbox_base_id_idx" ON "domain_event_outbox"("base_id");
+
+CREATE UNIQUE INDEX "domain_event_delivery_event_id_consumer_id_key" ON "domain_event_delivery"("event_id", "consumer_id");
+
+CREATE INDEX "domain_event_inbox_event_id_idx" ON "domain_event_inbox"("event_id");
+
 CREATE INDEX "computed_update_outbox_status_next_run_at_idx" ON "computed_update_outbox"("status", "next_run_at");
 
 CREATE INDEX "computed_update_outbox_worker_lane_status_next_run_at_idx" ON "computed_update_outbox"("worker_lane", "status", "next_run_at");
@@ -1389,6 +1440,9 @@ ALTER TABLE "base_node" ADD CONSTRAINT "base_node_parent_id_fkey" FOREIGN KEY ("
 | [TableQueryObservationShard](#model-TableQueryObservationShard)     | `table_query_observation_shard`    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [SchemaOperation](#model-SchemaOperation)                           | `schema_operation`                 |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [Field](#model-Field)                                               | `field`                            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [DomainEventOutbox](#model-DomainEventOutbox)                       | `domain_event_outbox`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [DomainEventDelivery](#model-DomainEventDelivery)                   | `domain_event_delivery`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [DomainEventInbox](#model-DomainEventInbox)                         | `domain_event_inbox`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateOutbox](#model-ComputedUpdateOutbox)                 | `computed_update_outbox`           |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateOutboxSeed](#model-ComputedUpdateOutboxSeed)         | `computed_update_outbox_seed`      |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [ComputedUpdateChangeFrontier](#model-ComputedUpdateChangeFrontier) | `computed_update_change_frontier`  | Actual output-value evidence; independent from continuation progress.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
@@ -5695,6 +5749,693 @@ RETURNING
   "public"."field"."created_by",
   "public"."field"."last_modified_by"
 -- params: ["example"]
+```
+
+</details>
+
+<a id="model-DomainEventOutbox"></a>
+
+### DomainEventOutbox
+
+Table `domain_event_outbox`.
+
+| Field                                      | Type       | Constraints | Default | Description |
+| ------------------------------------------ | ---------- | ----------- | ------- | ----------- |
+| `id`                                       | `String`   | PK NOT NULL |         |             |
+| `baseId` (`base_id`)                       | `String`   | NOT NULL    |         |             |
+| `tableId` (`table_id`)                     | `String`   | NULL        |         |             |
+| `messageName` (`message_name`)             | `String`   | NOT NULL    |         |             |
+| `schemaVersion` (`schema_version`)         | `Int`      | NOT NULL    |         |             |
+| `aggregateId` (`aggregate_id`)             | `String`   | NULL        |         |             |
+| `payload`                                  | `Json`     | NOT NULL    |         |             |
+| `payloadBytes` (`payload_bytes`)           | `Int`      | NOT NULL    |         |             |
+| `catalogGeneration` (`catalog_generation`) | `Int`      | NOT NULL    |         |             |
+| `requiredConsumers` (`required_consumers`) | `Json`     | NOT NULL    |         |             |
+| `bindingId` (`binding_id`)                 | `String`   | NULL        |         |             |
+| `storageEpoch` (`storage_epoch`)           | `Int`      | NULL        |         |             |
+| `unpublished`                              | `Boolean`  | NOT NULL    | `true`  |             |
+| `settled`                                  | `String`   | NULL        |         |             |
+| `settledAt` (`settled_at`)                 | `DateTime` | NULL        |         |             |
+| `createdAt` (`created_at`)                 | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Indexes
+
+- `@@index([baseId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "domain_event_outbox" (
+    "id" TEXT NOT NULL,
+    "base_id" TEXT NOT NULL,
+    "table_id" TEXT,
+    "message_name" TEXT NOT NULL,
+    "schema_version" INTEGER NOT NULL,
+    "aggregate_id" TEXT,
+    "payload" JSONB NOT NULL,
+    "payload_bytes" INTEGER NOT NULL,
+    "catalog_generation" INTEGER NOT NULL,
+    "required_consumers" JSONB NOT NULL,
+    "binding_id" TEXT,
+    "storage_epoch" INTEGER,
+    "unpublished" BOOLEAN NOT NULL DEFAULT true,
+    "settled" TEXT,
+    "settled_at" TIMESTAMP(3),
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_outbox_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "domain_event_outbox_base_id_idx" ON "domain_event_outbox"("base_id");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.domainEventOutbox.findMany();
+```
+
+```sql
+SELECT
+  "public"."domain_event_outbox"."id",
+  "public"."domain_event_outbox"."base_id",
+  "public"."domain_event_outbox"."table_id",
+  "public"."domain_event_outbox"."message_name",
+  "public"."domain_event_outbox"."schema_version",
+  "public"."domain_event_outbox"."aggregate_id",
+  "public"."domain_event_outbox"."payload",
+  "public"."domain_event_outbox"."payload_bytes",
+  "public"."domain_event_outbox"."catalog_generation",
+  "public"."domain_event_outbox"."required_consumers",
+  "public"."domain_event_outbox"."binding_id",
+  "public"."domain_event_outbox"."storage_epoch",
+  "public"."domain_event_outbox"."unpublished",
+  "public"."domain_event_outbox"."settled",
+  "public"."domain_event_outbox"."settled_at",
+  "public"."domain_event_outbox"."created_at"
+FROM
+  "public"."domain_event_outbox"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.domainEventOutbox.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."domain_event_outbox"."id"
+    FROM
+      "public"."domain_event_outbox"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.domainEventOutbox.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."domain_event_outbox"."id",
+  "public"."domain_event_outbox"."base_id",
+  "public"."domain_event_outbox"."table_id",
+  "public"."domain_event_outbox"."message_name",
+  "public"."domain_event_outbox"."schema_version",
+  "public"."domain_event_outbox"."aggregate_id",
+  "public"."domain_event_outbox"."payload",
+  "public"."domain_event_outbox"."payload_bytes",
+  "public"."domain_event_outbox"."catalog_generation",
+  "public"."domain_event_outbox"."required_consumers",
+  "public"."domain_event_outbox"."binding_id",
+  "public"."domain_event_outbox"."storage_epoch",
+  "public"."domain_event_outbox"."unpublished",
+  "public"."domain_event_outbox"."settled",
+  "public"."domain_event_outbox"."settled_at",
+  "public"."domain_event_outbox"."created_at"
+FROM
+  "public"."domain_event_outbox"
+WHERE
+  (
+    "public"."domain_event_outbox"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.domainEventOutbox.create({
+  data: {
+    id: "example",
+    baseId: "example",
+    messageName: "example",
+    schemaVersion: 1,
+    payload: {},
+    payloadBytes: 1,
+    catalogGeneration: 1,
+    requiredConsumers: {},
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."domain_event_outbox" (
+    "id",
+    "base_id",
+    "message_name",
+    "schema_version",
+    "payload",
+    "payload_bytes",
+    "catalog_generation",
+    "required_consumers",
+    "unpublished",
+    "created_at"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+RETURNING
+  "public"."domain_event_outbox"."id",
+  "public"."domain_event_outbox"."base_id",
+  "public"."domain_event_outbox"."table_id",
+  "public"."domain_event_outbox"."message_name",
+  "public"."domain_event_outbox"."schema_version",
+  "public"."domain_event_outbox"."aggregate_id",
+  "public"."domain_event_outbox"."payload",
+  "public"."domain_event_outbox"."payload_bytes",
+  "public"."domain_event_outbox"."catalog_generation",
+  "public"."domain_event_outbox"."required_consumers",
+  "public"."domain_event_outbox"."binding_id",
+  "public"."domain_event_outbox"."storage_epoch",
+  "public"."domain_event_outbox"."unpublished",
+  "public"."domain_event_outbox"."settled",
+  "public"."domain_event_outbox"."settled_at",
+  "public"."domain_event_outbox"."created_at"
+-- params: ["example","example","example","1","{}","1","1","{}",true,"<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.domainEventOutbox.update({ where: { id: "example" }, data: { baseId: "example" } });
+```
+
+```sql
+UPDATE "public"."domain_event_outbox"
+SET
+  "base_id" = $1
+WHERE
+  (
+    "public"."domain_event_outbox"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_outbox"."id",
+  "public"."domain_event_outbox"."base_id",
+  "public"."domain_event_outbox"."table_id",
+  "public"."domain_event_outbox"."message_name",
+  "public"."domain_event_outbox"."schema_version",
+  "public"."domain_event_outbox"."aggregate_id",
+  "public"."domain_event_outbox"."payload",
+  "public"."domain_event_outbox"."payload_bytes",
+  "public"."domain_event_outbox"."catalog_generation",
+  "public"."domain_event_outbox"."required_consumers",
+  "public"."domain_event_outbox"."binding_id",
+  "public"."domain_event_outbox"."storage_epoch",
+  "public"."domain_event_outbox"."unpublished",
+  "public"."domain_event_outbox"."settled",
+  "public"."domain_event_outbox"."settled_at",
+  "public"."domain_event_outbox"."created_at"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.domainEventOutbox.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."domain_event_outbox"
+WHERE
+  (
+    "public"."domain_event_outbox"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_outbox"."id",
+  "public"."domain_event_outbox"."base_id",
+  "public"."domain_event_outbox"."table_id",
+  "public"."domain_event_outbox"."message_name",
+  "public"."domain_event_outbox"."schema_version",
+  "public"."domain_event_outbox"."aggregate_id",
+  "public"."domain_event_outbox"."payload",
+  "public"."domain_event_outbox"."payload_bytes",
+  "public"."domain_event_outbox"."catalog_generation",
+  "public"."domain_event_outbox"."required_consumers",
+  "public"."domain_event_outbox"."binding_id",
+  "public"."domain_event_outbox"."storage_epoch",
+  "public"."domain_event_outbox"."unpublished",
+  "public"."domain_event_outbox"."settled",
+  "public"."domain_event_outbox"."settled_at",
+  "public"."domain_event_outbox"."created_at"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DomainEventDelivery"></a>
+
+### DomainEventDelivery
+
+Table `domain_event_delivery`.
+
+| Field                                 | Type                            | Constraints | Default | Description |
+| ------------------------------------- | ------------------------------- | ----------- | ------- | ----------- |
+| `id`                                  | `String`                        | PK NOT NULL |         |             |
+| `eventId` (`event_id`)                | `String`                        | NOT NULL    |         |             |
+| `consumerId` (`consumer_id`)          | `String`                        | NOT NULL    |         |             |
+| `status`                              | `String`                        | NOT NULL    |         |             |
+| `attempts`                            | `Int`                           | NOT NULL    | `0`     |             |
+| `maxAttempts` (`max_attempts`)        | `Int`                           | NOT NULL    | `12`    |             |
+| `leaseToken` (`lease_token`)          | `String`                        | NULL        |         |             |
+| `leaseExpiresAt` (`lease_expires_at`) | `DateTime` `@db.Timestamptz(3)` | NULL        |         |             |
+| `nextAttemptAt` (`next_attempt_at`)   | `DateTime` `@db.Timestamptz(3)` | NOT NULL    | `now()` |             |
+| `lastError` (`last_error`)            | `String`                        | NULL        |         |             |
+| `createdAt` (`created_at`)            | `DateTime`                      | NOT NULL    | `now()` |             |
+
+#### Indexes
+
+- `@@unique([eventId, consumerId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "domain_event_delivery" (
+    "id" TEXT NOT NULL,
+    "event_id" TEXT NOT NULL,
+    "consumer_id" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "max_attempts" INTEGER NOT NULL DEFAULT 12,
+    "lease_token" TEXT,
+    "lease_expires_at" TIMESTAMPTZ(3),
+    "next_attempt_at" TIMESTAMPTZ(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "last_error" TEXT,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_delivery_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "domain_event_delivery_event_id_consumer_id_key" ON "domain_event_delivery"("event_id", "consumer_id");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.domainEventDelivery.findMany();
+```
+
+```sql
+SELECT
+  "public"."domain_event_delivery"."id",
+  "public"."domain_event_delivery"."event_id",
+  "public"."domain_event_delivery"."consumer_id",
+  "public"."domain_event_delivery"."status",
+  "public"."domain_event_delivery"."attempts",
+  "public"."domain_event_delivery"."max_attempts",
+  "public"."domain_event_delivery"."lease_token",
+  "public"."domain_event_delivery"."lease_expires_at",
+  "public"."domain_event_delivery"."next_attempt_at",
+  "public"."domain_event_delivery"."last_error",
+  "public"."domain_event_delivery"."created_at"
+FROM
+  "public"."domain_event_delivery"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.domainEventDelivery.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."domain_event_delivery"."id"
+    FROM
+      "public"."domain_event_delivery"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.domainEventDelivery.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."domain_event_delivery"."id",
+  "public"."domain_event_delivery"."event_id",
+  "public"."domain_event_delivery"."consumer_id",
+  "public"."domain_event_delivery"."status",
+  "public"."domain_event_delivery"."attempts",
+  "public"."domain_event_delivery"."max_attempts",
+  "public"."domain_event_delivery"."lease_token",
+  "public"."domain_event_delivery"."lease_expires_at",
+  "public"."domain_event_delivery"."next_attempt_at",
+  "public"."domain_event_delivery"."last_error",
+  "public"."domain_event_delivery"."created_at"
+FROM
+  "public"."domain_event_delivery"
+WHERE
+  (
+    "public"."domain_event_delivery"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.domainEventDelivery.create({
+  data: { id: "example", eventId: "example", consumerId: "example", status: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."domain_event_delivery" (
+    "id",
+    "event_id",
+    "consumer_id",
+    "status",
+    "attempts",
+    "max_attempts",
+    "next_attempt_at",
+    "created_at"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+  "public"."domain_event_delivery"."id",
+  "public"."domain_event_delivery"."event_id",
+  "public"."domain_event_delivery"."consumer_id",
+  "public"."domain_event_delivery"."status",
+  "public"."domain_event_delivery"."attempts",
+  "public"."domain_event_delivery"."max_attempts",
+  "public"."domain_event_delivery"."lease_token",
+  "public"."domain_event_delivery"."lease_expires_at",
+  "public"."domain_event_delivery"."next_attempt_at",
+  "public"."domain_event_delivery"."last_error",
+  "public"."domain_event_delivery"."created_at"
+-- params: ["example","example","example","example","0","12","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.domainEventDelivery.update({ where: { id: "example" }, data: { eventId: "example" } });
+```
+
+```sql
+UPDATE "public"."domain_event_delivery"
+SET
+  "event_id" = $1
+WHERE
+  (
+    "public"."domain_event_delivery"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_delivery"."id",
+  "public"."domain_event_delivery"."event_id",
+  "public"."domain_event_delivery"."consumer_id",
+  "public"."domain_event_delivery"."status",
+  "public"."domain_event_delivery"."attempts",
+  "public"."domain_event_delivery"."max_attempts",
+  "public"."domain_event_delivery"."lease_token",
+  "public"."domain_event_delivery"."lease_expires_at",
+  "public"."domain_event_delivery"."next_attempt_at",
+  "public"."domain_event_delivery"."last_error",
+  "public"."domain_event_delivery"."created_at"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.domainEventDelivery.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."domain_event_delivery"
+WHERE
+  (
+    "public"."domain_event_delivery"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_delivery"."id",
+  "public"."domain_event_delivery"."event_id",
+  "public"."domain_event_delivery"."consumer_id",
+  "public"."domain_event_delivery"."status",
+  "public"."domain_event_delivery"."attempts",
+  "public"."domain_event_delivery"."max_attempts",
+  "public"."domain_event_delivery"."lease_token",
+  "public"."domain_event_delivery"."lease_expires_at",
+  "public"."domain_event_delivery"."next_attempt_at",
+  "public"."domain_event_delivery"."last_error",
+  "public"."domain_event_delivery"."created_at"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-DomainEventInbox"></a>
+
+### DomainEventInbox
+
+Table `domain_event_inbox`.
+
+| Field                        | Type       | Constraints | Default | Description |
+| ---------------------------- | ---------- | ----------- | ------- | ----------- |
+| `consumerId` (`consumer_id`) | `String`   | PK NOT NULL |         |             |
+| `eventId` (`event_id`)       | `String`   | PK NOT NULL |         |             |
+| `createdAt` (`created_at`)   | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Indexes
+
+- `@@id([consumerId, eventId])`
+- `@@index([eventId], map: "domain_event_inbox_event_id_idx")`
+
+#### Definition
+
+```sql
+CREATE TABLE "domain_event_inbox" (
+    "consumer_id" TEXT NOT NULL,
+    "event_id" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "domain_event_inbox_pkey" PRIMARY KEY ("consumer_id","event_id")
+);
+
+CREATE INDEX "domain_event_inbox_event_id_idx" ON "domain_event_inbox"("event_id");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.domainEventInbox.findMany();
+```
+
+```sql
+SELECT
+  "public"."domain_event_inbox"."consumer_id",
+  "public"."domain_event_inbox"."event_id",
+  "public"."domain_event_inbox"."created_at"
+FROM
+  "public"."domain_event_inbox"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.domainEventInbox.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."domain_event_inbox"."consumer_id",
+      "public"."domain_event_inbox"."event_id"
+    FROM
+      "public"."domain_event_inbox"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.domainEventInbox.findUnique({
+  where: { consumerId_eventId: { consumerId: "example", eventId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."domain_event_inbox"."consumer_id",
+  "public"."domain_event_inbox"."event_id",
+  "public"."domain_event_inbox"."created_at"
+FROM
+  "public"."domain_event_inbox"
+WHERE
+  (
+    (
+      "public"."domain_event_inbox"."consumer_id" = $1
+      AND "public"."domain_event_inbox"."event_id" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.domainEventInbox.create({ data: { consumerId: "example", eventId: "example" } });
+```
+
+```sql
+INSERT INTO
+  "public"."domain_event_inbox" ("consumer_id", "event_id", "created_at")
+VALUES
+  ($1, $2, $3)
+RETURNING
+  "public"."domain_event_inbox"."consumer_id",
+  "public"."domain_event_inbox"."event_id",
+  "public"."domain_event_inbox"."created_at"
+-- params: ["example","example","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.domainEventInbox.update({
+  where: { consumerId_eventId: { consumerId: "example", eventId: "example" } },
+  data: { createdAt: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+UPDATE "public"."domain_event_inbox"
+SET
+  "created_at" = $1
+WHERE
+  (
+    (
+      "public"."domain_event_inbox"."consumer_id" = $2
+      AND "public"."domain_event_inbox"."event_id" = $3
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_inbox"."consumer_id",
+  "public"."domain_event_inbox"."event_id",
+  "public"."domain_event_inbox"."created_at"
+-- params: ["2026-01-01T00:00:00.000Z","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.domainEventInbox.delete({
+  where: { consumerId_eventId: { consumerId: "example", eventId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."domain_event_inbox"
+WHERE
+  (
+    (
+      "public"."domain_event_inbox"."consumer_id" = $1
+      AND "public"."domain_event_inbox"."event_id" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."domain_event_inbox"."consumer_id",
+  "public"."domain_event_inbox"."event_id",
+  "public"."domain_event_inbox"."created_at"
+-- params: ["example","example"]
 ```
 
 </details>

@@ -1,9 +1,9 @@
 // Rallly: Rallly scheduling polls: users, spaces, polls, options, participants and votes.
 //
-// Imported from https://github.com/lukevella/rallly/tree/a7f829b4d9d1e458e87f11b841951e9a67b821f8/packages/database/prisma/
+// Imported from https://github.com/lukevella/rallly/tree/73f4b6524a3fcfbb2f96a63bb72148839939c9f2/packages/database/prisma/
 // (AGPL-3.0 license) by tools/import/import-schema.mjs, which dropped the original
 // generator blocks and the datasource's connection URLs and added the hekireki generators below.
-// The project keeps its schema in 15 files (prismaSchemaFolder), joined here in name order.
+// The project keeps its schema in 16 files (prismaSchemaFolder), joined here in name order.
 // The models, enums and `///` comments are the project's own, as they are at that commit.
 
 // ---- models/api-usage.prisma
@@ -14,6 +14,8 @@ enum ApiUsageResource {
   @@map("api_usage_resource")
 }
 
+/// Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+/// deployments keep working during the switch, then dropped.
 model ApiUsage {
   spaceId           String           @map("space_id")
   resource          ApiUsageResource
@@ -782,6 +784,33 @@ model SheetSlot {
   @@map("sheet_slots")
 }
 
+// ---- models/space-usage.prisma
+
+enum SpaceUsageResource {
+  api_poll
+  email_invite
+
+  @@map("space_usage_resource")
+}
+
+/// Monthly counters for metered actions charged to a space, independent of
+/// the records they produce, so deleting a poll does not give back what it
+/// spent.
+model SpaceUsage {
+  spaceId           String             @map("space_id")
+  resource          SpaceUsageResource
+  period            DateTime           @db.Date
+  count             Int                @default(0)
+  nearLimitWarnedAt DateTime?          @map("near_limit_warned_at")
+  atLimitWarnedAt   DateTime?          @map("at_limit_warned_at")
+  updatedAt         DateTime           @updatedAt @map("updated_at")
+
+  space Space @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  @@id([spaceId, resource, period])
+  @@map("space_usage")
+}
+
 // ---- models/space.prisma
 
 model Space {
@@ -834,6 +863,7 @@ model Space {
   webhooks SpaceWebhook[]
 
   apiUsage ApiUsage[]
+  usage    SpaceUsage[]
 
   @@index([ownerId])
   @@map("spaces")

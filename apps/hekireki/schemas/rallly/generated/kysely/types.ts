@@ -43,6 +43,8 @@ export type PollClosedReason = 'auto' | 'manual'
 
 export type VoteType = 'yes' | 'no' | 'ifNeedBe'
 
+export type SpaceUsageResource = 'api_poll' | 'email_invite'
+
 export type SpaceMemberRole = 'ADMIN' | 'MEMBER'
 
 export type SpaceType = 'personal' | 'work'
@@ -55,6 +57,10 @@ export type TimeFormat = 'hours12' | 'hours24'
 
 export type UserRole = 'admin' | 'user'
 
+/**
+ * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+ * deployments keep working during the switch, then dropped.
+ */
 export interface ApiUsage {
   space_id: string
   resource: ApiUsageResource
@@ -472,6 +478,21 @@ export interface SheetSlot {
   updated_at: Timestamp
 }
 
+/**
+ * Monthly counters for metered actions charged to a space, independent of
+ * the records they produce, so deleting a poll does not give back what it
+ * spent.
+ */
+export interface SpaceUsage {
+  space_id: string
+  resource: SpaceUsageResource
+  period: Timestamp
+  count: Generated<number>
+  near_limit_warned_at: Timestamp | null
+  at_limit_warned_at: Timestamp | null
+  updated_at: Timestamp
+}
+
 export interface Space {
   id: string
   name: string
@@ -655,6 +676,7 @@ export interface DB {
   registered_instances: RegisteredInstance
   sheets: Sheet
   sheet_slots: SheetSlot
+  space_usage: SpaceUsage
   spaces: Space
   space_members: SpaceMember
   space_member_invites: SpaceMemberInvite

@@ -75,6 +75,8 @@ pub enum Relation {
         to = "super::api_key::Column::CreatedByApiKeyId"
     )]
     ApiKeysCreated,
+    #[sea_orm(has_many = "super::gateway_spend_limit::Entity")]
+    GatewaySpendLimits,
     #[sea_orm(has_many = "super::role_assignment::Entity")]
     RoleAssignments,
     #[sea_orm(has_one = "super::gateway_api_key_association::Entity")]
@@ -102,6 +104,12 @@ impl Related<super::user::Entity> for Entity {
 impl Related<super::api_key::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::CreatedByApiKey.def()
+    }
+}
+
+impl Related<super::gateway_spend_limit::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewaySpendLimits.def()
     }
 }
 

@@ -84,7 +84,7 @@ CREATE TYPE "RoleChangeSource" AS ENUM ('MANUAL', 'SSO');
 
 CREATE TYPE "ActivityEntity" AS ENUM ('ASSET', 'BOOKING', 'AUDIT', 'KIT', 'LOCATION', 'TEAM_MEMBER', 'CUSTODY', 'USER', 'ORGANIZATION');
 
-CREATE TYPE "ActivityAction" AS ENUM ('ASSET_CREATED', 'ASSET_NAME_CHANGED', 'ASSET_DESCRIPTION_CHANGED', 'ASSET_CATEGORY_CHANGED', 'ASSET_MODEL_CHANGED', 'ASSET_KIT_CHANGED', 'ASSET_LOCATION_CHANGED', 'ASSET_TAGS_CHANGED', 'ASSET_STATUS_CHANGED', 'ASSET_VALUATION_CHANGED', 'ASSET_QUANTITY_CHANGED', 'ASSET_MIN_QUANTITY_CHANGED', 'ASSET_CUSTOM_FIELD_CHANGED', 'ASSET_PREFERRED_BARCODE_CHANGED', 'ASSET_AVAILABLE_TO_BOOK_CHANGED', 'ASSET_ARCHIVED', 'ASSET_UNARCHIVED', 'ASSET_DELETED', 'CUSTODY_ASSIGNED', 'CUSTODY_RELEASED', 'BOOKING_CREATED', 'BOOKING_STATUS_CHANGED', 'BOOKING_DATES_CHANGED', 'BOOKING_ASSETS_ADDED', 'BOOKING_ASSETS_REMOVED', 'BOOKING_CHECKED_OUT', 'BOOKING_CHECKED_IN', 'BOOKING_PARTIAL_CHECKIN', 'BOOKING_PARTIAL_CHECKOUT', 'BOOKING_CANCELLED', 'BOOKING_ARCHIVED', 'BOOKING_MODEL_REQUESTED', 'BOOKING_MODEL_REQUEST_CHANGED', 'BOOKING_MODEL_REQUEST_REMOVED', 'BOOKING_MODEL_REQUEST_FULFILLED', 'AUDIT_CREATED', 'AUDIT_STARTED', 'AUDIT_ASSETS_ADDED', 'AUDIT_ASSETS_REMOVED', 'AUDIT_ASSET_SCANNED', 'AUDIT_ASSET_SCAN_REMOVED', 'AUDIT_DUE_DATE_CHANGED', 'AUDIT_ASSIGNEE_ADDED', 'AUDIT_ASSIGNEE_REMOVED', 'AUDIT_UPDATED', 'AUDIT_COMPLETED', 'AUDIT_CANCELLED', 'AUDIT_ARCHIVED', 'LOCATION_CREATED', 'LOCATION_UPDATED', 'KIT_CREATED', 'KIT_UPDATED', 'ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED');
+CREATE TYPE "ActivityAction" AS ENUM ('ASSET_CREATED', 'ASSET_NAME_CHANGED', 'ASSET_DESCRIPTION_CHANGED', 'ASSET_CATEGORY_CHANGED', 'ASSET_MODEL_CHANGED', 'ASSET_KIT_CHANGED', 'ASSET_LOCATION_CHANGED', 'ASSET_TAGS_CHANGED', 'ASSET_STATUS_CHANGED', 'ASSET_VALUATION_CHANGED', 'ASSET_QUANTITY_CHANGED', 'ASSET_MIN_QUANTITY_CHANGED', 'ASSET_CUSTOM_FIELD_CHANGED', 'ASSET_PREFERRED_BARCODE_CHANGED', 'ASSET_AVAILABLE_TO_BOOK_CHANGED', 'ASSET_ARCHIVED', 'ASSET_UNARCHIVED', 'ASSET_DELETED', 'CUSTODY_ASSIGNED', 'CUSTODY_RELEASED', 'BOOKING_CREATED', 'BOOKING_STATUS_CHANGED', 'BOOKING_DATES_CHANGED', 'BOOKING_ASSETS_ADDED', 'BOOKING_ASSETS_REMOVED', 'BOOKING_CHECKED_OUT', 'BOOKING_CHECKED_IN', 'BOOKING_PARTIAL_CHECKIN', 'BOOKING_PARTIAL_CHECKOUT', 'BOOKING_CANCELLED', 'BOOKING_ARCHIVED', 'BOOKING_APPROVED', 'BOOKING_MODEL_REQUESTED', 'BOOKING_MODEL_REQUEST_CHANGED', 'BOOKING_MODEL_REQUEST_REMOVED', 'BOOKING_MODEL_REQUEST_FULFILLED', 'AUDIT_CREATED', 'AUDIT_STARTED', 'AUDIT_ASSETS_ADDED', 'AUDIT_ASSETS_REMOVED', 'AUDIT_ASSET_SCANNED', 'AUDIT_ASSET_SCAN_REMOVED', 'AUDIT_DUE_DATE_CHANGED', 'AUDIT_ASSIGNEE_ADDED', 'AUDIT_ASSIGNEE_REMOVED', 'AUDIT_UPDATED', 'AUDIT_COMPLETED', 'AUDIT_CANCELLED', 'AUDIT_ARCHIVED', 'LOCATION_CREATED', 'LOCATION_UPDATED', 'KIT_CREATED', 'KIT_UPDATED', 'ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED');
 
 CREATE TABLE "Image" (
     "id" TEXT NOT NULL,
@@ -707,6 +707,8 @@ CREATE TABLE "Booking" (
     "autoArchivedAt" TIMESTAMPTZ(3),
     "archivedWithoutCheckin" BOOLEAN NOT NULL DEFAULT false,
     "cancellationReason" TEXT,
+    "approvedAt" TIMESTAMPTZ(3),
+    "approvedById" TEXT,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
@@ -720,6 +722,8 @@ CREATE TABLE "BookingSettings" (
     "autoArchiveBookings" BOOLEAN NOT NULL DEFAULT false,
     "autoArchiveDays" INTEGER NOT NULL DEFAULT 2,
     "autoArchiveExpiredReservations" BOOLEAN NOT NULL DEFAULT false,
+    "requireApprovalForBase" BOOLEAN NOT NULL DEFAULT false,
+    "requireApprovalForSelfService" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckinForAdmin" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckinForSelfService" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckoutForAdmin" BOOLEAN NOT NULL DEFAULT false,
@@ -1431,6 +1435,8 @@ CREATE INDEX "Booking_custodianTeamMemberId_idx" ON "Booking"("custodianTeamMemb
 
 CREATE INDEX "Booking_custodianUserId_idx" ON "Booking"("custodianUserId");
 
+CREATE INDEX "Booking_approvedById_idx" ON "Booking"("approvedById");
+
 CREATE INDEX "Booking_organizationId_idx" ON "Booking"("organizationId");
 
 CREATE INDEX "Booking_status_idx" ON "Booking"("status");
@@ -1788,6 +1794,8 @@ ALTER TABLE "Booking" ADD CONSTRAINT "Booking_custodianUserId_fkey" FOREIGN KEY 
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_custodianTeamMemberId_fkey" FOREIGN KEY ("custodianTeamMemberId") REFERENCES "TeamMember"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "BookingSettings" ADD CONSTRAINT "BookingSettings_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -2513,6 +2521,7 @@ RETURNING
 - `id` ← [ConsumptionLog.userId](#model-ConsumptionLog) (one-to-many)
 - `id` ← [Booking.creatorId](#model-Booking) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [Booking.custodianUserId](#model-Booking) (one-to-many, on delete Cascade, on update Cascade)
+- `id` ← [Booking.approvedById](#model-Booking) (one-to-many, on delete SetNull, on update Cascade)
 - `id` ← [PartialBookingCheckin.checkedInById](#model-PartialBookingCheckin) (one-to-many)
 - `id` ← [PartialBookingCheckout.checkedOutById](#model-PartialBookingCheckout) (one-to-many)
 - `id` ← [MobileAuthCode.userId](#model-MobileAuthCode) (one-to-many, on delete Cascade, on update Cascade)
@@ -2687,6 +2696,7 @@ await prisma.user.findMany({
     userOrganizations: true,
     bookings: true,
     custodies: true,
+    approvedBookings: true,
     createdKits: true,
     tier: true,
     assetReminders: true,
@@ -3179,7 +3189,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -3206,11 +3218,42 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
   "public"."Booking"."custodianUserId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."Booking"."id",
+  "public"."Booking"."name",
+  "public"."Booking"."status"::text,
+  "public"."Booking"."description",
+  "public"."Booking"."activeSchedulerReference",
+  "public"."Booking"."creatorId",
+  "public"."Booking"."custodianUserId",
+  "public"."Booking"."custodianTeamMemberId",
+  "public"."Booking"."organizationId",
+  "public"."Booking"."createdAt",
+  "public"."Booking"."updatedAt",
+  "public"."Booking"."from",
+  "public"."Booking"."to",
+  "public"."Booking"."originalFrom",
+  "public"."Booking"."originalTo",
+  "public"."Booking"."autoArchivedAt",
+  "public"."Booking"."archivedWithoutCheckin",
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
+FROM
+  "public"."Booking"
+WHERE
+  "public"."Booking"."approvedById" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -7474,7 +7517,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -7892,6 +7937,8 @@ SELECT
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
   "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById",
   "t1"."B" AS "BookingToTag@Tag"
 FROM
   "public"."Booking"
@@ -8523,7 +8570,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -11944,7 +11993,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -12028,6 +12079,8 @@ SELECT
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -12070,6 +12123,8 @@ SELECT
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
   "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById",
   "t2"."B" AS "BookingNotificationRecipients@TeamMember"
 FROM
   "public"."Booking"
@@ -13033,6 +13088,8 @@ SELECT
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -13240,7 +13297,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -17752,7 +17811,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -18115,7 +18176,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -18318,12 +18381,15 @@ RETURNING
 | `autoArchivedAt`           | `DateTime` `@db.Timestamptz(3)`        | NULL                                              |              |             |
 | `archivedWithoutCheckin`   | `Boolean`                              | NOT NULL                                          | `false`      |             |
 | `cancellationReason`       | `String`                               | NULL                                              |              |             |
+| `approvedAt`               | `DateTime` `@db.Timestamptz(3)`        | NULL                                              |              |             |
+| `approvedById`             | `String`                               | NULL → [User.id](#model-User)                     |              |             |
 
 #### Indexes
 
 - `@@index([creatorId])`
 - `@@index([custodianTeamMemberId])`
 - `@@index([custodianUserId])`
+- `@@index([approvedById])`
 - `@@index([organizationId])`
 - `@@index([status])`
 - `@@index([organizationId, from, id])`
@@ -18334,6 +18400,7 @@ RETURNING
 - `custodianUserId` → [User.id](#model-User) (many-to-one, on delete Cascade, on update Cascade)
 - `custodianTeamMemberId` → [TeamMember.id](#model-TeamMember) (many-to-one, on delete Cascade, on update Cascade)
 - `organizationId` → [Organization.id](#model-Organization) (many-to-one, on delete Cascade, on update Cascade)
+- `approvedById` → [User.id](#model-User) (many-to-one, on delete SetNull, on update Cascade)
 
 #### Referenced by
 
@@ -18371,6 +18438,8 @@ CREATE TABLE "Booking" (
     "autoArchivedAt" TIMESTAMPTZ(3),
     "archivedWithoutCheckin" BOOLEAN NOT NULL DEFAULT false,
     "cancellationReason" TEXT,
+    "approvedAt" TIMESTAMPTZ(3),
+    "approvedById" TEXT,
 
     CONSTRAINT "Booking_pkey" PRIMARY KEY ("id")
 );
@@ -18380,6 +18449,8 @@ CREATE INDEX "Booking_creatorId_idx" ON "Booking"("creatorId");
 CREATE INDEX "Booking_custodianTeamMemberId_idx" ON "Booking"("custodianTeamMemberId");
 
 CREATE INDEX "Booking_custodianUserId_idx" ON "Booking"("custodianUserId");
+
+CREATE INDEX "Booking_approvedById_idx" ON "Booking"("approvedById");
 
 CREATE INDEX "Booking_organizationId_idx" ON "Booking"("organizationId");
 
@@ -18394,6 +18465,8 @@ ALTER TABLE "Booking" ADD CONSTRAINT "Booking_custodianUserId_fkey" FOREIGN KEY 
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_custodianTeamMemberId_fkey" FOREIGN KEY ("custodianTeamMemberId") REFERENCES "TeamMember"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "Booking" ADD CONSTRAINT "Booking_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "Booking" ADD CONSTRAINT "Booking_approvedById_fkey" FOREIGN KEY ("approvedById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 ```
 
 <details>
@@ -18424,7 +18497,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -18473,6 +18548,7 @@ await prisma.booking.findMany({
     tags: true,
     partialCheckins: true,
     partialCheckouts: true,
+    approvedBy: true,
     notificationRecipients: true,
   },
 });
@@ -18497,7 +18573,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -18764,6 +18842,41 @@ OFFSET
 -- params: ["<id of the rows above>","0"]
 
 SELECT
+  "public"."User"."id",
+  "public"."User"."email",
+  "public"."User"."username",
+  "public"."User"."firstName",
+  "public"."User"."lastName",
+  "public"."User"."displayName",
+  "public"."User"."profilePicture",
+  "public"."User"."usedFreeTrial",
+  "public"."User"."onboarded",
+  "public"."User"."customerId",
+  "public"."User"."sso",
+  "public"."User"."createdWithInvite",
+  "public"."User"."skipSubscriptionCheck",
+  "public"."User"."hasUnpaidInvoice",
+  "public"."User"."warnForNoPaymentMethod",
+  "public"."User"."lastSelectedOrganizationId",
+  "public"."User"."createdAt",
+  "public"."User"."updatedAt",
+  "public"."User"."deletedAt",
+  "public"."User"."lastMobileActiveAt",
+  "public"."User"."dateFormat"::text,
+  "public"."User"."timeFormat"::text,
+  "public"."User"."weekStart"::text,
+  "public"."User"."timeZone",
+  "public"."User"."tierId"::text,
+  "public"."User"."referralSource"
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<approvedById of the rows above>","0"]
+
+SELECT
   "public"."TeamMember"."id",
   "public"."TeamMember"."name",
   "public"."TeamMember"."organizationId",
@@ -18810,7 +18923,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -18886,7 +19001,9 @@ RETURNING
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 -- params: ["<cuid(1)>","example","DRAFT","","example","example","<now()>","<now()>","2026-01-01T00:00:00.000Z","2026-01-01T00:00:00.000Z",false]
 ```
 
@@ -18924,7 +19041,9 @@ RETURNING
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -18959,7 +19078,9 @@ RETURNING
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 -- params: ["example"]
 ```
 
@@ -18981,6 +19102,8 @@ RETURNING
 | `autoArchiveBookings`                   | `Boolean`  | NOT NULL                                                 | `false`      |             |
 | `autoArchiveDays`                       | `Int`      | NOT NULL                                                 | `2`          |             |
 | `autoArchiveExpiredReservations`        | `Boolean`  | NOT NULL                                                 | `false`      |             |
+| `requireApprovalForBase`                | `Boolean`  | NOT NULL                                                 | `false`      |             |
+| `requireApprovalForSelfService`         | `Boolean`  | NOT NULL                                                 | `false`      |             |
 | `requireExplicitCheckinForAdmin`        | `Boolean`  | NOT NULL                                                 | `false`      |             |
 | `requireExplicitCheckinForSelfService`  | `Boolean`  | NOT NULL                                                 | `false`      |             |
 | `requireExplicitCheckoutForAdmin`       | `Boolean`  | NOT NULL                                                 | `false`      |             |
@@ -19016,6 +19139,8 @@ CREATE TABLE "BookingSettings" (
     "autoArchiveBookings" BOOLEAN NOT NULL DEFAULT false,
     "autoArchiveDays" INTEGER NOT NULL DEFAULT 2,
     "autoArchiveExpiredReservations" BOOLEAN NOT NULL DEFAULT false,
+    "requireApprovalForBase" BOOLEAN NOT NULL DEFAULT false,
+    "requireApprovalForSelfService" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckinForAdmin" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckinForSelfService" BOOLEAN NOT NULL DEFAULT false,
     "requireExplicitCheckoutForAdmin" BOOLEAN NOT NULL DEFAULT false,
@@ -19056,6 +19181,8 @@ SELECT
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19116,6 +19243,8 @@ SELECT
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19208,6 +19337,8 @@ SELECT
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19248,6 +19379,8 @@ INSERT INTO
     "autoArchiveBookings",
     "autoArchiveDays",
     "autoArchiveExpiredReservations",
+    "requireApprovalForBase",
+    "requireApprovalForSelfService",
     "requireExplicitCheckinForAdmin",
     "requireExplicitCheckinForSelfService",
     "requireExplicitCheckoutForAdmin",
@@ -19277,7 +19410,9 @@ VALUES
     $14,
     $15,
     $16,
-    $17
+    $17,
+    $18,
+    $19
   )
 RETURNING
   "public"."BookingSettings"."id",
@@ -19288,6 +19423,8 @@ RETURNING
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19298,7 +19435,7 @@ RETURNING
   "public"."BookingSettings"."organizationId",
   "public"."BookingSettings"."createdAt",
   "public"."BookingSettings"."updatedAt"
--- params: ["<cuid(1)>","0",false,false,false,"2",false,false,false,false,false,false,true,true,"example","<now()>","<now()>"]
+-- params: ["<cuid(1)>","0",false,false,false,"2",false,false,false,false,false,false,false,false,true,true,"example","<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -19326,6 +19463,8 @@ RETURNING
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19361,6 +19500,8 @@ RETURNING
   "public"."BookingSettings"."autoArchiveBookings",
   "public"."BookingSettings"."autoArchiveDays",
   "public"."BookingSettings"."autoArchiveExpiredReservations",
+  "public"."BookingSettings"."requireApprovalForBase",
+  "public"."BookingSettings"."requireApprovalForSelfService",
   "public"."BookingSettings"."requireExplicitCheckinForAdmin",
   "public"."BookingSettings"."requireExplicitCheckinForSelfService",
   "public"."BookingSettings"."requireExplicitCheckoutForAdmin",
@@ -19535,7 +19676,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -19871,7 +20014,9 @@ SELECT
   "public"."Booking"."originalTo",
   "public"."Booking"."autoArchivedAt",
   "public"."Booking"."archivedWithoutCheckin",
-  "public"."Booking"."cancellationReason"
+  "public"."Booking"."cancellationReason",
+  "public"."Booking"."approvedAt",
+  "public"."Booking"."approvedById"
 FROM
   "public"."Booking"
 WHERE
@@ -29167,6 +29312,7 @@ CREATE TYPE "ActivityEntity" AS ENUM ('ASSET', 'BOOKING', 'AUDIT', 'KIT', 'LOCAT
 - `BOOKING_PARTIAL_CHECKOUT`
 - `BOOKING_CANCELLED`
 - `BOOKING_ARCHIVED`
+- `BOOKING_APPROVED`
 - `BOOKING_MODEL_REQUESTED`
 - `BOOKING_MODEL_REQUEST_CHANGED`
 - `BOOKING_MODEL_REQUEST_REMOVED`
@@ -29193,5 +29339,5 @@ CREATE TYPE "ActivityEntity" AS ENUM ('ASSET', 'BOOKING', 'AUDIT', 'KIT', 'LOCAT
 #### Definition
 
 ```sql
-CREATE TYPE "ActivityAction" AS ENUM ('ASSET_CREATED', 'ASSET_NAME_CHANGED', 'ASSET_DESCRIPTION_CHANGED', 'ASSET_CATEGORY_CHANGED', 'ASSET_MODEL_CHANGED', 'ASSET_KIT_CHANGED', 'ASSET_LOCATION_CHANGED', 'ASSET_TAGS_CHANGED', 'ASSET_STATUS_CHANGED', 'ASSET_VALUATION_CHANGED', 'ASSET_QUANTITY_CHANGED', 'ASSET_MIN_QUANTITY_CHANGED', 'ASSET_CUSTOM_FIELD_CHANGED', 'ASSET_PREFERRED_BARCODE_CHANGED', 'ASSET_AVAILABLE_TO_BOOK_CHANGED', 'ASSET_ARCHIVED', 'ASSET_UNARCHIVED', 'ASSET_DELETED', 'CUSTODY_ASSIGNED', 'CUSTODY_RELEASED', 'BOOKING_CREATED', 'BOOKING_STATUS_CHANGED', 'BOOKING_DATES_CHANGED', 'BOOKING_ASSETS_ADDED', 'BOOKING_ASSETS_REMOVED', 'BOOKING_CHECKED_OUT', 'BOOKING_CHECKED_IN', 'BOOKING_PARTIAL_CHECKIN', 'BOOKING_PARTIAL_CHECKOUT', 'BOOKING_CANCELLED', 'BOOKING_ARCHIVED', 'BOOKING_MODEL_REQUESTED', 'BOOKING_MODEL_REQUEST_CHANGED', 'BOOKING_MODEL_REQUEST_REMOVED', 'BOOKING_MODEL_REQUEST_FULFILLED', 'AUDIT_CREATED', 'AUDIT_STARTED', 'AUDIT_ASSETS_ADDED', 'AUDIT_ASSETS_REMOVED', 'AUDIT_ASSET_SCANNED', 'AUDIT_ASSET_SCAN_REMOVED', 'AUDIT_DUE_DATE_CHANGED', 'AUDIT_ASSIGNEE_ADDED', 'AUDIT_ASSIGNEE_REMOVED', 'AUDIT_UPDATED', 'AUDIT_COMPLETED', 'AUDIT_CANCELLED', 'AUDIT_ARCHIVED', 'LOCATION_CREATED', 'LOCATION_UPDATED', 'KIT_CREATED', 'KIT_UPDATED', 'ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED');
+CREATE TYPE "ActivityAction" AS ENUM ('ASSET_CREATED', 'ASSET_NAME_CHANGED', 'ASSET_DESCRIPTION_CHANGED', 'ASSET_CATEGORY_CHANGED', 'ASSET_MODEL_CHANGED', 'ASSET_KIT_CHANGED', 'ASSET_LOCATION_CHANGED', 'ASSET_TAGS_CHANGED', 'ASSET_STATUS_CHANGED', 'ASSET_VALUATION_CHANGED', 'ASSET_QUANTITY_CHANGED', 'ASSET_MIN_QUANTITY_CHANGED', 'ASSET_CUSTOM_FIELD_CHANGED', 'ASSET_PREFERRED_BARCODE_CHANGED', 'ASSET_AVAILABLE_TO_BOOK_CHANGED', 'ASSET_ARCHIVED', 'ASSET_UNARCHIVED', 'ASSET_DELETED', 'CUSTODY_ASSIGNED', 'CUSTODY_RELEASED', 'BOOKING_CREATED', 'BOOKING_STATUS_CHANGED', 'BOOKING_DATES_CHANGED', 'BOOKING_ASSETS_ADDED', 'BOOKING_ASSETS_REMOVED', 'BOOKING_CHECKED_OUT', 'BOOKING_CHECKED_IN', 'BOOKING_PARTIAL_CHECKIN', 'BOOKING_PARTIAL_CHECKOUT', 'BOOKING_CANCELLED', 'BOOKING_ARCHIVED', 'BOOKING_APPROVED', 'BOOKING_MODEL_REQUESTED', 'BOOKING_MODEL_REQUEST_CHANGED', 'BOOKING_MODEL_REQUEST_REMOVED', 'BOOKING_MODEL_REQUEST_FULFILLED', 'AUDIT_CREATED', 'AUDIT_STARTED', 'AUDIT_ASSETS_ADDED', 'AUDIT_ASSETS_REMOVED', 'AUDIT_ASSET_SCANNED', 'AUDIT_ASSET_SCAN_REMOVED', 'AUDIT_DUE_DATE_CHANGED', 'AUDIT_ASSIGNEE_ADDED', 'AUDIT_ASSIGNEE_REMOVED', 'AUDIT_UPDATED', 'AUDIT_COMPLETED', 'AUDIT_CANCELLED', 'AUDIT_ARCHIVED', 'LOCATION_CREATED', 'LOCATION_UPDATED', 'KIT_CREATED', 'KIT_UPDATED', 'ORGANIZATION_QR_ID_DISPLAY_PREFERENCE_CHANGED');
 ```

@@ -32,5 +32,6 @@ class Organisation < ApplicationRecord
   has_many :organisation_emails, foreign_key: "organisationId", inverse_of: :organisation, dependent: :destroy
   has_many :monthly_stats, class_name: "OrganisationMonthlyStat", foreign_key: "organisationId",
                            inverse_of: :organisation, dependent: :destroy
+  has_many :admin_tags, foreign_key: "organisationId", inverse_of: :organisation, dependent: :destroy
   has_many :embed_signatures, foreign_key: "organisationId", inverse_of: :organisation, dependent: :destroy
 end

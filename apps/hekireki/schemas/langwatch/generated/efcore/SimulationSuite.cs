@@ -31,6 +31,10 @@ public partial class SimulationSuite
 
     public string? JudgeModel { get; set; }
 
+    public int? TraceQuietPeriodMs { get; set; }
+
+    public int? TraceWaitTimeoutMs { get; set; }
+
     public string Kind { get; set; } = "run_plan";
 
     public string? Scope { get; set; }
@@ -40,6 +44,10 @@ public partial class SimulationSuite
     public string? Evaluators { get; set; }
 
     public virtual ICollection<Scenario> TestSuiteScenarios { get; set; } = new List<Scenario>();
+
+    public string? TemplateId { get; set; }
+
+    public int? TemplateVersion { get; set; }
 
     public DateTime? ArchivedAt { get; set; }
 

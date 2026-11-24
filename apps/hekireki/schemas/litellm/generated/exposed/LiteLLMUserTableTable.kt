@@ -8,6 +8,8 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 object LiteLLMUserTableTable : IdTable<String>("\"LiteLLM_UserTable\"") {
+    val rolloverMaxBudget = double("rollover_max_budget").nullable()
+    val rolloverCredit = double("rollover_credit").nullable()
     val budgetLimits = jsonb<String>("budget_limits", { it }, { it }).nullable()
     override val id = text("user_id").entityId()
     val userAlias = text("user_alias").nullable()

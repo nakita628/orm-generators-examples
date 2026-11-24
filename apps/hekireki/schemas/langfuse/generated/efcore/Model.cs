@@ -13,9 +13,15 @@ public partial class Model
 
     public DateTime UpdatedAt { get; set; }
 
+    public ModelScope Scope { get; set; }
+
     public string? ProjectId { get; set; }
 
     public virtual Project? Project { get; set; }
+
+    public string? OrganizationId { get; set; }
+
+    public virtual Organization? Organization { get; set; }
 
     public string ModelName { get; set; } = null!;
 

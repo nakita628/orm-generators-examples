@@ -15,6 +15,7 @@ class AnnotationQueueEntity(
     var name by AnnotationQueueTable.name
     var description by AnnotationQueueTable.description
     var scoreConfigIds by AnnotationQueueTable.scoreConfigIds
+    var sessionViewId by AnnotationQueueTable.sessionViewId
     var projectId by AnnotationQueueTable.projectId
     var project by ProjectEntity referencedOn AnnotationQueueTable.projectId
     var createdAt by AnnotationQueueTable.createdAt

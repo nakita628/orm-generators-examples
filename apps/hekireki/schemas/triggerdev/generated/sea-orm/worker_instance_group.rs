@@ -75,6 +75,12 @@ pub enum Relation {
         on_delete = "Cascade"
     )]
     Project,
+    #[sea_orm(
+        has_many = "super::worker_group_token::Entity",
+        from = "Column::Id",
+        to = "super::worker_group_token::Column::WorkerGroupId"
+    )]
+    ChildTokens,
     #[sea_orm(has_many = "super::worker_instance::Entity")]
     Workers,
     #[sea_orm(has_many = "super::background_worker::Entity")]

@@ -50,4 +50,13 @@ public enum GatewayChangeEventKind
 
     [PgName("ROUTING_POLICY_DELETED")]
     RoutingPolicyDeleted,
+
+    [PgName("A2A_TARGET_CREATED")]
+    A2aTargetCreated,
+
+    [PgName("A2A_TARGET_UPDATED")]
+    A2aTargetUpdated,
+
+    [PgName("A2A_TARGET_DELETED")]
+    A2aTargetDeleted,
 }

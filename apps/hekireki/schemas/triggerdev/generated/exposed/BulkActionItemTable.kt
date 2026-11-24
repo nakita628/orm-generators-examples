@@ -39,4 +39,8 @@ object BulkActionItemTable : IdTable<String>("\"BulkActionItem\"") {
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     override val primaryKey = PrimaryKey(id, name = "\"BulkActionItem_pkey\"")
+
+    init {
+        index("\"BulkActionItem_groupId_createdAt_idx\"", false, groupId, createdAt)
+    }
 }

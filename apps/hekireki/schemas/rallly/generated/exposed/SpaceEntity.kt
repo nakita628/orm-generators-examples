@@ -38,6 +38,7 @@ class SpaceEntity(
     val nonprofitApplications by NonprofitApplicationEntity referrersOn NonprofitApplicationTable.spaceId
     val webhooks by SpaceWebhookEntity referrersOn SpaceWebhookTable.spaceId
     val apiUsage by ApiUsageEntity referrersOn ApiUsageTable.spaceId
+    val usage by SpaceUsageEntity referrersOn SpaceUsageTable.spaceId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

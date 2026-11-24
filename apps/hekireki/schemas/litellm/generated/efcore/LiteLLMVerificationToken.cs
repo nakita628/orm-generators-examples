@@ -7,6 +7,8 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMVerificationToken
 {
+    public string? KeyId { get; set; } = Guid.NewGuid().ToString();
+
     public string Token { get; set; } = null!;
 
     public string? KeyName { get; set; }

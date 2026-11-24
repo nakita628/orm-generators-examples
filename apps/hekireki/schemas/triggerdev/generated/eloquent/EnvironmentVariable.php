@@ -35,4 +35,9 @@ class EnvironmentVariable extends Model
     {
         return $this->hasMany(EnvironmentVariableValue::class, 'variableId');
     }
+
+    public function ignores(): HasMany
+    {
+        return $this->hasMany(EnvironmentVariableIgnore::class, 'variableId');
+    }
 }

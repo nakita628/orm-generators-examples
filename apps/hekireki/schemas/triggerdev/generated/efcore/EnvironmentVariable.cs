@@ -22,4 +22,6 @@ public partial class EnvironmentVariable
     public DateTime UpdatedAt { get; set; }
 
     public virtual ICollection<EnvironmentVariableValue> Values { get; set; } = new List<EnvironmentVariableValue>();
+
+    public virtual ICollection<EnvironmentVariableIgnore> Ignores { get; set; } = new List<EnvironmentVariableIgnore>();
 }

@@ -104,7 +104,7 @@ CREATE TYPE "GatewayBudgetBreachAction" AS ENUM ('BLOCK', 'WARN');
 
 CREATE TYPE "GatewayBudgetLedgerStatus" AS ENUM ('SUCCESS', 'PROVIDER_ERROR', 'BLOCKED_BY_GUARDRAIL', 'CANCELLED');
 
-CREATE TYPE "GatewayChangeEventKind" AS ENUM ('VK_CREATED', 'VK_CONFIG_UPDATED', 'VK_REVOKED', 'VK_ROTATED', 'VK_DISABLED', 'VK_ENABLED', 'BUDGET_CREATED', 'BUDGET_UPDATED', 'BUDGET_DELETED', 'MODEL_PROVIDER_UPDATED', 'CACHE_RULE_CREATED', 'CACHE_RULE_UPDATED', 'CACHE_RULE_DELETED', 'ROUTING_POLICY_UPDATED', 'ROUTING_POLICY_DELETED');
+CREATE TYPE "GatewayChangeEventKind" AS ENUM ('VK_CREATED', 'VK_CONFIG_UPDATED', 'VK_REVOKED', 'VK_ROTATED', 'VK_DISABLED', 'VK_ENABLED', 'BUDGET_CREATED', 'BUDGET_UPDATED', 'BUDGET_DELETED', 'MODEL_PROVIDER_UPDATED', 'CACHE_RULE_CREATED', 'CACHE_RULE_UPDATED', 'CACHE_RULE_DELETED', 'ROUTING_POLICY_UPDATED', 'ROUTING_POLICY_DELETED', 'A2A_TARGET_CREATED', 'A2A_TARGET_UPDATED', 'A2A_TARGET_DELETED');
 
 CREATE TYPE "GatewayCacheRuleMode" AS ENUM ('RESPECT', 'FORCE', 'DISABLE');
 
@@ -1660,6 +1660,7 @@ CREATE TABLE "LangyConversationProjection" (
     "pendingHandoffTurnId" TEXT,
     "runToken" TEXT,
     "archivedAt" DOUBLE PRECISION,
+    "ciFollowUpsInARow" INTEGER NOT NULL DEFAULT 0,
     "createdAt" DOUBLE PRECISION NOT NULL,
     "updatedAt" DOUBLE PRECISION NOT NULL,
     "occurredAt" DOUBLE PRECISION NOT NULL,
@@ -1723,6 +1724,19 @@ CREATE TABLE "LangyConversationTurnProjection" (
     "projectionVersion" TEXT NOT NULL,
 
     CONSTRAINT "LangyConversationTurnProjection_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "LangyPullRequest" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "repositoryFullName" TEXT NOT NULL,
+    "prNumber" INTEGER NOT NULL,
+    "conversationId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "openedAt" DOUBLE PRECISION NOT NULL,
+    "sourceEventId" TEXT NOT NULL,
+
+    CONSTRAINT "LangyPullRequest_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "LangyMessageProjection" (
@@ -1916,6 +1930,25 @@ CREATE TABLE "RetentionPolicy" (
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "RetentionPolicy_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "RetentionApplyStatus" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "scopeType" "RetentionPolicyScopeType" NOT NULL,
+    "scopeId" TEXT NOT NULL,
+    "changedAt" DOUBLE PRECISION,
+    "appliedAt" DOUBLE PRECISION,
+    "raisedAt" DOUBLE PRECISION,
+    "shortenedAt" DOUBLE PRECISION,
+    "createdAt" DOUBLE PRECISION NOT NULL,
+    "updatedAt" DOUBLE PRECISION NOT NULL,
+    "occurredAt" DOUBLE PRECISION NOT NULL,
+    "acceptedAt" DOUBLE PRECISION NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+
+    CONSTRAINT "RetentionApplyStatus_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "DataPrivacyPolicy" (
@@ -2265,11 +2298,16 @@ CREATE TABLE "Scenario" (
     "parameters" JSONB,
     "simulatorModel" TEXT,
     "judgeModel" TEXT,
+    "traceQuietPeriodMs" INTEGER,
+    "traceWaitTimeoutMs" INTEGER,
     "maxTurns" INTEGER,
     "minTurns" INTEGER,
     "fields" JSONB,
     "callerVoice" JSONB,
     "testSuiteId" TEXT,
+    "kind" TEXT NOT NULL DEFAULT 'standard',
+    "redTeam" JSONB,
+    "sourceTemplateId" TEXT,
     "version" INTEGER NOT NULL DEFAULT 1,
     "lastUpdatedById" TEXT,
     "archivedAt" TIMESTAMP(3),
@@ -2306,10 +2344,14 @@ CREATE TABLE "SimulationSuite" (
     "labels" TEXT[],
     "simulatorModel" TEXT,
     "judgeModel" TEXT,
+    "traceQuietPeriodMs" INTEGER,
+    "traceWaitTimeoutMs" INTEGER,
     "kind" TEXT NOT NULL DEFAULT 'run_plan',
     "scope" JSONB,
     "fields" JSONB,
     "evaluators" JSONB,
+    "templateId" TEXT,
+    "templateVersion" INTEGER,
     "archivedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -2362,6 +2404,11 @@ CREATE TABLE "Subscription" (
     "seatRepairFlaggedAt" TIMESTAMP(3),
     "seatLineLeaseToken" TEXT,
     "seatLineLeaseUntil" TIMESTAMP(3),
+    "paymentRecoveryInvoiceId" TEXT,
+    "paymentRecoveryStartedAt" TIMESTAMP(3),
+    "paymentRecoveryNoticeDay" INTEGER,
+    "overPlanSince" TIMESTAMP(3),
+    "overPlanEndedAt" TIMESTAMP(3),
 
     CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id")
 );
@@ -2435,10 +2482,27 @@ CREATE TABLE "AuthzEngineSwitch" (
 CREATE TABLE "AuthzOrganizationPolicy" (
     "organizationId" TEXT NOT NULL,
     "braidsOrganizationAdminsOnly" BOOLEAN NOT NULL DEFAULT false,
+    "braidsEnabled" BOOLEAN NOT NULL DEFAULT false,
     "updatedByUserId" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "AuthzOrganizationPolicy_pkey" PRIMARY KEY ("organizationId")
+);
+
+CREATE TABLE "AuthzBraidWrite" (
+    "organizationId" TEXT NOT NULL,
+    "commandId" TEXT NOT NULL,
+    "grantId" TEXT NOT NULL,
+    "readerProjectId" TEXT NOT NULL,
+    "ownerProjectId" TEXT NOT NULL,
+    "termsKey" TEXT NOT NULL,
+    "condition" JSONB NOT NULL,
+    "expiresAt" TIMESTAMP(3),
+    "replacesGrantId" TEXT,
+    "createdByUserId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuthzBraidWrite_pkey" PRIMARY KEY ("organizationId","commandId")
 );
 
 CREATE TABLE "RoleBinding" (
@@ -2884,6 +2948,27 @@ CREATE TABLE "IngestionTemplate" (
     "updatedById" TEXT,
 
     CONSTRAINT "IngestionTemplate_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "GatewayA2ATarget" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "projectId" TEXT,
+    "name" TEXT NOT NULL,
+    "agentName" TEXT NOT NULL,
+    "cardUrl" TEXT NOT NULL,
+    "upstreamUrl" TEXT NOT NULL,
+    "encryptedUpstreamHeaders" TEXT,
+    "restrictToAllowList" BOOLEAN NOT NULL DEFAULT false,
+    "allowedVirtualKeyIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "blocked" BOOLEAN NOT NULL DEFAULT false,
+    "blockReason" TEXT,
+    "createdById" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "archivedAt" TIMESTAMP(3),
+
+    CONSTRAINT "GatewayA2ATarget_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "GatewayConnectUpstream" (
@@ -3400,6 +3485,96 @@ CREATE TABLE "AgentRegistryBaseline" (
     "baselinedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "AgentRegistryBaseline_pkey" PRIMARY KEY ("organizationId")
+);
+
+CREATE TABLE "AgentStopPlanTarget" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "position" INTEGER NOT NULL,
+    "label" TEXT NOT NULL,
+    "target" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStopPlanTarget_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AgentStopPlan" (
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "version" INTEGER NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStopPlan_pkey" PRIMARY KEY ("organizationId","agentId")
+);
+
+CREATE TABLE "GovernanceAwsConnection" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "accessKeyId" TEXT,
+    "encryptedSecretAccessKey" TEXT,
+    "roleArn" TEXT,
+    "encryptedExternalId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "GovernanceAwsConnection_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AgentStop" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "agentName" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "severity" TEXT NOT NULL,
+    "approval" TEXT NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "reason" TEXT NOT NULL,
+    "requestedByUserId" TEXT,
+    "requestedByApiKeyId" TEXT,
+    "decidedByUserId" TEXT,
+    "decidedByApiKeyId" TEXT,
+    "restoredByUserId" TEXT,
+    "restoredByApiKeyId" TEXT,
+    "targets" JSONB NOT NULL,
+    "requestedAt" TIMESTAMP(3) NOT NULL,
+    "decidedAt" TIMESTAMP(3),
+    "quarantinedAt" TIMESTAMP(3),
+    "restoreRequestedAt" TIMESTAMP(3),
+    "restoredAt" TIMESTAMP(3),
+    "lastAppliedEventId" TEXT NOT NULL,
+    "lastAcceptedAt" BIGINT NOT NULL,
+    "lastOccurredAt" BIGINT NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStop_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AgentStopClaim" (
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "stopId" TEXT NOT NULL,
+    "claimedAt" TIMESTAMP(3) NOT NULL,
+    "sentAt" TIMESTAMP(3),
+    "decision" TEXT,
+    "decisionTakenAt" TIMESTAMP(3),
+
+    CONSTRAINT "AgentStopClaim_pkey" PRIMARY KEY ("organizationId","agentId")
+);
+
+CREATE TABLE "AgentStopTargetPriorState" (
+    "organizationId" TEXT NOT NULL,
+    "stopId" TEXT NOT NULL,
+    "targetId" TEXT NOT NULL,
+    "wasStopped" BOOLEAN NOT NULL,
+    "recordedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AgentStopTargetPriorState_pkey" PRIMARY KEY ("organizationId","stopId","targetId")
 );
 
 CREATE TABLE "IdentityMatch" (
@@ -4044,6 +4219,10 @@ CREATE INDEX "LangyConversationTurnProjection_projectId_conversationId_up_idx" O
 
 CREATE UNIQUE INDEX "LangyConversationTurnProjection_projectId_conversationId_tu_key" ON "LangyConversationTurnProjection"("projectId", "conversationId", "turnId");
 
+CREATE INDEX "LangyPullRequest_userId_openedAt_idx" ON "LangyPullRequest"("userId", "openedAt");
+
+CREATE UNIQUE INDEX "LangyPullRequest_repositoryFullName_prNumber_key" ON "LangyPullRequest"("repositoryFullName", "prNumber");
+
 CREATE INDEX "LangyMessageProjection_projectId_conversationId_createdAt_idx" ON "LangyMessageProjection"("projectId", "conversationId", "createdAt");
 
 CREATE UNIQUE INDEX "LangyMessageProjection_projectId_conversationId_messageId_key" ON "LangyMessageProjection"("projectId", "conversationId", "messageId");
@@ -4123,6 +4302,8 @@ CREATE INDEX "RetentionPolicy_organizationId_idx" ON "RetentionPolicy"("organiza
 CREATE INDEX "RetentionPolicy_scopeType_scopeId_idx" ON "RetentionPolicy"("scopeType", "scopeId");
 
 CREATE UNIQUE INDEX "RetentionPolicy_scopeType_scopeId_category_key" ON "RetentionPolicy"("scopeType", "scopeId", "category");
+
+CREATE UNIQUE INDEX "RetentionApplyStatus_organizationId_scopeType_scopeId_key" ON "RetentionApplyStatus"("organizationId", "scopeType", "scopeId");
 
 CREATE INDEX "DataPrivacyPolicy_organizationId_idx" ON "DataPrivacyPolicy"("organizationId");
 
@@ -4302,6 +4483,8 @@ CREATE INDEX "GroupMembership_userId_idx" ON "GroupMembership"("userId");
 
 CREATE INDEX "GroupMembership_groupId_idx" ON "GroupMembership"("groupId");
 
+CREATE INDEX "AuthzBraidWrite_organizationId_readerProjectId_createdAt_idx" ON "AuthzBraidWrite"("organizationId", "readerProjectId", "createdAt");
+
 CREATE INDEX "RoleBinding_organizationId_idx" ON "RoleBinding"("organizationId");
 
 CREATE INDEX "RoleBinding_userId_idx" ON "RoleBinding"("userId");
@@ -4440,6 +4623,8 @@ CREATE INDEX "IngestionTemplate_sourceType_idx" ON "IngestionTemplate"("sourceTy
 
 CREATE UNIQUE INDEX "IngestionTemplate_organizationId_slug_key" ON "IngestionTemplate"("organizationId", "slug");
 
+CREATE INDEX "GatewayA2ATarget_organizationId_projectId_idx" ON "GatewayA2ATarget"("organizationId", "projectId");
+
 CREATE INDEX "GatewayBudget_organizationId_idx" ON "GatewayBudget"("organizationId");
 
 CREATE INDEX "GatewayBudget_scopeType_scopeId_providerKey_idx" ON "GatewayBudget"("scopeType", "scopeId", "providerKey");
@@ -4559,6 +4744,14 @@ CREATE INDEX "AgentRegistryEvent_organizationId_deliveryRecordedAt_idx" ON "Agen
 CREATE INDEX "AgentRegistryEvent_organizationId_entryId_idx" ON "AgentRegistryEvent"("organizationId", "entryId");
 
 CREATE UNIQUE INDEX "AgentRegistryEvent_organizationId_sequence_key" ON "AgentRegistryEvent"("organizationId", "sequence");
+
+CREATE INDEX "AgentStopPlanTarget_organizationId_agentId_idx" ON "AgentStopPlanTarget"("organizationId", "agentId");
+
+CREATE INDEX "GovernanceAwsConnection_organizationId_idx" ON "GovernanceAwsConnection"("organizationId");
+
+CREATE INDEX "AgentStop_organizationId_agentId_idx" ON "AgentStop"("organizationId", "agentId");
+
+CREATE INDEX "AgentStop_organizationId_status_idx" ON "AgentStop"("organizationId", "status");
 
 CREATE INDEX "IdentityMatch_organizationId_discoveredPersonId_idx" ON "IdentityMatch"("organizationId", "discoveredPersonId");
 
@@ -4705,6 +4898,7 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [LangyTurnRequest](#model-LangyTurnRequest)                                       | `LangyTurnRequest`                    | Durable idempotency receipt for one logical Langy send. A transport retry reuses the same requestId and receives the original conversation/turn ids instead of minting a second message or turn.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | [LangyActiveTurn](#model-LangyActiveTurn)                                         | `LangyActiveTurn`                     | Postgres-authoritative one-turn admission for a conversation. PREPARING claims are leased so a crash before the durable start event can recover; COMMITTED claims are released only by the matching terminal event.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | [LangyConversationTurnProjection](#model-LangyConversationTurnProjection)         | `LangyConversationTurnProjection`     | Rebuildable per-turn operational render document.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [LangyPullRequest](#model-LangyPullRequest)                                       | `LangyPullRequest`                    | One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished checks look it up by repository and number to wake the conversation; the daily pull request cap counts a person's rows by day. Rebuilt by a projection replay.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | [LangyMessageProjection](#model-LangyMessageProjection)                           | `LangyMessageProjection`              | Rebuildable operational message fact. One source event produces one row.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | [ProjectSecret](#model-ProjectSecret)                                             | `ProjectSecret`                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [TriggerSent](#model-TriggerSent)                                                 | `TriggerSent`                         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -4720,6 +4914,7 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [TraceEditOverlay](#model-TraceEditOverlay)                                       | `TraceEditOverlay`                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [TraceIngestSourceBilling](#model-TraceIngestSourceBilling)                       | `TraceIngestSourceBilling`            |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [RetentionPolicy](#model-RetentionPolicy)                                         | `RetentionPolicy`                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [RetentionApplyStatus](#model-RetentionApplyStatus)                               | `RetentionApplyStatus`                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [DataPrivacyPolicy](#model-DataPrivacyPolicy)                                     | `DataPrivacyPolicy`                   |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [InstantEvalJudgeProject](#model-InstantEvalJudgeProject)                         | `InstantEvalJudgeProject`             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [InstantEvalJudgeUsageBilling](#model-InstantEvalJudgeUsageBilling)               | `InstantEvalJudgeUsageBilling`        |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -4752,6 +4947,7 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [AuthzUserStanding](#model-AuthzUserStanding)                                     | `AuthzUserStanding`                   | Who authz treats as gone, from user's and identity's facts; authz never reads User (ARCHITECTURE.md, "Platform operators are a grant").                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | [AuthzEngineSwitch](#model-AuthzEngineSwitch)                                     | `AuthzEngineSwitch`                   | Whether an organization's permission checks run on the authorization engine: authz's own switch, set when the engine migration proves the organization and pinned off by an operator's rollback. No row is the legacy path. Spec: modules/authz/specs/engine-switch.feature.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | [AuthzOrganizationPolicy](#model-AuthzOrganizationPolicy)                         | `AuthzOrganizationPolicy`             | ADR-201: an organisation's braid setting. Owned by authz; read into the organisation's snapshot.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [AuthzBraidWrite](#model-AuthzBraidWrite)                                         | `AuthzBraidWrite`                     |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [RoleBinding](#model-RoleBinding)                                                 | `RoleBinding`                         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [Grant](#model-Grant)                                                             | `Grant`                               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [GrantUsage](#model-GrantUsage)                                                   | `GrantUsage`                          |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -4781,6 +4977,7 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [AiToolEntryTeam](#model-AiToolEntryTeam)                                         | `AiToolEntryTeam`                     | @deprecated Per-team scope binding for AiToolEntry. Superseded by AiToolEntryDepartment; kept so the rename migration is non-destructive. No new rows are written here.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
 | [AiToolEntryDepartment](#model-AiToolEntryDepartment)                             | `AiToolEntryDepartment`               | Per-department scope binding for AiToolEntry. Empty set = org-wide. Non-empty = entry visible only to members of those departments (an OrganizationUser whose `departmentId` is in the set). Mirrors AiToolEntryTeam's shape. `departmentId` is a plain column ref (relationMode="prisma"), matching how Department is referenced elsewhere; the service validates the id belongs to the org.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [IngestionTemplate](#model-IngestionTemplate)                                     | `IngestionTemplate`                   | Admin/platform-curated catalog row for upstream OTLP normalization. Owns the OTTL transform that reshapes a specific upstream tool's span shape into canonical gen_ai conventions. Users connect via an ingestion key (an ingest-only ApiKey carrying ingestionTemplateId) to land traces in their personal project. `organizationId` NULL = platform-published default (always-visible across every org). NOT NULL = org-authored (visible only within that org). v1 ships only platform-published; org-authored authoring UI lands v2 (the column ships now to avoid a future migration). Spec: specs/ai-gateway/governance/ingestion-templates-catalog.feature                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| [GatewayA2ATarget](#model-GatewayA2ATarget)                                       | `GatewayA2ATarget`                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [GatewayConnectUpstream](#model-GatewayConnectUpstream)                           | `GatewayConnectUpstream`              |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [GatewayTraceExportKey](#model-GatewayTraceExportKey)                             | `GatewayTraceExportKey`               |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [GatewayBudget](#model-GatewayBudget)                                             | `GatewayBudget`                       |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
@@ -4811,6 +5008,12 @@ CREATE INDEX "WebPushSubscription_userId_idx" ON "WebPushSubscription"("userId")
 | [AgentRegistryEntry](#model-AgentRegistryEntry)                                   | `AgentRegistryEntry`                  | One agent in the organisation's governance registry, from any source governance reads (enterprise/modules/governance/specs/agent-registry.feature). `entry` is the latest machine-readable snapshot; `version` grows by one on every material change.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | [AgentRegistryEvent](#model-AgentRegistryEvent)                                   | `AgentRegistryEvent`                  | The registry's append-only change feed: one row per registered, versioned, removed or tool-deprecated fact. `sequence` is the pull cursor; `deliveryRecordedAt` marks the webhook fan-out as recorded in governance's outbox.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | [AgentRegistryBaseline](#model-AgentRegistryBaseline)                             | `AgentRegistryBaseline`               | An organisation's registry baseline: its first reconcile, written as already pushed so the agents it already had are not announced. Every reconcile after it pushes its changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| [AgentStopPlanTarget](#model-AgentStopPlanTarget)                                 | `AgentStopPlanTarget`                 | One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/ agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway virtual key. A plan write replaces every row of the agent at once.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [AgentStopPlan](#model-AgentStopPlan)                                             | `AgentStopPlan`                       | One agent's stop plan version: bumped by every save, so a save over a plan someone else saved since it was read is refused. No row means the plan was never saved (version 0).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [GovernanceAwsConnection](#model-GovernanceAwsConnection)                         | `GovernanceAwsConnection`             | An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume, or both. The secret access key and the external id are stored sealed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [AgentStop](#model-AgentStop)                                                     | `AgentStop`                           | The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and every target's outcome, folded from the stop's events.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [AgentStopClaim](#model-AgentStopClaim)                                           | `AgentStopClaim`                      | The one open stop an agent may have: the api takes this row before it sends a stop's request, so two requests at once cannot both open one. A later request takes it over once the stop it names has closed. `sentAt` is set once the request command was sent: from then on the claim passes on only after its stop closed, never on age. `decision` is taken by the one approve or deny that wins. `decisionTakenAt` is set while that decision is in flight and cleared once its command was sent; a decision left in flight is taken over once abandoned.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [AgentStopTargetPriorState](#model-AgentStopTargetPriorState)                     | `AgentStopTargetPriorState`           | Whether a target was already stopped before a stop first touched it, recorded once before the stop's platform call, so a retried call after a success still knows the change is the stop's own.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
 | [IdentityMatch](#model-IdentityMatch)                                             | `IdentityMatch`                       | The dated match table: "`user_abc123` on Anthropic is platform user #42, valid from March 3", closed when it stops being true. Dating is what makes a re-issued email address survivable: the leaver's link closes at offboarding, the new hire gets a new link, and January's spend stays with January's person. A correction closes the old row and opens a new one; nothing is ever silently rewritten.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | [GovernanceTenantHistory](#model-GovernanceTenantHistory)                         | `GovernanceTenantHistory`             | Every ClickHouse `TenantId` this organization has ever written governance rows under, appended on first use and never pruned. The live `resolveGovProjectId` lookup cannot be this translation: it filters `archivedAt: null` and so returns null forever once someone archives the governance project, while the write path re-reads the same project by slug with no such filter and keeps landing rows under the old tenant. The organization would map to zero tenants on read and one on write - a permanent split-brain in which the cost screen reports "no governance data" and an erasure job erases nothing and reports success. Reads resolve against the whole history; erasure walks all of it, because personal data does not stop existing in a tenant that stopped being current.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | [ErasedIdentifierSuppression](#model-ErasedIdentifierSuppression)                 | `ErasedIdentifierSuppression`         | Hashes of erased identifiers - the do-not-reimport list. Without it the erasure is undone by the pipeline that produced it: the pullers look 30 days back, so the next day's pull re-ingests the same email and re-writes what we erased. Every write path carrying an identifier consults this list and drops a suppressed one (ADR-128 §9 step 1). It stores hashes and never identifiers, so it is not itself a copy of the data it exists to keep out. The stored `identifierHash` and the pseudonym written in place of the erased value are the same function of the same input - HMAC-SHA256(secret, identifier) - so a write path computes that digest once and uses it twice: as the membership test, and, on a hit, as the replacement value. That is why no original-to-pseudonym mapping table exists; one would hold the erased identifier in plaintext forever. Scoped to the provider as well as the organization: the same string can be a different person under a different provider.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -6712,11 +6915,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -16746,7 +16954,12 @@ SELECT
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 FROM
   "public"."Subscription"
 WHERE
@@ -24065,11 +24278,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -24095,10 +24313,14 @@ SELECT
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -38142,6 +38364,7 @@ The source of truth remains the ClickHouse event log.
 | `PendingHandoffTurnId` (`pendingHandoffTurnId`) | `String`                                                         | NULL        |                 |                                                                                                                                                                                                       |
 | `RunToken` (`runToken`)                         | `String`                                                         | NULL        |                 | Per-conversation HMAC key for worker stream frames; server-side only.                                                                                                                                 |
 | `ArchivedAt` (`archivedAt`)                     | `Float`                                                          | NULL        |                 |                                                                                                                                                                                                       |
+| `CiFollowUpsInARow` (`ciFollowUpsInARow`)       | `Int`                                                            | NOT NULL    | `0`             | Messages CI started on a pull request since the person last wrote.                                                                                                                                    |
 | `CreatedAt` (`createdAt`)                       | `Float`                                                          | NOT NULL    |                 |                                                                                                                                                                                                       |
 | `UpdatedAt` (`updatedAt`)                       | `Float`                                                          | NOT NULL    |                 |                                                                                                                                                                                                       |
 | `OccurredAt` (`occurredAt`)                     | `Float`                                                          | NOT NULL    |                 | Business time of the latest applied event.                                                                                                                                                            |
@@ -38179,6 +38402,7 @@ CREATE TABLE "LangyConversationProjection" (
     "pendingHandoffTurnId" TEXT,
     "runToken" TEXT,
     "archivedAt" DOUBLE PRECISION,
+    "ciFollowUpsInARow" INTEGER NOT NULL DEFAULT 0,
     "createdAt" DOUBLE PRECISION NOT NULL,
     "updatedAt" DOUBLE PRECISION NOT NULL,
     "occurredAt" DOUBLE PRECISION NOT NULL,
@@ -38227,6 +38451,7 @@ SELECT
   "public"."LangyConversationProjection"."pendingHandoffTurnId",
   "public"."LangyConversationProjection"."runToken",
   "public"."LangyConversationProjection"."archivedAt",
+  "public"."LangyConversationProjection"."ciFollowUpsInARow",
   "public"."LangyConversationProjection"."createdAt",
   "public"."LangyConversationProjection"."updatedAt",
   "public"."LangyConversationProjection"."occurredAt",
@@ -38293,6 +38518,7 @@ SELECT
   "public"."LangyConversationProjection"."pendingHandoffTurnId",
   "public"."LangyConversationProjection"."runToken",
   "public"."LangyConversationProjection"."archivedAt",
+  "public"."LangyConversationProjection"."ciFollowUpsInARow",
   "public"."LangyConversationProjection"."createdAt",
   "public"."LangyConversationProjection"."updatedAt",
   "public"."LangyConversationProjection"."occurredAt",
@@ -38345,6 +38571,7 @@ INSERT INTO
     "status",
     "isShared",
     "messageCount",
+    "ciFollowUpsInARow",
     "createdAt",
     "updatedAt",
     "occurredAt",
@@ -38368,7 +38595,8 @@ VALUES
     $12,
     $13,
     $14,
-    $15
+    $15,
+    $16
   )
 RETURNING
   "public"."LangyConversationProjection"."id",
@@ -38391,13 +38619,14 @@ RETURNING
   "public"."LangyConversationProjection"."pendingHandoffTurnId",
   "public"."LangyConversationProjection"."runToken",
   "public"."LangyConversationProjection"."archivedAt",
+  "public"."LangyConversationProjection"."ciFollowUpsInARow",
   "public"."LangyConversationProjection"."createdAt",
   "public"."LangyConversationProjection"."updatedAt",
   "public"."LangyConversationProjection"."occurredAt",
   "public"."LangyConversationProjection"."acceptedAt",
   "public"."LangyConversationProjection"."lastEventId",
   "public"."LangyConversationProjection"."projectionVersion"
--- params: ["<nanoid()>","example","example","example","derived","interactive","example",false,"0","1.5","1.5","1.5","1.5","example","example"]
+-- params: ["<nanoid()>","example","example","example","derived","interactive","example",false,"0","0","1.5","1.5","1.5","1.5","example","example"]
 ```
 
 **update**: Update a row
@@ -38457,6 +38686,7 @@ RETURNING
   "public"."LangyConversationProjection"."pendingHandoffTurnId",
   "public"."LangyConversationProjection"."runToken",
   "public"."LangyConversationProjection"."archivedAt",
+  "public"."LangyConversationProjection"."ciFollowUpsInARow",
   "public"."LangyConversationProjection"."createdAt",
   "public"."LangyConversationProjection"."updatedAt",
   "public"."LangyConversationProjection"."occurredAt",
@@ -38500,6 +38730,7 @@ RETURNING
   "public"."LangyConversationProjection"."pendingHandoffTurnId",
   "public"."LangyConversationProjection"."runToken",
   "public"."LangyConversationProjection"."archivedAt",
+  "public"."LangyConversationProjection"."ciFollowUpsInARow",
   "public"."LangyConversationProjection"."createdAt",
   "public"."LangyConversationProjection"."updatedAt",
   "public"."LangyConversationProjection"."occurredAt",
@@ -39376,6 +39607,246 @@ RETURNING
   "public"."LangyConversationTurnProjection"."acceptedAt",
   "public"."LangyConversationTurnProjection"."lastEventId",
   "public"."LangyConversationTurnProjection"."projectionVersion"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-LangyPullRequest"></a>
+
+### LangyPullRequest
+
+One pull request Langy opened, from the answer whose `gh pr create` printed it. Finished
+checks look it up by repository and number to wake the conversation; the daily pull request
+cap counts a person's rows by day. Rebuilt by a projection replay.
+
+| Field                                       | Type     | Constraints | Default    | Description                                                             |
+| ------------------------------------------- | -------- | ----------- | ---------- | ----------------------------------------------------------------------- |
+| `id`                                        | `String` | PK NOT NULL | `nanoid()` |                                                                         |
+| `projectId`                                 | `String` | NOT NULL    |            |                                                                         |
+| `RepositoryFullName` (`repositoryFullName`) | `String` | NOT NULL    |            | `owner/repo`, lowercased: GitHub matches repository names without case. |
+| `PrNumber` (`prNumber`)                     | `Int`    | NOT NULL    |            |                                                                         |
+| `ConversationId` (`conversationId`)         | `String` | NOT NULL    |            |                                                                         |
+| `UserId` (`userId`)                         | `String` | NOT NULL    |            | The conversation's owner, who opened it through Langy.                  |
+| `OpenedAt` (`openedAt`)                     | `Float`  | NOT NULL    |            | When the answer that opened it was recorded (epoch ms).                 |
+| `SourceEventId` (`sourceEventId`)           | `String` | NOT NULL    |            | The agent_responded event it came from.                                 |
+
+#### Indexes
+
+- `@@index([UserId, OpenedAt])`
+- `@@unique([RepositoryFullName, PrNumber])`
+
+#### Definition
+
+```sql
+CREATE TABLE "LangyPullRequest" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "repositoryFullName" TEXT NOT NULL,
+    "prNumber" INTEGER NOT NULL,
+    "conversationId" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "openedAt" DOUBLE PRECISION NOT NULL,
+    "sourceEventId" TEXT NOT NULL,
+
+    CONSTRAINT "LangyPullRequest_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "LangyPullRequest_userId_openedAt_idx" ON "LangyPullRequest"("userId", "openedAt");
+
+CREATE UNIQUE INDEX "LangyPullRequest_repositoryFullName_prNumber_key" ON "LangyPullRequest"("repositoryFullName", "prNumber");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.langyPullRequest.findMany();
+```
+
+```sql
+SELECT
+  "public"."LangyPullRequest"."id",
+  "public"."LangyPullRequest"."projectId",
+  "public"."LangyPullRequest"."repositoryFullName",
+  "public"."LangyPullRequest"."prNumber",
+  "public"."LangyPullRequest"."conversationId",
+  "public"."LangyPullRequest"."userId",
+  "public"."LangyPullRequest"."openedAt",
+  "public"."LangyPullRequest"."sourceEventId"
+FROM
+  "public"."LangyPullRequest"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.langyPullRequest.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."LangyPullRequest"."id"
+    FROM
+      "public"."LangyPullRequest"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.langyPullRequest.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."LangyPullRequest"."id",
+  "public"."LangyPullRequest"."projectId",
+  "public"."LangyPullRequest"."repositoryFullName",
+  "public"."LangyPullRequest"."prNumber",
+  "public"."LangyPullRequest"."conversationId",
+  "public"."LangyPullRequest"."userId",
+  "public"."LangyPullRequest"."openedAt",
+  "public"."LangyPullRequest"."sourceEventId"
+FROM
+  "public"."LangyPullRequest"
+WHERE
+  (
+    "public"."LangyPullRequest"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.langyPullRequest.create({
+  data: {
+    projectId: "example",
+    RepositoryFullName: "example",
+    PrNumber: 1,
+    ConversationId: "example",
+    UserId: "example",
+    OpenedAt: 1.5,
+    SourceEventId: "example",
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."LangyPullRequest" (
+    "id",
+    "projectId",
+    "repositoryFullName",
+    "prNumber",
+    "conversationId",
+    "userId",
+    "openedAt",
+    "sourceEventId"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+  "public"."LangyPullRequest"."id",
+  "public"."LangyPullRequest"."projectId",
+  "public"."LangyPullRequest"."repositoryFullName",
+  "public"."LangyPullRequest"."prNumber",
+  "public"."LangyPullRequest"."conversationId",
+  "public"."LangyPullRequest"."userId",
+  "public"."LangyPullRequest"."openedAt",
+  "public"."LangyPullRequest"."sourceEventId"
+-- params: ["<nanoid()>","example","example","1","example","example","1.5","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.langyPullRequest.update({ where: { id: "example" }, data: { projectId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."LangyPullRequest"."id"
+FROM
+  "public"."LangyPullRequest"
+WHERE
+  (
+    "public"."LangyPullRequest"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."LangyPullRequest"
+SET
+  "projectId" = $1
+WHERE
+  (
+    "public"."LangyPullRequest"."id" IN ($2)
+    AND (
+      "public"."LangyPullRequest"."id" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."LangyPullRequest"."id",
+  "public"."LangyPullRequest"."projectId",
+  "public"."LangyPullRequest"."repositoryFullName",
+  "public"."LangyPullRequest"."prNumber",
+  "public"."LangyPullRequest"."conversationId",
+  "public"."LangyPullRequest"."userId",
+  "public"."LangyPullRequest"."openedAt",
+  "public"."LangyPullRequest"."sourceEventId"
+-- params: ["example","<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.langyPullRequest.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."LangyPullRequest"
+WHERE
+  (
+    "public"."LangyPullRequest"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."LangyPullRequest"."id",
+  "public"."LangyPullRequest"."projectId",
+  "public"."LangyPullRequest"."repositoryFullName",
+  "public"."LangyPullRequest"."prNumber",
+  "public"."LangyPullRequest"."conversationId",
+  "public"."LangyPullRequest"."userId",
+  "public"."LangyPullRequest"."openedAt",
+  "public"."LangyPullRequest"."sourceEventId"
 -- params: ["example"]
 ```
 
@@ -44124,6 +44595,300 @@ RETURNING
   "public"."RetentionPolicy"."retentionDays",
   "public"."RetentionPolicy"."createdAt",
   "public"."RetentionPolicy"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-RetentionApplyStatus"></a>
+
+### RetentionApplyStatus
+
+| Field               | Type                                                         | Constraints | Default | Description |
+| ------------------- | ------------------------------------------------------------ | ----------- | ------- | ----------- |
+| `id`                | `String`                                                     | PK NOT NULL |         |             |
+| `organizationId`    | `String`                                                     | NOT NULL    |         |             |
+| `scopeType`         | [`RetentionPolicyScopeType`](#enum-RetentionPolicyScopeType) | NOT NULL    |         |             |
+| `scopeId`           | `String`                                                     | NOT NULL    |         |             |
+| `changedAt`         | `Float`                                                      | NULL        |         |             |
+| `appliedAt`         | `Float`                                                      | NULL        |         |             |
+| `raisedAt`          | `Float`                                                      | NULL        |         |             |
+| `shortenedAt`       | `Float`                                                      | NULL        |         |             |
+| `createdAt`         | `Float`                                                      | NOT NULL    |         |             |
+| `updatedAt`         | `Float`                                                      | NOT NULL    |         |             |
+| `occurredAt`        | `Float`                                                      | NOT NULL    |         |             |
+| `acceptedAt`        | `Float`                                                      | NOT NULL    |         |             |
+| `lastEventId`       | `String`                                                     | NOT NULL    |         |             |
+| `projectionVersion` | `String`                                                     | NOT NULL    |         |             |
+
+#### Indexes
+
+- `@@unique([organizationId, scopeType, scopeId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "RetentionApplyStatus" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "scopeType" "RetentionPolicyScopeType" NOT NULL,
+    "scopeId" TEXT NOT NULL,
+    "changedAt" DOUBLE PRECISION,
+    "appliedAt" DOUBLE PRECISION,
+    "raisedAt" DOUBLE PRECISION,
+    "shortenedAt" DOUBLE PRECISION,
+    "createdAt" DOUBLE PRECISION NOT NULL,
+    "updatedAt" DOUBLE PRECISION NOT NULL,
+    "occurredAt" DOUBLE PRECISION NOT NULL,
+    "acceptedAt" DOUBLE PRECISION NOT NULL,
+    "lastEventId" TEXT NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+
+    CONSTRAINT "RetentionApplyStatus_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "RetentionApplyStatus_organizationId_scopeType_scopeId_key" ON "RetentionApplyStatus"("organizationId", "scopeType", "scopeId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.retentionApplyStatus.findMany();
+```
+
+```sql
+SELECT
+  "public"."RetentionApplyStatus"."id",
+  "public"."RetentionApplyStatus"."organizationId",
+  "public"."RetentionApplyStatus"."scopeType"::text,
+  "public"."RetentionApplyStatus"."scopeId",
+  "public"."RetentionApplyStatus"."changedAt",
+  "public"."RetentionApplyStatus"."appliedAt",
+  "public"."RetentionApplyStatus"."raisedAt",
+  "public"."RetentionApplyStatus"."shortenedAt",
+  "public"."RetentionApplyStatus"."createdAt",
+  "public"."RetentionApplyStatus"."updatedAt",
+  "public"."RetentionApplyStatus"."occurredAt",
+  "public"."RetentionApplyStatus"."acceptedAt",
+  "public"."RetentionApplyStatus"."lastEventId",
+  "public"."RetentionApplyStatus"."projectionVersion"
+FROM
+  "public"."RetentionApplyStatus"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.retentionApplyStatus.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."RetentionApplyStatus"."id"
+    FROM
+      "public"."RetentionApplyStatus"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.retentionApplyStatus.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."RetentionApplyStatus"."id",
+  "public"."RetentionApplyStatus"."organizationId",
+  "public"."RetentionApplyStatus"."scopeType"::text,
+  "public"."RetentionApplyStatus"."scopeId",
+  "public"."RetentionApplyStatus"."changedAt",
+  "public"."RetentionApplyStatus"."appliedAt",
+  "public"."RetentionApplyStatus"."raisedAt",
+  "public"."RetentionApplyStatus"."shortenedAt",
+  "public"."RetentionApplyStatus"."createdAt",
+  "public"."RetentionApplyStatus"."updatedAt",
+  "public"."RetentionApplyStatus"."occurredAt",
+  "public"."RetentionApplyStatus"."acceptedAt",
+  "public"."RetentionApplyStatus"."lastEventId",
+  "public"."RetentionApplyStatus"."projectionVersion"
+FROM
+  "public"."RetentionApplyStatus"
+WHERE
+  (
+    "public"."RetentionApplyStatus"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.retentionApplyStatus.create({
+  data: {
+    id: "example",
+    organizationId: "example",
+    scopeType: "ORGANIZATION",
+    scopeId: "example",
+    createdAt: 1.5,
+    updatedAt: 1.5,
+    occurredAt: 1.5,
+    acceptedAt: 1.5,
+    lastEventId: "example",
+    projectionVersion: "example",
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."RetentionApplyStatus" (
+    "id",
+    "organizationId",
+    "scopeType",
+    "scopeId",
+    "createdAt",
+    "updatedAt",
+    "occurredAt",
+    "acceptedAt",
+    "lastEventId",
+    "projectionVersion"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    CAST($3::text AS "public"."RetentionPolicyScopeType"),
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9,
+    $10
+  )
+RETURNING
+  "public"."RetentionApplyStatus"."id",
+  "public"."RetentionApplyStatus"."organizationId",
+  "public"."RetentionApplyStatus"."scopeType"::text,
+  "public"."RetentionApplyStatus"."scopeId",
+  "public"."RetentionApplyStatus"."changedAt",
+  "public"."RetentionApplyStatus"."appliedAt",
+  "public"."RetentionApplyStatus"."raisedAt",
+  "public"."RetentionApplyStatus"."shortenedAt",
+  "public"."RetentionApplyStatus"."createdAt",
+  "public"."RetentionApplyStatus"."updatedAt",
+  "public"."RetentionApplyStatus"."occurredAt",
+  "public"."RetentionApplyStatus"."acceptedAt",
+  "public"."RetentionApplyStatus"."lastEventId",
+  "public"."RetentionApplyStatus"."projectionVersion"
+-- params: ["example","example","ORGANIZATION","example","1.5","1.5","1.5","1.5","example","example"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.retentionApplyStatus.update({
+  where: { id: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."RetentionApplyStatus"."id"
+FROM
+  "public"."RetentionApplyStatus"
+WHERE
+  (
+    "public"."RetentionApplyStatus"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."RetentionApplyStatus"
+SET
+  "organizationId" = $1
+WHERE
+  (
+    "public"."RetentionApplyStatus"."id" IN ($2)
+    AND (
+      "public"."RetentionApplyStatus"."id" = $3
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."RetentionApplyStatus"."id",
+  "public"."RetentionApplyStatus"."organizationId",
+  "public"."RetentionApplyStatus"."scopeType"::text,
+  "public"."RetentionApplyStatus"."scopeId",
+  "public"."RetentionApplyStatus"."changedAt",
+  "public"."RetentionApplyStatus"."appliedAt",
+  "public"."RetentionApplyStatus"."raisedAt",
+  "public"."RetentionApplyStatus"."shortenedAt",
+  "public"."RetentionApplyStatus"."createdAt",
+  "public"."RetentionApplyStatus"."updatedAt",
+  "public"."RetentionApplyStatus"."occurredAt",
+  "public"."RetentionApplyStatus"."acceptedAt",
+  "public"."RetentionApplyStatus"."lastEventId",
+  "public"."RetentionApplyStatus"."projectionVersion"
+-- params: ["example","<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.retentionApplyStatus.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."RetentionApplyStatus"
+WHERE
+  (
+    "public"."RetentionApplyStatus"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."RetentionApplyStatus"."id",
+  "public"."RetentionApplyStatus"."organizationId",
+  "public"."RetentionApplyStatus"."scopeType"::text,
+  "public"."RetentionApplyStatus"."scopeId",
+  "public"."RetentionApplyStatus"."changedAt",
+  "public"."RetentionApplyStatus"."appliedAt",
+  "public"."RetentionApplyStatus"."raisedAt",
+  "public"."RetentionApplyStatus"."shortenedAt",
+  "public"."RetentionApplyStatus"."createdAt",
+  "public"."RetentionApplyStatus"."updatedAt",
+  "public"."RetentionApplyStatus"."occurredAt",
+  "public"."RetentionApplyStatus"."acceptedAt",
+  "public"."RetentionApplyStatus"."lastEventId",
+  "public"."RetentionApplyStatus"."projectionVersion"
 -- params: ["example"]
 ```
 
@@ -51699,27 +52464,32 @@ RETURNING
 
 ![Scenario and the models it relates to](tables/Scenario.svg)
 
-| Field             | Type       | Constraints                                         | Default              | Description |
-| ----------------- | ---------- | --------------------------------------------------- | -------------------- | ----------- |
-| `id`              | `String`   | PK NOT NULL                                         | `nanoid()`           |             |
-| `projectId`       | `String`   | NOT NULL → [Project.id](#model-Project)             |                      |             |
-| `name`            | `String`   | NOT NULL                                            |                      |             |
-| `situation`       | `String`   | NOT NULL                                            |                      |             |
-| `criteria`        | `String[]` | NOT NULL                                            |                      |             |
-| `labels`          | `String[]` | NOT NULL                                            |                      |             |
-| `parameters`      | `Json`     | NULL                                                |                      |             |
-| `simulatorModel`  | `String`   | NULL                                                |                      |             |
-| `judgeModel`      | `String`   | NULL                                                |                      |             |
-| `maxTurns`        | `Int`      | NULL                                                |                      |             |
-| `minTurns`        | `Int`      | NULL                                                |                      |             |
-| `fields`          | `Json`     | NULL                                                |                      |             |
-| `callerVoice`     | `Json`     | NULL                                                |                      |             |
-| `testSuiteId`     | `String`   | NULL → [SimulationSuite.id](#model-SimulationSuite) |                      |             |
-| `version`         | `Int`      | NOT NULL                                            | `1`                  |             |
-| `lastUpdatedById` | `String`   | NULL → [User.id](#model-User)                       |                      |             |
-| `archivedAt`      | `DateTime` | NULL                                                |                      |             |
-| `createdAt`       | `DateTime` | NOT NULL                                            | `now()`              |             |
-| `updatedAt`       | `DateTime` | NOT NULL                                            | `now()` `@updatedAt` |             |
+| Field                | Type       | Constraints                                         | Default              | Description |
+| -------------------- | ---------- | --------------------------------------------------- | -------------------- | ----------- |
+| `id`                 | `String`   | PK NOT NULL                                         | `nanoid()`           |             |
+| `projectId`          | `String`   | NOT NULL → [Project.id](#model-Project)             |                      |             |
+| `name`               | `String`   | NOT NULL                                            |                      |             |
+| `situation`          | `String`   | NOT NULL                                            |                      |             |
+| `criteria`           | `String[]` | NOT NULL                                            |                      |             |
+| `labels`             | `String[]` | NOT NULL                                            |                      |             |
+| `parameters`         | `Json`     | NULL                                                |                      |             |
+| `simulatorModel`     | `String`   | NULL                                                |                      |             |
+| `judgeModel`         | `String`   | NULL                                                |                      |             |
+| `traceQuietPeriodMs` | `Int`      | NULL                                                |                      |             |
+| `traceWaitTimeoutMs` | `Int`      | NULL                                                |                      |             |
+| `maxTurns`           | `Int`      | NULL                                                |                      |             |
+| `minTurns`           | `Int`      | NULL                                                |                      |             |
+| `fields`             | `Json`     | NULL                                                |                      |             |
+| `callerVoice`        | `Json`     | NULL                                                |                      |             |
+| `testSuiteId`        | `String`   | NULL → [SimulationSuite.id](#model-SimulationSuite) |                      |             |
+| `kind`               | `String`   | NOT NULL                                            | `"standard"`         |             |
+| `redTeam`            | `Json`     | NULL                                                |                      |             |
+| `sourceTemplateId`   | `String`   | NULL                                                |                      |             |
+| `version`            | `Int`      | NOT NULL                                            | `1`                  |             |
+| `lastUpdatedById`    | `String`   | NULL → [User.id](#model-User)                       |                      |             |
+| `archivedAt`         | `DateTime` | NULL                                                |                      |             |
+| `createdAt`          | `DateTime` | NOT NULL                                            | `now()`              |             |
+| `updatedAt`          | `DateTime` | NOT NULL                                            | `now()` `@updatedAt` |             |
 
 #### Indexes
 
@@ -51749,11 +52519,16 @@ CREATE TABLE "Scenario" (
     "parameters" JSONB,
     "simulatorModel" TEXT,
     "judgeModel" TEXT,
+    "traceQuietPeriodMs" INTEGER,
+    "traceWaitTimeoutMs" INTEGER,
     "maxTurns" INTEGER,
     "minTurns" INTEGER,
     "fields" JSONB,
     "callerVoice" JSONB,
     "testSuiteId" TEXT,
+    "kind" TEXT NOT NULL DEFAULT 'standard',
+    "redTeam" JSONB,
+    "sourceTemplateId" TEXT,
     "version" INTEGER NOT NULL DEFAULT 1,
     "lastUpdatedById" TEXT,
     "archivedAt" TIMESTAMP(3),
@@ -51788,11 +52563,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -51849,11 +52629,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -51918,10 +52703,14 @@ SELECT
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52000,11 +52789,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -52047,12 +52841,13 @@ INSERT INTO
     "situation",
     "criteria",
     "labels",
+    "kind",
     "version",
     "createdAt",
     "updatedAt"
   )
 VALUES
-  ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
   "public"."Scenario"."id",
   "public"."Scenario"."projectId",
@@ -52063,17 +52858,22 @@ RETURNING
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
   "public"."Scenario"."createdAt",
   "public"."Scenario"."updatedAt"
--- params: ["<nanoid()>","example","example","example",["example"],["example"],"1","<now()>","<now()>"]
+-- params: ["<nanoid()>","example","example","example",["example"],["example"],"standard","1","<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -52120,11 +52920,16 @@ RETURNING
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -52156,11 +52961,16 @@ RETURNING
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -52336,11 +53146,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -52511,26 +53326,30 @@ RETURNING
 
 ![SimulationSuite and the models it relates to](tables/SimulationSuite.svg)
 
-| Field            | Type       | Constraints                             | Default              | Description |
-| ---------------- | ---------- | --------------------------------------- | -------------------- | ----------- |
-| `id`             | `String`   | PK NOT NULL                             | `nanoid()`           |             |
-| `projectId`      | `String`   | NOT NULL → [Project.id](#model-Project) |                      |             |
-| `name`           | `String`   | NOT NULL                                |                      |             |
-| `slug`           | `String`   | NOT NULL                                |                      |             |
-| `description`    | `String`   | NULL                                    |                      |             |
-| `scenarioIds`    | `String[]` | NOT NULL                                |                      |             |
-| `targets`        | `Json`     | NOT NULL                                |                      |             |
-| `repeatCount`    | `Int`      | NOT NULL                                | `1`                  |             |
-| `labels`         | `String[]` | NOT NULL                                |                      |             |
-| `simulatorModel` | `String`   | NULL                                    |                      |             |
-| `judgeModel`     | `String`   | NULL                                    |                      |             |
-| `kind`           | `String`   | NOT NULL                                | `"run_plan"`         |             |
-| `scope`          | `Json`     | NULL                                    |                      |             |
-| `fields`         | `Json`     | NULL                                    |                      |             |
-| `evaluators`     | `Json`     | NULL                                    |                      |             |
-| `archivedAt`     | `DateTime` | NULL                                    |                      |             |
-| `createdAt`      | `DateTime` | NOT NULL                                | `now()`              |             |
-| `updatedAt`      | `DateTime` | NOT NULL                                | `now()` `@updatedAt` |             |
+| Field                | Type       | Constraints                             | Default              | Description |
+| -------------------- | ---------- | --------------------------------------- | -------------------- | ----------- |
+| `id`                 | `String`   | PK NOT NULL                             | `nanoid()`           |             |
+| `projectId`          | `String`   | NOT NULL → [Project.id](#model-Project) |                      |             |
+| `name`               | `String`   | NOT NULL                                |                      |             |
+| `slug`               | `String`   | NOT NULL                                |                      |             |
+| `description`        | `String`   | NULL                                    |                      |             |
+| `scenarioIds`        | `String[]` | NOT NULL                                |                      |             |
+| `targets`            | `Json`     | NOT NULL                                |                      |             |
+| `repeatCount`        | `Int`      | NOT NULL                                | `1`                  |             |
+| `labels`             | `String[]` | NOT NULL                                |                      |             |
+| `simulatorModel`     | `String`   | NULL                                    |                      |             |
+| `judgeModel`         | `String`   | NULL                                    |                      |             |
+| `traceQuietPeriodMs` | `Int`      | NULL                                    |                      |             |
+| `traceWaitTimeoutMs` | `Int`      | NULL                                    |                      |             |
+| `kind`               | `String`   | NOT NULL                                | `"run_plan"`         |             |
+| `scope`              | `Json`     | NULL                                    |                      |             |
+| `fields`             | `Json`     | NULL                                    |                      |             |
+| `evaluators`         | `Json`     | NULL                                    |                      |             |
+| `templateId`         | `String`   | NULL                                    |                      |             |
+| `templateVersion`    | `Int`      | NULL                                    |                      |             |
+| `archivedAt`         | `DateTime` | NULL                                    |                      |             |
+| `createdAt`          | `DateTime` | NOT NULL                                | `now()`              |             |
+| `updatedAt`          | `DateTime` | NOT NULL                                | `now()` `@updatedAt` |             |
 
 #### Indexes
 
@@ -52561,10 +53380,14 @@ CREATE TABLE "SimulationSuite" (
     "labels" TEXT[],
     "simulatorModel" TEXT,
     "judgeModel" TEXT,
+    "traceQuietPeriodMs" INTEGER,
+    "traceWaitTimeoutMs" INTEGER,
     "kind" TEXT NOT NULL DEFAULT 'run_plan',
     "scope" JSONB,
     "fields" JSONB,
     "evaluators" JSONB,
+    "templateId" TEXT,
+    "templateVersion" INTEGER,
     "archivedAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -52601,10 +53424,14 @@ SELECT
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52659,10 +53486,14 @@ SELECT
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52723,11 +53554,16 @@ SELECT
   "public"."Scenario"."parameters",
   "public"."Scenario"."simulatorModel",
   "public"."Scenario"."judgeModel",
+  "public"."Scenario"."traceQuietPeriodMs",
+  "public"."Scenario"."traceWaitTimeoutMs",
   "public"."Scenario"."maxTurns",
   "public"."Scenario"."minTurns",
   "public"."Scenario"."fields",
   "public"."Scenario"."callerVoice",
   "public"."Scenario"."testSuiteId",
+  "public"."Scenario"."kind",
+  "public"."Scenario"."redTeam",
+  "public"."Scenario"."sourceTemplateId",
   "public"."Scenario"."version",
   "public"."Scenario"."lastUpdatedById",
   "public"."Scenario"."archivedAt",
@@ -52761,10 +53597,14 @@ SELECT
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52826,10 +53666,14 @@ RETURNING
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52882,10 +53726,14 @@ RETURNING
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -52917,10 +53765,14 @@ RETURNING
   "public"."SimulationSuite"."labels",
   "public"."SimulationSuite"."simulatorModel",
   "public"."SimulationSuite"."judgeModel",
+  "public"."SimulationSuite"."traceQuietPeriodMs",
+  "public"."SimulationSuite"."traceWaitTimeoutMs",
   "public"."SimulationSuite"."kind",
   "public"."SimulationSuite"."scope",
   "public"."SimulationSuite"."fields",
   "public"."SimulationSuite"."evaluators",
+  "public"."SimulationSuite"."templateId",
+  "public"."SimulationSuite"."templateVersion",
   "public"."SimulationSuite"."archivedAt",
   "public"."SimulationSuite"."createdAt",
   "public"."SimulationSuite"."updatedAt"
@@ -53005,6 +53857,11 @@ WHERE
 | `seatRepairFlaggedAt`      | `DateTime`                                       | NULL                                              |                      | Set once the seat line repair has failed often enough that Ops should look at it.                                                                                                                                                 |
 | `seatLineLeaseToken`       | `String`                                         | NULL                                              |                      | The lease a seat change or seat line repair holds while it reads and moves the seat line.                                                                                                                                         |
 | `seatLineLeaseUntil`       | `DateTime`                                       | NULL                                              |                      |                                                                                                                                                                                                                                   |
+| `paymentRecoveryInvoiceId` | `String`                                         | NULL                                              |                      | An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes.                                                        |
+| `paymentRecoveryStartedAt` | `DateTime`                                       | NULL                                              |                      |                                                                                                                                                                                                                                   |
+| `paymentRecoveryNoticeDay` | `Int`                                            | NULL                                              |                      |                                                                                                                                                                                                                                   |
+| `overPlanSince`            | `DateTime`                                       | NULL                                              |                      | The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the organization is on Free with more members than Free allows; ended once that no longer holds.                                         |
+| `overPlanEndedAt`          | `DateTime`                                       | NULL                                              |                      |                                                                                                                                                                                                                                   |
 
 #### Indexes
 
@@ -53066,6 +53923,11 @@ CREATE TABLE "Subscription" (
     "seatRepairFlaggedAt" TIMESTAMP(3),
     "seatLineLeaseToken" TEXT,
     "seatLineLeaseUntil" TIMESTAMP(3),
+    "paymentRecoveryInvoiceId" TEXT,
+    "paymentRecoveryStartedAt" TIMESTAMP(3),
+    "paymentRecoveryNoticeDay" INTEGER,
+    "overPlanSince" TIMESTAMP(3),
+    "overPlanEndedAt" TIMESTAMP(3),
 
     CONSTRAINT "Subscription_pkey" PRIMARY KEY ("id")
 );
@@ -53129,7 +53991,12 @@ SELECT
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 FROM
   "public"."Subscription"
 WHERE
@@ -53213,7 +54080,12 @@ SELECT
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 FROM
   "public"."Subscription"
 WHERE
@@ -53353,7 +54225,12 @@ SELECT
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 FROM
   "public"."Subscription"
 WHERE
@@ -53441,7 +54318,12 @@ RETURNING
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 -- params: ["<nanoid()>","example","FREE","PENDING","<now()>","<now()>",[]]
 ```
 
@@ -53523,7 +54405,12 @@ RETURNING
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 -- params: ["FREE",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
 ```
 
@@ -53584,7 +54471,12 @@ RETURNING
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 -- params: ["example"]
 
 SELECT
@@ -53771,7 +54663,12 @@ SELECT
   "public"."Subscription"."seatRepairAttempts",
   "public"."Subscription"."seatRepairFlaggedAt",
   "public"."Subscription"."seatLineLeaseToken",
-  "public"."Subscription"."seatLineLeaseUntil"
+  "public"."Subscription"."seatLineLeaseUntil",
+  "public"."Subscription"."paymentRecoveryInvoiceId",
+  "public"."Subscription"."paymentRecoveryStartedAt",
+  "public"."Subscription"."paymentRecoveryNoticeDay",
+  "public"."Subscription"."overPlanSince",
+  "public"."Subscription"."overPlanEndedAt"
 FROM
   "public"."Subscription"
 WHERE
@@ -55317,6 +56214,7 @@ ADR-201: an organisation's braid setting. Owned by authz; read into the organisa
 | ------------------------------ | ---------- | ----------- | ------------ | ----------- |
 | `organizationId`               | `String`   | PK NOT NULL |              |             |
 | `braidsOrganizationAdminsOnly` | `Boolean`  | NOT NULL    | `false`      |             |
+| `braidsEnabled`                | `Boolean`  | NOT NULL    | `false`      |             |
 | `updatedByUserId`              | `String`   | NOT NULL    |              |             |
 | `updatedAt`                    | `DateTime` | NOT NULL    | `@updatedAt` |             |
 
@@ -55326,6 +56224,7 @@ ADR-201: an organisation's braid setting. Owned by authz; read into the organisa
 CREATE TABLE "AuthzOrganizationPolicy" (
     "organizationId" TEXT NOT NULL,
     "braidsOrganizationAdminsOnly" BOOLEAN NOT NULL DEFAULT false,
+    "braidsEnabled" BOOLEAN NOT NULL DEFAULT false,
     "updatedByUserId" TEXT NOT NULL,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -55346,6 +56245,7 @@ await prisma.authzOrganizationPolicy.findMany();
 SELECT
   "public"."AuthzOrganizationPolicy"."organizationId",
   "public"."AuthzOrganizationPolicy"."braidsOrganizationAdminsOnly",
+  "public"."AuthzOrganizationPolicy"."braidsEnabled",
   "public"."AuthzOrganizationPolicy"."updatedByUserId",
   "public"."AuthzOrganizationPolicy"."updatedAt"
 FROM
@@ -55390,6 +56290,7 @@ await prisma.authzOrganizationPolicy.findUnique({ where: { organizationId: "exam
 SELECT
   "public"."AuthzOrganizationPolicy"."organizationId",
   "public"."AuthzOrganizationPolicy"."braidsOrganizationAdminsOnly",
+  "public"."AuthzOrganizationPolicy"."braidsEnabled",
   "public"."AuthzOrganizationPolicy"."updatedByUserId",
   "public"."AuthzOrganizationPolicy"."updatedAt"
 FROM
@@ -55419,17 +56320,19 @@ INSERT INTO
   "public"."AuthzOrganizationPolicy" (
     "organizationId",
     "braidsOrganizationAdminsOnly",
+    "braidsEnabled",
     "updatedByUserId",
     "updatedAt"
   )
 VALUES
-  ($1, $2, $3, $4)
+  ($1, $2, $3, $4, $5)
 RETURNING
   "public"."AuthzOrganizationPolicy"."organizationId",
   "public"."AuthzOrganizationPolicy"."braidsOrganizationAdminsOnly",
+  "public"."AuthzOrganizationPolicy"."braidsEnabled",
   "public"."AuthzOrganizationPolicy"."updatedByUserId",
   "public"."AuthzOrganizationPolicy"."updatedAt"
--- params: ["example",false,"example","<now()>"]
+-- params: ["example",false,false,"example","<now()>"]
 ```
 
 **update**: Update a row
@@ -55472,6 +56375,7 @@ WHERE
 RETURNING
   "public"."AuthzOrganizationPolicy"."organizationId",
   "public"."AuthzOrganizationPolicy"."braidsOrganizationAdminsOnly",
+  "public"."AuthzOrganizationPolicy"."braidsEnabled",
   "public"."AuthzOrganizationPolicy"."updatedByUserId",
   "public"."AuthzOrganizationPolicy"."updatedAt"
 -- params: [true,{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<organizationId of the rows above>","example"]
@@ -55493,9 +56397,289 @@ WHERE
 RETURNING
   "public"."AuthzOrganizationPolicy"."organizationId",
   "public"."AuthzOrganizationPolicy"."braidsOrganizationAdminsOnly",
+  "public"."AuthzOrganizationPolicy"."braidsEnabled",
   "public"."AuthzOrganizationPolicy"."updatedByUserId",
   "public"."AuthzOrganizationPolicy"."updatedAt"
 -- params: ["example"]
+```
+
+</details>
+
+<a id="model-AuthzBraidWrite"></a>
+
+### AuthzBraidWrite
+
+| Field             | Type       | Constraints | Default | Description |
+| ----------------- | ---------- | ----------- | ------- | ----------- |
+| `organizationId`  | `String`   | PK NOT NULL |         |             |
+| `commandId`       | `String`   | PK NOT NULL |         |             |
+| `grantId`         | `String`   | NOT NULL    |         |             |
+| `readerProjectId` | `String`   | NOT NULL    |         |             |
+| `ownerProjectId`  | `String`   | NOT NULL    |         |             |
+| `termsKey`        | `String`   | NOT NULL    |         |             |
+| `condition`       | `Json`     | NOT NULL    |         |             |
+| `expiresAt`       | `DateTime` | NULL        |         |             |
+| `replacesGrantId` | `String`   | NULL        |         |             |
+| `createdByUserId` | `String`   | NULL        |         |             |
+| `createdAt`       | `DateTime` | NOT NULL    | `now()` |             |
+
+#### Indexes
+
+- `@@id([organizationId, commandId])`
+- `@@index([organizationId, readerProjectId, createdAt])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AuthzBraidWrite" (
+    "organizationId" TEXT NOT NULL,
+    "commandId" TEXT NOT NULL,
+    "grantId" TEXT NOT NULL,
+    "readerProjectId" TEXT NOT NULL,
+    "ownerProjectId" TEXT NOT NULL,
+    "termsKey" TEXT NOT NULL,
+    "condition" JSONB NOT NULL,
+    "expiresAt" TIMESTAMP(3),
+    "replacesGrantId" TEXT,
+    "createdByUserId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AuthzBraidWrite_pkey" PRIMARY KEY ("organizationId","commandId")
+);
+
+CREATE INDEX "AuthzBraidWrite_organizationId_readerProjectId_createdAt_idx" ON "AuthzBraidWrite"("organizationId", "readerProjectId", "createdAt");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.authzBraidWrite.findMany();
+```
+
+```sql
+SELECT
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId",
+  "public"."AuthzBraidWrite"."grantId",
+  "public"."AuthzBraidWrite"."readerProjectId",
+  "public"."AuthzBraidWrite"."ownerProjectId",
+  "public"."AuthzBraidWrite"."termsKey",
+  "public"."AuthzBraidWrite"."condition",
+  "public"."AuthzBraidWrite"."expiresAt",
+  "public"."AuthzBraidWrite"."replacesGrantId",
+  "public"."AuthzBraidWrite"."createdByUserId",
+  "public"."AuthzBraidWrite"."createdAt"
+FROM
+  "public"."AuthzBraidWrite"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.authzBraidWrite.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AuthzBraidWrite"."organizationId",
+      "public"."AuthzBraidWrite"."commandId"
+    FROM
+      "public"."AuthzBraidWrite"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.authzBraidWrite.findUnique({
+  where: { organizationId_commandId: { organizationId: "example", commandId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId",
+  "public"."AuthzBraidWrite"."grantId",
+  "public"."AuthzBraidWrite"."readerProjectId",
+  "public"."AuthzBraidWrite"."ownerProjectId",
+  "public"."AuthzBraidWrite"."termsKey",
+  "public"."AuthzBraidWrite"."condition",
+  "public"."AuthzBraidWrite"."expiresAt",
+  "public"."AuthzBraidWrite"."replacesGrantId",
+  "public"."AuthzBraidWrite"."createdByUserId",
+  "public"."AuthzBraidWrite"."createdAt"
+FROM
+  "public"."AuthzBraidWrite"
+WHERE
+  (
+    (
+      "public"."AuthzBraidWrite"."organizationId" = $1
+      AND "public"."AuthzBraidWrite"."commandId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.authzBraidWrite.create({
+  data: {
+    organizationId: "example",
+    commandId: "example",
+    grantId: "example",
+    readerProjectId: "example",
+    ownerProjectId: "example",
+    termsKey: "example",
+    condition: {},
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AuthzBraidWrite" (
+    "organizationId",
+    "commandId",
+    "grantId",
+    "readerProjectId",
+    "ownerProjectId",
+    "termsKey",
+    "condition",
+    "createdAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId",
+  "public"."AuthzBraidWrite"."grantId",
+  "public"."AuthzBraidWrite"."readerProjectId",
+  "public"."AuthzBraidWrite"."ownerProjectId",
+  "public"."AuthzBraidWrite"."termsKey",
+  "public"."AuthzBraidWrite"."condition",
+  "public"."AuthzBraidWrite"."expiresAt",
+  "public"."AuthzBraidWrite"."replacesGrantId",
+  "public"."AuthzBraidWrite"."createdByUserId",
+  "public"."AuthzBraidWrite"."createdAt"
+-- params: ["example","example","example","example","example","example","{}","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.authzBraidWrite.update({
+  where: { organizationId_commandId: { organizationId: "example", commandId: "example" } },
+  data: { grantId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId"
+FROM
+  "public"."AuthzBraidWrite"
+WHERE
+  (
+    (
+      "public"."AuthzBraidWrite"."organizationId" = $1
+      AND "public"."AuthzBraidWrite"."commandId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+
+UPDATE "public"."AuthzBraidWrite"
+SET
+  "grantId" = $1
+WHERE
+  (
+    (
+      "public"."AuthzBraidWrite"."organizationId" IN ($2)
+      AND "public"."AuthzBraidWrite"."commandId" IN ($3)
+    )
+    AND (
+      (
+        "public"."AuthzBraidWrite"."organizationId" = $4
+        AND "public"."AuthzBraidWrite"."commandId" = $5
+      )
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId",
+  "public"."AuthzBraidWrite"."grantId",
+  "public"."AuthzBraidWrite"."readerProjectId",
+  "public"."AuthzBraidWrite"."ownerProjectId",
+  "public"."AuthzBraidWrite"."termsKey",
+  "public"."AuthzBraidWrite"."condition",
+  "public"."AuthzBraidWrite"."expiresAt",
+  "public"."AuthzBraidWrite"."replacesGrantId",
+  "public"."AuthzBraidWrite"."createdByUserId",
+  "public"."AuthzBraidWrite"."createdAt"
+-- params: ["example","<organizationId of the rows above>","<commandId of the rows above>","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.authzBraidWrite.delete({
+  where: { organizationId_commandId: { organizationId: "example", commandId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."AuthzBraidWrite"
+WHERE
+  (
+    (
+      "public"."AuthzBraidWrite"."organizationId" = $1
+      AND "public"."AuthzBraidWrite"."commandId" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AuthzBraidWrite"."organizationId",
+  "public"."AuthzBraidWrite"."commandId",
+  "public"."AuthzBraidWrite"."grantId",
+  "public"."AuthzBraidWrite"."readerProjectId",
+  "public"."AuthzBraidWrite"."ownerProjectId",
+  "public"."AuthzBraidWrite"."termsKey",
+  "public"."AuthzBraidWrite"."condition",
+  "public"."AuthzBraidWrite"."expiresAt",
+  "public"."AuthzBraidWrite"."replacesGrantId",
+  "public"."AuthzBraidWrite"."createdByUserId",
+  "public"."AuthzBraidWrite"."createdAt"
+-- params: ["example","example"]
 ```
 
 </details>
@@ -64836,6 +66020,303 @@ RETURNING
 
 </details>
 
+<a id="model-GatewayA2ATarget"></a>
+
+### GatewayA2ATarget
+
+| Field                      | Type       | Constraints | Default      | Description |
+| -------------------------- | ---------- | ----------- | ------------ | ----------- |
+| `id`                       | `String`   | PK NOT NULL |              |             |
+| `organizationId`           | `String`   | NOT NULL    |              |             |
+| `projectId`                | `String`   | NULL        |              |             |
+| `name`                     | `String`   | NOT NULL    |              |             |
+| `agentName`                | `String`   | NOT NULL    |              |             |
+| `cardUrl`                  | `String`   | NOT NULL    |              |             |
+| `upstreamUrl`              | `String`   | NOT NULL    |              |             |
+| `encryptedUpstreamHeaders` | `String`   | NULL        |              |             |
+| `restrictToAllowList`      | `Boolean`  | NOT NULL    | `false`      |             |
+| `allowedVirtualKeyIds`     | `String[]` | NOT NULL    | `[]`         |             |
+| `blocked`                  | `Boolean`  | NOT NULL    | `false`      |             |
+| `blockReason`              | `String`   | NULL        |              |             |
+| `createdById`              | `String`   | NOT NULL    |              |             |
+| `createdAt`                | `DateTime` | NOT NULL    | `now()`      |             |
+| `updatedAt`                | `DateTime` | NOT NULL    | `@updatedAt` |             |
+| `archivedAt`               | `DateTime` | NULL        |              |             |
+
+#### Indexes
+
+- `@@index([organizationId, projectId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "GatewayA2ATarget" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "projectId" TEXT,
+    "name" TEXT NOT NULL,
+    "agentName" TEXT NOT NULL,
+    "cardUrl" TEXT NOT NULL,
+    "upstreamUrl" TEXT NOT NULL,
+    "encryptedUpstreamHeaders" TEXT,
+    "restrictToAllowList" BOOLEAN NOT NULL DEFAULT false,
+    "allowedVirtualKeyIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "blocked" BOOLEAN NOT NULL DEFAULT false,
+    "blockReason" TEXT,
+    "createdById" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "archivedAt" TIMESTAMP(3),
+
+    CONSTRAINT "GatewayA2ATarget_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "GatewayA2ATarget_organizationId_projectId_idx" ON "GatewayA2ATarget"("organizationId", "projectId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.gatewayA2ATarget.findMany();
+```
+
+```sql
+SELECT
+  "public"."GatewayA2ATarget"."id",
+  "public"."GatewayA2ATarget"."organizationId",
+  "public"."GatewayA2ATarget"."projectId",
+  "public"."GatewayA2ATarget"."name",
+  "public"."GatewayA2ATarget"."agentName",
+  "public"."GatewayA2ATarget"."cardUrl",
+  "public"."GatewayA2ATarget"."upstreamUrl",
+  "public"."GatewayA2ATarget"."encryptedUpstreamHeaders",
+  "public"."GatewayA2ATarget"."restrictToAllowList",
+  "public"."GatewayA2ATarget"."allowedVirtualKeyIds",
+  "public"."GatewayA2ATarget"."blocked",
+  "public"."GatewayA2ATarget"."blockReason",
+  "public"."GatewayA2ATarget"."createdById",
+  "public"."GatewayA2ATarget"."createdAt",
+  "public"."GatewayA2ATarget"."updatedAt",
+  "public"."GatewayA2ATarget"."archivedAt"
+FROM
+  "public"."GatewayA2ATarget"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.gatewayA2ATarget.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."GatewayA2ATarget"."id"
+    FROM
+      "public"."GatewayA2ATarget"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.gatewayA2ATarget.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."GatewayA2ATarget"."id",
+  "public"."GatewayA2ATarget"."organizationId",
+  "public"."GatewayA2ATarget"."projectId",
+  "public"."GatewayA2ATarget"."name",
+  "public"."GatewayA2ATarget"."agentName",
+  "public"."GatewayA2ATarget"."cardUrl",
+  "public"."GatewayA2ATarget"."upstreamUrl",
+  "public"."GatewayA2ATarget"."encryptedUpstreamHeaders",
+  "public"."GatewayA2ATarget"."restrictToAllowList",
+  "public"."GatewayA2ATarget"."allowedVirtualKeyIds",
+  "public"."GatewayA2ATarget"."blocked",
+  "public"."GatewayA2ATarget"."blockReason",
+  "public"."GatewayA2ATarget"."createdById",
+  "public"."GatewayA2ATarget"."createdAt",
+  "public"."GatewayA2ATarget"."updatedAt",
+  "public"."GatewayA2ATarget"."archivedAt"
+FROM
+  "public"."GatewayA2ATarget"
+WHERE
+  (
+    "public"."GatewayA2ATarget"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.gatewayA2ATarget.create({
+  data: {
+    id: "example",
+    organizationId: "example",
+    name: "example",
+    agentName: "example",
+    cardUrl: "example",
+    upstreamUrl: "example",
+    createdById: "example",
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."GatewayA2ATarget" (
+    "id",
+    "organizationId",
+    "name",
+    "agentName",
+    "cardUrl",
+    "upstreamUrl",
+    "restrictToAllowList",
+    "allowedVirtualKeyIds",
+    "blocked",
+    "createdById",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+RETURNING
+  "public"."GatewayA2ATarget"."id",
+  "public"."GatewayA2ATarget"."organizationId",
+  "public"."GatewayA2ATarget"."projectId",
+  "public"."GatewayA2ATarget"."name",
+  "public"."GatewayA2ATarget"."agentName",
+  "public"."GatewayA2ATarget"."cardUrl",
+  "public"."GatewayA2ATarget"."upstreamUrl",
+  "public"."GatewayA2ATarget"."encryptedUpstreamHeaders",
+  "public"."GatewayA2ATarget"."restrictToAllowList",
+  "public"."GatewayA2ATarget"."allowedVirtualKeyIds",
+  "public"."GatewayA2ATarget"."blocked",
+  "public"."GatewayA2ATarget"."blockReason",
+  "public"."GatewayA2ATarget"."createdById",
+  "public"."GatewayA2ATarget"."createdAt",
+  "public"."GatewayA2ATarget"."updatedAt",
+  "public"."GatewayA2ATarget"."archivedAt"
+-- params: ["example","example","example","example","example","example",false,[],false,"example","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.gatewayA2ATarget.update({
+  where: { id: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."GatewayA2ATarget"."id"
+FROM
+  "public"."GatewayA2ATarget"
+WHERE
+  (
+    "public"."GatewayA2ATarget"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."GatewayA2ATarget"
+SET
+  "organizationId" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."GatewayA2ATarget"."id" IN ($3)
+    AND (
+      "public"."GatewayA2ATarget"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."GatewayA2ATarget"."id",
+  "public"."GatewayA2ATarget"."organizationId",
+  "public"."GatewayA2ATarget"."projectId",
+  "public"."GatewayA2ATarget"."name",
+  "public"."GatewayA2ATarget"."agentName",
+  "public"."GatewayA2ATarget"."cardUrl",
+  "public"."GatewayA2ATarget"."upstreamUrl",
+  "public"."GatewayA2ATarget"."encryptedUpstreamHeaders",
+  "public"."GatewayA2ATarget"."restrictToAllowList",
+  "public"."GatewayA2ATarget"."allowedVirtualKeyIds",
+  "public"."GatewayA2ATarget"."blocked",
+  "public"."GatewayA2ATarget"."blockReason",
+  "public"."GatewayA2ATarget"."createdById",
+  "public"."GatewayA2ATarget"."createdAt",
+  "public"."GatewayA2ATarget"."updatedAt",
+  "public"."GatewayA2ATarget"."archivedAt"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.gatewayA2ATarget.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."GatewayA2ATarget"
+WHERE
+  (
+    "public"."GatewayA2ATarget"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."GatewayA2ATarget"."id",
+  "public"."GatewayA2ATarget"."organizationId",
+  "public"."GatewayA2ATarget"."projectId",
+  "public"."GatewayA2ATarget"."name",
+  "public"."GatewayA2ATarget"."agentName",
+  "public"."GatewayA2ATarget"."cardUrl",
+  "public"."GatewayA2ATarget"."upstreamUrl",
+  "public"."GatewayA2ATarget"."encryptedUpstreamHeaders",
+  "public"."GatewayA2ATarget"."restrictToAllowList",
+  "public"."GatewayA2ATarget"."allowedVirtualKeyIds",
+  "public"."GatewayA2ATarget"."blocked",
+  "public"."GatewayA2ATarget"."blockReason",
+  "public"."GatewayA2ATarget"."createdById",
+  "public"."GatewayA2ATarget"."createdAt",
+  "public"."GatewayA2ATarget"."updatedAt",
+  "public"."GatewayA2ATarget"."archivedAt"
+-- params: ["example"]
+```
+
+</details>
+
 <a id="model-GatewayConnectUpstream"></a>
 
 ### GatewayConnectUpstream
@@ -73737,6 +75218,1615 @@ RETURNING
 
 </details>
 
+<a id="model-AgentStopPlanTarget"></a>
+
+### AgentStopPlanTarget
+
+One target of a registry agent's kill switch stop plan (enterprise/modules/governance/specs/
+agent-kill-switch.feature): a Databricks serving endpoint, a Bedrock agent alias or a gateway
+virtual key. A plan write replaces every row of the agent at once.
+
+| Field            | Type       | Constraints | Default              | Description                                 |
+| ---------------- | ---------- | ----------- | -------------------- | ------------------------------------------- |
+| `id`             | `String`   | PK NOT NULL |                      |                                             |
+| `organizationId` | `String`   | NOT NULL    |                      |                                             |
+| `agentId`        | `String`   | NOT NULL    |                      | The AgentRegistryEntry the plan belongs to. |
+| `position`       | `Int`      | NOT NULL    |                      |                                             |
+| `label`          | `String`   | NOT NULL    |                      |                                             |
+| `target`         | `Json`     | NOT NULL    |                      |                                             |
+| `createdAt`      | `DateTime` | NOT NULL    | `now()`              |                                             |
+| `updatedAt`      | `DateTime` | NOT NULL    | `now()` `@updatedAt` |                                             |
+
+#### Indexes
+
+- `@@index([organizationId, agentId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentStopPlanTarget" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "position" INTEGER NOT NULL,
+    "label" TEXT NOT NULL,
+    "target" JSONB NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStopPlanTarget_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "AgentStopPlanTarget_organizationId_agentId_idx" ON "AgentStopPlanTarget"("organizationId", "agentId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentStopPlanTarget.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlanTarget"."id",
+  "public"."AgentStopPlanTarget"."organizationId",
+  "public"."AgentStopPlanTarget"."agentId",
+  "public"."AgentStopPlanTarget"."position",
+  "public"."AgentStopPlanTarget"."label",
+  "public"."AgentStopPlanTarget"."target",
+  "public"."AgentStopPlanTarget"."createdAt",
+  "public"."AgentStopPlanTarget"."updatedAt"
+FROM
+  "public"."AgentStopPlanTarget"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentStopPlanTarget.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentStopPlanTarget"."id"
+    FROM
+      "public"."AgentStopPlanTarget"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentStopPlanTarget.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlanTarget"."id",
+  "public"."AgentStopPlanTarget"."organizationId",
+  "public"."AgentStopPlanTarget"."agentId",
+  "public"."AgentStopPlanTarget"."position",
+  "public"."AgentStopPlanTarget"."label",
+  "public"."AgentStopPlanTarget"."target",
+  "public"."AgentStopPlanTarget"."createdAt",
+  "public"."AgentStopPlanTarget"."updatedAt"
+FROM
+  "public"."AgentStopPlanTarget"
+WHERE
+  (
+    "public"."AgentStopPlanTarget"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentStopPlanTarget.create({
+  data: {
+    id: "example",
+    organizationId: "example",
+    agentId: "example",
+    position: 1,
+    label: "example",
+    target: {},
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AgentStopPlanTarget" (
+    "id",
+    "organizationId",
+    "agentId",
+    "position",
+    "label",
+    "target",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+  "public"."AgentStopPlanTarget"."id",
+  "public"."AgentStopPlanTarget"."organizationId",
+  "public"."AgentStopPlanTarget"."agentId",
+  "public"."AgentStopPlanTarget"."position",
+  "public"."AgentStopPlanTarget"."label",
+  "public"."AgentStopPlanTarget"."target",
+  "public"."AgentStopPlanTarget"."createdAt",
+  "public"."AgentStopPlanTarget"."updatedAt"
+-- params: ["example","example","example","1","example","{}","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentStopPlanTarget.update({
+  where: { id: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlanTarget"."id"
+FROM
+  "public"."AgentStopPlanTarget"
+WHERE
+  (
+    "public"."AgentStopPlanTarget"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."AgentStopPlanTarget"
+SET
+  "organizationId" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."AgentStopPlanTarget"."id" IN ($3)
+    AND (
+      "public"."AgentStopPlanTarget"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentStopPlanTarget"."id",
+  "public"."AgentStopPlanTarget"."organizationId",
+  "public"."AgentStopPlanTarget"."agentId",
+  "public"."AgentStopPlanTarget"."position",
+  "public"."AgentStopPlanTarget"."label",
+  "public"."AgentStopPlanTarget"."target",
+  "public"."AgentStopPlanTarget"."createdAt",
+  "public"."AgentStopPlanTarget"."updatedAt"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentStopPlanTarget.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AgentStopPlanTarget"
+WHERE
+  (
+    "public"."AgentStopPlanTarget"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentStopPlanTarget"."id",
+  "public"."AgentStopPlanTarget"."organizationId",
+  "public"."AgentStopPlanTarget"."agentId",
+  "public"."AgentStopPlanTarget"."position",
+  "public"."AgentStopPlanTarget"."label",
+  "public"."AgentStopPlanTarget"."target",
+  "public"."AgentStopPlanTarget"."createdAt",
+  "public"."AgentStopPlanTarget"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AgentStopPlan"></a>
+
+### AgentStopPlan
+
+One agent's stop plan version: bumped by every save, so a save over a plan someone else saved
+since it was read is refused. No row means the plan was never saved (version 0).
+
+| Field            | Type       | Constraints | Default              | Description                                 |
+| ---------------- | ---------- | ----------- | -------------------- | ------------------------------------------- |
+| `organizationId` | `String`   | PK NOT NULL |                      |                                             |
+| `agentId`        | `String`   | PK NOT NULL |                      | The AgentRegistryEntry the plan belongs to. |
+| `version`        | `Int`      | NOT NULL    |                      |                                             |
+| `updatedAt`      | `DateTime` | NOT NULL    | `now()` `@updatedAt` |                                             |
+
+#### Indexes
+
+- `@@id([organizationId, agentId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentStopPlan" (
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "version" INTEGER NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStopPlan_pkey" PRIMARY KEY ("organizationId","agentId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentStopPlan.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId",
+  "public"."AgentStopPlan"."version",
+  "public"."AgentStopPlan"."updatedAt"
+FROM
+  "public"."AgentStopPlan"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentStopPlan.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentStopPlan"."organizationId",
+      "public"."AgentStopPlan"."agentId"
+    FROM
+      "public"."AgentStopPlan"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentStopPlan.findUnique({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId",
+  "public"."AgentStopPlan"."version",
+  "public"."AgentStopPlan"."updatedAt"
+FROM
+  "public"."AgentStopPlan"
+WHERE
+  (
+    (
+      "public"."AgentStopPlan"."organizationId" = $1
+      AND "public"."AgentStopPlan"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentStopPlan.create({
+  data: { organizationId: "example", agentId: "example", version: 1 },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AgentStopPlan" (
+    "organizationId",
+    "agentId",
+    "version",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4)
+RETURNING
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId",
+  "public"."AgentStopPlan"."version",
+  "public"."AgentStopPlan"."updatedAt"
+-- params: ["example","example","1","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentStopPlan.update({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+  data: { version: 1 },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId"
+FROM
+  "public"."AgentStopPlan"
+WHERE
+  (
+    (
+      "public"."AgentStopPlan"."organizationId" = $1
+      AND "public"."AgentStopPlan"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+
+UPDATE "public"."AgentStopPlan"
+SET
+  "version" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    (
+      "public"."AgentStopPlan"."organizationId" IN ($3)
+      AND "public"."AgentStopPlan"."agentId" IN ($4)
+    )
+    AND (
+      (
+        "public"."AgentStopPlan"."organizationId" = $5
+        AND "public"."AgentStopPlan"."agentId" = $6
+      )
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId",
+  "public"."AgentStopPlan"."version",
+  "public"."AgentStopPlan"."updatedAt"
+-- params: ["1",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<organizationId of the rows above>","<agentId of the rows above>","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentStopPlan.delete({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."AgentStopPlan"
+WHERE
+  (
+    (
+      "public"."AgentStopPlan"."organizationId" = $1
+      AND "public"."AgentStopPlan"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentStopPlan"."organizationId",
+  "public"."AgentStopPlan"."agentId",
+  "public"."AgentStopPlan"."version",
+  "public"."AgentStopPlan"."updatedAt"
+-- params: ["example","example"]
+```
+
+</details>
+
+<a id="model-GovernanceAwsConnection"></a>
+
+### GovernanceAwsConnection
+
+An AWS credential a Bedrock kill switch target signs with: a static key pair, a role to assume,
+or both. The secret access key and the external id are stored sealed.
+
+| Field                      | Type       | Constraints | Default              | Description |
+| -------------------------- | ---------- | ----------- | -------------------- | ----------- |
+| `id`                       | `String`   | PK NOT NULL |                      |             |
+| `organizationId`           | `String`   | NOT NULL    |                      |             |
+| `name`                     | `String`   | NOT NULL    |                      |             |
+| `accessKeyId`              | `String`   | NULL        |                      |             |
+| `encryptedSecretAccessKey` | `String`   | NULL        |                      |             |
+| `roleArn`                  | `String`   | NULL        |                      |             |
+| `encryptedExternalId`      | `String`   | NULL        |                      |             |
+| `createdAt`                | `DateTime` | NOT NULL    | `now()`              |             |
+| `updatedAt`                | `DateTime` | NOT NULL    | `now()` `@updatedAt` |             |
+
+#### Indexes
+
+- `@@index([organizationId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "GovernanceAwsConnection" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "accessKeyId" TEXT,
+    "encryptedSecretAccessKey" TEXT,
+    "roleArn" TEXT,
+    "encryptedExternalId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "GovernanceAwsConnection_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "GovernanceAwsConnection_organizationId_idx" ON "GovernanceAwsConnection"("organizationId");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.governanceAwsConnection.findMany();
+```
+
+```sql
+SELECT
+  "public"."GovernanceAwsConnection"."id",
+  "public"."GovernanceAwsConnection"."organizationId",
+  "public"."GovernanceAwsConnection"."name",
+  "public"."GovernanceAwsConnection"."accessKeyId",
+  "public"."GovernanceAwsConnection"."encryptedSecretAccessKey",
+  "public"."GovernanceAwsConnection"."roleArn",
+  "public"."GovernanceAwsConnection"."encryptedExternalId",
+  "public"."GovernanceAwsConnection"."createdAt",
+  "public"."GovernanceAwsConnection"."updatedAt"
+FROM
+  "public"."GovernanceAwsConnection"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.governanceAwsConnection.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."GovernanceAwsConnection"."id"
+    FROM
+      "public"."GovernanceAwsConnection"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.governanceAwsConnection.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."GovernanceAwsConnection"."id",
+  "public"."GovernanceAwsConnection"."organizationId",
+  "public"."GovernanceAwsConnection"."name",
+  "public"."GovernanceAwsConnection"."accessKeyId",
+  "public"."GovernanceAwsConnection"."encryptedSecretAccessKey",
+  "public"."GovernanceAwsConnection"."roleArn",
+  "public"."GovernanceAwsConnection"."encryptedExternalId",
+  "public"."GovernanceAwsConnection"."createdAt",
+  "public"."GovernanceAwsConnection"."updatedAt"
+FROM
+  "public"."GovernanceAwsConnection"
+WHERE
+  (
+    "public"."GovernanceAwsConnection"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.governanceAwsConnection.create({
+  data: { id: "example", organizationId: "example", name: "example" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."GovernanceAwsConnection" (
+    "id",
+    "organizationId",
+    "name",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5)
+RETURNING
+  "public"."GovernanceAwsConnection"."id",
+  "public"."GovernanceAwsConnection"."organizationId",
+  "public"."GovernanceAwsConnection"."name",
+  "public"."GovernanceAwsConnection"."accessKeyId",
+  "public"."GovernanceAwsConnection"."encryptedSecretAccessKey",
+  "public"."GovernanceAwsConnection"."roleArn",
+  "public"."GovernanceAwsConnection"."encryptedExternalId",
+  "public"."GovernanceAwsConnection"."createdAt",
+  "public"."GovernanceAwsConnection"."updatedAt"
+-- params: ["example","example","example","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.governanceAwsConnection.update({
+  where: { id: "example" },
+  data: { organizationId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."GovernanceAwsConnection"."id"
+FROM
+  "public"."GovernanceAwsConnection"
+WHERE
+  (
+    "public"."GovernanceAwsConnection"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."GovernanceAwsConnection"
+SET
+  "organizationId" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."GovernanceAwsConnection"."id" IN ($3)
+    AND (
+      "public"."GovernanceAwsConnection"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."GovernanceAwsConnection"."id",
+  "public"."GovernanceAwsConnection"."organizationId",
+  "public"."GovernanceAwsConnection"."name",
+  "public"."GovernanceAwsConnection"."accessKeyId",
+  "public"."GovernanceAwsConnection"."encryptedSecretAccessKey",
+  "public"."GovernanceAwsConnection"."roleArn",
+  "public"."GovernanceAwsConnection"."encryptedExternalId",
+  "public"."GovernanceAwsConnection"."createdAt",
+  "public"."GovernanceAwsConnection"."updatedAt"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.governanceAwsConnection.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."GovernanceAwsConnection"
+WHERE
+  (
+    "public"."GovernanceAwsConnection"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."GovernanceAwsConnection"."id",
+  "public"."GovernanceAwsConnection"."organizationId",
+  "public"."GovernanceAwsConnection"."name",
+  "public"."GovernanceAwsConnection"."accessKeyId",
+  "public"."GovernanceAwsConnection"."encryptedSecretAccessKey",
+  "public"."GovernanceAwsConnection"."roleArn",
+  "public"."GovernanceAwsConnection"."encryptedExternalId",
+  "public"."GovernanceAwsConnection"."createdAt",
+  "public"."GovernanceAwsConnection"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AgentStop"></a>
+
+### AgentStop
+
+The `agent_stop` aggregate's Postgres projection: one row per kill switch stop, its status and
+every target's outcome, folded from the stop's events.
+
+| Field                 | Type       | Constraints | Default              | Description |
+| --------------------- | ---------- | ----------- | -------------------- | ----------- |
+| `id`                  | `String`   | PK NOT NULL |                      |             |
+| `organizationId`      | `String`   | NOT NULL    |                      |             |
+| `agentId`             | `String`   | NOT NULL    |                      |             |
+| `agentName`           | `String`   | NOT NULL    |                      |             |
+| `status`              | `String`   | NOT NULL    |                      |             |
+| `severity`            | `String`   | NOT NULL    |                      |             |
+| `approval`            | `String`   | NOT NULL    |                      |             |
+| `trigger`             | `String`   | NOT NULL    |                      |             |
+| `reason`              | `String`   | NOT NULL    |                      |             |
+| `requestedByUserId`   | `String`   | NULL        |                      |             |
+| `requestedByApiKeyId` | `String`   | NULL        |                      |             |
+| `decidedByUserId`     | `String`   | NULL        |                      |             |
+| `decidedByApiKeyId`   | `String`   | NULL        |                      |             |
+| `restoredByUserId`    | `String`   | NULL        |                      |             |
+| `restoredByApiKeyId`  | `String`   | NULL        |                      |             |
+| `targets`             | `Json`     | NOT NULL    |                      |             |
+| `requestedAt`         | `DateTime` | NOT NULL    |                      |             |
+| `decidedAt`           | `DateTime` | NULL        |                      |             |
+| `quarantinedAt`       | `DateTime` | NULL        |                      |             |
+| `restoreRequestedAt`  | `DateTime` | NULL        |                      |             |
+| `restoredAt`          | `DateTime` | NULL        |                      |             |
+| `lastAppliedEventId`  | `String`   | NOT NULL    |                      |             |
+| `lastAcceptedAt`      | `BigInt`   | NOT NULL    |                      |             |
+| `lastOccurredAt`      | `BigInt`   | NOT NULL    |                      |             |
+| `projectionVersion`   | `String`   | NOT NULL    |                      |             |
+| `createdAt`           | `DateTime` | NOT NULL    | `now()`              |             |
+| `updatedAt`           | `DateTime` | NOT NULL    | `now()` `@updatedAt` |             |
+
+#### Indexes
+
+- `@@index([organizationId, agentId])`
+- `@@index([organizationId, status])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentStop" (
+    "id" TEXT NOT NULL,
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "agentName" TEXT NOT NULL,
+    "status" TEXT NOT NULL,
+    "severity" TEXT NOT NULL,
+    "approval" TEXT NOT NULL,
+    "trigger" TEXT NOT NULL,
+    "reason" TEXT NOT NULL,
+    "requestedByUserId" TEXT,
+    "requestedByApiKeyId" TEXT,
+    "decidedByUserId" TEXT,
+    "decidedByApiKeyId" TEXT,
+    "restoredByUserId" TEXT,
+    "restoredByApiKeyId" TEXT,
+    "targets" JSONB NOT NULL,
+    "requestedAt" TIMESTAMP(3) NOT NULL,
+    "decidedAt" TIMESTAMP(3),
+    "quarantinedAt" TIMESTAMP(3),
+    "restoreRequestedAt" TIMESTAMP(3),
+    "restoredAt" TIMESTAMP(3),
+    "lastAppliedEventId" TEXT NOT NULL,
+    "lastAcceptedAt" BIGINT NOT NULL,
+    "lastOccurredAt" BIGINT NOT NULL,
+    "projectionVersion" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgentStop_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "AgentStop_organizationId_agentId_idx" ON "AgentStop"("organizationId", "agentId");
+
+CREATE INDEX "AgentStop_organizationId_status_idx" ON "AgentStop"("organizationId", "status");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentStop.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentStop"."id",
+  "public"."AgentStop"."organizationId",
+  "public"."AgentStop"."agentId",
+  "public"."AgentStop"."agentName",
+  "public"."AgentStop"."status",
+  "public"."AgentStop"."severity",
+  "public"."AgentStop"."approval",
+  "public"."AgentStop"."trigger",
+  "public"."AgentStop"."reason",
+  "public"."AgentStop"."requestedByUserId",
+  "public"."AgentStop"."requestedByApiKeyId",
+  "public"."AgentStop"."decidedByUserId",
+  "public"."AgentStop"."decidedByApiKeyId",
+  "public"."AgentStop"."restoredByUserId",
+  "public"."AgentStop"."restoredByApiKeyId",
+  "public"."AgentStop"."targets",
+  "public"."AgentStop"."requestedAt",
+  "public"."AgentStop"."decidedAt",
+  "public"."AgentStop"."quarantinedAt",
+  "public"."AgentStop"."restoreRequestedAt",
+  "public"."AgentStop"."restoredAt",
+  "public"."AgentStop"."lastAppliedEventId",
+  "public"."AgentStop"."lastAcceptedAt",
+  "public"."AgentStop"."lastOccurredAt",
+  "public"."AgentStop"."projectionVersion",
+  "public"."AgentStop"."createdAt",
+  "public"."AgentStop"."updatedAt"
+FROM
+  "public"."AgentStop"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentStop.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentStop"."id"
+    FROM
+      "public"."AgentStop"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentStop.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AgentStop"."id",
+  "public"."AgentStop"."organizationId",
+  "public"."AgentStop"."agentId",
+  "public"."AgentStop"."agentName",
+  "public"."AgentStop"."status",
+  "public"."AgentStop"."severity",
+  "public"."AgentStop"."approval",
+  "public"."AgentStop"."trigger",
+  "public"."AgentStop"."reason",
+  "public"."AgentStop"."requestedByUserId",
+  "public"."AgentStop"."requestedByApiKeyId",
+  "public"."AgentStop"."decidedByUserId",
+  "public"."AgentStop"."decidedByApiKeyId",
+  "public"."AgentStop"."restoredByUserId",
+  "public"."AgentStop"."restoredByApiKeyId",
+  "public"."AgentStop"."targets",
+  "public"."AgentStop"."requestedAt",
+  "public"."AgentStop"."decidedAt",
+  "public"."AgentStop"."quarantinedAt",
+  "public"."AgentStop"."restoreRequestedAt",
+  "public"."AgentStop"."restoredAt",
+  "public"."AgentStop"."lastAppliedEventId",
+  "public"."AgentStop"."lastAcceptedAt",
+  "public"."AgentStop"."lastOccurredAt",
+  "public"."AgentStop"."projectionVersion",
+  "public"."AgentStop"."createdAt",
+  "public"."AgentStop"."updatedAt"
+FROM
+  "public"."AgentStop"
+WHERE
+  (
+    "public"."AgentStop"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentStop.create({
+  data: {
+    id: "example",
+    organizationId: "example",
+    agentId: "example",
+    agentName: "example",
+    status: "example",
+    severity: "example",
+    approval: "example",
+    trigger: "example",
+    reason: "example",
+    targets: {},
+    requestedAt: new Date("2026-01-01T00:00:00.000Z"),
+    lastAppliedEventId: "example",
+    lastAcceptedAt: 1n,
+    lastOccurredAt: 1n,
+    projectionVersion: "example",
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AgentStop" (
+    "id",
+    "organizationId",
+    "agentId",
+    "agentName",
+    "status",
+    "severity",
+    "approval",
+    "trigger",
+    "reason",
+    "targets",
+    "requestedAt",
+    "lastAppliedEventId",
+    "lastAcceptedAt",
+    "lastOccurredAt",
+    "projectionVersion",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9,
+    $10,
+    $11,
+    $12,
+    $13,
+    $14,
+    $15,
+    $16,
+    $17
+  )
+RETURNING
+  "public"."AgentStop"."id",
+  "public"."AgentStop"."organizationId",
+  "public"."AgentStop"."agentId",
+  "public"."AgentStop"."agentName",
+  "public"."AgentStop"."status",
+  "public"."AgentStop"."severity",
+  "public"."AgentStop"."approval",
+  "public"."AgentStop"."trigger",
+  "public"."AgentStop"."reason",
+  "public"."AgentStop"."requestedByUserId",
+  "public"."AgentStop"."requestedByApiKeyId",
+  "public"."AgentStop"."decidedByUserId",
+  "public"."AgentStop"."decidedByApiKeyId",
+  "public"."AgentStop"."restoredByUserId",
+  "public"."AgentStop"."restoredByApiKeyId",
+  "public"."AgentStop"."targets",
+  "public"."AgentStop"."requestedAt",
+  "public"."AgentStop"."decidedAt",
+  "public"."AgentStop"."quarantinedAt",
+  "public"."AgentStop"."restoreRequestedAt",
+  "public"."AgentStop"."restoredAt",
+  "public"."AgentStop"."lastAppliedEventId",
+  "public"."AgentStop"."lastAcceptedAt",
+  "public"."AgentStop"."lastOccurredAt",
+  "public"."AgentStop"."projectionVersion",
+  "public"."AgentStop"."createdAt",
+  "public"."AgentStop"."updatedAt"
+-- params: ["example","example","example","example","example","example","example","example","example","{}","2026-01-01T00:00:00.000Z","example","1","1","example","<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentStop.update({ where: { id: "example" }, data: { organizationId: "example" } });
+```
+
+```sql
+SELECT
+  "public"."AgentStop"."id"
+FROM
+  "public"."AgentStop"
+WHERE
+  (
+    "public"."AgentStop"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+
+UPDATE "public"."AgentStop"
+SET
+  "organizationId" = $1,
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."AgentStop"."id" IN ($3)
+    AND (
+      "public"."AgentStop"."id" = $4
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentStop"."id",
+  "public"."AgentStop"."organizationId",
+  "public"."AgentStop"."agentId",
+  "public"."AgentStop"."agentName",
+  "public"."AgentStop"."status",
+  "public"."AgentStop"."severity",
+  "public"."AgentStop"."approval",
+  "public"."AgentStop"."trigger",
+  "public"."AgentStop"."reason",
+  "public"."AgentStop"."requestedByUserId",
+  "public"."AgentStop"."requestedByApiKeyId",
+  "public"."AgentStop"."decidedByUserId",
+  "public"."AgentStop"."decidedByApiKeyId",
+  "public"."AgentStop"."restoredByUserId",
+  "public"."AgentStop"."restoredByApiKeyId",
+  "public"."AgentStop"."targets",
+  "public"."AgentStop"."requestedAt",
+  "public"."AgentStop"."decidedAt",
+  "public"."AgentStop"."quarantinedAt",
+  "public"."AgentStop"."restoreRequestedAt",
+  "public"."AgentStop"."restoredAt",
+  "public"."AgentStop"."lastAppliedEventId",
+  "public"."AgentStop"."lastAcceptedAt",
+  "public"."AgentStop"."lastOccurredAt",
+  "public"."AgentStop"."projectionVersion",
+  "public"."AgentStop"."createdAt",
+  "public"."AgentStop"."updatedAt"
+-- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"<id of the rows above>","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentStop.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."AgentStop"
+WHERE
+  (
+    "public"."AgentStop"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentStop"."id",
+  "public"."AgentStop"."organizationId",
+  "public"."AgentStop"."agentId",
+  "public"."AgentStop"."agentName",
+  "public"."AgentStop"."status",
+  "public"."AgentStop"."severity",
+  "public"."AgentStop"."approval",
+  "public"."AgentStop"."trigger",
+  "public"."AgentStop"."reason",
+  "public"."AgentStop"."requestedByUserId",
+  "public"."AgentStop"."requestedByApiKeyId",
+  "public"."AgentStop"."decidedByUserId",
+  "public"."AgentStop"."decidedByApiKeyId",
+  "public"."AgentStop"."restoredByUserId",
+  "public"."AgentStop"."restoredByApiKeyId",
+  "public"."AgentStop"."targets",
+  "public"."AgentStop"."requestedAt",
+  "public"."AgentStop"."decidedAt",
+  "public"."AgentStop"."quarantinedAt",
+  "public"."AgentStop"."restoreRequestedAt",
+  "public"."AgentStop"."restoredAt",
+  "public"."AgentStop"."lastAppliedEventId",
+  "public"."AgentStop"."lastAcceptedAt",
+  "public"."AgentStop"."lastOccurredAt",
+  "public"."AgentStop"."projectionVersion",
+  "public"."AgentStop"."createdAt",
+  "public"."AgentStop"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-AgentStopClaim"></a>
+
+### AgentStopClaim
+
+The one open stop an agent may have: the api takes this row before it sends a stop's request,
+so two requests at once cannot both open one. A later request takes it over once the stop it
+names has closed.
+`sentAt` is set once the request command was sent: from then on the claim passes on only after
+its stop closed, never on age. `decision` is taken by the one approve or deny that wins.
+`decisionTakenAt` is set while that decision is in flight and cleared once its command was
+sent; a decision left in flight is taken over once abandoned.
+
+| Field             | Type       | Constraints | Default | Description |
+| ----------------- | ---------- | ----------- | ------- | ----------- |
+| `organizationId`  | `String`   | PK NOT NULL |         |             |
+| `agentId`         | `String`   | PK NOT NULL |         |             |
+| `stopId`          | `String`   | NOT NULL    |         |             |
+| `claimedAt`       | `DateTime` | NOT NULL    |         |             |
+| `sentAt`          | `DateTime` | NULL        |         |             |
+| `decision`        | `String`   | NULL        |         |             |
+| `decisionTakenAt` | `DateTime` | NULL        |         |             |
+
+#### Indexes
+
+- `@@id([organizationId, agentId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentStopClaim" (
+    "organizationId" TEXT NOT NULL,
+    "agentId" TEXT NOT NULL,
+    "stopId" TEXT NOT NULL,
+    "claimedAt" TIMESTAMP(3) NOT NULL,
+    "sentAt" TIMESTAMP(3),
+    "decision" TEXT,
+    "decisionTakenAt" TIMESTAMP(3),
+
+    CONSTRAINT "AgentStopClaim_pkey" PRIMARY KEY ("organizationId","agentId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentStopClaim.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId",
+  "public"."AgentStopClaim"."stopId",
+  "public"."AgentStopClaim"."claimedAt",
+  "public"."AgentStopClaim"."sentAt",
+  "public"."AgentStopClaim"."decision",
+  "public"."AgentStopClaim"."decisionTakenAt"
+FROM
+  "public"."AgentStopClaim"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentStopClaim.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentStopClaim"."organizationId",
+      "public"."AgentStopClaim"."agentId"
+    FROM
+      "public"."AgentStopClaim"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentStopClaim.findUnique({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId",
+  "public"."AgentStopClaim"."stopId",
+  "public"."AgentStopClaim"."claimedAt",
+  "public"."AgentStopClaim"."sentAt",
+  "public"."AgentStopClaim"."decision",
+  "public"."AgentStopClaim"."decisionTakenAt"
+FROM
+  "public"."AgentStopClaim"
+WHERE
+  (
+    (
+      "public"."AgentStopClaim"."organizationId" = $1
+      AND "public"."AgentStopClaim"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentStopClaim.create({
+  data: {
+    organizationId: "example",
+    agentId: "example",
+    stopId: "example",
+    claimedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AgentStopClaim" (
+    "organizationId",
+    "agentId",
+    "stopId",
+    "claimedAt"
+  )
+VALUES
+  ($1, $2, $3, $4)
+RETURNING
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId",
+  "public"."AgentStopClaim"."stopId",
+  "public"."AgentStopClaim"."claimedAt",
+  "public"."AgentStopClaim"."sentAt",
+  "public"."AgentStopClaim"."decision",
+  "public"."AgentStopClaim"."decisionTakenAt"
+-- params: ["example","example","example","2026-01-01T00:00:00.000Z"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentStopClaim.update({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+  data: { stopId: "example" },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId"
+FROM
+  "public"."AgentStopClaim"
+WHERE
+  (
+    (
+      "public"."AgentStopClaim"."organizationId" = $1
+      AND "public"."AgentStopClaim"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $3
+OFFSET
+  $4
+-- params: ["example","example","1","0"]
+
+UPDATE "public"."AgentStopClaim"
+SET
+  "stopId" = $1
+WHERE
+  (
+    (
+      "public"."AgentStopClaim"."organizationId" IN ($2)
+      AND "public"."AgentStopClaim"."agentId" IN ($3)
+    )
+    AND (
+      (
+        "public"."AgentStopClaim"."organizationId" = $4
+        AND "public"."AgentStopClaim"."agentId" = $5
+      )
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId",
+  "public"."AgentStopClaim"."stopId",
+  "public"."AgentStopClaim"."claimedAt",
+  "public"."AgentStopClaim"."sentAt",
+  "public"."AgentStopClaim"."decision",
+  "public"."AgentStopClaim"."decisionTakenAt"
+-- params: ["example","<organizationId of the rows above>","<agentId of the rows above>","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentStopClaim.delete({
+  where: { organizationId_agentId: { organizationId: "example", agentId: "example" } },
+});
+```
+
+```sql
+DELETE FROM "public"."AgentStopClaim"
+WHERE
+  (
+    (
+      "public"."AgentStopClaim"."organizationId" = $1
+      AND "public"."AgentStopClaim"."agentId" = $2
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentStopClaim"."organizationId",
+  "public"."AgentStopClaim"."agentId",
+  "public"."AgentStopClaim"."stopId",
+  "public"."AgentStopClaim"."claimedAt",
+  "public"."AgentStopClaim"."sentAt",
+  "public"."AgentStopClaim"."decision",
+  "public"."AgentStopClaim"."decisionTakenAt"
+-- params: ["example","example"]
+```
+
+</details>
+
+<a id="model-AgentStopTargetPriorState"></a>
+
+### AgentStopTargetPriorState
+
+Whether a target was already stopped before a stop first touched it, recorded once before the
+stop's platform call, so a retried call after a success still knows the change is the stop's own.
+
+| Field            | Type       | Constraints | Default | Description |
+| ---------------- | ---------- | ----------- | ------- | ----------- |
+| `organizationId` | `String`   | PK NOT NULL |         |             |
+| `stopId`         | `String`   | PK NOT NULL |         |             |
+| `targetId`       | `String`   | PK NOT NULL |         |             |
+| `wasStopped`     | `Boolean`  | NOT NULL    |         |             |
+| `recordedAt`     | `DateTime` | NOT NULL    |         |             |
+
+#### Indexes
+
+- `@@id([organizationId, stopId, targetId])`
+
+#### Definition
+
+```sql
+CREATE TABLE "AgentStopTargetPriorState" (
+    "organizationId" TEXT NOT NULL,
+    "stopId" TEXT NOT NULL,
+    "targetId" TEXT NOT NULL,
+    "wasStopped" BOOLEAN NOT NULL,
+    "recordedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "AgentStopTargetPriorState_pkey" PRIMARY KEY ("organizationId","stopId","targetId")
+);
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.agentStopTargetPriorState.findMany();
+```
+
+```sql
+SELECT
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId",
+  "public"."AgentStopTargetPriorState"."wasStopped",
+  "public"."AgentStopTargetPriorState"."recordedAt"
+FROM
+  "public"."AgentStopTargetPriorState"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.agentStopTargetPriorState.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."AgentStopTargetPriorState"."organizationId",
+      "public"."AgentStopTargetPriorState"."stopId",
+      "public"."AgentStopTargetPriorState"."targetId"
+    FROM
+      "public"."AgentStopTargetPriorState"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.agentStopTargetPriorState.findUnique({
+  where: {
+    organizationId_stopId_targetId: {
+      organizationId: "example",
+      stopId: "example",
+      targetId: "example",
+    },
+  },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId",
+  "public"."AgentStopTargetPriorState"."wasStopped",
+  "public"."AgentStopTargetPriorState"."recordedAt"
+FROM
+  "public"."AgentStopTargetPriorState"
+WHERE
+  (
+    (
+      "public"."AgentStopTargetPriorState"."organizationId" = $1
+      AND "public"."AgentStopTargetPriorState"."stopId" = $2
+      AND "public"."AgentStopTargetPriorState"."targetId" = $3
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $4
+OFFSET
+  $5
+-- params: ["example","example","example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.agentStopTargetPriorState.create({
+  data: {
+    organizationId: "example",
+    stopId: "example",
+    targetId: "example",
+    wasStopped: true,
+    recordedAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."AgentStopTargetPriorState" (
+    "organizationId",
+    "stopId",
+    "targetId",
+    "wasStopped",
+    "recordedAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5)
+RETURNING
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId",
+  "public"."AgentStopTargetPriorState"."wasStopped",
+  "public"."AgentStopTargetPriorState"."recordedAt"
+-- params: ["example","example","example",true,"2026-01-01T00:00:00.000Z"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.agentStopTargetPriorState.update({
+  where: {
+    organizationId_stopId_targetId: {
+      organizationId: "example",
+      stopId: "example",
+      targetId: "example",
+    },
+  },
+  data: { wasStopped: true },
+});
+```
+
+```sql
+SELECT
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId"
+FROM
+  "public"."AgentStopTargetPriorState"
+WHERE
+  (
+    (
+      "public"."AgentStopTargetPriorState"."organizationId" = $1
+      AND "public"."AgentStopTargetPriorState"."stopId" = $2
+      AND "public"."AgentStopTargetPriorState"."targetId" = $3
+    )
+    AND 1 = 1
+  )
+LIMIT
+  $4
+OFFSET
+  $5
+-- params: ["example","example","example","1","0"]
+
+UPDATE "public"."AgentStopTargetPriorState"
+SET
+  "wasStopped" = $1
+WHERE
+  (
+    (
+      "public"."AgentStopTargetPriorState"."organizationId" IN ($2)
+      AND "public"."AgentStopTargetPriorState"."stopId" IN ($3)
+      AND "public"."AgentStopTargetPriorState"."targetId" IN ($4)
+    )
+    AND (
+      (
+        "public"."AgentStopTargetPriorState"."organizationId" = $5
+        AND "public"."AgentStopTargetPriorState"."stopId" = $6
+        AND "public"."AgentStopTargetPriorState"."targetId" = $7
+      )
+      AND 1 = 1
+    )
+  )
+RETURNING
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId",
+  "public"."AgentStopTargetPriorState"."wasStopped",
+  "public"."AgentStopTargetPriorState"."recordedAt"
+-- params: [true,"<organizationId of the rows above>","<stopId of the rows above>","<targetId of the rows above>","example","example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.agentStopTargetPriorState.delete({
+  where: {
+    organizationId_stopId_targetId: {
+      organizationId: "example",
+      stopId: "example",
+      targetId: "example",
+    },
+  },
+});
+```
+
+```sql
+DELETE FROM "public"."AgentStopTargetPriorState"
+WHERE
+  (
+    (
+      "public"."AgentStopTargetPriorState"."organizationId" = $1
+      AND "public"."AgentStopTargetPriorState"."stopId" = $2
+      AND "public"."AgentStopTargetPriorState"."targetId" = $3
+    )
+    AND 1 = 1
+  )
+RETURNING
+  "public"."AgentStopTargetPriorState"."organizationId",
+  "public"."AgentStopTargetPriorState"."stopId",
+  "public"."AgentStopTargetPriorState"."targetId",
+  "public"."AgentStopTargetPriorState"."wasStopped",
+  "public"."AgentStopTargetPriorState"."recordedAt"
+-- params: ["example","example","example"]
+```
+
+</details>
+
 <a id="model-IdentityMatch"></a>
 
 ### IdentityMatch
@@ -78094,11 +81184,14 @@ CREATE TYPE "GatewayBudgetLedgerStatus" AS ENUM ('SUCCESS', 'PROVIDER_ERROR', 'B
 - `CACHE_RULE_DELETED`
 - `ROUTING_POLICY_UPDATED`
 - `ROUTING_POLICY_DELETED`
+- `A2A_TARGET_CREATED`
+- `A2A_TARGET_UPDATED`
+- `A2A_TARGET_DELETED`
 
 #### Definition
 
 ```sql
-CREATE TYPE "GatewayChangeEventKind" AS ENUM ('VK_CREATED', 'VK_CONFIG_UPDATED', 'VK_REVOKED', 'VK_ROTATED', 'VK_DISABLED', 'VK_ENABLED', 'BUDGET_CREATED', 'BUDGET_UPDATED', 'BUDGET_DELETED', 'MODEL_PROVIDER_UPDATED', 'CACHE_RULE_CREATED', 'CACHE_RULE_UPDATED', 'CACHE_RULE_DELETED', 'ROUTING_POLICY_UPDATED', 'ROUTING_POLICY_DELETED');
+CREATE TYPE "GatewayChangeEventKind" AS ENUM ('VK_CREATED', 'VK_CONFIG_UPDATED', 'VK_REVOKED', 'VK_ROTATED', 'VK_DISABLED', 'VK_ENABLED', 'BUDGET_CREATED', 'BUDGET_UPDATED', 'BUDGET_DELETED', 'MODEL_PROVIDER_UPDATED', 'CACHE_RULE_CREATED', 'CACHE_RULE_UPDATED', 'CACHE_RULE_DELETED', 'ROUTING_POLICY_UPDATED', 'ROUTING_POLICY_DELETED', 'A2A_TARGET_CREATED', 'A2A_TARGET_UPDATED', 'A2A_TARGET_DELETED');
 ```
 
 <a id="enum-GatewayCacheRuleMode"></a>

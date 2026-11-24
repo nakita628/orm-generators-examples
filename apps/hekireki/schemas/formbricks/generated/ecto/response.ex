@@ -27,6 +27,7 @@ defmodule Formbricks.Response do
           ttc: map() | list() | String.t() | number() | boolean(),
           meta: map() | list() | String.t() | number() | boolean(),
           ingest_flags: map() | list() | String.t() | number() | boolean() | nil,
+          cal_bookings: map() | list() | String.t() | number() | boolean() | nil,
           outcome: atom() | nil,
           not_shown: map() | list() | String.t() | number() | boolean() | nil,
           contact_attributes: map() | list() | String.t() | number() | boolean() | nil,
@@ -61,6 +62,13 @@ defmodule Formbricks.Response do
     # and surfacing that in the UI (v2) would have nothing to read.
     # [ResponseIngestFlags]
     field(:ingest_flags, Formbricks.PrismaJson)
+    # What the Cal.com elements reported when the respondent booked, `{ [Question ID]: booking }`. `data`
+    # keeps the string "booked" for those questions, so this column is purely additive: it is omitted from
+    # every read without a `select` (`PRISMA_GLOBAL_OMIT`), and only the webhook body (as
+    # `calBookingsByQuestionId`) and `/api/v3/responses` read it. Server-derived from the incoming `data`,
+    # never accepted as a field of its own.
+    # [ResponseCalBookings]
+    field(:cal_bookings, Formbricks.PrismaJson, source: :cal_bookings_by_question_id)
     # A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
     # export by default and from Feedback Records, and nothing else: it is never deleted and every
     # count, list, webhook and integration still includes it (ENG-6780).

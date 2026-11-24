@@ -13,6 +13,8 @@ defmodule Shelf.BookingSettings do
           auto_archive_bookings: boolean(),
           auto_archive_days: integer(),
           auto_archive_expired_reservations: boolean(),
+          require_approval_for_base: boolean(),
+          require_approval_for_self_service: boolean(),
           require_explicit_checkin_for_admin: boolean(),
           require_explicit_checkin_for_self_service: boolean(),
           require_explicit_checkout_for_admin: boolean(),
@@ -35,6 +37,8 @@ defmodule Shelf.BookingSettings do
     field(:auto_archive_bookings, :boolean, default: false, source: :autoArchiveBookings)
     field(:auto_archive_days, :integer, default: 2, source: :autoArchiveDays)
     field(:auto_archive_expired_reservations, :boolean, default: false, source: :autoArchiveExpiredReservations)
+    field(:require_approval_for_base, :boolean, default: false, source: :requireApprovalForBase)
+    field(:require_approval_for_self_service, :boolean, default: false, source: :requireApprovalForSelfService)
     field(:require_explicit_checkin_for_admin, :boolean, default: false, source: :requireExplicitCheckinForAdmin)
     field(:require_explicit_checkin_for_self_service, :boolean, default: false, source: :requireExplicitCheckinForSelfService)
     field(:require_explicit_checkout_for_admin, :boolean, default: false, source: :requireExplicitCheckoutForAdmin)

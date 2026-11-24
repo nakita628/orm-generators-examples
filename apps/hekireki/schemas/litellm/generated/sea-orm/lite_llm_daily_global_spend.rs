@@ -35,6 +35,8 @@ pub struct Model {
     #[sea_orm(default_value = 0)]
     pub guardrail_spend: f64,
     #[sea_orm(default_value = 0)]
+    pub customer_margin_spend: f64,
+    #[sea_orm(default_value = 0)]
     pub spend: f64,
     #[sea_orm(default_value = "0")]
     pub api_requests: i64,

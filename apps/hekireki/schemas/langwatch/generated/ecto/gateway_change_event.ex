@@ -17,7 +17,7 @@ defmodule LangWatch.GatewayChangeEvent do
         }
 
   schema "GatewayChangeEvent" do
-    field(:kind, Ecto.Enum, values: [:VK_CREATED, :VK_CONFIG_UPDATED, :VK_REVOKED, :VK_ROTATED, :VK_DISABLED, :VK_ENABLED, :BUDGET_CREATED, :BUDGET_UPDATED, :BUDGET_DELETED, :MODEL_PROVIDER_UPDATED, :CACHE_RULE_CREATED, :CACHE_RULE_UPDATED, :CACHE_RULE_DELETED, :ROUTING_POLICY_UPDATED, :ROUTING_POLICY_DELETED])
+    field(:kind, Ecto.Enum, values: [:VK_CREATED, :VK_CONFIG_UPDATED, :VK_REVOKED, :VK_ROTATED, :VK_DISABLED, :VK_ENABLED, :BUDGET_CREATED, :BUDGET_UPDATED, :BUDGET_DELETED, :MODEL_PROVIDER_UPDATED, :CACHE_RULE_CREATED, :CACHE_RULE_UPDATED, :CACHE_RULE_DELETED, :ROUTING_POLICY_UPDATED, :ROUTING_POLICY_DELETED, :A2A_TARGET_CREATED, :A2A_TARGET_UPDATED, :A2A_TARGET_DELETED])
     field(:virtual_key_id, :string, source: :virtualKeyId)
     field(:budget_id, :string, source: :budgetId)
     field(:model_provider_id, :string, source: :modelProviderId)

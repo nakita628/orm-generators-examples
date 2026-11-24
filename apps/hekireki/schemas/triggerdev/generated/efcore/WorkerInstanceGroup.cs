@@ -33,6 +33,8 @@ public partial class WorkerInstanceGroup
 
     public string TokenId { get; set; } = null!;
 
+    public virtual ICollection<WorkerGroupToken> ChildTokens { get; set; } = new List<WorkerGroupToken>();
+
     public virtual ICollection<WorkerInstance> Workers { get; set; } = new List<WorkerInstance>();
 
     public virtual ICollection<BackgroundWorker> BackgroundWorkers { get; set; } = new List<BackgroundWorker>();

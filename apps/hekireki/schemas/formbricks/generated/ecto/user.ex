@@ -46,6 +46,7 @@ defmodule Formbricks.User do
           oauth_access_tokens: [Formbricks.OauthAccessToken.t()],
           oauth_refresh_tokens: [Formbricks.OauthRefreshToken.t()],
           oauth_consents: [Formbricks.OauthConsent.t()],
+          mcp_grants: [Formbricks.McpGrant.t()],
           invites_created: [Formbricks.Invite.t()],
           invites_accepted: [Formbricks.Invite.t()],
           surveys: [Formbricks.Survey.t()],
@@ -101,6 +102,7 @@ defmodule Formbricks.User do
     has_many(:oauth_access_tokens, Formbricks.OauthAccessToken, foreign_key: :user_id, references: :id)
     has_many(:oauth_refresh_tokens, Formbricks.OauthRefreshToken, foreign_key: :user_id, references: :id)
     has_many(:oauth_consents, Formbricks.OauthConsent, foreign_key: :user_id, references: :id)
+    has_many(:mcp_grants, Formbricks.McpGrant, foreign_key: :user_id, references: :id)
     has_many(:invites_created, Formbricks.Invite, foreign_key: :creator_id, references: :id)
     has_many(:invites_accepted, Formbricks.Invite, foreign_key: :acceptor_id, references: :id)
     has_many(:surveys, Formbricks.Survey, foreign_key: :created_by, references: :id)

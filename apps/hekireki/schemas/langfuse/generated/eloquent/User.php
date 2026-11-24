@@ -211,4 +211,14 @@ class User extends \Illuminate\Database\Eloquent\Model
     {
         return $this->hasMany(EvaluationRule::class, 'created_by_user_id');
     }
+
+    public function gatewaySpendLimitsOwned(): HasMany
+    {
+        return $this->hasMany(GatewaySpendLimit::class, 'owner_user_id');
+    }
+
+    public function gatewaySpendLimits(): HasMany
+    {
+        return $this->hasMany(GatewaySpendLimit::class, 'user_id');
+    }
 }

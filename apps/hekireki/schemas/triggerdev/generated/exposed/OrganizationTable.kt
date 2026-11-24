@@ -1,6 +1,7 @@
 package triggerdev.models
 
 import io.github.thibaultmeyer.cuid.CUID
+import org.jetbrains.exposed.v1.core.TextColumnType
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.json.jsonb
 import java.time.Instant
@@ -65,5 +66,12 @@ object OrganizationTable : IdTable<String>("\"Organization\"") {
         )
     val supportAccessModeUpdatedAt = pgTimestamp("supportAccessModeUpdatedAt", 3).nullable()
     val supportAccessModeUpdatedById = text("supportAccessModeUpdatedById").nullable()
+
+    /** When true, members without MFA are locked out of the dashboard and CLI until they set it up. */
+    val mfaRequired = bool("mfaRequired").default(false)
+
+    /** Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp). */
+    val mfaStepUpActions = array("mfaStepUpActions", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
+    val mfaStepUpWindowMinutes = integer("mfaStepUpWindowMinutes").default(5)
     override val primaryKey = PrimaryKey(id, name = "\"Organization_pkey\"")
 }

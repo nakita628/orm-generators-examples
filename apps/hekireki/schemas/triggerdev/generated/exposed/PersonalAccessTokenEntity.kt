@@ -45,6 +45,9 @@ class PersonalAccessTokenEntity(
     var createdAt by PersonalAccessTokenTable.createdAt
     var updatedAt by PersonalAccessTokenTable.updatedAt
     val authorizationCodes by AuthorizationCodeEntity optionalReferrersOn AuthorizationCodeTable.personalAccessTokenId
+    var oauthClient by OAuthClientEntity optionalReferencedOn PersonalAccessTokenTable.oauthClientId
+    var oauthClientId by PersonalAccessTokenTable.oauthClientId
+    val oauthRefreshTokens by OAuthRefreshTokenEntity referrersOn OAuthRefreshTokenTable.personalAccessTokenId
 
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {

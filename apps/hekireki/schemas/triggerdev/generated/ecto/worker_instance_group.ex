@@ -22,6 +22,7 @@ defmodule Trigger.WorkerInstanceGroup do
           token: Trigger.WorkerGroupToken.t() | nil,
           organization: Trigger.Organization.t() | nil,
           project: Trigger.Project.t() | nil,
+          child_tokens: [Trigger.WorkerGroupToken.t()],
           workers: [Trigger.WorkerInstance.t()],
           background_workers: [Trigger.BackgroundWorker.t()],
           default_for_projects: [Trigger.Project.t()]
@@ -54,6 +55,7 @@ defmodule Trigger.WorkerInstanceGroup do
     belongs_to(:token, Trigger.WorkerGroupToken, foreign_key: :token_id, define_field: false, type: :string)
     belongs_to(:organization, Trigger.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     belongs_to(:project, Trigger.Project, foreign_key: :project_id, define_field: false, type: :string)
+    has_many(:child_tokens, Trigger.WorkerGroupToken, foreign_key: :worker_group_id, references: :id)
     has_many(:workers, Trigger.WorkerInstance, foreign_key: :worker_group_id, references: :id)
     has_many(:background_workers, Trigger.BackgroundWorker, foreign_key: :worker_group_id, references: :id)
     has_many(:default_for_projects, Trigger.Project, foreign_key: :default_worker_group_id, references: :id)

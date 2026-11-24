@@ -7,6 +7,10 @@ namespace LiteLLM.Models;
 
 public partial class LiteLLMCustomerOrganizationTable
 {
+    public virtual ICollection<LiteLLMAppGroupCustomerOrgTable> AppGroups { get; set; } = new List<LiteLLMAppGroupCustomerOrgTable>();
+
+    public virtual ICollection<LiteLLMAppCustomerOrgTable> Apps { get; set; } = new List<LiteLLMAppCustomerOrgTable>();
+
     public double Spend { get; set; } = 0.0;
 
     public List<string>? BudgetTemplateIds { get; set; } = new List<string>();

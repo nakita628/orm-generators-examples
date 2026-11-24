@@ -27,6 +27,11 @@ object ConnectedGithubRepositoryTable : IdTable<String>("\"ConnectedGithubReposi
         )
     val branchTracking = jsonb<String>("branchTracking", { it }, { it })
     val previewDeploymentsEnabled = bool("previewDeploymentsEnabled").default(true)
+
+    /** Skip queued builds once a newer commit is queued for the same environment or preview branch */
+    val supersedeProductionBuilds = bool("supersedeProductionBuilds").default(false)
+    val supersedeStagingBuilds = bool("supersedeStagingBuilds").default(true)
+    val supersedePreviewBuilds = bool("supersedePreviewBuilds").default(true)
     val buildFilters = jsonb<String>("buildFilters", { it }, { it }).nullable()
     val createdAt = pgTimestamp("createdAt", 3).databaseDefault("CURRENT_TIMESTAMP") { Instant.now().truncatedTo(ChronoUnit.MILLIS) }
     val updatedAt = pgTimestamp("updatedAt", 3).clientDefault { Instant.now().truncatedTo(ChronoUnit.MILLIS) }

@@ -60,4 +60,5 @@ class OauthClientEntity(
     val refreshTokens by OauthRefreshTokenEntity referrersOn OauthRefreshTokenTable.clientId
     val consents by OauthConsentEntity referrersOn OauthConsentTable.clientId
     val resources by OauthClientResourceEntity referrersOn OauthClientResourceTable.clientId
+    val mcpGrants by McpGrantEntity referrersOn McpGrantTable.clientId
 }

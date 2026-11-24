@@ -45,8 +45,12 @@ pub enum Relation {
     VerifiedDomains,
     #[sea_orm(has_many = "super::gateway_ai_connection::Entity")]
     GatewayAiConnections,
+    #[sea_orm(has_many = "super::gateway_spend_limit::Entity")]
+    GatewaySpendLimits,
     #[sea_orm(has_many = "super::llm_api_keys::Entity")]
     OrganizationLlmApiKeys,
+    #[sea_orm(has_many = "super::model::Entity")]
+    Models,
     #[sea_orm(has_many = "super::role_assignment::Entity")]
     RoleAssignments,
     #[sea_orm(has_one = "super::gateway_config::Entity")]
@@ -101,9 +105,21 @@ impl Related<super::gateway_ai_connection::Entity> for Entity {
     }
 }
 
+impl Related<super::gateway_spend_limit::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::GatewaySpendLimits.def()
+    }
+}
+
 impl Related<super::llm_api_keys::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::OrganizationLlmApiKeys.def()
+    }
+}
+
+impl Related<super::model::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Models.def()
     }
 }
 

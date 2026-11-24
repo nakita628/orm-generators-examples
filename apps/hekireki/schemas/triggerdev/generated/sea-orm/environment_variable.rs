@@ -32,6 +32,8 @@ pub enum Relation {
     Project,
     #[sea_orm(has_many = "super::environment_variable_value::Entity")]
     Values,
+    #[sea_orm(has_many = "super::environment_variable_ignore::Entity")]
+    Ignores,
 }
 
 impl Related<super::project::Entity> for Entity {
@@ -43,6 +45,12 @@ impl Related<super::project::Entity> for Entity {
 impl Related<super::environment_variable_value::Entity> for Entity {
     fn to() -> RelationDef {
         Relation::Values.def()
+    }
+}
+
+impl Related<super::environment_variable_ignore::Entity> for Entity {
+    fn to() -> RelationDef {
+        Relation::Ignores.def()
     }
 }
 

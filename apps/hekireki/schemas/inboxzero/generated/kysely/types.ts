@@ -345,6 +345,8 @@ export interface EmailAccount {
    * Null until first turned on, which is when default bundles are chosen.
    */
   mailBundleInbox: boolean | null
+  /** Collapses the inbox's other mail from one sender into one row. */
+  mailGroupBySender: Generated<boolean>
   mailDefaultSplitId: string | null
   mailSetup: Generated<MailSetupState>
   includeInAllAccounts: Generated<boolean>

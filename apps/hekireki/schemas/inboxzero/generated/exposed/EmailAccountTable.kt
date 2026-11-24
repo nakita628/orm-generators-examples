@@ -61,6 +61,9 @@ object EmailAccountTable : IdTable<String>("\"EmailAccount\"") {
      * Null until first turned on, which is when default bundles are chosen.
      */
     val mailBundleInbox = bool("mailBundleInbox").nullable()
+
+    /** Collapses the inbox's other mail from one sender into one row. */
+    val mailGroupBySender = bool("mailGroupBySender").default(true)
     val mailDefaultSplitId = text("mailDefaultSplitId").nullable()
     val mailSetup =
         pgEnum("mailSetup", "\"MailSetupState\"", MailSetupState.entries, MailSetupState::dbName).default(MailSetupState.PENDING)

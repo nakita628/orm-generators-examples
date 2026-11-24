@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Superseded by SpaceUsage (resource api_poll). Unused; kept so old
+ * deployments keep working during the switch, then dropped.
+ */
 class ApiUsage extends Model
 {
     use PrismaDates;

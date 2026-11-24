@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property \Carbon\CarbonInterface|null $rootApiKeyHiddenAt Non-null prevents the root API key from being returned to users.
+ * @property \Carbon\CarbonInterface|null $rootKeyInjectionDisabledAt Non-null disables automatic root key injection into new deployed attempts.
  * @property string $pkApiKey @deprecated was for v2
  * @property bool $isBranchableEnvironment If true, this environment has branches and is treated differently in the dashboard/API
  * NB: this flag is NOT used for Development branches, instead (type, parentEnvironmentId) = (DEVELOPMENT, NULL) is used
@@ -36,6 +37,7 @@ class RuntimeEnvironment extends Model
         'slug',
         'apiKey',
         'rootApiKeyHiddenAt',
+        'rootKeyInjectionDisabledAt',
         'pkApiKey',
         'type',
         'isBranchableEnvironment',
@@ -73,6 +75,7 @@ class RuntimeEnvironment extends Model
 
     protected $casts = [
         'rootApiKeyHiddenAt' => 'datetime',
+        'rootKeyInjectionDisabledAt' => 'datetime',
         'type' => RuntimeEnvironmentType::class,
         'isBranchableEnvironment' => 'boolean',
         'previewAutoArchiveAfterDays' => 'integer',
@@ -157,6 +160,11 @@ class RuntimeEnvironment extends Model
     public function environmentVariableValues(): HasMany
     {
         return $this->hasMany(EnvironmentVariableValue::class, 'environmentId');
+    }
+
+    public function environmentVariableIgnores(): HasMany
+    {
+        return $this->hasMany(EnvironmentVariableIgnore::class, 'environmentId');
     }
 
     public function checkpoints(): HasMany

@@ -9,6 +9,7 @@ defmodule Langfuse.AnnotationQueue do
           name: String.t(),
           description: String.t() | nil,
           score_config_ids: [String.t()],
+          session_view_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -21,6 +22,7 @@ defmodule Langfuse.AnnotationQueue do
     field(:name, :string)
     field(:description, :string)
     field(:score_config_ids, {:array, :string})
+    field(:session_view_id, :string)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     has_many(:annotation_queue_item, Langfuse.AnnotationQueueItem, foreign_key: :queue_id, references: :id)
     has_many(:annotation_queue_assignment, Langfuse.AnnotationQueueAssignment, foreign_key: :queue_id, references: :id)

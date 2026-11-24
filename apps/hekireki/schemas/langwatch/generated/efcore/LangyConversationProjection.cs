@@ -71,6 +71,11 @@ public partial class LangyConversationProjection
 
     public double? ArchivedAt { get; set; }
 
+    /// <summary>
+    /// Messages CI started on a pull request since the person last wrote.
+    /// </summary>
+    public int CiFollowUpsInARow { get; set; } = 0;
+
     public double CreatedAt { get; set; }
 
     public double UpdatedAt { get; set; }

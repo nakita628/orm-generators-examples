@@ -1,6 +1,8 @@
 class LiteLLMDailyCustomerMemberSpend < ApplicationRecord
   self.table_name = "LiteLLM_DailyCustomerMemberSpend"
 
+  attribute :app_group_id, default: ""
+  attribute :app_id, default: ""
   attribute :customer_team_id, default: ""
   attribute :customer_member_id, default: ""
   attribute :model, default: ""
@@ -14,12 +16,15 @@ class LiteLLMDailyCustomerMemberSpend < ApplicationRecord
   attribute :completion_tokens, default: 0
   attribute :cache_read_input_tokens, default: 0
   attribute :cache_creation_input_tokens, default: 0
+  attribute :cache_cost, default: 0
+  attribute :priced_cache_tokens, default: 0
   attribute :compression_saved_tokens, default: 0
   attribute :compression_savings_spend, default: 0
   attribute :prompt_caching_savings_spend, default: 0
   attribute :gateway_injected_caching_savings_spend, default: 0
   attribute :autorouter_savings_spend, default: 0
   attribute :guardrail_spend, default: 0
+  attribute :customer_margin_spend, default: 0
   attribute :api_requests, default: 0
   attribute :successful_requests, default: 0
   attribute :failed_requests, default: 0

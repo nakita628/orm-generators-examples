@@ -99,6 +99,9 @@ public enum ActivityAction
     [PgName("BOOKING_ARCHIVED")]
     BookingArchived,
 
+    [PgName("BOOKING_APPROVED")]
+    BookingApproved,
+
     [PgName("BOOKING_MODEL_REQUESTED")]
     BookingModelRequested,
 

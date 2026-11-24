@@ -1,11 +1,13 @@
 # initializedAt:: Set the first time the CLI `init` command completes against this project. Drives the dev onboarding progress.
 # defaultRuntime:: Runtime used when a deployment config does not specify one. Null preserves the legacy Node 20 fallback.
+# secretProxyEnabled:: Newly triggered deployed runs require the secret proxy (pinned in their annotations).
 # allowedMasterQueues:: The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
 class Project < ApplicationRecord
   self.table_name = "Project"
   self.implicit_order_column = "createdAt"
 
   attribute :id, default: -> { Cuid.generate }
+  attribute :secretProxyEnabled, default: false
   attribute :allowedMasterQueues, default: -> { [] }
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt
@@ -33,6 +35,7 @@ class Project < ApplicationRecord
   has_many :run_tags, class_name: "TaskRunTag", foreign_key: "projectId", inverse_of: :project, dependent: :destroy
   has_many :task_queues, foreign_key: "projectId", inverse_of: :project, dependent: :destroy
   has_many :environment_variables, foreign_key: "projectId", inverse_of: :project, dependent: :destroy
+  has_many :environment_variable_ignores, foreign_key: "projectId", inverse_of: :project, dependent: :destroy
   has_many :checkpoints, foreign_key: "projectId", inverse_of: :project, dependent: :destroy
   has_many :worker_deployment, foreign_key: "projectId", inverse_of: :project, dependent: :destroy
   has_many :checkpoint_restore_event, foreign_key: "projectId", inverse_of: :project, dependent: :destroy

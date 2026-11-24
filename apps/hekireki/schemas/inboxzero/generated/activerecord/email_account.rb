@@ -1,5 +1,6 @@
 # mailBundleInbox:: Collapses threads from bundled splits into one row each in the inbox.
 #   Null until first turned on, which is when default bundles are chosen.
+# mailGroupBySender:: Collapses the inbox's other mail from one sender into one row.
 class EmailAccount < ApplicationRecord
   self.table_name = "EmailAccount"
   self.implicit_order_column = "createdAt"
@@ -16,6 +17,7 @@ class EmailAccount < ApplicationRecord
   attribute :allowHiddenAiDraftLinks, default: false
   attribute :rulesRevision, default: 0
   attribute :mailExpandedPreview, default: false
+  attribute :mailGroupBySender, default: true
   attribute :includeInAllAccounts, default: true
   attribute :meetingBriefingsEnabled, default: false
   attribute :meetingBriefingsMinutesBefore, default: 240

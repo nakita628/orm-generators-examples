@@ -4,7 +4,11 @@ erDiagram
     InvitationCode |o--o{ User : "(id) - (invitationCodeId)"
     User ||--o{ MfaBackupCode : "(id) - (userId)"
     PersonalAccessToken |o--o{ AuthorizationCode : "(id) - (personalAccessTokenId)"
+    OAuthClient |o--o{ AuthorizationCode : "(id) - (oauthClientId)"
     User ||--o{ PersonalAccessToken : "(id) - (userId)"
+    OAuthClient |o--o{ PersonalAccessToken : "(id) - (oauthClientId)"
+    PersonalAccessToken ||--o{ OAuthRefreshToken : "(id) - (personalAccessTokenId)"
+    OAuthClient ||--o{ OAuthRefreshToken : "(id) - (oauthClientId)"
     Organization ||--o{ OrganizationAccessToken : "(id) - (organizationId)"
     Organization ||--o{ OrgMember : "(id) - (organizationId)"
     User ||--o{ OrgMember : "(id) - (userId)"
@@ -71,6 +75,7 @@ erDiagram
     WorkerGroupToken ||--o| WorkerInstanceGroup : "(id) - (tokenId)"
     Organization |o--o{ WorkerInstanceGroup : "(id) - (organizationId)"
     Project |o--o{ WorkerInstanceGroup : "(id) - (projectId)"
+    WorkerInstanceGroup |o--o{ WorkerGroupToken : "(id) - (workerGroupId)"
     Project ||--o{ TaskRunTag : "(id) - (projectId)"
     TaskRun ||--o| TaskRunDependency : "(id) - (taskRunId)"
     CheckpointRestoreEvent |o--o| TaskRunDependency : "(id) - (checkpointEventId)"
@@ -94,6 +99,10 @@ erDiagram
     SecretReference |o--o{ EnvironmentVariableValue : "(id) - (valueReferenceId)"
     EnvironmentVariable ||--o{ EnvironmentVariableValue : "(id) - (variableId)"
     RuntimeEnvironment ||--o{ EnvironmentVariableValue : "(id) - (environmentId)"
+    Project ||--o{ EnvironmentVariableIgnore : "(id) - (projectId)"
+    RuntimeEnvironment ||--o{ EnvironmentVariableIgnore : "(id) - (environmentId)"
+    EnvironmentVariable ||--o{ EnvironmentVariableIgnore : "(id) - (variableId)"
+    User |o--o{ EnvironmentVariableIgnore : "(id) - (createdById)"
     TaskRun ||--o{ Checkpoint : "(id) - (runId)"
     TaskRunAttempt ||--o{ Checkpoint : "(id) - (attemptId)"
     Project ||--o{ Checkpoint : "(id) - (projectId)"
@@ -220,6 +229,12 @@ erDiagram
         string codeChallenge "S256 PKCE challenge from the client that minted the code. Null for codes minted by CLIs that predate it."
         int callbackPort "Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it."
         string approvalCodeHash "sha256 of the approval code, which only the approving browser ever sees."
+        string oauthClientId FK
+        string redirectUri
+        string[] scope
+        string resource
+        string approvedByUserId
+        string requestedByUserId "The user who started the OAuth authorization. Only they can approve it."
         datetime createdAt
         datetime updatedAt
     }
@@ -238,6 +253,33 @@ erDiagram
         datetime expiredNoticeSentAt "When the #quot;has expired#quot; email was sent. Set before sending, so it's sent at most once."
         datetime createdAt
         datetime updatedAt
+        string oauthClientId FK
+    }
+    OAuthClient {
+        string id PK
+        oauthclientkind kind
+        string clientId UK
+        string metadataUrl
+        string displayName
+        string selfReportedName
+        string[] redirectUris
+        string dedupeKey UK
+        datetime metadataExpiresAt
+        datetime lastUsedAt
+        datetime createdAt
+        datetime updatedAt
+    }
+    OAuthRefreshToken {
+        string id PK
+        string hashedToken UK
+        string personalAccessTokenId FK
+        string oauthClientId FK
+        string[] scope
+        string resource
+        datetime usedAt
+        string replacedById
+        datetime idleExpiresAt
+        datetime createdAt
     }
     OrganizationAccessToken {
         string id PK
@@ -283,12 +325,17 @@ erDiagram
         supportaccessmode supportAccessMode
         datetime supportAccessModeUpdatedAt
         string supportAccessModeUpdatedById
+        boolean mfaRequired "When true, members without MFA are locked out of the dashboard and CLI until they set it up."
+        string[] mfaStepUpActions "Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp)."
+        int mfaStepUpWindowMinutes
     }
     OrgMember {
         string id PK
         string organizationId FK, UK
         string userId FK, UK
         orgmemberrole role
+        string invitedById "Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded."
+        string joinMethod "How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded."
         datetime createdAt
         datetime updatedAt
     }
@@ -308,6 +355,7 @@ erDiagram
         string slug UK
         string apiKey UK
         datetime rootApiKeyHiddenAt "Non-null prevents the root API key from being returned to users."
+        datetime rootKeyInjectionDisabledAt "Non-null disables automatic root key injection into new deployed attempts."
         string pkApiKey UK "@deprecated was for v2"
         runtimeenvironmenttype type
         boolean isBranchableEnvironment "If true, this environment has branches and is treated differently in the dashboard/API NB: this flag is NOT used for Development branches, instead (type, parentEnvironmentId) = (DEVELOPMENT, NULL) is used"
@@ -376,6 +424,7 @@ erDiagram
         runengineversion engine
         string builderProjectId
         string defaultWorkerGroupId FK
+        boolean secretProxyEnabled "Newly triggered deployed runs require the secret proxy (pinned in their annotations)."
         string[] allowedWorkerQueues "The master queues they are allowed to use (impacts what they can set as default and trigger runs with)"
         json buildSettings
         json onboardingData
@@ -517,6 +566,8 @@ erDiagram
         string ttl
         tasktriggersource triggerSource
         json config "Extra task configuration JSON. Shape depends on triggerSource. AGENT: { type: #quot;ai-sdk-chat#quot; }"
+        taskexecutionmode executionMode
+        json executionPolicy "RunExecutionPolicy from @trigger.dev/core. Null means the standard policy."
         json payloadSchema
     }
     WebhookEndpoint {
@@ -911,6 +962,7 @@ erDiagram
         datetime previousTokenValidUntil
         datetime createdAt
         datetime updatedAt
+        string workerGroupId FK
     }
     TaskRunTag {
         string id PK
@@ -1104,10 +1156,21 @@ erDiagram
         string variableId FK, UK
         string environmentId FK, UK
         boolean isSecret "If true, the value is secret and cannot be revealed"
+        boolean isProxyOnly
+        json proxyConfig
         datetime createdAt
         datetime updatedAt
         int version
         json lastUpdatedBy
+    }
+    EnvironmentVariableIgnore {
+        string id PK
+        string projectId FK
+        string environmentId FK, UK
+        string variableId FK, UK
+        environmentvariableignorereason reason UK
+        string createdById FK
+        datetime createdAt
     }
     Checkpoint {
         string id PK
@@ -1146,7 +1209,7 @@ erDiagram
         string version UK
         string runtime
         string runtimeVersion
-        string cliVersion "CLI version that initiated the deploy, stamped at initialization"
+        string cliVersion "CLI version that initiated the deploy, stamped at initialization or worker upload"
         string imageReference
         string imagePlatform
         string templateKey "Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds"
@@ -1165,6 +1228,7 @@ erDiagram
         string triggeredVia
         string commitSHA
         string externalId
+        deploymentinitiatedbycredential initiatedByCredential "The kind of credential that started the deployment. Null when unknown."
         datetime startedAt
         datetime installedAt
         datetime builtAt
@@ -1173,6 +1237,7 @@ erDiagram
         json errorData
         datetime canceledAt
         string canceledReason
+        string supersededById "The newer GitHub build that superseded this one while it was still queued"
         json git
         datetime createdAt
         datetime updatedAt
@@ -1438,6 +1503,9 @@ erDiagram
         string repositoryId FK
         json branchTracking
         boolean previewDeploymentsEnabled
+        boolean supersedeProductionBuilds "Skip queued builds once a newer commit is queued for the same environment or preview branch"
+        boolean supersedeStagingBuilds
+        boolean supersedePreviewBuilds
         json buildFilters
         datetime createdAt
         datetime updatedAt

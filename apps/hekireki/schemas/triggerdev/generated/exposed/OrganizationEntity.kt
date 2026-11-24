@@ -82,6 +82,13 @@ class OrganizationEntity(
     var supportAccessModeUpdatedById by OrganizationTable.supportAccessModeUpdatedById
     val supportAccessRequests by SupportAccessRequestEntity referrersOn SupportAccessRequestTable.organizationId
 
+    /** When true, members without MFA are locked out of the dashboard and CLI until they set it up. */
+    var mfaRequired by OrganizationTable.mfaRequired
+
+    /** Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp). */
+    var mfaStepUpActions by OrganizationTable.mfaStepUpActions
+    var mfaStepUpWindowMinutes by OrganizationTable.mfaStepUpWindowMinutes
+
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {
             if (!isWritten(OrganizationTable.updatedAt)) {

@@ -26,6 +26,7 @@ class LiteLLMShadowEvalJob extends Model
         'models',
         'direction',
         'baseline_model',
+        'skip_same_model',
         'judge_model',
         'shadow_percentage',
         'max_turns',
@@ -34,20 +35,25 @@ class LiteLLMShadowEvalJob extends Model
         'ends_at',
         'stopped_at',
         'stopped_by',
+        'rubric',
+        'rubric_version',
     ];
 
     protected $attributes = [
         'target_type' => 'key',
         'direction' => 'forward',
+        'skip_same_model' => false,
     ];
 
     protected $casts = [
         'router_names' => AsPrismaList::class,
         'models' => AsPrismaList::class,
+        'skip_same_model' => 'boolean',
         'shadow_percentage' => 'float',
         'max_turns' => 'integer',
         'max_budget' => 'float',
         'ends_at' => 'datetime',
         'stopped_at' => 'datetime',
+        'rubric_version' => 'integer',
     ];
 }

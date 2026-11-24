@@ -2,6 +2,7 @@
 #   slot in while executing. Shape: [{ queue: string, concurrencyKey?: string }]
 # config:: Extra task configuration JSON. Shape depends on triggerSource.
 #   AGENT: { type: "ai-sdk-chat" }
+# executionPolicy:: RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.
 class BackgroundWorkerTask < ApplicationRecord
   self.table_name = "BackgroundWorkerTask"
   self.implicit_order_column = "createdAt"
@@ -12,6 +13,7 @@ class BackgroundWorkerTask < ApplicationRecord
 
   enum :triggerSource, { standard: "STANDARD", scheduled: "SCHEDULED", agent: "AGENT", webhook: "WEBHOOK" },
        default: :standard, validate: true
+  enum :executionMode, { standard: "STANDARD", sandbox: "SANDBOX" }, default: :standard, prefix: true, validate: true
 
   validates :slug, presence: true, uniqueness: { scope: :workerId }
   validates :friendlyId, presence: true, uniqueness: true

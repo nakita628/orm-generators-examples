@@ -10,6 +10,8 @@ CREATE SCHEMA IF NOT EXISTS "public";
 
 CREATE TYPE "AuthenticationMethod" AS ENUM ('GITHUB', 'MAGIC_LINK', 'GOOGLE', 'SSO');
 
+CREATE TYPE "OAuthClientKind" AS ENUM ('PREREGISTERED', 'CIMD', 'DCR');
+
 CREATE TYPE "OrganizationAccessTokenType" AS ENUM ('USER', 'SYSTEM');
 
 CREATE TYPE "OrgMemberRole" AS ENUM ('ADMIN', 'MEMBER');
@@ -31,6 +33,8 @@ CREATE TYPE "OidcSigningKeyStatus" AS ENUM ('STAGED', 'ACTIVE', 'RETIRED');
 CREATE TYPE "OidcSigningKeyPurpose" AS ENUM ('EXTERNAL_OIDC', 'INTERNAL_RUN');
 
 CREATE TYPE "TaskTriggerSource" AS ENUM ('STANDARD', 'SCHEDULED', 'AGENT', 'WEBHOOK');
+
+CREATE TYPE "TaskExecutionMode" AS ENUM ('STANDARD', 'SANDBOX');
 
 CREATE TYPE "WebhookEndpointStatus" AS ENUM ('ACTIVE', 'INACTIVE', 'DELETING');
 
@@ -72,11 +76,15 @@ CREATE TYPE "BatchTaskRunStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 
 
 CREATE TYPE "BatchTaskRunItemStatus" AS ENUM ('PENDING', 'FAILED', 'CANCELED', 'COMPLETED');
 
+CREATE TYPE "EnvironmentVariableIgnoreReason" AS ENUM ('EMPTY', 'MISSING', 'OIDC');
+
 CREATE TYPE "CheckpointType" AS ENUM ('DOCKER', 'KUBERNETES');
 
 CREATE TYPE "CheckpointRestoreEventType" AS ENUM ('CHECKPOINT', 'RESTORE');
 
 CREATE TYPE "WorkerDeploymentType" AS ENUM ('MANAGED', 'UNMANAGED', 'V1');
+
+CREATE TYPE "DeploymentInitiatedByCredential" AS ENUM ('ROOT_API_KEY', 'SCOPED_API_KEY', 'PERSONAL_ACCESS_TOKEN', 'ORGANIZATION_ACCESS_TOKEN', 'TRUSTED_PUBLISHING');
 
 CREATE TYPE "WorkerDeploymentStatus" AS ENUM ('PENDING', 'INSTALLING', 'BUILDING', 'DEPLOYING', 'DEPLOYED', 'FAILED', 'CANCELED', 'TIMED_OUT');
 
@@ -181,6 +189,12 @@ CREATE TABLE "AuthorizationCode" (
     "codeChallenge" TEXT,
     "callbackPort" INTEGER,
     "approvalCodeHash" TEXT,
+    "oauthClientId" TEXT,
+    "redirectUri" TEXT,
+    "scope" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "resource" TEXT,
+    "approvedByUserId" TEXT,
+    "requestedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -202,8 +216,41 @@ CREATE TABLE "PersonalAccessToken" (
     "expiredNoticeSentAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "oauthClientId" TEXT,
 
     CONSTRAINT "PersonalAccessToken_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "OAuthClient" (
+    "id" TEXT NOT NULL,
+    "kind" "OAuthClientKind" NOT NULL,
+    "clientId" TEXT NOT NULL,
+    "metadataUrl" TEXT,
+    "displayName" TEXT,
+    "selfReportedName" TEXT,
+    "redirectUris" TEXT[],
+    "dedupeKey" TEXT,
+    "metadataExpiresAt" TIMESTAMP(3),
+    "lastUsedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "OAuthClient_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "OAuthRefreshToken" (
+    "id" TEXT NOT NULL,
+    "hashedToken" TEXT NOT NULL,
+    "personalAccessTokenId" TEXT NOT NULL,
+    "oauthClientId" TEXT NOT NULL,
+    "scope" TEXT[],
+    "resource" TEXT NOT NULL,
+    "usedAt" TIMESTAMP(3),
+    "replacedById" TEXT,
+    "idleExpiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "OAuthRefreshToken_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "OrganizationAccessToken" (
@@ -253,6 +300,9 @@ CREATE TABLE "Organization" (
     "supportAccessMode" "SupportAccessMode" NOT NULL DEFAULT 'ALLOW',
     "supportAccessModeUpdatedAt" TIMESTAMP(3),
     "supportAccessModeUpdatedById" TEXT,
+    "mfaRequired" BOOLEAN NOT NULL DEFAULT false,
+    "mfaStepUpActions" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "mfaStepUpWindowMinutes" INTEGER NOT NULL DEFAULT 5,
 
     CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
 );
@@ -262,6 +312,8 @@ CREATE TABLE "OrgMember" (
     "organizationId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "role" "OrgMemberRole" NOT NULL DEFAULT 'MEMBER',
+    "invitedById" TEXT,
+    "joinMethod" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -287,6 +339,7 @@ CREATE TABLE "RuntimeEnvironment" (
     "slug" TEXT NOT NULL,
     "apiKey" TEXT NOT NULL,
     "rootApiKeyHiddenAt" TIMESTAMP(3),
+    "rootKeyInjectionDisabledAt" TIMESTAMP(3),
     "pkApiKey" TEXT NOT NULL,
     "type" "RuntimeEnvironmentType" NOT NULL DEFAULT 'DEVELOPMENT',
     "isBranchableEnvironment" BOOLEAN NOT NULL DEFAULT false,
@@ -364,6 +417,7 @@ CREATE TABLE "Project" (
     "engine" "RunEngineVersion" NOT NULL DEFAULT 'V1',
     "builderProjectId" TEXT,
     "defaultWorkerGroupId" TEXT,
+    "secretProxyEnabled" BOOLEAN NOT NULL DEFAULT false,
     "allowedMasterQueues" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "buildSettings" JSONB,
     "onboardingData" JSONB,
@@ -536,6 +590,8 @@ CREATE TABLE "BackgroundWorkerTask" (
     "ttl" TEXT,
     "triggerSource" "TaskTriggerSource" NOT NULL DEFAULT 'STANDARD',
     "config" JSONB,
+    "executionMode" "TaskExecutionMode" NOT NULL DEFAULT 'STANDARD',
+    "executionPolicy" JSONB,
     "payloadSchema" JSONB,
 
     CONSTRAINT "BackgroundWorkerTask_pkey" PRIMARY KEY ("id")
@@ -990,6 +1046,7 @@ CREATE TABLE "WorkerGroupToken" (
     "previousTokenValidUntil" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "workerGroupId" TEXT,
 
     CONSTRAINT "WorkerGroupToken_pkey" PRIMARY KEY ("id")
 );
@@ -1219,12 +1276,26 @@ CREATE TABLE "EnvironmentVariableValue" (
     "variableId" TEXT NOT NULL,
     "environmentId" TEXT NOT NULL,
     "isSecret" BOOLEAN NOT NULL DEFAULT false,
+    "isProxyOnly" BOOLEAN NOT NULL DEFAULT false,
+    "proxyConfig" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,
     "lastUpdatedBy" JSONB,
 
     CONSTRAINT "EnvironmentVariableValue_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "EnvironmentVariableIgnore" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "environmentId" TEXT NOT NULL,
+    "variableId" TEXT NOT NULL,
+    "reason" "EnvironmentVariableIgnoreReason" NOT NULL,
+    "createdById" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "EnvironmentVariableIgnore_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "Checkpoint" (
@@ -1289,6 +1360,7 @@ CREATE TABLE "WorkerDeployment" (
     "triggeredVia" TEXT,
     "commitSHA" TEXT,
     "externalId" TEXT,
+    "initiatedByCredential" "DeploymentInitiatedByCredential",
     "startedAt" TIMESTAMP(3),
     "installedAt" TIMESTAMP(3),
     "builtAt" TIMESTAMP(3),
@@ -1297,6 +1369,7 @@ CREATE TABLE "WorkerDeployment" (
     "errorData" JSONB,
     "canceledAt" TIMESTAMP(3),
     "canceledReason" TEXT,
+    "supersededById" TEXT,
     "git" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -1616,6 +1689,9 @@ CREATE TABLE "ConnectedGithubRepository" (
     "repositoryId" TEXT NOT NULL,
     "branchTracking" JSONB NOT NULL,
     "previewDeploymentsEnabled" BOOLEAN NOT NULL DEFAULT true,
+    "supersedeProductionBuilds" BOOLEAN NOT NULL DEFAULT false,
+    "supersedeStagingBuilds" BOOLEAN NOT NULL DEFAULT true,
+    "supersedePreviewBuilds" BOOLEAN NOT NULL DEFAULT true,
     "buildFilters" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -1868,9 +1944,27 @@ CREATE UNIQUE INDEX "InvitationCode_code_key" ON "InvitationCode"("code");
 
 CREATE UNIQUE INDEX "AuthorizationCode_code_key" ON "AuthorizationCode"("code");
 
+CREATE INDEX "AuthorizationCode_oauthClientId_idx" ON "AuthorizationCode"("oauthClientId");
+
 CREATE UNIQUE INDEX "PersonalAccessToken_hashedToken_key" ON "PersonalAccessToken"("hashedToken");
 
 CREATE INDEX "PersonalAccessToken_userId_idx" ON "PersonalAccessToken"("userId");
+
+CREATE INDEX "PersonalAccessToken_oauthClientId_userId_idx" ON "PersonalAccessToken"("oauthClientId", "userId");
+
+CREATE UNIQUE INDEX "OAuthClient_clientId_key" ON "OAuthClient"("clientId");
+
+CREATE UNIQUE INDEX "OAuthClient_dedupeKey_key" ON "OAuthClient"("dedupeKey");
+
+CREATE INDEX "OAuthClient_kind_lastUsedAt_idx" ON "OAuthClient"("kind", "lastUsedAt");
+
+CREATE UNIQUE INDEX "OAuthRefreshToken_hashedToken_key" ON "OAuthRefreshToken"("hashedToken");
+
+CREATE INDEX "OAuthRefreshToken_personalAccessTokenId_idx" ON "OAuthRefreshToken"("personalAccessTokenId");
+
+CREATE INDEX "OAuthRefreshToken_oauthClientId_idx" ON "OAuthRefreshToken"("oauthClientId");
+
+CREATE INDEX "OAuthRefreshToken_idleExpiresAt_idx" ON "OAuthRefreshToken"("idleExpiresAt");
 
 CREATE UNIQUE INDEX "OrganizationAccessToken_hashedToken_key" ON "OrganizationAccessToken"("hashedToken");
 
@@ -2078,6 +2172,8 @@ CREATE UNIQUE INDEX "WorkerGroupToken_tokenHash_key" ON "WorkerGroupToken"("toke
 
 CREATE UNIQUE INDEX "WorkerGroupToken_previousTokenHash_key" ON "WorkerGroupToken"("previousTokenHash");
 
+CREATE INDEX "WorkerGroupToken_workerGroupId_idx" ON "WorkerGroupToken"("workerGroupId");
+
 CREATE UNIQUE INDEX "TaskRunTag_friendlyId_key" ON "TaskRunTag"("friendlyId");
 
 CREATE INDEX "TaskRunTag_name_id_idx" ON "TaskRunTag"("name", "id");
@@ -2145,6 +2241,14 @@ CREATE INDEX "EnvironmentVariableValue_valueReferenceId_idx" ON "EnvironmentVari
 CREATE INDEX "EnvironmentVariableValue_environmentId_updatedAt_variableId_idx" ON "EnvironmentVariableValue"("environmentId", "updatedAt" DESC, "variableId");
 
 CREATE UNIQUE INDEX "EnvironmentVariableValue_variableId_environmentId_key" ON "EnvironmentVariableValue"("variableId", "environmentId");
+
+CREATE INDEX "EnvironmentVariableIgnore_variableId_idx" ON "EnvironmentVariableIgnore"("variableId");
+
+CREATE INDEX "EnvironmentVariableIgnore_projectId_idx" ON "EnvironmentVariableIgnore"("projectId");
+
+CREATE INDEX "EnvironmentVariableIgnore_createdById_idx" ON "EnvironmentVariableIgnore"("createdById");
+
+CREATE UNIQUE INDEX "EnvironmentVariableIgnore_environmentId_variableId_reason_key" ON "EnvironmentVariableIgnore"("environmentId", "variableId", "reason");
 
 CREATE UNIQUE INDEX "Checkpoint_friendlyId_key" ON "Checkpoint"("friendlyId");
 
@@ -2215,6 +2319,8 @@ CREATE INDEX "BulkActionGroup_environmentId_createdAt_idx" ON "BulkActionGroup"(
 CREATE INDEX "BulkActionGroup_environmentId_type_dedupeKey_idx" ON "BulkActionGroup"("environmentId", "type", "dedupeKey");
 
 CREATE INDEX "BulkActionGroup_environmentId_status_type_idx" ON "BulkActionGroup"("environmentId", "status", "type");
+
+CREATE INDEX "BulkActionItem_groupId_createdAt_idx" ON "BulkActionItem"("groupId", "createdAt");
 
 CREATE INDEX "RealtimeStreamChunk_runId_idx" ON "RealtimeStreamChunk"("runId");
 
@@ -2314,7 +2420,15 @@ ALTER TABLE "MfaBackupCode" ADD CONSTRAINT "MfaBackupCode_userId_fkey" FOREIGN K
 
 ALTER TABLE "AuthorizationCode" ADD CONSTRAINT "AuthorizationCode_personalAccessTokenId_fkey" FOREIGN KEY ("personalAccessTokenId") REFERENCES "PersonalAccessToken"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "AuthorizationCode" ADD CONSTRAINT "AuthorizationCode_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "PersonalAccessToken" ADD CONSTRAINT "PersonalAccessToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "PersonalAccessToken" ADD CONSTRAINT "PersonalAccessToken_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "OAuthRefreshToken" ADD CONSTRAINT "OAuthRefreshToken_personalAccessTokenId_fkey" FOREIGN KEY ("personalAccessTokenId") REFERENCES "PersonalAccessToken"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "OAuthRefreshToken" ADD CONSTRAINT "OAuthRefreshToken_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "OrganizationAccessToken" ADD CONSTRAINT "OrganizationAccessToken_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -2448,6 +2562,8 @@ ALTER TABLE "WorkerInstanceGroup" ADD CONSTRAINT "WorkerInstanceGroup_organizati
 
 ALTER TABLE "WorkerInstanceGroup" ADD CONSTRAINT "WorkerInstanceGroup_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
+ALTER TABLE "WorkerGroupToken" ADD CONSTRAINT "WorkerGroupToken_workerGroupId_fkey" FOREIGN KEY ("workerGroupId") REFERENCES "WorkerInstanceGroup"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
 ALTER TABLE "TaskRunTag" ADD CONSTRAINT "TaskRunTag_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "TaskRunDependency" ADD CONSTRAINT "TaskRunDependency_taskRunId_fkey" FOREIGN KEY ("taskRunId") REFERENCES "TaskRun"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -2493,6 +2609,14 @@ ALTER TABLE "EnvironmentVariableValue" ADD CONSTRAINT "EnvironmentVariableValue_
 ALTER TABLE "EnvironmentVariableValue" ADD CONSTRAINT "EnvironmentVariableValue_variableId_fkey" FOREIGN KEY ("variableId") REFERENCES "EnvironmentVariable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 ALTER TABLE "EnvironmentVariableValue" ADD CONSTRAINT "EnvironmentVariableValue_environmentId_fkey" FOREIGN KEY ("environmentId") REFERENCES "RuntimeEnvironment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_environmentId_fkey" FOREIGN KEY ("environmentId") REFERENCES "RuntimeEnvironment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_variableId_fkey" FOREIGN KEY ("variableId") REFERENCES "EnvironmentVariable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 ALTER TABLE "Checkpoint" ADD CONSTRAINT "Checkpoint_runId_fkey" FOREIGN KEY ("runId") REFERENCES "TaskRun"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -2666,6 +2790,8 @@ ALTER TABLE "_completedWaitpoints" ADD CONSTRAINT "_completedWaitpoints_B_fkey" 
 | [InvitationCode](#model-InvitationCode)                                   | `InvitationCode`                  |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [AuthorizationCode](#model-AuthorizationCode)                             | `AuthorizationCode`               | Used to generate PersonalAccessTokens, they're one-time use                                                                                                                                                                                                                                                                                                                                  |
 | [PersonalAccessToken](#model-PersonalAccessToken)                         | `PersonalAccessToken`             |                                                                                                                                                                                                                                                                                                                                                                                              |
+| [OAuthClient](#model-OAuthClient)                                         | `OAuthClient`                     |                                                                                                                                                                                                                                                                                                                                                                                              |
+| [OAuthRefreshToken](#model-OAuthRefreshToken)                             | `OAuthRefreshToken`               |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [OrganizationAccessToken](#model-OrganizationAccessToken)                 | `OrganizationAccessToken`         |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [Organization](#model-Organization)                                       | `Organization`                    |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [OrgMember](#model-OrgMember)                                             | `OrgMember`                       |                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -2717,6 +2843,7 @@ ALTER TABLE "_completedWaitpoints" ADD CONSTRAINT "_completedWaitpoints_B_fkey" 
 | [BatchTaskRunError](#model-BatchTaskRunError)                             | `BatchTaskRunError`               | Track individual run creation failures in batch processing (Run Engine v2)                                                                                                                                                                                                                                                                                                                   |
 | [EnvironmentVariable](#model-EnvironmentVariable)                         | `EnvironmentVariable`             |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [EnvironmentVariableValue](#model-EnvironmentVariableValue)               | `EnvironmentVariableValue`        |                                                                                                                                                                                                                                                                                                                                                                                              |
+| [EnvironmentVariableIgnore](#model-EnvironmentVariableIgnore)             | `EnvironmentVariableIgnore`       | A reason the environment variables "Needs attention" page shows a key in one environment, which the project's team chose to ignore. An ignored EMPTY goes when the value is next saved.                                                                                                                                                                                                      |
 | [Checkpoint](#model-Checkpoint)                                           | `Checkpoint`                      |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [CheckpointRestoreEvent](#model-CheckpointRestoreEvent)                   | `CheckpointRestoreEvent`          |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [WorkerDeployment](#model-WorkerDeployment)                               | `WorkerDeployment`                |                                                                                                                                                                                                                                                                                                                                                                                              |
@@ -2752,65 +2879,69 @@ ALTER TABLE "_completedWaitpoints" ADD CONSTRAINT "_completedWaitpoints_B_fkey" 
 | [TaskIdentifier](#model-TaskIdentifier)                                   | `TaskIdentifier`                  |                                                                                                                                                                                                                                                                                                                                                                                              |
 | [OrganizationDataStore](#model-OrganizationDataStore)                     | `OrganizationDataStore`           | Defines org-scoped data store overrides (e.g. dedicated ClickHouse for HIPAA orgs). Multiple organizations can share a single data store row via organizationIds.                                                                                                                                                                                                                            |
 
-| Enum                                                                   | Name in the database             | Description                                                                       |
-| ---------------------------------------------------------------------- | -------------------------------- | --------------------------------------------------------------------------------- |
-| [AuthenticationMethod](#enum-AuthenticationMethod)                     | `AuthenticationMethod`           |                                                                                   |
-| [OrganizationAccessTokenType](#enum-OrganizationAccessTokenType)       | `OrganizationAccessTokenType`    |                                                                                   |
-| [OrgMemberRole](#enum-OrgMemberRole)                                   | `OrgMemberRole`                  |                                                                                   |
-| [ApiKeyIssuer](#enum-ApiKeyIssuer)                                     | `ApiKeyIssuer`                   |                                                                                   |
-| [RuntimeEnvironmentType](#enum-RuntimeEnvironmentType)                 | `RuntimeEnvironmentType`         |                                                                                   |
-| [EnvironmentPauseSource](#enum-EnvironmentPauseSource)                 | `EnvironmentPauseSource`         |                                                                                   |
-| [ProjectVersion](#enum-ProjectVersion)                                 | `ProjectVersion`                 |                                                                                   |
-| [EnvironmentKeyWrappingProvider](#enum-EnvironmentKeyWrappingProvider) | `EnvironmentKeyWrappingProvider` |                                                                                   |
-| [SecretStoreProvider](#enum-SecretStoreProvider)                       | `SecretStoreProvider`            |                                                                                   |
-| [OidcSigningKeyStatus](#enum-OidcSigningKeyStatus)                     | `OidcSigningKeyStatus`           |                                                                                   |
-| [OidcSigningKeyPurpose](#enum-OidcSigningKeyPurpose)                   | `OidcSigningKeyPurpose`          | Each purpose is a separate key set with its own issuer, rotation and publication. |
-| [TaskTriggerSource](#enum-TaskTriggerSource)                           | `TaskTriggerSource`              |                                                                                   |
-| [WebhookEndpointStatus](#enum-WebhookEndpointStatus)                   | `WebhookEndpointStatus`          |                                                                                   |
-| [WebhookDeliveryStatus](#enum-WebhookDeliveryStatus)                   | `WebhookDeliveryStatus`          |                                                                                   |
-| [TaskRunStatus](#enum-TaskRunStatus)                                   | `TaskRunStatus`                  |                                                                                   |
-| [RunEngineVersion](#enum-RunEngineVersion)                             | `RunEngineVersion`               |                                                                                   |
-| [TaskRunExecutionStatus](#enum-TaskRunExecutionStatus)                 | `TaskRunExecutionStatus`         |                                                                                   |
-| [TaskRunCheckpointType](#enum-TaskRunCheckpointType)                   | `TaskRunCheckpointType`          |                                                                                   |
-| [WaitpointType](#enum-WaitpointType)                                   | `WaitpointType`                  |                                                                                   |
-| [WaitpointStatus](#enum-WaitpointStatus)                               | `WaitpointStatus`                |                                                                                   |
-| [WorkerInstanceGroupType](#enum-WorkerInstanceGroupType)               | `WorkerInstanceGroupType`        |                                                                                   |
-| [WorkloadType](#enum-WorkloadType)                                     | `WorkloadType`                   |                                                                                   |
-| [TaskRunAttemptStatus](#enum-TaskRunAttemptStatus)                     | `TaskRunAttemptStatus`           |                                                                                   |
-| [TaskEventLevel](#enum-TaskEventLevel)                                 | `TaskEventLevel`                 |                                                                                   |
-| [TaskEventKind](#enum-TaskEventKind)                                   | `TaskEventKind`                  |                                                                                   |
-| [TaskEventStatus](#enum-TaskEventStatus)                               | `TaskEventStatus`                |                                                                                   |
-| [TaskQueueType](#enum-TaskQueueType)                                   | `TaskQueueType`                  |                                                                                   |
-| [TaskQueueVersion](#enum-TaskQueueVersion)                             | `TaskQueueVersion`               |                                                                                   |
-| [TaskQueueConcurrencyVersion](#enum-TaskQueueConcurrencyVersion)       | `TaskQueueConcurrencyVersion`    |                                                                                   |
-| [TaskQueueRole](#enum-TaskQueueRole)                                   | `TaskQueueRole`                  |                                                                                   |
-| [BatchTaskRunStatus](#enum-BatchTaskRunStatus)                         | `BatchTaskRunStatus`             |                                                                                   |
-| [BatchTaskRunItemStatus](#enum-BatchTaskRunItemStatus)                 | `BatchTaskRunItemStatus`         |                                                                                   |
-| [CheckpointType](#enum-CheckpointType)                                 | `CheckpointType`                 |                                                                                   |
-| [CheckpointRestoreEventType](#enum-CheckpointRestoreEventType)         | `CheckpointRestoreEventType`     |                                                                                   |
-| [WorkerDeploymentType](#enum-WorkerDeploymentType)                     | `WorkerDeploymentType`           |                                                                                   |
-| [WorkerDeploymentStatus](#enum-WorkerDeploymentStatus)                 | `WorkerDeploymentStatus`         |                                                                                   |
-| [ScheduleType](#enum-ScheduleType)                                     | `ScheduleType`                   |                                                                                   |
-| [ScheduleGeneratorType](#enum-ScheduleGeneratorType)                   | `ScheduleGeneratorType`          |                                                                                   |
-| [ProjectAlertChannelType](#enum-ProjectAlertChannelType)               | `ProjectAlertChannelType`        |                                                                                   |
-| [ProjectAlertType](#enum-ProjectAlertType)                             | `ProjectAlertType`               |                                                                                   |
-| [ProjectAlertStatus](#enum-ProjectAlertStatus)                         | `ProjectAlertStatus`             |                                                                                   |
-| [IntegrationService](#enum-IntegrationService)                         | `IntegrationService`             |                                                                                   |
-| [BulkActionType](#enum-BulkActionType)                                 | `BulkActionType`                 |                                                                                   |
-| [BulkActionStatus](#enum-BulkActionStatus)                             | `BulkActionStatus`               |                                                                                   |
-| [BulkActionNotificationType](#enum-BulkActionNotificationType)         | `BulkActionNotificationType`     |                                                                                   |
-| [BulkActionItemStatus](#enum-BulkActionItemStatus)                     | `BulkActionItemStatus`           |                                                                                   |
-| [GithubRepositorySelection](#enum-GithubRepositorySelection)           | `GithubRepositorySelection`      |                                                                                   |
-| [TrustedDeployScope](#enum-TrustedDeployScope)                         | `TrustedDeployScope`             |                                                                                   |
-| [ImpersonationAuditLogAction](#enum-ImpersonationAuditLogAction)       | `ImpersonationAuditLogAction`    |                                                                                   |
-| [SupportAccessMode](#enum-SupportAccessMode)                           | `SupportAccessMode`              |                                                                                   |
-| [SupportAccessRequestStatus](#enum-SupportAccessRequestStatus)         | `SupportAccessRequestStatus`     |                                                                                   |
-| [CustomerQuerySource](#enum-CustomerQuerySource)                       | `CustomerQuerySource`            |                                                                                   |
-| [CustomerQueryScope](#enum-CustomerQueryScope)                         | `CustomerQueryScope`             |                                                                                   |
-| [PlatformNotificationSurface](#enum-PlatformNotificationSurface)       | `PlatformNotificationSurface`    |                                                                                   |
-| [PlatformNotificationScope](#enum-PlatformNotificationScope)           | `PlatformNotificationScope`      |                                                                                   |
-| [ErrorGroupStatus](#enum-ErrorGroupStatus)                             | `ErrorGroupStatus`               |                                                                                   |
-| [DataStoreKind](#enum-DataStoreKind)                                   | `DataStoreKind`                  |                                                                                   |
+| Enum                                                                     | Name in the database              | Description                                                                       |
+| ------------------------------------------------------------------------ | --------------------------------- | --------------------------------------------------------------------------------- |
+| [AuthenticationMethod](#enum-AuthenticationMethod)                       | `AuthenticationMethod`            |                                                                                   |
+| [OAuthClientKind](#enum-OAuthClientKind)                                 | `OAuthClientKind`                 |                                                                                   |
+| [OrganizationAccessTokenType](#enum-OrganizationAccessTokenType)         | `OrganizationAccessTokenType`     |                                                                                   |
+| [OrgMemberRole](#enum-OrgMemberRole)                                     | `OrgMemberRole`                   |                                                                                   |
+| [ApiKeyIssuer](#enum-ApiKeyIssuer)                                       | `ApiKeyIssuer`                    |                                                                                   |
+| [RuntimeEnvironmentType](#enum-RuntimeEnvironmentType)                   | `RuntimeEnvironmentType`          |                                                                                   |
+| [EnvironmentPauseSource](#enum-EnvironmentPauseSource)                   | `EnvironmentPauseSource`          |                                                                                   |
+| [ProjectVersion](#enum-ProjectVersion)                                   | `ProjectVersion`                  |                                                                                   |
+| [EnvironmentKeyWrappingProvider](#enum-EnvironmentKeyWrappingProvider)   | `EnvironmentKeyWrappingProvider`  |                                                                                   |
+| [SecretStoreProvider](#enum-SecretStoreProvider)                         | `SecretStoreProvider`             |                                                                                   |
+| [OidcSigningKeyStatus](#enum-OidcSigningKeyStatus)                       | `OidcSigningKeyStatus`            |                                                                                   |
+| [OidcSigningKeyPurpose](#enum-OidcSigningKeyPurpose)                     | `OidcSigningKeyPurpose`           | Each purpose is a separate key set with its own issuer, rotation and publication. |
+| [TaskTriggerSource](#enum-TaskTriggerSource)                             | `TaskTriggerSource`               |                                                                                   |
+| [TaskExecutionMode](#enum-TaskExecutionMode)                             | `TaskExecutionMode`               |                                                                                   |
+| [WebhookEndpointStatus](#enum-WebhookEndpointStatus)                     | `WebhookEndpointStatus`           |                                                                                   |
+| [WebhookDeliveryStatus](#enum-WebhookDeliveryStatus)                     | `WebhookDeliveryStatus`           |                                                                                   |
+| [TaskRunStatus](#enum-TaskRunStatus)                                     | `TaskRunStatus`                   |                                                                                   |
+| [RunEngineVersion](#enum-RunEngineVersion)                               | `RunEngineVersion`                |                                                                                   |
+| [TaskRunExecutionStatus](#enum-TaskRunExecutionStatus)                   | `TaskRunExecutionStatus`          |                                                                                   |
+| [TaskRunCheckpointType](#enum-TaskRunCheckpointType)                     | `TaskRunCheckpointType`           |                                                                                   |
+| [WaitpointType](#enum-WaitpointType)                                     | `WaitpointType`                   |                                                                                   |
+| [WaitpointStatus](#enum-WaitpointStatus)                                 | `WaitpointStatus`                 |                                                                                   |
+| [WorkerInstanceGroupType](#enum-WorkerInstanceGroupType)                 | `WorkerInstanceGroupType`         |                                                                                   |
+| [WorkloadType](#enum-WorkloadType)                                       | `WorkloadType`                    |                                                                                   |
+| [TaskRunAttemptStatus](#enum-TaskRunAttemptStatus)                       | `TaskRunAttemptStatus`            |                                                                                   |
+| [TaskEventLevel](#enum-TaskEventLevel)                                   | `TaskEventLevel`                  |                                                                                   |
+| [TaskEventKind](#enum-TaskEventKind)                                     | `TaskEventKind`                   |                                                                                   |
+| [TaskEventStatus](#enum-TaskEventStatus)                                 | `TaskEventStatus`                 |                                                                                   |
+| [TaskQueueType](#enum-TaskQueueType)                                     | `TaskQueueType`                   |                                                                                   |
+| [TaskQueueVersion](#enum-TaskQueueVersion)                               | `TaskQueueVersion`                |                                                                                   |
+| [TaskQueueConcurrencyVersion](#enum-TaskQueueConcurrencyVersion)         | `TaskQueueConcurrencyVersion`     |                                                                                   |
+| [TaskQueueRole](#enum-TaskQueueRole)                                     | `TaskQueueRole`                   |                                                                                   |
+| [BatchTaskRunStatus](#enum-BatchTaskRunStatus)                           | `BatchTaskRunStatus`              |                                                                                   |
+| [BatchTaskRunItemStatus](#enum-BatchTaskRunItemStatus)                   | `BatchTaskRunItemStatus`          |                                                                                   |
+| [EnvironmentVariableIgnoreReason](#enum-EnvironmentVariableIgnoreReason) | `EnvironmentVariableIgnoreReason` |                                                                                   |
+| [CheckpointType](#enum-CheckpointType)                                   | `CheckpointType`                  |                                                                                   |
+| [CheckpointRestoreEventType](#enum-CheckpointRestoreEventType)           | `CheckpointRestoreEventType`      |                                                                                   |
+| [WorkerDeploymentType](#enum-WorkerDeploymentType)                       | `WorkerDeploymentType`            |                                                                                   |
+| [DeploymentInitiatedByCredential](#enum-DeploymentInitiatedByCredential) | `DeploymentInitiatedByCredential` |                                                                                   |
+| [WorkerDeploymentStatus](#enum-WorkerDeploymentStatus)                   | `WorkerDeploymentStatus`          |                                                                                   |
+| [ScheduleType](#enum-ScheduleType)                                       | `ScheduleType`                    |                                                                                   |
+| [ScheduleGeneratorType](#enum-ScheduleGeneratorType)                     | `ScheduleGeneratorType`           |                                                                                   |
+| [ProjectAlertChannelType](#enum-ProjectAlertChannelType)                 | `ProjectAlertChannelType`         |                                                                                   |
+| [ProjectAlertType](#enum-ProjectAlertType)                               | `ProjectAlertType`                |                                                                                   |
+| [ProjectAlertStatus](#enum-ProjectAlertStatus)                           | `ProjectAlertStatus`              |                                                                                   |
+| [IntegrationService](#enum-IntegrationService)                           | `IntegrationService`              |                                                                                   |
+| [BulkActionType](#enum-BulkActionType)                                   | `BulkActionType`                  |                                                                                   |
+| [BulkActionStatus](#enum-BulkActionStatus)                               | `BulkActionStatus`                |                                                                                   |
+| [BulkActionNotificationType](#enum-BulkActionNotificationType)           | `BulkActionNotificationType`      |                                                                                   |
+| [BulkActionItemStatus](#enum-BulkActionItemStatus)                       | `BulkActionItemStatus`            |                                                                                   |
+| [GithubRepositorySelection](#enum-GithubRepositorySelection)             | `GithubRepositorySelection`       |                                                                                   |
+| [TrustedDeployScope](#enum-TrustedDeployScope)                           | `TrustedDeployScope`              |                                                                                   |
+| [ImpersonationAuditLogAction](#enum-ImpersonationAuditLogAction)         | `ImpersonationAuditLogAction`     |                                                                                   |
+| [SupportAccessMode](#enum-SupportAccessMode)                             | `SupportAccessMode`               |                                                                                   |
+| [SupportAccessRequestStatus](#enum-SupportAccessRequestStatus)           | `SupportAccessRequestStatus`      |                                                                                   |
+| [CustomerQuerySource](#enum-CustomerQuerySource)                         | `CustomerQuerySource`             |                                                                                   |
+| [CustomerQueryScope](#enum-CustomerQueryScope)                           | `CustomerQueryScope`              |                                                                                   |
+| [PlatformNotificationSurface](#enum-PlatformNotificationSurface)         | `PlatformNotificationSurface`     |                                                                                   |
+| [PlatformNotificationScope](#enum-PlatformNotificationScope)             | `PlatformNotificationScope`       |                                                                                   |
+| [ErrorGroupStatus](#enum-ErrorGroupStatus)                               | `ErrorGroupStatus`                |                                                                                   |
+| [DataStoreKind](#enum-DataStoreKind)                                     | `DataStoreKind`                   |                                                                                   |
 
 ## Models
 
@@ -2862,6 +2993,7 @@ ALTER TABLE "_completedWaitpoints" ADD CONSTRAINT "_completedWaitpoints_B_fkey" 
 - `id` ← [OrgMember.userId](#model-OrgMember) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [OrgMemberInvite.inviterId](#model-OrgMemberInvite) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [ApiKey.createdByUserId](#model-ApiKey) (one-to-many, on delete SetNull, on update Cascade)
+- `id` ← [EnvironmentVariableIgnore.createdById](#model-EnvironmentVariableIgnore) (one-to-many, on delete SetNull, on update Cascade)
 - `id` ← [WorkerDeployment.triggeredById](#model-WorkerDeployment) (one-to-many, on delete SetNull, on update Cascade)
 - `id` ← [BulkActionGroup.userId](#model-BulkActionGroup) (one-to-many, on delete SetNull, on update Cascade)
 - `id` ← [ImpersonationAuditLog.adminId](#model-ImpersonationAuditLog) (one-to-many, on delete Cascade, on update Cascade)
@@ -3009,6 +3141,7 @@ await prisma.user.findMany({
     metricsDashboards: true,
     platformNotifications: true,
     platformNotificationInteractions: true,
+    environmentVariableIgnores: true,
   },
 });
 ```
@@ -3055,6 +3188,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -3123,7 +3258,8 @@ SELECT
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 FROM
   "public"."PersonalAccessToken"
 WHERE
@@ -3185,6 +3321,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -3193,6 +3330,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -3404,6 +3542,22 @@ FROM
   "public"."PlatformNotificationInteraction"
 WHERE
   "public"."PlatformNotificationInteraction"."userId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  "public"."EnvironmentVariableIgnore"."createdById" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -4105,12 +4259,23 @@ Used to generate PersonalAccessTokens, they're one-time use
 | `codeChallenge`         | `String`   | NULL                                                        |              | S256 PKCE challenge from the client that minted the code. Null for codes minted by CLIs that predate it.                        |
 | `callbackPort`          | `Int`      | NULL                                                        |              | Loopback port the approving browser is redirected to with the approval code. Null means the user pastes it.                     |
 | `approvalCodeHash`      | `String`   | NULL                                                        |              | sha256 of the approval code, which only the approving browser ever sees.                                                        |
+| `oauthClientId`         | `String`   | NULL → [OAuthClient.id](#model-OAuthClient)                 |              |                                                                                                                                 |
+| `redirectUri`           | `String`   | NULL                                                        |              |                                                                                                                                 |
+| `scope`                 | `String[]` | NOT NULL                                                    | `[]`         |                                                                                                                                 |
+| `resource`              | `String`   | NULL                                                        |              |                                                                                                                                 |
+| `approvedByUserId`      | `String`   | NULL                                                        |              |                                                                                                                                 |
+| `requestedByUserId`     | `String`   | NULL                                                        |              | The user who started the OAuth authorization. Only they can approve it.                                                         |
 | `createdAt`             | `DateTime` | NOT NULL                                                    | `now()`      |                                                                                                                                 |
 | `updatedAt`             | `DateTime` | NOT NULL                                                    | `@updatedAt` |                                                                                                                                 |
+
+#### Indexes
+
+- `@@index([oauthClientId])`
 
 #### References
 
 - `personalAccessTokenId` → [PersonalAccessToken.id](#model-PersonalAccessToken) (many-to-one, on delete Cascade, on update Cascade)
+- `oauthClientId` → [OAuthClient.id](#model-OAuthClient) (many-to-one, on delete Cascade)
 
 #### Definition
 
@@ -4123,6 +4288,12 @@ CREATE TABLE "AuthorizationCode" (
     "codeChallenge" TEXT,
     "callbackPort" INTEGER,
     "approvalCodeHash" TEXT,
+    "oauthClientId" TEXT,
+    "redirectUri" TEXT,
+    "scope" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "resource" TEXT,
+    "approvedByUserId" TEXT,
+    "requestedByUserId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -4131,7 +4302,11 @@ CREATE TABLE "AuthorizationCode" (
 
 CREATE UNIQUE INDEX "AuthorizationCode_code_key" ON "AuthorizationCode"("code");
 
+CREATE INDEX "AuthorizationCode_oauthClientId_idx" ON "AuthorizationCode"("oauthClientId");
+
 ALTER TABLE "AuthorizationCode" ADD CONSTRAINT "AuthorizationCode_personalAccessTokenId_fkey" FOREIGN KEY ("personalAccessTokenId") REFERENCES "PersonalAccessToken"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "AuthorizationCode" ADD CONSTRAINT "AuthorizationCode_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ```
 
 <details>
@@ -4152,6 +4327,12 @@ SELECT
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 FROM
@@ -4189,7 +4370,9 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.authorizationCode.findMany({ include: { personalAccessToken: true } });
+await prisma.authorizationCode.findMany({
+  include: { personalAccessToken: true, oauthClient: true },
+});
 ```
 
 ```sql
@@ -4201,6 +4384,12 @@ SELECT
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 FROM
@@ -4225,7 +4414,8 @@ SELECT
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 FROM
   "public"."PersonalAccessToken"
 WHERE
@@ -4233,6 +4423,27 @@ WHERE
 OFFSET
   $2
 -- params: ["<personalAccessTokenId of the rows above>","0"]
+
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  "public"."OAuthClient"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<oauthClientId of the rows above>","0"]
 ```
 
 **findUnique**: One row by what is unique to it
@@ -4250,6 +4461,12 @@ SELECT
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 FROM
@@ -4274,9 +4491,9 @@ await prisma.authorizationCode.create({ data: { code: "example" } });
 
 ```sql
 INSERT INTO
-  "public"."AuthorizationCode" ("id", "code", "createdAt", "updatedAt")
+  "public"."AuthorizationCode" ("id", "code", "scope", "createdAt", "updatedAt")
 VALUES
-  ($1, $2, $3, $4)
+  ($1, $2, $3, $4, $5)
 RETURNING
   "public"."AuthorizationCode"."id",
   "public"."AuthorizationCode"."code",
@@ -4285,9 +4502,15 @@ RETURNING
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
--- params: ["<cuid(1)>","example","<now()>","<now()>"]
+-- params: ["<cuid(1)>","example",[],"<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -4314,6 +4537,12 @@ RETURNING
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
@@ -4340,6 +4569,12 @@ RETURNING
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 -- params: ["example"]
@@ -4353,34 +4588,38 @@ RETURNING
 
 ![PersonalAccessToken and the models it relates to](tables/PersonalAccessToken.svg)
 
-| Field                  | Type       | Constraints                       | Default      | Description                                                                                                                                      |
-| ---------------------- | ---------- | --------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `id`                   | `String`   | PK NOT NULL                       | `cuid(1)`    |                                                                                                                                                  |
-| `name`                 | `String`   | NOT NULL                          |              | If generated by the CLI this will be "cli", otherwise user-provided                                                                              |
-| `encryptedToken`       | `Json`     | NOT NULL                          |              | This is the token encrypted using the ENCRYPTION_KEY                                                                                             |
-| `obfuscatedToken`      | `String`   | NOT NULL                          |              | This is shown in the UI, with ********                                                                                                           |
-| `hashedToken`          | `String`   | UNIQUE NOT NULL                   |              | This is used to find the token in the database                                                                                                   |
-| `userId`               | `String`   | NOT NULL → [User.id](#model-User) |              |                                                                                                                                                  |
-| `revokedAt`            | `DateTime` | NULL                              |              |                                                                                                                                                  |
-| `lastAccessedAt`       | `DateTime` | NULL                              |              |                                                                                                                                                  |
-| `expiresAt`            | `DateTime` | NULL                              |              | After this the token no longer authenticates. Null means it never expires.                                                                       |
-| `idleTimeoutSeconds`   | `Int`      | NULL                              |              | Set on CLI login tokens: they stop authenticating this many seconds after their last use (or creation, if never used). Null means no idle limit. |
-| `expiryReminderSentAt` | `DateTime` | NULL                              |              | When the "about to expire" email was sent. Set before sending, so it's sent at most once.                                                        |
-| `expiredNoticeSentAt`  | `DateTime` | NULL                              |              | When the "has expired" email was sent. Set before sending, so it's sent at most once.                                                            |
-| `createdAt`            | `DateTime` | NOT NULL                          | `now()`      |                                                                                                                                                  |
-| `updatedAt`            | `DateTime` | NOT NULL                          | `@updatedAt` |                                                                                                                                                  |
+| Field                  | Type       | Constraints                                 | Default      | Description                                                                                                                                      |
+| ---------------------- | ---------- | ------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id`                   | `String`   | PK NOT NULL                                 | `cuid(1)`    |                                                                                                                                                  |
+| `name`                 | `String`   | NOT NULL                                    |              | If generated by the CLI this will be "cli", otherwise user-provided                                                                              |
+| `encryptedToken`       | `Json`     | NOT NULL                                    |              | This is the token encrypted using the ENCRYPTION_KEY                                                                                             |
+| `obfuscatedToken`      | `String`   | NOT NULL                                    |              | This is shown in the UI, with ********                                                                                                           |
+| `hashedToken`          | `String`   | UNIQUE NOT NULL                             |              | This is used to find the token in the database                                                                                                   |
+| `userId`               | `String`   | NOT NULL → [User.id](#model-User)           |              |                                                                                                                                                  |
+| `revokedAt`            | `DateTime` | NULL                                        |              |                                                                                                                                                  |
+| `lastAccessedAt`       | `DateTime` | NULL                                        |              |                                                                                                                                                  |
+| `expiresAt`            | `DateTime` | NULL                                        |              | After this the token no longer authenticates. Null means it never expires.                                                                       |
+| `idleTimeoutSeconds`   | `Int`      | NULL                                        |              | Set on CLI login tokens: they stop authenticating this many seconds after their last use (or creation, if never used). Null means no idle limit. |
+| `expiryReminderSentAt` | `DateTime` | NULL                                        |              | When the "about to expire" email was sent. Set before sending, so it's sent at most once.                                                        |
+| `expiredNoticeSentAt`  | `DateTime` | NULL                                        |              | When the "has expired" email was sent. Set before sending, so it's sent at most once.                                                            |
+| `createdAt`            | `DateTime` | NOT NULL                                    | `now()`      |                                                                                                                                                  |
+| `updatedAt`            | `DateTime` | NOT NULL                                    | `@updatedAt` |                                                                                                                                                  |
+| `oauthClientId`        | `String`   | NULL → [OAuthClient.id](#model-OAuthClient) |              |                                                                                                                                                  |
 
 #### Indexes
 
 - `@@index([userId])`
+- `@@index([oauthClientId, userId])`
 
 #### References
 
 - `userId` → [User.id](#model-User) (many-to-one)
+- `oauthClientId` → [OAuthClient.id](#model-OAuthClient) (many-to-one, on delete Restrict)
 
 #### Referenced by
 
 - `id` ← [AuthorizationCode.personalAccessTokenId](#model-AuthorizationCode) (one-to-many, on delete Cascade, on update Cascade)
+- `id` ← [OAuthRefreshToken.personalAccessTokenId](#model-OAuthRefreshToken) (one-to-many, on delete Cascade)
 
 #### Definition
 
@@ -4400,6 +4639,7 @@ CREATE TABLE "PersonalAccessToken" (
     "expiredNoticeSentAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "oauthClientId" TEXT,
 
     CONSTRAINT "PersonalAccessToken_pkey" PRIMARY KEY ("id")
 );
@@ -4408,7 +4648,11 @@ CREATE UNIQUE INDEX "PersonalAccessToken_hashedToken_key" ON "PersonalAccessToke
 
 CREATE INDEX "PersonalAccessToken_userId_idx" ON "PersonalAccessToken"("userId");
 
+CREATE INDEX "PersonalAccessToken_oauthClientId_userId_idx" ON "PersonalAccessToken"("oauthClientId", "userId");
+
 ALTER TABLE "PersonalAccessToken" ADD CONSTRAINT "PersonalAccessToken_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "PersonalAccessToken" ADD CONSTRAINT "PersonalAccessToken_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ```
 
 <details>
@@ -4435,7 +4679,8 @@ SELECT
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 FROM
   "public"."PersonalAccessToken"
 WHERE
@@ -4471,7 +4716,9 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.personalAccessToken.findMany({ include: { user: true, authorizationCodes: true } });
+await prisma.personalAccessToken.findMany({
+  include: { user: true, authorizationCodes: true, oauthClient: true, oauthRefreshTokens: true },
+});
 ```
 
 ```sql
@@ -4489,7 +4736,8 @@ SELECT
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 FROM
   "public"."PersonalAccessToken"
 WHERE
@@ -4542,12 +4790,58 @@ SELECT
   "public"."AuthorizationCode"."codeChallenge",
   "public"."AuthorizationCode"."callbackPort",
   "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
   "public"."AuthorizationCode"."createdAt",
   "public"."AuthorizationCode"."updatedAt"
 FROM
   "public"."AuthorizationCode"
 WHERE
   "public"."AuthorizationCode"."personalAccessTokenId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  "public"."OAuthClient"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<oauthClientId of the rows above>","0"]
+
+SELECT
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+FROM
+  "public"."OAuthRefreshToken"
+WHERE
+  "public"."OAuthRefreshToken"."personalAccessTokenId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -4574,7 +4868,8 @@ SELECT
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 FROM
   "public"."PersonalAccessToken"
 WHERE
@@ -4631,7 +4926,8 @@ RETURNING
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 -- params: ["<cuid(1)>","example","{}","example","example","example","<now()>","<now()>"]
 ```
 
@@ -4665,7 +4961,8 @@ RETURNING
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -4696,7 +4993,683 @@ RETURNING
   "public"."PersonalAccessToken"."expiryReminderSentAt",
   "public"."PersonalAccessToken"."expiredNoticeSentAt",
   "public"."PersonalAccessToken"."createdAt",
-  "public"."PersonalAccessToken"."updatedAt"
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-OAuthClient"></a>
+
+### OAuthClient
+
+![OAuthClient and the models it relates to](tables/OAuthClient.svg)
+
+| Field               | Type                                       | Constraints     | Default      | Description |
+| ------------------- | ------------------------------------------ | --------------- | ------------ | ----------- |
+| `id`                | `String`                                   | PK NOT NULL     | `cuid(1)`    |             |
+| `kind`              | [`OAuthClientKind`](#enum-OAuthClientKind) | NOT NULL        |              |             |
+| `clientId`          | `String`                                   | UNIQUE NOT NULL |              |             |
+| `metadataUrl`       | `String`                                   | NULL            |              |             |
+| `displayName`       | `String`                                   | NULL            |              |             |
+| `selfReportedName`  | `String`                                   | NULL            |              |             |
+| `redirectUris`      | `String[]`                                 | NOT NULL        |              |             |
+| `dedupeKey`         | `String`                                   | UNIQUE NULL     |              |             |
+| `metadataExpiresAt` | `DateTime`                                 | NULL            |              |             |
+| `lastUsedAt`        | `DateTime`                                 | NULL            |              |             |
+| `createdAt`         | `DateTime`                                 | NOT NULL        | `now()`      |             |
+| `updatedAt`         | `DateTime`                                 | NOT NULL        | `@updatedAt` |             |
+
+#### Indexes
+
+- `@@index([kind, lastUsedAt])`
+
+#### Referenced by
+
+- `id` ← [AuthorizationCode.oauthClientId](#model-AuthorizationCode) (one-to-many, on delete Cascade)
+- `id` ← [PersonalAccessToken.oauthClientId](#model-PersonalAccessToken) (one-to-many, on delete Restrict)
+- `id` ← [OAuthRefreshToken.oauthClientId](#model-OAuthRefreshToken) (one-to-many, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "OAuthClient" (
+    "id" TEXT NOT NULL,
+    "kind" "OAuthClientKind" NOT NULL,
+    "clientId" TEXT NOT NULL,
+    "metadataUrl" TEXT,
+    "displayName" TEXT,
+    "selfReportedName" TEXT,
+    "redirectUris" TEXT[],
+    "dedupeKey" TEXT,
+    "metadataExpiresAt" TIMESTAMP(3),
+    "lastUsedAt" TIMESTAMP(3),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "OAuthClient_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "OAuthClient_clientId_key" ON "OAuthClient"("clientId");
+
+CREATE UNIQUE INDEX "OAuthClient_dedupeKey_key" ON "OAuthClient"("dedupeKey");
+
+CREATE INDEX "OAuthClient_kind_lastUsedAt_idx" ON "OAuthClient"("kind", "lastUsedAt");
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.oAuthClient.findMany();
+```
+
+```sql
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.oAuthClient.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."OAuthClient"."id"
+    FROM
+      "public"."OAuthClient"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.oAuthClient.findMany({
+  include: { authorizationCodes: true, personalAccessTokens: true, refreshTokens: true },
+});
+```
+
+```sql
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."AuthorizationCode"."id",
+  "public"."AuthorizationCode"."code",
+  "public"."AuthorizationCode"."personalAccessTokenId",
+  "public"."AuthorizationCode"."requesterIp",
+  "public"."AuthorizationCode"."codeChallenge",
+  "public"."AuthorizationCode"."callbackPort",
+  "public"."AuthorizationCode"."approvalCodeHash",
+  "public"."AuthorizationCode"."oauthClientId",
+  "public"."AuthorizationCode"."redirectUri",
+  "public"."AuthorizationCode"."scope",
+  "public"."AuthorizationCode"."resource",
+  "public"."AuthorizationCode"."approvedByUserId",
+  "public"."AuthorizationCode"."requestedByUserId",
+  "public"."AuthorizationCode"."createdAt",
+  "public"."AuthorizationCode"."updatedAt"
+FROM
+  "public"."AuthorizationCode"
+WHERE
+  "public"."AuthorizationCode"."oauthClientId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."PersonalAccessToken"."id",
+  "public"."PersonalAccessToken"."name",
+  "public"."PersonalAccessToken"."encryptedToken",
+  "public"."PersonalAccessToken"."obfuscatedToken",
+  "public"."PersonalAccessToken"."hashedToken",
+  "public"."PersonalAccessToken"."userId",
+  "public"."PersonalAccessToken"."revokedAt",
+  "public"."PersonalAccessToken"."lastAccessedAt",
+  "public"."PersonalAccessToken"."expiresAt",
+  "public"."PersonalAccessToken"."idleTimeoutSeconds",
+  "public"."PersonalAccessToken"."expiryReminderSentAt",
+  "public"."PersonalAccessToken"."expiredNoticeSentAt",
+  "public"."PersonalAccessToken"."createdAt",
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
+FROM
+  "public"."PersonalAccessToken"
+WHERE
+  "public"."PersonalAccessToken"."oauthClientId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+FROM
+  "public"."OAuthRefreshToken"
+WHERE
+  "public"."OAuthRefreshToken"."oauthClientId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.oAuthClient.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  (
+    "public"."OAuthClient"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.oAuthClient.create({
+  data: { kind: "PREREGISTERED", clientId: "example", redirectUris: ["example"] },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."OAuthClient" (
+    "id",
+    "kind",
+    "clientId",
+    "redirectUris",
+    "createdAt",
+    "updatedAt"
+  )
+VALUES
+  (
+    $1,
+    CAST($2::text AS "public"."OAuthClientKind"),
+    $3,
+    $4,
+    $5,
+    $6
+  )
+RETURNING
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+-- params: ["<cuid(1)>","PREREGISTERED","example",["example"],"<now()>","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.oAuthClient.update({ where: { id: "example" }, data: { kind: "PREREGISTERED" } });
+```
+
+```sql
+UPDATE "public"."OAuthClient"
+SET
+  "kind" = CAST($1::text AS "public"."OAuthClientKind"),
+  "updatedAt" = $2
+WHERE
+  (
+    "public"."OAuthClient"."id" = $3
+    AND 1 = 1
+  )
+RETURNING
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+-- params: ["PREREGISTERED",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.oAuthClient.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."OAuthClient"
+WHERE
+  (
+    "public"."OAuthClient"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-OAuthRefreshToken"></a>
+
+### OAuthRefreshToken
+
+![OAuthRefreshToken and the models it relates to](tables/OAuthRefreshToken.svg)
+
+| Field                   | Type       | Constraints                                                     | Default   | Description |
+| ----------------------- | ---------- | --------------------------------------------------------------- | --------- | ----------- |
+| `id`                    | `String`   | PK NOT NULL                                                     | `cuid(1)` |             |
+| `hashedToken`           | `String`   | UNIQUE NOT NULL                                                 |           |             |
+| `personalAccessTokenId` | `String`   | NOT NULL → [PersonalAccessToken.id](#model-PersonalAccessToken) |           |             |
+| `oauthClientId`         | `String`   | NOT NULL → [OAuthClient.id](#model-OAuthClient)                 |           |             |
+| `scope`                 | `String[]` | NOT NULL                                                        |           |             |
+| `resource`              | `String`   | NOT NULL                                                        |           |             |
+| `usedAt`                | `DateTime` | NULL                                                            |           |             |
+| `replacedById`          | `String`   | NULL                                                            |           |             |
+| `idleExpiresAt`         | `DateTime` | NOT NULL                                                        |           |             |
+| `createdAt`             | `DateTime` | NOT NULL                                                        | `now()`   |             |
+
+#### Indexes
+
+- `@@index([personalAccessTokenId])`
+- `@@index([oauthClientId])`
+- `@@index([idleExpiresAt])`
+
+#### References
+
+- `personalAccessTokenId` → [PersonalAccessToken.id](#model-PersonalAccessToken) (many-to-one, on delete Cascade)
+- `oauthClientId` → [OAuthClient.id](#model-OAuthClient) (many-to-one, on delete Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "OAuthRefreshToken" (
+    "id" TEXT NOT NULL,
+    "hashedToken" TEXT NOT NULL,
+    "personalAccessTokenId" TEXT NOT NULL,
+    "oauthClientId" TEXT NOT NULL,
+    "scope" TEXT[],
+    "resource" TEXT NOT NULL,
+    "usedAt" TIMESTAMP(3),
+    "replacedById" TEXT,
+    "idleExpiresAt" TIMESTAMP(3) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "OAuthRefreshToken_pkey" PRIMARY KEY ("id")
+);
+
+CREATE UNIQUE INDEX "OAuthRefreshToken_hashedToken_key" ON "OAuthRefreshToken"("hashedToken");
+
+CREATE INDEX "OAuthRefreshToken_personalAccessTokenId_idx" ON "OAuthRefreshToken"("personalAccessTokenId");
+
+CREATE INDEX "OAuthRefreshToken_oauthClientId_idx" ON "OAuthRefreshToken"("oauthClientId");
+
+CREATE INDEX "OAuthRefreshToken_idleExpiresAt_idx" ON "OAuthRefreshToken"("idleExpiresAt");
+
+ALTER TABLE "OAuthRefreshToken" ADD CONSTRAINT "OAuthRefreshToken_personalAccessTokenId_fkey" FOREIGN KEY ("personalAccessTokenId") REFERENCES "PersonalAccessToken"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "OAuthRefreshToken" ADD CONSTRAINT "OAuthRefreshToken_oauthClientId_fkey" FOREIGN KEY ("oauthClientId") REFERENCES "OAuthClient"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.oAuthRefreshToken.findMany();
+```
+
+```sql
+SELECT
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+FROM
+  "public"."OAuthRefreshToken"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.oAuthRefreshToken.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."OAuthRefreshToken"."id"
+    FROM
+      "public"."OAuthRefreshToken"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.oAuthRefreshToken.findMany({
+  include: { personalAccessToken: true, oauthClient: true },
+});
+```
+
+```sql
+SELECT
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+FROM
+  "public"."OAuthRefreshToken"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."PersonalAccessToken"."id",
+  "public"."PersonalAccessToken"."name",
+  "public"."PersonalAccessToken"."encryptedToken",
+  "public"."PersonalAccessToken"."obfuscatedToken",
+  "public"."PersonalAccessToken"."hashedToken",
+  "public"."PersonalAccessToken"."userId",
+  "public"."PersonalAccessToken"."revokedAt",
+  "public"."PersonalAccessToken"."lastAccessedAt",
+  "public"."PersonalAccessToken"."expiresAt",
+  "public"."PersonalAccessToken"."idleTimeoutSeconds",
+  "public"."PersonalAccessToken"."expiryReminderSentAt",
+  "public"."PersonalAccessToken"."expiredNoticeSentAt",
+  "public"."PersonalAccessToken"."createdAt",
+  "public"."PersonalAccessToken"."updatedAt",
+  "public"."PersonalAccessToken"."oauthClientId"
+FROM
+  "public"."PersonalAccessToken"
+WHERE
+  "public"."PersonalAccessToken"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<personalAccessTokenId of the rows above>","0"]
+
+SELECT
+  "public"."OAuthClient"."id",
+  "public"."OAuthClient"."kind"::text,
+  "public"."OAuthClient"."clientId",
+  "public"."OAuthClient"."metadataUrl",
+  "public"."OAuthClient"."displayName",
+  "public"."OAuthClient"."selfReportedName",
+  "public"."OAuthClient"."redirectUris",
+  "public"."OAuthClient"."dedupeKey",
+  "public"."OAuthClient"."metadataExpiresAt",
+  "public"."OAuthClient"."lastUsedAt",
+  "public"."OAuthClient"."createdAt",
+  "public"."OAuthClient"."updatedAt"
+FROM
+  "public"."OAuthClient"
+WHERE
+  "public"."OAuthClient"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<oauthClientId of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.oAuthRefreshToken.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+FROM
+  "public"."OAuthRefreshToken"
+WHERE
+  (
+    "public"."OAuthRefreshToken"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.oAuthRefreshToken.create({
+  data: {
+    hashedToken: "example",
+    personalAccessTokenId: "example",
+    oauthClientId: "example",
+    scope: ["example"],
+    resource: "example",
+    idleExpiresAt: new Date("2026-01-01T00:00:00.000Z"),
+  },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."OAuthRefreshToken" (
+    "id",
+    "hashedToken",
+    "personalAccessTokenId",
+    "oauthClientId",
+    "scope",
+    "resource",
+    "idleExpiresAt",
+    "createdAt"
+  )
+VALUES
+  ($1, $2, $3, $4, $5, $6, $7, $8)
+RETURNING
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+-- params: ["<cuid(1)>","example","example","example",["example"],"example","2026-01-01T00:00:00.000Z","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.oAuthRefreshToken.update({
+  where: { id: "example" },
+  data: { hashedToken: "example" },
+});
+```
+
+```sql
+UPDATE "public"."OAuthRefreshToken"
+SET
+  "hashedToken" = $1
+WHERE
+  (
+    "public"."OAuthRefreshToken"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
+-- params: ["example","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.oAuthRefreshToken.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."OAuthRefreshToken"
+WHERE
+  (
+    "public"."OAuthRefreshToken"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."OAuthRefreshToken"."id",
+  "public"."OAuthRefreshToken"."hashedToken",
+  "public"."OAuthRefreshToken"."personalAccessTokenId",
+  "public"."OAuthRefreshToken"."oauthClientId",
+  "public"."OAuthRefreshToken"."scope",
+  "public"."OAuthRefreshToken"."resource",
+  "public"."OAuthRefreshToken"."usedAt",
+  "public"."OAuthRefreshToken"."replacedById",
+  "public"."OAuthRefreshToken"."idleExpiresAt",
+  "public"."OAuthRefreshToken"."createdAt"
 -- params: ["example"]
 ```
 
@@ -4864,7 +5837,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -5052,6 +6028,9 @@ RETURNING
 | `supportAccessMode`              | [`SupportAccessMode`](#enum-SupportAccessMode) | NOT NULL        | `ALLOW`      |                                                                                                                                                                                                                                                                                                |
 | `supportAccessModeUpdatedAt`     | `DateTime`                                     | NULL            |              |                                                                                                                                                                                                                                                                                                |
 | `supportAccessModeUpdatedById`   | `String`                                       | NULL            |              |                                                                                                                                                                                                                                                                                                |
+| `mfaRequired`                    | `Boolean`                                      | NOT NULL        | `false`      | When true, members without MFA are locked out of the dashboard and CLI until they set it up.                                                                                                                                                                                                   |
+| `mfaStepUpActions`               | `String[]`                                     | NOT NULL        | `[]`         | Dashboard actions that need an MFA check within the step-up window (see MfaStepUpAction in the webapp).                                                                                                                                                                                        |
+| `mfaStepUpWindowMinutes`         | `Int`                                          | NOT NULL        | `5`          |                                                                                                                                                                                                                                                                                                |
 
 #### Referenced by
 
@@ -5106,6 +6085,9 @@ CREATE TABLE "Organization" (
     "supportAccessMode" "SupportAccessMode" NOT NULL DEFAULT 'ALLOW',
     "supportAccessModeUpdatedAt" TIMESTAMP(3),
     "supportAccessModeUpdatedById" TEXT,
+    "mfaRequired" BOOLEAN NOT NULL DEFAULT false,
+    "mfaStepUpActions" TEXT[] DEFAULT ARRAY[]::TEXT[],
+    "mfaStepUpWindowMinutes" INTEGER NOT NULL DEFAULT 5,
 
     CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
 );
@@ -5154,7 +6136,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -5243,7 +6228,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -5257,6 +6245,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -5306,6 +6295,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -5322,6 +6312,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -5643,7 +6635,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -5681,7 +6676,10 @@ INSERT INTO
     "v2MarqsEnabled",
     "hasRequestedV3",
     "maximumProjectCount",
-    "supportAccessMode"
+    "supportAccessMode",
+    "mfaRequired",
+    "mfaStepUpActions",
+    "mfaStepUpWindowMinutes"
   )
 VALUES
   (
@@ -5699,7 +6697,10 @@ VALUES
     $12,
     $13,
     $14,
-    CAST($15::text AS "public"."SupportAccessMode")
+    CAST($15::text AS "public"."SupportAccessMode"),
+    $16,
+    $17,
+    $18
   )
 RETURNING
   "public"."Organization"."id",
@@ -5732,8 +6733,11 @@ RETURNING
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
--- params: ["<cuid(1)>","example","example","900000","10","5","<now()>","<now()>",true,false,false,false,false,"25","ALLOW"]
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
+-- params: ["<cuid(1)>","example","example","900000","10","5","<now()>","<now()>",true,false,false,false,false,"25","ALLOW",false,[],"5"]
 ```
 
 **update**: Update a row
@@ -5783,7 +6787,10 @@ RETURNING
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -5831,7 +6838,10 @@ RETURNING
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 -- params: ["example"]
 ```
 
@@ -5843,14 +6853,16 @@ RETURNING
 
 ![OrgMember and the models it relates to](tables/OrgMember.svg)
 
-| Field            | Type                                   | Constraints                                       | Default      | Description |
-| ---------------- | -------------------------------------- | ------------------------------------------------- | ------------ | ----------- |
-| `id`             | `String`                               | PK NOT NULL                                       | `cuid(1)`    |             |
-| `organizationId` | `String`                               | NOT NULL → [Organization.id](#model-Organization) |              |             |
-| `userId`         | `String`                               | NOT NULL → [User.id](#model-User)                 |              |             |
-| `role`           | [`OrgMemberRole`](#enum-OrgMemberRole) | NOT NULL                                          | `MEMBER`     |             |
-| `createdAt`      | `DateTime`                             | NOT NULL                                          | `now()`      |             |
-| `updatedAt`      | `DateTime`                             | NOT NULL                                          | `@updatedAt` |             |
+| Field            | Type                                   | Constraints                                       | Default      | Description                                                                                                         |
+| ---------------- | -------------------------------------- | ------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `id`             | `String`                               | PK NOT NULL                                       | `cuid(1)`    |                                                                                                                     |
+| `organizationId` | `String`                               | NOT NULL → [Organization.id](#model-Organization) |              |                                                                                                                     |
+| `userId`         | `String`                               | NOT NULL → [User.id](#model-User)                 |              |                                                                                                                     |
+| `role`           | [`OrgMemberRole`](#enum-OrgMemberRole) | NOT NULL                                          | `MEMBER`     |                                                                                                                     |
+| `invitedById`    | `String`                               | NULL                                              |              | Who invited them (a User id, kept if that user is deleted). Null if not invited or joined before this was recorded. |
+| `joinMethod`     | `String`                               | NULL                                              |              | How they joined: created, invite, sso_jit, directory_sync or manual. Null if joined before this was recorded.       |
+| `createdAt`      | `DateTime`                             | NOT NULL                                          | `now()`      |                                                                                                                     |
+| `updatedAt`      | `DateTime`                             | NOT NULL                                          | `@updatedAt` |                                                                                                                     |
 
 #### Indexes
 
@@ -5874,6 +6886,8 @@ CREATE TABLE "OrgMember" (
     "organizationId" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
     "role" "OrgMemberRole" NOT NULL DEFAULT 'MEMBER',
+    "invitedById" TEXT,
+    "joinMethod" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -5904,6 +6918,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -5952,6 +6968,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -5993,7 +7011,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -6043,6 +7064,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -6090,6 +7112,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -6136,6 +7160,8 @@ RETURNING
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 -- params: ["<cuid(1)>","example","example","MEMBER","<now()>","<now()>"]
@@ -6162,6 +7188,8 @@ RETURNING
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 -- params: ["ADMIN",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
@@ -6185,6 +7213,8 @@ RETURNING
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 -- params: ["example"]
@@ -6353,7 +7383,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -6543,6 +7576,7 @@ RETURNING
 | `slug`                                | `String`                                                 | NOT NULL                                                                |               |                                                                                                                                                                                                              |
 | `apiKey`                              | `String`                                                 | UNIQUE NOT NULL                                                         |               |                                                                                                                                                                                                              |
 | `rootApiKeyHiddenAt`                  | `DateTime`                                               | NULL                                                                    |               | Non-null prevents the root API key from being returned to users.                                                                                                                                             |
+| `rootKeyInjectionDisabledAt`          | `DateTime`                                               | NULL                                                                    |               | Non-null disables automatic root key injection into new deployed attempts.                                                                                                                                   |
 | `pkApiKey`                            | `String`                                                 | UNIQUE NOT NULL                                                         |               | @deprecated was for v2                                                                                                                                                                                       |
 | `type`                                | [`RuntimeEnvironmentType`](#enum-RuntimeEnvironmentType) | NOT NULL                                                                | `DEVELOPMENT` |                                                                                                                                                                                                              |
 | `isBranchableEnvironment`             | `Boolean`                                                | NOT NULL                                                                | `false`       | If true, this environment has branches and is treated differently in the dashboard/API NB: this flag is NOT used for Development branches, instead (type, parentEnvironmentId) = (DEVELOPMENT, NULL) is used |
@@ -6606,6 +7640,7 @@ RETURNING
 - `id` ← [TaskRunAttempt.runtimeEnvironmentId](#model-TaskRunAttempt) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [TaskQueue.runtimeEnvironmentId](#model-TaskQueue) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [EnvironmentVariableValue.environmentId](#model-EnvironmentVariableValue) (one-to-many, on delete Cascade, on update Cascade)
+- `id` ← [EnvironmentVariableIgnore.environmentId](#model-EnvironmentVariableIgnore) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [Checkpoint.runtimeEnvironmentId](#model-Checkpoint) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [CheckpointRestoreEvent.runtimeEnvironmentId](#model-CheckpointRestoreEvent) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [WorkerDeployment.environmentId](#model-WorkerDeployment) (one-to-many, on delete Cascade, on update Cascade)
@@ -6627,6 +7662,7 @@ CREATE TABLE "RuntimeEnvironment" (
     "slug" TEXT NOT NULL,
     "apiKey" TEXT NOT NULL,
     "rootApiKeyHiddenAt" TIMESTAMP(3),
+    "rootKeyInjectionDisabledAt" TIMESTAMP(3),
     "pkApiKey" TEXT NOT NULL,
     "type" "RuntimeEnvironmentType" NOT NULL DEFAULT 'DEVELOPMENT',
     "isBranchableEnvironment" BOOLEAN NOT NULL DEFAULT false,
@@ -6697,6 +7733,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -6772,6 +7809,7 @@ await prisma.runtimeEnvironment.findMany({
     taskRuns: true,
     taskQueues: true,
     environmentVariableValues: true,
+    environmentVariableIgnores: true,
     checkpoints: true,
     workerDeployments: true,
     workerDeploymentPromotions: true,
@@ -6805,6 +7843,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -6874,6 +7913,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -6913,6 +7953,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -6978,7 +8019,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -7002,6 +8046,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -7018,6 +8063,8 @@ SELECT
   "public"."OrgMember"."organizationId",
   "public"."OrgMember"."userId",
   "public"."OrgMember"."role"::text,
+  "public"."OrgMember"."invitedById",
+  "public"."OrgMember"."joinMethod",
   "public"."OrgMember"."createdAt",
   "public"."OrgMember"."updatedAt"
 FROM
@@ -7075,6 +8122,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -7216,6 +8265,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -7224,6 +8275,22 @@ FROM
   "public"."EnvironmentVariableValue"
 WHERE
   "public"."EnvironmentVariableValue"."environmentId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  "public"."EnvironmentVariableIgnore"."environmentId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -7278,6 +8345,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -7286,6 +8354,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -7740,6 +8809,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -7839,6 +8909,7 @@ RETURNING
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -7889,6 +8960,7 @@ RETURNING
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -7936,6 +9008,7 @@ RETURNING
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -8139,6 +9212,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -8504,6 +9578,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -8668,6 +9743,7 @@ RETURNING
 | `engine`                                      | [`RunEngineVersion`](#enum-RunEngineVersion) | NOT NULL                                                    | `V1`         |                                                                                                               |
 | `builderProjectId`                            | `String`                                     | NULL                                                        |              |                                                                                                               |
 | `defaultWorkerGroupId`                        | `String`                                     | NULL → [WorkerInstanceGroup.id](#model-WorkerInstanceGroup) |              |                                                                                                               |
+| `secretProxyEnabled`                          | `Boolean`                                    | NOT NULL                                                    | `false`      | Newly triggered deployed runs require the secret proxy (pinned in their annotations).                         |
 | `allowedWorkerQueues` (`allowedMasterQueues`) | `String[]`                                   | NOT NULL                                                    | `[]`         | The master queues they are allowed to use (impacts what they can set as default and trigger runs with)        |
 | `buildSettings`                               | `Json`                                       | NULL                                                        |              |                                                                                                               |
 | `onboardingData`                              | `Json`                                       | NULL                                                        |              |                                                                                                               |
@@ -8695,6 +9771,7 @@ RETURNING
 - `id` ← [TaskRunTag.projectId](#model-TaskRunTag) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [TaskQueue.projectId](#model-TaskQueue) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [EnvironmentVariable.projectId](#model-EnvironmentVariable) (one-to-many, on delete Cascade, on update Cascade)
+- `id` ← [EnvironmentVariableIgnore.projectId](#model-EnvironmentVariableIgnore) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [Checkpoint.projectId](#model-Checkpoint) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [CheckpointRestoreEvent.projectId](#model-CheckpointRestoreEvent) (one-to-many, on delete Cascade, on update Cascade)
 - `id` ← [WorkerDeployment.projectId](#model-WorkerDeployment) (one-to-many, on delete Cascade, on update Cascade)
@@ -8732,6 +9809,7 @@ CREATE TABLE "Project" (
     "engine" "RunEngineVersion" NOT NULL DEFAULT 'V1',
     "builderProjectId" TEXT,
     "defaultWorkerGroupId" TEXT,
+    "secretProxyEnabled" BOOLEAN NOT NULL DEFAULT false,
     "allowedMasterQueues" TEXT[] DEFAULT ARRAY[]::TEXT[],
     "buildSettings" JSONB,
     "onboardingData" JSONB,
@@ -8773,6 +9851,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -8824,6 +9903,7 @@ await prisma.project.findMany({
     runTags: true,
     taskQueues: true,
     environmentVariables: true,
+    environmentVariableIgnores: true,
     checkpoints: true,
     WorkerDeployment: true,
     CheckpointRestoreEvent: true,
@@ -8869,6 +9949,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -8911,7 +9992,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -8999,6 +10083,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -9080,6 +10165,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -9245,6 +10332,22 @@ OFFSET
 -- params: ["<id of the rows above>","0"]
 
 SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  "public"."EnvironmentVariableIgnore"."projectId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
   "public"."Checkpoint"."id",
   "public"."Checkpoint"."friendlyId",
   "public"."Checkpoint"."type"::text,
@@ -9294,6 +10397,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -9302,6 +10406,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -9555,6 +10660,9 @@ SELECT
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -9834,6 +10942,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -9871,6 +10980,7 @@ INSERT INTO
     "updatedAt",
     "version",
     "engine",
+    "secretProxyEnabled",
     "allowedMasterQueues"
   )
 VALUES
@@ -9884,7 +10994,8 @@ VALUES
     $7,
     CAST($8::text AS "public"."ProjectVersion"),
     CAST($9::text AS "public"."RunEngineVersion"),
-    $10
+    $10,
+    $11
   )
 RETURNING
   "public"."Project"."id",
@@ -9901,10 +11012,11 @@ RETURNING
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
--- params: ["<cuid(1)>","example","example","example","example","<now()>","<now()>","V2","V1",[]]
+-- params: ["<cuid(1)>","example","example","example","example","<now()>","<now()>","V2","V1",false,[]]
 ```
 
 **update**: Update a row
@@ -9938,6 +11050,7 @@ RETURNING
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -9972,6 +11085,7 @@ RETURNING
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -10093,6 +11207,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -10374,6 +11489,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -10670,6 +11786,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -11667,6 +12785,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -11683,6 +12802,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -11739,6 +12859,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -11976,6 +13098,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -11984,6 +13107,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -12361,6 +13485,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -12424,6 +13549,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -12766,7 +13893,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -12790,6 +13920,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -12806,6 +13937,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -13405,6 +14537,8 @@ RETURNING
 | `ttl`                  | `String`                                       | NULL                                                          |              |                                                                                                                                                             |
 | `triggerSource`        | [`TaskTriggerSource`](#enum-TaskTriggerSource) | NOT NULL                                                      | `STANDARD`   |                                                                                                                                                             |
 | `config`               | `Json`                                         | NULL                                                          |              | Extra task configuration JSON. Shape depends on triggerSource. AGENT: { type: "ai-sdk-chat" }                                                               |
+| `executionMode`        | [`TaskExecutionMode`](#enum-TaskExecutionMode) | NOT NULL                                                      | `STANDARD`   |                                                                                                                                                             |
+| `executionPolicy`      | `Json`                                         | NULL                                                          |              | RunExecutionPolicy from @trigger.dev/core. Null means the standard policy.                                                                                  |
 | `payloadSchema`        | `Json`                                         | NULL                                                          |              |                                                                                                                                                             |
 
 #### Indexes
@@ -13453,6 +14587,8 @@ CREATE TABLE "BackgroundWorkerTask" (
     "ttl" TEXT,
     "triggerSource" "TaskTriggerSource" NOT NULL DEFAULT 'STANDARD',
     "config" JSONB,
+    "executionMode" "TaskExecutionMode" NOT NULL DEFAULT 'STANDARD',
+    "executionPolicy" JSONB,
     "payloadSchema" JSONB,
 
     CONSTRAINT "BackgroundWorkerTask_pkey" PRIMARY KEY ("id")
@@ -13513,6 +14649,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -13585,6 +14723,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -13634,6 +14774,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -13666,6 +14807,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -13882,6 +15024,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -13924,7 +15068,8 @@ INSERT INTO
     "runtimeEnvironmentId",
     "createdAt",
     "updatedAt",
-    "triggerSource"
+    "triggerSource",
+    "executionMode"
   )
 VALUES
   (
@@ -13937,7 +15082,8 @@ VALUES
     $7,
     $8,
     $9,
-    CAST($10::text AS "public"."TaskTriggerSource")
+    CAST($10::text AS "public"."TaskTriggerSource"),
+    CAST($11::text AS "public"."TaskExecutionMode")
   )
 RETURNING
   "public"."BackgroundWorkerTask"."id",
@@ -13961,8 +15107,10 @@ RETURNING
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
--- params: ["<cuid(1)>","example","example","example","example","example","example","<now()>","<now()>","STANDARD"]
+-- params: ["<cuid(1)>","example","example","example","example","example","example","<now()>","<now()>","STANDARD","STANDARD"]
 ```
 
 **update**: Update a row
@@ -14003,6 +15151,8 @@ RETURNING
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
@@ -14042,6 +15192,8 @@ RETURNING
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 -- params: ["example"]
 ```
@@ -16154,6 +17306,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -16170,6 +17323,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -17541,6 +18695,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -17590,6 +18745,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -17672,6 +18828,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -19875,6 +21033,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -19891,6 +21050,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -20623,6 +21783,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -20639,6 +21800,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -21147,6 +22309,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -21439,6 +22602,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -21488,6 +22652,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -21993,7 +23158,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -22017,6 +23185,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -22033,6 +23202,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -22094,6 +23264,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -22102,6 +23273,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -22288,6 +23460,7 @@ RETURNING
 - `id` ← [Project.defaultWorkerGroupId](#model-Project) (one-to-many)
 - `id` ← [BackgroundWorker.workerGroupId](#model-BackgroundWorker) (one-to-many, on delete SetNull, on update Cascade)
 - `id` ← [WorkerInstance.workerGroupId](#model-WorkerInstance) (one-to-many)
+- `id` ← [WorkerGroupToken.workerGroupId](#model-WorkerGroupToken) (one-to-many, on delete Cascade, on update Cascade)
 
 #### Definition
 
@@ -22391,6 +23564,7 @@ FROM
 await prisma.workerInstanceGroup.findMany({
   include: {
     token: true,
+    childTokens: true,
     workers: true,
     backgroundWorkers: true,
     defaultForProjects: true,
@@ -22433,7 +23607,8 @@ SELECT
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 FROM
   "public"."WorkerGroupToken"
 WHERE
@@ -22441,6 +23616,22 @@ WHERE
 OFFSET
   $2
 -- params: ["<tokenId of the rows above>","0"]
+
+SELECT
+  "public"."WorkerGroupToken"."id",
+  "public"."WorkerGroupToken"."tokenHash",
+  "public"."WorkerGroupToken"."previousTokenHash",
+  "public"."WorkerGroupToken"."previousTokenValidUntil",
+  "public"."WorkerGroupToken"."createdAt",
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
+FROM
+  "public"."WorkerGroupToken"
+WHERE
+  "public"."WorkerGroupToken"."workerGroupId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
 
 SELECT
   "public"."WorkerInstance"."id",
@@ -22504,6 +23695,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -22546,7 +23738,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -22570,6 +23765,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -22756,14 +23952,23 @@ RETURNING
 
 ![WorkerGroupToken and the models it relates to](tables/WorkerGroupToken.svg)
 
-| Field                     | Type       | Constraints     | Default      | Description |
-| ------------------------- | ---------- | --------------- | ------------ | ----------- |
-| `id`                      | `String`   | PK NOT NULL     | `cuid(1)`    |             |
-| `tokenHash`               | `String`   | UNIQUE NOT NULL |              |             |
-| `previousTokenHash`       | `String`   | UNIQUE NULL     |              |             |
-| `previousTokenValidUntil` | `DateTime` | NULL            |              |             |
-| `createdAt`               | `DateTime` | NOT NULL        | `now()`      |             |
-| `updatedAt`               | `DateTime` | NOT NULL        | `@updatedAt` |             |
+| Field                     | Type       | Constraints                                                 | Default      | Description |
+| ------------------------- | ---------- | ----------------------------------------------------------- | ------------ | ----------- |
+| `id`                      | `String`   | PK NOT NULL                                                 | `cuid(1)`    |             |
+| `tokenHash`               | `String`   | UNIQUE NOT NULL                                             |              |             |
+| `previousTokenHash`       | `String`   | UNIQUE NULL                                                 |              |             |
+| `previousTokenValidUntil` | `DateTime` | NULL                                                        |              |             |
+| `createdAt`               | `DateTime` | NOT NULL                                                    | `now()`      |             |
+| `updatedAt`               | `DateTime` | NOT NULL                                                    | `@updatedAt` |             |
+| `workerGroupId`           | `String`   | NULL → [WorkerInstanceGroup.id](#model-WorkerInstanceGroup) |              |             |
+
+#### Indexes
+
+- `@@index([workerGroupId])`
+
+#### References
+
+- `workerGroupId` → [WorkerInstanceGroup.id](#model-WorkerInstanceGroup) (many-to-one, on delete Cascade, on update Cascade)
 
 #### Referenced by
 
@@ -22779,6 +23984,7 @@ CREATE TABLE "WorkerGroupToken" (
     "previousTokenValidUntil" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "workerGroupId" TEXT,
 
     CONSTRAINT "WorkerGroupToken_pkey" PRIMARY KEY ("id")
 );
@@ -22786,6 +23992,10 @@ CREATE TABLE "WorkerGroupToken" (
 CREATE UNIQUE INDEX "WorkerGroupToken_tokenHash_key" ON "WorkerGroupToken"("tokenHash");
 
 CREATE UNIQUE INDEX "WorkerGroupToken_previousTokenHash_key" ON "WorkerGroupToken"("previousTokenHash");
+
+CREATE INDEX "WorkerGroupToken_workerGroupId_idx" ON "WorkerGroupToken"("workerGroupId");
+
+ALTER TABLE "WorkerGroupToken" ADD CONSTRAINT "WorkerGroupToken_workerGroupId_fkey" FOREIGN KEY ("workerGroupId") REFERENCES "WorkerInstanceGroup"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 ```
 
 <details>
@@ -22804,7 +24014,8 @@ SELECT
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 FROM
   "public"."WorkerGroupToken"
 WHERE
@@ -22840,7 +24051,7 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.workerGroupToken.findMany({ include: { workerGroup: true } });
+await prisma.workerGroupToken.findMany({ include: { workerGroup: true, childOf: true } });
 ```
 
 ```sql
@@ -22850,7 +24061,8 @@ SELECT
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 FROM
   "public"."WorkerGroupToken"
 WHERE
@@ -22884,6 +24096,32 @@ WHERE
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."WorkerInstanceGroup"."id",
+  "public"."WorkerInstanceGroup"."type"::text,
+  "public"."WorkerInstanceGroup"."name",
+  "public"."WorkerInstanceGroup"."masterQueue",
+  "public"."WorkerInstanceGroup"."description",
+  "public"."WorkerInstanceGroup"."hidden",
+  "public"."WorkerInstanceGroup"."tokenId",
+  "public"."WorkerInstanceGroup"."organizationId",
+  "public"."WorkerInstanceGroup"."projectId",
+  "public"."WorkerInstanceGroup"."cloudProvider",
+  "public"."WorkerInstanceGroup"."location",
+  "public"."WorkerInstanceGroup"."staticIPs",
+  "public"."WorkerInstanceGroup"."workloadType"::text,
+  "public"."WorkerInstanceGroup"."region",
+  "public"."WorkerInstanceGroup"."enableFastPath",
+  "public"."WorkerInstanceGroup"."createdAt",
+  "public"."WorkerInstanceGroup"."updatedAt"
+FROM
+  "public"."WorkerInstanceGroup"
+WHERE
+  "public"."WorkerInstanceGroup"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<workerGroupId of the rows above>","0"]
 ```
 
 **findUnique**: One row by what is unique to it
@@ -22899,7 +24137,8 @@ SELECT
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 FROM
   "public"."WorkerGroupToken"
 WHERE
@@ -22931,7 +24170,8 @@ RETURNING
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 -- params: ["<cuid(1)>","example","<now()>","<now()>"]
 ```
 
@@ -22957,7 +24197,8 @@ RETURNING
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 -- params: ["example",{"prisma__type":"generatorCall","prisma__value":{"name":"now","args":[],"returnType":{"type":"DateTime"}}},"example"]
 ```
 
@@ -22980,7 +24221,8 @@ RETURNING
   "public"."WorkerGroupToken"."previousTokenHash",
   "public"."WorkerGroupToken"."previousTokenValidUntil",
   "public"."WorkerGroupToken"."createdAt",
-  "public"."WorkerGroupToken"."updatedAt"
+  "public"."WorkerGroupToken"."updatedAt",
+  "public"."WorkerGroupToken"."workerGroupId"
 -- params: ["example"]
 ```
 
@@ -23115,6 +24357,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -23931,6 +25174,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -24406,6 +25650,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -24420,6 +25666,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -25672,6 +26919,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -25688,6 +26936,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -25770,6 +27019,8 @@ SELECT
   "public"."BackgroundWorkerTask"."ttl",
   "public"."BackgroundWorkerTask"."triggerSource"::text,
   "public"."BackgroundWorkerTask"."config",
+  "public"."BackgroundWorkerTask"."executionMode"::text,
+  "public"."BackgroundWorkerTask"."executionPolicy",
   "public"."BackgroundWorkerTask"."payloadSchema"
 FROM
   "public"."BackgroundWorkerTask"
@@ -27468,6 +28719,7 @@ RETURNING
 #### Referenced by
 
 - `id` ← [EnvironmentVariableValue.variableId](#model-EnvironmentVariableValue) (one-to-many, on delete Cascade, on update Cascade)
+- `id` ← [EnvironmentVariableIgnore.variableId](#model-EnvironmentVariableIgnore) (one-to-many, on delete Cascade, on update Cascade)
 
 #### Definition
 
@@ -27542,7 +28794,9 @@ FROM
 **findMany**: Every row with its relations
 
 ```ts
-await prisma.environmentVariable.findMany({ include: { project: true, values: true } });
+await prisma.environmentVariable.findMany({
+  include: { project: true, values: true, ignores: true },
+});
 ```
 
 ```sql
@@ -27576,6 +28830,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -27593,6 +28848,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -27601,6 +28858,22 @@ FROM
   "public"."EnvironmentVariableValue"
 WHERE
   "public"."EnvironmentVariableValue"."variableId" IN ($1)
+OFFSET
+  $2
+-- params: ["<id of the rows above>","0"]
+
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  "public"."EnvironmentVariableIgnore"."variableId" IN ($1)
 OFFSET
   $2
 -- params: ["<id of the rows above>","0"]
@@ -27731,6 +29004,8 @@ RETURNING
 | `variableId`       | `String`   | NOT NULL → [EnvironmentVariable.id](#model-EnvironmentVariable) |              |                                                     |
 | `environmentId`    | `String`   | NOT NULL → [RuntimeEnvironment.id](#model-RuntimeEnvironment)   |              |                                                     |
 | `isSecret`         | `Boolean`  | NOT NULL                                                        | `false`      | If true, the value is secret and cannot be revealed |
+| `isProxyOnly`      | `Boolean`  | NOT NULL                                                        | `false`      |                                                     |
+| `proxyConfig`      | `Json`     | NULL                                                            |              |                                                     |
 | `createdAt`        | `DateTime` | NOT NULL                                                        | `now()`      |                                                     |
 | `updatedAt`        | `DateTime` | NOT NULL                                                        | `@updatedAt` |                                                     |
 | `version`          | `Int`      | NOT NULL                                                        | `1`          |                                                     |
@@ -27758,6 +29033,8 @@ CREATE TABLE "EnvironmentVariableValue" (
     "variableId" TEXT NOT NULL,
     "environmentId" TEXT NOT NULL,
     "isSecret" BOOLEAN NOT NULL DEFAULT false,
+    "isProxyOnly" BOOLEAN NOT NULL DEFAULT false,
+    "proxyConfig" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "version" INTEGER NOT NULL DEFAULT 1,
@@ -27797,6 +29074,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -27848,6 +29127,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -27894,6 +29175,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -27942,6 +29224,8 @@ SELECT
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -27975,23 +29259,26 @@ INSERT INTO
     "variableId",
     "environmentId",
     "isSecret",
+    "isProxyOnly",
     "createdAt",
     "updatedAt",
     "version"
   )
 VALUES
-  ($1, $2, $3, $4, $5, $6, $7)
+  ($1, $2, $3, $4, $5, $6, $7, $8)
 RETURNING
   "public"."EnvironmentVariableValue"."id",
   "public"."EnvironmentVariableValue"."valueReferenceId",
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
   "public"."EnvironmentVariableValue"."lastUpdatedBy"
--- params: ["<cuid(1)>","example","example",false,"<now()>","<now()>","1"]
+-- params: ["<cuid(1)>","example","example",false,false,"<now()>","<now()>","1"]
 ```
 
 **update**: Update a row
@@ -28019,6 +29306,8 @@ RETURNING
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
@@ -28045,10 +29334,397 @@ RETURNING
   "public"."EnvironmentVariableValue"."variableId",
   "public"."EnvironmentVariableValue"."environmentId",
   "public"."EnvironmentVariableValue"."isSecret",
+  "public"."EnvironmentVariableValue"."isProxyOnly",
+  "public"."EnvironmentVariableValue"."proxyConfig",
   "public"."EnvironmentVariableValue"."createdAt",
   "public"."EnvironmentVariableValue"."updatedAt",
   "public"."EnvironmentVariableValue"."version",
   "public"."EnvironmentVariableValue"."lastUpdatedBy"
+-- params: ["example"]
+```
+
+</details>
+
+<a id="model-EnvironmentVariableIgnore"></a>
+
+### EnvironmentVariableIgnore
+
+A reason the environment variables "Needs attention" page shows a key in one environment, which
+the project's team chose to ignore. An ignored EMPTY goes when the value is next saved.
+
+![EnvironmentVariableIgnore and the models it relates to](tables/EnvironmentVariableIgnore.svg)
+
+| Field           | Type                                                                       | Constraints                                                     | Default   | Description |
+| --------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------- | --------- | ----------- |
+| `id`            | `String`                                                                   | PK NOT NULL                                                     | `cuid(1)` |             |
+| `projectId`     | `String`                                                                   | NOT NULL → [Project.id](#model-Project)                         |           |             |
+| `environmentId` | `String`                                                                   | NOT NULL → [RuntimeEnvironment.id](#model-RuntimeEnvironment)   |           |             |
+| `variableId`    | `String`                                                                   | NOT NULL → [EnvironmentVariable.id](#model-EnvironmentVariable) |           |             |
+| `reason`        | [`EnvironmentVariableIgnoreReason`](#enum-EnvironmentVariableIgnoreReason) | NOT NULL                                                        |           |             |
+| `createdById`   | `String`                                                                   | NULL → [User.id](#model-User)                                   |           |             |
+| `createdAt`     | `DateTime`                                                                 | NOT NULL                                                        | `now()`   |             |
+
+#### Indexes
+
+- `@@index([variableId])`
+- `@@index([projectId])`
+- `@@index([createdById])`
+- `@@unique([environmentId, variableId, reason])`
+
+#### References
+
+- `projectId` → [Project.id](#model-Project) (many-to-one, on delete Cascade, on update Cascade)
+- `environmentId` → [RuntimeEnvironment.id](#model-RuntimeEnvironment) (many-to-one, on delete Cascade, on update Cascade)
+- `variableId` → [EnvironmentVariable.id](#model-EnvironmentVariable) (many-to-one, on delete Cascade, on update Cascade)
+- `createdById` → [User.id](#model-User) (many-to-one, on delete SetNull, on update Cascade)
+
+#### Definition
+
+```sql
+CREATE TABLE "EnvironmentVariableIgnore" (
+    "id" TEXT NOT NULL,
+    "projectId" TEXT NOT NULL,
+    "environmentId" TEXT NOT NULL,
+    "variableId" TEXT NOT NULL,
+    "reason" "EnvironmentVariableIgnoreReason" NOT NULL,
+    "createdById" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "EnvironmentVariableIgnore_pkey" PRIMARY KEY ("id")
+);
+
+CREATE INDEX "EnvironmentVariableIgnore_variableId_idx" ON "EnvironmentVariableIgnore"("variableId");
+
+CREATE INDEX "EnvironmentVariableIgnore_projectId_idx" ON "EnvironmentVariableIgnore"("projectId");
+
+CREATE INDEX "EnvironmentVariableIgnore_createdById_idx" ON "EnvironmentVariableIgnore"("createdById");
+
+CREATE UNIQUE INDEX "EnvironmentVariableIgnore_environmentId_variableId_reason_key" ON "EnvironmentVariableIgnore"("environmentId", "variableId", "reason");
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_environmentId_fkey" FOREIGN KEY ("environmentId") REFERENCES "RuntimeEnvironment"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_variableId_fkey" FOREIGN KEY ("variableId") REFERENCES "EnvironmentVariable"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE "EnvironmentVariableIgnore" ADD CONSTRAINT "EnvironmentVariableIgnore_createdById_fkey" FOREIGN KEY ("createdById") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+```
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**findMany**: Every row
+
+```ts
+await prisma.environmentVariableIgnore.findMany();
+```
+
+```sql
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+```
+
+**count**: How many rows there are
+
+```ts
+await prisma.environmentVariableIgnore.count();
+```
+
+```sql
+SELECT
+  COUNT(*) AS "_count$_all"
+FROM
+  (
+    SELECT
+      "public"."EnvironmentVariableIgnore"."id"
+    FROM
+      "public"."EnvironmentVariableIgnore"
+    WHERE
+      1 = 1
+    OFFSET
+      $1
+  ) AS "sub"
+-- params: ["0"]
+```
+
+**findMany**: Every row with its relations
+
+```ts
+await prisma.environmentVariableIgnore.findMany({
+  include: { project: true, environment: true, variable: true, createdBy: true },
+});
+```
+
+```sql
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  1 = 1
+OFFSET
+  $1
+-- params: ["0"]
+
+SELECT
+  "public"."Project"."id",
+  "public"."Project"."slug",
+  "public"."Project"."name",
+  "public"."Project"."externalRef",
+  "public"."Project"."organizationId",
+  "public"."Project"."createdAt",
+  "public"."Project"."updatedAt",
+  "public"."Project"."deletedAt",
+  "public"."Project"."initializedAt",
+  "public"."Project"."defaultRuntime",
+  "public"."Project"."version"::text,
+  "public"."Project"."engine"::text,
+  "public"."Project"."builderProjectId",
+  "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
+  "public"."Project"."allowedMasterQueues",
+  "public"."Project"."buildSettings",
+  "public"."Project"."onboardingData"
+FROM
+  "public"."Project"
+WHERE
+  "public"."Project"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<projectId of the rows above>","0"]
+
+SELECT
+  "public"."RuntimeEnvironment"."id",
+  "public"."RuntimeEnvironment"."slug",
+  "public"."RuntimeEnvironment"."apiKey",
+  "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
+  "public"."RuntimeEnvironment"."pkApiKey",
+  "public"."RuntimeEnvironment"."type"::text,
+  "public"."RuntimeEnvironment"."isBranchableEnvironment",
+  "public"."RuntimeEnvironment"."branchName",
+  "public"."RuntimeEnvironment"."parentEnvironmentId",
+  "public"."RuntimeEnvironment"."previewAutoArchiveAfterDays",
+  "public"."RuntimeEnvironment"."previewAutoArchiveExcludedBranches",
+  "public"."RuntimeEnvironment"."previewAutoArchiveNextCheckAt",
+  "public"."RuntimeEnvironment"."previewAutoArchiveCursorCreatedAt",
+  "public"."RuntimeEnvironment"."previewAutoArchiveCursorId",
+  "public"."RuntimeEnvironment"."git",
+  "public"."RuntimeEnvironment"."archivedAt",
+  "public"."RuntimeEnvironment"."shortcode",
+  "public"."RuntimeEnvironment"."maximumConcurrencyLimit",
+  "public"."RuntimeEnvironment"."concurrencyLimitBurstFactor",
+  "public"."RuntimeEnvironment"."paused",
+  "public"."RuntimeEnvironment"."pauseSource"::text,
+  "public"."RuntimeEnvironment"."autoEnableInternalSources",
+  "public"."RuntimeEnvironment"."organizationId",
+  "public"."RuntimeEnvironment"."projectId",
+  "public"."RuntimeEnvironment"."orgMemberId",
+  "public"."RuntimeEnvironment"."createdAt",
+  "public"."RuntimeEnvironment"."updatedAt",
+  "public"."RuntimeEnvironment"."builtInEnvironmentVariableOverrides",
+  "public"."RuntimeEnvironment"."tunnelId",
+  "public"."RuntimeEnvironment"."currentSessionId"
+FROM
+  "public"."RuntimeEnvironment"
+WHERE
+  "public"."RuntimeEnvironment"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<environmentId of the rows above>","0"]
+
+SELECT
+  "public"."EnvironmentVariable"."id",
+  "public"."EnvironmentVariable"."friendlyId",
+  "public"."EnvironmentVariable"."key",
+  "public"."EnvironmentVariable"."projectId",
+  "public"."EnvironmentVariable"."createdAt",
+  "public"."EnvironmentVariable"."updatedAt"
+FROM
+  "public"."EnvironmentVariable"
+WHERE
+  "public"."EnvironmentVariable"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<variableId of the rows above>","0"]
+
+SELECT
+  "public"."User"."id",
+  "public"."User"."email",
+  "public"."User"."pendingEmail",
+  "public"."User"."authenticationMethod"::text,
+  "public"."User"."authenticationProfile",
+  "public"."User"."authenticationExtraParams",
+  "public"."User"."authIdentifier",
+  "public"."User"."displayName",
+  "public"."User"."name",
+  "public"."User"."avatarUrl",
+  "public"."User"."admin",
+  "public"."User"."dashboardPreferences",
+  "public"."User"."createdAt",
+  "public"."User"."updatedAt",
+  "public"."User"."isOnCloudWaitlist",
+  "public"."User"."featureCloud",
+  "public"."User"."isOnHostedRepoWaitlist",
+  "public"."User"."marketingEmails",
+  "public"."User"."confirmedBasicDetails",
+  "public"."User"."referralSource",
+  "public"."User"."onboardingData",
+  "public"."User"."mfaEnabledAt",
+  "public"."User"."mfaSecretReferenceId",
+  "public"."User"."mfaLastUsedCode",
+  "public"."User"."sessionDuration",
+  "public"."User"."nextSessionEnd",
+  "public"."User"."invitationCodeId"
+FROM
+  "public"."User"
+WHERE
+  "public"."User"."id" IN ($1)
+OFFSET
+  $2
+-- params: ["<createdById of the rows above>","0"]
+```
+
+**findUnique**: One row by what is unique to it
+
+```ts
+await prisma.environmentVariableIgnore.findUnique({ where: { id: "example" } });
+```
+
+```sql
+SELECT
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+FROM
+  "public"."EnvironmentVariableIgnore"
+WHERE
+  (
+    "public"."EnvironmentVariableIgnore"."id" = $1
+    AND 1 = 1
+  )
+LIMIT
+  $2
+OFFSET
+  $3
+-- params: ["example","1","0"]
+```
+
+**create**: Create a row
+
+```ts
+await prisma.environmentVariableIgnore.create({
+  data: { projectId: "example", environmentId: "example", variableId: "example", reason: "EMPTY" },
+});
+```
+
+```sql
+INSERT INTO
+  "public"."EnvironmentVariableIgnore" (
+    "id",
+    "projectId",
+    "environmentId",
+    "variableId",
+    "reason",
+    "createdAt"
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    CAST(
+      $5::text AS "public"."EnvironmentVariableIgnoreReason"
+    ),
+    $6
+  )
+RETURNING
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+-- params: ["<cuid(1)>","example","example","example","EMPTY","<now()>"]
+```
+
+**update**: Update a row
+
+```ts
+await prisma.environmentVariableIgnore.update({
+  where: { id: "example" },
+  data: { reason: "EMPTY" },
+});
+```
+
+```sql
+UPDATE "public"."EnvironmentVariableIgnore"
+SET
+  "reason" = CAST(
+    $1::text AS "public"."EnvironmentVariableIgnoreReason"
+  )
+WHERE
+  (
+    "public"."EnvironmentVariableIgnore"."id" = $2
+    AND 1 = 1
+  )
+RETURNING
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
+-- params: ["EMPTY","example"]
+```
+
+**delete**: Delete a row
+
+```ts
+await prisma.environmentVariableIgnore.delete({ where: { id: "example" } });
+```
+
+```sql
+DELETE FROM "public"."EnvironmentVariableIgnore"
+WHERE
+  (
+    "public"."EnvironmentVariableIgnore"."id" = $1
+    AND 1 = 1
+  )
+RETURNING
+  "public"."EnvironmentVariableIgnore"."id",
+  "public"."EnvironmentVariableIgnore"."projectId",
+  "public"."EnvironmentVariableIgnore"."environmentId",
+  "public"."EnvironmentVariableIgnore"."variableId",
+  "public"."EnvironmentVariableIgnore"."reason"::text,
+  "public"."EnvironmentVariableIgnore"."createdById",
+  "public"."EnvironmentVariableIgnore"."createdAt"
 -- params: ["example"]
 ```
 
@@ -28373,6 +30049,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -28389,6 +30066,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -28911,6 +30589,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -28927,6 +30606,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -29176,45 +30856,47 @@ RETURNING
 
 ![WorkerDeployment and the models it relates to](tables/WorkerDeployment.svg)
 
-| Field                 | Type                                                     | Constraints                                                   | Default         | Description                                                                                                                                                     |
-| --------------------- | -------------------------------------------------------- | ------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `id`                  | `String`                                                 | PK NOT NULL                                                   | `cuid(1)`       |                                                                                                                                                                 |
-| `contentHash`         | `String`                                                 | NOT NULL                                                      |                 |                                                                                                                                                                 |
-| `friendlyId`          | `String`                                                 | UNIQUE NOT NULL                                               |                 |                                                                                                                                                                 |
-| `shortCode`           | `String`                                                 | NOT NULL                                                      |                 |                                                                                                                                                                 |
-| `version`             | `String`                                                 | NOT NULL                                                      |                 |                                                                                                                                                                 |
-| `runtime`             | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `runtimeVersion`      | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `cliVersion`          | `String`                                                 | NULL                                                          |                 | CLI version that initiated the deploy, stamped at initialization                                                                                                |
-| `imageReference`      | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `imagePlatform`       | `String`                                                 | NOT NULL                                                      | `"linux/amd64"` |                                                                                                                                                                 |
-| `templateKey`         | `String`                                                 | NULL                                                          |                 | Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds                                                                |
-| `indexObjectKey`      | `String`                                                 | NULL                                                          |                 | Object key of the full index snapshot in the deployment index store. Set only after the upload succeeds.                                                        |
-| `indexSha256`         | `String`                                                 | NULL                                                          |                 | sha256 hex of the snapshot's uncompressed JSON                                                                                                                  |
-| `indexFormatVersion`  | `Int`                                                    | NULL                                                          |                 |                                                                                                                                                                 |
-| `externalBuildData`   | `Json`                                                   | NULL                                                          |                 |                                                                                                                                                                 |
-| `buildServerMetadata` | `Json`                                                   | NULL                                                          |                 |                                                                                                                                                                 |
-| `buildEnvVars`        | `Json`                                                   | NULL                                                          |                 | Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep. |
-| `status`              | [`WorkerDeploymentStatus`](#enum-WorkerDeploymentStatus) | NOT NULL                                                      | `PENDING`       |                                                                                                                                                                 |
-| `type`                | [`WorkerDeploymentType`](#enum-WorkerDeploymentType)     | NOT NULL                                                      | `V1`            |                                                                                                                                                                 |
-| `projectId`           | `String`                                                 | NOT NULL → [Project.id](#model-Project)                       |                 |                                                                                                                                                                 |
-| `environmentId`       | `String`                                                 | NOT NULL → [RuntimeEnvironment.id](#model-RuntimeEnvironment) |                 |                                                                                                                                                                 |
-| `workerId`            | `String`                                                 | UNIQUE NULL → [BackgroundWorker.id](#model-BackgroundWorker)  |                 |                                                                                                                                                                 |
-| `triggeredById`       | `String`                                                 | NULL → [User.id](#model-User)                                 |                 |                                                                                                                                                                 |
-| `triggeredVia`        | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `commitSHA`           | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `externalId`          | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `startedAt`           | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `installedAt`         | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `builtAt`             | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `deployedAt`          | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `failedAt`            | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `errorData`           | `Json`                                                   | NULL                                                          |                 |                                                                                                                                                                 |
-| `canceledAt`          | `DateTime`                                               | NULL                                                          |                 |                                                                                                                                                                 |
-| `canceledReason`      | `String`                                                 | NULL                                                          |                 |                                                                                                                                                                 |
-| `git`                 | `Json`                                                   | NULL                                                          |                 |                                                                                                                                                                 |
-| `createdAt`           | `DateTime`                                               | NOT NULL                                                      | `now()`         |                                                                                                                                                                 |
-| `updatedAt`           | `DateTime`                                               | NOT NULL                                                      | `@updatedAt`    |                                                                                                                                                                 |
+| Field                   | Type                                                                       | Constraints                                                   | Default         | Description                                                                                                                                                     |
+| ----------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `id`                    | `String`                                                                   | PK NOT NULL                                                   | `cuid(1)`       |                                                                                                                                                                 |
+| `contentHash`           | `String`                                                                   | NOT NULL                                                      |                 |                                                                                                                                                                 |
+| `friendlyId`            | `String`                                                                   | UNIQUE NOT NULL                                               |                 |                                                                                                                                                                 |
+| `shortCode`             | `String`                                                                   | NOT NULL                                                      |                 |                                                                                                                                                                 |
+| `version`               | `String`                                                                   | NOT NULL                                                      |                 |                                                                                                                                                                 |
+| `runtime`               | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `runtimeVersion`        | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `cliVersion`            | `String`                                                                   | NULL                                                          |                 | CLI version that initiated the deploy, stamped at initialization or worker upload                                                                               |
+| `imageReference`        | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `imagePlatform`         | `String`                                                                   | NOT NULL                                                      | `"linux/amd64"` |                                                                                                                                                                 |
+| `templateKey`           | `String`                                                                   | NULL                                                          |                 | Key of the microVM template prebuilt from this deployment's image, set when the builder succeeds                                                                |
+| `indexObjectKey`        | `String`                                                                   | NULL                                                          |                 | Object key of the full index snapshot in the deployment index store. Set only after the upload succeeds.                                                        |
+| `indexSha256`           | `String`                                                                   | NULL                                                          |                 | sha256 hex of the snapshot's uncompressed JSON                                                                                                                  |
+| `indexFormatVersion`    | `Int`                                                                      | NULL                                                          |                 |                                                                                                                                                                 |
+| `externalBuildData`     | `Json`                                                                     | NULL                                                          |                 |                                                                                                                                                                 |
+| `buildServerMetadata`   | `Json`                                                                     | NULL                                                          |                 |                                                                                                                                                                 |
+| `buildEnvVars`          | `Json`                                                                     | NULL                                                          |                 | Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep. |
+| `status`                | [`WorkerDeploymentStatus`](#enum-WorkerDeploymentStatus)                   | NOT NULL                                                      | `PENDING`       |                                                                                                                                                                 |
+| `type`                  | [`WorkerDeploymentType`](#enum-WorkerDeploymentType)                       | NOT NULL                                                      | `V1`            |                                                                                                                                                                 |
+| `projectId`             | `String`                                                                   | NOT NULL → [Project.id](#model-Project)                       |                 |                                                                                                                                                                 |
+| `environmentId`         | `String`                                                                   | NOT NULL → [RuntimeEnvironment.id](#model-RuntimeEnvironment) |                 |                                                                                                                                                                 |
+| `workerId`              | `String`                                                                   | UNIQUE NULL → [BackgroundWorker.id](#model-BackgroundWorker)  |                 |                                                                                                                                                                 |
+| `triggeredById`         | `String`                                                                   | NULL → [User.id](#model-User)                                 |                 |                                                                                                                                                                 |
+| `triggeredVia`          | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `commitSHA`             | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `externalId`            | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `initiatedByCredential` | [`DeploymentInitiatedByCredential`](#enum-DeploymentInitiatedByCredential) | NULL                                                          |                 | The kind of credential that started the deployment. Null when unknown.                                                                                          |
+| `startedAt`             | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `installedAt`           | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `builtAt`               | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `deployedAt`            | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `failedAt`              | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `errorData`             | `Json`                                                                     | NULL                                                          |                 |                                                                                                                                                                 |
+| `canceledAt`            | `DateTime`                                                                 | NULL                                                          |                 |                                                                                                                                                                 |
+| `canceledReason`        | `String`                                                                   | NULL                                                          |                 |                                                                                                                                                                 |
+| `supersededById`        | `String`                                                                   | NULL                                                          |                 | The newer GitHub build that superseded this one while it was still queued                                                                                       |
+| `git`                   | `Json`                                                                     | NULL                                                          |                 |                                                                                                                                                                 |
+| `createdAt`             | `DateTime`                                                                 | NOT NULL                                                      | `now()`         |                                                                                                                                                                 |
+| `updatedAt`             | `DateTime`                                                                 | NOT NULL                                                      | `@updatedAt`    |                                                                                                                                                                 |
 
 #### Indexes
 
@@ -29269,6 +30951,7 @@ CREATE TABLE "WorkerDeployment" (
     "triggeredVia" TEXT,
     "commitSHA" TEXT,
     "externalId" TEXT,
+    "initiatedByCredential" "DeploymentInitiatedByCredential",
     "startedAt" TIMESTAMP(3),
     "installedAt" TIMESTAMP(3),
     "builtAt" TIMESTAMP(3),
@@ -29277,6 +30960,7 @@ CREATE TABLE "WorkerDeployment" (
     "errorData" JSONB,
     "canceledAt" TIMESTAMP(3),
     "canceledReason" TEXT,
+    "supersededById" TEXT,
     "git" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -29346,6 +31030,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29354,6 +31039,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -29434,6 +31120,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29442,6 +31129,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -29468,6 +31156,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -29484,6 +31173,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -29687,6 +31377,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29695,6 +31386,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -29785,6 +31477,7 @@ RETURNING
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29793,6 +31486,7 @@ RETURNING
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -29845,6 +31539,7 @@ RETURNING
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29853,6 +31548,7 @@ RETURNING
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -29899,6 +31595,7 @@ RETURNING
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -29907,6 +31604,7 @@ RETURNING
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -30052,6 +31750,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -30060,6 +31759,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -30076,6 +31776,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -30424,6 +32125,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -30808,6 +32510,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -30857,6 +32560,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -31113,6 +32817,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -31152,6 +32857,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -31493,6 +33199,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -31886,6 +33593,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -31902,6 +33610,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -31987,6 +33696,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -31995,6 +33705,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -32298,6 +34009,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -32662,7 +34374,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -33029,6 +34744,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -33369,6 +35085,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -33385,6 +35102,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -33653,6 +35371,10 @@ RETURNING
 | `createdAt`        | `DateTime`                                           | NOT NULL                                | `now()`      |                                                                                                                                             |
 | `updatedAt`        | `DateTime`                                           | NOT NULL                                | `@updatedAt` |                                                                                                                                             |
 
+#### Indexes
+
+- `@@index([groupId, createdAt])`
+
 #### References
 
 - `sourceRunId` → [TaskRun.id](#model-TaskRun) (many-to-one, on delete Cascade, on update Cascade)
@@ -33675,6 +35397,8 @@ CREATE TABLE "BulkActionItem" (
 
     CONSTRAINT "BulkActionItem_pkey" PRIMARY KEY ("id")
 );
+
+CREATE INDEX "BulkActionItem_groupId_createdAt_idx" ON "BulkActionItem"("groupId", "createdAt");
 
 ALTER TABLE "BulkActionItem" ADD CONSTRAINT "BulkActionItem_sourceRunId_fkey" FOREIGN KEY ("sourceRunId") REFERENCES "TaskRun"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -35046,7 +36770,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -35406,6 +37133,9 @@ SELECT
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -35695,6 +37425,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -36005,6 +37736,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -36178,16 +37910,19 @@ RETURNING
 
 ![ConnectedGithubRepository and the models it relates to](tables/ConnectedGithubRepository.svg)
 
-| Field                       | Type       | Constraints                                               | Default      | Description |
-| --------------------------- | ---------- | --------------------------------------------------------- | ------------ | ----------- |
-| `id`                        | `String`   | PK NOT NULL                                               | `cuid(1)`    |             |
-| `projectId`                 | `String`   | UNIQUE NOT NULL → [Project.id](#model-Project)            |              |             |
-| `repositoryId`              | `String`   | NOT NULL → [GithubRepository.id](#model-GithubRepository) |              |             |
-| `branchTracking`            | `Json`     | NOT NULL                                                  |              |             |
-| `previewDeploymentsEnabled` | `Boolean`  | NOT NULL                                                  | `true`       |             |
-| `buildFilters`              | `Json`     | NULL                                                      |              |             |
-| `createdAt`                 | `DateTime` | NOT NULL                                                  | `now()`      |             |
-| `updatedAt`                 | `DateTime` | NOT NULL                                                  | `@updatedAt` |             |
+| Field                       | Type       | Constraints                                               | Default      | Description                                                                                 |
+| --------------------------- | ---------- | --------------------------------------------------------- | ------------ | ------------------------------------------------------------------------------------------- |
+| `id`                        | `String`   | PK NOT NULL                                               | `cuid(1)`    |                                                                                             |
+| `projectId`                 | `String`   | UNIQUE NOT NULL → [Project.id](#model-Project)            |              |                                                                                             |
+| `repositoryId`              | `String`   | NOT NULL → [GithubRepository.id](#model-GithubRepository) |              |                                                                                             |
+| `branchTracking`            | `Json`     | NOT NULL                                                  |              |                                                                                             |
+| `previewDeploymentsEnabled` | `Boolean`  | NOT NULL                                                  | `true`       |                                                                                             |
+| `supersedeProductionBuilds` | `Boolean`  | NOT NULL                                                  | `false`      | Skip queued builds once a newer commit is queued for the same environment or preview branch |
+| `supersedeStagingBuilds`    | `Boolean`  | NOT NULL                                                  | `true`       |                                                                                             |
+| `supersedePreviewBuilds`    | `Boolean`  | NOT NULL                                                  | `true`       |                                                                                             |
+| `buildFilters`              | `Json`     | NULL                                                      |              |                                                                                             |
+| `createdAt`                 | `DateTime` | NOT NULL                                                  | `now()`      |                                                                                             |
+| `updatedAt`                 | `DateTime` | NOT NULL                                                  | `@updatedAt` |                                                                                             |
 
 #### Indexes
 
@@ -36208,6 +37943,9 @@ CREATE TABLE "ConnectedGithubRepository" (
     "repositoryId" TEXT NOT NULL,
     "branchTracking" JSONB NOT NULL,
     "previewDeploymentsEnabled" BOOLEAN NOT NULL DEFAULT true,
+    "supersedeProductionBuilds" BOOLEAN NOT NULL DEFAULT false,
+    "supersedeStagingBuilds" BOOLEAN NOT NULL DEFAULT true,
+    "supersedePreviewBuilds" BOOLEAN NOT NULL DEFAULT true,
     "buildFilters" JSONB,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -36240,6 +37978,9 @@ SELECT
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -36288,6 +38029,9 @@ SELECT
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -36314,6 +38058,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -36358,6 +38103,9 @@ SELECT
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -36391,21 +38139,27 @@ INSERT INTO
     "repositoryId",
     "branchTracking",
     "previewDeploymentsEnabled",
+    "supersedeProductionBuilds",
+    "supersedeStagingBuilds",
+    "supersedePreviewBuilds",
     "createdAt",
     "updatedAt"
   )
 VALUES
-  ($1, $2, $3, $4, $5, $6, $7)
+  ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 RETURNING
   "public"."ConnectedGithubRepository"."id",
   "public"."ConnectedGithubRepository"."projectId",
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
--- params: ["<cuid(1)>","example","example","{}",true,"<now()>","<now()>"]
+-- params: ["<cuid(1)>","example","example","{}",true,false,true,true,"<now()>","<now()>"]
 ```
 
 **update**: Update a row
@@ -36433,6 +38187,9 @@ RETURNING
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -36458,6 +38215,9 @@ RETURNING
   "public"."ConnectedGithubRepository"."repositoryId",
   "public"."ConnectedGithubRepository"."branchTracking",
   "public"."ConnectedGithubRepository"."previewDeploymentsEnabled",
+  "public"."ConnectedGithubRepository"."supersedeProductionBuilds",
+  "public"."ConnectedGithubRepository"."supersedeStagingBuilds",
+  "public"."ConnectedGithubRepository"."supersedePreviewBuilds",
   "public"."ConnectedGithubRepository"."buildFilters",
   "public"."ConnectedGithubRepository"."createdAt",
   "public"."ConnectedGithubRepository"."updatedAt"
@@ -36960,7 +38720,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -37372,7 +39135,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -37396,6 +39162,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -37412,6 +39179,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -37783,6 +39551,7 @@ SELECT
   "public"."WorkerDeployment"."triggeredVia",
   "public"."WorkerDeployment"."commitSHA",
   "public"."WorkerDeployment"."externalId",
+  "public"."WorkerDeployment"."initiatedByCredential"::text,
   "public"."WorkerDeployment"."startedAt",
   "public"."WorkerDeployment"."installedAt",
   "public"."WorkerDeployment"."builtAt",
@@ -37791,6 +39560,7 @@ SELECT
   "public"."WorkerDeployment"."errorData",
   "public"."WorkerDeployment"."canceledAt",
   "public"."WorkerDeployment"."canceledReason",
+  "public"."WorkerDeployment"."supersededById",
   "public"."WorkerDeployment"."git",
   "public"."WorkerDeployment"."createdAt",
   "public"."WorkerDeployment"."updatedAt"
@@ -38095,7 +39865,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -38119,6 +39892,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -38478,6 +40252,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -39451,7 +41226,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -39475,6 +41253,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -40239,7 +42018,10 @@ SELECT
   "public"."Organization"."streamBasinName",
   "public"."Organization"."supportAccessMode"::text,
   "public"."Organization"."supportAccessModeUpdatedAt",
-  "public"."Organization"."supportAccessModeUpdatedById"
+  "public"."Organization"."supportAccessModeUpdatedById",
+  "public"."Organization"."mfaRequired",
+  "public"."Organization"."mfaStepUpActions",
+  "public"."Organization"."mfaStepUpWindowMinutes"
 FROM
   "public"."Organization"
 WHERE
@@ -40263,6 +42045,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -40279,6 +42062,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -40635,6 +42419,7 @@ SELECT
   "public"."RuntimeEnvironment"."slug",
   "public"."RuntimeEnvironment"."apiKey",
   "public"."RuntimeEnvironment"."rootApiKeyHiddenAt",
+  "public"."RuntimeEnvironment"."rootKeyInjectionDisabledAt",
   "public"."RuntimeEnvironment"."pkApiKey",
   "public"."RuntimeEnvironment"."type"::text,
   "public"."RuntimeEnvironment"."isBranchableEnvironment",
@@ -40684,6 +42469,7 @@ SELECT
   "public"."Project"."engine"::text,
   "public"."Project"."builderProjectId",
   "public"."Project"."defaultWorkerGroupId",
+  "public"."Project"."secretProxyEnabled",
   "public"."Project"."allowedMasterQueues",
   "public"."Project"."buildSettings",
   "public"."Project"."onboardingData"
@@ -41082,6 +42868,20 @@ RETURNING
 CREATE TYPE "AuthenticationMethod" AS ENUM ('GITHUB', 'MAGIC_LINK', 'GOOGLE', 'SSO');
 ```
 
+<a id="enum-OAuthClientKind"></a>
+
+### OAuthClientKind
+
+- `PREREGISTERED`
+- `CIMD`
+- `DCR`
+
+#### Definition
+
+```sql
+CREATE TYPE "OAuthClientKind" AS ENUM ('PREREGISTERED', 'CIMD', 'DCR');
+```
+
 <a id="enum-OrganizationAccessTokenType"></a>
 
 ### OrganizationAccessTokenType
@@ -41230,6 +43030,19 @@ CREATE TYPE "OidcSigningKeyPurpose" AS ENUM ('EXTERNAL_OIDC', 'INTERNAL_RUN');
 
 ```sql
 CREATE TYPE "TaskTriggerSource" AS ENUM ('STANDARD', 'SCHEDULED', 'AGENT', 'WEBHOOK');
+```
+
+<a id="enum-TaskExecutionMode"></a>
+
+### TaskExecutionMode
+
+- `STANDARD`
+- `SANDBOX`
+
+#### Definition
+
+```sql
+CREATE TYPE "TaskExecutionMode" AS ENUM ('STANDARD', 'SANDBOX');
 ```
 
 <a id="enum-WebhookEndpointStatus"></a>
@@ -41544,6 +43357,20 @@ CREATE TYPE "BatchTaskRunStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 
 CREATE TYPE "BatchTaskRunItemStatus" AS ENUM ('PENDING', 'FAILED', 'CANCELED', 'COMPLETED');
 ```
 
+<a id="enum-EnvironmentVariableIgnoreReason"></a>
+
+### EnvironmentVariableIgnoreReason
+
+- `EMPTY`
+- `MISSING`
+- `OIDC`
+
+#### Definition
+
+```sql
+CREATE TYPE "EnvironmentVariableIgnoreReason" AS ENUM ('EMPTY', 'MISSING', 'OIDC');
+```
+
 <a id="enum-CheckpointType"></a>
 
 ### CheckpointType
@@ -41582,6 +43409,22 @@ CREATE TYPE "CheckpointRestoreEventType" AS ENUM ('CHECKPOINT', 'RESTORE');
 
 ```sql
 CREATE TYPE "WorkerDeploymentType" AS ENUM ('MANAGED', 'UNMANAGED', 'V1');
+```
+
+<a id="enum-DeploymentInitiatedByCredential"></a>
+
+### DeploymentInitiatedByCredential
+
+- `ROOT_API_KEY`
+- `SCOPED_API_KEY`
+- `PERSONAL_ACCESS_TOKEN`
+- `ORGANIZATION_ACCESS_TOKEN`
+- `TRUSTED_PUBLISHING`
+
+#### Definition
+
+```sql
+CREATE TYPE "DeploymentInitiatedByCredential" AS ENUM ('ROOT_API_KEY', 'SCOPED_API_KEY', 'PERSONAL_ACCESS_TOKEN', 'ORGANIZATION_ACCESS_TOKEN', 'TRUSTED_PUBLISHING');
 ```
 
 <a id="enum-WorkerDeploymentStatus"></a>

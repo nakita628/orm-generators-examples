@@ -50,6 +50,9 @@ class LangyConversationProjectionEntity(
     /** Per-conversation HMAC key for worker stream frames; server-side only. */
     var runToken by LangyConversationProjectionTable.runToken
     var archivedAt by LangyConversationProjectionTable.archivedAt
+
+    /** Messages CI started on a pull request since the person last wrote. */
+    var ciFollowUpsInARow by LangyConversationProjectionTable.ciFollowUpsInARow
     var createdAt by LangyConversationProjectionTable.createdAt
     var updatedAt by LangyConversationProjectionTable.updatedAt
 

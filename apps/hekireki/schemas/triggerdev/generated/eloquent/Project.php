@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property \Carbon\CarbonInterface|null $initializedAt Set the first time the CLI `init` command completes against this project. Drives the dev onboarding progress.
  * @property string|null $defaultRuntime Runtime used when a deployment config does not specify one. Null preserves the legacy Node 20 fallback.
+ * @property bool $secretProxyEnabled Newly triggered deployed runs require the secret proxy (pinned in their annotations).
  * @property list<string> $allowedMasterQueues The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
  */
 class Project extends Model
@@ -38,6 +39,7 @@ class Project extends Model
         'engine',
         'builderProjectId',
         'defaultWorkerGroupId',
+        'secretProxyEnabled',
         'allowedMasterQueues',
         'buildSettings',
         'onboardingData',
@@ -46,6 +48,7 @@ class Project extends Model
     protected $attributes = [
         'version' => 'V2',
         'engine' => 'V1',
+        'secretProxyEnabled' => false,
     ];
 
     protected $casts = [
@@ -53,6 +56,7 @@ class Project extends Model
         'initializedAt' => 'datetime',
         'version' => ProjectVersion::class,
         'engine' => RunEngineVersion::class,
+        'secretProxyEnabled' => 'boolean',
         'allowedMasterQueues' => AsPrismaList::class,
         'buildSettings' => 'array',
         'onboardingData' => 'array',
@@ -121,6 +125,11 @@ class Project extends Model
     public function environmentVariables(): HasMany
     {
         return $this->hasMany(EnvironmentVariable::class, 'projectId');
+    }
+
+    public function environmentVariableIgnores(): HasMany
+    {
+        return $this->hasMany(EnvironmentVariableIgnore::class, 'projectId');
     }
 
     public function checkpoints(): HasMany

@@ -25,6 +25,13 @@ class WorkflowEntity(
     /** [WorkflowDefinition] */
     var definition by WorkflowTable.definition
 
+    /**
+     * Webhook Secret URL token (ADRs 0048, 0057): SHA-256 hash to check calls, and an encrypted copy so
+     * the editor can show the URL again. Never part of the definition, its versions or its copies.
+     */
+    var webhookTokenHash by WorkflowTable.webhookTokenHash
+    var webhookTokenEncrypted by WorkflowTable.webhookTokenEncrypted
+
     override fun flush(batch: EntityBatchUpdate?): Boolean {
         if (writeValues.isNotEmpty()) {
             if (!isWritten(WorkflowTable.updatedAt)) {

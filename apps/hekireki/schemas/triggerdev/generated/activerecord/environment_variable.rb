@@ -12,4 +12,6 @@ class EnvironmentVariable < ApplicationRecord
   belongs_to :project, foreign_key: "projectId", inverse_of: :environment_variables
   has_many :values, class_name: "EnvironmentVariableValue", foreign_key: "variableId", inverse_of: :variable,
                     dependent: :destroy
+  has_many :ignores, class_name: "EnvironmentVariableIgnore", foreign_key: "variableId", inverse_of: :variable,
+                     dependent: :destroy
 end

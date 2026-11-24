@@ -16,6 +16,7 @@ object LiteLLMShadowEvalJobTable : IdTable<String>("\"LiteLLM_ShadowEvalJob\"") 
     val models = array("models", TextColumnType()).nullable().databaseDefault("'{}'") { emptyList() }
     val direction = text("direction").default("forward")
     val baselineModel = text("baseline_model").nullable()
+    val skipSameModel = bool("skip_same_model").default(false)
     val judgeModel = text("judge_model")
     val shadowPercentage = double("shadow_percentage")
     val maxTurns = integer("max_turns")
@@ -25,6 +26,8 @@ object LiteLLMShadowEvalJobTable : IdTable<String>("\"LiteLLM_ShadowEvalJob\"") 
     val endsAt = pgTimestamp("ends_at", 3)
     val stoppedAt = pgTimestamp("stopped_at", 3).nullable()
     val stoppedBy = text("stopped_by").nullable()
+    val rubric = text("rubric").nullable()
+    val rubricVersion = integer("rubric_version").nullable()
     override val primaryKey = PrimaryKey(id, name = "\"LiteLLM_ShadowEvalJob_pkey\"")
 
     init {

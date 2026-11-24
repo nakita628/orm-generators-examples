@@ -1434,6 +1434,7 @@ erDiagram
         string PendingHandoffTurnId
         string RunToken "Per-conversation HMAC key for worker stream frames; server-side only."
         float ArchivedAt
+        int CiFollowUpsInARow "Messages CI started on a pull request since the person last wrote."
         float CreatedAt
         float UpdatedAt
         float OccurredAt "Business time of the latest applied event."
@@ -1486,6 +1487,16 @@ erDiagram
         float AcceptedAt
         string LastEventId
         string ProjectionVersion
+    }
+    LangyPullRequest {
+        string id PK
+        string projectId
+        string RepositoryFullName UK "`owner/repo`, lowercased: GitHub matches repository names without case."
+        int PrNumber UK
+        string ConversationId
+        string UserId "The conversation's owner, who opened it through Langy."
+        float OpenedAt "When the answer that opened it was recorded (epoch ms)."
+        string SourceEventId "The agent_responded event it came from."
     }
     LangyMessageProjection {
         string id PK
@@ -1634,6 +1645,22 @@ erDiagram
         int retentionDays
         datetime createdAt
         datetime updatedAt
+    }
+    RetentionApplyStatus {
+        string id PK
+        string organizationId UK
+        retentionpolicyscopetype scopeType UK
+        string scopeId UK
+        float changedAt
+        float appliedAt
+        float raisedAt
+        float shortenedAt
+        float createdAt
+        float updatedAt
+        float occurredAt
+        float acceptedAt
+        string lastEventId
+        string projectionVersion
     }
     DataPrivacyPolicy {
         string id PK
@@ -1894,11 +1921,16 @@ erDiagram
         json parameters
         string simulatorModel
         string judgeModel
+        int traceQuietPeriodMs
+        int traceWaitTimeoutMs
         int maxTurns
         int minTurns
         json fields
         json callerVoice
         string testSuiteId FK
+        string kind
+        json redTeam
+        string sourceTemplateId
         int version
         string lastUpdatedById FK
         datetime archivedAt
@@ -1929,10 +1961,14 @@ erDiagram
         string[] labels
         string simulatorModel
         string judgeModel
+        int traceQuietPeriodMs
+        int traceWaitTimeoutMs
         string kind
         json scope
         json fields
         json evaluators
+        string templateId
+        int templateVersion
         datetime archivedAt
         datetime createdAt
         datetime updatedAt
@@ -1982,6 +2018,11 @@ erDiagram
         datetime seatRepairFlaggedAt "Set once the seat line repair has failed often enough that Ops should look at it."
         string seatLineLeaseToken "The lease a seat change or seat line repair holds while it reads and moves the seat line."
         datetime seatLineLeaseUntil
+        string paymentRecoveryInvoiceId "An open failed payment recovery case: the unpaid renewal invoice, day 0 (its first failed charge) and the last notice sent (3, 7, 14 or 21). Cleared when the case closes."
+        datetime paymentRecoveryStartedAt
+        int paymentRecoveryNoticeDay
+        datetime overPlanSince "The over-plan mark: traces recorded from overPlanSince are withheld while it is open and the organization is on Free with more members than Free allows; ended once that no longer holds."
+        datetime overPlanEndedAt
     }
     Invoice {
         string id PK
@@ -2034,8 +2075,22 @@ erDiagram
     AuthzOrganizationPolicy {
         string organizationId PK
         boolean braidsOrganizationAdminsOnly
+        boolean braidsEnabled
         string updatedByUserId
         datetime updatedAt
+    }
+    AuthzBraidWrite {
+        string organizationId PK
+        string commandId PK
+        string grantId
+        string readerProjectId
+        string ownerProjectId
+        string termsKey
+        json condition
+        datetime expiresAt
+        string replacesGrantId
+        string createdByUserId
+        datetime createdAt
     }
     RoleBinding {
         string id PK
@@ -2394,6 +2449,24 @@ erDiagram
         datetime updatedAt
         string createdById
         string updatedById
+    }
+    GatewayA2ATarget {
+        string id PK
+        string organizationId
+        string projectId
+        string name
+        string agentName
+        string cardUrl
+        string upstreamUrl
+        string encryptedUpstreamHeaders
+        boolean restrictToAllowList
+        string[] allowedVirtualKeyIds
+        boolean blocked
+        string blockReason
+        string createdById
+        datetime createdAt
+        datetime updatedAt
+        datetime archivedAt
     }
     GatewayConnectUpstream {
         string organizationId PK
@@ -2820,6 +2893,78 @@ erDiagram
     AgentRegistryBaseline {
         string organizationId PK
         datetime baselinedAt
+    }
+    AgentStopPlanTarget {
+        string id PK
+        string organizationId
+        string agentId "The AgentRegistryEntry the plan belongs to."
+        int position
+        string label
+        json target
+        datetime createdAt
+        datetime updatedAt
+    }
+    AgentStopPlan {
+        string organizationId PK
+        string agentId PK "The AgentRegistryEntry the plan belongs to."
+        int version
+        datetime updatedAt
+    }
+    GovernanceAwsConnection {
+        string id PK
+        string organizationId
+        string name
+        string accessKeyId
+        string encryptedSecretAccessKey
+        string roleArn
+        string encryptedExternalId
+        datetime createdAt
+        datetime updatedAt
+    }
+    AgentStop {
+        string id PK
+        string organizationId
+        string agentId
+        string agentName
+        string status
+        string severity
+        string approval
+        string trigger
+        string reason
+        string requestedByUserId
+        string requestedByApiKeyId
+        string decidedByUserId
+        string decidedByApiKeyId
+        string restoredByUserId
+        string restoredByApiKeyId
+        json targets
+        datetime requestedAt
+        datetime decidedAt
+        datetime quarantinedAt
+        datetime restoreRequestedAt
+        datetime restoredAt
+        string lastAppliedEventId
+        bigint lastAcceptedAt
+        bigint lastOccurredAt
+        string projectionVersion
+        datetime createdAt
+        datetime updatedAt
+    }
+    AgentStopClaim {
+        string organizationId PK
+        string agentId PK
+        string stopId
+        datetime claimedAt
+        datetime sentAt
+        string decision
+        datetime decisionTakenAt
+    }
+    AgentStopTargetPriorState {
+        string organizationId PK
+        string stopId PK
+        string targetId PK
+        boolean wasStopped
+        datetime recordedAt
     }
     IdentityMatch {
         string id PK
