@@ -1,44 +1,81 @@
 import { sql } from "drizzle-orm";
 import {
-  bigint,
-  boolean,
-  bytea,
-  doublePrecision,
+  blob,
+  check,
   index,
   integer,
-  pgEnum,
-  pgTable,
+  sqliteTable,
   text,
-  timestamp,
   uniqueIndex,
-} from "drizzle-orm/pg-core";
+  type SQLiteColumn,
+} from "drizzle-orm/sqlite-core";
 
-export const userFlagEnum = pgEnum("UserFlag", ["NONE", "VERIFIED"]);
+/** Millisecond timestamp, read back as a `Date`. */
+const timestamp = (name: string) => integer(name, { mode: "timestamp_ms" });
+
+/** Boolean stored as 0 or 1. */
+const boolean = (name: string) => integer(name, { mode: "boolean" });
+
+/** A string array stored as JSON text. */
+const textArray = (name: string) =>
+  text(name, { mode: "json" }).$type<string[]>();
+
+const now = () => new Date();
+
+/**
+ * Limits a text column to `values`. Drizzle's `enum` option only narrows the
+ * TypeScript type, SQLite stores any text without this constraint.
+ */
+const oneOf = (
+  name: string,
+  column: SQLiteColumn,
+  values: ReadonlyArray<string>,
+) =>
+  check(
+    name,
+    sql`${column} IN (${sql.raw(values.map((value) => `'${value}'`).join(", "))})`,
+  );
+
+const userFlags = ["NONE", "VERIFIED"] as const;
+
+export const userPlans = ["free", "pro"] as const;
 
 // --
 // better-auth models
 // --
 
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  lastLoginAt: timestamp("last_login_at", { precision: 3 }),
-  flag: userFlagEnum("flag").default("NONE").notNull(),
-  name: text("name"),
-  email: text("email").unique("user_email_key"),
-  emailVerified: boolean("email_verified").default(false).notNull(),
-  image: text("image"),
-  createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
-});
+export const user = sqliteTable(
+  "user",
+  {
+    id: text("id").primaryKey(),
+    lastLoginAt: timestamp("last_login_at"),
+    flag: text("flag", { enum: userFlags }).default("NONE").notNull(),
+    // Set when the user activates Pro from the website, and re-checked twice a
+    // day while they are on Pro.
+    plan: text("plan", { enum: userPlans }).default("free").notNull(),
+    // When the plan was last checked against the user's NFT holdings, null
+    // when never.
+    planCheckedAt: timestamp("plan_checked_at"),
+    name: text("name"),
+    email: text("email").unique("user_email_key"),
+    emailVerified: boolean("email_verified").default(false).notNull(),
+    image: text("image"),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
+  },
+  // No CHECK on `plan`: adding one to an existing SQLite table rebuilds it,
+  // and the rows referencing users would be deleted with it.
+  (table) => [oneOf("user_flag_check", table.flag, userFlags)],
+);
 
-export const session = pgTable(
+export const session = sqliteTable(
   "session",
   {
     id: text("id").primaryKey(),
-    expiresAt: timestamp("expires_at", { precision: 3 }).notNull(),
+    expiresAt: timestamp("expires_at").notNull(),
     token: text("token").notNull().unique("session_token_key"),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     userId: text("user_id")
@@ -48,7 +85,7 @@ export const session = pgTable(
   (table) => [index("session_user_id_idx").on(table.userId)],
 );
 
-export const account = pgTable(
+export const account = sqliteTable(
   "account",
   {
     id: text("id").primaryKey(),
@@ -60,35 +97,31 @@ export const account = pgTable(
     accessToken: text("access_token"),
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
-    accessTokenExpiresAt: timestamp("access_token_expires_at", {
-      precision: 3,
-    }),
-    refreshTokenExpiresAt: timestamp("refresh_token_expires_at", {
-      precision: 3,
-    }),
+    accessTokenExpiresAt: timestamp("access_token_expires_at"),
+    refreshTokenExpiresAt: timestamp("refresh_token_expires_at"),
     scope: text("scope"),
     password: text("password"),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
   },
   (table) => [index("account_user_id_idx").on(table.userId)],
 );
 
-export const verification = pgTable(
+export const verification = sqliteTable(
   "verification",
   {
     id: text("id").primaryKey(),
     identifier: text("identifier").notNull(),
     value: text("value").notNull(),
-    expiresAt: timestamp("expires_at", { precision: 3 }).notNull(),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow(),
+    expiresAt: timestamp("expires_at").notNull(),
+    createdAt: timestamp("created_at").$defaultFn(now),
+    updatedAt: timestamp("updated_at").$defaultFn(now),
   },
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
 // Wallet identity model added by the sign-in-with-stacks better-auth plugin.
-export const walletAddress = pgTable(
+export const walletAddress = sqliteTable(
   "wallet_address",
   {
     id: text("id").primaryKey(),
@@ -96,9 +129,9 @@ export const walletAddress = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     address: text("address").notNull(),
-    chainId: bigint("chain_id", { mode: "number" }).notNull(),
+    chainId: integer("chain_id").notNull(),
     isPrimary: boolean("is_primary").default(false).notNull(),
-    createdAt: timestamp("created_at", { precision: 3 }).notNull(),
+    createdAt: timestamp("created_at").notNull(),
   },
   (table) => [
     index("wallet_address_user_id_idx").on(table.userId),
@@ -113,19 +146,17 @@ export const walletAddress = pgTable(
 // End of better-auth models
 // --
 
-// Backing store for the persistent rate limiter (`RateLimiterFlexible` in the
-// legacy Prisma schema).
-export const rateLimiterFlexible = pgTable("rate_limiter_flexible", {
-  key: text("key").primaryKey(),
-  points: doublePrecision("points").notNull(),
-  expire: timestamp("expire", { precision: 3 }),
-});
-
 // --
 // Drafts
 // --
 
-export const draft = pgTable(
+/**
+ * Content warning of a draft or post, the values of `contentWarning` in the
+ * signed post metadata. Null means no warning.
+ */
+export const contentWarnings = ["NSFW", "SENSITIVE", "SPOILER"] as const;
+
+export const draft = sqliteTable(
   "draft",
   {
     id: text("id").primaryKey(),
@@ -136,16 +167,18 @@ export const draft = pgTable(
     coverImage: text("cover_image"),
     canonicalUri: text("canonical_uri"),
     arweaveTxId: text("arweave_tx_id"),
-    txStatus: text("tx_status"),
+    // Publish state, null until the draft is first published.
+    txStatus: text("tx_status").$type<"PENDING" | "PROCESSING" | "FAILED">(),
     // Signature of the signed post metadata the draft is publishing (or last
     // attempted). `arweaveTxId` is a valid checkpoint only while it matches.
     publishSignature: text("publish_signature"),
     // Lease held by the worker uploading to Arweave, so concurrent workers for
     // the same signature do not upload the same metadata twice.
-    uploadClaimedAt: timestamp("upload_claimed_at", { precision: 3 }),
-    tags: text("tags").array(),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    uploadClaimedAt: timestamp("upload_claimed_at"),
+    tags: textArray("tags"),
+    contentWarning: text("content_warning", { enum: contentWarnings }),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id),
@@ -157,59 +190,52 @@ export const draft = pgTable(
 // Profiles
 // --
 
-export const profile = pgTable("profile", {
-  // Stacks address that signed the latest profile metadata. A profile belongs
-  // to the signing address rather than to an account, so a profile published
-  // on Arweave exists even if its signer never signed in.
+export const profile = sqliteTable("profile", {
+  // Stacks address the profile belongs to: the primary address of the user
+  // who saved it. Profiles published on Arweave before profiles moved to the
+  // database are kept, including those of addresses that never signed in.
   address: text("address").primaryKey(),
-  arweaveTxId: text("arweave_tx_id")
-    .notNull()
-    .unique("profile_arweave_tx_id_key"),
-  // Null until the profile transaction is included in an Arweave block; set
-  // by the profile indexer.
-  arweaveBlockHeight: integer("arweave_block_height"),
-  signature: text("signature").notNull().unique("profile_signature_key"),
   displayName: text("display_name"),
   description: text("description"),
   website: text("website"),
   twitter: text("twitter"),
   picture: text("picture"),
   coverPicture: text("cover_picture"),
-  createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+  createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+  updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
 });
 
 // --
 // Media images
 // --
 
-export const mediaImageStatusEnum = pgEnum("MediaImageStatus", [
-  "PENDING",
-  "READY",
-  "FAILED",
-]);
-
 /**
- * Placeholder metadata for an image referenced by a post cover or a profile
- * picture. `id` is the canonical URL stored on `post.cover_image` and
- * `profile.picture`/`cover_picture`; rows are created eagerly as PENDING by the
- * producers and filled in by the thumbhash job (or inline on upload).
+ * Placeholder metadata for an image, keyed by its canonical URL. Post covers
+ * (`post.cover_image`) get a PENDING row from their producers that the
+ * thumbhash job fills in. Images uploaded through the API (profile and draft
+ * images) get a READY row inline. External image URLs embedded in post content
+ * have no row.
  */
-export const mediaImage = pgTable(
+const mediaImageStatuses = ["PENDING", "READY", "FAILED"] as const;
+
+export const mediaImage = sqliteTable(
   "media_image",
   {
     id: text("id").primaryKey(),
-    status: mediaImageStatusEnum("status").default("PENDING").notNull(),
+    status: text("status", { enum: mediaImageStatuses })
+      .default("PENDING")
+      .notNull(),
     mimeType: text("mime_type"),
     width: integer("width"),
     height: integer("height"),
     size: integer("size"),
     // Base64 of the 25-byte ThumbHash placeholder.
     thumbhash: text("thumbhash"),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
   },
   (table) => [
+    oneOf("media_image_status_check", table.status, mediaImageStatuses),
     index("media_image_pending_idx")
       .on(table.createdAt)
       .where(sql`status = 'PENDING'`),
@@ -220,7 +246,7 @@ export const mediaImage = pgTable(
 // Posts
 // --
 
-export const post = pgTable(
+export const post = sqliteTable(
   "post",
   {
     id: text("id").primaryKey(),
@@ -239,17 +265,25 @@ export const post = pgTable(
     metaTitle: text("meta_title"),
     metaDescription: text("meta_description"),
     coverImage: text("cover_image"),
-    tags: text("tags").array(),
+    tags: textArray("tags"),
     canonicalUri: text("canonical_uri"),
+    contentWarning: text("content_warning", { enum: contentWarnings }),
     signature: text("signature").unique("post_signature_key"),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    // When the author hid the post from Sigle, null while it is shown. A
+    // hidden post stays on Arweave, but Sigle no longer serves it.
+    hiddenAt: timestamp("hidden_at"),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
     userId: text("user_id")
       .notNull()
       .references(() => user.id),
   },
   (table) => [
     index("post_user_id_idx").on(table.userId),
+    // Serves the `GET /api/posts` order (`created_at DESC, id DESC`) with a
+    // backward scan, so a feed page reads the first rows of the index instead
+    // of sorting every post.
+    index("post_created_at_id_idx").on(table.createdAt, table.id),
     index("post_arweave_pending_idx")
       .on(table.createdAt)
       .where(sql`arweave_block_height is null`),
@@ -260,33 +294,34 @@ export const post = pgTable(
 // OpenTimestamps
 // --
 
-export const postOtsStatusEnum = pgEnum("PostOtsStatus", [
-  "PENDING",
-  "UPGRADED",
-  "FAILED",
-]);
+export const postOtsStatuses = ["PENDING", "UPGRADED", "FAILED"] as const;
 
 // One OpenTimestamps proof per published post. The post metadata JSON uploaded
 // to Arweave is the file being anchored, identified by `contentHash`.
-export const postOts = pgTable(
+export const postOts = sqliteTable(
   "post_ots",
   {
     postId: text("post_id")
       .primaryKey()
       .references(() => post.id, { onDelete: "cascade" }),
-    status: postOtsStatusEnum("status").default("PENDING").notNull(),
+    status: text("status", { enum: postOtsStatuses })
+      .default("PENDING")
+      .notNull(),
     // Hex SHA-256 of the exact metadata bytes stored on Arweave.
     contentHash: text("content_hash").notNull(),
     // Pending `.ots` proof returned by the calendars, kept until it can be
     // upgraded to a Bitcoin-anchored proof.
-    pendingProof: bytea("pending_proof"),
+    pendingProof: blob("pending_proof", { mode: "buffer" }),
     // Arweave transaction id of the upgraded `.ots` proof.
     otsTxId: text("ots_tx_id"),
     bitcoinBlockHeight: integer("bitcoin_block_height"),
     bitcoinBlockHash: text("bitcoin_block_hash"),
-    bitcoinTimestamp: timestamp("bitcoin_timestamp", { precision: 3 }),
-    createdAt: timestamp("created_at", { precision: 3 }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { precision: 3 }).defaultNow().notNull(),
+    bitcoinTimestamp: timestamp("bitcoin_timestamp"),
+    createdAt: timestamp("created_at").$defaultFn(now).notNull(),
+    updatedAt: timestamp("updated_at").$defaultFn(now).notNull(),
   },
-  (table) => [index("post_ots_status_idx").on(table.status)],
+  (table) => [
+    oneOf("post_ots_status_check", table.status, postOtsStatuses),
+    index("post_ots_status_idx").on(table.status),
+  ],
 );

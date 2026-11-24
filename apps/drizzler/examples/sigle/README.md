@@ -1,10 +1,10 @@
 # sigle
 
-The server schema of Sigle, an open-source decentralized blogging platform on Stacks: Better Auth users, sessions, accounts and verifications, wallet addresses, drafts, posts and their OpenTimestamps proofs, with drizzle-orm 1.0 relations.
+The server schema of Sigle, an open-source decentralized blogging platform on Stacks: Better Auth users, sessions, accounts and verifications, wallet addresses, drafts, profiles, media images, posts and their OpenTimestamps proofs, with drizzle-orm 1.0 relations.
 
-- Source: [sigle/sigle `apps/server-v2/src/db/schema.ts`](https://github.com/sigle/sigle/blob/31767a4d8f16e8448f88c3ff9b3d68efb47541c8/apps/server-v2/src/db/schema.ts) and [`relations.ts`](https://github.com/sigle/sigle/blob/31767a4d8f16e8448f88c3ff9b3d68efb47541c8/apps/server-v2/src/db/relations.ts) (MIT)
-- Dialect: PostgreSQL
-- Covers: `defineRelations` in its own file, reading the tables through `import * as schema from "@/db/schema"` (a tsconfig `paths` alias), one-to-one and one-to-many relations, and `text[]` columns (`text("tags").array()`)
+- Source: [sigle/sigle `apps/server/src/db/schema.ts`](https://github.com/sigle/sigle/blob/51f08cd2158c0b35e57179a0744a5eb574bd3f54/apps/server/src/db/schema.ts) and [`relations.ts`](https://github.com/sigle/sigle/blob/51f08cd2158c0b35e57179a0744a5eb574bd3f54/apps/server/src/db/relations.ts) (MIT)
+- Dialect: SQLite
+- Covers: `defineRelations` in its own file, reading the tables through `import * as schema from "@/db/schema"` (a tsconfig `paths` alias), one-to-one and one-to-many relations, column helpers that wrap `integer` and `text` (`timestamp`, `boolean`, `textArray`), `check` constraints built by a helper, partial indexes (`.where(sql`...`)`), string arrays stored as JSON text (`text({ mode: "json" }).$type<string[]>()`) and a `blob`
 
 ## Changes from upstream
 

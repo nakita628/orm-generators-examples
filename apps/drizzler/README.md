@@ -36,7 +36,7 @@ Each app holds one upstream schema with as few changes as possible, plus the doc
 | [cap](examples/cap) | CapSoftware/Cap | MySQL | — |
 | [pages-cms](examples/pages-cms) | pages-cms/pages-cms | PostgreSQL | — |
 | [turborepo-elysia](examples/turborepo-elysia) | vercel/turborepo (with-nextjs-elysia) | PostgreSQL | — |
-| [sigle](examples/sigle) | sigle/sigle | PostgreSQL | — |
+| [sigle](examples/sigle) | sigle/sigle | SQLite | — |
 | [create-t3-turbo](examples/create-t3-turbo) | t3-oss/create-t3-turbo | PostgreSQL | — |
 | [alchemy-d1](examples/alchemy-d1) | alchemy-run/alchemy (cloudflare-d1-drizzle) | SQLite | — |
 | [alchemy-planetscale-mysql](examples/alchemy-planetscale-mysql) | alchemy-run/alchemy (cloudflare-planetscale-mysql-drizzle) | MySQL | — |
