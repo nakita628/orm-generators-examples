@@ -316,6 +316,7 @@ Not managed by Django (`managed = False`): it neither creates nor changes the ta
 | `task_name` | `CharField` | `varchar(128)` |  |  |  |  |
 | `priority` | `IntegerField` | `integer` |  |  |  |  |
 | `lock` | `TextField` | `text` | yes | unique |  |  |
+| `lock_mode` | `ProcrastinateJobLockMode` | `varchar(32)` |  |  | `'ordered'` |  |
 | `args` | `JSONField` | `jsonb` |  |  |  |  |
 | `status` | `ProcrastinateJobStatus` | `varchar(32)` |  |  |  |  |
 | `scheduled_at` | `DateTimeField` | `timestamp with time zone` | yes |  |  |  |
@@ -382,6 +383,13 @@ Relations:
 | `Addition` | `1` |
 | `Change` | `2` |
 | `Deletion` | `3` |
+
+## ProcrastinateJobLockMode
+
+| Name | Stored as |
+| --- | --- |
+| `ordered` | `ordered` |
+| `mutex` | `mutex` |
 
 ## ProcrastinateJobStatus
 

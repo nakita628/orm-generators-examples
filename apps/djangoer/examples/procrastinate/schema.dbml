@@ -4,6 +4,11 @@ Enum LogEntryActionFlag {
   "3"
 }
 
+Enum ProcrastinateJobLockMode {
+  "ordered"
+  "mutex"
+}
+
 Enum ProcrastinateJobStatus {
   "todo"
   "doing"
@@ -178,6 +183,7 @@ Table procrastinate_jobs {
   task_name varchar(128) [not null]
   priority integer [not null]
   lock text [unique]
+  lock_mode ProcrastinateJobLockMode [default: 'ordered', not null]
   args jsonb [not null]
   status ProcrastinateJobStatus [not null]
   scheduled_at "timestamp with time zone"

@@ -62,6 +62,7 @@ erDiagram
         CharField task_name
         IntegerField priority
         TextField lock UK
+        ProcrastinateJobLockMode lock_mode
         JSONField args
         ProcrastinateJobStatus status
         DateTimeField scheduled_at
