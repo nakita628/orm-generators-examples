@@ -4,6 +4,7 @@ Each project's tables as Django created them (`<project>/source.sql`), written u
 
 | Schema | Models | hekireki | drizzle | kysely | sqlalchemy | django | gorm | sea-orm | ecto | activerecord | eloquent | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [django-cas-server](django-cas-server.md) | 24 | 0.52.20 | ✅ 158/158 · tables ≠ | ✅ 116/116 · no tables | ✅ 158/158 · tables ≠ | ✅ 158/158 · tables ≠ | ✅ 158/158 · tables ≠ | ✅ 158/158 · tables ≠ | ✅ 158/158 · no tables | ✅ 158/158 · no tables | ✅ 158/158 · no tables | ✅ 158/158 · tables ≠ | ✅ 158/158 · tables ✅ |
 | [django-categories](django-categories.md) | 11 | 0.52.2 | ✅ 75/75 · tables ≠ | ⚠️ 49/51 · no tables | ✅ 75/75 · tables ≠ | ✅ 75/75 · tables ❌ | ✅ 75/75 · tables ≠ | ⚠️ 63/66 · tables ≠ | ✅ 75/75 · no tables | ✅ 75/75 · no tables | ✅ 75/75 · no tables | ✅ 75/75 · tables ≠ | ✅ 75/75 · tables ✅ |
 | [django-oidc-provider](django-oidc-provider.md) | 16 | 0.52.2 | ✅ 111/111 · tables ≠ | ⚠️ 68/75 · no tables | ✅ 111/111 · tables ≠ | ✅ 111/111 · tables ❌ | ⚠️ 107/111 · tables ❌ | ⚠️ 101/104 · tables ≠ | ✅ 111/111 · no tables | ✅ 111/111 · no tables | ✅ 111/111 · no tables | ✅ 111/111 · tables ≠ | ✅ 111/111 · tables ✅ |
 | [django-simple-captcha](django-simple-captcha.md) | 10 | 0.52.2 | ✅ 64/64 · tables ≠ | ✅ 46/46 · no tables | ✅ 64/64 · tables ≠ | ✅ 64/64 · tables ❌ | ✅ 64/64 · tables ≠ | ⚠️ 54/57 · tables ≠ | ✅ 64/64 · no tables | ✅ 64/64 · no tables | ✅ 64/64 · no tables | ✅ 64/64 · tables ≠ | ✅ 64/64 · tables ✅ |
@@ -17,6 +18,7 @@ Each project's tables as Django created them (`<project>/source.sql`), written u
 
 | Project | prisma | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| [django-cas-server](../django-cas-server/README.md) | ≠ 24 | ≠ 24 | ≠ 24 | ≠ 2 | ≠ 24 | ≠ 24 | ≠ 24 | ≠ 24 |
 | [django-categories](../django-categories/README.md) | ≠ 11 | ≠ 11 | ≠ 11 | ❌ | ≠ 11 | ≠ 11 | ≠ 11 | ≠ 11 |
 | [django-oidc-provider](../django-oidc-provider/README.md) | ≠ 16 | ≠ 16 | ≠ 16 | ❌ | ❌ | ≠ 16 | ≠ 16 | ≠ 16 |
 | [django-simple-captcha](../django-simple-captcha/README.md) | ≠ 10 | ≠ 10 | ≠ 10 | ❌ | ≠ 10 | ≠ 10 | ≠ 10 | ≠ 10 |
@@ -28,6 +30,7 @@ What the write-up cannot say (Django's identity columns become serial ones, chec
 
 | Project | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| [django-cas-server](../django-cas-server/README.md) | ≈ | ≈ | ≠ 24 | ≠ 1 | ≠ 23 | ≈ | ≈ |
 | [django-categories](../django-categories/README.md) | ≈ | ≈ | ❌ | ≠ 10 | ≠ 11 | ≈ | ≈ |
 | [django-oidc-provider](../django-oidc-provider/README.md) | ≈ | ≈ | ❌ | ❌ | ≠ 16 | ≈ | ≈ |
 | [django-simple-captcha](../django-simple-captcha/README.md) | ≈ | ≈ | ❌ | ≠ 9 | ≠ 10 | ≈ | ≈ |
