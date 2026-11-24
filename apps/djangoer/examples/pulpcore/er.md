@@ -872,12 +872,14 @@ erDiagram
     file_filerepository {
         OneToOneField repository_ptr_id PK
         TextField manifest
+        FileRepositorySha256Sums sha256sums
         BooleanField autopublish
         JSONField last_sync_details
     }
     file_filepublication {
         OneToOneField publication_ptr_id PK
         TextField manifest
+        FilePublicationSha256Sums sha256sums
     }
     file_filedistribution {
         OneToOneField distribution_ptr_id PK

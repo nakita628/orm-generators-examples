@@ -168,9 +168,9 @@ CREATE TABLE "file_fileremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY);
 
 CREATE TABLE "file_filegitremote" ("remote_ptr_id" uuid NOT NULL PRIMARY KEY, "git_ref" text NOT NULL);
 
-CREATE TABLE "file_filerepository" ("repository_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "autopublish" boolean NOT NULL, "last_sync_details" jsonb NOT NULL);
+CREATE TABLE "file_filerepository" ("repository_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "sha256sums" text NOT NULL, "autopublish" boolean NOT NULL, "last_sync_details" jsonb NOT NULL);
 
-CREATE TABLE "file_filepublication" ("publication_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL);
+CREATE TABLE "file_filepublication" ("publication_ptr_id" uuid NOT NULL PRIMARY KEY, "manifest" text NULL, "sha256sums" text NOT NULL);
 
 CREATE TABLE "file_filedistribution" ("distribution_ptr_id" uuid NOT NULL PRIMARY KEY);
 
@@ -319,6 +319,8 @@ CREATE INDEX "core_contentartifact_artifact_id_f5d9a66b" ON "core_contentartifac
 CREATE INDEX "core_contentartifact_content_id_04d8a3d5" ON "core_contentartifact" ("content_id");
 
 CREATE INDEX "core_conten_relativ_ca1ae5_idx" ON "core_contentartifact" ("relative_path");
+
+CREATE INDEX "core_ca_relpath_pattern_idx" ON "core_contentartifact" ("relative_path" text_pattern_ops);
 
 ALTER TABLE "core_remoteartifact" ADD CONSTRAINT "core_remoteartifact_content_artifact_id_remo_f11e4ef2_uniq" UNIQUE ("content_artifact_id", "remote_id", "pulp_domain_id");
 
@@ -1469,6 +1471,7 @@ Indexes:
 - index `core_contentartifact_content_id_04d8a3d5` on `content_id`
 - unique `core_contentartifact_content_id_relative_path_d2ef8231_uniq` on `content_id`, `relative_path`
 - index `core_conten_relativ_ca1ae5_idx` on `relative_path`
+- index `core_ca_relpath_pattern_idx` on `relative_path` (`text_pattern_ops`)
 
 Relations:
 
@@ -4098,6 +4101,7 @@ The "file" repository type.
 | --- | --- | --- | --- | --- | --- | --- |
 | `repository_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
 | `manifest` | `TextField` | `text` | yes |  | `'PULP_MANIFEST'` |  |
+| `sha256sums` | `FileRepositorySha256Sums` | `text` |  |  | `'disabled'` |  |
 | `autopublish` | `BooleanField` | `boolean` |  |  | `False` |  |
 | `last_sync_details` | `JSONField` | `jsonb` |  |  | `dict()` |  |
 
@@ -4121,6 +4125,7 @@ Publication for 'file' content.
 | --- | --- | --- | --- | --- | --- | --- |
 | `publication_ptr_id` | `OneToOneField` | `uuid` |  | PK, FK |  |  |
 | `manifest` | `TextField` | `text` | yes |  |  |  |
+| `sha256sums` | `FilePublicationSha256Sums` | `text` |  |  | `'disabled'` |  |
 
 Relations:
 
@@ -4241,3 +4246,19 @@ Relations:
 | `Replicate manages ALL local objects within the domain.` | `all` |
 | `Replicate will only manage the objects created from a previous replication, unlabled local objects will be untouched.` | `labeled` |
 | `Replicate will not delete any local object whether they were created by replication or not.` | `nodelete` |
+
+## FileRepositorySha256Sums
+
+| Name | Stored as |
+| --- | --- |
+| `Do not generate SHA256SUMS files.` | `disabled` |
+| `Generate a single SHA256SUMS at the root of the repository, listing every file by its path relative to the root.` | `root` |
+| `Generate a SHA256SUMS in every directory of the repository, each listing every file below it by its path relative to that directory.` | `directory` |
+
+## FilePublicationSha256Sums
+
+| Name | Stored as |
+| --- | --- |
+| `Do not generate SHA256SUMS files.` | `disabled` |
+| `Generate a single SHA256SUMS at the root of the repository, listing every file by its path relative to the root.` | `root` |
+| `Generate a SHA256SUMS in every directory of the repository, each listing every file below it by its path relative to that directory.` | `directory` |

@@ -54,6 +54,18 @@ Enum UpstreamPulpPolicy {
   "nodelete"
 }
 
+Enum FileRepositorySha256Sums {
+  "disabled"
+  "root"
+  "directory"
+}
+
+Enum FilePublicationSha256Sums {
+  "disabled"
+  "root"
+  "directory"
+}
+
 Table auth_permission {
   id integer [pk, increment]
   name varchar(255) [not null]
@@ -457,6 +469,7 @@ Table core_contentartifact {
     (content_id) [name: 'core_contentartifact_content_id_04d8a3d5']
     (content_id, relative_path) [unique, name: 'core_contentartifact_content_id_relative_path_d2ef8231_uniq']
     (relative_path) [name: 'core_conten_relativ_ca1ae5_idx']
+    (relative_path) [name: 'core_ca_relpath_pattern_idx', note: 'text_pattern_ops']
   }
 
   Note: '''A relationship between a Content and an Artifact.
@@ -2039,6 +2052,7 @@ branch, tag, or commit to sync from (defaults to `HEAD`).'''
 Table file_filerepository {
   repository_ptr_id uuid [pk, note: 'parent link: a FileRepository is a Repository (multi-table inheritance)']
   manifest text [default: 'PULP_MANIFEST']
+  sha256sums FileRepositorySha256Sums [default: 'disabled', not null]
   autopublish boolean [default: false, not null]
   last_sync_details jsonb [not null, note: 'default in Python: dict()']
 
@@ -2048,6 +2062,7 @@ Table file_filerepository {
 Table file_filepublication {
   publication_ptr_id uuid [pk, note: 'parent link: a FilePublication is a Publication (multi-table inheritance)']
   manifest text
+  sha256sums FilePublicationSha256Sums [default: 'disabled', not null]
 
   Note: '''Publication for \'file\' content.'''
 }
