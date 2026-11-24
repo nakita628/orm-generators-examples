@@ -8,7 +8,7 @@ defmodule Calcom.AuditActor do
   @type t :: %__MODULE__{
           id: Ecto.UUID.t(),
           type: atom(),
-          user_uuid: String.t() | nil,
+          user_uuid: Ecto.UUID.t() | nil,
           attendee_id: integer() | nil,
           credential_id: integer() | nil,
           email: String.t() | nil,
@@ -20,7 +20,7 @@ defmodule Calcom.AuditActor do
 
   schema "AuditActor" do
     field(:type, Ecto.Enum, values: [USER: "user", GUEST: "guest", ATTENDEE: "attendee", SYSTEM: "system", APP: "app"])
-    field(:user_uuid, :string, source: :userUuid)
+    field(:user_uuid, Ecto.UUID, source: :userUuid)
     field(:attendee_id, :integer, source: :attendeeId)
     field(:credential_id, :integer, source: :credentialId)
     field(:email, :string)

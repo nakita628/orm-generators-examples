@@ -12,8 +12,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_type = "Uuid")]
-    pub uuid: String,
+    pub uuid: Uuid,
     pub name: Option<String>,
     #[sea_orm(unique)]
     pub username: Option<String>,
@@ -185,7 +184,7 @@ impl Related<super::dashboard_section::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            uuid: Set(uuid::Uuid::new_v4().to_string()),
+            uuid: Set(uuid::Uuid::new_v4()),
             ..ActiveModelTrait::default()
         }
     }

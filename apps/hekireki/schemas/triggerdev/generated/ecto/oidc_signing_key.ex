@@ -9,7 +9,7 @@ defmodule Trigger.OidcSigningKey do
           kid: String.t(),
           purpose: atom(),
           status: atom(),
-          public_jwk: map(),
+          public_jwk: map() | list() | String.t() | number() | boolean(),
           ready_at: DateTime.t(),
           public_until: DateTime.t() | nil,
           generated_by_user_id: String.t(),
@@ -27,7 +27,7 @@ defmodule Trigger.OidcSigningKey do
     field(:purpose, Ecto.Enum, values: [:EXTERNAL_OIDC, :INTERNAL_RUN], default: :EXTERNAL_OIDC)
     # At most one STAGED and one ACTIVE key per purpose: enforced by a partial unique index in the migration.
     field(:status, Ecto.Enum, values: [:STAGED, :ACTIVE, :RETIRED])
-    field(:public_jwk, :map, source: :publicJwk)
+    field(:public_jwk, Trigger.PrismaJson, source: :publicJwk)
     field(:ready_at, Trigger.PrismaDateTime, source: :readyAt)
     field(:public_until, Trigger.PrismaDateTime, source: :publicUntil)
     field(:generated_by_user_id, :string, source: :generatedByUserId)

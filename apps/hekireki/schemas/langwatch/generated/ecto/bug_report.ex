@@ -16,7 +16,7 @@ defmodule LangWatch.BugReport do
           contact_email: String.t() | nil,
           cli_version: String.t() | nil,
           linked_project_id: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t()
         }
 
@@ -32,7 +32,7 @@ defmodule LangWatch.BugReport do
     field(:contact_email, :string, source: :contactEmail)
     field(:cli_version, :string, source: :cliVersion)
     field(:linked_project_id, :string, source: :linkedProjectId)
-    field(:metadata, :map)
+    field(:metadata, LangWatch.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end
 end

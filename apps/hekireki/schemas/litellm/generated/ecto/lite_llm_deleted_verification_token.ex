@@ -1,11 +1,11 @@
 defmodule LiteLLM.LiteLLMDeletedVerificationToken do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           token: String.t(),
           key_name: String.t() | nil,
           key_alias: String.t() | nil,
@@ -14,15 +14,15 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
           total_spend: float(),
           expires: DateTime.t() | nil,
           models: [String.t()],
-          aliases: map(),
-          config: map(),
+          aliases: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean(),
           user_id: String.t() | nil,
           team_id: String.t() | nil,
           agent_id: String.t() | nil,
           project_id: String.t() | nil,
-          permissions: map(),
+          permissions: map() | list() | String.t() | number() | boolean(),
           max_parallel_requests: integer() | nil,
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           blocked: boolean() | nil,
           tpm_limit: integer() | nil,
           rpm_limit: integer() | nil,
@@ -35,10 +35,10 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
           key_type: String.t() | nil,
           policies: [String.t()],
           access_group_ids: [String.t()],
-          model_spend: map(),
-          model_max_budget: map(),
-          budget_fallbacks: map(),
-          router_settings: map() | nil,
+          model_spend: map() | list() | String.t() | number() | boolean(),
+          model_max_budget: map() | list() | String.t() | number() | boolean(),
+          budget_fallbacks: map() | list() | String.t() | number() | boolean(),
+          router_settings: map() | list() | String.t() | number() | boolean() | nil,
           budget_id: String.t() | nil,
           organization_id: String.t() | nil,
           object_permission_id: String.t() | nil,
@@ -68,15 +68,15 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
     field(:total_spend, :float, default: 0.0)
     field(:expires, LiteLLM.PrismaDateTime)
     field(:models, {:array, :string})
-    field(:aliases, :map, default: %{})
-    field(:config, :map, default: %{})
+    field(:aliases, LiteLLM.PrismaJson, default: %{})
+    field(:config, LiteLLM.PrismaJson, default: %{})
     field(:user_id, :string)
     field(:team_id, :string)
     field(:agent_id, :string)
     field(:project_id, :string)
-    field(:permissions, :map, default: %{})
+    field(:permissions, LiteLLM.PrismaJson, default: %{})
     field(:max_parallel_requests, :integer)
-    field(:metadata, :map, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:blocked, :boolean)
     field(:tpm_limit, :integer)
     field(:rpm_limit, :integer)
@@ -89,10 +89,10 @@ defmodule LiteLLM.LiteLLMDeletedVerificationToken do
     field(:key_type, :string)
     field(:policies, {:array, :string})
     field(:access_group_ids, {:array, :string})
-    field(:model_spend, :map, default: %{})
-    field(:model_max_budget, :map, default: %{})
-    field(:budget_fallbacks, :map, default: %{})
-    field(:router_settings, :map, default: %{})
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
+    field(:model_max_budget, LiteLLM.PrismaJson, default: %{})
+    field(:budget_fallbacks, LiteLLM.PrismaJson, default: %{})
+    field(:router_settings, LiteLLM.PrismaJson, default: %{})
     field(:budget_id, :string)
     field(:organization_id, :string)
     field(:object_permission_id, :string)

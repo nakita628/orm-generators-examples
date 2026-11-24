@@ -13,7 +13,7 @@ defmodule Postiz.MastraScheduleTriggers do
           error: String.t() | nil,
           trigger_kind: String.t(),
           parent_trigger_id: String.t() | nil,
-          metadata: map() | nil
+          metadata: map() | list() | String.t() | number() | boolean() | nil
         }
 
   schema "mastra_schedule_triggers" do
@@ -26,6 +26,6 @@ defmodule Postiz.MastraScheduleTriggers do
     field(:error, :string)
     field(:trigger_kind, :string)
     field(:parent_trigger_id, :string)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
   end
 end

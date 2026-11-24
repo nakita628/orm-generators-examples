@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMJWTKeyMapping do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           jwt_issuer: String.t(),
           jwt_claim_name: String.t(),
           jwt_claim_value: String.t(),
@@ -27,7 +27,7 @@ defmodule LiteLLM.LiteLLMJWTKeyMapping do
     field(:is_active, :boolean, default: true)
     field(:created_by, :string)
     field(:updated_by, :string)
-    belongs_to(:litellm_verification_token, LiteLLM.LiteLLMVerificationToken, foreign_key: :token, type: :string, references: :token)
+    belongs_to(:litellm_verification_token, LiteLLM.LiteLLMVerificationToken, foreign_key: :token, references: :token)
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -14,7 +14,7 @@ defmodule OpenPanel.Project do
           cross_domain: boolean(),
           allow_unsafe_revenue_tracking: boolean(),
           ai_store_content: boolean(),
-          filters: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
           first_event_at: DateTime.t() | nil,
           no_data_notified_at: DateTime.t() | nil,
           data_stopped_notified_at: DateTime.t() | nil,
@@ -54,7 +54,7 @@ defmodule OpenPanel.Project do
     field(:allow_unsafe_revenue_tracking, :boolean, default: false, source: :allowUnsafeRevenueTracking)
     field(:ai_store_content, :boolean, default: true, source: :aiStoreContent)
     # [IPrismaProjectFilters]
-    field(:filters, :map)
+    field(:filters, OpenPanel.PrismaJson, default: [])
     field(:first_event_at, OpenPanel.PrismaDateTime, source: :firstEventAt)
     field(:no_data_notified_at, OpenPanel.PrismaDateTime, source: :noDataNotifiedAt)
     field(:data_stopped_notified_at, OpenPanel.PrismaDateTime, source: :dataStoppedNotifiedAt)

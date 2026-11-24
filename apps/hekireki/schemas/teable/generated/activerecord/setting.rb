@@ -1,5 +1,6 @@
 class Setting < ApplicationRecord
   self.table_name = "setting"
+  self.primary_key = "name"
 
   alias_attribute :updated_at, :last_modified_time
 

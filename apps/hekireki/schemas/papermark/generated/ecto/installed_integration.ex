@@ -6,8 +6,8 @@ defmodule Papermark.InstalledIntegration do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          credentials: map() | nil,
-          configuration: map() | nil,
+          credentials: map() | list() | String.t() | number() | boolean() | nil,
+          configuration: map() | list() | String.t() | number() | boolean() | nil,
           enabled: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -18,8 +18,8 @@ defmodule Papermark.InstalledIntegration do
 
   schema "InstalledIntegration" do
     field(:id, :string, primary_key: true)
-    field(:credentials, :map)
-    field(:configuration, :map)
+    field(:credentials, Papermark.PrismaJson)
+    field(:configuration, Papermark.PrismaJson)
     field(:enabled, :boolean, default: true)
     field(:integration_id, :string, source: :integrationId)
     field(:user_id, :string, source: :userId)

@@ -1,12 +1,12 @@
 defmodule Rallly.SpaceMember do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Rallly.PrismaDateTime, autogenerate: {Rallly.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           role: atom(),
           last_selected_at: DateTime.t(),
           inserted_at: DateTime.t(),
@@ -19,7 +19,7 @@ defmodule Rallly.SpaceMember do
     field(:role, Ecto.Enum, values: [:ADMIN, :MEMBER], default: :MEMBER)
     field(:last_selected_at, Rallly.PrismaDateTime, autogenerate: true)
     belongs_to(:space, Rallly.Space, foreign_key: :space_id)
-    belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
+    belongs_to(:user, Rallly.User, foreign_key: :user_id)
     timestamps(inserted_at_source: :created_at)
   end
 end

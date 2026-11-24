@@ -10,7 +10,7 @@ defmodule Rallly.Poll do
           title: String.t(),
           description: String.t() | nil,
           location: String.t() | nil,
-          conferencing: map() | nil,
+          conferencing: map() | list() | String.t() | number() | boolean() | nil,
           time_zone: String.t() | nil,
           status: atom(),
           closed_reason: atom() | nil,
@@ -46,7 +46,7 @@ defmodule Rallly.Poll do
     # What the organizer asked for: a provider to mint a link with at
     # finalize ("zoom" | "meet" | "teams" | "webex"), or a link they pasted
     # themselves.
-    field(:conferencing, :map)
+    field(:conferencing, Rallly.PrismaJson)
     field(:time_zone, :string)
     field(:status, Ecto.Enum, values: [:open, :closed, :scheduled, :canceled], default: :open)
     field(:closed_reason, Ecto.Enum, values: [:auto, :manual])
@@ -66,7 +66,7 @@ defmodule Rallly.Poll do
     field(:muted, :boolean, default: false)
     belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
     belongs_to(:scheduled_event, Rallly.ScheduledEvent, foreign_key: :scheduled_event_id, type: :string)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     has_many(:options, Rallly.Option, foreign_key: :poll_id, references: :id)
     has_many(:participants, Rallly.Participant, foreign_key: :poll_id, references: :id)
     has_many(:comments, Rallly.Comment, foreign_key: :poll_id, references: :id)

@@ -8,9 +8,9 @@ defmodule LangWatch.LlmPromptConfigVersion do
           id: String.t(),
           version: integer(),
           commit_message: String.t() | nil,
-          config_data: map(),
+          config_data: map() | list() | String.t() | number() | boolean(),
           schema_version: String.t(),
-          runtime_parameters: map(),
+          runtime_parameters: map() | list() | String.t() | number() | boolean(),
           project_id: String.t(),
           inserted_at: DateTime.t(),
           author: LangWatch.User.t() | nil,
@@ -22,9 +22,9 @@ defmodule LangWatch.LlmPromptConfigVersion do
     field(:id, :string, primary_key: true)
     field(:version, :integer)
     field(:commit_message, :string, source: :commitMessage)
-    field(:config_data, :map, source: :config)
+    field(:config_data, LangWatch.PrismaJson, source: :config)
     field(:schema_version, :string, source: :schemaVersion)
-    field(:runtime_parameters, :map, default: %{}, source: :runtimeParameters)
+    field(:runtime_parameters, LangWatch.PrismaJson, default: %{}, source: :runtimeParameters)
     field(:project_id, :string, source: :projectId)
     field(:author_id, :string, source: :authorId)
     field(:config_id, :string, source: :configId)

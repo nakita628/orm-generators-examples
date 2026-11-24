@@ -10,7 +10,7 @@ defmodule Langfuse.InAppAgentEvent do
           run_id: String.t(),
           sequence_number: integer(),
           type: String.t(),
-          event: map(),
+          event: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           project: Langfuse.Project.t() | nil
         }
@@ -20,7 +20,7 @@ defmodule Langfuse.InAppAgentEvent do
     field(:run_id, :string)
     field(:sequence_number, :integer, primary_key: true)
     field(:type, :string)
-    field(:event, :map)
+    field(:event, Langfuse.PrismaJson)
     field(:project_id, :string, primary_key: true)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)

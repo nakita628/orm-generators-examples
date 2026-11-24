@@ -1,23 +1,23 @@
 defmodule LiteLLM.LiteLLMSearchToolsTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :search_tool_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :search_tool_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           search_tool_name: String.t(),
-          litellm_params: map(),
-          search_tool_info: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean(),
+          search_tool_info: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
 
   schema "LiteLLM_SearchToolsTable" do
     field(:search_tool_name, :string)
-    field(:litellm_params, :map)
-    field(:search_tool_info, :map)
+    field(:litellm_params, LiteLLM.PrismaJson)
+    field(:search_tool_info, LiteLLM.PrismaJson)
     timestamps(inserted_at_source: :created_at)
   end
 end

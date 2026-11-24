@@ -1,15 +1,15 @@
 defmodule LiteLLM.LiteLLMGuardrailsTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :guardrail_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :guardrail_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           guardrail_name: String.t(),
-          litellm_params: map(),
-          guardrail_info: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean(),
+          guardrail_info: map() | list() | String.t() | number() | boolean() | nil,
           team_id: String.t() | nil,
           status: String.t(),
           submitted_at: DateTime.t() | nil,
@@ -20,8 +20,8 @@ defmodule LiteLLM.LiteLLMGuardrailsTable do
 
   schema "LiteLLM_GuardrailsTable" do
     field(:guardrail_name, :string)
-    field(:litellm_params, :map)
-    field(:guardrail_info, :map)
+    field(:litellm_params, LiteLLM.PrismaJson)
+    field(:guardrail_info, LiteLLM.PrismaJson)
     field(:team_id, :string)
     field(:status, :string, default: "active")
     field(:submitted_at, LiteLLM.PrismaDateTime)

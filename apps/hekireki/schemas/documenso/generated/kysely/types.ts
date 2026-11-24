@@ -121,7 +121,7 @@ export interface User {
   createdAt: Generated<Timestamp>
   updatedAt: Generated<Timestamp>
   lastSignedIn: Generated<Timestamp>
-  roles: Generated<Role[]>
+  roles: Generated<ColumnType<string, Role[], Role[]>>
   identityProvider: Generated<IdentityProvider>
   avatarImageId: string | null
   disabled: Generated<boolean>
@@ -165,7 +165,7 @@ export interface Passkey {
   credentialId: Buffer
   /** @zod.custom.use(z.instanceof(Uint8Array)) */
   credentialPublicKey: Buffer
-  counter: bigint
+  counter: ColumnType<string, bigint | number | string, bigint | number | string>
   credentialDeviceType: string
   credentialBackedUp: boolean
   transports: string[]
@@ -193,7 +193,7 @@ export interface VerificationToken {
 export interface Webhook {
   id: string
   webhookUrl: string
-  eventTriggers: WebhookTriggerEvents[]
+  eventTriggers: ColumnType<string, WebhookTriggerEvents[], WebhookTriggerEvents[]>
   secret: string | null
   enabled: Generated<boolean>
   createdAt: Generated<Timestamp>

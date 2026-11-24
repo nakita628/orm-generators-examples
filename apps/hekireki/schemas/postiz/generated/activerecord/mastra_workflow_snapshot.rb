@@ -1,5 +1,6 @@
 class MastraWorkflowSnapshot < ApplicationRecord
   self.table_name = "mastra_workflow_snapshot"
+  self.primary_key = %w[workflow_name run_id]
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

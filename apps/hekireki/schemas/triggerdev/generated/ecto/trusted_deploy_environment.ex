@@ -9,7 +9,7 @@ defmodule Trigger.TrustedDeployEnvironment do
           enabled: boolean(),
           scope: atom(),
           scope_value: String.t() | nil,
-          additional_claims: map(),
+          additional_claims: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           trusted_deploy_repository: Trigger.TrustedDeployRepository.t() | nil,
@@ -21,7 +21,7 @@ defmodule Trigger.TrustedDeployEnvironment do
     field(:enabled, :boolean, default: false)
     field(:scope, Ecto.Enum, values: [:ANY, :BRANCH, :TAG, :ENVIRONMENT])
     field(:scope_value, :string, source: :scopeValue)
-    field(:additional_claims, :map, default: %{}, source: :additionalClaims)
+    field(:additional_claims, Trigger.PrismaJson, default: %{}, source: :additionalClaims)
     field(:trusted_deploy_repository_id, :string, source: :trustedDeployRepositoryId)
     field(:runtime_environment_id, :string, source: :runtimeEnvironmentId)
     belongs_to(:trusted_deploy_repository, Trigger.TrustedDeployRepository, foreign_key: :trusted_deploy_repository_id, define_field: false, type: :string)

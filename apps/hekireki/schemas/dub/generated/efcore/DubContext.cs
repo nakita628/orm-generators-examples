@@ -169,7 +169,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.ProjectConnectId).HasColumnName("projectConnectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -219,7 +219,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("showConversions");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -282,7 +282,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("archived");
             entity.Property(e => e.LastChecked)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("lastChecked");
@@ -301,7 +301,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.LinkRetentionDays).HasColumnName("linkRetentionDays");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -349,7 +349,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("expiresAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -448,7 +448,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("accessLevel");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -483,7 +483,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("role");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -520,7 +520,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.UserId).HasColumnName("userId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -576,7 +576,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("comingSoon");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -616,7 +616,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.ProjectId).HasColumnName("projectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -704,7 +704,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("failedAttempts");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -787,7 +787,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("options");
             entity.Property(e => e.ScheduledAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("scheduledAt");
@@ -798,7 +798,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.LastError).HasColumnName("lastError");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -939,7 +939,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("lastConversionAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -994,7 +994,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.WorkspaceId).HasColumnName("workspaceId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1119,7 +1119,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("expiresAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1165,7 +1165,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("expiresAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1213,7 +1213,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("isMachine");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1310,7 +1310,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("color");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1341,7 +1341,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1389,7 +1389,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("lastUsed");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1436,7 +1436,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("lastUsed");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1534,7 +1534,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.ProjectId).HasColumnName("projectId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1595,7 +1595,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("disabledAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1632,7 +1632,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.WebhookId).HasColumnName("webhookId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1665,7 +1665,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.WebhookId).HasColumnName("webhookId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1828,7 +1828,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("ssoEnforcedAt");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1838,7 +1838,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("updatedAt");
             entity.Property(e => e.UsageLastChecked)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("usageLastChecked");
@@ -1869,7 +1869,7 @@ public partial class DubContext : DbContext
                 .HasColumnName("role");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1906,7 +1906,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.DefaultFolderId).HasColumnName("defaultFolderId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -1940,7 +1940,7 @@ public partial class DubContext : DbContext
             entity.Property(e => e.Type).HasColumnName("type");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");

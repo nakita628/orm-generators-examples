@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $region User-facing geo region, stamped at trigger; workerQueue is where it actually ran.
  * @property string|null $secondaryMasterQueue @deprecated
  * @property int|null $attemptNumber From engine v2+ this will be defined after a run has been dequeued (starting at 1)
- * @property mixed $runTags Denormized column that holds the raw tags
+ * @property list<string> $runTags Denormized column that holds the raw tags
  * @property string|null $taskVersion Denormalized version of the background worker task
  * @property \Carbon\CarbonInterface|null $startedAt startedAt marks the point at which a run is dequeued from MarQS
  * @property \Carbon\CarbonInterface|null $executedAt executedAt is set when the first attempt is about to execute
@@ -37,7 +37,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property mixed $error Run error
  * @property string|null $planType Organization's billing plan type (cached for fallback when billing API fails)
  * @property string $realtimeStreamsVersion The version of the realtime streams implementation used by the run
- * @property mixed $realtimeStreams Store the stream keys that are being used by the run
+ * @property list<string> $realtimeStreams Store the stream keys that are being used by the run
  * @property string|null $streamBasinName S2 basin where this run's realtime streams live. Stamped at create
  * time from `Organization.streamBasinName` so reads can resolve the
  * basin without joining org. Null when the org has no per-org basin
@@ -174,6 +174,7 @@ class TaskRun extends Model
         'traceContext' => 'array',
         'environmentType' => RuntimeEnvironmentType::class,
         'attemptNumber' => 'integer',
+        'runTags' => AsPrismaList::class,
         'startedAt' => 'datetime',
         'executedAt' => 'datetime',
         'completedAt' => 'datetime',
@@ -189,6 +190,7 @@ class TaskRun extends Model
         'maxAttempts' => 'integer',
         'lockedRetryConfig' => 'array',
         'queueTimestamp' => 'datetime',
+        'bulkActionGroupIds' => AsPrismaList::class,
         'logsDeletedAt' => 'datetime',
         'resumeParentOnCompletion' => 'boolean',
         'depth' => 'integer',
@@ -198,6 +200,7 @@ class TaskRun extends Model
         'isWarmStart' => 'boolean',
         'error' => 'array',
         'maxDurationInSeconds' => 'integer',
+        'realtimeStreams' => AsPrismaList::class,
     ];
 
     public function runtimeEnvironment(): BelongsTo

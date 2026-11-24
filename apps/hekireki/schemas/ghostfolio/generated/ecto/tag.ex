@@ -1,11 +1,11 @@
 defmodule Ghostfolio.Tag do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           user: Ghostfolio.User.t() | nil,
           accounts: [Ghostfolio.TagsOnAccounts.t()],
@@ -14,7 +14,7 @@ defmodule Ghostfolio.Tag do
 
   schema "Tag" do
     field(:name, :string)
-    field(:user_id, :binary_id, source: :userId)
+    field(:user_id, :string, source: :userId)
     belongs_to(:user, Ghostfolio.User, foreign_key: :user_id, define_field: false)
     has_many(:accounts, Ghostfolio.TagsOnAccounts, foreign_key: :tag_id)
     many_to_many(:activities, Ghostfolio.Order, join_through: "_OrderToTag", join_keys: [B: :id, A: :id])

@@ -28,11 +28,11 @@ defmodule Papermark.LinkPreset do
           enable_password: boolean() | nil,
           password: String.t() | nil,
           enable_watermark: boolean() | nil,
-          watermark_config: map() | nil,
+          watermark_config: map() | list() | String.t() | number() | boolean() | nil,
           enable_agreement: boolean() | nil,
           agreement_id: String.t() | nil,
           enable_custom_fields: boolean() | nil,
-          custom_fields: map() | nil,
+          custom_fields: map() | list() | String.t() | number() | boolean() | nil,
           show_banner: boolean() | nil,
           welcome_message: String.t() | nil,
           is_default: boolean(),
@@ -65,11 +65,11 @@ defmodule Papermark.LinkPreset do
     field(:enable_password, :boolean, default: false, source: :enablePassword)
     field(:password, :string)
     field(:enable_watermark, :boolean, default: false, source: :enableWatermark)
-    field(:watermark_config, :map, source: :watermarkConfig)
+    field(:watermark_config, Papermark.PrismaJson, source: :watermarkConfig)
     field(:enable_agreement, :boolean, default: false, source: :enableAgreement)
     field(:agreement_id, :string, source: :agreementId)
     field(:enable_custom_fields, :boolean, default: false, source: :enableCustomFields)
-    field(:custom_fields, :map, source: :customFields)
+    field(:custom_fields, Papermark.PrismaJson, source: :customFields)
     field(:show_banner, :boolean, default: false, source: :showBanner)
     field(:welcome_message, :string, source: :welcomeMessage)
     field(:is_default, :boolean, default: false, source: :isDefault)

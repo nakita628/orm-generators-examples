@@ -1,14 +1,14 @@
 defmodule Plunk.Contact do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           email: String.t(),
-          data: map() | nil,
+          data: map() | list() | String.t() | number() | boolean() | nil,
           subscribed: boolean(),
           snoozed_until: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -23,7 +23,7 @@ defmodule Plunk.Contact do
 
   schema "contacts" do
     field(:email, :string)
-    field(:data, :map)
+    field(:data, Plunk.PrismaJson)
     field(:subscribed, :boolean, default: true)
     # When set, `subscribed = false` is temporary rather than permanent: the snooze
     # sweep resubscribes the contact once this passes. Suppression itself is still
@@ -33,7 +33,7 @@ defmodule Plunk.Contact do
     # Cleared by every other write to `subscribed` — including the bounce and
     # complaint paths, so a suppressed address can never be woken back up.
     field(:snoozed_until, Plunk.PrismaDateTime, source: :snoozedUntil)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     has_many(:emails, Plunk.Email, foreign_key: :contact_id)
     has_many(:workflow_executions, Plunk.WorkflowExecution, foreign_key: :contact_id)

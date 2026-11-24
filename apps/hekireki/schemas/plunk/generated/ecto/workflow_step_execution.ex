@@ -1,16 +1,16 @@
 defmodule Plunk.WorkflowStepExecution do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           status: atom(),
           scheduled_for: DateTime.t() | nil,
           execute_after: DateTime.t() | nil,
-          output: map() | nil,
+          output: map() | list() | String.t() | number() | boolean() | nil,
           error: String.t() | nil,
           started_at: DateTime.t() | nil,
           completed_at: DateTime.t() | nil,
@@ -25,12 +25,12 @@ defmodule Plunk.WorkflowStepExecution do
     field(:status, Ecto.Enum, values: [:PENDING, :SCHEDULED, :WAITING, :RUNNING, :COMPLETED, :SKIPPED, :FAILED], default: :PENDING)
     field(:scheduled_for, Plunk.PrismaDateTime, source: :scheduledFor)
     field(:execute_after, Plunk.PrismaDateTime, source: :executeAfter)
-    field(:output, :map)
+    field(:output, Plunk.PrismaJson)
     field(:error, :string)
     field(:started_at, Plunk.PrismaDateTime, source: :startedAt)
     field(:completed_at, Plunk.PrismaDateTime, source: :completedAt)
-    field(:execution_id, :binary_id, source: :executionId)
-    field(:step_id, :binary_id, source: :stepId)
+    field(:execution_id, :string, source: :executionId)
+    field(:step_id, :string, source: :stepId)
     belongs_to(:execution, Plunk.WorkflowExecution, foreign_key: :execution_id, define_field: false)
     belongs_to(:step, Plunk.WorkflowStep, foreign_key: :step_id, define_field: false)
     has_many(:emails, Plunk.Email, foreign_key: :workflow_step_execution_id)

@@ -14,13 +14,14 @@ defmodule LangWatch.SsoConnectionReproofCursor do
   @primary_key false
 
   @type t :: %__MODULE__{
+          connection_id: String.t(),
           last_reproof_at: DateTime.t(),
           connection: LangWatch.SsoConnection.t() | nil
         }
 
   schema "SsoConnectionReproofCursor" do
     field(:last_reproof_at, LangWatch.PrismaDateTime, source: :lastReproofAt)
-    field(:connection_id, :string, source: :connectionId)
+    field(:connection_id, :string, primary_key: true, source: :connectionId)
     belongs_to(:connection, LangWatch.SsoConnection, foreign_key: :connection_id, define_field: false, type: :string)
   end
 end

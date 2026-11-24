@@ -27,6 +27,7 @@ class InstanceSettings extends Model
     ];
 
     protected $attributes = [
+        'id' => 1,
         'disable_user_registration' => false,
         'footer_links' => '[]',
     ];

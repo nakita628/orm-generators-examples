@@ -10,8 +10,8 @@ defmodule Hoppscotch.User do
           photo_url: String.t() | nil,
           is_admin: boolean(),
           refresh_token: String.t() | nil,
-          current_restsession: map() | nil,
-          current_gqlsession: map() | nil,
+          current_restsession: map() | list() | String.t() | number() | boolean() | nil,
+          current_gqlsession: map() | list() | String.t() | number() | boolean() | nil,
           created_on: DateTime.t(),
           last_logged_on: DateTime.t() | nil,
           last_active_on: DateTime.t() | nil,
@@ -35,8 +35,8 @@ defmodule Hoppscotch.User do
     field(:photo_url, :string, source: :photoURL)
     field(:is_admin, :boolean, default: false, source: :isAdmin)
     field(:refresh_token, :string, source: :refreshToken)
-    field(:current_restsession, :map, source: :currentRESTSession)
-    field(:current_gqlsession, :map, source: :currentGQLSession)
+    field(:current_restsession, Hoppscotch.PrismaJson, source: :currentRESTSession)
+    field(:current_gqlsession, Hoppscotch.PrismaJson, source: :currentGQLSession)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:last_logged_on, Hoppscotch.PrismaDateTime, source: :lastLoggedOn)
     field(:last_active_on, Hoppscotch.PrismaDateTime, source: :lastActiveOn)

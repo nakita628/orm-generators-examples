@@ -42,6 +42,8 @@ class LiteLLMShadowEvalJob extends Model
     ];
 
     protected $casts = [
+        'router_names' => AsPrismaList::class,
+        'models' => AsPrismaList::class,
         'shadow_percentage' => 'float',
         'max_turns' => 'integer',
         'max_budget' => 'float',

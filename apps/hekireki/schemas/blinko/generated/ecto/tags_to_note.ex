@@ -4,8 +4,8 @@ defmodule Blinko.TagsToNote do
   @primary_key false
 
   @type t :: %__MODULE__{
-          note_id: term(),
-          tag_id: term(),
+          note_id: integer(),
+          tag_id: integer(),
           id: integer(),
           note: Blinko.Notes.t() | nil,
           tag: Blinko.Tag.t() | nil

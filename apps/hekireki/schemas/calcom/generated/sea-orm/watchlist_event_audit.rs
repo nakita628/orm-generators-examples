@@ -8,10 +8,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WatchlistEventAudit")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_name = "watchlistId", column_type = "Uuid")]
-    pub watchlist_id: String,
+    pub id: Uuid,
+    #[sea_orm(column_name = "watchlistId")]
+    pub watchlist_id: Uuid,
     #[sea_orm(column_name = "eventTypeId")]
     pub event_type_id: i32,
     #[sea_orm(column_name = "actionTaken")]
@@ -26,7 +25,7 @@ pub enum Relation {}
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::now_v7().to_string()),
+            id: Set(uuid::Uuid::now_v7()),
             ..ActiveModelTrait::default()
         }
     }

@@ -26,8 +26,8 @@ defmodule LangWatch.AnomalyRule do
           description: String.t() | nil,
           severity: String.t(),
           rule_type: String.t(),
-          threshold_config: map(),
-          destination_config: map(),
+          threshold_config: map() | list() | String.t() | number() | boolean(),
+          destination_config: map() | list() | String.t() | number() | boolean(),
           status: String.t(),
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -59,13 +59,13 @@ defmodule LangWatch.AnomalyRule do
     # spend_spike: { windowSec, ratioVsBaseline, minBaselineUsd }
     # rate_limit: { windowSec, requestsThreshold }
     # after_hours: { startHour, endHour, timezone, requestsThreshold }
-    field(:threshold_config, :map, default: %{}, source: :thresholdConfig)
+    field(:threshold_config, LangWatch.PrismaJson, default: %{}, source: :thresholdConfig)
     # Alert routing per destination. Shape:
     # { slack?: { channelId }, siem?: { endpointUrl, authHeader },
     # webhook?: { url, authHeader }, pagerduty?: { routingKey },
     # email?: { to: string[] } }
     # Empty map = use org defaults (when defaults exist; today no-op).
-    field(:destination_config, :map, default: %{}, source: :destinationConfig)
+    field(:destination_config, LangWatch.PrismaJson, default: %{}, source: :destinationConfig)
     # 'active' (default - evaluator picks it up) | 'disabled' (admin
     # paused; rule rows kept for audit). 'archived' uses archivedAt
     # timestamp instead so we can filter `archivedAt IS NULL` cheaply.

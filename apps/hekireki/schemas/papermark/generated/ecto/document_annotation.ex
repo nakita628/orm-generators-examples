@@ -7,7 +7,7 @@ defmodule Papermark.DocumentAnnotation do
   @type t :: %__MODULE__{
           id: String.t(),
           title: String.t(),
-          content: map(),
+          content: map() | list() | String.t() | number() | boolean(),
           pages: [integer()],
           is_visible: boolean(),
           inserted_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule Papermark.DocumentAnnotation do
   schema "DocumentAnnotation" do
     field(:id, :string, primary_key: true)
     field(:title, :string)
-    field(:content, :map)
+    field(:content, Papermark.PrismaJson)
     field(:pages, {:array, :integer})
     field(:is_visible, :boolean, default: true, source: :isVisible)
     field(:document_id, :string, source: :documentId)

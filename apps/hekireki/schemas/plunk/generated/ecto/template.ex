@@ -1,12 +1,12 @@
 defmodule Plunk.Template do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           description: String.t() | nil,
           subject: String.t(),
@@ -31,7 +31,7 @@ defmodule Plunk.Template do
     field(:from_name, :string, source: :fromName)
     field(:reply_to, :string, source: :replyTo)
     field(:type, Ecto.Enum, values: [:TRANSACTIONAL, :MARKETING, :HEADLESS], default: :MARKETING)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     has_many(:emails, Plunk.Email, foreign_key: :template_id)
     has_many(:workflow_steps, Plunk.WorkflowStep, foreign_key: :template_id)

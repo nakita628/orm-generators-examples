@@ -59,6 +59,7 @@ class LiteLLMBudgetTable extends Model
         'budget_limits' => 'array',
         'budget_reset_at' => 'datetime',
         'budget_reset_count' => 'integer',
+        'allowed_models' => AsPrismaList::class,
         'temp_budget_increase' => 'float',
         'temp_budget_expiry' => 'datetime',
     ];

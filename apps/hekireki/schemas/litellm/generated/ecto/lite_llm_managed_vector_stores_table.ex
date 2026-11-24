@@ -9,9 +9,9 @@ defmodule LiteLLM.LiteLLMManagedVectorStoresTable do
           custom_llm_provider: String.t(),
           vector_store_name: String.t() | nil,
           vector_store_description: String.t() | nil,
-          vector_store_metadata: map() | nil,
+          vector_store_metadata: map() | list() | String.t() | number() | boolean() | nil,
           litellm_credential_name: String.t() | nil,
-          litellm_params: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean() | nil,
           team_id: String.t() | nil,
           user_id: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -23,9 +23,9 @@ defmodule LiteLLM.LiteLLMManagedVectorStoresTable do
     field(:custom_llm_provider, :string)
     field(:vector_store_name, :string)
     field(:vector_store_description, :string)
-    field(:vector_store_metadata, :map)
+    field(:vector_store_metadata, LiteLLM.PrismaJson)
     field(:litellm_credential_name, :string)
-    field(:litellm_params, :map)
+    field(:litellm_params, LiteLLM.PrismaJson)
     field(:team_id, :string)
     field(:user_id, :string)
     timestamps(inserted_at_source: :created_at)

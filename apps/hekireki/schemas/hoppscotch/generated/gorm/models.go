@@ -15,11 +15,11 @@ import (
 type Team struct {
 	ID           string            `gorm:"column:id;primaryKey" json:"id"`
 	Name         string            `gorm:"column:name;not null" json:"name"`
-	Collections  []TeamCollection  `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
-	Environments []TeamEnvironment `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
-	Invitations  []TeamInvitation  `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
-	Members      []TeamMember      `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
-	Requests     []TeamRequest     `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
+	Collections  []TeamCollection  `gorm:"foreignKey:TeamID;constraint:TeamCollection_teamID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Environments []TeamEnvironment `gorm:"foreignKey:TeamID;constraint:TeamEnvironment_teamID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Invitations  []TeamInvitation  `gorm:"foreignKey:TeamID;constraint:TeamInvitation_teamID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Members      []TeamMember      `gorm:"foreignKey:TeamID;constraint:TeamMember_teamID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Requests     []TeamRequest     `gorm:"foreignKey:TeamID;constraint:TeamRequest_teamID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Team) TableName() string {
@@ -34,11 +34,11 @@ func (m *Team) BeforeCreate(_ *gorm.DB) error {
 }
 
 type TeamMember struct {
-	ID      string `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID      string `gorm:"column:id;primaryKey" json:"id"`
 	Role    string `gorm:"column:role;not null" json:"role"`
 	UserUID string `gorm:"column:userUid;uniqueIndex:TeamMember_teamID_userUid_key;not null" json:"userUid"`
 	TeamID  string `gorm:"column:teamID;uniqueIndex:TeamMember_teamID_userUid_key;not null" json:"teamID"`
-	Team    *Team
+	Team    *Team  `gorm:"belongsTo"`
 }
 
 func (TeamMember) TableName() string {
@@ -58,7 +58,7 @@ type TeamInvitation struct {
 	CreatorUID   string `gorm:"column:creatorUid;not null" json:"creatorUid"`
 	InviteeEmail string `gorm:"column:inviteeEmail;uniqueIndex:TeamInvitation_teamID_inviteeEmail_key;not null" json:"inviteeEmail"`
 	InviteeRole  string `gorm:"column:inviteeRole;not null" json:"inviteeRole"`
-	Team         *Team
+	Team         *Team  `gorm:"belongsTo"`
 }
 
 func (TeamInvitation) TableName() string {
@@ -73,18 +73,18 @@ func (m *TeamInvitation) BeforeCreate(_ *gorm.DB) error {
 }
 
 type TeamCollection struct {
-	ID         string          `gorm:"column:id;primaryKey" json:"id"`
-	ParentID   *string         `gorm:"column:parentID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key" json:"parentID"`
-	TeamID     string          `gorm:"column:teamID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;not null" json:"teamID"`
-	Title      string          `gorm:"column:title;not null" json:"title"`
-	OrderIndex int             `gorm:"column:orderIndex;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;not null" json:"orderIndex"`
-	Data       datatypes.JSON  `gorm:"column:data" json:"data"`
-	CreatedOn  DateTime        `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
-	UpdatedOn  DateTime        `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	Parent     *TeamCollection `gorm:"foreignKey:ParentID"`
-	Team       *Team
-	Children   []TeamCollection `gorm:"foreignKey:ParentID;constraint:OnDelete:CASCADE"`
-	Requests   []TeamRequest    `gorm:"foreignKey:CollectionID;constraint:OnDelete:CASCADE"`
+	ID         string           `gorm:"column:id;primaryKey" json:"id"`
+	ParentID   *string          `gorm:"column:parentID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key" json:"parentID"`
+	TeamID     string           `gorm:"column:teamID;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;not null" json:"teamID"`
+	Title      string           `gorm:"column:title;not null" json:"title"`
+	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:TeamCollection_teamID_parentID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	Data       datatypes.JSON   `gorm:"column:data" json:"data"`
+	CreatedOn  DateTime         `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
+	UpdatedOn  DateTime         `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
+	Parent     *TeamCollection  `gorm:"foreignKey:ParentID;belongsTo"`
+	Team       *Team            `gorm:"belongsTo"`
+	Children   []TeamCollection `gorm:"foreignKey:ParentID;constraint:TeamCollection_parentID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Requests   []TeamRequest    `gorm:"foreignKey:CollectionID;constraint:TeamRequest_collectionID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (TeamCollection) TableName() string {
@@ -120,11 +120,11 @@ type TeamRequest struct {
 	Title        string          `gorm:"column:title;not null" json:"title"`
 	Request      datatypes.JSON  `gorm:"column:request;not null" json:"request"`
 	MockExamples datatypes.JSON  `gorm:"column:mockExamples" json:"mockExamples"`
-	OrderIndex   int             `gorm:"column:orderIndex;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key;not null" json:"orderIndex"`
-	CreatedOn    DateTime        `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	OrderIndex   int             `gorm:"column:orderIndex;uniqueIndex:TeamRequest_teamID_collectionID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	CreatedOn    DateTime        `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn    DateTime        `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	Collection   *TeamCollection `gorm:"foreignKey:CollectionID"`
-	Team         *Team
+	Collection   *TeamCollection `gorm:"foreignKey:CollectionID;belongsTo"`
+	Team         *Team           `gorm:"belongsTo"`
 }
 
 func (TeamRequest) TableName() string {
@@ -158,7 +158,7 @@ type TeamEnvironment struct {
 	TeamID    string         `gorm:"column:teamID;not null" json:"teamID"`
 	Name      string         `gorm:"column:name;not null" json:"name"`
 	Variables datatypes.JSON `gorm:"column:variables;not null" json:"variables"`
-	Team      *Team
+	Team      *Team          `gorm:"belongsTo"`
 }
 
 func (TeamEnvironment) TableName() string {
@@ -175,26 +175,26 @@ func (m *TeamEnvironment) BeforeCreate(_ *gorm.DB) error {
 type User struct {
 	UID                  string                `gorm:"column:uid;primaryKey" json:"uid"`
 	DisplayName          *string               `gorm:"column:displayName" json:"displayName"`
-	Email                *string               `gorm:"column:email;uniqueIndex" json:"email"`
+	Email                *string               `gorm:"column:email;uniqueIndex:User_email_key" json:"email"`
 	PhotoURL             *string               `gorm:"column:photoURL" json:"photoURL"`
 	IsAdmin              bool                  `gorm:"column:isAdmin;default:false;not null" json:"isAdmin"`
 	RefreshToken         *string               `gorm:"column:refreshToken" json:"refreshToken"`
 	CurrentRESTSession   datatypes.JSON        `gorm:"column:currentRESTSession" json:"currentRESTSession"`
 	CurrentGQLSession    datatypes.JSON        `gorm:"column:currentGQLSession" json:"currentGQLSession"`
-	CreatedOn            DateTime              `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn            DateTime              `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	LastLoggedOn         *DateTime             `gorm:"column:lastLoggedOn;type:timestamptz(3)" json:"lastLoggedOn"`
 	LastActiveOn         *DateTime             `gorm:"column:lastActiveOn;type:timestamptz(3)" json:"lastActiveOn"`
-	ProviderAccounts     []Account             `gorm:"foreignKey:UserID;references:UID;constraint:OnDelete:CASCADE"`
-	InvitedUsers         []InvitedUsers        `gorm:"foreignKey:AdminUID;references:UID;constraint:OnDelete:CASCADE"`
-	MockServers          []MockServer          `gorm:"foreignKey:CreatorUID;references:UID;constraint:OnDelete:SET NULL"`
-	PersonalAccessTokens []PersonalAccessToken `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	Shortcodes           []Shortcode           `gorm:"foreignKey:CreatorUID;references:UID"`
-	UserCollections      []UserCollection      `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	Environments         []UserEnvironment     `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	History              []UserHistory         `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	UserRequests         []UserRequest         `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	VerificationTokens   []VerificationToken   `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
-	Settings             *UserSettings         `gorm:"foreignKey:UserUID;references:UID;constraint:OnDelete:CASCADE"`
+	ProviderAccounts     []Account             `gorm:"foreignKey:UserID;references:UID;constraint:Account_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	InvitedUsers         []InvitedUsers        `gorm:"foreignKey:AdminUID;references:UID;constraint:InvitedUsers_adminUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	MockServers          []MockServer          `gorm:"foreignKey:CreatorUID;references:UID;constraint:MockServer_creatorUid_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PersonalAccessTokens []PersonalAccessToken `gorm:"foreignKey:UserUID;references:UID;constraint:PersonalAccessToken_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Shortcodes           []Shortcode           `gorm:"foreignKey:CreatorUID;references:UID;constraint:Shortcode_creatorUid_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	UserCollections      []UserCollection      `gorm:"foreignKey:UserUID;references:UID;constraint:UserCollection_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Environments         []UserEnvironment     `gorm:"foreignKey:UserUID;references:UID;constraint:UserEnvironment_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	History              []UserHistory         `gorm:"foreignKey:UserUID;references:UID;constraint:UserHistory_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	UserRequests         []UserRequest         `gorm:"foreignKey:UserUID;references:UID;constraint:UserRequest_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	VerificationTokens   []VerificationToken   `gorm:"foreignKey:UserUID;references:UID;constraint:VerificationToken_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Settings             *UserSettings         `gorm:"foreignKey:UserUID;references:UID;constraint:UserSettings_userUid_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (User) TableName() string {
@@ -220,8 +220,8 @@ type Account struct {
 	ProviderRefreshToken *string  `gorm:"column:providerRefreshToken" json:"providerRefreshToken"`
 	ProviderAccessToken  *string  `gorm:"column:providerAccessToken" json:"providerAccessToken"`
 	ProviderScope        *string  `gorm:"column:providerScope" json:"providerScope"`
-	LoggedIn             DateTime `gorm:"column:loggedIn;type:timestamptz(3);not null" json:"loggedIn"`
-	User                 *User    `gorm:"foreignKey:UserID;references:UID"`
+	LoggedIn             DateTime `gorm:"column:loggedIn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"loggedIn"`
+	User                 *User    `gorm:"foreignKey:UserID;references:UID;belongsTo"`
 }
 
 func (Account) TableName() string {
@@ -241,10 +241,10 @@ func (m *Account) BeforeCreate(tx *gorm.DB) error {
 
 type VerificationToken struct {
 	DeviceIdentifier string   `gorm:"column:deviceIdentifier;uniqueIndex:VerificationToken_deviceIdentifier_token_key;not null" json:"deviceIdentifier"`
-	Token            string   `gorm:"column:token;primaryKey;uniqueIndex;uniqueIndex:VerificationToken_deviceIdentifier_token_key" json:"token"`
+	Token            string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key;uniqueIndex:VerificationToken_deviceIdentifier_token_key" json:"token"`
 	UserUID          string   `gorm:"column:userUid;not null" json:"userUid"`
 	ExpiresOn        DateTime `gorm:"column:expiresOn;type:timestamptz(3);not null" json:"expiresOn"`
-	User             *User    `gorm:"references:UID"`
+	User             *User    `gorm:"references:UID;belongsTo"`
 }
 
 func (VerificationToken) TableName() string {
@@ -260,10 +260,10 @@ func (m *VerificationToken) BeforeCreate(_ *gorm.DB) error {
 
 type UserSettings struct {
 	ID         string         `gorm:"column:id;primaryKey" json:"id"`
-	UserUID    string         `gorm:"column:userUid;uniqueIndex;not null" json:"userUid"`
+	UserUID    string         `gorm:"column:userUid;uniqueIndex:UserSettings_userUid_key;not null" json:"userUid"`
 	Properties datatypes.JSON `gorm:"column:properties;not null" json:"properties"`
 	UpdatedOn  DateTime       `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	User       *User          `gorm:"references:UID"`
+	User       *User          `gorm:"references:UID;belongsTo"`
 }
 
 func (UserSettings) TableName() string {
@@ -296,8 +296,8 @@ type UserHistory struct {
 	Request          datatypes.JSON `gorm:"column:request;not null" json:"request"`
 	ResponseMetadata datatypes.JSON `gorm:"column:responseMetadata;not null" json:"responseMetadata"`
 	IsStarred        bool           `gorm:"column:isStarred;not null" json:"isStarred"`
-	ExecutedOn       DateTime       `gorm:"column:executedOn;type:timestamptz(3);not null" json:"executedOn"`
-	User             *User          `gorm:"references:UID"`
+	ExecutedOn       DateTime       `gorm:"column:executedOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"executedOn"`
+	User             *User          `gorm:"references:UID;belongsTo"`
 }
 
 func (UserHistory) TableName() string {
@@ -321,7 +321,7 @@ type UserEnvironment struct {
 	Name      *string        `gorm:"column:name" json:"name"`
 	Variables datatypes.JSON `gorm:"column:variables;not null" json:"variables"`
 	IsGlobal  bool           `gorm:"column:isGlobal;not null" json:"isGlobal"`
-	User      *User          `gorm:"references:UID"`
+	User      *User          `gorm:"references:UID;belongsTo"`
 }
 
 func (UserEnvironment) TableName() string {
@@ -338,9 +338,9 @@ func (m *UserEnvironment) BeforeCreate(_ *gorm.DB) error {
 type InvitedUsers struct {
 	AdminUID     string   `gorm:"column:adminUid;not null" json:"adminUid"`
 	AdminEmail   string   `gorm:"column:adminEmail;not null" json:"adminEmail"`
-	InviteeEmail string   `gorm:"column:inviteeEmail;primaryKey;uniqueIndex" json:"inviteeEmail"`
-	InvitedOn    DateTime `gorm:"column:invitedOn;type:timestamptz(3);not null" json:"invitedOn"`
-	User         *User    `gorm:"foreignKey:AdminUID;references:UID"`
+	InviteeEmail string   `gorm:"column:inviteeEmail;primaryKey;uniqueIndex:InvitedUsers_inviteeEmail_key" json:"inviteeEmail"`
+	InvitedOn    DateTime `gorm:"column:invitedOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"invitedOn"`
+	User         *User    `gorm:"foreignKey:AdminUID;references:UID;belongsTo"`
 }
 
 func (InvitedUsers) TableName() string {
@@ -363,11 +363,11 @@ type UserRequest struct {
 	Request        datatypes.JSON  `gorm:"column:request;not null" json:"request"`
 	Type           string          `gorm:"column:type;not null" json:"type"`
 	MockExamples   datatypes.JSON  `gorm:"column:mockExamples" json:"mockExamples"`
-	OrderIndex     int             `gorm:"column:orderIndex;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key;not null" json:"orderIndex"`
-	CreatedOn      DateTime        `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	OrderIndex     int             `gorm:"column:orderIndex;uniqueIndex:UserRequest_userUid_collectionID_orderIndex_key;size:32;not null" json:"orderIndex"`
+	CreatedOn      DateTime        `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn      DateTime        `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	UserCollection *UserCollection `gorm:"foreignKey:CollectionID"`
-	User           *User           `gorm:"references:UID"`
+	UserCollection *UserCollection `gorm:"foreignKey:CollectionID;belongsTo"`
+	User           *User           `gorm:"references:UID;belongsTo"`
 }
 
 func (UserRequest) TableName() string {
@@ -402,14 +402,14 @@ type UserCollection struct {
 	UserUID    string           `gorm:"column:userUid;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key;not null" json:"userUid"`
 	Title      string           `gorm:"column:title;not null" json:"title"`
 	Type       string           `gorm:"column:type;not null" json:"type"`
-	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key;not null" json:"orderIndex"`
+	OrderIndex int              `gorm:"column:orderIndex;uniqueIndex:UserCollection_userUid_parentID_orderIndex_key;size:32;not null" json:"orderIndex"`
 	Data       datatypes.JSON   `gorm:"column:data" json:"data"`
-	CreatedOn  DateTime         `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn  DateTime         `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn  DateTime         `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	Parent     *UserCollection  `gorm:"foreignKey:ParentID"`
-	User       *User            `gorm:"references:UID"`
-	Children   []UserCollection `gorm:"foreignKey:ParentID;constraint:OnDelete:CASCADE"`
-	Requests   []UserRequest    `gorm:"foreignKey:CollectionID;constraint:OnDelete:CASCADE"`
+	Parent     *UserCollection  `gorm:"foreignKey:ParentID;belongsTo"`
+	User       *User            `gorm:"references:UID;belongsTo"`
+	Children   []UserCollection `gorm:"foreignKey:ParentID;constraint:UserCollection_parentID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Requests   []UserRequest    `gorm:"foreignKey:CollectionID;constraint:UserRequest_collectionID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (UserCollection) TableName() string {
@@ -441,22 +441,22 @@ func (*UserCollection) BeforeUpdate(tx *gorm.DB) error {
 type MockServer struct {
 	ID              string               `gorm:"column:id;primaryKey" json:"id"`
 	Name            string               `gorm:"column:name;not null" json:"name"`
-	Subdomain       string               `gorm:"column:subdomain;uniqueIndex;not null" json:"subdomain"`
+	Subdomain       string               `gorm:"column:subdomain;uniqueIndex:MockServer_subdomain_key;not null" json:"subdomain"`
 	CreatorUID      *string              `gorm:"column:creatorUid" json:"creatorUid"`
 	CollectionID    string               `gorm:"column:collectionID;not null" json:"collectionID"`
 	WorkspaceType   string               `gorm:"column:workspaceType;not null" json:"workspaceType"`
 	WorkspaceID     string               `gorm:"column:workspaceID;not null" json:"workspaceID"`
-	DelayInMs       int                  `gorm:"column:delayInMs;default:0;not null" json:"delayInMs"`
+	DelayInMs       int                  `gorm:"column:delayInMs;size:32;default:0;not null" json:"delayInMs"`
 	IsPublic        *bool                `gorm:"column:isPublic;default:true;not null" json:"isPublic"`
 	IsActive        *bool                `gorm:"column:isActive;default:true;not null" json:"isActive"`
-	HitCount        int                  `gorm:"column:hitCount;default:0;not null" json:"hitCount"`
+	HitCount        int                  `gorm:"column:hitCount;size:32;default:0;not null" json:"hitCount"`
 	LastHitAt       *DateTime            `gorm:"column:lastHitAt;type:timestamptz(3)" json:"lastHitAt"`
-	CreatedOn       DateTime             `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn       DateTime             `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn       DateTime             `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
 	DeletedAt       *DateTime            `gorm:"column:deletedAt;type:timestamptz(3)" json:"deletedAt"`
-	User            *User                `gorm:"foreignKey:CreatorUID;references:UID"`
-	RequestLogs     []MockServerLog      `gorm:"foreignKey:MockServerID;constraint:OnDelete:CASCADE"`
-	ActivityHistory []MockServerActivity `gorm:"foreignKey:MockServerID;constraint:OnDelete:CASCADE"`
+	User            *User                `gorm:"foreignKey:CreatorUID;references:UID;belongsTo"`
+	RequestLogs     []MockServerLog      `gorm:"foreignKey:MockServerID;constraint:MockServerLog_mockServerID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ActivityHistory []MockServerActivity `gorm:"foreignKey:MockServerID;constraint:MockServerActivity_mockServerID_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (MockServer) TableName() string {
@@ -493,14 +493,14 @@ type MockServerLog struct {
 	RequestHeaders  datatypes.JSON `gorm:"column:requestHeaders;not null" json:"requestHeaders"`
 	RequestBody     datatypes.JSON `gorm:"column:requestBody" json:"requestBody"`
 	RequestQuery    datatypes.JSON `gorm:"column:requestQuery" json:"requestQuery"`
-	ResponseStatus  int            `gorm:"column:responseStatus;not null" json:"responseStatus"`
+	ResponseStatus  int            `gorm:"column:responseStatus;size:32;not null" json:"responseStatus"`
 	ResponseHeaders datatypes.JSON `gorm:"column:responseHeaders;not null" json:"responseHeaders"`
 	ResponseBody    datatypes.JSON `gorm:"column:responseBody" json:"responseBody"`
-	ResponseTime    int            `gorm:"column:responseTime;not null" json:"responseTime"`
+	ResponseTime    int            `gorm:"column:responseTime;size:32;not null" json:"responseTime"`
 	IPAddress       *string        `gorm:"column:ipAddress" json:"ipAddress"`
 	UserAgent       *string        `gorm:"column:userAgent" json:"userAgent"`
-	ExecutedAt      DateTime       `gorm:"column:executedAt;index:MockServerLog_mockServerID_executedAt_idx;type:timestamptz(3);not null" json:"executedAt"`
-	MockServer      *MockServer
+	ExecutedAt      DateTime       `gorm:"column:executedAt;index:MockServerLog_mockServerID_executedAt_idx;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"executedAt"`
+	MockServer      *MockServer    `gorm:"belongsTo"`
 }
 
 func (MockServerLog) TableName() string {
@@ -519,12 +519,12 @@ func (m *MockServerLog) BeforeCreate(tx *gorm.DB) error {
 }
 
 type MockServerActivity struct {
-	ID           string   `gorm:"column:id;primaryKey" json:"id"`
-	MockServerID string   `gorm:"column:mockServerID;index:MockServerActivity_mockServerID_idx;not null" json:"mockServerID"`
-	Action       string   `gorm:"column:action;not null" json:"action"`
-	PerformedBy  *string  `gorm:"column:performedBy" json:"performedBy"`
-	PerformedAt  DateTime `gorm:"column:performedAt;type:timestamptz(3);not null" json:"performedAt"`
-	MockServer   *MockServer
+	ID           string      `gorm:"column:id;primaryKey" json:"id"`
+	MockServerID string      `gorm:"column:mockServerID;index:MockServerActivity_mockServerID_idx;not null" json:"mockServerID"`
+	Action       string      `gorm:"column:action;not null" json:"action"`
+	PerformedBy  *string     `gorm:"column:performedBy" json:"performedBy"`
+	PerformedAt  DateTime    `gorm:"column:performedAt;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"performedAt"`
+	MockServer   *MockServer `gorm:"belongsTo"`
 }
 
 func (MockServerActivity) TableName() string {
@@ -547,9 +547,9 @@ type Shortcode struct {
 	Request         datatypes.JSON `gorm:"column:request;not null" json:"request"`
 	CreatorUID      *string        `gorm:"column:creatorUid;uniqueIndex:Shortcode_id_creatorUid_key" json:"creatorUid"`
 	EmbedProperties datatypes.JSON `gorm:"column:embedProperties" json:"embedProperties"`
-	CreatedOn       DateTime       `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
-	UpdatedOn       DateTime       `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	User            *User          `gorm:"foreignKey:CreatorUID;references:UID"`
+	CreatedOn       DateTime       `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
+	UpdatedOn       DateTime       `gorm:"column:updatedOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"updatedOn"`
+	User            *User          `gorm:"foreignKey:CreatorUID;references:UID;belongsTo"`
 }
 
 func (Shortcode) TableName() string {
@@ -577,11 +577,11 @@ func (*Shortcode) BeforeUpdate(tx *gorm.DB) error {
 
 type InfraConfig struct {
 	ID                     string   `gorm:"column:id;primaryKey" json:"id"`
-	Name                   string   `gorm:"column:name;uniqueIndex;not null" json:"name"`
+	Name                   string   `gorm:"column:name;uniqueIndex:InfraConfig_name_key;not null" json:"name"`
 	Value                  *string  `gorm:"column:value" json:"value"`
 	IsEncrypted            bool     `gorm:"column:isEncrypted;default:false;not null" json:"isEncrypted"`
 	LastSyncedEnvFileValue *string  `gorm:"column:lastSyncedEnvFileValue" json:"lastSyncedEnvFileValue"`
-	CreatedOn              DateTime `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn              DateTime `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn              DateTime `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
 }
 
@@ -615,11 +615,11 @@ type PersonalAccessToken struct {
 	ID        string    `gorm:"column:id;primaryKey" json:"id"`
 	UserUID   string    `gorm:"column:userUid;not null" json:"userUid"`
 	Label     string    `gorm:"column:label;not null" json:"label"`
-	Token     string    `gorm:"column:token;uniqueIndex;not null" json:"token"`
+	Token     string    `gorm:"column:token;uniqueIndex:PersonalAccessToken_token_key;not null" json:"token"`
 	ExpiresOn *DateTime `gorm:"column:expiresOn;type:timestamptz(3)" json:"expiresOn"`
-	CreatedOn DateTime  `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn DateTime  `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn DateTime  `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
-	User      *User     `gorm:"references:UID"`
+	User      *User     `gorm:"references:UID;belongsTo"`
 }
 
 func (PersonalAccessToken) TableName() string {
@@ -655,10 +655,10 @@ type InfraToken struct {
 	ID         string    `gorm:"column:id;primaryKey" json:"id"`
 	CreatorUID string    `gorm:"column:creatorUid;not null" json:"creatorUid"`
 	Label      string    `gorm:"column:label;not null" json:"label"`
-	Token      string    `gorm:"column:token;uniqueIndex;not null" json:"token"`
+	Token      string    `gorm:"column:token;uniqueIndex:InfraToken_token_key;not null" json:"token"`
 	ExpiresOn  *DateTime `gorm:"column:expiresOn;type:timestamptz(3)" json:"expiresOn"`
-	CreatedOn  DateTime  `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
-	UpdatedOn  DateTime  `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
+	CreatedOn  DateTime  `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
+	UpdatedOn  DateTime  `gorm:"column:updatedOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"updatedOn"`
 }
 
 func (InfraToken) TableName() string {
@@ -697,7 +697,7 @@ type PublishedDocs struct {
 	EnvironmentName      *string        `gorm:"column:environmentName" json:"environmentName"`
 	EnvironmentVariables datatypes.JSON `gorm:"column:environmentVariables" json:"environmentVariables"`
 	Metadata             datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	CreatedOn            DateTime       `gorm:"column:createdOn;type:timestamptz(3);not null" json:"createdOn"`
+	CreatedOn            DateTime       `gorm:"column:createdOn;type:timestamptz(3);default:CURRENT_TIMESTAMP;not null" json:"createdOn"`
 	UpdatedOn            DateTime       `gorm:"column:updatedOn;type:timestamptz(3);not null" json:"updatedOn"`
 }
 

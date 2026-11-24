@@ -22,22 +22,22 @@ defmodule LiteLLM.LiteLLMSpendLogs do
           custom_llm_provider: String.t() | nil,
           api_base: String.t() | nil,
           user: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           cache_hit: String.t() | nil,
           cache_key: String.t() | nil,
-          request_tags: map() | nil,
+          request_tags: map() | list() | String.t() | number() | boolean() | nil,
           team_id: String.t() | nil,
           organization_id: String.t() | nil,
           end_user: String.t() | nil,
           requester_ip_address: String.t() | nil,
-          messages: map() | nil,
-          response: map() | nil,
+          messages: map() | list() | String.t() | number() | boolean() | nil,
+          response: map() | list() | String.t() | number() | boolean() | nil,
           session_id: String.t() | nil,
           status: String.t() | nil,
           mcp_namespaced_tool_name: String.t() | nil,
           billing_agent_id: String.t() | nil,
           agent_id: String.t() | nil,
-          proxy_server_request: map() | nil,
+          proxy_server_request: map() | list() | String.t() | number() | boolean() | nil,
           litellm_call_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -61,22 +61,22 @@ defmodule LiteLLM.LiteLLMSpendLogs do
     field(:custom_llm_provider, :string, default: "")
     field(:api_base, :string, default: "")
     field(:user, :string, default: "")
-    field(:metadata, :map, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:cache_hit, :string, default: "")
     field(:cache_key, :string, default: "")
-    field(:request_tags, :map)
+    field(:request_tags, LiteLLM.PrismaJson, default: [])
     field(:team_id, :string)
     field(:organization_id, :string)
     field(:end_user, :string)
     field(:requester_ip_address, :string)
-    field(:messages, :map, default: %{})
-    field(:response, :map, default: %{})
+    field(:messages, LiteLLM.PrismaJson, default: %{})
+    field(:response, LiteLLM.PrismaJson, default: %{})
     field(:session_id, :string)
     field(:status, :string)
     field(:mcp_namespaced_tool_name, :string)
     field(:billing_agent_id, :string)
     field(:agent_id, :string)
-    field(:proxy_server_request, :map, default: %{})
+    field(:proxy_server_request, LiteLLM.PrismaJson, default: %{})
     field(:litellm_call_id, :string)
     timestamps(inserted_at_source: :created_at)
   end

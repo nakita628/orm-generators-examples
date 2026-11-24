@@ -5,11 +5,11 @@ defmodule Umami.Board do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           type: String.t(),
           name: String.t(),
           description: String.t(),
-          parameters: map(),
+          parameters: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil,
           user: Umami.User.t() | nil,
@@ -17,13 +17,13 @@ defmodule Umami.Board do
         }
 
   schema "board" do
-    field(:id, :string, primary_key: true, source: :board_id)
+    field(:id, Ecto.UUID, primary_key: true, source: :board_id)
     field(:type, :string)
     field(:name, :string)
     field(:description, :string)
-    field(:parameters, :map)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
-    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: :string)
+    field(:parameters, Umami.PrismaJson)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
+    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: Ecto.UUID)
     timestamps(inserted_at_source: :created_at)
   end
 end

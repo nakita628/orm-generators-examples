@@ -16,7 +16,7 @@ defmodule Trigger.TaskRunAttempt do
           started_at: DateTime.t() | nil,
           completed_at: DateTime.t() | nil,
           usage_duration_ms: integer(),
-          error: map() | nil,
+          error: map() | list() | String.t() | number() | boolean() | nil,
           output: String.t() | nil,
           output_type: String.t(),
           inserted_at: DateTime.t(),
@@ -42,7 +42,7 @@ defmodule Trigger.TaskRunAttempt do
     field(:started_at, Trigger.PrismaDateTime, source: :startedAt)
     field(:completed_at, Trigger.PrismaDateTime, source: :completedAt)
     field(:usage_duration_ms, :integer, default: 0, source: :usageDurationMs)
-    field(:error, :map)
+    field(:error, Trigger.PrismaJson)
     field(:output, :string)
     field(:output_type, :string, default: "application/json", source: :outputType)
     field(:task_run_id, :string, source: :taskRunId)

@@ -82,8 +82,10 @@ class User extends Model
     protected $casts = [
         'emailVerified' => 'datetime',
         'parentSubscriptionId' => 'integer',
+        'collectionOrder' => AsPrismaList::class . ':int',
         'linksRouteTo' => LinksRouteTo::class,
         'aiTaggingMethod' => AiTaggingMethod::class,
+        'aiPredefinedTags' => AsPrismaList::class,
         'aiTagExistingLinks' => 'boolean',
         'theme' => Theme::class,
         'preventDuplicateLinks' => 'boolean',

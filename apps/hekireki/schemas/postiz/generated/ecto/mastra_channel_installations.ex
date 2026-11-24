@@ -9,7 +9,7 @@ defmodule Postiz.MastraChannelInstallations do
           agent_id: String.t(),
           status: String.t(),
           webhook_id: String.t() | nil,
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           config_hash: String.t() | nil,
           error: String.t() | nil,
           created_at: DateTime.t(),
@@ -24,7 +24,7 @@ defmodule Postiz.MastraChannelInstallations do
     field(:agent_id, :string, source: :agentId)
     field(:status, :string)
     field(:webhook_id, :string, source: :webhookId)
-    field(:data, :map)
+    field(:data, Postiz.PrismaJson)
     field(:config_hash, :string, source: :configHash)
     field(:error, :string)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)

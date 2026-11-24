@@ -7,7 +7,7 @@ defmodule OpenPanel.Dashboard do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          filters: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: OpenPanel.Organization.t() | nil,
@@ -19,7 +19,7 @@ defmodule OpenPanel.Dashboard do
   schema "dashboards" do
     field(:id, :string, primary_key: true, read_after_writes: true)
     field(:name, :string)
-    field(:filters, :map)
+    field(:filters, OpenPanel.PrismaJson, default: [])
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)
     belongs_to(:organization, OpenPanel.Organization, foreign_key: :organization_id, define_field: false, type: :string)

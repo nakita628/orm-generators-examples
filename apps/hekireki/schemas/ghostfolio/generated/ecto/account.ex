@@ -5,7 +5,7 @@ defmodule Ghostfolio.Account do
   @timestamps_opts [type: Ghostfolio.PrismaDateTime, autogenerate: {Ghostfolio.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          user_id: Ecto.UUID.t(),
+          user_id: String.t(),
           comment: String.t() | nil,
           currency: String.t() | nil,
           id: String.t(),
@@ -21,10 +21,10 @@ defmodule Ghostfolio.Account do
     field(:currency, :string)
     field(:id, :string, primary_key: true, autogenerate: {Ecto.UUID, :generate, []})
     field(:name, :string)
-    field(:platform_id, :binary_id, source: :platformId)
-    field(:user_id, :binary_id, primary_key: true, source: :userId)
-    belongs_to(:platform, Ghostfolio.Platform, foreign_key: :platform_id, define_field: false, type: :binary_id)
-    belongs_to(:user, Ghostfolio.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:platform_id, :string, source: :platformId)
+    field(:user_id, :string, primary_key: true, source: :userId)
+    belongs_to(:platform, Ghostfolio.Platform, foreign_key: :platform_id, define_field: false, type: :string)
+    belongs_to(:user, Ghostfolio.User, foreign_key: :user_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

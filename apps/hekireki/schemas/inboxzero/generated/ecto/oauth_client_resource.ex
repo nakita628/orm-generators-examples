@@ -5,7 +5,7 @@ defmodule InboxZero.OauthClientResource do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           created_at: DateTime.t() | nil,
           client: InboxZero.OauthClient.t() | nil,
           oauth_resource: InboxZero.OauthResource.t() | nil
@@ -13,7 +13,7 @@ defmodule InboxZero.OauthClientResource do
 
   schema "OauthClientResource" do
     field(:id, :string, primary_key: true)
-    field(:metadata, :map)
+    field(:metadata, InboxZero.PrismaJson)
     field(:created_at, InboxZero.PrismaDateTime, source: :createdAt)
     field(:client_id, :string, source: :clientId)
     field(:resource_id, :string, source: :resourceId)

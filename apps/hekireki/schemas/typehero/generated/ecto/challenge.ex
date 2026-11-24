@@ -14,7 +14,7 @@ defmodule TypeHero.Challenge do
           code: String.t(),
           tests: String.t(),
           status: atom(),
-          tsconfig: map() | nil,
+          tsconfig: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: TypeHero.User.t() | nil,
@@ -42,9 +42,9 @@ defmodule TypeHero.Challenge do
     # Test cases that need to be passed in order have the submission be accepted.
     field(:tests, :string)
     field(:status, Ecto.Enum, values: [:DECLINED, :BANNED, :PENDING, :ACTIVE], default: :PENDING)
-    field(:tsconfig, :map)
-    field(:user_id, :binary_id, source: :userId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:tsconfig, TypeHero.PrismaJson)
+    field(:user_id, :string, source: :userId)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
     has_many(:vote, TypeHero.Vote, foreign_key: :challenge_id)
     has_many(:submission, TypeHero.Submission, foreign_key: :challenge_id)
     has_many(:comment, TypeHero.Comment, foreign_key: :root_challenge_id)

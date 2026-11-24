@@ -10,7 +10,7 @@ defmodule LangWatch.Experiment do
           type: atom(),
           slug: String.t(),
           archived_at: DateTime.t() | nil,
-          workbench_state: map() | nil,
+          workbench_state: map() | list() | String.t() | number() | boolean() | nil,
           workbench_version: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -26,7 +26,7 @@ defmodule LangWatch.Experiment do
     field(:type, Ecto.Enum, values: [:DSPY, :BATCH_EVALUATION, :BATCH_EVALUATION_V2, :EVALUATIONS_V3])
     field(:slug, :string)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
-    field(:workbench_state, :map, source: :workbenchState)
+    field(:workbench_state, LangWatch.PrismaJson, source: :workbenchState)
     field(:workbench_version, :integer, default: 0, source: :workbenchVersion)
     field(:project_id, :string, source: :projectId)
     field(:workflow_id, :string, source: :workflowId)

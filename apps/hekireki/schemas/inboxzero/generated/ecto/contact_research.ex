@@ -11,7 +11,7 @@ defmodule InboxZero.ContactResearch do
           found: boolean(),
           role: String.t() | nil,
           confidence: String.t() | nil,
-          company: map() | nil,
+          company: map() | list() | String.t() | number() | boolean() | nil,
           sources: [String.t()],
           inserted_at: DateTime.t()
         }
@@ -23,7 +23,7 @@ defmodule InboxZero.ContactResearch do
     field(:found, :boolean)
     field(:role, :string)
     field(:confidence, :string)
-    field(:company, :map)
+    field(:company, InboxZero.PrismaJson)
     field(:sources, {:array, :string})
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end

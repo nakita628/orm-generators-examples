@@ -16,8 +16,8 @@ defmodule Trigger.Project do
           engine: atom(),
           builder_project_id: String.t() | nil,
           allowed_worker_queues: [String.t()],
-          build_settings: map() | nil,
-          onboarding_data: map() | nil,
+          build_settings: map() | list() | String.t() | number() | boolean() | nil,
+          onboarding_data: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: Trigger.Organization.t() | nil,
@@ -73,8 +73,8 @@ defmodule Trigger.Project do
     field(:builder_project_id, :string, source: :builderProjectId)
     # The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
     field(:allowed_worker_queues, {:array, :string}, source: :allowedMasterQueues)
-    field(:build_settings, :map, source: :buildSettings)
-    field(:onboarding_data, :map, source: :onboardingData)
+    field(:build_settings, Trigger.PrismaJson, source: :buildSettings)
+    field(:onboarding_data, Trigger.PrismaJson, source: :onboardingData)
     field(:organization_id, :string, source: :organizationId)
     field(:default_worker_group_id, :string, source: :defaultWorkerGroupId)
     belongs_to(:organization, Trigger.Organization, foreign_key: :organization_id, define_field: false, type: :string)

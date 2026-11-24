@@ -6,7 +6,7 @@ defmodule Postiz.MastraThreadState do
   @type t :: %__MODULE__{
           thread_id: String.t(),
           type: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
           created_at_z: DateTime.t() | nil,
@@ -16,7 +16,7 @@ defmodule Postiz.MastraThreadState do
   schema "mastra_thread_state" do
     field(:thread_id, :string, primary_key: true, source: :threadId)
     field(:type, :string, primary_key: true)
-    field(:value, :map)
+    field(:value, Postiz.PrismaJson)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:updated_at, Postiz.PrismaDateTime, source: :updatedAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

@@ -40,6 +40,8 @@ class Prompt extends \Illuminate\Database\Eloquent\Model
         'version' => 'integer',
         'is_active' => 'boolean',
         'config' => 'array',
+        'tags' => AsPrismaList::class,
+        'labels' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

@@ -12,14 +12,14 @@ import (
 )
 
 type User struct {
-	ID            string       `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Email         string       `gorm:"column:email;uniqueIndex;not null" json:"email"`
+	ID            string       `gorm:"column:id;primaryKey" json:"id"`
+	Email         string       `gorm:"column:email;uniqueIndex:users_email_key;not null" json:"email"`
 	Password      *string      `gorm:"column:password" json:"password"`
 	Type          string       `gorm:"column:type;not null" json:"type"`
 	EmailVerified bool         `gorm:"column:emailVerified;default:false;not null" json:"emailVerified"`
-	CreatedAt     DateTime     `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime     `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Memberships   []Membership `gorm:"foreignKey:UserID"`
+	CreatedAt     DateTime     `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime     `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Memberships   []Membership `gorm:"foreignKey:UserID;constraint:memberships_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (User) TableName() string {
@@ -49,41 +49,41 @@ func (*User) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Project struct {
-	ID                            string           `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID                            string           `gorm:"column:id;primaryKey" json:"id"`
 	Name                          string           `gorm:"column:name;not null" json:"name"`
-	Public                        string           `gorm:"column:public;uniqueIndex;not null" json:"public"`
-	Secret                        string           `gorm:"column:secret;uniqueIndex;not null" json:"secret"`
+	Public                        string           `gorm:"column:public;uniqueIndex:projects_public_key;not null" json:"public"`
+	Secret                        string           `gorm:"column:secret;uniqueIndex:projects_secret_key;not null" json:"secret"`
 	Disabled                      bool             `gorm:"column:disabled;default:false;not null" json:"disabled"`
 	DisabledReason                *string          `gorm:"column:disabledReason" json:"disabledReason"`
-	Customer                      *string          `gorm:"column:customer;uniqueIndex" json:"customer"`
-	Subscription                  *string          `gorm:"column:subscription;uniqueIndex" json:"subscription"`
+	Customer                      *string          `gorm:"column:customer;uniqueIndex:projects_customer_key" json:"customer"`
+	Subscription                  *string          `gorm:"column:subscription;uniqueIndex:projects_subscription_key" json:"subscription"`
 	CardVerification              *string          `gorm:"column:cardVerification;index:projects_cardVerification_cardVerificationAt_idx" json:"cardVerification"`
 	CardVerificationIntent        *string          `gorm:"column:cardVerificationIntent" json:"cardVerificationIntent"`
-	CardVerificationAt            *DateTime        `gorm:"column:cardVerificationAt;index:projects_cardVerification_cardVerificationAt_idx" json:"cardVerificationAt"`
+	CardVerificationAt            *DateTime        `gorm:"column:cardVerificationAt;index:projects_cardVerification_cardVerificationAt_idx;type:timestamp(3)" json:"cardVerificationAt"`
 	CardVerificationSession       *string          `gorm:"column:cardVerificationSession" json:"cardVerificationSession"`
 	CardVerificationPaymentMethod *string          `gorm:"column:cardVerificationPaymentMethod" json:"cardVerificationPaymentMethod"`
 	CardVerificationFingerprint   *string          `gorm:"column:cardVerificationFingerprint" json:"cardVerificationFingerprint"`
-	CardVerificationAttempts      int              `gorm:"column:cardVerificationAttempts;default:0;not null" json:"cardVerificationAttempts"`
-	BillingLimitWorkflows         *int             `gorm:"column:billingLimitWorkflows" json:"billingLimitWorkflows"`
-	BillingLimitCampaigns         *int             `gorm:"column:billingLimitCampaigns" json:"billingLimitCampaigns"`
-	BillingLimitTransactional     *int             `gorm:"column:billingLimitTransactional" json:"billingLimitTransactional"`
-	BillingLimitInbound           *int             `gorm:"column:billingLimitInbound" json:"billingLimitInbound"`
+	CardVerificationAttempts      int              `gorm:"column:cardVerificationAttempts;size:32;default:0;not null" json:"cardVerificationAttempts"`
+	BillingLimitWorkflows         *int             `gorm:"column:billingLimitWorkflows;size:32" json:"billingLimitWorkflows"`
+	BillingLimitCampaigns         *int             `gorm:"column:billingLimitCampaigns;size:32" json:"billingLimitCampaigns"`
+	BillingLimitTransactional     *int             `gorm:"column:billingLimitTransactional;size:32" json:"billingLimitTransactional"`
+	BillingLimitInbound           *int             `gorm:"column:billingLimitInbound;size:32" json:"billingLimitInbound"`
 	Tracking                      string           `gorm:"column:tracking;default:'ENABLED';not null" json:"tracking"`
 	Language                      *string          `gorm:"column:language;default:'en';not null" json:"language"`
-	CreatedAt                     DateTime         `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                     DateTime         `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Members                       []Membership     `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Contacts                      []Contact        `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Templates                     []Template       `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Segments                      []Segment        `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Workflows                     []Workflow       `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Campaigns                     []Campaign       `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Emails                        []Email          `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Events                        []Event          `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Domains                       []Domain         `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	APIRequests                   []APIRequest     `gorm:"foreignKey:ProjectID;constraint:OnDelete:SET NULL"`
-	IdempotencyKeys               []IdempotencyKey `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	ThrottleClaims                []ThrottleClaim  `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
+	CreatedAt                     DateTime         `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                     DateTime         `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Members                       []Membership     `gorm:"foreignKey:ProjectID;constraint:memberships_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Contacts                      []Contact        `gorm:"foreignKey:ProjectID;constraint:contacts_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Templates                     []Template       `gorm:"foreignKey:ProjectID;constraint:templates_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Segments                      []Segment        `gorm:"foreignKey:ProjectID;constraint:segments_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Workflows                     []Workflow       `gorm:"foreignKey:ProjectID;constraint:workflows_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Campaigns                     []Campaign       `gorm:"foreignKey:ProjectID;constraint:campaigns_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Emails                        []Email          `gorm:"foreignKey:ProjectID;constraint:emails_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Events                        []Event          `gorm:"foreignKey:ProjectID;constraint:events_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Domains                       []Domain         `gorm:"foreignKey:ProjectID;constraint:domains_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIRequests                   []APIRequest     `gorm:"foreignKey:ProjectID;constraint:api_requests_projectId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	IdempotencyKeys               []IdempotencyKey `gorm:"foreignKey:ProjectID;constraint:idempotency_keys_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ThrottleClaims                []ThrottleClaim  `gorm:"foreignKey:ProjectID;constraint:throttle_claims_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Project) TableName() string {
@@ -116,10 +116,10 @@ type Membership struct {
 	UserID    string   `gorm:"column:userId;primaryKey" json:"userId"`
 	ProjectID string   `gorm:"column:projectId;primaryKey" json:"projectId"`
 	Role      string   `gorm:"column:role;default:'MEMBER';not null" json:"role"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User      *User
-	Project   *Project
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	User      *User    `gorm:"belongsTo"`
+	Project   *Project `gorm:"belongsTo"`
 }
 
 func (Membership) TableName() string {
@@ -146,14 +146,14 @@ func (*Membership) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Domain struct {
-	ID         string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID         string         `gorm:"column:id;primaryKey" json:"id"`
 	Domain     string         `gorm:"column:domain;uniqueIndex:domains_projectId_domain_key;not null" json:"domain"`
 	Verified   bool           `gorm:"column:verified;index:domains_projectId_verified_idx;default:false;not null" json:"verified"`
 	DkimTokens datatypes.JSON `gorm:"column:dkimTokens" json:"dkimTokens"`
 	ProjectID  string         `gorm:"column:projectId;uniqueIndex:domains_projectId_domain_key;index:domains_projectId_idx;index:domains_projectId_verified_idx;not null" json:"projectId"`
-	CreatedAt  DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt  DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project    *Project
+	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt  DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project    *Project       `gorm:"belongsTo"`
 }
 
 func (Domain) TableName() string {
@@ -183,7 +183,7 @@ func (*Domain) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Contact struct {
-	ID         string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID         string         `gorm:"column:id;primaryKey" json:"id"`
 	Email      string         `gorm:"column:email;uniqueIndex:contacts_projectId_email_key;not null" json:"email"`
 	Data       datatypes.JSON `gorm:"column:data;index:contacts_data_idx" json:"data"`
 	Subscribed *bool          `gorm:"column:subscribed;index:contacts_projectId_subscribed_idx;default:true;not null" json:"subscribed"`
@@ -194,16 +194,16 @@ type Contact struct {
 	//
 	// Cleared by every other write to `subscribed` — including the bounce and
 	// complaint paths, so a suppressed address can never be woken back up.
-	SnoozedUntil       *DateTime `gorm:"column:snoozedUntil;index:contacts_snoozedUntil_idx" json:"snoozedUntil"`
-	ProjectID          string    `gorm:"column:projectId;uniqueIndex:contacts_projectId_email_key;index:contacts_projectId_idx;index:contacts_projectId_subscribed_idx;not null" json:"projectId"`
-	CreatedAt          DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt          DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project            *Project
-	Emails             []Email             `gorm:"foreignKey:ContactID;constraint:OnDelete:CASCADE"`
-	WorkflowExecutions []WorkflowExecution `gorm:"foreignKey:ContactID;constraint:OnDelete:CASCADE"`
-	Events             []Event             `gorm:"foreignKey:ContactID;constraint:OnDelete:CASCADE"`
-	SegmentMemberships []SegmentMembership `gorm:"foreignKey:ContactID;constraint:OnDelete:CASCADE"`
-	ThrottleClaims     []ThrottleClaim     `gorm:"foreignKey:ContactID;constraint:OnDelete:CASCADE"`
+	SnoozedUntil       *DateTime           `gorm:"column:snoozedUntil;index:contacts_snoozedUntil_idx;type:timestamp(3)" json:"snoozedUntil"`
+	ProjectID          string              `gorm:"column:projectId;uniqueIndex:contacts_projectId_email_key;index:contacts_projectId_idx;index:contacts_projectId_subscribed_idx;not null" json:"projectId"`
+	CreatedAt          DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt          DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project            *Project            `gorm:"belongsTo"`
+	Emails             []Email             `gorm:"foreignKey:ContactID;constraint:emails_contactId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkflowExecutions []WorkflowExecution `gorm:"foreignKey:ContactID;constraint:workflow_executions_contactId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Events             []Event             `gorm:"foreignKey:ContactID;constraint:events_contactId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	SegmentMemberships []SegmentMembership `gorm:"foreignKey:ContactID;constraint:segment_memberships_contactId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ThrottleClaims     []ThrottleClaim     `gorm:"foreignKey:ContactID;constraint:throttle_claims_contactId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Contact) TableName() string {
@@ -233,21 +233,21 @@ func (*Contact) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Template struct {
-	ID            string   `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Name          string   `gorm:"column:name;not null" json:"name"`
-	Description   *string  `gorm:"column:description" json:"description"`
-	Subject       string   `gorm:"column:subject;not null" json:"subject"`
-	Body          string   `gorm:"column:body;not null" json:"body"`
-	From          string   `gorm:"column:from;not null" json:"from"`
-	FromName      *string  `gorm:"column:fromName" json:"fromName"`
-	ReplyTo       *string  `gorm:"column:replyTo" json:"replyTo"`
-	Type          string   `gorm:"column:type;index:templates_projectId_type_idx;default:'MARKETING';not null" json:"type"`
-	ProjectID     string   `gorm:"column:projectId;index:templates_projectId_idx;index:templates_projectId_type_idx;not null" json:"projectId"`
-	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project       *Project
-	Emails        []Email        `gorm:"foreignKey:TemplateID"`
-	WorkflowSteps []WorkflowStep `gorm:"foreignKey:TemplateID"`
+	ID            string         `gorm:"column:id;primaryKey" json:"id"`
+	Name          string         `gorm:"column:name;not null" json:"name"`
+	Description   *string        `gorm:"column:description" json:"description"`
+	Subject       string         `gorm:"column:subject;not null" json:"subject"`
+	Body          string         `gorm:"column:body;not null" json:"body"`
+	From          string         `gorm:"column:from;not null" json:"from"`
+	FromName      *string        `gorm:"column:fromName" json:"fromName"`
+	ReplyTo       *string        `gorm:"column:replyTo" json:"replyTo"`
+	Type          string         `gorm:"column:type;index:templates_projectId_type_idx;default:'MARKETING';not null" json:"type"`
+	ProjectID     string         `gorm:"column:projectId;index:templates_projectId_idx;index:templates_projectId_type_idx;not null" json:"projectId"`
+	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project       *Project       `gorm:"belongsTo"`
+	Emails        []Email        `gorm:"foreignKey:TemplateID;constraint:emails_templateId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	WorkflowSteps []WorkflowStep `gorm:"foreignKey:TemplateID;constraint:workflow_steps_templateId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (Template) TableName() string {
@@ -277,19 +277,19 @@ func (*Template) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Segment struct {
-	ID              string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Name            string         `gorm:"column:name;not null" json:"name"`
-	Description     *string        `gorm:"column:description" json:"description"`
-	Type            string         `gorm:"column:type;default:'DYNAMIC';not null" json:"type"`
-	Condition       datatypes.JSON `gorm:"column:condition;index:segments_condition_idx" json:"condition"`
-	TrackMembership bool           `gorm:"column:trackMembership;default:false;not null" json:"trackMembership"`
-	MemberCount     int            `gorm:"column:memberCount;default:0;not null" json:"memberCount"`
-	ProjectID       string         `gorm:"column:projectId;index:segments_projectId_idx;not null" json:"projectId"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project         *Project
-	Memberships     []SegmentMembership `gorm:"foreignKey:SegmentID;constraint:OnDelete:CASCADE"`
-	Campaigns       []Campaign          `gorm:"foreignKey:SegmentID"`
+	ID              string              `gorm:"column:id;primaryKey" json:"id"`
+	Name            string              `gorm:"column:name;not null" json:"name"`
+	Description     *string             `gorm:"column:description" json:"description"`
+	Type            string              `gorm:"column:type;default:'DYNAMIC';not null" json:"type"`
+	Condition       datatypes.JSON      `gorm:"column:condition;index:segments_condition_idx" json:"condition"`
+	TrackMembership bool                `gorm:"column:trackMembership;default:false;not null" json:"trackMembership"`
+	MemberCount     int                 `gorm:"column:memberCount;size:32;default:0;not null" json:"memberCount"`
+	ProjectID       string              `gorm:"column:projectId;index:segments_projectId_idx;not null" json:"projectId"`
+	CreatedAt       DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project         *Project            `gorm:"belongsTo"`
+	Memberships     []SegmentMembership `gorm:"foreignKey:SegmentID;constraint:segment_memberships_segmentId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Campaigns       []Campaign          `gorm:"foreignKey:SegmentID;constraint:campaigns_segmentId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (Segment) TableName() string {
@@ -321,12 +321,12 @@ func (*Segment) BeforeUpdate(tx *gorm.DB) error {
 type SegmentMembership struct {
 	ContactID string    `gorm:"column:contactId;primaryKey;index:segment_memberships_contactId_exitedAt_idx" json:"contactId"`
 	SegmentID string    `gorm:"column:segmentId;primaryKey;index:segment_memberships_segmentId_exitedAt_idx" json:"segmentId"`
-	EnteredAt DateTime  `gorm:"column:enteredAt;index:segment_memberships_enteredAt_idx;not null" json:"enteredAt"`
-	ExitedAt  *DateTime `gorm:"column:exitedAt;index:segment_memberships_segmentId_exitedAt_idx;index:segment_memberships_contactId_exitedAt_idx" json:"exitedAt"`
-	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Contact   *Contact
-	Segment   *Segment
+	EnteredAt DateTime  `gorm:"column:enteredAt;index:segment_memberships_enteredAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"enteredAt"`
+	ExitedAt  *DateTime `gorm:"column:exitedAt;index:segment_memberships_segmentId_exitedAt_idx;index:segment_memberships_contactId_exitedAt_idx;type:timestamp(3)" json:"exitedAt"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Contact   *Contact  `gorm:"belongsTo"`
+	Segment   *Segment  `gorm:"belongsTo"`
 }
 
 func (SegmentMembership) TableName() string {
@@ -356,7 +356,7 @@ func (*SegmentMembership) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Campaign struct {
-	ID                string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID                string         `gorm:"column:id;primaryKey" json:"id"`
 	Name              string         `gorm:"column:name;not null" json:"name"`
 	Description       *string        `gorm:"column:description" json:"description"`
 	Status            string         `gorm:"column:status;index:campaigns_projectId_status_idx;default:'DRAFT';not null" json:"status"`
@@ -369,23 +369,23 @@ type Campaign struct {
 	AudienceType      string         `gorm:"column:audienceType;default:'ALL';not null" json:"audienceType"`
 	AudienceCondition datatypes.JSON `gorm:"column:audienceCondition;index:campaigns_audienceCondition_idx" json:"audienceCondition"`
 	SegmentID         *string        `gorm:"column:segmentId;index:campaigns_segmentId_idx" json:"segmentId"`
-	ScheduledFor      *DateTime      `gorm:"column:scheduledFor;index:campaigns_scheduledFor_idx" json:"scheduledFor"`
-	TotalRecipients   int            `gorm:"column:totalRecipients;default:0;not null" json:"totalRecipients"`
-	SentCount         int            `gorm:"column:sentCount;default:0;not null" json:"sentCount"`
-	DeliveredCount    int            `gorm:"column:deliveredCount;default:0;not null" json:"deliveredCount"`
-	OpenedCount       int            `gorm:"column:openedCount;default:0;not null" json:"openedCount"`
-	ClickedCount      int            `gorm:"column:clickedCount;default:0;not null" json:"clickedCount"`
-	BouncedCount      int            `gorm:"column:bouncedCount;default:0;not null" json:"bouncedCount"`
-	ComplainedCount   int            `gorm:"column:complainedCount;default:0;not null" json:"complainedCount"`
-	UnsubscribedCount int            `gorm:"column:unsubscribedCount;default:0;not null" json:"unsubscribedCount"`
+	ScheduledFor      *DateTime      `gorm:"column:scheduledFor;index:campaigns_scheduledFor_idx;type:timestamp(3)" json:"scheduledFor"`
+	TotalRecipients   int            `gorm:"column:totalRecipients;size:32;default:0;not null" json:"totalRecipients"`
+	SentCount         int            `gorm:"column:sentCount;size:32;default:0;not null" json:"sentCount"`
+	DeliveredCount    int            `gorm:"column:deliveredCount;size:32;default:0;not null" json:"deliveredCount"`
+	OpenedCount       int            `gorm:"column:openedCount;size:32;default:0;not null" json:"openedCount"`
+	ClickedCount      int            `gorm:"column:clickedCount;size:32;default:0;not null" json:"clickedCount"`
+	BouncedCount      int            `gorm:"column:bouncedCount;size:32;default:0;not null" json:"bouncedCount"`
+	ComplainedCount   int            `gorm:"column:complainedCount;size:32;default:0;not null" json:"complainedCount"`
+	UnsubscribedCount int            `gorm:"column:unsubscribedCount;size:32;default:0;not null" json:"unsubscribedCount"`
 	Archived          bool           `gorm:"column:archived;index:campaigns_projectId_archived_createdAt_idx;default:false;not null" json:"archived"`
 	ProjectID         string         `gorm:"column:projectId;index:campaigns_projectId_status_idx;index:campaigns_projectId_archived_createdAt_idx;not null" json:"projectId"`
-	SentAt            *DateTime      `gorm:"column:sentAt" json:"sentAt"`
-	CreatedAt         DateTime       `gorm:"column:createdAt;index:campaigns_projectId_archived_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Segment           *Segment
-	Project           *Project
-	Emails            []Email `gorm:"foreignKey:CampaignID;constraint:OnDelete:CASCADE"`
+	SentAt            *DateTime      `gorm:"column:sentAt;type:timestamp(3)" json:"sentAt"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;index:campaigns_projectId_archived_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Segment           *Segment       `gorm:"belongsTo"`
+	Project           *Project       `gorm:"belongsTo"`
+	Emails            []Email        `gorm:"foreignKey:CampaignID;constraint:emails_campaignId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Campaign) TableName() string {
@@ -415,22 +415,22 @@ func (*Campaign) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Workflow struct {
-	ID                    string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Name                  string         `gorm:"column:name;not null" json:"name"`
-	Description           *string        `gorm:"column:description" json:"description"`
-	Enabled               bool           `gorm:"column:enabled;index:workflows_projectId_enabled_idx;default:false;not null" json:"enabled"`
-	TriggerType           string         `gorm:"column:triggerType;not null" json:"triggerType"`
-	TriggerConfig         datatypes.JSON `gorm:"column:triggerConfig" json:"triggerConfig"`
-	AllowReentry          bool           `gorm:"column:allowReentry;default:false;not null" json:"allowReentry"`
-	ThrottleWindowSeconds *int           `gorm:"column:throttleWindowSeconds" json:"throttleWindowSeconds"`
-	ThrottleKey           *string        `gorm:"column:throttleKey" json:"throttleKey"`
-	ProjectID             string         `gorm:"column:projectId;index:workflows_projectId_idx;index:workflows_projectId_enabled_idx;not null" json:"projectId"`
-	CreatedAt             DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project               *Project
-	Steps                 []WorkflowStep      `gorm:"foreignKey:WorkflowID;constraint:OnDelete:CASCADE"`
-	Executions            []WorkflowExecution `gorm:"foreignKey:WorkflowID;constraint:OnDelete:CASCADE"`
-	ThrottleClaims        []ThrottleClaim     `gorm:"foreignKey:WorkflowID;constraint:OnDelete:CASCADE"`
+	ID                    string              `gorm:"column:id;primaryKey" json:"id"`
+	Name                  string              `gorm:"column:name;not null" json:"name"`
+	Description           *string             `gorm:"column:description" json:"description"`
+	Enabled               bool                `gorm:"column:enabled;index:workflows_projectId_enabled_idx;default:false;not null" json:"enabled"`
+	TriggerType           string              `gorm:"column:triggerType;not null" json:"triggerType"`
+	TriggerConfig         datatypes.JSON      `gorm:"column:triggerConfig" json:"triggerConfig"`
+	AllowReentry          bool                `gorm:"column:allowReentry;default:false;not null" json:"allowReentry"`
+	ThrottleWindowSeconds *int                `gorm:"column:throttleWindowSeconds;size:32" json:"throttleWindowSeconds"`
+	ThrottleKey           *string             `gorm:"column:throttleKey" json:"throttleKey"`
+	ProjectID             string              `gorm:"column:projectId;index:workflows_projectId_idx;index:workflows_projectId_enabled_idx;not null" json:"projectId"`
+	CreatedAt             DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime            `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project               *Project            `gorm:"belongsTo"`
+	Steps                 []WorkflowStep      `gorm:"foreignKey:WorkflowID;constraint:workflow_steps_workflowId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Executions            []WorkflowExecution `gorm:"foreignKey:WorkflowID;constraint:workflow_executions_workflowId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ThrottleClaims        []ThrottleClaim     `gorm:"foreignKey:WorkflowID;constraint:throttle_claims_workflowId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Workflow) TableName() string {
@@ -460,21 +460,21 @@ func (*Workflow) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkflowStep struct {
-	ID                        string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	Type                      string         `gorm:"column:type;not null" json:"type"`
-	Name                      string         `gorm:"column:name;not null" json:"name"`
-	Position                  datatypes.JSON `gorm:"column:position;not null" json:"position"`
-	Config                    datatypes.JSON `gorm:"column:config;not null" json:"config"`
-	WorkflowID                string         `gorm:"column:workflowId;index:workflow_steps_workflowId_idx;not null" json:"workflowId"`
-	TemplateID                *string        `gorm:"column:templateId;index:workflow_steps_templateId_idx" json:"templateId"`
-	CreatedAt                 DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                 DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Workflow                  *Workflow
-	Template                  *Template
-	OutgoingTransitions       []WorkflowTransition    `gorm:"foreignKey:FromStepID;constraint:OnDelete:CASCADE"`
-	IncomingTransitions       []WorkflowTransition    `gorm:"foreignKey:ToStepID;constraint:OnDelete:CASCADE"`
-	Executions                []WorkflowStepExecution `gorm:"foreignKey:StepID;constraint:OnDelete:CASCADE"`
-	CurrentWorkflowExecutions []WorkflowExecution     `gorm:"foreignKey:CurrentStepID"`
+	ID                        string                  `gorm:"column:id;primaryKey" json:"id"`
+	Type                      string                  `gorm:"column:type;not null" json:"type"`
+	Name                      string                  `gorm:"column:name;not null" json:"name"`
+	Position                  datatypes.JSON          `gorm:"column:position;not null" json:"position"`
+	Config                    datatypes.JSON          `gorm:"column:config;not null" json:"config"`
+	WorkflowID                string                  `gorm:"column:workflowId;index:workflow_steps_workflowId_idx;not null" json:"workflowId"`
+	TemplateID                *string                 `gorm:"column:templateId;index:workflow_steps_templateId_idx" json:"templateId"`
+	CreatedAt                 DateTime                `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                 DateTime                `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Workflow                  *Workflow               `gorm:"belongsTo"`
+	Template                  *Template               `gorm:"belongsTo"`
+	OutgoingTransitions       []WorkflowTransition    `gorm:"foreignKey:FromStepID;constraint:workflow_transitions_fromStepId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	IncomingTransitions       []WorkflowTransition    `gorm:"foreignKey:ToStepID;constraint:workflow_transitions_toStepId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Executions                []WorkflowStepExecution `gorm:"foreignKey:StepID;constraint:workflow_step_executions_stepId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	CurrentWorkflowExecutions []WorkflowExecution     `gorm:"foreignKey:CurrentStepID;constraint:workflow_executions_currentStepId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (WorkflowStep) TableName() string {
@@ -504,15 +504,15 @@ func (*WorkflowStep) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkflowTransition struct {
-	ID         string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID         string         `gorm:"column:id;primaryKey" json:"id"`
 	FromStepID string         `gorm:"column:fromStepId;index:workflow_transitions_fromStepId_idx;not null" json:"fromStepId"`
 	ToStepID   string         `gorm:"column:toStepId;index:workflow_transitions_toStepId_idx;not null" json:"toStepId"`
 	Condition  datatypes.JSON `gorm:"column:condition" json:"condition"`
-	Priority   int            `gorm:"column:priority;default:0;not null" json:"priority"`
-	CreatedAt  DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt  DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	FromStep   *WorkflowStep  `gorm:"foreignKey:FromStepID"`
-	ToStep     *WorkflowStep  `gorm:"foreignKey:ToStepID"`
+	Priority   int            `gorm:"column:priority;size:32;default:0;not null" json:"priority"`
+	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt  DateTime       `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	FromStep   *WorkflowStep  `gorm:"foreignKey:FromStepID;belongsTo"`
+	ToStep     *WorkflowStep  `gorm:"foreignKey:ToStepID;belongsTo"`
 }
 
 func (WorkflowTransition) TableName() string {
@@ -542,22 +542,22 @@ func (*WorkflowTransition) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkflowExecution struct {
-	ID             string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
-	WorkflowID     string         `gorm:"column:workflowId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_workflowId_status_idx;not null" json:"workflowId"`
-	ContactID      string         `gorm:"column:contactId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_contactId_status_idx;not null" json:"contactId"`
-	Status         string         `gorm:"column:status;index:workflow_executions_workflowId_status_idx;index:workflow_executions_contactId_status_idx;index:workflow_executions_status_currentStepId_idx;default:'RUNNING';not null" json:"status"`
-	CurrentStepID  *string        `gorm:"column:currentStepId;index:workflow_executions_status_currentStepId_idx" json:"currentStepId"`
-	ExitReason     *string        `gorm:"column:exitReason" json:"exitReason"`
-	Context        datatypes.JSON `gorm:"column:context" json:"context"`
-	StartedAt      DateTime       `gorm:"column:startedAt;not null" json:"startedAt"`
-	CompletedAt    *DateTime      `gorm:"column:completedAt" json:"completedAt"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Workflow       *Workflow
-	Contact        *Contact
-	CurrentStep    *WorkflowStep           `gorm:"foreignKey:CurrentStepID"`
-	StepExecutions []WorkflowStepExecution `gorm:"foreignKey:ExecutionID;constraint:OnDelete:CASCADE"`
-	Emails         []Email                 `gorm:"foreignKey:WorkflowExecutionID;constraint:OnDelete:CASCADE"`
+	ID             string                  `gorm:"column:id;primaryKey" json:"id"`
+	WorkflowID     string                  `gorm:"column:workflowId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_workflowId_status_idx;not null" json:"workflowId"`
+	ContactID      string                  `gorm:"column:contactId;index:workflow_executions_workflowId_contactId_idx;index:workflow_executions_contactId_status_idx;not null" json:"contactId"`
+	Status         string                  `gorm:"column:status;index:workflow_executions_workflowId_status_idx;index:workflow_executions_contactId_status_idx;index:workflow_executions_status_currentStepId_idx;default:'RUNNING';not null" json:"status"`
+	CurrentStepID  *string                 `gorm:"column:currentStepId;index:workflow_executions_status_currentStepId_idx" json:"currentStepId"`
+	ExitReason     *string                 `gorm:"column:exitReason" json:"exitReason"`
+	Context        datatypes.JSON          `gorm:"column:context" json:"context"`
+	StartedAt      DateTime                `gorm:"column:startedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"startedAt"`
+	CompletedAt    *DateTime               `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
+	CreatedAt      DateTime                `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime                `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Workflow       *Workflow               `gorm:"belongsTo"`
+	Contact        *Contact                `gorm:"belongsTo"`
+	CurrentStep    *WorkflowStep           `gorm:"foreignKey:CurrentStepID;belongsTo"`
+	StepExecutions []WorkflowStepExecution `gorm:"foreignKey:ExecutionID;constraint:workflow_step_executions_executionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Emails         []Email                 `gorm:"foreignKey:WorkflowExecutionID;constraint:emails_workflowExecutionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WorkflowExecution) TableName() string {
@@ -590,21 +590,21 @@ func (*WorkflowExecution) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkflowStepExecution struct {
-	ID           string             `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID           string             `gorm:"column:id;primaryKey" json:"id"`
 	ExecutionID  string             `gorm:"column:executionId;index:workflow_step_executions_executionId_status_idx;not null" json:"executionId"`
 	StepID       string             `gorm:"column:stepId;index:workflow_step_executions_stepId_idx;not null" json:"stepId"`
 	Status       string             `gorm:"column:status;index:workflow_step_executions_executionId_status_idx;index:workflow_step_executions_status_scheduledFor_idx;default:'PENDING';not null" json:"status"`
-	ScheduledFor *DateTime          `gorm:"column:scheduledFor;index:workflow_step_executions_status_scheduledFor_idx;index:workflow_step_executions_scheduledFor_idx" json:"scheduledFor"`
-	ExecuteAfter *DateTime          `gorm:"column:executeAfter" json:"executeAfter"`
+	ScheduledFor *DateTime          `gorm:"column:scheduledFor;index:workflow_step_executions_status_scheduledFor_idx;index:workflow_step_executions_scheduledFor_idx;type:timestamp(3)" json:"scheduledFor"`
+	ExecuteAfter *DateTime          `gorm:"column:executeAfter;type:timestamp(3)" json:"executeAfter"`
 	Output       datatypes.JSON     `gorm:"column:output" json:"output"`
 	Error        *string            `gorm:"column:error" json:"error"`
-	StartedAt    *DateTime          `gorm:"column:startedAt" json:"startedAt"`
-	CompletedAt  *DateTime          `gorm:"column:completedAt" json:"completedAt"`
-	CreatedAt    DateTime           `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime           `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Execution    *WorkflowExecution `gorm:"foreignKey:ExecutionID"`
-	Step         *WorkflowStep      `gorm:"foreignKey:StepID"`
-	Emails       []Email            `gorm:"foreignKey:WorkflowStepExecutionID;constraint:OnDelete:CASCADE"`
+	StartedAt    *DateTime          `gorm:"column:startedAt;type:timestamp(3)" json:"startedAt"`
+	CompletedAt  *DateTime          `gorm:"column:completedAt;type:timestamp(3)" json:"completedAt"`
+	CreatedAt    DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Execution    *WorkflowExecution `gorm:"foreignKey:ExecutionID;belongsTo"`
+	Step         *WorkflowStep      `gorm:"foreignKey:StepID;belongsTo"`
+	Emails       []Email            `gorm:"foreignKey:WorkflowStepExecutionID;constraint:emails_workflowStepExecutionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WorkflowStepExecution) TableName() string {
@@ -634,7 +634,7 @@ func (*WorkflowStepExecution) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Email struct {
-	ID                      string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID                      string         `gorm:"column:id;primaryKey" json:"id"`
 	ContactID               string         `gorm:"column:contactId;index:emails_projectId_contactId_idx;index:emails_contactId_idx;index:emails_contactId_openedAt_idx;index:emails_contactId_clickedAt_idx;index:emails_contactId_bouncedAt_idx;index:emails_contactId_complainedAt_idx;not null" json:"contactId"`
 	ToName                  *string        `gorm:"column:toName" json:"toName"`
 	Subject                 string         `gorm:"column:subject;not null" json:"subject"`
@@ -644,7 +644,7 @@ type Email struct {
 	ReplyTo                 *string        `gorm:"column:replyTo" json:"replyTo"`
 	Headers                 datatypes.JSON `gorm:"column:headers" json:"headers"`
 	Attachments             datatypes.JSON `gorm:"column:attachments" json:"attachments"`
-	MessageID               *string        `gorm:"column:messageId;uniqueIndex" json:"messageId"`
+	MessageID               *string        `gorm:"column:messageId;uniqueIndex:emails_messageId_key" json:"messageId"`
 	SourceType              string         `gorm:"column:sourceType;index:emails_projectId_sourceType_createdAt_idx;not null" json:"sourceType"`
 	TemplateID              *string        `gorm:"column:templateId" json:"templateId"`
 	CampaignID              *string        `gorm:"column:campaignId;index:emails_campaignId_idx;index:emails_campaignId_status_idx" json:"campaignId"`
@@ -655,20 +655,20 @@ type Email struct {
 	// status is SCHEDULED; the delayed queue job is the timer and the scheduled-email sweep
 	// re-queues any row still SCHEDULED past this time. The partial index on SCHEDULED rows
 	// is built by the background index builder, not a migration (see background-index-builder.ts).
-	ScheduledFor *DateTime `gorm:"column:scheduledFor" json:"scheduledFor"`
-	SentAt       *DateTime `gorm:"column:sentAt" json:"sentAt"`
-	DeliveredAt  *DateTime `gorm:"column:deliveredAt" json:"deliveredAt"`
-	OpenedAt     *DateTime `gorm:"column:openedAt;index:emails_contactId_openedAt_idx" json:"openedAt"`
-	ClickedAt    *DateTime `gorm:"column:clickedAt;index:emails_contactId_clickedAt_idx" json:"clickedAt"`
-	BouncedAt    *DateTime `gorm:"column:bouncedAt;index:emails_contactId_bouncedAt_idx" json:"bouncedAt"`
-	ComplainedAt *DateTime `gorm:"column:complainedAt;index:emails_contactId_complainedAt_idx" json:"complainedAt"`
+	ScheduledFor *DateTime `gorm:"column:scheduledFor;type:timestamp(3)" json:"scheduledFor"`
+	SentAt       *DateTime `gorm:"column:sentAt;type:timestamp(3)" json:"sentAt"`
+	DeliveredAt  *DateTime `gorm:"column:deliveredAt;type:timestamp(3)" json:"deliveredAt"`
+	OpenedAt     *DateTime `gorm:"column:openedAt;index:emails_contactId_openedAt_idx;type:timestamp(3)" json:"openedAt"`
+	ClickedAt    *DateTime `gorm:"column:clickedAt;index:emails_contactId_clickedAt_idx;type:timestamp(3)" json:"clickedAt"`
+	BouncedAt    *DateTime `gorm:"column:bouncedAt;index:emails_contactId_bouncedAt_idx;type:timestamp(3)" json:"bouncedAt"`
+	ComplainedAt *DateTime `gorm:"column:complainedAt;index:emails_contactId_complainedAt_idx;type:timestamp(3)" json:"complainedAt"`
 	// When the recipient opted out from this email (unsubscribe or snooze). Only set for
 	// opt-outs attributed to a campaign email and counted in `Campaign.unsubscribedCount`,
 	// in the same transaction, so the stamped rows are the list behind that figure. Indexed
 	// by a partial index built in the background (see background-index-builder.ts).
-	UnsubscribedAt *DateTime `gorm:"column:unsubscribedAt" json:"unsubscribedAt"`
-	Opens          int       `gorm:"column:opens;default:0;not null" json:"opens"`
-	Clicks         int       `gorm:"column:clicks;default:0;not null" json:"clicks"`
+	UnsubscribedAt *DateTime `gorm:"column:unsubscribedAt;type:timestamp(3)" json:"unsubscribedAt"`
+	Opens          int       `gorm:"column:opens;size:32;default:0;not null" json:"opens"`
+	Clicks         int       `gorm:"column:clicks;size:32;default:0;not null" json:"clicks"`
 	// The address handed to SES belonged to the mailbox simulator
 	// (`@simulator.amazonses.com`), stamped at send time from the address actually used --
 	// which is the recipient override when one is set, not necessarily `contact.email`.
@@ -677,18 +677,18 @@ type Email struct {
 	// and reputation metrics, so Plunk's security rates exclude it from both the numerator
 	// and the denominator. The events themselves are untouched: the webhook fires, the
 	// activity feed shows the bounce, the contact is still suppressed.
-	Simulated             bool     `gorm:"column:simulated;default:false;not null" json:"simulated"`
-	Error                 *string  `gorm:"column:error" json:"error"`
-	ProjectID             string   `gorm:"column:projectId;index:emails_projectId_contactId_idx;index:emails_projectId_sourceType_createdAt_idx;not null" json:"projectId"`
-	CreatedAt             DateTime `gorm:"column:createdAt;index:emails_createdAt_idx;index:emails_projectId_sourceType_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Contact               *Contact
-	Template              *Template
-	Campaign              *Campaign
-	WorkflowExecution     *WorkflowExecution
-	WorkflowStepExecution *WorkflowStepExecution
-	Project               *Project
-	Events                []Event `gorm:"foreignKey:EmailID;constraint:OnDelete:CASCADE"`
+	Simulated             bool                   `gorm:"column:simulated;default:false;not null" json:"simulated"`
+	Error                 *string                `gorm:"column:error" json:"error"`
+	ProjectID             string                 `gorm:"column:projectId;index:emails_projectId_contactId_idx;index:emails_projectId_sourceType_createdAt_idx;not null" json:"projectId"`
+	CreatedAt             DateTime               `gorm:"column:createdAt;index:emails_createdAt_idx;index:emails_projectId_sourceType_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime               `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Contact               *Contact               `gorm:"belongsTo"`
+	Template              *Template              `gorm:"belongsTo"`
+	Campaign              *Campaign              `gorm:"belongsTo"`
+	WorkflowExecution     *WorkflowExecution     `gorm:"belongsTo"`
+	WorkflowStepExecution *WorkflowStepExecution `gorm:"belongsTo"`
+	Project               *Project               `gorm:"belongsTo"`
+	Events                []Event                `gorm:"foreignKey:EmailID;constraint:events_emailId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Email) TableName() string {
@@ -718,16 +718,16 @@ func (*Email) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Event struct {
-	ID        string         `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID        string         `gorm:"column:id;primaryKey" json:"id"`
 	Name      string         `gorm:"column:name;index:events_projectId_name_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;not null" json:"name"`
 	Data      datatypes.JSON `gorm:"column:data;index:events_data_idx" json:"data"`
 	ProjectID string         `gorm:"column:projectId;index:events_projectId_name_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;not null" json:"projectId"`
 	ContactID *string        `gorm:"column:contactId;index:events_contactId_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_contactId_createdAt_idx" json:"contactId"`
 	EmailID   *string        `gorm:"column:emailId;index:events_emailId_idx" json:"emailId"`
-	CreatedAt DateTime       `gorm:"column:createdAt;index:events_createdAt_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;index:events_contactId_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	Project   *Project
-	Contact   *Contact
-	Email     *Email
+	CreatedAt DateTime       `gorm:"column:createdAt;index:events_createdAt_idx;index:events_projectId_contactId_name_createdAt_idx;index:events_contactId_name_createdAt_idx;index:events_projectId_name_createdAt_idx;index:events_contactId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Project   *Project       `gorm:"belongsTo"`
+	Contact   *Contact       `gorm:"belongsTo"`
+	Email     *Email         `gorm:"belongsTo"`
 }
 
 func (Event) TableName() string {
@@ -746,15 +746,15 @@ func (m *Event) BeforeCreate(tx *gorm.DB) error {
 }
 
 type IdempotencyKey struct {
-	ID         string   `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID         string   `gorm:"column:id;primaryKey" json:"id"`
 	Key        string   `gorm:"column:key;uniqueIndex:idempotency_keys_projectId_key_key;not null" json:"key"`
 	ProjectID  string   `gorm:"column:projectId;uniqueIndex:idempotency_keys_projectId_key_key;not null" json:"projectId"`
 	Method     string   `gorm:"column:method;not null" json:"method"`
 	Path       string   `gorm:"column:path;not null" json:"path"`
-	StatusCode *int     `gorm:"column:statusCode" json:"statusCode"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	ExpiresAt  DateTime `gorm:"column:expiresAt;index:idempotency_keys_expiresAt_idx;not null" json:"expiresAt"`
-	Project    *Project
+	StatusCode *int     `gorm:"column:statusCode;size:32" json:"statusCode"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	ExpiresAt  DateTime `gorm:"column:expiresAt;index:idempotency_keys_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
+	Project    *Project `gorm:"belongsTo"`
 }
 
 func (IdempotencyKey) TableName() string {
@@ -780,20 +780,20 @@ func (m *IdempotencyKey) BeforeCreate(tx *gorm.DB) error {
 // moment the send is accepted, re-anchored to the real send time once SES has the message,
 // and released when the email never gets there (cancelled, or failed before sending).
 type ThrottleClaim struct {
-	ID            string    `gorm:"column:id;primaryKey;type:char(36)" json:"id"`
+	ID            string    `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID     string    `gorm:"column:projectId;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"projectId"`
 	Key           string    `gorm:"column:key;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"key"`
 	RecipientKey  string    `gorm:"column:recipientKey;uniqueIndex:throttle_claims_projectId_key_recipientKey_key;not null" json:"recipientKey"`
 	ContactID     *string   `gorm:"column:contactId;index:throttle_claims_contactId_idx" json:"contactId"`
 	EmailID       *string   `gorm:"column:emailId;index:throttle_claims_emailId_idx" json:"emailId"`
 	WorkflowID    *string   `gorm:"column:workflowId;index:throttle_claims_workflowId_idx" json:"workflowId"`
-	WindowSeconds *int      `gorm:"column:windowSeconds" json:"windowSeconds"`
-	ExpiresAt     *DateTime `gorm:"column:expiresAt;index:throttle_claims_expiresAt_idx" json:"expiresAt"`
-	CreatedAt     DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project       *Project
-	Contact       *Contact
-	Workflow      *Workflow
+	WindowSeconds *int      `gorm:"column:windowSeconds;size:32" json:"windowSeconds"`
+	ExpiresAt     *DateTime `gorm:"column:expiresAt;index:throttle_claims_expiresAt_idx;type:timestamp(3)" json:"expiresAt"`
+	CreatedAt     DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Project       *Project  `gorm:"belongsTo"`
+	Contact       *Contact  `gorm:"belongsTo"`
+	Workflow      *Workflow `gorm:"belongsTo"`
 }
 
 func (ThrottleClaim) TableName() string {
@@ -826,8 +826,8 @@ type APIRequest struct {
 	ID           string   `gorm:"column:id;primaryKey" json:"id"`
 	Method       string   `gorm:"column:method;not null" json:"method"`
 	Path         string   `gorm:"column:path;index:api_requests_path_createdAt_idx;not null" json:"path"`
-	StatusCode   int      `gorm:"column:statusCode;index:api_requests_statusCode_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;not null" json:"statusCode"`
-	Duration     int      `gorm:"column:duration;not null" json:"duration"`
+	StatusCode   int      `gorm:"column:statusCode;index:api_requests_statusCode_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;size:32;not null" json:"statusCode"`
+	Duration     int      `gorm:"column:duration;size:32;not null" json:"duration"`
 	ProjectID    *string  `gorm:"column:projectId;index:api_requests_projectId_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx" json:"projectId"`
 	UserID       *string  `gorm:"column:userId;index:api_requests_userId_createdAt_idx" json:"userId"`
 	AuthType     *string  `gorm:"column:authType" json:"authType"`
@@ -835,10 +835,10 @@ type APIRequest struct {
 	UserAgent    *string  `gorm:"column:userAgent" json:"userAgent"`
 	ErrorCode    *string  `gorm:"column:errorCode" json:"errorCode"`
 	ErrorMessage *string  `gorm:"column:errorMessage" json:"errorMessage"`
-	RequestSize  *int     `gorm:"column:requestSize" json:"requestSize"`
-	ResponseSize *int     `gorm:"column:responseSize" json:"responseSize"`
-	CreatedAt    DateTime `gorm:"column:createdAt;index:api_requests_projectId_createdAt_idx;index:api_requests_userId_createdAt_idx;index:api_requests_statusCode_createdAt_idx;index:api_requests_path_createdAt_idx;index:api_requests_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	Project      *Project
+	RequestSize  *int     `gorm:"column:requestSize;size:32" json:"requestSize"`
+	ResponseSize *int     `gorm:"column:responseSize;size:32" json:"responseSize"`
+	CreatedAt    DateTime `gorm:"column:createdAt;index:api_requests_projectId_createdAt_idx;index:api_requests_userId_createdAt_idx;index:api_requests_statusCode_createdAt_idx;index:api_requests_path_createdAt_idx;index:api_requests_createdAt_idx;index:api_requests_projectId_statusCode_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Project      *Project `gorm:"belongsTo"`
 }
 
 func (APIRequest) TableName() string {

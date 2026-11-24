@@ -12,7 +12,7 @@ defmodule Formbricks.OauthClientResource do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           created_at: DateTime.t() | nil,
           client: Formbricks.OauthClient.t() | nil,
           resource: Formbricks.OauthResource.t() | nil
@@ -20,7 +20,7 @@ defmodule Formbricks.OauthClientResource do
 
   schema "oauthClientResource" do
     field(:id, :string, primary_key: true)
-    field(:metadata, :map)
+    field(:metadata, Formbricks.PrismaJson)
     field(:created_at, Formbricks.PrismaDateTime, source: :createdAt)
     field(:client_id, :string, source: :clientId)
     field(:resource_id, :string, source: :resourceId)

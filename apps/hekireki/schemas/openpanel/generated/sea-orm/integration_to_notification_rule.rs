@@ -5,9 +5,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "_IntegrationToNotificationRule")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false, column_name = "A")]
-    pub integration_id: String,
+    pub integration_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false, column_name = "B")]
-    pub notification_rule_id: String,
+    pub notification_rule_id: Uuid,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]

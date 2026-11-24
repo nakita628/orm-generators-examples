@@ -10,7 +10,7 @@ defmodule Shelf.AuditSession do
           description: String.t() | nil,
           target_id: String.t() | nil,
           status: atom(),
-          scope_meta: map() | nil,
+          scope_meta: map() | list() | String.t() | number() | boolean() | nil,
           expected_asset_count: integer(),
           found_asset_count: integer(),
           missing_asset_count: integer(),
@@ -37,7 +37,7 @@ defmodule Shelf.AuditSession do
     field(:description, :string)
     field(:target_id, :string, source: :targetId)
     field(:status, Ecto.Enum, values: [:PENDING, :ACTIVE, :COMPLETED, :CANCELLED, :ARCHIVED], default: :PENDING)
-    field(:scope_meta, :map, source: :scopeMeta)
+    field(:scope_meta, Shelf.PrismaJson, source: :scopeMeta)
     field(:expected_asset_count, :integer, default: 0, source: :expectedAssetCount)
     field(:found_asset_count, :integer, default: 0, source: :foundAssetCount)
     field(:missing_asset_count, :integer, default: 0, source: :missingAssetCount)

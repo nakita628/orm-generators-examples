@@ -7,8 +7,8 @@ defmodule Langfuse.Organization do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          cloud_config: map() | nil,
-          metadata: map() | nil,
+          cloud_config: map() | list() | String.t() | number() | boolean() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           cloud_billing_cycle_anchor: DateTime.t() | nil,
           cloud_billing_cycle_updated_at: DateTime.t() | nil,
           cloud_current_cycle_usage: integer() | nil,
@@ -36,8 +36,8 @@ defmodule Langfuse.Organization do
   schema "organizations" do
     field(:id, :string, primary_key: true)
     field(:name, :string)
-    field(:cloud_config, :map)
-    field(:metadata, :map)
+    field(:cloud_config, Langfuse.PrismaJson)
+    field(:metadata, Langfuse.PrismaJson)
     field(:cloud_billing_cycle_anchor, Langfuse.PrismaDateTime, autogenerate: true)
     field(:cloud_billing_cycle_updated_at, Langfuse.PrismaDateTime)
     field(:cloud_current_cycle_usage, :integer)

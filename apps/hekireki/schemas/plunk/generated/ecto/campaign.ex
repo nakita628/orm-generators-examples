@@ -1,12 +1,12 @@
 defmodule Plunk.Campaign do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           description: String.t() | nil,
           status: atom(),
@@ -17,7 +17,7 @@ defmodule Plunk.Campaign do
           reply_to: String.t() | nil,
           type: atom(),
           audience_type: atom(),
-          audience_condition: map() | nil,
+          audience_condition: map() | list() | String.t() | number() | boolean() | nil,
           scheduled_for: DateTime.t() | nil,
           total_recipients: integer(),
           sent_count: integer(),
@@ -47,7 +47,7 @@ defmodule Plunk.Campaign do
     field(:reply_to, :string, source: :replyTo)
     field(:type, Ecto.Enum, values: [:TRANSACTIONAL, :MARKETING, :HEADLESS], default: :MARKETING)
     field(:audience_type, Ecto.Enum, values: [:ALL, :FILTERED, :SEGMENT], default: :ALL, source: :audienceType)
-    field(:audience_condition, :map, source: :audienceCondition)
+    field(:audience_condition, Plunk.PrismaJson, source: :audienceCondition)
     field(:scheduled_for, Plunk.PrismaDateTime, source: :scheduledFor)
     field(:total_recipients, :integer, default: 0, source: :totalRecipients)
     field(:sent_count, :integer, default: 0, source: :sentCount)
@@ -59,8 +59,8 @@ defmodule Plunk.Campaign do
     field(:unsubscribed_count, :integer, default: 0, source: :unsubscribedCount)
     field(:archived, :boolean, default: false)
     field(:sent_at, Plunk.PrismaDateTime, source: :sentAt)
-    field(:segment_id, :binary_id, source: :segmentId)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:segment_id, :string, source: :segmentId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:segment, Plunk.Segment, foreign_key: :segment_id, define_field: false)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     has_many(:emails, Plunk.Email, foreign_key: :campaign_id)

@@ -13,14 +13,14 @@ defmodule Trigger.TaskRun do
           status_reason: String.t() | nil,
           idempotency_key: String.t() | nil,
           idempotency_key_expires_at: DateTime.t() | nil,
-          idempotency_key_options: map() | nil,
-          debounce: map() | nil,
+          idempotency_key_options: map() | list() | String.t() | number() | boolean() | nil,
+          debounce: map() | list() | String.t() | number() | boolean() | nil,
           task_identifier: String.t(),
           is_test: boolean(),
           payload: String.t(),
           payload_type: String.t(),
-          context: map() | nil,
-          trace_context: map() | nil,
+          context: map() | list() | String.t() | number() | boolean() | nil,
+          trace_context: map() | list() | String.t() | number() | boolean() | nil,
           trace_id: String.t(),
           span_id: String.t(),
           environment_type: atom() | nil,
@@ -45,13 +45,13 @@ defmodule Trigger.TaskRun do
           locked_at: DateTime.t() | nil,
           priority_ms: integer(),
           concurrency_key: String.t() | nil,
-          gates: map() | nil,
+          gates: map() | list() | String.t() | number() | boolean() | nil,
           delay_until: DateTime.t() | nil,
           queued_at: DateTime.t() | nil,
           ttl: String.t() | nil,
           expired_at: DateTime.t() | nil,
           max_attempts: integer() | nil,
-          locked_retry_config: map() | nil,
+          locked_retry_config: map() | list() | String.t() | number() | boolean() | nil,
           one_time_use_token: String.t() | nil,
           task_event_store: String.t(),
           queue_timestamp: DateTime.t() | nil,
@@ -63,17 +63,17 @@ defmodule Trigger.TaskRun do
           resume_parent_on_completion: boolean(),
           depth: integer(),
           parent_span_id: String.t() | nil,
-          run_chain_state: map() | nil,
+          run_chain_state: map() | list() | String.t() | number() | boolean() | nil,
           seed_metadata: String.t() | nil,
           seed_metadata_type: String.t(),
           metadata: String.t() | nil,
           metadata_type: String.t(),
           metadata_version: integer(),
-          annotations: map() | nil,
+          annotations: map() | list() | String.t() | number() | boolean() | nil,
           is_warm_start: boolean() | nil,
           output: String.t() | nil,
           output_type: String.t(),
-          error: map() | nil,
+          error: map() | list() | String.t() | number() | boolean() | nil,
           plan_type: String.t() | nil,
           max_duration_in_seconds: integer() | nil,
           realtime_streams_version: String.t(),
@@ -115,15 +115,15 @@ defmodule Trigger.TaskRun do
     field(:idempotency_key, :string, source: :idempotencyKey)
     field(:idempotency_key_expires_at, Trigger.PrismaDateTime, source: :idempotencyKeyExpiresAt)
     # Stores the user-provided key and scope: { key: string, scope: "run" | "attempt" | "global" }
-    field(:idempotency_key_options, :map, source: :idempotencyKeyOptions)
+    field(:idempotency_key_options, Trigger.PrismaJson, source: :idempotencyKeyOptions)
     # Debounce options: { key: string, delay: string, createdAt: Date }
-    field(:debounce, :map)
+    field(:debounce, Trigger.PrismaJson)
     field(:task_identifier, :string, source: :taskIdentifier)
     field(:is_test, :boolean, default: false, source: :isTest)
     field(:payload, :string)
     field(:payload_type, :string, default: "application/json", source: :payloadType)
-    field(:context, :map)
-    field(:trace_context, :map, source: :traceContext)
+    field(:context, Trigger.PrismaJson)
+    field(:trace_context, Trigger.PrismaJson, source: :traceContext)
     field(:trace_id, :string, source: :traceId)
     field(:span_id, :string, source: :spanId)
     field(:environment_type, Ecto.Enum, values: [:PRODUCTION, :STAGING, :DEVELOPMENT, :PREVIEW], source: :environmentType)
@@ -160,13 +160,13 @@ defmodule Trigger.TaskRun do
     field(:concurrency_key, :string, source: :concurrencyKey)
     # Gates for this run: other queues it must also hold a concurrency slot in while
     # executing. Shape: [{ queue: string, concurrencyKey?: string }]
-    field(:gates, :map)
+    field(:gates, Trigger.PrismaJson)
     field(:delay_until, Trigger.PrismaDateTime, source: :delayUntil)
     field(:queued_at, Trigger.PrismaDateTime, source: :queuedAt)
     field(:ttl, :string)
     field(:expired_at, Trigger.PrismaDateTime, source: :expiredAt)
     field(:max_attempts, :integer, source: :maxAttempts)
-    field(:locked_retry_config, :map, source: :lockedRetryConfig)
+    field(:locked_retry_config, Trigger.PrismaJson, source: :lockedRetryConfig)
     # optional token that can be used to authenticate the task run
     field(:one_time_use_token, :string, source: :oneTimeUseToken)
     # Where the logs are stored
@@ -184,7 +184,7 @@ defmodule Trigger.TaskRun do
     # The span ID of the "trigger" span in the parent task run
     field(:parent_span_id, :string, source: :parentSpanId)
     # Holds the state of the run chain for deadlock detection
-    field(:run_chain_state, :map, source: :runChainState)
+    field(:run_chain_state, Trigger.PrismaJson, source: :runChainState)
     # seed run metadata
     field(:seed_metadata, :string, source: :seedMetadata)
     field(:seed_metadata_type, :string, default: "application/json", source: :seedMetadataType)
@@ -193,14 +193,14 @@ defmodule Trigger.TaskRun do
     field(:metadata_type, :string, default: "application/json", source: :metadataType)
     field(:metadata_version, :integer, default: 1, source: :metadataVersion)
     # Structured annotations: triggerSource, triggerAction, rootTriggerSource, rootScheduleId
-    field(:annotations, :map)
+    field(:annotations, Trigger.PrismaJson)
     # Whether the latest attempt was a warm start. Null until first attempt starts.
     field(:is_warm_start, :boolean, source: :isWarmStart)
     # Run output
     field(:output, :string)
     field(:output_type, :string, default: "application/json", source: :outputType)
     # Run error
-    field(:error, :map)
+    field(:error, Trigger.PrismaJson)
     # Organization's billing plan type (cached for fallback when billing API fails)
     field(:plan_type, :string, source: :planType)
     field(:max_duration_in_seconds, :integer, source: :maxDurationInSeconds)

@@ -7,7 +7,7 @@ defmodule OpenPanel.Invite do
   @type t :: %__MODULE__{
           id: String.t(),
           email: String.t(),
-          project_access: map(),
+          project_access: map() | list() | String.t() | number() | boolean(),
           project_scope: atom(),
           expires_at: DateTime.t(),
           role: String.t(),
@@ -21,7 +21,7 @@ defmodule OpenPanel.Invite do
     field(:id, :string, primary_key: true)
     field(:email, :string)
     # [IPrismaInviteProjectAccess]
-    field(:project_access, :map, source: :projectAccess)
+    field(:project_access, OpenPanel.PrismaJson, default: [], source: :projectAccess)
     field(:project_scope, Ecto.Enum, values: [:all, :selected], default: :all, source: :projectScope)
     field(:expires_at, OpenPanel.PrismaDateTime, source: :expiresAt)
     field(:role, :string)

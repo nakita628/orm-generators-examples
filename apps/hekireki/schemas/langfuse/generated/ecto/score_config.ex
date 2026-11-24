@@ -11,7 +11,7 @@ defmodule Langfuse.ScoreConfig do
           is_archived: boolean(),
           min_value: float() | nil,
           max_value: float() | nil,
-          categories: map() | nil,
+          categories: map() | list() | String.t() | number() | boolean() | nil,
           description: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -25,7 +25,7 @@ defmodule Langfuse.ScoreConfig do
     field(:is_archived, :boolean, default: false)
     field(:min_value, :float)
     field(:max_value, :float)
-    field(:categories, :map)
+    field(:categories, Langfuse.PrismaJson)
     field(:description, :string)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     timestamps(inserted_at_source: :created_at)

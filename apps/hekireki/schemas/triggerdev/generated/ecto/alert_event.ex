@@ -12,7 +12,7 @@ defmodule Trigger.AlertEvent do
           alert_id: String.t(),
           type: String.t(),
           at: DateTime.t(),
-          facts: map(),
+          facts: map() | list() | String.t() | number() | boolean(),
           actor_id: String.t() | nil,
           source_event_id: String.t() | nil
         }
@@ -22,7 +22,7 @@ defmodule Trigger.AlertEvent do
     field(:alert_id, :string, source: :alertId)
     field(:type, :string)
     field(:at, Trigger.PrismaDateTime, primary_key: true, autogenerate: true)
-    field(:facts, :map, default: %{})
+    field(:facts, Trigger.PrismaJson, default: %{})
     field(:actor_id, :string, source: :actorId)
     field(:source_event_id, :string, source: :sourceEventId)
   end

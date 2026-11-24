@@ -11,7 +11,7 @@ defmodule InboxZero.ExecutedRule do
           status: atom(),
           automated: boolean(),
           reason: String.t() | nil,
-          match_metadata: map() | nil,
+          match_metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           rule: InboxZero.Rule.t() | nil,
@@ -27,7 +27,7 @@ defmodule InboxZero.ExecutedRule do
     field(:status, Ecto.Enum, values: [:APPLIED, :APPLYING, :REJECTED, :PENDING, :SKIPPED, :ERROR])
     field(:automated, :boolean)
     field(:reason, :string)
-    field(:match_metadata, :map, source: :matchMetadata)
+    field(:match_metadata, InboxZero.PrismaJson, source: :matchMetadata)
     field(:rule_id, :string, source: :ruleId)
     field(:email_account_id, :string, source: :emailAccountId)
     belongs_to(:rule, InboxZero.Rule, foreign_key: :rule_id, define_field: false, type: :string)

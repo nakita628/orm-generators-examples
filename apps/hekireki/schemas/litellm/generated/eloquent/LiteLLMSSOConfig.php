@@ -19,6 +19,10 @@ class LiteLLMSSOConfig extends Model
         'sso_settings',
     ];
 
+    protected $attributes = [
+        'id' => 'sso_config',
+    ];
+
     protected $casts = [
         'sso_settings' => 'array',
     ];

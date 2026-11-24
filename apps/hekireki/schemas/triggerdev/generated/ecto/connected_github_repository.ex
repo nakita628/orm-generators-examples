@@ -6,9 +6,9 @@ defmodule Trigger.ConnectedGithubRepository do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          branch_tracking: map(),
+          branch_tracking: map() | list() | String.t() | number() | boolean(),
           preview_deployments_enabled: boolean(),
-          build_filters: map() | nil,
+          build_filters: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Trigger.Project.t() | nil,
@@ -17,9 +17,9 @@ defmodule Trigger.ConnectedGithubRepository do
 
   schema "ConnectedGithubRepository" do
     field(:id, :string, primary_key: true)
-    field(:branch_tracking, :map, source: :branchTracking)
+    field(:branch_tracking, Trigger.PrismaJson, source: :branchTracking)
     field(:preview_deployments_enabled, :boolean, default: true, source: :previewDeploymentsEnabled)
-    field(:build_filters, :map, source: :buildFilters)
+    field(:build_filters, Trigger.PrismaJson, source: :buildFilters)
     field(:project_id, :string, source: :projectId)
     field(:repository_id, :string, source: :repositoryId)
     belongs_to(:project, Trigger.Project, foreign_key: :project_id, define_field: false, type: :string)

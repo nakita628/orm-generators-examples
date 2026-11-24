@@ -23,6 +23,10 @@ class AnnotationQueue extends \Illuminate\Database\Eloquent\Model
         'project_id',
     ];
 
+    protected $casts = [
+        'score_config_ids' => AsPrismaList::class,
+    ];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id');

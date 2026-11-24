@@ -19,7 +19,7 @@ defmodule LiteLLM.LiteLLMModelAccessGroupBudgetTable do
     field(:spend, :float, default: 0.0)
     field(:created_by, :string)
     field(:updated_by, :string)
-    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :binary_id)
+    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end
 end

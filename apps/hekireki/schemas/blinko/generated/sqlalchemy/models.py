@@ -172,8 +172,8 @@ class TagsToNote(Base):
     __tablename__ = "tagsToNote"
 
     id: Mapped[int]
-    note_id: Mapped[int] = mapped_column("noteId", ForeignKey("notes.id", ondelete="RESTRICT", onupdate="CASCADE", name="tagsToNote_noteId_fkey"), primary_key=True)
-    tag_id: Mapped[int] = mapped_column("tagId", ForeignKey("tag.id", ondelete="RESTRICT", onupdate="CASCADE", name="tagsToNote_tagId_fkey"), primary_key=True)
+    note_id: Mapped[int] = mapped_column("noteId", ForeignKey("notes.id", ondelete="RESTRICT", onupdate="CASCADE", name="tagsToNote_noteId_fkey"), primary_key=True, default=0, server_default=text("0"))
+    tag_id: Mapped[int] = mapped_column("tagId", ForeignKey("tag.id", ondelete="RESTRICT", onupdate="CASCADE", name="tagsToNote_tagId_fkey"), primary_key=True, default=0, server_default=text("0"))
 
     note: Mapped["Notes"] = relationship(back_populates="tags")
     tag: Mapped["Tag"] = relationship(back_populates="tags_to_note")

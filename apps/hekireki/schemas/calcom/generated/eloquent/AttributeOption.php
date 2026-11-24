@@ -33,6 +33,7 @@ class AttributeOption extends Model
 
     protected $casts = [
         'isGroup' => 'boolean',
+        'contains' => AsPrismaList::class,
     ];
 
     public function attribute(): BelongsTo

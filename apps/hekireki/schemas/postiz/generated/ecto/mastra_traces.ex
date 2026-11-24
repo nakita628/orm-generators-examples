@@ -10,10 +10,10 @@ defmodule Postiz.MastraTraces do
           trace_id: String.t(),
           scope: String.t(),
           kind: integer(),
-          attributes: map() | nil,
-          status: map() | nil,
-          events: map() | nil,
-          links: map() | nil,
+          attributes: map() | list() | String.t() | number() | boolean() | nil,
+          status: map() | list() | String.t() | number() | boolean() | nil,
+          events: map() | list() | String.t() | number() | boolean() | nil,
+          links: map() | list() | String.t() | number() | boolean() | nil,
           other: String.t() | nil,
           start_time: integer(),
           end_time: integer(),
@@ -28,10 +28,10 @@ defmodule Postiz.MastraTraces do
     field(:trace_id, :string, source: :traceId)
     field(:scope, :string)
     field(:kind, :integer)
-    field(:attributes, :map)
-    field(:status, :map)
-    field(:events, :map)
-    field(:links, :map)
+    field(:attributes, Postiz.PrismaJson)
+    field(:status, Postiz.PrismaJson)
+    field(:events, Postiz.PrismaJson)
+    field(:links, Postiz.PrismaJson)
     field(:other, :string)
     field(:start_time, :integer, source: :startTime)
     field(:end_time, :integer, source: :endTime)

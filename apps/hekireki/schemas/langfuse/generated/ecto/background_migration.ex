@@ -7,8 +7,8 @@ defmodule Langfuse.BackgroundMigration do
           id: String.t(),
           name: String.t(),
           script: String.t(),
-          args: map(),
-          state: map(),
+          args: map() | list() | String.t() | number() | boolean(),
+          state: map() | list() | String.t() | number() | boolean(),
           finished_at: DateTime.t() | nil,
           failed_at: DateTime.t() | nil,
           failed_reason: String.t() | nil,
@@ -20,8 +20,8 @@ defmodule Langfuse.BackgroundMigration do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:script, :string)
-    field(:args, :map)
-    field(:state, :map, default: %{})
+    field(:args, Langfuse.PrismaJson)
+    field(:state, Langfuse.PrismaJson, default: %{})
     field(:finished_at, Langfuse.PrismaDateTime)
     field(:failed_at, Langfuse.PrismaDateTime)
     field(:failed_reason, :string)

@@ -8,25 +8,25 @@ defmodule Postiz.MastraScorers do
           scorer_id: String.t(),
           trace_id: String.t() | nil,
           run_id: String.t(),
-          scorer: map(),
-          preprocess_step_result: map() | nil,
-          extract_step_result: map() | nil,
-          analyze_step_result: map() | nil,
+          scorer: map() | list() | String.t() | number() | boolean(),
+          preprocess_step_result: map() | list() | String.t() | number() | boolean() | nil,
+          extract_step_result: map() | list() | String.t() | number() | boolean() | nil,
+          analyze_step_result: map() | list() | String.t() | number() | boolean() | nil,
           score: float(),
           reason: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           preprocess_prompt: String.t() | nil,
           extract_prompt: String.t() | nil,
           generate_score_prompt: String.t() | nil,
           generate_reason_prompt: String.t() | nil,
           analyze_prompt: String.t() | nil,
           reason_prompt: String.t() | nil,
-          input: map(),
-          output: map(),
-          additional_context: map() | nil,
-          runtime_context: map() | nil,
+          input: map() | list() | String.t() | number() | boolean(),
+          output: map() | list() | String.t() | number() | boolean(),
+          additional_context: map() | list() | String.t() | number() | boolean() | nil,
+          runtime_context: map() | list() | String.t() | number() | boolean() | nil,
           entity_type: String.t() | nil,
-          entity: map() | nil,
+          entity: map() | list() | String.t() | number() | boolean() | nil,
           entity_id: String.t() | nil,
           source: String.t(),
           resource_id: String.t() | nil,
@@ -36,7 +36,7 @@ defmodule Postiz.MastraScorers do
           created_at_z: DateTime.t() | nil,
           updated_at_z: DateTime.t() | nil,
           span_id: String.t() | nil,
-          request_context: map() | nil,
+          request_context: map() | list() | String.t() | number() | boolean() | nil,
           organization_id: String.t() | nil,
           project_id: String.t() | nil,
           batch_id: String.t() | nil,
@@ -49,25 +49,25 @@ defmodule Postiz.MastraScorers do
     field(:scorer_id, :string, source: :scorerId)
     field(:trace_id, :string, source: :traceId)
     field(:run_id, :string, source: :runId)
-    field(:scorer, :map)
-    field(:preprocess_step_result, :map, source: :preprocessStepResult)
-    field(:extract_step_result, :map, source: :extractStepResult)
-    field(:analyze_step_result, :map, source: :analyzeStepResult)
+    field(:scorer, Postiz.PrismaJson)
+    field(:preprocess_step_result, Postiz.PrismaJson, source: :preprocessStepResult)
+    field(:extract_step_result, Postiz.PrismaJson, source: :extractStepResult)
+    field(:analyze_step_result, Postiz.PrismaJson, source: :analyzeStepResult)
     field(:score, :float)
     field(:reason, :string)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
     field(:preprocess_prompt, :string, source: :preprocessPrompt)
     field(:extract_prompt, :string, source: :extractPrompt)
     field(:generate_score_prompt, :string, source: :generateScorePrompt)
     field(:generate_reason_prompt, :string, source: :generateReasonPrompt)
     field(:analyze_prompt, :string, source: :analyzePrompt)
     field(:reason_prompt, :string, source: :reasonPrompt)
-    field(:input, :map)
-    field(:output, :map)
-    field(:additional_context, :map, source: :additionalContext)
-    field(:runtime_context, :map, source: :runtimeContext)
+    field(:input, Postiz.PrismaJson)
+    field(:output, Postiz.PrismaJson)
+    field(:additional_context, Postiz.PrismaJson, source: :additionalContext)
+    field(:runtime_context, Postiz.PrismaJson, source: :runtimeContext)
     field(:entity_type, :string, source: :entityType)
-    field(:entity, :map)
+    field(:entity, Postiz.PrismaJson)
     field(:entity_id, :string, source: :entityId)
     field(:source, :string)
     field(:resource_id, :string, source: :resourceId)
@@ -77,7 +77,7 @@ defmodule Postiz.MastraScorers do
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)
     field(:updated_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :updatedAtZ)
     field(:span_id, :string, source: :spanId)
-    field(:request_context, :map, source: :requestContext)
+    field(:request_context, Postiz.PrismaJson, source: :requestContext)
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)
     field(:batch_id, :string, source: :batchId)

@@ -8,8 +8,8 @@ defmodule Langfuse.Dashboard do
           id: String.t(),
           name: String.t(),
           description: String.t(),
-          definition: map(),
-          filters: map(),
+          definition: map() | list() | String.t() | number() | boolean(),
+          filters: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           created_by_user: Langfuse.User.t() | nil,
@@ -22,8 +22,8 @@ defmodule Langfuse.Dashboard do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:definition, :map)
-    field(:filters, :map)
+    field(:definition, Langfuse.PrismaJson)
+    field(:filters, Langfuse.PrismaJson, default: [])
     belongs_to(:created_by_user, Langfuse.User, foreign_key: :created_by, type: :string)
     belongs_to(:updated_by_user, Langfuse.User, foreign_key: :updated_by, type: :string)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)

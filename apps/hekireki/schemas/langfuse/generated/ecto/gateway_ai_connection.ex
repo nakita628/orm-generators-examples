@@ -12,9 +12,9 @@ defmodule Langfuse.GatewayAiConnection do
           display_secret: String.t(),
           created_by_id: String.t() | nil,
           status: atom(),
-          allowed_models: map() | nil,
-          custom_models: map(),
-          config: map() | nil,
+          allowed_models: map() | list() | String.t() | number() | boolean() | nil,
+          custom_models: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean() | nil,
           base_url: String.t() | nil,
           extra_headers: String.t() | nil,
           extra_header_keys: [String.t()],
@@ -31,9 +31,9 @@ defmodule Langfuse.GatewayAiConnection do
     field(:display_secret, :string, source: :display_secret_key)
     field(:created_by_id, :string)
     field(:status, Ecto.Enum, values: [ENABLED: "enabled", DISABLED: "disabled", ERROR: "error"], default: :ENABLED)
-    field(:allowed_models, :map)
-    field(:custom_models, :map)
-    field(:config, :map)
+    field(:allowed_models, Langfuse.PrismaJson)
+    field(:custom_models, Langfuse.PrismaJson, default: [])
+    field(:config, Langfuse.PrismaJson)
     field(:base_url, :string)
     field(:extra_headers, :string)
     field(:extra_header_keys, {:array, :string})

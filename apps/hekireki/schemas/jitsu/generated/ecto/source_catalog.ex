@@ -7,7 +7,7 @@ defmodule Jitsu.SourceCatalog do
           package: String.t(),
           version: String.t(),
           key: String.t(),
-          catalog: map() | nil,
+          catalog: map() | list() | String.t() | number() | boolean() | nil,
           timestamp: DateTime.t(),
           status: String.t(),
           description: String.t() | nil
@@ -17,7 +17,7 @@ defmodule Jitsu.SourceCatalog do
     field(:package, :string, primary_key: true)
     field(:version, :string, primary_key: true)
     field(:key, :string, primary_key: true)
-    field(:catalog, :map)
+    field(:catalog, Jitsu.PrismaJson)
     # @zod.custom(z.coerce.date())
     field(:timestamp, Jitsu.PrismaDateTime, autogenerate: true)
     field(:status, :string)

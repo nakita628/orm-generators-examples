@@ -5,8 +5,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "error_rate_limit")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub website_id: String,
+    pub website_id: Uuid,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub bucket: DateTimeWithTimeZone,
     pub count: i32,

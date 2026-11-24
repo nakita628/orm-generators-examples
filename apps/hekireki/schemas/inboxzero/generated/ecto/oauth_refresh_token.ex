@@ -17,7 +17,7 @@ defmodule InboxZero.OauthRefreshToken do
           rotation_replay_response: String.t() | nil,
           rotation_replay_expires_at: DateTime.t() | nil,
           auth_time: DateTime.t() | nil,
-          confirmation: map() | nil,
+          confirmation: map() | list() | String.t() | number() | boolean() | nil,
           scopes: [String.t()],
           client: InboxZero.OauthClient.t() | nil,
           session: InboxZero.Session.t() | nil,
@@ -39,7 +39,7 @@ defmodule InboxZero.OauthRefreshToken do
     field(:rotation_replay_response, :string, source: :rotationReplayResponse)
     field(:rotation_replay_expires_at, InboxZero.PrismaDateTime, source: :rotationReplayExpiresAt)
     field(:auth_time, InboxZero.PrismaDateTime, source: :authTime)
-    field(:confirmation, :map)
+    field(:confirmation, InboxZero.PrismaJson)
     field(:scopes, {:array, :string})
     field(:client_id, :string, source: :clientId)
     field(:session_id, :string, source: :sessionId)

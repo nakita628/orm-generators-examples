@@ -9,7 +9,7 @@ defmodule Formbricks.Workflow do
           name: String.t(),
           description: String.t() | nil,
           status: atom(),
-          definition: map(),
+          definition: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -22,7 +22,7 @@ defmodule Formbricks.Workflow do
     field(:description, :string)
     field(:status, Ecto.Enum, values: [:draft, :enabled, :disabled, :archived], default: :draft)
     # [WorkflowDefinition]
-    field(:definition, :map)
+    field(:definition, Formbricks.PrismaJson)
     field(:workspace_id, :string, source: :workspaceId)
     field(:created_by, :string, source: :createdBy)
     belongs_to(:workspace, Formbricks.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)

@@ -9,7 +9,7 @@ defmodule Langfuse.Skill do
           created_by: String.t(),
           name: String.t(),
           description: String.t(),
-          frontmatter: map(),
+          frontmatter: map() | list() | String.t() | number() | boolean(),
           version: integer(),
           tags: [String.t()],
           labels: [String.t()],
@@ -25,7 +25,7 @@ defmodule Langfuse.Skill do
     field(:created_by, :string)
     field(:name, :string)
     field(:description, :string)
-    field(:frontmatter, :map, default: %{})
+    field(:frontmatter, Langfuse.PrismaJson, default: %{})
     field(:version, :integer)
     field(:tags, {:array, :string})
     field(:labels, {:array, :string})

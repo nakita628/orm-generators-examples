@@ -8,8 +8,8 @@ defmodule Rallly.ScheduledEvent do
           id: String.t(),
           title: String.t(),
           description: String.t() | nil,
-          location: map() | nil,
-          conferencing: map() | nil,
+          location: map() | list() | String.t() | number() | boolean() | nil,
+          conferencing: map() | list() | String.t() | number() | boolean() | nil,
           capacity: integer() | nil,
           status: atom(),
           time_zone: String.t() | nil,
@@ -35,8 +35,8 @@ defmodule Rallly.ScheduledEvent do
     field(:id, :string, primary_key: true)
     field(:title, :string)
     field(:description, :string)
-    field(:location, :map)
-    field(:conferencing, :map)
+    field(:location, Rallly.PrismaJson)
+    field(:conferencing, Rallly.PrismaJson)
     field(:capacity, :integer)
     field(:status, Ecto.Enum, values: [:confirmed, :canceled, :unconfirmed], default: :confirmed)
     # Venue / anchor timezone for in-person or hybrid events. Null means no fixed venue (e.g. remote-only).
@@ -49,7 +49,7 @@ defmodule Rallly.ScheduledEvent do
     field(:uid, :string)
     field(:hide_attendees, :boolean, default: false)
     belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     belongs_to(:event_type, Rallly.EventType, foreign_key: :event_type_id, type: :string)
     belongs_to(:sheet_slot, Rallly.SheetSlot, foreign_key: :sheet_slot_id, type: :string)
     has_many(:rescheduled_dates, Rallly.RescheduledEventDate, foreign_key: :scheduled_event_id, references: :id)

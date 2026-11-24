@@ -5,7 +5,7 @@ defmodule OpenPanel.MemberProject do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          member_id: String.t(),
+          member_id: Ecto.UUID.t(),
           project_id: String.t(),
           level: atom() | nil,
           inserted_at: DateTime.t(),
@@ -15,9 +15,9 @@ defmodule OpenPanel.MemberProject do
 
   schema "member_projects" do
     field(:level, Ecto.Enum, values: [:read, :write, :admin])
-    field(:member_id, :string, primary_key: true, source: :memberId)
+    field(:member_id, Ecto.UUID, primary_key: true, source: :memberId)
     field(:project_id, :string, primary_key: true, source: :projectId)
-    belongs_to(:member, OpenPanel.Member, foreign_key: :member_id, define_field: false, type: :string)
+    belongs_to(:member, OpenPanel.Member, foreign_key: :member_id, define_field: false, type: Ecto.UUID)
     belongs_to(:project, OpenPanel.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end

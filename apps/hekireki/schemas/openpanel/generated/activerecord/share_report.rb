@@ -1,4 +1,6 @@
 class ShareReport < ApplicationRecord
+  self.primary_key = "id"
+
   attribute :public, default: false
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

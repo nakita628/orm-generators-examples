@@ -22,8 +22,8 @@ defmodule Formbricks.Survey do
   @timestamps_opts [type: Formbricks.PrismaDateTime, autogenerate: {Formbricks.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          hidden_fields: map(),
-          variables: map(),
+          hidden_fields: map() | list() | String.t() | number() | boolean(),
+          variables: map() | list() | String.t() | number() | boolean(),
           ownership_initialized: boolean(),
           id: String.t(),
           name: String.t(),
@@ -36,14 +36,14 @@ defmodule Formbricks.Survey do
           visibility_changed_at: DateTime.t() | nil,
           visibility_changed_by_id: String.t() | nil,
           status: atom(),
-          welcome_card: map(),
-          questions: map(),
-          blocks: [map()],
-          endings: [map()],
+          welcome_card: map() | list() | String.t() | number() | boolean(),
+          questions: map() | list() | String.t() | number() | boolean(),
+          blocks: [map() | list() | String.t() | number() | boolean()],
+          endings: [map() | list() | String.t() | number() | boolean()],
           display_option: atom(),
           recontact_days: integer() | nil,
           display_limit: integer() | nil,
-          inline_triggers: map() | nil,
+          inline_triggers: map() | list() | String.t() | number() | boolean() | nil,
           auto_close: integer() | nil,
           keep_ending_card_open: boolean(),
           auto_complete: integer() | nil,
@@ -51,10 +51,10 @@ defmodule Formbricks.Survey do
           publish_on: DateTime.t() | nil,
           close_on: DateTime.t() | nil,
           archived_at: DateTime.t() | nil,
-          survey_closed_message: map() | nil,
-          workspace_overwrites: map() | nil,
-          styling: map() | nil,
-          single_use: map() | nil,
+          survey_closed_message: map() | list() | String.t() | number() | boolean() | nil,
+          workspace_overwrites: map() | list() | String.t() | number() | boolean() | nil,
+          styling: map() | list() | String.t() | number() | boolean() | nil,
+          single_use: map() | list() | String.t() | number() | boolean() | nil,
           is_verify_email_enabled: boolean(),
           is_back_button_hidden: boolean(),
           is_auto_progressing_enabled: boolean(),
@@ -64,14 +64,14 @@ defmodule Formbricks.Survey do
           display_percentage: Decimal.t() | nil,
           show_language_switch: boolean() | nil,
           auto_select_language: boolean() | nil,
-          recaptcha: map() | nil,
-          metadata: map(),
+          recaptcha: map() | list() | String.t() | number() | boolean() | nil,
+          metadata: map() | list() | String.t() | number() | boolean(),
           slug: String.t() | nil,
           custom_head_scripts: String.t() | nil,
           custom_head_scripts_mode: atom() | nil,
-          custom_css: map() | nil,
-          show_conditions: map() | nil,
-          start_logic: map() | nil,
+          custom_css: map() | list() | String.t() | number() | boolean() | nil,
+          show_conditions: map() | list() | String.t() | number() | boolean() | nil,
+          start_logic: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -92,9 +92,9 @@ defmodule Formbricks.Survey do
 
   schema "Survey" do
     # [SurveyHiddenFields]
-    field(:hidden_fields, :map, default: %{"enabled" => false}, source: :hiddenFields)
+    field(:hidden_fields, Formbricks.PrismaJson, default: %{"enabled" => false}, source: :hiddenFields)
     # [SurveyVariables]
-    field(:variables, :map)
+    field(:variables, Formbricks.PrismaJson, default: [])
     field(:ownership_initialized, :boolean, default: false, source: :ownershipInitialized)
     field(:id, :string, primary_key: true)
     field(:name, :string)
@@ -117,18 +117,18 @@ defmodule Formbricks.Survey do
     field(:visibility_changed_by_id, :string, source: :visibilityChangedById)
     field(:status, Ecto.Enum, values: [:draft, :inProgress, :paused, :completed], default: :draft)
     # [SurveyWelcomeCard]
-    field(:welcome_card, :map, default: %{"enabled" => false}, source: :welcomeCard)
+    field(:welcome_card, Formbricks.PrismaJson, default: %{"enabled" => false}, source: :welcomeCard)
     # [SurveyQuestions]
-    field(:questions, :map)
+    field(:questions, Formbricks.PrismaJson, default: [])
     # [SurveyBlocks]
-    field(:blocks, {:array, :map})
+    field(:blocks, {:array, Formbricks.PrismaJson})
     # [SurveyEnding]
-    field(:endings, {:array, :map})
+    field(:endings, {:array, Formbricks.PrismaJson})
     field(:display_option, Ecto.Enum, values: [:displayOnce, :displayMultiple, :displaySome, :respondMultiple], default: :displayOnce, source: :displayOption)
     field(:recontact_days, :integer, source: :recontactDays)
     field(:display_limit, :integer, source: :displayLimit)
     # [SurveyInlineTriggers]
-    field(:inline_triggers, :map, source: :inlineTriggers)
+    field(:inline_triggers, Formbricks.PrismaJson, source: :inlineTriggers)
     field(:auto_close, :integer, source: :autoClose)
     field(:keep_ending_card_open, :boolean, default: false, source: :keepEndingCardOpen)
     field(:auto_complete, :integer, source: :autoComplete)
@@ -137,13 +137,13 @@ defmodule Formbricks.Survey do
     field(:close_on, Formbricks.PrismaDateTime, source: :closeOn)
     field(:archived_at, Formbricks.PrismaDateTime, source: :archivedAt)
     # [SurveyClosedMessage]
-    field(:survey_closed_message, :map, source: :surveyClosedMessage)
+    field(:survey_closed_message, Formbricks.PrismaJson, source: :surveyClosedMessage)
     # [SurveyWorkspaceOverwrites]
-    field(:workspace_overwrites, :map, source: :workspaceOverwrites)
+    field(:workspace_overwrites, Formbricks.PrismaJson, source: :workspaceOverwrites)
     # [SurveyStyling]
-    field(:styling, :map)
+    field(:styling, Formbricks.PrismaJson)
     # [SurveySingleUse]
-    field(:single_use, :map, default: %{"enabled" => false, "isEncrypted" => true}, source: :singleUse)
+    field(:single_use, Formbricks.PrismaJson, default: %{"enabled" => false, "isEncrypted" => true}, source: :singleUse)
     field(:is_verify_email_enabled, :boolean, default: false, source: :isVerifyEmailEnabled)
     field(:is_back_button_hidden, :boolean, default: false, source: :isBackButtonHidden)
     field(:is_auto_progressing_enabled, :boolean, default: false, source: :isAutoProgressingEnabled)
@@ -156,21 +156,21 @@ defmodule Formbricks.Survey do
     # language. Null on surveys that predate the setting, which reads as off.
     field(:auto_select_language, :boolean, source: :autoSelectLanguage)
     # [SurveyRecaptcha]
-    field(:recaptcha, :map, default: %{"enabled" => false, "threshold" => 0.1})
+    field(:recaptcha, Formbricks.PrismaJson, default: %{"enabled" => false, "threshold" => 0.1})
     # [SurveyLinkMetadata]
-    field(:metadata, :map, default: %{})
+    field(:metadata, Formbricks.PrismaJson, default: %{})
     field(:slug, :string)
     field(:custom_head_scripts, :string, source: :customHeadScripts)
     field(:custom_head_scripts_mode, Ecto.Enum, values: [:add, :replace], default: :add, source: :customHeadScriptsMode)
     # [CustomCssStored] Survey custom CSS (ENG-2949): source plus trusted compiled output, written only
     # by the shared custom CSS save service. null = no survey CSS. Kept outside `styling` (M2.07).
-    field(:custom_css, :map, source: :customCss)
+    field(:custom_css, Formbricks.PrismaJson, source: :customCss)
     # [SurveyShowConditions] App surveys: conditions checked in the browser when a trigger fires
     # (ENG-3873). null = no conditions, which is what every existing survey keeps.
-    field(:show_conditions, :map, source: :showConditions)
+    field(:show_conditions, Formbricks.PrismaJson, source: :showConditions)
     # [SurveyStartLogic] Rules before the first question (ENG-6932): block-rule format, run by the
     # survey on load. null = none, which is what every existing survey keeps.
-    field(:start_logic, :map, source: :startLogic)
+    field(:start_logic, Formbricks.PrismaJson, source: :startLogic)
     field(:workspace_id, :string, source: :workspaceId)
     field(:created_by, :string, source: :createdBy)
     field(:owner_id, :string, source: :ownerId)

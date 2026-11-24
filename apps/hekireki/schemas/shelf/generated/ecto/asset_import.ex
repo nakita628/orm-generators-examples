@@ -19,11 +19,11 @@ defmodule Shelf.AssetImport do
           file_name: String.t() | nil,
           total_rows: integer(),
           processed_rows: integer(),
-          rows: map() | nil,
-          resolved: map() | nil,
+          rows: map() | list() | String.t() | number() | boolean() | nil,
+          resolved: map() | list() | String.t() | number() | boolean() | nil,
           can_use_barcodes: boolean(),
           error_message: String.t() | nil,
-          warnings: map() | nil,
+          warnings: map() | list() | String.t() | number() | boolean() | nil,
           warning_count: integer(),
           locked_until: DateTime.t() | nil,
           confirmed_at: DateTime.t() | nil,
@@ -44,14 +44,14 @@ defmodule Shelf.AssetImport do
     # Rows committed so far. Advanced in the same transaction as each chunk.
     field(:processed_rows, :integer, default: 0, source: :processedRows)
     # Parsed rows (`StoredImportRow[]`). Cleared when the import completes.
-    field(:rows, :map)
+    field(:rows, Shelf.PrismaJson)
     # Name to id maps written by the PREPARE step (`ResolvedImportEntities`).
-    field(:resolved, :map)
+    field(:resolved, Shelf.PrismaJson)
     field(:can_use_barcodes, :boolean, default: false, source: :canUseBarcodes)
     # User-facing reason the import failed. Null unless status is FAILED.
     field(:error_message, :string, source: :errorMessage)
     # Rows imported without a conflicting piece (`ImportWarning[]`), capped at 500.
-    field(:warnings, :map)
+    field(:warnings, Shelf.PrismaJson)
     # Exact number of warnings, including any beyond the stored cap.
     field(:warning_count, :integer, default: 0, source: :warningCount)
     # A step holds the import until this time. Null when no step is running.

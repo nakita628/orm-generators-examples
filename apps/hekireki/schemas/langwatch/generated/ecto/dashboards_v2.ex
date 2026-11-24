@@ -18,7 +18,7 @@ defmodule LangWatch.DashboardsV2 do
           created_by_id: String.t() | nil,
           scope: atom(),
           organization_id: String.t() | nil,
-          excluded_origins: map() | nil,
+          excluded_origins: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -39,7 +39,7 @@ defmodule LangWatch.DashboardsV2 do
     field(:organization_id, :string, source: :organizationId)
     # Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
     # 2026-10-28); dropped in a later migration, once no serving release reads it.
-    field(:excluded_origins, :map, source: :excludedOrigins)
+    field(:excluded_origins, LangWatch.PrismaJson, source: :excludedOrigins)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

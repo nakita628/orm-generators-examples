@@ -10,7 +10,7 @@ defmodule InboxZero.DraftSendLog do
           similarity_score: float(),
           body_similarity_score: float() | nil,
           body_similarity_status: String.t() | nil,
-          similarity_metadata: map() | nil,
+          similarity_metadata: map() | list() | String.t() | number() | boolean() | nil,
           sent_text: String.t() | nil,
           reply_memory_sent_text: String.t() | nil,
           reply_memory_attempt_count: integer(),
@@ -26,7 +26,7 @@ defmodule InboxZero.DraftSendLog do
     field(:similarity_score, :float, source: :similarityScore)
     field(:body_similarity_score, :float, source: :bodySimilarityScore)
     field(:body_similarity_status, :string, source: :bodySimilarityStatus)
-    field(:similarity_metadata, :map, source: :similarityMetadata)
+    field(:similarity_metadata, InboxZero.PrismaJson, source: :similarityMetadata)
     field(:sent_text, :string, source: :sentText)
     field(:reply_memory_sent_text, :string, source: :replyMemorySentText)
     field(:reply_memory_attempt_count, :integer, default: 0, source: :replyMemoryAttemptCount)

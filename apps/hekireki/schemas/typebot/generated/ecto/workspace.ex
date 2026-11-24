@@ -24,7 +24,7 @@ defmodule Typebot.Workspace do
           is_past_due: boolean(),
           is_verified: boolean() | nil,
           chats_hard_limit: integer() | nil,
-          settings: map() | nil,
+          settings: map() | list() | String.t() | number() | boolean() | nil,
           last_activity_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -59,7 +59,7 @@ defmodule Typebot.Workspace do
     field(:is_past_due, :boolean, default: false, source: :isPastDue)
     field(:is_verified, :boolean, source: :isVerified)
     field(:chats_hard_limit, :integer, source: :chatsHardLimit)
-    field(:settings, :map)
+    field(:settings, Typebot.PrismaJson)
     field(:last_activity_at, Typebot.PrismaDateTime, source: :lastActivityAt)
     has_one(:claimable_custom_plan, Typebot.ClaimableCustomPlan, foreign_key: :workspace_id, references: :id)
     has_many(:credentials, Typebot.Credentials, foreign_key: :workspace_id, references: :id)

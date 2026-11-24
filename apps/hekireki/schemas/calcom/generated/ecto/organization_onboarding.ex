@@ -1,12 +1,12 @@
 defmodule Calcom.OrganizationOnboarding do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           org_owner_email: String.t(),
           error: String.t() | nil,
           billing_period: atom(),
@@ -23,8 +23,8 @@ defmodule Calcom.OrganizationOnboarding do
           stripe_customer_id: String.t() | nil,
           stripe_subscription_id: String.t() | nil,
           stripe_subscription_item_id: String.t() | nil,
-          invited_members: map(),
-          teams: map(),
+          invited_members: map() | list() | String.t() | number() | boolean(),
+          teams: map() | list() | String.t() | number() | boolean(),
           is_complete: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -50,9 +50,9 @@ defmodule Calcom.OrganizationOnboarding do
     field(:stripe_subscription_id, :string, source: :stripeSubscriptionId)
     field(:stripe_subscription_item_id, :string, source: :stripeSubscriptionItemId)
     # @zod.import(["import { orgOnboardingInvitedMembersSchema } from '../../zod-utils'"]).custom.use(orgOnboardingInvitedMembersSchema)
-    field(:invited_members, :map, source: :invitedMembers)
+    field(:invited_members, Calcom.PrismaJson, default: [], source: :invitedMembers)
     # @zod.import(["import { orgOnboardingTeamsSchema } from '../../zod-utils'"]).custom.use(orgOnboardingTeamsSchema)
-    field(:teams, :map)
+    field(:teams, Calcom.PrismaJson, default: [])
     field(:is_complete, :boolean, default: false, source: :isComplete)
     field(:created_by_id, :id, source: :createdById)
     field(:organization_id, :id, source: :organizationId)

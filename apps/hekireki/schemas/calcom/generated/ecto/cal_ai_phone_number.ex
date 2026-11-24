@@ -29,12 +29,12 @@ defmodule Calcom.CalAiPhoneNumber do
     field(:subscription_status, Ecto.Enum, values: [:ACTIVE, :PAST_DUE, :CANCELLED, :INCOMPLETE, :INCOMPLETE_EXPIRED, :TRIALING, :UNPAID], source: :subscriptionStatus)
     field(:user_id, :id, source: :userId)
     field(:team_id, :id, source: :teamId)
-    field(:inbound_agent_id, :binary_id, source: :inboundAgentId)
-    field(:outbound_agent_id, :binary_id, source: :outboundAgentId)
+    field(:inbound_agent_id, :string, source: :inboundAgentId)
+    field(:outbound_agent_id, :string, source: :outboundAgentId)
     belongs_to(:user, Calcom.User, foreign_key: :user_id, define_field: false)
     belongs_to(:team, Calcom.Team, foreign_key: :team_id, define_field: false)
-    belongs_to(:inbound_agent, Calcom.Agent, foreign_key: :inbound_agent_id, define_field: false, type: :binary_id)
-    belongs_to(:outbound_agent, Calcom.Agent, foreign_key: :outbound_agent_id, define_field: false, type: :binary_id)
+    belongs_to(:inbound_agent, Calcom.Agent, foreign_key: :inbound_agent_id, define_field: false, type: :string)
+    belongs_to(:outbound_agent, Calcom.Agent, foreign_key: :outbound_agent_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

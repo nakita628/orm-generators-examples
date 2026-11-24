@@ -36,7 +36,9 @@ class LlmApiKeys extends \Illuminate\Database\Eloquent\Model
     ];
 
     protected $casts = [
+        'custom_models' => AsPrismaList::class,
         'with_default_models' => 'boolean',
+        'extra_header_keys' => AsPrismaList::class,
         'config' => 'array',
     ];
 

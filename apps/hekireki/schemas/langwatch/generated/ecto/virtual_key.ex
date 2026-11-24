@@ -12,14 +12,14 @@ defmodule LangWatch.VirtualKey do
           status: atom(),
           purpose: atom(),
           external_id: String.t() | nil,
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           disabled_at: DateTime.t() | nil,
           disabled_reason: String.t() | nil,
           expires_at: DateTime.t() | nil,
           hashed_secret: String.t(),
           display_prefix: String.t(),
           trace_project_id: String.t() | nil,
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           revision: integer(),
           previous_hashed_secret: String.t() | nil,
           previous_secret_valid_until: DateTime.t() | nil,
@@ -49,14 +49,14 @@ defmodule LangWatch.VirtualKey do
     field(:status, Ecto.Enum, values: [:ACTIVE, :DISABLED, :REVOKED], default: :ACTIVE)
     field(:purpose, Ecto.Enum, values: [:USER, :LANGY, :CONNECT], default: :USER)
     field(:external_id, :string, source: :externalId)
-    field(:metadata, :map, default: %{})
+    field(:metadata, LangWatch.PrismaJson, default: %{})
     field(:disabled_at, LangWatch.PrismaDateTime, source: :disabledAt)
     field(:disabled_reason, :string, source: :disabledReason)
     field(:expires_at, LangWatch.PrismaDateTime, source: :expiresAt)
     field(:hashed_secret, :string, source: :hashedSecret)
     field(:display_prefix, :string, source: :displayPrefix)
     field(:trace_project_id, :string, source: :traceProjectId)
-    field(:config, :map, default: %{})
+    field(:config, LangWatch.PrismaJson, default: %{})
     field(:revision, :integer, default: 0)
     field(:previous_hashed_secret, :string, source: :previousHashedSecret)
     field(:previous_secret_valid_until, LangWatch.PrismaDateTime, source: :previousSecretValidUntil)

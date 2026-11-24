@@ -39,6 +39,7 @@ class EvaluatorVersion extends \Illuminate\Database\Eloquent\Model
         'version' => 'integer',
         'prompt_messages' => 'array',
         'model_params' => 'array',
+        'vars' => AsPrismaList::class,
         'variable_mapping' => 'array',
         'output_definition' => 'array',
         'source_code_language' => EvaluatorSourceCodeLanguage::class,

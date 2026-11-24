@@ -14,7 +14,7 @@ defmodule Langfuse.User do
           image: String.t() | nil,
           admin: boolean(),
           v4_beta_enabled: boolean(),
-          support_access: map() | nil,
+          support_access: map() | list() | String.t() | number() | boolean() | nil,
           feature_flags: [String.t()],
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -64,7 +64,7 @@ defmodule Langfuse.User do
     field(:image, :string)
     field(:admin, :boolean, default: false)
     field(:v4_beta_enabled, :boolean, default: false)
-    field(:support_access, :map)
+    field(:support_access, Langfuse.PrismaJson)
     field(:feature_flags, {:array, :string})
     has_many(:accounts, Langfuse.Account, foreign_key: :user_id, references: :id)
     has_many(:sessions, Langfuse.Session, foreign_key: :user_id, references: :id)

@@ -21,8 +21,8 @@ defmodule InboxZero.RuleHistory do
           body: String.t() | nil,
           category_filter_type: String.t() | nil,
           system_type: String.t() | nil,
-          actions: map(),
-          category_filters: map() | nil,
+          actions: map() | list() | String.t() | number() | boolean(),
+          category_filters: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           rule: InboxZero.Rule.t() | nil
         }
@@ -44,8 +44,8 @@ defmodule InboxZero.RuleHistory do
     field(:body, :string)
     field(:category_filter_type, :string, source: :categoryFilterType)
     field(:system_type, :string, source: :systemType)
-    field(:actions, :map)
-    field(:category_filters, :map, source: :categoryFilters)
+    field(:actions, InboxZero.PrismaJson)
+    field(:category_filters, InboxZero.PrismaJson, source: :categoryFilters)
     field(:rule_id, :string, source: :ruleId)
     belongs_to(:rule, InboxZero.Rule, foreign_key: :rule_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

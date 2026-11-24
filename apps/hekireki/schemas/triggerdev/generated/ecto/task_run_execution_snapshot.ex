@@ -31,7 +31,7 @@ defmodule Trigger.TaskRunExecutionSnapshot do
           worker_id: String.t() | nil,
           runner_id: String.t() | nil,
           last_heartbeat_at: DateTime.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           run: Trigger.TaskRun.t() | nil,
@@ -68,7 +68,7 @@ defmodule Trigger.TaskRunExecutionSnapshot do
     field(:runner_id, :string, source: :runnerId)
     field(:last_heartbeat_at, Trigger.PrismaDateTime, source: :lastHeartbeatAt)
     # Metadata used by various systems in the run engine
-    field(:metadata, :map)
+    field(:metadata, Trigger.PrismaJson)
     # Run
     field(:run_id, :string, source: :runId)
     # Checkpoint

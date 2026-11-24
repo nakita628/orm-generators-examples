@@ -1,18 +1,18 @@
 defmodule LiteLLM.LiteLLMToolTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :tool_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :tool_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           tool_name: String.t(),
           origin: String.t() | nil,
           input_policy: String.t(),
           output_policy: String.t(),
           call_count: integer(),
-          assignments: map() | nil,
+          assignments: map() | list() | String.t() | number() | boolean() | nil,
           key_hash: String.t() | nil,
           team_id: String.t() | nil,
           key_alias: String.t() | nil,
@@ -30,7 +30,7 @@ defmodule LiteLLM.LiteLLMToolTable do
     field(:input_policy, :string, default: "untrusted")
     field(:output_policy, :string, default: "untrusted")
     field(:call_count, :integer, default: 0)
-    field(:assignments, :map, default: %{})
+    field(:assignments, LiteLLM.PrismaJson, default: %{})
     field(:key_hash, :string)
     field(:team_id, :string)
     field(:key_alias, :string)

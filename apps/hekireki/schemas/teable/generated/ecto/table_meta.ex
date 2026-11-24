@@ -11,9 +11,9 @@ defmodule Teable.TableMeta do
           icon: String.t() | nil,
           db_table_name: String.t(),
           db_view_name: String.t() | nil,
-          search_index: map() | nil,
-          search_index_policy: map() | nil,
-          query_index_policy: map() | nil,
+          search_index: map() | list() | String.t() | number() | boolean() | nil,
+          search_index_policy: map() | list() | String.t() | number() | boolean() | nil,
+          query_index_policy: map() | list() | String.t() | number() | boolean() | nil,
           provision_state: atom(),
           version: integer(),
           order: float(),
@@ -36,9 +36,9 @@ defmodule Teable.TableMeta do
     field(:icon, :string)
     field(:db_table_name, :string)
     field(:db_view_name, :string)
-    field(:search_index, :map)
-    field(:search_index_policy, :map)
-    field(:query_index_policy, :map)
+    field(:search_index, Teable.PrismaJson)
+    field(:search_index_policy, Teable.PrismaJson)
+    field(:query_index_policy, Teable.PrismaJson)
     field(:provision_state, Ecto.Enum, values: [:pending, :ready, :error, :deleting], default: :ready)
     field(:version, :integer)
     field(:order, :float)

@@ -1271,7 +1271,7 @@ class Feedback(Base):
 class Deployment(Base):
     __tablename__ = "Deployment"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False, default=1, server_default=text("1"))
     """This is a single row table, so we use a fixed id"""
     logo: Mapped[Optional[str]]
     theme: Mapped[Optional[dict[str, Any]]] = mapped_column(JSONB(none_as_null=True))
@@ -2590,6 +2590,9 @@ class AttributeSyncFieldMapping(Base):
 
 class BookingTimeStatus(Base):
     __tablename__ = "BookingTimeStatus"
+    # A database view: its own MetaData keeps it out of Base.metadata, so create_all(), drop_all()
+    # and Alembic's autogenerate leave it alone. Read it; do not write to it.
+    metadata = MetaData()
 
     id: Mapped[int] = mapped_column()
     uid: Mapped[Optional[str]]
@@ -2615,14 +2618,13 @@ class BookingTimeStatus(Base):
     no_show_host: Mapped[Optional[bool]] = mapped_column("noShowHost")
     is_team_booking: Mapped[bool] = mapped_column("isTeamBooking")
 
-    __table_args__ = (
-        Index("BookingTimeStatus_id_key", "id", unique=True),
-    )
-
     __mapper_args__ = {"primary_key": [id]}
 
 class BookingTimeStatusDenormalized(Base):
     __tablename__ = "BookingTimeStatusDenormalized"
+    # A database view: its own MetaData keeps it out of Base.metadata, so create_all(), drop_all()
+    # and Alembic's autogenerate leave it alone. Read it; do not write to it.
+    metadata = MetaData()
 
     id: Mapped[int] = mapped_column()
     uid: Mapped[str]
@@ -2649,9 +2651,5 @@ class BookingTimeStatusDenormalized(Base):
     no_show_host: Mapped[Optional[bool]] = mapped_column("noShowHost")
     is_team_booking: Mapped[bool] = mapped_column("isTeamBooking")
     time_status: Mapped[Optional[str]] = mapped_column("timeStatus")
-
-    __table_args__ = (
-        Index("BookingTimeStatusDenormalized_id_key", "id", unique=True),
-    )
 
     __mapper_args__ = {"primary_key": [id]}

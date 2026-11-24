@@ -760,7 +760,7 @@ export interface Webhook {
   payloadTemplate: string | null
   createdAt: Generated<Timestamp>
   active: Generated<boolean>
-  eventTriggers: WebhookTriggerEvents[]
+  eventTriggers: ColumnType<string, WebhookTriggerEvents[], WebhookTriggerEvents[]>
   appId: string | null
   secret: string | null
   platform: Generated<boolean>
@@ -828,7 +828,7 @@ export interface App {
   slug: string
   dirName: string
   keys: unknown
-  categories: AppCategories[]
+  categories: ColumnType<string, AppCategories[], AppCategories[]>
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
   enabled: Generated<boolean>
@@ -952,7 +952,7 @@ export interface AccessCode {
   code: string
   clientId: string | null
   expiresAt: Timestamp
-  scopes: AccessScope[]
+  scopes: ColumnType<string, AccessScope[], AccessScope[]>
   userId: number | null
   teamId: number | null
   codeChallenge: string | null

@@ -9,8 +9,8 @@ defmodule Trigger.PlaygroundConversation do
           chat_id: String.t(),
           title: String.t(),
           agent_slug: String.t(),
-          client_data: map() | nil,
-          messages: map() | nil,
+          client_data: map() | list() | String.t() | number() | boolean() | nil,
+          messages: map() | list() | String.t() | number() | boolean() | nil,
           last_event_id: String.t() | nil,
           user_id: String.t(),
           inserted_at: DateTime.t(),
@@ -29,9 +29,9 @@ defmodule Trigger.PlaygroundConversation do
     # Which agent this conversation is with
     field(:agent_slug, :string, source: :agentSlug)
     # The client data JSON used for this conversation
-    field(:client_data, :map, source: :clientData)
+    field(:client_data, Trigger.PrismaJson, source: :clientData)
     # Accumulated UIMessages from completed turns (for resume without stream replay)
-    field(:messages, :map)
+    field(:messages, Trigger.PrismaJson)
     # Last SSE event ID — resume from this position to avoid replaying old turns
     field(:last_event_id, :string, source: :lastEventId)
     # The user who started this conversation

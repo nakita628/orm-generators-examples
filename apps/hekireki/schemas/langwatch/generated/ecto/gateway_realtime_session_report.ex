@@ -10,7 +10,7 @@ defmodule LangWatch.GatewayRealtimeSessionReport do
           report_key: String.t(),
           project_id: String.t(),
           model: String.t(),
-          usage: map(),
+          usage: map() | list() | String.t() | number() | boolean(),
           cost_nano_usd: integer(),
           inserted_at: DateTime.t()
         }
@@ -21,7 +21,7 @@ defmodule LangWatch.GatewayRealtimeSessionReport do
     field(:report_key, :string, source: :reportKey)
     field(:project_id, :string, source: :projectId)
     field(:model, :string)
-    field(:usage, :map)
+    field(:usage, LangWatch.PrismaJson)
     field(:cost_nano_usd, :integer, source: :costNanoUsd)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end

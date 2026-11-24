@@ -11,6 +11,7 @@ defmodule Shelf.NotificationPreference do
   @timestamps_opts [type: Shelf.PrismaDateTime, autogenerate: {Shelf.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          user_id: String.t(),
           push_enabled: boolean(),
           bookings: boolean(),
           audits: boolean(),
@@ -24,7 +25,7 @@ defmodule Shelf.NotificationPreference do
     field(:bookings, :boolean, default: true)
     field(:audits, :boolean, default: true)
     field(:stock_and_reminders, :boolean, default: true, source: :stockAndReminders)
-    field(:user_id, :string, source: :userId)
+    field(:user_id, :string, primary_key: true, source: :userId)
     belongs_to(:user, Shelf.User, foreign_key: :user_id, define_field: false, type: :string)
     timestamps(inserted_at: false, updated_at_source: :updatedAt)
   end

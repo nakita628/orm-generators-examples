@@ -1,4 +1,6 @@
 class Media < ApplicationRecord
+  self.primary_key = %w[project_id id]
+
   validates :id, presence: true, uniqueness: { scope: :project_id }
   validates :sha_256_hash, presence: true, length: { maximum: 44 }, uniqueness: { scope: :project_id }
   validates :bucket_path, presence: true

@@ -30,8 +30,8 @@ defmodule Dub.Link do
           do_index: boolean(),
           ios: String.t() | nil,
           android: String.t() | nil,
-          geo: map() | nil,
-          test_variants: map() | nil,
+          geo: map() | list() | String.t() | number() | boolean() | nil,
+          test_variants: map() | list() | String.t() | number() | boolean() | nil,
           test_started_at: DateTime.t() | nil,
           test_completed_at: DateTime.t() | nil,
           external_id: String.t() | nil,
@@ -84,8 +84,8 @@ defmodule Dub.Link do
     field(:do_index, :boolean, default: false, source: :doIndex)
     field(:ios, :string)
     field(:android, :string)
-    field(:geo, :map)
-    field(:test_variants, :map, source: :testVariants)
+    field(:geo, Dub.PrismaJson)
+    field(:test_variants, Dub.PrismaJson, source: :testVariants)
     field(:test_started_at, Dub.PrismaDateTime, source: :testStartedAt)
     field(:test_completed_at, Dub.PrismaDateTime, source: :testCompletedAt)
     field(:external_id, :string, source: :externalId)

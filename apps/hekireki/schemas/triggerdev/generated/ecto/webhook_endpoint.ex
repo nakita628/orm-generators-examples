@@ -16,9 +16,9 @@ defmodule Trigger.WebhookEndpoint do
           endpoint_external_ref: String.t(),
           source: String.t(),
           declared_id: String.t(),
-          routing_targets: map(),
-          verifier_artifact: map(),
-          metadata: map(),
+          routing_targets: map() | list() | String.t() | number() | boolean(),
+          verifier_artifact: map() | list() | String.t() | number() | boolean(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           secret_provisioning: String.t(),
           setup_prompt: String.t() | nil,
           signing_secret_key: String.t() | nil,
@@ -44,9 +44,9 @@ defmodule Trigger.WebhookEndpoint do
     # The declared webhooks.endpoint.define id (string ref, no relation).
     field(:declared_id, :string, source: :declaredId)
     # Subscribers of this endpoint: StoredWebhookRoutingTarget[] ({ id, type: "task" | "session", ..., filterAst }).
-    field(:routing_targets, :map, source: :routingTargets)
-    field(:verifier_artifact, :map, source: :verifierArtifact)
-    field(:metadata, :map, default: %{})
+    field(:routing_targets, Trigger.PrismaJson, default: [], source: :routingTargets)
+    field(:verifier_artifact, Trigger.PrismaJson, source: :verifierArtifact)
+    field(:metadata, Trigger.PrismaJson, default: %{})
     field(:secret_provisioning, :string, default: "either", source: :secretProvisioning)
     # The source's instructions for an AI agent registering this endpoint with the provider.
     field(:setup_prompt, :string, source: :setupPrompt)

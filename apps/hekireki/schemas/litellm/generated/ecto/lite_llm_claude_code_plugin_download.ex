@@ -27,6 +27,6 @@ defmodule LiteLLM.LiteLLMClaudeCodePluginDownload do
     field(:key_alias, :string)
     field(:team_id, :string)
     field(:team_alias, :string)
-    belongs_to(:plugin, LiteLLM.LiteLLMClaudeCodePluginTable, foreign_key: :plugin_id, type: :binary_id)
+    belongs_to(:plugin, LiteLLM.LiteLLMClaudeCodePluginTable, foreign_key: :plugin_id, type: :string)
   end
 end

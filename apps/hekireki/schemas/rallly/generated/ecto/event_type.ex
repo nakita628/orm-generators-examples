@@ -10,7 +10,7 @@ defmodule Rallly.EventType do
           duration: integer(),
           capacity: integer() | nil,
           description: String.t() | nil,
-          location: map() | nil,
+          location: map() | list() | String.t() | number() | boolean() | nil,
           deleted: boolean(),
           deleted_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -27,10 +27,10 @@ defmodule Rallly.EventType do
     field(:duration, :integer, source: :duration_minutes)
     field(:capacity, :integer)
     field(:description, :string)
-    field(:location, :map)
+    field(:location, Rallly.PrismaJson)
     field(:deleted, :boolean, default: false)
     field(:deleted_at, Rallly.PrismaDateTime)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     belongs_to(:host, Rallly.User, foreign_key: :host_id, type: :string)
     has_many(:slots, Rallly.SheetSlot, foreign_key: :event_type_id, references: :id)
     has_many(:scheduled_events, Rallly.ScheduledEvent, foreign_key: :event_type_id, references: :id)

@@ -30,7 +30,7 @@ defmodule TypeHero.Account do
     field(:scope, :string)
     field(:id_token, :string)
     field(:session_state, :string)
-    field(:user_id, :binary_id, source: :userId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:user_id, :string, source: :userId)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
   end
 end

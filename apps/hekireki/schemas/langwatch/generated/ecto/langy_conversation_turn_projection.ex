@@ -13,10 +13,10 @@ defmodule LangWatch.LangyConversationTurnProjection do
           conversation_id: String.t(),
           turn_id: String.t(),
           status: String.t(),
-          question_parts: map(),
-          answer_parts: map(),
-          tool_calls: map(),
-          plan: map() | nil,
+          question_parts: map() | list() | String.t() | number() | boolean(),
+          answer_parts: map() | list() | String.t() | number() | boolean(),
+          tool_calls: map() | list() | String.t() | number() | boolean(),
+          plan: map() | list() | String.t() | number() | boolean() | nil,
           error: String.t() | nil,
           started_at: float() | nil,
           ended_at: float() | nil,
@@ -41,13 +41,13 @@ defmodule LangWatch.LangyConversationTurnProjection do
     # `LANGY_CONVERSATION_TURN_STATUS`; the repository validates against it.
     field(:status, :string)
     # LangyMessagePart[] — the user question that opened the turn.
-    field(:question_parts, :map, source: :questionParts)
+    field(:question_parts, LangWatch.PrismaJson, source: :questionParts)
     # LangyMessagePart[] — the agent's whole final answer.
-    field(:answer_parts, :map, source: :answerParts)
+    field(:answer_parts, LangWatch.PrismaJson, source: :answerParts)
     # LangyTurnToolCall[] — tool-call lifecycle audit in initiation order.
-    field(:tool_calls, :map, source: :toolCalls)
+    field(:tool_calls, LangWatch.PrismaJson, source: :toolCalls)
     # LangyPlanItemData[] | null — null means the turn never kept a plan.
-    field(:plan, :map)
+    field(:plan, LangWatch.PrismaJson)
     field(:error, :string)
     field(:started_at, :float, source: :startedAt)
     field(:ended_at, :float, source: :endedAt)

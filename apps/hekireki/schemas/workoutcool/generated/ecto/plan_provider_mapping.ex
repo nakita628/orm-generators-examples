@@ -9,7 +9,7 @@ defmodule WorkoutCool.PlanProviderMapping do
           provider: atom(),
           external_id: String.t(),
           region: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           is_active: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule WorkoutCool.PlanProviderMapping do
     field(:provider, Ecto.Enum, values: [:STRIPE, :PAYPAL, :LEMONSQUEEZY, :PADDLE, :APPLE_PAY, :GOOGLE_PAY, :REVENUECAT, :NONE, :OTHER])
     field(:external_id, :string, source: :externalId)
     field(:region, :string)
-    field(:metadata, :map)
+    field(:metadata, WorkoutCool.PrismaJson)
     field(:is_active, :boolean, default: true, source: :isActive)
     field(:plan_id, :string, source: :planId)
     belongs_to(:plan, WorkoutCool.SubscriptionPlan, foreign_key: :plan_id, define_field: false, type: :string)

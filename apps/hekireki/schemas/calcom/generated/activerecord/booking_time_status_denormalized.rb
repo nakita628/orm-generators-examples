@@ -1,5 +1,6 @@
 class BookingTimeStatusDenormalized < ApplicationRecord
   self.table_name = "BookingTimeStatusDenormalized"
+  self.primary_key = "id"
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

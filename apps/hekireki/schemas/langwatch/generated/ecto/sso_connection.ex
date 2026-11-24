@@ -27,13 +27,13 @@ defmodule LangWatch.SsoConnection do
           type: String.t(),
           state: String.t(),
           claimed_domains: [String.t()],
-          domain_claims: map(),
+          domain_claims: map() | list() | String.t() | number() | boolean(),
           approved_domains: [String.t()],
           verified_domains: [String.t()],
           lapsed_domains: [String.t()],
-          domain_verifications: map(),
-          pending_verification: map() | nil,
-          idp_metadata: map(),
+          domain_verifications: map() | list() | String.t() | number() | boolean(),
+          pending_verification: map() | list() | String.t() | number() | boolean() | nil,
+          idp_metadata: map() | list() | String.t() | number() | boolean(),
           arrival_policy: String.t(),
           allows_jit: boolean(),
           arrival_policy_decided_at: DateTime.t() | nil,
@@ -45,7 +45,7 @@ defmodule LangWatch.SsoConnection do
           route_changed_at: DateTime.t() | nil,
           finalization_requested_at: DateTime.t() | nil,
           finalized_at: DateTime.t() | nil,
-          rejection: map() | nil,
+          rejection: map() | list() | String.t() | number() | boolean() | nil,
           created_by: String.t() | nil,
           tear_down_after: DateTime.t() | nil,
           occurred_at: DateTime.t(),
@@ -72,7 +72,7 @@ defmodule LangWatch.SsoConnection do
     # connection has made and how long each waited to be decided. The tier-3
     # approval queue is a read of this column, and the epic's Open Q2 wants
     # that latency measured from the day the queue exists.
-    field(:domain_claims, :map, source: :domainClaims)
+    field(:domain_claims, LangWatch.PrismaJson, default: [], source: :domainClaims)
     field(:approved_domains, {:array, :string}, source: :approvedDomains)
     # The only domains that ever route, and only while state is ACTIVE.
     field(:verified_domains, {:array, :string}, source: :verifiedDomains)
@@ -88,10 +88,10 @@ defmodule LangWatch.SsoConnection do
     # that evidence is still there. Kept on the row rather than only in the
     # log so that an operator-attested domain can never be read as one the
     # customer proved, and a wavering one never as one nothing is doubting.
-    field(:domain_verifications, :map, source: :domainVerifications)
+    field(:domain_verifications, LangWatch.PrismaJson, default: [], source: :domainVerifications)
     # { domain, method, tokenHash } while a ceremony is in flight.
-    field(:pending_verification, :map, source: :pendingVerification)
-    field(:idp_metadata, :map, source: :idpMetadata)
+    field(:pending_verification, LangWatch.PrismaJson, source: :pendingVerification)
+    field(:idp_metadata, LangWatch.PrismaJson, source: :idpMetadata)
     # admit | request | refuse - what this connection does with somebody who
     # signs in through it and is not a member yet (ADR-117 3). Stated at
     # registration and changed by the setup journey, so it is never absent
@@ -133,7 +133,7 @@ defmodule LangWatch.SsoConnection do
     field(:finalization_requested_at, LangWatch.PrismaDateTime, source: :finalizationRequestedAt)
     field(:finalized_at, LangWatch.PrismaDateTime, source: :finalizedAt)
     # { domain, note } - the last ops rejection, read back on a re-claim.
-    field(:rejection, :map)
+    field(:rejection, LangWatch.PrismaJson)
     field(:created_by, :string, source: :createdBy)
     # While TEARDOWN_PENDING: when the process manager's wake completes it.
     field(:tear_down_after, LangWatch.PrismaDateTime, source: :tearDownAfter)

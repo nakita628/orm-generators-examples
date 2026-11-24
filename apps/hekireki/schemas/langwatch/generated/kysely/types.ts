@@ -2204,7 +2204,7 @@ export interface Dataset {
   sourceStoredObjectId: string | null
   uploadFilename: string | null
   rowCount: number | null
-  sizeBytes: bigint | null
+  sizeBytes: ColumnType<string, bigint | number | string, bigint | number | string> | null
   chunkCount: number | null
   chunkOffsets: unknown
 }
@@ -2232,7 +2232,7 @@ export interface DatasetVersion {
   contentHash: string
   columnTypes: unknown
   rowCount: number
-  sizeBytes: bigint
+  sizeBytes: ColumnType<string, bigint | number | string, bigint | number | string>
   chunkCount: number
   restoredFromVersion: number | null
   authorId: string | null
@@ -3320,7 +3320,7 @@ export interface InstantEvalJudgeUsageBilling {
 export interface InstantEvalJudgeSpend {
   organizationId: string
   requestId: string
-  spendNanoUsd: bigint
+  spendNanoUsd: ColumnType<string, bigint | number | string, bigint | number | string>
   occurredAt: Timestamp
 }
 
@@ -4091,7 +4091,7 @@ export interface VirtualKey {
   principalUserId: string | null
   traceProjectId: string | null
   config: Generated<unknown>
-  revision: Generated<bigint>
+  revision: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   previousHashedSecret: string | null
   previousSecretValidUntil: Timestamp | null
   revokedAt: Timestamp | null
@@ -4678,7 +4678,7 @@ export interface GatewayBudgetLedger {
 }
 
 export interface GatewayChangeEvent {
-  revision: Generated<bigint>
+  revision: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   organizationId: string
   kind: GatewayChangeEventKind
   virtualKeyId: string | null
@@ -5072,7 +5072,9 @@ export interface GatewayRealtimeSession {
   transcriptionModel: string | null
   endUserId: string | null
   lastReportAt: Timestamp | null
-  reportedCostNanoUsd: Generated<bigint>
+  reportedCostNanoUsd: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   reportCount: Generated<number>
   createdAt: Generated<Timestamp>
   updatedAt: Generated<Timestamp>
@@ -5085,7 +5087,7 @@ export interface GatewayRealtimeSessionReport {
   projectId: string
   model: string
   usage: unknown
-  costNanoUsd: bigint
+  costNanoUsd: ColumnType<string, bigint | number | string, bigint | number | string>
   createdAt: Generated<Timestamp>
 }
 
@@ -5115,7 +5117,7 @@ export interface StoredObject {
   ownerId: string
   filename: string
   sha256: string
-  sizeBytes: bigint
+  sizeBytes: ColumnType<string, bigint | number | string, bigint | number | string>
   mediaType: string
   mediaTypeVerified: Generated<boolean>
   storageProvider: string | null
@@ -5262,7 +5264,7 @@ export interface AgentRegistryEntry {
 export interface AgentRegistryEvent {
   id: string
   organizationId: string
-  sequence: Generated<bigint>
+  sequence: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   type: string
   entryId: string
   fromVersion: number | null

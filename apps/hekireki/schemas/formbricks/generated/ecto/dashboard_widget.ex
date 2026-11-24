@@ -17,7 +17,7 @@ defmodule Formbricks.DashboardWidget do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          layout: map(),
+          layout: map() | list() | String.t() | number() | boolean(),
           order: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -28,7 +28,7 @@ defmodule Formbricks.DashboardWidget do
   schema "DashboardWidget" do
     field(:id, :string, primary_key: true)
     # [WidgetLayout] - Grid layout: { x, y, w, h }
-    field(:layout, :map, default: %{"x" => 0, "y" => 0, "w" => 4, "h" => 3})
+    field(:layout, Formbricks.PrismaJson, default: %{"x" => 0, "y" => 0, "w" => 4, "h" => 3})
     field(:order, :integer, default: 0)
     field(:dashboard_id, :string, source: :dashboardId)
     field(:chart_id, :string, source: :chartId)

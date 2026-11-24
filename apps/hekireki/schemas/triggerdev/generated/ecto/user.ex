@@ -9,21 +9,21 @@ defmodule Trigger.User do
           email: String.t(),
           pending_email: String.t() | nil,
           authentication_method: atom(),
-          authentication_profile: map() | nil,
-          authentication_extra_params: map() | nil,
+          authentication_profile: map() | list() | String.t() | number() | boolean() | nil,
+          authentication_extra_params: map() | list() | String.t() | number() | boolean() | nil,
           auth_identifier: String.t() | nil,
           display_name: String.t() | nil,
           name: String.t() | nil,
           avatar_url: String.t() | nil,
           admin: boolean(),
-          dashboard_preferences: map() | nil,
+          dashboard_preferences: map() | list() | String.t() | number() | boolean() | nil,
           is_on_cloud_waitlist: boolean(),
           feature_cloud: boolean(),
           is_on_hosted_repo_waitlist: boolean(),
           marketing_emails: boolean(),
           confirmed_basic_details: boolean(),
           referral_source: String.t() | nil,
-          onboarding_data: map() | nil,
+          onboarding_data: map() | list() | String.t() | number() | boolean() | nil,
           mfa_enabled_at: DateTime.t() | nil,
           mfa_last_used_code: String.t() | nil,
           session_duration: integer(),
@@ -55,15 +55,15 @@ defmodule Trigger.User do
     # Address awaiting confirmation; becomes `email` only after a link sent to it is opened
     field(:pending_email, :string, source: :pendingEmail)
     field(:authentication_method, Ecto.Enum, values: [:GITHUB, :MAGIC_LINK, :GOOGLE, :SSO], source: :authenticationMethod)
-    field(:authentication_profile, :map, source: :authenticationProfile)
-    field(:authentication_extra_params, :map, source: :authenticationExtraParams)
+    field(:authentication_profile, Trigger.PrismaJson, source: :authenticationProfile)
+    field(:authentication_extra_params, Trigger.PrismaJson, source: :authenticationExtraParams)
     field(:auth_identifier, :string, source: :authIdentifier)
     field(:display_name, :string, source: :displayName)
     field(:name, :string)
     field(:avatar_url, :string, source: :avatarUrl)
     field(:admin, :boolean, default: false)
     # Preferences for the dashboard
-    field(:dashboard_preferences, :map, source: :dashboardPreferences)
+    field(:dashboard_preferences, Trigger.PrismaJson, source: :dashboardPreferences)
     # @deprecated
     field(:is_on_cloud_waitlist, :boolean, default: false, source: :isOnCloudWaitlist)
     # @deprecated
@@ -73,7 +73,7 @@ defmodule Trigger.User do
     field(:marketing_emails, :boolean, default: true, source: :marketingEmails)
     field(:confirmed_basic_details, :boolean, default: false, source: :confirmedBasicDetails)
     field(:referral_source, :string, source: :referralSource)
-    field(:onboarding_data, :map, source: :onboardingData)
+    field(:onboarding_data, Trigger.PrismaJson, source: :onboardingData)
     field(:mfa_enabled_at, Trigger.PrismaDateTime, source: :mfaEnabledAt)
     # Hash of the last used code to prevent replay attacks
     field(:mfa_last_used_code, :string, source: :mfaLastUsedCode)

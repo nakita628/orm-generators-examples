@@ -5,11 +5,11 @@ defmodule OpenPanel.NotificationRule do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           send_to_app: boolean(),
           send_to_email: boolean(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           template: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -19,12 +19,12 @@ defmodule OpenPanel.NotificationRule do
         }
 
   schema "notification_rules" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     field(:send_to_app, :boolean, default: false, source: :sendToApp)
     field(:send_to_email, :boolean, default: false, source: :sendToEmail)
     # [IPrismaNotificationRuleConfig]
-    field(:config, :map)
+    field(:config, OpenPanel.PrismaJson)
     field(:template, :string)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, OpenPanel.Project, foreign_key: :project_id, define_field: false, type: :string)

@@ -10,7 +10,7 @@ defmodule Dub.Webhook do
           name: String.t(),
           url: String.t(),
           secret: String.t(),
-          triggers: map(),
+          triggers: map() | list() | String.t() | number() | boolean(),
           link_scope: atom() | nil,
           consecutive_failures: integer(),
           last_failed_at: DateTime.t() | nil,
@@ -29,7 +29,7 @@ defmodule Dub.Webhook do
     field(:name, :string)
     field(:url, :string)
     field(:secret, :string)
-    field(:triggers, :map)
+    field(:triggers, Dub.PrismaJson)
     field(:link_scope, Ecto.Enum, values: [:workspace, :folders, :links], source: :linkScope)
     field(:consecutive_failures, :integer, default: 0, source: :consecutiveFailures)
     field(:last_failed_at, Dub.PrismaDateTime, source: :lastFailedAt)

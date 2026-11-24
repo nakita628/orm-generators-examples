@@ -34,6 +34,7 @@ class WorkoutSession extends Model
         'startedAt' => 'datetime',
         'endedAt' => 'datetime',
         'duration' => 'integer',
+        'muscles' => AsPrismaList::class . ':' . ExerciseAttributeValueEnum::class,
         'rating' => 'integer',
     ];
 

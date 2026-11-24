@@ -23,12 +23,12 @@ defmodule Formbricks.Creative do
           status: atom(),
           published_at: DateTime.t() | nil,
           archived_at: DateTime.t() | nil,
-          content: map(),
-          styling: map(),
+          content: map() | list() | String.t() | number() | boolean(),
+          styling: map() | list() | String.t() | number() | boolean(),
           survey_id: String.t() | nil,
           link_url: String.t() | nil,
           show_on: atom(),
-          show_conditions: map() | nil,
+          show_conditions: map() | list() | String.t() | number() | boolean() | nil,
           display_percentage: float() | nil,
           start_at: DateTime.t() | nil,
           end_at: DateTime.t() | nil,
@@ -50,12 +50,12 @@ defmodule Formbricks.Creative do
     field(:status, Ecto.Enum, values: [:draft, :inProgress, :paused, :completed], default: :draft)
     field(:published_at, Formbricks.PrismaDateTime, source: :publishedAt)
     field(:archived_at, Formbricks.PrismaDateTime, source: :archivedAt)
-    field(:content, :map)
-    field(:styling, :map)
+    field(:content, Formbricks.PrismaJson)
+    field(:styling, Formbricks.PrismaJson)
     field(:survey_id, :string, source: :surveyId)
     field(:link_url, :string, source: :linkUrl)
     field(:show_on, Ecto.Enum, values: [:pageView, :action], default: :pageView, source: :showOn)
-    field(:show_conditions, :map, source: :showConditions)
+    field(:show_conditions, Formbricks.PrismaJson, source: :showConditions)
     field(:display_percentage, :float, source: :displayPercentage)
     field(:start_at, Formbricks.PrismaDateTime, source: :startAt)
     field(:end_at, Formbricks.PrismaDateTime, source: :endAt)

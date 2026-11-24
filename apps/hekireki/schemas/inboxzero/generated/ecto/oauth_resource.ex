@@ -12,13 +12,13 @@ defmodule InboxZero.OauthResource do
           signing_algorithm: String.t() | nil,
           signing_key_id: String.t() | nil,
           allowed_scopes: [String.t()],
-          custom_claims: map() | nil,
+          custom_claims: map() | list() | String.t() | number() | boolean() | nil,
           dpop_bound_access_tokens_required: boolean() | nil,
           disabled: boolean() | nil,
           created_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil,
           policy_version: integer() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           oauth_client_resources: [InboxZero.OauthClientResource.t()]
         }
 
@@ -31,13 +31,13 @@ defmodule InboxZero.OauthResource do
     field(:signing_algorithm, :string, source: :signingAlgorithm)
     field(:signing_key_id, :string, source: :signingKeyId)
     field(:allowed_scopes, {:array, :string}, source: :allowedScopes)
-    field(:custom_claims, :map, source: :customClaims)
+    field(:custom_claims, InboxZero.PrismaJson, source: :customClaims)
     field(:dpop_bound_access_tokens_required, :boolean, default: false, source: :dpopBoundAccessTokensRequired)
     field(:disabled, :boolean, default: false)
     field(:created_at, InboxZero.PrismaDateTime, source: :createdAt)
     field(:updated_at, InboxZero.PrismaDateTime, source: :updatedAt)
     field(:policy_version, :integer, default: 1, source: :policyVersion)
-    field(:metadata, :map)
+    field(:metadata, InboxZero.PrismaJson)
     has_many(:oauth_client_resources, InboxZero.OauthClientResource, foreign_key: :resource_id, references: :identifier)
   end
 end

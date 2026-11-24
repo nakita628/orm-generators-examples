@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMCustomerTeamTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :customer_team_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :customer_team_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           spend: float(),
           spend_reset_window: String.t() | nil,
           alias: String.t() | nil,

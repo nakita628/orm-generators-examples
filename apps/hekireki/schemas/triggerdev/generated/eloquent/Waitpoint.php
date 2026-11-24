@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * If it's a MANUAL waitpoint, this can be set as the `timeout`.
  * @property string|null $completedByBatchId If it's a BATCH type waitpoint, this is the associated batch
  * @property string|null $output When completed, an output can be stored here
- * @property mixed $tags Denormized column that holds the raw tags
+ * @property list<string> $tags Denormized column that holds the raw tags
  * Denormalized column that holds the raw tags
  */
 class Waitpoint extends Model
@@ -73,6 +73,7 @@ class Waitpoint extends Model
         'idempotencyKeyExpiresAt' => 'datetime',
         'completedAfter' => 'datetime',
         'outputIsError' => 'boolean',
+        'tags' => AsPrismaList::class,
     ];
 
     public function completedByTaskRun(): BelongsTo

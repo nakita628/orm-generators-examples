@@ -40,6 +40,7 @@ class LiteLLMOrganizationTable extends Model
 
     protected $casts = [
         'metadata' => 'array',
+        'models' => AsPrismaList::class,
         'spend' => 'float',
         'model_spend' => 'array',
     ];

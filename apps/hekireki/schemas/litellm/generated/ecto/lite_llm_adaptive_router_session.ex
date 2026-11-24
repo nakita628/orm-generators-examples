@@ -18,8 +18,8 @@ defmodule LiteLLM.LiteLLMAdaptiveRouterSession do
           exhaustion_count: integer(),
           last_user_content: String.t() | nil,
           last_assistant_content: String.t() | nil,
-          tool_call_history: map(),
-          pending_tool_calls: map(),
+          tool_call_history: map() | list() | String.t() | number() | boolean(),
+          pending_tool_calls: map() | list() | String.t() | number() | boolean(),
           turn_count: integer(),
           last_processed_turn: integer(),
           clean_credit_awarded: boolean(),
@@ -41,8 +41,8 @@ defmodule LiteLLM.LiteLLMAdaptiveRouterSession do
     field(:exhaustion_count, :integer, default: 0)
     field(:last_user_content, :string)
     field(:last_assistant_content, :string)
-    field(:tool_call_history, :map)
-    field(:pending_tool_calls, :map, default: %{})
+    field(:tool_call_history, LiteLLM.PrismaJson, default: [])
+    field(:pending_tool_calls, LiteLLM.PrismaJson, default: %{})
     field(:turn_count, :integer, default: 0)
     field(:last_processed_turn, :integer, default: -1)
     field(:clean_credit_awarded, :boolean, default: false)

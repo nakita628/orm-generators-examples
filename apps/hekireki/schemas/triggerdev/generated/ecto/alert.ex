@@ -10,8 +10,8 @@ defmodule Trigger.Alert do
           project_id: String.t(),
           environment_id: String.t(),
           capability_key: String.t(),
-          params: map(),
-          condition: map(),
+          params: map() | list() | String.t() | number() | boolean(),
+          condition: map() | list() | String.t() | number() | boolean(),
           query: String.t() | nil,
           expires_at: DateTime.t() | nil,
           lifecycle: String.t(),
@@ -19,12 +19,12 @@ defmodule Trigger.Alert do
           observed_condition: String.t(),
           observed_condition_changed_at: DateTime.t() | nil,
           pending_met_since: DateTime.t() | nil,
-          evaluator_state: map() | nil,
+          evaluator_state: map() | list() | String.t() | number() | boolean() | nil,
           evaluation_lease_id: String.t() | nil,
           evaluation_lease_until: DateTime.t() | nil,
           last_evaluated_at: DateTime.t() | nil,
           next_evaluation_at: DateTime.t() | nil,
-          notifiers: map(),
+          notifiers: map() | list() | String.t() | number() | boolean(),
           name: String.t() | nil,
           created_by: String.t(),
           updated_at: DateTime.t(),
@@ -45,8 +45,8 @@ defmodule Trigger.Alert do
     field(:project_id, :string, source: :projectId)
     field(:environment_id, :string, source: :environmentId)
     field(:capability_key, :string, source: :capabilityKey)
-    field(:params, :map)
-    field(:condition, :map)
+    field(:params, Trigger.PrismaJson)
+    field(:condition, Trigger.PrismaJson)
     field(:query, :string)
     field(:expires_at, Trigger.PrismaDateTime, source: :expiresAt)
     field(:lifecycle, :string, default: "active")
@@ -54,12 +54,12 @@ defmodule Trigger.Alert do
     field(:observed_condition, :string, default: "unknown", source: :observedCondition)
     field(:observed_condition_changed_at, Trigger.PrismaDateTime, source: :observedConditionChangedAt)
     field(:pending_met_since, Trigger.PrismaDateTime, source: :pendingMetSince)
-    field(:evaluator_state, :map, source: :evaluatorState)
+    field(:evaluator_state, Trigger.PrismaJson, source: :evaluatorState)
     field(:evaluation_lease_id, :string, source: :evaluationLeaseId)
     field(:evaluation_lease_until, Trigger.PrismaDateTime, source: :evaluationLeaseUntil)
     field(:last_evaluated_at, Trigger.PrismaDateTime, source: :lastEvaluatedAt)
     field(:next_evaluation_at, Trigger.PrismaDateTime, source: :nextEvaluationAt)
-    field(:notifiers, :map)
+    field(:notifiers, Trigger.PrismaJson, default: [])
     field(:name, :string)
     field(:created_by, :string, source: :createdBy)
     field(:updated_at, Trigger.PrismaDateTime, autogenerate: true, source: :updatedAt)

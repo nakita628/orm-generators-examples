@@ -7,12 +7,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "export_watermarks")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(column_name = "projectId")]
     pub project_id: String,
-    #[sea_orm(column_name = "integrationId", column_type = "Uuid")]
-    pub integration_id: String,
+    #[sea_orm(column_name = "integrationId")]
+    pub integration_id: Uuid,
     #[sea_orm(column_name = "lastInsertedAt")]
     pub last_inserted_at: DateTime,
     #[sea_orm(column_name = "lastEventId", default_value = "")]

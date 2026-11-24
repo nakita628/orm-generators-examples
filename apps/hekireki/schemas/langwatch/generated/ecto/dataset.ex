@@ -8,9 +8,9 @@ defmodule LangWatch.Dataset do
           id: String.t(),
           name: String.t(),
           slug: String.t(),
-          column_types: map(),
+          column_types: map() | list() | String.t() | number() | boolean(),
           archived_at: DateTime.t() | nil,
-          mapping: map() | nil,
+          mapping: map() | list() | String.t() | number() | boolean() | nil,
           use_s3: boolean(),
           s3_record_count: integer() | nil,
           content_layout: String.t(),
@@ -22,7 +22,7 @@ defmodule LangWatch.Dataset do
           row_count: integer() | nil,
           size_bytes: integer() | nil,
           chunk_count: integer() | nil,
-          chunk_offsets: map() | nil,
+          chunk_offsets: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: LangWatch.Project.t() | nil,
@@ -34,9 +34,9 @@ defmodule LangWatch.Dataset do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:slug, :string)
-    field(:column_types, :map, source: :columnTypes)
+    field(:column_types, LangWatch.PrismaJson, source: :columnTypes)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
-    field(:mapping, :map)
+    field(:mapping, LangWatch.PrismaJson)
     field(:use_s3, :boolean, default: false, source: :useS3)
     field(:s3_record_count, :integer, source: :s3RecordCount)
     field(:content_layout, :string, default: "postgres", source: :contentLayout)
@@ -48,7 +48,7 @@ defmodule LangWatch.Dataset do
     field(:row_count, :integer, source: :rowCount)
     field(:size_bytes, :integer, source: :sizeBytes)
     field(:chunk_count, :integer, source: :chunkCount)
-    field(:chunk_offsets, :map, source: :chunkOffsets)
+    field(:chunk_offsets, LangWatch.PrismaJson, source: :chunkOffsets)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, LangWatch.Project, foreign_key: :project_id, define_field: false, type: :string)
     has_many(:dataset_records, LangWatch.DatasetRecord, foreign_key: :dataset_id, references: :id)

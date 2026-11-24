@@ -5,7 +5,7 @@ defmodule Umami.User do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           username: String.t(),
           password: String.t(),
           role: String.t(),
@@ -30,7 +30,7 @@ defmodule Umami.User do
         }
 
   schema "user" do
-    field(:id, :string, primary_key: true, source: :user_id)
+    field(:id, Ecto.UUID, primary_key: true, source: :user_id)
     field(:username, :string)
     field(:password, :string)
     field(:role, :string)

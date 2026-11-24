@@ -5,8 +5,8 @@ defmodule Umami.ErrorIssue do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
-          website_id: String.t(),
+          id: Ecto.UUID.t(),
+          website_id: Ecto.UUID.t(),
           fingerprint: String.t(),
           grouping_version: integer(),
           title: String.t(),
@@ -16,8 +16,8 @@ defmodule Umami.ErrorIssue do
         }
 
   schema "error_issue" do
-    field(:id, :string, primary_key: true, source: :issue_id)
-    field(:website_id, :string)
+    field(:id, Ecto.UUID, primary_key: true, source: :issue_id)
+    field(:website_id, Ecto.UUID)
     field(:fingerprint, :string)
     field(:grouping_version, :integer, default: 1)
     field(:title, :string)

@@ -4,6 +4,7 @@ defmodule LiteLLM.LiteLLMAgentIdentity do
   @primary_key false
 
   @type t :: %__MODULE__{
+          agent_id: String.t(),
           active: boolean(),
           provider: String.t(),
           issuer: String.t(),
@@ -28,6 +29,7 @@ defmodule LiteLLM.LiteLLMAgentIdentity do
     field(:required_scopes, {:array, :string})
     field(:revision, :string, autogenerate: {Ecto.UUID, :generate, []})
     field(:last_authenticated_at, LiteLLM.PrismaDateTime)
-    belongs_to(:agent, LiteLLM.LiteLLMAgentsTable, foreign_key: :agent_id, type: :binary_id)
+    field(:agent_id, :string, primary_key: true)
+    belongs_to(:agent, LiteLLM.LiteLLMAgentsTable, foreign_key: :agent_id, define_field: false, type: :string)
   end
 end

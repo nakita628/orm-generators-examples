@@ -21,13 +21,13 @@ defmodule Teable.Template do
           snapshot: String.t() | nil,
           order: float(),
           usage_count: integer(),
-          publish_info: map() | nil,
+          publish_info: map() | list() | String.t() | number() | boolean() | nil,
           visit_count: integer(),
           kind: String.t() | nil,
           version: integer(),
-          manifest: map() | nil,
-          review: map() | nil,
-          history: map() | nil,
+          manifest: map() | list() | String.t() | number() | boolean() | nil,
+          review: map() | list() | String.t() | number() | boolean() | nil,
+          history: map() | list() | String.t() | number() | boolean() | nil,
           parent_template_id: String.t() | nil,
           slug: String.t() | nil,
           updated_at: DateTime.t() | nil
@@ -50,13 +50,13 @@ defmodule Teable.Template do
     field(:snapshot, :string)
     field(:order, :float)
     field(:usage_count, :integer, default: 0)
-    field(:publish_info, :map)
+    field(:publish_info, Teable.PrismaJson)
     field(:visit_count, :integer, default: 0)
     field(:kind, :string)
     field(:version, :integer, default: 1)
-    field(:manifest, :map)
-    field(:review, :map)
-    field(:history, :map)
+    field(:manifest, Teable.PrismaJson)
+    field(:review, Teable.PrismaJson)
+    field(:history, Teable.PrismaJson)
     field(:parent_template_id, :string)
     field(:slug, :string)
     timestamps(inserted_at: false, updated_at_source: :last_modified_time)

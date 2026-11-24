@@ -17,12 +17,12 @@ defmodule Trigger.WebhookDelivery do
           run_id: String.t() | nil,
           status: atom(),
           is_test: boolean(),
-          parsed_event: map() | nil,
-          headers: map() | nil,
+          parsed_event: map() | list() | String.t() | number() | boolean() | nil,
+          headers: map() | list() | String.t() | number() | boolean() | nil,
           raw_body_hash: String.t() | nil,
           error_message: String.t() | nil,
           filter_reason: String.t() | nil,
-          targets: map(),
+          targets: map() | list() | String.t() | number() | boolean(),
           processed_at: DateTime.t() | nil,
           retention_days: integer(),
           inserted_at: DateTime.t(),
@@ -43,13 +43,13 @@ defmodule Trigger.WebhookDelivery do
     field(:status, Ecto.Enum, values: [:PENDING, :PROCESSING, :SUCCEEDED, :FAILED, :FILTERED, :UNMATCHED], default: :PENDING)
     # Set from the x-trigger-test ingress header; marks console/test-send deliveries so the list can filter them.
     field(:is_test, :boolean, default: false, source: :isTest)
-    field(:parsed_event, :map, source: :parsedEvent)
-    field(:headers, :map)
+    field(:parsed_event, Trigger.PrismaJson, source: :parsedEvent)
+    field(:headers, Trigger.PrismaJson)
     field(:raw_body_hash, :string, source: :rawBodyHash)
     field(:error_message, :string, source: :errorMessage)
     field(:filter_reason, :string, source: :filterReason)
     # Per-target results: WebhookDeliveryTargetResult[] ({ id, type, status, reason?, runId?, error? }).
-    field(:targets, :map)
+    field(:targets, Trigger.PrismaJson, default: [])
     field(:processed_at, Trigger.PrismaDateTime, source: :processedAt)
     # Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id.
     field(:retention_days, :integer, primary_key: true, default: 30, source: :retentionDays)

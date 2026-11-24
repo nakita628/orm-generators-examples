@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMPolicyTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :policy_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :policy_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           policy_name: String.t(),
           version_number: integer(),
           version_status: String.t(),
@@ -18,8 +18,8 @@ defmodule LiteLLM.LiteLLMPolicyTable do
           description: String.t() | nil,
           guardrails_add: [String.t()],
           guardrails_remove: [String.t()],
-          condition: map() | nil,
-          pipeline: map() | nil,
+          condition: map() | list() | String.t() | number() | boolean() | nil,
+          pipeline: map() | list() | String.t() | number() | boolean() | nil,
           created_by: String.t() | nil,
           updated_by: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -38,8 +38,8 @@ defmodule LiteLLM.LiteLLMPolicyTable do
     field(:description, :string)
     field(:guardrails_add, {:array, :string})
     field(:guardrails_remove, {:array, :string})
-    field(:condition, :map, default: %{})
-    field(:pipeline, :map)
+    field(:condition, LiteLLM.PrismaJson, default: %{})
+    field(:pipeline, LiteLLM.PrismaJson)
     field(:created_by, :string)
     field(:updated_by, :string)
     timestamps(inserted_at_source: :created_at)

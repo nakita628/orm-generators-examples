@@ -5,7 +5,7 @@ defmodule OpenPanel.ReportLayout do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           grid_columns: integer(),
           x: integer(),
           y: integer(),
@@ -21,7 +21,7 @@ defmodule OpenPanel.ReportLayout do
         }
 
   schema "report_layouts" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:grid_columns, :integer, default: 12, source: :gridColumns)
     field(:x, :integer, default: 0)
     field(:y, :integer, default: 0)
@@ -31,8 +31,8 @@ defmodule OpenPanel.ReportLayout do
     field(:min_h, :integer, default: 4, source: :minH)
     field(:max_w, :integer, source: :maxW)
     field(:max_h, :integer, source: :maxH)
-    field(:report_id, :string, source: :reportId)
-    belongs_to(:report, OpenPanel.Report, foreign_key: :report_id, define_field: false, type: :string)
+    field(:report_id, Ecto.UUID, source: :reportId)
+    belongs_to(:report, OpenPanel.Report, foreign_key: :report_id, define_field: false, type: Ecto.UUID)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

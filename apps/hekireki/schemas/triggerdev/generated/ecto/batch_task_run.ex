@@ -15,7 +15,7 @@ defmodule Trigger.BatchTaskRun do
           run_count: integer(),
           payload: String.t() | nil,
           payload_type: String.t(),
-          options: map() | nil,
+          options: map() | list() | String.t() | number() | boolean() | nil,
           batch_version: String.t(),
           sealed: boolean(),
           sealed_at: DateTime.t() | nil,
@@ -55,7 +55,7 @@ defmodule Trigger.BatchTaskRun do
     field(:run_count, :integer, default: 0, source: :runCount)
     field(:payload, :string)
     field(:payload_type, :string, default: "application/json", source: :payloadType)
-    field(:options, :map)
+    field(:options, Trigger.PrismaJson)
     field(:batch_version, :string, default: "v1", source: :batchVersion)
     # sealed is set to true once no more items can be added to the batch
     field(:sealed, :boolean, default: false)

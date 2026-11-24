@@ -25,7 +25,7 @@ defmodule Rallly.SpaceApiKey do
     field(:last_used_at, Rallly.PrismaDateTime)
     field(:expires_at, Rallly.PrismaDateTime)
     field(:revoked_at, Rallly.PrismaDateTime)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end
 end

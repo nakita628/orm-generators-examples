@@ -9,7 +9,7 @@ defmodule Typebot.SetVariableHistoryItem do
           variable_id: String.t(),
           block_id: String.t(),
           block_index: integer() | nil,
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           result: Typebot.Result.t() | nil
         }
 
@@ -18,7 +18,7 @@ defmodule Typebot.SetVariableHistoryItem do
     field(:variable_id, :string, source: :variableId)
     field(:block_id, :string, source: :blockId)
     field(:block_index, :integer, source: :blockIndex)
-    field(:value, :map)
+    field(:value, Typebot.PrismaJson)
     field(:result_id, :string, primary_key: true, source: :resultId)
     belongs_to(:result, Typebot.Result, foreign_key: :result_id, define_field: false, type: :string)
   end

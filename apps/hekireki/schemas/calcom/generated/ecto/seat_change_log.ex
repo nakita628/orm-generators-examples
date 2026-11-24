@@ -1,12 +1,12 @@
 defmodule Calcom.SeatChangeLog do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           change_type: atom(),
           seat_count: integer(),
           user_id: integer() | nil,
@@ -14,7 +14,7 @@ defmodule Calcom.SeatChangeLog do
           change_date: DateTime.t(),
           month_key: String.t(),
           operation_id: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           team: Calcom.Team.t() | nil,
           proration: Calcom.MonthlyProration.t() | nil,
@@ -30,11 +30,11 @@ defmodule Calcom.SeatChangeLog do
     field(:change_date, Calcom.PrismaDateTime, autogenerate: true, source: :changeDate)
     field(:month_key, :string, source: :monthKey)
     field(:operation_id, :string, source: :operationId)
-    field(:metadata, :map)
+    field(:metadata, Calcom.PrismaJson)
     field(:team_id, :id, source: :teamId)
-    field(:processed_in_proration_id, :binary_id, source: :processedInProrationId)
-    field(:team_billing_id, :binary_id, source: :teamBillingId)
-    field(:organization_billing_id, :binary_id, source: :organizationBillingId)
+    field(:processed_in_proration_id, :string, source: :processedInProrationId)
+    field(:team_billing_id, :string, source: :teamBillingId)
+    field(:organization_billing_id, :string, source: :organizationBillingId)
     belongs_to(:team, Calcom.Team, foreign_key: :team_id, define_field: false, type: :id)
     belongs_to(:proration, Calcom.MonthlyProration, foreign_key: :processed_in_proration_id, define_field: false)
     belongs_to(:team_billing, Calcom.TeamBilling, foreign_key: :team_billing_id, define_field: false)

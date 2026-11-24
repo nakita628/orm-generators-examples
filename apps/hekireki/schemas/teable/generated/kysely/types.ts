@@ -335,7 +335,7 @@ export interface ComputedUpdateStageLedger {
   kind: string
   table_id: string
   record_id: string
-  seq: Generated<bigint>
+  seq: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
 }
 
 export interface ComputedUpdateDeadLetter {
@@ -441,9 +441,13 @@ export interface ComputedFieldActivity {
   status: string
   active_task_count: Generated<number>
   processing_task_count: Generated<number>
-  generation: Generated<bigint>
-  estimated_complexity: Generated<bigint>
-  estimated_dirty_records: Generated<bigint>
+  generation: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  estimated_complexity: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  estimated_dirty_records: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   has_all_target_records: Generated<boolean>
   queued_at: Timestamp | null
   started_at: Timestamp | null
@@ -461,9 +465,11 @@ export interface ComputedTableActivity {
   status: string
   calculating_field_count: Generated<number>
   queued_field_count: Generated<number>
-  estimated_complexity: Generated<bigint>
+  estimated_complexity: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   recent_completions: Generated<unknown>
-  generation: Generated<bigint>
+  generation: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   updated_at: Generated<Timestamp>
 }
 
@@ -555,7 +561,7 @@ export interface Attachments {
   id: string
   token: string
   hash: string
-  size: bigint
+  size: ColumnType<string, bigint | number | string, bigint | number | string>
   mimetype: string
   path: string
   width: number | null

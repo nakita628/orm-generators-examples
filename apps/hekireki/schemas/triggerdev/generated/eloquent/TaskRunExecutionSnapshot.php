@@ -21,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $runId Run
  * @property int|null $attemptNumber This is the current run attempt number. Users can define how many attempts they want for a run.
  * @property string $environmentId Environment
- * @property mixed $completedWaitpointOrder An array of waitpoint IDs in the correct order, used for batches
+ * @property list<string> $completedWaitpointOrder An array of waitpoint IDs in the correct order, used for batches
  * @property string|null $checkpointId Checkpoint
  * @property string|null $workerId Worker
  * @property mixed $metadata Metadata used by various systems in the run engine
@@ -75,6 +75,7 @@ class TaskRunExecutionSnapshot extends Model
         'runStatus' => TaskRunStatus::class,
         'attemptNumber' => 'integer',
         'environmentType' => RuntimeEnvironmentType::class,
+        'completedWaitpointOrder' => AsPrismaList::class,
         'lastHeartbeatAt' => 'datetime',
         'metadata' => 'array',
     ];

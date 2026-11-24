@@ -8,9 +8,9 @@ defmodule Trigger.PromptVersion do
           id: String.t(),
           version: integer(),
           text_content: String.t() | nil,
-          chat_content: map() | nil,
+          chat_content: map() | list() | String.t() | number() | boolean() | nil,
           model: String.t() | nil,
-          config: map() | nil,
+          config: map() | list() | String.t() | number() | boolean() | nil,
           source: String.t(),
           commit_message: String.t() | nil,
           content_hash: String.t(),
@@ -25,9 +25,9 @@ defmodule Trigger.PromptVersion do
     field(:id, :string, primary_key: true)
     field(:version, :integer)
     field(:text_content, :string, source: :textContent)
-    field(:chat_content, :map, source: :chatContent)
+    field(:chat_content, Trigger.PrismaJson, source: :chatContent)
     field(:model, :string)
-    field(:config, :map)
+    field(:config, Trigger.PrismaJson)
     field(:source, :string)
     field(:commit_message, :string, source: :commitMessage)
     field(:content_hash, :string, source: :contentHash)

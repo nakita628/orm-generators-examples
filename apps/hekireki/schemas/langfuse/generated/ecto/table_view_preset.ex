@@ -8,11 +8,11 @@ defmodule Langfuse.TableViewPreset do
           id: String.t(),
           name: String.t(),
           table_name: String.t(),
-          filters: map(),
-          column_order: map(),
-          column_visibility: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
+          column_order: map() | list() | String.t() | number() | boolean(),
+          column_visibility: map() | list() | String.t() | number() | boolean(),
           search_query: String.t() | nil,
-          order_by: map() | nil,
+          order_by: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -24,11 +24,11 @@ defmodule Langfuse.TableViewPreset do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:table_name, :string)
-    field(:filters, :map)
-    field(:column_order, :map)
-    field(:column_visibility, :map)
+    field(:filters, Langfuse.PrismaJson)
+    field(:column_order, Langfuse.PrismaJson)
+    field(:column_visibility, Langfuse.PrismaJson)
     field(:search_query, :string)
-    field(:order_by, :map)
+    field(:order_by, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     belongs_to(:created_by_user, Langfuse.User, foreign_key: :created_by, type: :string)
     belongs_to(:updated_by_user, Langfuse.User, foreign_key: :updated_by, type: :string)

@@ -9,10 +9,10 @@ defmodule Calcom.FilterSegment do
           name: String.t(),
           table_identifier: String.t(),
           scope: atom(),
-          active_filters: map() | nil,
-          sorting: map() | nil,
-          column_visibility: map() | nil,
-          column_sizing: map() | nil,
+          active_filters: map() | list() | String.t() | number() | boolean() | nil,
+          sorting: map() | list() | String.t() | number() | boolean() | nil,
+          column_visibility: map() | list() | String.t() | number() | boolean() | nil,
+          column_sizing: map() | list() | String.t() | number() | boolean() | nil,
           per_page: integer(),
           search_term: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -26,10 +26,10 @@ defmodule Calcom.FilterSegment do
     field(:name, :string)
     field(:table_identifier, :string, source: :tableIdentifier)
     field(:scope, Ecto.Enum, values: [:USER, :TEAM])
-    field(:active_filters, :map, source: :activeFilters)
-    field(:sorting, :map)
-    field(:column_visibility, :map, source: :columnVisibility)
-    field(:column_sizing, :map, source: :columnSizing)
+    field(:active_filters, Calcom.PrismaJson, source: :activeFilters)
+    field(:sorting, Calcom.PrismaJson)
+    field(:column_visibility, Calcom.PrismaJson, source: :columnVisibility)
+    field(:column_sizing, Calcom.PrismaJson, source: :columnSizing)
     field(:per_page, :integer, source: :perPage)
     field(:search_term, :string, source: :searchTerm)
     field(:user_id, :id, source: :userId)

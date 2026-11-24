@@ -9,8 +9,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WatchlistAudit")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     pub r#type: WatchlistType,
     pub value: String,
     pub description: Option<String>,
@@ -20,8 +19,8 @@ pub struct Model {
     pub changed_at: DateTime,
     #[sea_orm(column_name = "changedByUserId")]
     pub changed_by_user_id: Option<i32>,
-    #[sea_orm(column_name = "watchlistId", column_type = "Uuid")]
-    pub watchlist_id: Option<String>,
+    #[sea_orm(column_name = "watchlistId")]
+    pub watchlist_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -45,7 +44,7 @@ impl Related<super::watchlist::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::now_v7().to_string()),
+            id: Set(uuid::Uuid::now_v7()),
             ..ActiveModelTrait::default()
         }
     }

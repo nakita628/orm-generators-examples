@@ -7,7 +7,7 @@ defmodule Taxonomy.Post do
   @type t :: %__MODULE__{
           id: String.t(),
           title: String.t(),
-          content: map() | nil,
+          content: map() | list() | String.t() | number() | boolean() | nil,
           published: boolean(),
           updated_at: DateTime.t(),
           inserted_at: DateTime.t(),
@@ -17,7 +17,7 @@ defmodule Taxonomy.Post do
   schema "posts" do
     field(:id, :string, primary_key: true)
     field(:title, :string)
-    field(:content, :map)
+    field(:content, Taxonomy.PrismaJson)
     field(:published, :boolean, default: false)
     field(:updated_at, Taxonomy.PrismaDateTime, autogenerate: true)
     field(:author_id, :string, source: :authorId)

@@ -11,7 +11,7 @@ defmodule Blinko.AiScheduledTask do
           schedule: String.t(),
           is_enabled: boolean(),
           last_run: DateTime.t() | nil,
-          last_result: map() | nil,
+          last_result: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           account: Blinko.Accounts.t() | nil
@@ -23,7 +23,7 @@ defmodule Blinko.AiScheduledTask do
     field(:schedule, :string)
     field(:is_enabled, :boolean, default: true, source: :isEnabled)
     field(:last_run, Blinko.PrismaDateTime, source: :lastRun)
-    field(:last_result, :map, source: :lastResult)
+    field(:last_result, Blinko.PrismaJson, source: :lastResult)
     field(:account_id, :id, source: :accountId)
     belongs_to(:account, Blinko.Accounts, foreign_key: :account_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

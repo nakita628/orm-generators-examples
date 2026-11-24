@@ -5,16 +5,16 @@ defmodule Langfuse.AuditLogStaging do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
-          payload: map(),
+          id: Ecto.UUID.t(),
+          payload: map() | list() | String.t() | number() | boolean(),
           failed_at: DateTime.t() | nil,
           last_error: String.t() | nil,
           inserted_at: DateTime.t()
         }
 
   schema "audit_log_staging" do
-    field(:id, :string, primary_key: true)
-    field(:payload, :map)
+    field(:id, Ecto.UUID, primary_key: true)
+    field(:payload, Langfuse.PrismaJson)
     field(:failed_at, Langfuse.PrismaDateTime)
     field(:last_error, :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)

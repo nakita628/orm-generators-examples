@@ -6,7 +6,7 @@ defmodule LangWatch.ModelDefaultConfig do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           author_id: String.t() | nil,
           organization_id: String.t(),
           inserted_at: DateTime.t(),
@@ -16,7 +16,7 @@ defmodule LangWatch.ModelDefaultConfig do
 
   schema "ModelDefaultConfig" do
     field(:id, :string, primary_key: true)
-    field(:config, :map)
+    field(:config, LangWatch.PrismaJson)
     field(:author_id, :string, source: :authorId)
     field(:organization_id, :string, source: :organizationId)
     has_many(:scopes, LangWatch.ModelDefaultConfigScope, foreign_key: :config_id, references: :id)

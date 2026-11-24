@@ -12,10 +12,10 @@ defmodule InboxZero.User do
           image: String.t() | nil,
           completed_onboarding_at: DateTime.t() | nil,
           signup_intent: atom() | nil,
-          onboarding_answers: map() | nil,
+          onboarding_answers: map() | list() | String.t() | number() | boolean() | nil,
           last_login: DateTime.t() | nil,
-          utms: map() | nil,
-          error_messages: map() | nil,
+          utms: map() | list() | String.t() | number() | boolean() | nil,
+          error_messages: map() | list() | String.t() | number() | boolean() | nil,
           announcement_dismissed_at: DateTime.t() | nil,
           dismissed_hints: [String.t()],
           survey_features: [String.t()],
@@ -66,10 +66,10 @@ defmodule InboxZero.User do
     field(:image, :string)
     field(:completed_onboarding_at, InboxZero.PrismaDateTime, source: :completedOnboardingAt)
     field(:signup_intent, Ecto.Enum, values: [:AI_ASSISTANT, :MAIL_CLIENT, :BOTH], source: :signupIntent)
-    field(:onboarding_answers, :map, source: :onboardingAnswers)
+    field(:onboarding_answers, InboxZero.PrismaJson, source: :onboardingAnswers)
     field(:last_login, InboxZero.PrismaDateTime, source: :lastLogin)
-    field(:utms, :map)
-    field(:error_messages, :map, source: :errorMessages)
+    field(:utms, InboxZero.PrismaJson)
+    field(:error_messages, InboxZero.PrismaJson, source: :errorMessages)
     field(:announcement_dismissed_at, InboxZero.PrismaDateTime, source: :announcementDismissedAt)
     field(:dismissed_hints, {:array, :string}, source: :dismissedHints)
     field(:survey_features, {:array, :string}, source: :surveyFeatures)

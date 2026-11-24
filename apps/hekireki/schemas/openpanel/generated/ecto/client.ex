@@ -5,7 +5,7 @@ defmodule OpenPanel.Client do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           secret: String.t() | nil,
           type: atom(),
@@ -17,7 +17,7 @@ defmodule OpenPanel.Client do
         }
 
   schema "clients" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     field(:secret, :string)
     field(:type, Ecto.Enum, values: [:read, :write, :root], default: :write)

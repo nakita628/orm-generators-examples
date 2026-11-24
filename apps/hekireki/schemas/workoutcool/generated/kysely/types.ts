@@ -234,7 +234,7 @@ export interface WorkoutSession {
   startedAt: Timestamp
   endedAt: Timestamp | null
   duration: number | null
-  muscles: Generated<ExerciseAttributeValueEnum[]>
+  muscles: Generated<ColumnType<string, ExerciseAttributeValueEnum[], ExerciseAttributeValueEnum[]>>
   rating: number | null
   ratingComment: string | null
 }
@@ -251,10 +251,10 @@ export interface WorkoutSet {
   workoutSessionExerciseId: string
   setIndex: number
   type: WorkoutSetType
-  types: Generated<WorkoutSetType[]>
+  types: Generated<ColumnType<string, WorkoutSetType[], WorkoutSetType[]>>
   valuesInt: Generated<number[]>
   valuesSec: Generated<number[]>
-  units: Generated<WorkoutSetUnit[]>
+  units: Generated<ColumnType<string, WorkoutSetUnit[], WorkoutSetUnit[]>>
   completed: Generated<boolean>
 }
 
@@ -354,7 +354,9 @@ export interface Program {
   durationWeeks: Generated<number>
   sessionsPerWeek: Generated<number>
   sessionDurationMin: Generated<number>
-  equipment: Generated<ExerciseAttributeValueEnum[]>
+  equipment: Generated<
+    ColumnType<string, ExerciseAttributeValueEnum[], ExerciseAttributeValueEnum[]>
+  >
   isPremium: Generated<boolean>
   isActive: Generated<boolean>
   visibility: Generated<ProgramVisibility>
@@ -411,7 +413,9 @@ export interface ProgramSession {
   descriptionPt: string
   descriptionRu: string
   descriptionZhCn: string
-  equipment: Generated<ExerciseAttributeValueEnum[]>
+  equipment: Generated<
+    ColumnType<string, ExerciseAttributeValueEnum[], ExerciseAttributeValueEnum[]>
+  >
   estimatedMinutes: number
   isPremium: Generated<boolean>
 }
@@ -433,10 +437,10 @@ export interface ProgramSuggestedSet {
   id: string
   programSessionExerciseId: string
   setIndex: number
-  types: Generated<WorkoutSetType[]>
+  types: Generated<ColumnType<string, WorkoutSetType[], WorkoutSetType[]>>
   valuesInt: Generated<number[]>
   valuesSec: Generated<number[]>
-  units: Generated<WorkoutSetUnit[]>
+  units: Generated<ColumnType<string, WorkoutSetUnit[], WorkoutSetUnit[]>>
 }
 
 export interface UserProgramEnrollment {

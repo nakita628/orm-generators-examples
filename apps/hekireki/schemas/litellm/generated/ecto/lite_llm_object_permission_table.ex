@@ -1,14 +1,14 @@
 defmodule LiteLLM.LiteLLMObjectPermissionTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :object_permission_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :object_permission_id}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           mcp_servers: [String.t()],
           mcp_access_groups: [String.t()],
-          mcp_tool_permissions: map() | nil,
+          mcp_tool_permissions: map() | list() | String.t() | number() | boolean() | nil,
           vector_stores: [String.t()],
           agents: [String.t()],
           agent_access_groups: [String.t()],
@@ -30,7 +30,7 @@ defmodule LiteLLM.LiteLLMObjectPermissionTable do
   schema "LiteLLM_ObjectPermissionTable" do
     field(:mcp_servers, {:array, :string})
     field(:mcp_access_groups, {:array, :string})
-    field(:mcp_tool_permissions, :map)
+    field(:mcp_tool_permissions, LiteLLM.PrismaJson)
     field(:vector_stores, {:array, :string})
     field(:agents, {:array, :string})
     field(:agent_access_groups, {:array, :string})

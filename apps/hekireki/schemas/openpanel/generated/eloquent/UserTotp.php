@@ -27,6 +27,7 @@ class UserTotp extends Model
     ];
 
     protected $casts = [
+        'recoveryCodes' => AsPrismaList::class,
         'enabledAt' => 'datetime',
     ];
 

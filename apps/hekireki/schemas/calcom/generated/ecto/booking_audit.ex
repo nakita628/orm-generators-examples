@@ -13,8 +13,8 @@ defmodule Calcom.BookingAudit do
           timestamp: DateTime.t(),
           source: atom(),
           operation_id: String.t(),
-          data: map() | nil,
-          context: map() | nil,
+          data: map() | list() | String.t() | number() | boolean() | nil,
+          context: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           actor: Calcom.AuditActor.t() | nil
@@ -27,8 +27,8 @@ defmodule Calcom.BookingAudit do
     field(:timestamp, Calcom.PrismaDateTime)
     field(:source, Ecto.Enum, values: [API_V1: "api_v1", API_V2: "api_v2", WEBAPP: "webapp", WEBHOOK: "webhook", SYSTEM: "system", MAGIC_LINK: "magic_link", UNKNOWN: "unknown"])
     field(:operation_id, :string, source: :operationId)
-    field(:data, :map)
-    field(:context, :map)
+    field(:data, Calcom.PrismaJson)
+    field(:context, Calcom.PrismaJson)
     field(:actor_id, :binary_id, source: :actorId)
     belongs_to(:actor, Calcom.AuditActor, foreign_key: :actor_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

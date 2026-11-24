@@ -8,8 +8,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "project_insights")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(column_name = "projectId")]
     pub project_id: String,
     #[sea_orm(column_name = "moduleKey")]
@@ -48,8 +47,8 @@ pub struct Model {
     pub enrich_version: Option<i32>,
     #[sea_orm(default_value = 1)]
     pub version: i32,
-    #[sea_orm(column_name = "threadId", column_type = "Uuid")]
-    pub thread_id: String,
+    #[sea_orm(column_name = "threadId")]
+    pub thread_id: Uuid,
     #[sea_orm(column_name = "windowStart")]
     pub window_start: Option<DateTime>,
     #[sea_orm(column_name = "windowEnd")]

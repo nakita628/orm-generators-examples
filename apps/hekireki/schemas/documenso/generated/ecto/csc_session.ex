@@ -16,7 +16,7 @@ defmodule Documenso.CscSession do
           id: String.t(),
           envelope_id: String.t(),
           signing_time: DateTime.t(),
-          items_json: map(),
+          items_json: map() | list() | String.t() | number() | boolean(),
           encrypted_sad: binary() | nil,
           sad_expires_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -36,7 +36,7 @@ defmodule Documenso.CscSession do
     # `documentDataId` pins the immutable bytes that produced the captured
     # digest so sign-time can re-derive the same hash against the same content.
     # [CscSessionItems] @zod.custom.use(ZCscSessionItemsSchema)
-    field(:items_json, :map, source: :itemsJson)
+    field(:items_json, Documenso.PrismaJson, source: :itemsJson)
     # Populated by the credential-scope OAuth callback. Both nullable at row
     # creation; set together when the SAD is exchanged.
     field(:encrypted_sad, :binary, source: :encryptedSad)

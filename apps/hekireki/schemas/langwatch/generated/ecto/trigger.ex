@@ -9,8 +9,8 @@ defmodule LangWatch.Trigger do
           name: String.t(),
           action: atom(),
           trigger_kind: atom(),
-          action_params: map(),
-          filters: map(),
+          action_params: map() | list() | String.t() | number() | boolean(),
+          filters: map() | list() | String.t() | number() | boolean(),
           filter_query: String.t() | nil,
           last_run_at: float(),
           active: boolean(),
@@ -39,8 +39,8 @@ defmodule LangWatch.Trigger do
     field(:name, :string)
     field(:action, Ecto.Enum, values: [:SEND_EMAIL, :ADD_TO_DATASET, :ADD_TO_ANNOTATION_QUEUE, :SEND_SLACK_MESSAGE, :SEND_WEBHOOK])
     field(:trigger_kind, Ecto.Enum, values: [:AUTOMATION, :ALERT, :REPORT], default: :AUTOMATION, source: :triggerKind)
-    field(:action_params, :map, source: :actionParams)
-    field(:filters, :map)
+    field(:action_params, LangWatch.PrismaJson, source: :actionParams)
+    field(:filters, LangWatch.PrismaJson)
     field(:filter_query, :string, source: :filterQuery)
     field(:last_run_at, :float, default: 0.0, source: :lastRunAt)
     field(:active, :boolean, default: true)

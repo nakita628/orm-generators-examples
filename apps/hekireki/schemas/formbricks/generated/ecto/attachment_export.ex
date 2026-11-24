@@ -18,7 +18,7 @@ defmodule Formbricks.AttachmentExport do
           id: String.t(),
           survey_id: String.t(),
           status: atom(),
-          filter_criteria: map() | nil,
+          filter_criteria: map() | list() | String.t() | number() | boolean() | nil,
           time_zone: String.t(),
           dispatch_count: integer(),
           file_count: integer(),
@@ -42,7 +42,7 @@ defmodule Formbricks.AttachmentExport do
     field(:survey_id, :string, source: :surveyId)
     field(:status, Ecto.Enum, values: [:queued, :running, :completed, :failed, :expired], default: :queued)
     # The response filter at request time, a `TResponseFilterCriteria`; null exports every response.
-    field(:filter_criteria, :map, source: :filterCriteria)
+    field(:filter_criteria, Formbricks.PrismaJson, source: :filterCriteria)
     # IANA zone the archive's folder names are stamped in: the org's display zone at request time.
     field(:time_zone, :string, source: :timeZone)
     # Bumped on every enqueue and part of the job id, so a re-dispatch never dedupes against a job an

@@ -9,7 +9,7 @@ defmodule Hoppscotch.UserCollection do
           title: String.t(),
           type: atom(),
           order_index: integer(),
-          data: map() | nil,
+          data: map() | list() | String.t() | number() | boolean() | nil,
           created_on: DateTime.t(),
           updated_at: DateTime.t(),
           parent: Hoppscotch.UserCollection.t() | nil,
@@ -23,7 +23,7 @@ defmodule Hoppscotch.UserCollection do
     field(:title, :string)
     field(:type, Ecto.Enum, values: [:REST, :GQL])
     field(:order_index, :integer, source: :orderIndex)
-    field(:data, :map)
+    field(:data, Hoppscotch.PrismaJson)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:parent_id, :string, source: :parentID)
     field(:user_uid, :string, source: :userUid)

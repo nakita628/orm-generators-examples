@@ -11,11 +11,11 @@ defmodule Jitsu.AuditLog do
           user_id: String.t() | nil,
           workspace_id: String.t() | nil,
           object_id: String.t() | nil,
-          changes: map() | nil,
+          changes: map() | list() | String.t() | number() | boolean() | nil,
           auth_type: String.t() | nil,
           token_id: String.t() | nil,
           ip: String.t() | nil,
-          request_headers: map() | nil
+          request_headers: map() | list() | String.t() | number() | boolean() | nil
         }
 
   schema "AuditLog" do
@@ -27,10 +27,10 @@ defmodule Jitsu.AuditLog do
     field(:user_id, :string, source: :userId)
     field(:workspace_id, :string, source: :workspaceId)
     field(:object_id, :string, source: :objectId)
-    field(:changes, :map)
+    field(:changes, Jitsu.PrismaJson)
     field(:auth_type, :string, source: :authType)
     field(:token_id, :string, source: :tokenId)
     field(:ip, :string)
-    field(:request_headers, :map, source: :requestHeaders)
+    field(:request_headers, Jitsu.PrismaJson, source: :requestHeaders)
   end
 end

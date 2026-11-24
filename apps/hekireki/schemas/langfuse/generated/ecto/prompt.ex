@@ -7,12 +7,12 @@ defmodule Langfuse.Prompt do
   @type t :: %__MODULE__{
           id: String.t(),
           created_by: String.t(),
-          prompt: map(),
+          prompt: map() | list() | String.t() | number() | boolean(),
           name: String.t(),
           version: integer(),
           type: String.t(),
           is_active: boolean() | nil,
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           tags: [String.t()],
           labels: [String.t()],
           commit_message: String.t() | nil,
@@ -25,12 +25,12 @@ defmodule Langfuse.Prompt do
   schema "prompts" do
     field(:id, :string, primary_key: true)
     field(:created_by, :string)
-    field(:prompt, :map)
+    field(:prompt, Langfuse.PrismaJson)
     field(:name, :string)
     field(:version, :integer)
     field(:type, :string, default: "text")
     field(:is_active, :boolean)
-    field(:config, :map, default: %{})
+    field(:config, Langfuse.PrismaJson, default: %{})
     field(:tags, {:array, :string})
     field(:labels, {:array, :string})
     field(:commit_message, :string)

@@ -1,12 +1,12 @@
 defmodule Ghostfolio.Order do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Ghostfolio.PrismaDateTime, autogenerate: {Ghostfolio.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           account_id: String.t() | nil,
           account_user_id: String.t() | nil,
           comment: String.t() | nil,
@@ -33,8 +33,8 @@ defmodule Ghostfolio.Order do
     field(:quantity, :float)
     field(:type, Ecto.Enum, values: [:BUY, :DIVIDEND, :FEE, :INTEREST, :LIABILITY, :SELL])
     field(:unit_price, :float, source: :unitPrice)
-    field(:user_id, :binary_id, source: :userId)
-    field(:symbol_profile_id, :binary_id, source: :symbolProfileId)
+    field(:user_id, :string, source: :userId)
+    field(:symbol_profile_id, :string, source: :symbolProfileId)
     belongs_to(:user, Ghostfolio.User, foreign_key: :user_id, define_field: false)
     belongs_to(:symbol_profile, Ghostfolio.SymbolProfile, foreign_key: :symbol_profile_id, define_field: false)
     many_to_many(:tags, Ghostfolio.Tag, join_through: "_OrderToTag", join_keys: [A: :id, B: :id])

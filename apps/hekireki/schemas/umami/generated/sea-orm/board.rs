@@ -7,8 +7,8 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "board")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "board_id", column_type = "Uuid")]
-    pub id: String,
+    #[sea_orm(column_name = "board_id")]
+    pub id: Uuid,
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub r#type: String,
     #[sea_orm(column_type = "String(StringLen::N(200))")]
@@ -16,10 +16,8 @@ pub struct Model {
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub description: String,
     pub parameters: Json,
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: Option<String>,
-    #[sea_orm(column_type = "Uuid")]
-    pub team_id: Option<String>,
+    pub user_id: Option<Uuid>,
+    pub team_id: Option<Uuid>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]

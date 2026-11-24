@@ -6793,7 +6793,7 @@ class InstanceIdentity(Base):
 
     __tablename__ = "InstanceIdentity"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="self", server_default=text("'self'"))
     """Fixed, so this table holds one row. A second insert loses the race on the
     primary key and re-reads the winner's id.
     """
@@ -7026,7 +7026,7 @@ class WebPushVapidKey(Base):
 
     __tablename__ = "WebPushVapidKey"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="self", server_default=text("'self'"))
     public_key: Mapped[str] = mapped_column("publicKey")
     """The uncompressed P-256 public key, base64url. The browser subscribes with it."""
     private_key_encrypted: Mapped[str] = mapped_column("privateKeyEncrypted")
@@ -7036,7 +7036,7 @@ class WebPushVapidKey(Base):
 class SignInProviderMount(Base):
     __tablename__ = "SignInProviderMount"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="self", server_default=text("'self'"))
     """Fixed, so this table holds one row: licensing's copy of sso's sign-in
     provider fact (ADR-179).
     """

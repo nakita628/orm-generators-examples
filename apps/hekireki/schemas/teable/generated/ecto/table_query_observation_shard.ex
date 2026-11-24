@@ -20,8 +20,8 @@ defmodule Teable.TableQueryObservationShard do
           max_duration_ms: float(),
           total_db_duration_ms: float() | nil,
           max_db_duration_ms: float() | nil,
-          shape: map(),
-          sql_diagnostics: map() | nil,
+          shape: map() | list() | String.t() | number() | boolean(),
+          sql_diagnostics: map() | list() | String.t() | number() | boolean() | nil,
           created_time: DateTime.t(),
           last_modified_time: DateTime.t() | nil
         }
@@ -43,8 +43,8 @@ defmodule Teable.TableQueryObservationShard do
     field(:max_duration_ms, :float)
     field(:total_db_duration_ms, :float)
     field(:max_db_duration_ms, :float)
-    field(:shape, :map)
-    field(:sql_diagnostics, :map)
+    field(:shape, Teable.PrismaJson)
+    field(:sql_diagnostics, Teable.PrismaJson)
     field(:created_time, Teable.PrismaDateTime, autogenerate: true)
     field(:last_modified_time, Teable.PrismaDateTime)
   end

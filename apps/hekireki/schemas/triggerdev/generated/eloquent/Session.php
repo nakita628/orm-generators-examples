@@ -88,6 +88,7 @@ class Session extends Model
         'environmentType' => RuntimeEnvironmentType::class,
         'triggerConfig' => 'array',
         'isTest' => 'boolean',
+        'tags' => AsPrismaList::class,
         'metadata' => 'array',
         'currentRunVersion' => 'integer',
         'closedAt' => 'datetime',

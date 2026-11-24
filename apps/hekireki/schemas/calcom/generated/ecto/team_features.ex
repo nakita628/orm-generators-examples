@@ -5,7 +5,7 @@ defmodule Calcom.TeamFeatures do
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          team_id: term(),
+          team_id: integer(),
           feature_id: String.t(),
           enabled: boolean(),
           assigned_at: DateTime.t(),

@@ -13,7 +13,7 @@ defmodule InboxZero.OauthAccessToken do
           expires_at: DateTime.t(),
           created_at: DateTime.t(),
           revoked: DateTime.t() | nil,
-          confirmation: map() | nil,
+          confirmation: map() | list() | String.t() | number() | boolean() | nil,
           scopes: [String.t()],
           client: InboxZero.OauthClient.t() | nil,
           session: InboxZero.Session.t() | nil,
@@ -31,7 +31,7 @@ defmodule InboxZero.OauthAccessToken do
     field(:expires_at, InboxZero.PrismaDateTime, source: :expiresAt)
     field(:created_at, InboxZero.PrismaDateTime, source: :createdAt)
     field(:revoked, InboxZero.PrismaDateTime)
-    field(:confirmation, :map)
+    field(:confirmation, InboxZero.PrismaJson)
     field(:scopes, {:array, :string})
     field(:client_id, :string, source: :clientId)
     field(:session_id, :string, source: :sessionId)

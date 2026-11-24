@@ -8,8 +8,8 @@ defmodule Typebot.Webhook do
           id: String.t(),
           url: String.t() | nil,
           method: String.t(),
-          query_params: map(),
-          headers: map(),
+          query_params: map() | list() | String.t() | number() | boolean(),
+          headers: map() | list() | String.t() | number() | boolean(),
           body: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -20,8 +20,8 @@ defmodule Typebot.Webhook do
     field(:id, :string, primary_key: true)
     field(:url, :string)
     field(:method, :string)
-    field(:query_params, :map, source: :queryParams)
-    field(:headers, :map)
+    field(:query_params, Typebot.PrismaJson, source: :queryParams)
+    field(:headers, Typebot.PrismaJson)
     field(:body, :string)
     field(:typebot_id, :string, source: :typebotId)
     belongs_to(:typebot, Typebot.Typebot, foreign_key: :typebot_id, define_field: false, type: :string)

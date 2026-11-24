@@ -8,7 +8,7 @@ defmodule LangWatch.Agent do
           id: String.t(),
           name: String.t(),
           type: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           environment: String.t() | nil,
           owner_user_id: String.t() | nil,
           host_label: String.t() | nil,
@@ -29,7 +29,7 @@ defmodule LangWatch.Agent do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:type, :string)
-    field(:config, :map)
+    field(:config, LangWatch.PrismaJson)
     field(:environment, :string)
     field(:owner_user_id, :string, source: :ownerUserId)
     field(:host_label, :string, source: :hostLabel)

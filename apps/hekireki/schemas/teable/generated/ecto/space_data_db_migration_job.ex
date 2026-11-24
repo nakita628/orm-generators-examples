@@ -11,9 +11,9 @@ defmodule Teable.SpaceDataDbMigrationJob do
           state: atom(),
           target_url_fingerprint: String.t(),
           target_internal_schema: String.t(),
-          inventory: map() | nil,
-          copy_stats: map() | nil,
-          validation_stats: map() | nil,
+          inventory: map() | list() | String.t() | number() | boolean() | nil,
+          copy_stats: map() | list() | String.t() | number() | boolean() | nil,
+          validation_stats: map() | list() | String.t() | number() | boolean() | nil,
           last_error: String.t() | nil,
           started_at: DateTime.t() | nil,
           completed_at: DateTime.t() | nil,
@@ -32,9 +32,9 @@ defmodule Teable.SpaceDataDbMigrationJob do
     field(:state, Ecto.Enum, values: [:pending, :waiting_worker, :preflight, :freezing_writes, :copying, :validating, :switching, :succeeded, :failed, :canceled, :rolled_back], default: :pending)
     field(:target_url_fingerprint, :string)
     field(:target_internal_schema, :string)
-    field(:inventory, :map)
-    field(:copy_stats, :map)
-    field(:validation_stats, :map)
+    field(:inventory, Teable.PrismaJson)
+    field(:copy_stats, Teable.PrismaJson)
+    field(:validation_stats, Teable.PrismaJson)
     field(:last_error, :string)
     field(:started_at, Teable.PrismaDateTime)
     field(:completed_at, Teable.PrismaDateTime)

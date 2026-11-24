@@ -12,7 +12,7 @@ defmodule InboxZero.AttachmentDocument do
           modified_at: DateTime.t() | nil,
           summary: String.t() | nil,
           content: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           indexed_at: DateTime.t() | nil,
           error: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -28,7 +28,7 @@ defmodule InboxZero.AttachmentDocument do
     field(:modified_at, InboxZero.PrismaDateTime, source: :modifiedAt)
     field(:summary, :string)
     field(:content, :string)
-    field(:metadata, :map)
+    field(:metadata, InboxZero.PrismaJson)
     field(:indexed_at, InboxZero.PrismaDateTime, source: :indexedAt)
     field(:error, :string)
     field(:attachment_source_id, :string, source: :attachmentSourceId)

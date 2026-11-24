@@ -31,5 +31,6 @@ class LiteLLMManagedFileTable extends Model
     protected $casts = [
         'file_object' => 'array',
         'model_mappings' => 'array',
+        'flat_model_file_ids' => AsPrismaList::class,
     ];
 }

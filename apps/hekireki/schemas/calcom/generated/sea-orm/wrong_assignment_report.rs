@@ -8,8 +8,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "WrongAssignmentReport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "bookingUid")]
     pub booking_uid: String,
@@ -87,7 +86,7 @@ impl Related<super::team::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::new_v4().to_string()),
+            id: Set(uuid::Uuid::new_v4()),
             ..ActiveModelTrait::default()
         }
     }

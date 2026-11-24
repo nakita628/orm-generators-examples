@@ -5,8 +5,8 @@ defmodule Umami.Session do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
-          website_id: String.t(),
+          id: Ecto.UUID.t(),
+          website_id: Ecto.UUID.t(),
           browser: String.t() | nil,
           os: String.t() | nil,
           device: String.t() | nil,
@@ -23,8 +23,8 @@ defmodule Umami.Session do
         }
 
   schema "session" do
-    field(:id, :string, primary_key: true, source: :session_id)
-    field(:website_id, :string)
+    field(:id, Ecto.UUID, primary_key: true, source: :session_id)
+    field(:website_id, Ecto.UUID)
     field(:browser, :string)
     field(:os, :string)
     field(:device, :string)

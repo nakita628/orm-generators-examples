@@ -8,7 +8,7 @@ defmodule Dub.OAuthApp do
           client_id: String.t(),
           hashed_client_secret: String.t(),
           partial_client_secret: String.t(),
-          redirect_uris: map(),
+          redirect_uris: map() | list() | String.t() | number() | boolean(),
           pkce: boolean(),
           integration: Dub.Integration.t() | nil,
           o_auth_codes: [Dub.OAuthCode.t()]
@@ -19,7 +19,7 @@ defmodule Dub.OAuthApp do
     field(:client_id, :string, source: :clientId)
     field(:hashed_client_secret, :string, source: :hashedClientSecret)
     field(:partial_client_secret, :string, source: :partialClientSecret)
-    field(:redirect_uris, :map, source: :redirectUris)
+    field(:redirect_uris, Dub.PrismaJson, source: :redirectUris)
     field(:pkce, :boolean, default: false)
     field(:integration_id, :string, source: :integrationId)
     belongs_to(:integration, Dub.Integration, foreign_key: :integration_id, define_field: false, type: :string)

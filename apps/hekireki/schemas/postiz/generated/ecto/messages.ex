@@ -1,12 +1,12 @@
 defmodule Postiz.Messages do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           from: atom(),
           content: String.t() | nil,
           special: String.t() | nil,
@@ -22,7 +22,7 @@ defmodule Postiz.Messages do
     field(:content, :string)
     field(:special, :string)
     field(:deleted_at, Postiz.PrismaDateTime, source: :deletedAt)
-    field(:group_id, :binary_id, source: :groupId)
+    field(:group_id, :string, source: :groupId)
     belongs_to(:group, Postiz.MessagesGroup, foreign_key: :group_id, define_field: false)
     has_many(:posts, Postiz.Post, foreign_key: :last_message_id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

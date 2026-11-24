@@ -21,9 +21,9 @@ defmodule TypeHero.Submission do
   schema "Submission" do
     field(:code, :string)
     field(:is_successful, :boolean, source: :isSuccessful)
-    field(:user_id, :binary_id, source: :userId)
+    field(:user_id, :string, source: :userId)
     field(:challenge_id, :id, source: :challengeId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
     belongs_to(:challenge, TypeHero.Challenge, foreign_key: :challenge_id, define_field: false)
     has_many(:vote, TypeHero.Vote, foreign_key: :submission_id)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

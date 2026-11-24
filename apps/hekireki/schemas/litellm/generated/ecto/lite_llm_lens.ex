@@ -6,7 +6,7 @@ defmodule LiteLLM.LiteLLMLens do
   @type t :: %__MODULE__{
           id: String.t(),
           version: integer(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           due_at: DateTime.t() | nil,
           reviews: [LiteLLM.LiteLLMLensReview.t()]
         }
@@ -14,7 +14,7 @@ defmodule LiteLLM.LiteLLMLens do
   schema "LiteLLM_Lens" do
     field(:id, :string, primary_key: true)
     field(:version, :integer, default: 0)
-    field(:data, :map)
+    field(:data, LiteLLM.PrismaJson)
     field(:due_at, LiteLLM.PrismaDateTime, read_after_writes: true)
     has_many(:reviews, LiteLLM.LiteLLMLensReview, foreign_key: :lens_id, references: :id)
   end

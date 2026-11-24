@@ -9,7 +9,7 @@ defmodule Langfuse.EvaluationRule do
           name: String.t(),
           status: atom(),
           target_object: String.t(),
-          filter: map(),
+          filter: map() | list() | String.t() | number() | boolean(),
           sampling: Decimal.t(),
           delay: integer(),
           idle_time: integer() | nil,
@@ -26,7 +26,7 @@ defmodule Langfuse.EvaluationRule do
     field(:name, :string)
     field(:status, Ecto.Enum, values: [:ACTIVE, :INACTIVE], default: :ACTIVE)
     field(:target_object, :string)
-    field(:filter, :map)
+    field(:filter, Langfuse.PrismaJson)
     field(:sampling, :decimal)
     field(:delay, :integer)
     field(:idle_time, :integer)

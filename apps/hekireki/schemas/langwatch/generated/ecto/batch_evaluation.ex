@@ -6,7 +6,7 @@ defmodule LangWatch.BatchEvaluation do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           status: String.t(),
           score: float(),
           label: String.t() | nil,
@@ -24,7 +24,7 @@ defmodule LangWatch.BatchEvaluation do
 
   schema "BatchEvaluation" do
     field(:id, :string, primary_key: true)
-    field(:data, :map, default: %{})
+    field(:data, LangWatch.PrismaJson, default: %{})
     field(:status, :string)
     field(:score, :float)
     field(:label, :string)

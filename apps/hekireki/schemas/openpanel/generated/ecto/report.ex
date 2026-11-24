@@ -5,15 +5,15 @@ defmodule OpenPanel.Report do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           interval: atom(),
           range: String.t(),
           chart_type: atom(),
           line_type: String.t(),
-          breakdowns: map(),
-          events: map(),
-          global_filters: map(),
+          breakdowns: map() | list() | String.t() | number() | boolean(),
+          events: map() | list() | String.t() | number() | boolean(),
+          global_filters: map() | list() | String.t() | number() | boolean(),
           formula: String.t() | nil,
           unit: String.t() | nil,
           metric: atom(),
@@ -21,8 +21,8 @@ defmodule OpenPanel.Report do
           criteria: String.t() | nil,
           funnel_group: String.t() | nil,
           funnel_window: float() | nil,
-          options: map() | nil,
-          display: map() | nil,
+          options: map() | list() | String.t() | number() | boolean() | nil,
+          display: map() | list() | String.t() | number() | boolean() | nil,
           visible_series: [String.t()],
           start_date: String.t() | nil,
           end_date: String.t() | nil,
@@ -35,15 +35,15 @@ defmodule OpenPanel.Report do
         }
 
   schema "reports" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     field(:interval, Ecto.Enum, values: [:hour, :day, :month, :minute, :week])
     field(:range, :string, default: "30d")
     field(:chart_type, Ecto.Enum, values: [:linear, :bar, :histogram, :pie, :metric, :area, :map, :funnel, :retention, :conversion, :sankey, :distribution], source: :chartType)
     field(:line_type, :string, default: "monotone", source: :lineType)
-    field(:breakdowns, :map)
-    field(:events, :map)
-    field(:global_filters, :map, source: :globalFilters)
+    field(:breakdowns, OpenPanel.PrismaJson)
+    field(:events, OpenPanel.PrismaJson)
+    field(:global_filters, OpenPanel.PrismaJson, default: [], source: :globalFilters)
     field(:formula, :string)
     field(:unit, :string)
     field(:metric, Ecto.Enum, values: [:sum, :average, :min, :max, :count], default: :sum)
@@ -52,9 +52,9 @@ defmodule OpenPanel.Report do
     field(:funnel_group, :string, source: :funnelGroup)
     field(:funnel_window, :float, source: :funnelWindow)
     # [IReportOptions]
-    field(:options, :map)
+    field(:options, OpenPanel.PrismaJson)
     # How a dashboard tile shows the report: { view: 'chart' | 'table' }
-    field(:display, :map)
+    field(:display, OpenPanel.PrismaJson)
     field(:visible_series, {:array, :string}, source: :visibleSeries)
     field(:start_date, :string, source: :startDate)
     field(:end_date, :string, source: :endDate)

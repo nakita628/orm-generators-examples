@@ -451,7 +451,7 @@ export interface DocumentVersion {
   originalFile: string | null
   type: string | null
   contentType: string | null
-  fileSize: bigint | null
+  fileSize: ColumnType<string, bigint | number | string, bigint | number | string> | null
   storageType: Generated<DocumentStorageType>
   numPages: number | null
   isPrimary: Generated<boolean>
@@ -501,7 +501,7 @@ export interface DocumentUpload {
   dataroomDocumentId: string | null
   taskId: string | null
   originalFilename: string | null
-  fileSize: bigint | null
+  fileSize: ColumnType<string, bigint | number | string, bigint | number | string> | null
   numPages: number | null
   mimeType: string | null
   uploadedAt: Generated<Timestamp>
@@ -570,7 +570,7 @@ export interface jackson_store {
 
 export interface jackson_ttl {
   key: string
-  expiresAt: bigint
+  expiresAt: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 export interface Link {

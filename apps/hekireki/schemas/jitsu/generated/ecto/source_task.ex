@@ -10,10 +10,10 @@ defmodule Jitsu.SourceTask do
           version: String.t(),
           started_at: DateTime.t(),
           updated_at: DateTime.t(),
-          started_by: map() | nil,
+          started_by: map() | list() | String.t() | number() | boolean() | nil,
           status: String.t(),
           description: String.t() | nil,
-          metrics: map() | nil,
+          metrics: map() | list() | String.t() | number() | boolean() | nil,
           error: String.t() | nil
         }
 
@@ -26,10 +26,10 @@ defmodule Jitsu.SourceTask do
     field(:started_at, Jitsu.PrismaDateTime, autogenerate: true)
     # @zod.custom(z.coerce.date())
     field(:updated_at, Jitsu.PrismaDateTime, autogenerate: true)
-    field(:started_by, :map)
+    field(:started_by, Jitsu.PrismaJson)
     field(:status, :string)
     field(:description, :string)
-    field(:metrics, :map)
+    field(:metrics, Jitsu.PrismaJson)
     field(:error, :string)
   end
 end

@@ -29,6 +29,10 @@ class OAuthClient extends Model
         'redirectUris',
     ];
 
+    protected $casts = [
+        'redirectUris' => AsPrismaList::class,
+    ];
+
     public function tokens(): HasMany
     {
         return $this->hasMany(UserApiToken::class, 'oauthClientId');

@@ -33,6 +33,7 @@ class WebCalloutEndpoint extends \Illuminate\Database\Eloquent\Model
 
     protected $casts = [
         'enabled' => 'boolean',
+        'request_header_keys' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

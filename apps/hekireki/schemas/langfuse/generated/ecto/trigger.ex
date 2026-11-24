@@ -8,7 +8,7 @@ defmodule Langfuse.Trigger do
           id: String.t(),
           event_source: String.t(),
           event_actions: [String.t()],
-          filter: map() | nil,
+          filter: map() | list() | String.t() | number() | boolean() | nil,
           status: atom(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule Langfuse.Trigger do
     field(:id, :string, primary_key: true)
     field(:event_source, :string, source: :eventSource)
     field(:event_actions, {:array, :string}, source: :eventActions)
-    field(:filter, :map)
+    field(:filter, Langfuse.PrismaJson)
     field(:status, Ecto.Enum, values: [:ACTIVE, :INACTIVE], default: :ACTIVE)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     has_many(:automation_executions, Langfuse.AutomationExecution, foreign_key: :trigger_id, references: :id)

@@ -6,7 +6,7 @@ defmodule Calcom.Credential do
   @type t :: %__MODULE__{
           id: integer(),
           type: String.t(),
-          key: map(),
+          key: map() | list() | String.t() | number() | boolean(),
           encrypted_key: String.t() | nil,
           subscription_id: String.t() | nil,
           payment_status: String.t() | nil,
@@ -26,7 +26,7 @@ defmodule Calcom.Credential do
 
   schema "Credential" do
     field(:type, :string)
-    field(:key, :map)
+    field(:key, Calcom.PrismaJson)
     field(:encrypted_key, :string, source: :encryptedKey)
     field(:subscription_id, :string, source: :subscriptionId)
     field(:payment_status, :string, source: :paymentStatus)
@@ -35,11 +35,11 @@ defmodule Calcom.Credential do
     field(:user_id, :id, source: :userId)
     field(:team_id, :id, source: :teamId)
     field(:app_id, :string, source: :appId)
-    field(:delegation_credential_id, :binary_id, source: :delegationCredentialId)
+    field(:delegation_credential_id, :string, source: :delegationCredentialId)
     belongs_to(:user, Calcom.User, foreign_key: :user_id, define_field: false)
     belongs_to(:team, Calcom.Team, foreign_key: :team_id, define_field: false)
     belongs_to(:app, Calcom.App, foreign_key: :app_id, define_field: false, type: :string, references: :slug)
-    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :binary_id)
+    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :string)
     has_many(:destination_calendars, Calcom.DestinationCalendar, foreign_key: :credential_id)
     has_many(:selected_calendars, Calcom.SelectedCalendar, foreign_key: :credential_id)
     has_many(:calendar_cache, Calcom.CalendarCache, foreign_key: :credential_id)

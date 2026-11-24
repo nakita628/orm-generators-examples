@@ -7,8 +7,8 @@ defmodule OpenPanel.ChatMessage do
   @type t :: %__MODULE__{
           id: String.t(),
           role: String.t(),
-          parts: map(),
-          metadata: map() | nil,
+          parts: map() | list() | String.t() | number() | boolean(),
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           conversation: OpenPanel.Conversation.t() | nil
         }
@@ -17,9 +17,9 @@ defmodule OpenPanel.ChatMessage do
     field(:id, :string, primary_key: true, read_after_writes: true)
     field(:role, :string)
     # [IPrismaUIMessageParts]
-    field(:parts, :map)
+    field(:parts, OpenPanel.PrismaJson)
     # [IPrismaChatMessageMetadata]
-    field(:metadata, :map)
+    field(:metadata, OpenPanel.PrismaJson)
     field(:conversation_id, :string, source: :conversationId)
     belongs_to(:conversation, OpenPanel.Conversation, foreign_key: :conversation_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

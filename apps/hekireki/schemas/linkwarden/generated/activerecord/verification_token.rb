@@ -1,5 +1,6 @@
 class VerificationToken < ApplicationRecord
   self.table_name = "VerificationToken"
+  self.primary_key = "token"
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

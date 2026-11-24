@@ -12,10 +12,10 @@ defmodule Trigger.ProjectAlertChannel do
           enabled: boolean(),
           type: atom(),
           name: String.t(),
-          properties: map(),
+          properties: map() | list() | String.t() | number() | boolean(),
           alert_types: atom(),
           environment_types: atom(),
-          error_alert_config: map() | nil,
+          error_alert_config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           integration: Trigger.OrganizationIntegration.t() | nil,
@@ -33,10 +33,10 @@ defmodule Trigger.ProjectAlertChannel do
     field(:enabled, :boolean, default: true)
     field(:type, Ecto.Enum, values: [:EMAIL, :SLACK, :WEBHOOK])
     field(:name, :string)
-    field(:properties, :map)
+    field(:properties, Trigger.PrismaJson)
     field(:alert_types, {:array, Ecto.Enum}, values: [:TASK_RUN, :TASK_RUN_ATTEMPT, :DEPLOYMENT_FAILURE, :DEPLOYMENT_SUCCESS, :ERROR_GROUP, :DASHBOARD_AGENT_WATCH], source: :alertTypes)
     field(:environment_types, {:array, Ecto.Enum}, values: [:PRODUCTION, :STAGING, :DEVELOPMENT, :PREVIEW], source: :environmentTypes)
-    field(:error_alert_config, :map, source: :errorAlertConfig)
+    field(:error_alert_config, Trigger.PrismaJson, source: :errorAlertConfig)
     field(:integration_id, :string, source: :integrationId)
     field(:project_id, :string, source: :projectId)
     belongs_to(:integration, Trigger.OrganizationIntegration, foreign_key: :integration_id, define_field: false, type: :string)

@@ -1,17 +1,17 @@
 defmodule LiteLLM.LiteLLMOrganizationTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :organization_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :organization_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           organization_alias: String.t(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           models: [String.t()],
           spend: float(),
-          model_spend: map(),
+          model_spend: map() | list() | String.t() | number() | boolean(),
           created_by: String.t(),
           updated_by: String.t(),
           inserted_at: DateTime.t(),
@@ -26,10 +26,10 @@ defmodule LiteLLM.LiteLLMOrganizationTable do
 
   schema "LiteLLM_OrganizationTable" do
     field(:organization_alias, :string)
-    field(:metadata, :map, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:models, {:array, :string})
     field(:spend, :float, default: 0.0)
-    field(:model_spend, :map, default: %{})
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
     field(:created_by, :string)
     field(:updated_by, :string)
     belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id)

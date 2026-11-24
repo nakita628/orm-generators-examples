@@ -6,7 +6,7 @@ defmodule Langfuse.EvaluationRuleEvaluatorAssignment do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          variable_mapping: map() | nil,
+          variable_mapping: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -16,7 +16,7 @@ defmodule Langfuse.EvaluationRuleEvaluatorAssignment do
 
   schema "evaluation_rule_evaluator_assignments" do
     field(:id, :string, primary_key: true)
-    field(:variable_mapping, :map)
+    field(:variable_mapping, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     belongs_to(:evaluation_rule, Langfuse.EvaluationRule, foreign_key: :evaluation_rule_id, type: :string)
     belongs_to(:evaluator, Langfuse.Evaluator, foreign_key: :evaluator_id, type: :string)

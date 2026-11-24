@@ -1,5 +1,6 @@
 class ProjectInvite < ApplicationRecord
   self.table_name = "ProjectInvite"
+  self.primary_key = %w[email projectId]
 
   alias_attribute :created_at, :createdAt
 

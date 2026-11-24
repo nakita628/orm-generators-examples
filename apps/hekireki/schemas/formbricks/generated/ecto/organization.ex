@@ -22,7 +22,7 @@ defmodule Formbricks.Organization do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          whitelabel: map(),
+          whitelabel: map() | list() | String.t() | number() | boolean(),
           is_aismart_tools_enabled: boolean(),
           display_time_zone: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -44,7 +44,7 @@ defmodule Formbricks.Organization do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     # [OrganizationWhitelabel]
-    field(:whitelabel, :map, default: %{})
+    field(:whitelabel, Formbricks.PrismaJson, default: %{})
     field(:is_aismart_tools_enabled, :boolean, default: false, source: :isAISmartToolsEnabled)
     field(:display_time_zone, :string, source: :displayTimeZone)
     has_one(:billing, Formbricks.OrganizationBilling, foreign_key: :organization_id, references: :id)

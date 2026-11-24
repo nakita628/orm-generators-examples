@@ -1,12 +1,12 @@
 defmodule Postiz.OAuthAuthorization do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           access_token: String.t() | nil,
           authorization_code: String.t() | nil,
           code_expires_at: DateTime.t() | nil,
@@ -29,9 +29,9 @@ defmodule Postiz.OAuthAuthorization do
     field(:code_challenge_method, :string, source: :codeChallengeMethod)
     field(:redirect_uri, :string, source: :redirectUri)
     field(:revoked_at, Postiz.PrismaDateTime, source: :revokedAt)
-    field(:oauth_app_id, :binary_id, source: :oauthAppId)
-    field(:user_id, :binary_id, source: :userId)
-    field(:organization_id, :binary_id, source: :organizationId)
+    field(:oauth_app_id, :string, source: :oauthAppId)
+    field(:user_id, :string, source: :userId)
+    field(:organization_id, :string, source: :organizationId)
     belongs_to(:oauth_app, Postiz.OAuthApp, foreign_key: :oauth_app_id, define_field: false)
     belongs_to(:user, Postiz.User, foreign_key: :user_id, define_field: false)
     belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false)

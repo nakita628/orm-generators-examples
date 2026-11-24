@@ -10,15 +10,15 @@ defmodule LangWatch.SimulationSuite do
           slug: String.t(),
           description: String.t() | nil,
           scenario_ids: [String.t()],
-          targets: map(),
+          targets: map() | list() | String.t() | number() | boolean(),
           repeat_count: integer(),
           labels: [String.t()],
           simulator_model: String.t() | nil,
           judge_model: String.t() | nil,
           kind: String.t(),
-          scope: map() | nil,
-          fields: map() | nil,
-          evaluators: map() | nil,
+          scope: map() | list() | String.t() | number() | boolean() | nil,
+          fields: map() | list() | String.t() | number() | boolean() | nil,
+          evaluators: map() | list() | String.t() | number() | boolean() | nil,
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -32,15 +32,15 @@ defmodule LangWatch.SimulationSuite do
     field(:slug, :string)
     field(:description, :string)
     field(:scenario_ids, {:array, :string}, source: :scenarioIds)
-    field(:targets, :map)
+    field(:targets, LangWatch.PrismaJson)
     field(:repeat_count, :integer, default: 1, source: :repeatCount)
     field(:labels, {:array, :string})
     field(:simulator_model, :string, source: :simulatorModel)
     field(:judge_model, :string, source: :judgeModel)
     field(:kind, :string, default: "run_plan")
-    field(:scope, :map)
-    field(:fields, :map)
-    field(:evaluators, :map)
+    field(:scope, LangWatch.PrismaJson)
+    field(:fields, LangWatch.PrismaJson)
+    field(:evaluators, LangWatch.PrismaJson)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, LangWatch.Project, foreign_key: :project_id, define_field: false, type: :string)

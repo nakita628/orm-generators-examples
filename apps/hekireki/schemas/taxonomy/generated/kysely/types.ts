@@ -55,7 +55,7 @@ export interface Post {
   id: string
   title: string
   content: unknown
-  published: Generated<boolean>
+  published: Generated<ColumnType<number, boolean | number, boolean | number>>
   created_at: Generated<Timestamp>
   updated_at: Generated<Timestamp>
   authorId: string

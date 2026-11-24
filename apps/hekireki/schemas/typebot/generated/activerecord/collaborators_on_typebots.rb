@@ -1,5 +1,6 @@
 class CollaboratorsOnTypebots < ApplicationRecord
   self.table_name = "CollaboratorsOnTypebots"
+  self.primary_key = %w[userId typebotId]
   self.inheritance_column = nil
 
   alias_attribute :created_at, :createdAt

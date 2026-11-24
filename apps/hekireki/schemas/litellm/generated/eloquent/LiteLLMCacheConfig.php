@@ -19,6 +19,10 @@ class LiteLLMCacheConfig extends Model
         'cache_settings',
     ];
 
+    protected $attributes = [
+        'id' => 'cache_config',
+    ];
+
     protected $casts = [
         'cache_settings' => 'array',
     ];

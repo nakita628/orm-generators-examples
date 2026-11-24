@@ -9,16 +9,16 @@ defmodule Typebot.Typebot do
           version: String.t() | nil,
           icon: String.t() | nil,
           name: String.t(),
-          groups: map(),
-          events: map() | nil,
-          variables: map(),
-          edges: map(),
-          theme: map(),
+          groups: map() | list() | String.t() | number() | boolean(),
+          events: map() | list() | String.t() | number() | boolean() | nil,
+          variables: map() | list() | String.t() | number() | boolean(),
+          edges: map() | list() | String.t() | number() | boolean(),
+          theme: map() | list() | String.t() | number() | boolean(),
           selected_theme_template_id: String.t() | nil,
-          settings: map(),
+          settings: map() | list() | String.t() | number() | boolean(),
           public_id: String.t() | nil,
           custom_domain: String.t() | nil,
-          results_table_preferences: map() | nil,
+          results_table_preferences: map() | list() | String.t() | number() | boolean() | nil,
           is_archived: boolean(),
           is_closed: boolean(),
           whats_app_credentials_id: String.t() | nil,
@@ -41,16 +41,16 @@ defmodule Typebot.Typebot do
     field(:version, :string)
     field(:icon, :string)
     field(:name, :string)
-    field(:groups, :map)
-    field(:events, :map)
-    field(:variables, :map)
-    field(:edges, :map)
-    field(:theme, :map)
+    field(:groups, Typebot.PrismaJson)
+    field(:events, Typebot.PrismaJson)
+    field(:variables, Typebot.PrismaJson)
+    field(:edges, Typebot.PrismaJson)
+    field(:theme, Typebot.PrismaJson)
     field(:selected_theme_template_id, :string, source: :selectedThemeTemplateId)
-    field(:settings, :map)
+    field(:settings, Typebot.PrismaJson)
     field(:public_id, :string, source: :publicId)
     field(:custom_domain, :string, source: :customDomain)
-    field(:results_table_preferences, :map, source: :resultsTablePreferences)
+    field(:results_table_preferences, Typebot.PrismaJson, source: :resultsTablePreferences)
     field(:is_archived, :boolean, default: false, source: :isArchived)
     field(:is_closed, :boolean, default: false, source: :isClosed)
     field(:whats_app_credentials_id, :string, source: :whatsAppCredentialsId)

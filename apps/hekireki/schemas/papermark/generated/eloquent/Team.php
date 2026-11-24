@@ -79,6 +79,8 @@ class Team extends Model
         'ssoEnforcedAt' => 'datetime',
         'surveyData' => 'array',
         'agentsEnabled' => 'boolean',
+        'ignoredDomains' => AsPrismaList::class,
+        'globalBlockList' => AsPrismaList::class,
         'referralTrack' => ReferralTrack::class,
         'referralTrackSelectedAt' => 'datetime',
         'referralProfile' => 'array',

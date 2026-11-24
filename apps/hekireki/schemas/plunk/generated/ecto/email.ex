@@ -1,20 +1,20 @@
 defmodule Plunk.Email do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           to_name: String.t() | nil,
           subject: String.t(),
           body: String.t(),
           from: String.t(),
           from_name: String.t() | nil,
           reply_to: String.t() | nil,
-          headers: map() | nil,
-          attachments: map() | nil,
+          headers: map() | list() | String.t() | number() | boolean() | nil,
+          attachments: map() | list() | String.t() | number() | boolean() | nil,
           message_id: String.t() | nil,
           source_type: atom(),
           status: atom(),
@@ -48,8 +48,8 @@ defmodule Plunk.Email do
     field(:from, :string)
     field(:from_name, :string, source: :fromName)
     field(:reply_to, :string, source: :replyTo)
-    field(:headers, :map)
-    field(:attachments, :map)
+    field(:headers, Plunk.PrismaJson)
+    field(:attachments, Plunk.PrismaJson)
     field(:message_id, :string, source: :messageId)
     field(:source_type, Ecto.Enum, values: [:TRANSACTIONAL, :CAMPAIGN, :WORKFLOW, :INBOUND], source: :sourceType)
     field(:status, Ecto.Enum, values: [:SCHEDULED, :CANCELLED, :PENDING, :SENDING, :SENT, :DELIVERED, :RECEIVED, :OPENED, :CLICKED, :BOUNCED, :COMPLAINED, :FAILED], default: :PENDING)
@@ -81,12 +81,12 @@ defmodule Plunk.Email do
     # activity feed shows the bounce, the contact is still suppressed.
     field(:simulated, :boolean, default: false)
     field(:error, :string)
-    field(:contact_id, :binary_id, source: :contactId)
-    field(:template_id, :binary_id, source: :templateId)
-    field(:campaign_id, :binary_id, source: :campaignId)
-    field(:workflow_execution_id, :binary_id, source: :workflowExecutionId)
-    field(:workflow_step_execution_id, :binary_id, source: :workflowStepExecutionId)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:contact_id, :string, source: :contactId)
+    field(:template_id, :string, source: :templateId)
+    field(:campaign_id, :string, source: :campaignId)
+    field(:workflow_execution_id, :string, source: :workflowExecutionId)
+    field(:workflow_step_execution_id, :string, source: :workflowStepExecutionId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:contact, Plunk.Contact, foreign_key: :contact_id, define_field: false)
     belongs_to(:template, Plunk.Template, foreign_key: :template_id, define_field: false)
     belongs_to(:campaign, Plunk.Campaign, foreign_key: :campaign_id, define_field: false)

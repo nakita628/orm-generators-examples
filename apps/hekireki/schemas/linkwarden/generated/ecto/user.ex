@@ -6,7 +6,7 @@ defmodule Linkwarden.User do
 
   @type t :: %__MODULE__{
           id: integer(),
-          uuid: String.t(),
+          uuid: Ecto.UUID.t(),
           name: String.t() | nil,
           username: String.t() | nil,
           email: String.t() | nil,
@@ -57,7 +57,7 @@ defmodule Linkwarden.User do
         }
 
   schema "User" do
-    field(:uuid, :string, autogenerate: {Ecto.UUID, :generate, []})
+    field(:uuid, Ecto.UUID, autogenerate: {Ecto.UUID, :generate, []})
     field(:name, :string)
     field(:username, :string)
     field(:email, :string)

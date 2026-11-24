@@ -36,6 +36,10 @@ class LiteLLMPolicyAttachmentTable extends Model
     ];
 
     protected $casts = [
+        'teams' => AsPrismaList::class,
+        'keys' => AsPrismaList::class,
+        'models' => AsPrismaList::class,
+        'tags' => AsPrismaList::class,
         'priority' => 'integer',
         'is_default' => 'boolean',
     ];

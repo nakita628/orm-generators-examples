@@ -11,8 +11,8 @@ defmodule LangWatch.AnnotationScore do
           description: String.t() | nil,
           active: boolean(),
           data_type: atom() | nil,
-          options: map() | nil,
-          default_value: map() | nil,
+          options: map() | list() | String.t() | number() | boolean() | nil,
+          default_value: map() | list() | String.t() | number() | boolean() | nil,
           global: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -27,8 +27,8 @@ defmodule LangWatch.AnnotationScore do
     field(:description, :string)
     field(:active, :boolean, default: true)
     field(:data_type, Ecto.Enum, values: [:CATEGORICAL, :BOOLEAN, :LIKERT, :OPTION, :CHECKBOX], source: :dataType)
-    field(:options, :map)
-    field(:default_value, :map, source: :defaultValue)
+    field(:options, LangWatch.PrismaJson)
+    field(:default_value, LangWatch.PrismaJson, source: :defaultValue)
     field(:global, :boolean, default: false)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, LangWatch.Project, foreign_key: :project_id, define_field: false, type: :string)

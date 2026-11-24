@@ -7,9 +7,9 @@ defmodule LangWatch.SavedView do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          filters: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
           query: String.t() | nil,
-          period: map() | nil,
+          period: map() | list() | String.t() | number() | boolean() | nil,
           order: integer(),
           kind: String.t(),
           inserted_at: DateTime.t(),
@@ -21,9 +21,9 @@ defmodule LangWatch.SavedView do
   schema "SavedView" do
     field(:id, :string, primary_key: true)
     field(:name, :string)
-    field(:filters, :map, default: %{})
+    field(:filters, LangWatch.PrismaJson, default: %{})
     field(:query, :string)
-    field(:period, :map)
+    field(:period, LangWatch.PrismaJson)
     field(:order, :integer, default: 0)
     # Discriminator for the two storage shapes that share this table:
     # - "v1-traces-filter" (default) - legacy /messages page filter map saved views

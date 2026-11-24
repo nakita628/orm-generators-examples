@@ -34,6 +34,10 @@ class WorkoutSet extends Model
     protected $casts = [
         'setIndex' => 'integer',
         'type' => WorkoutSetType::class,
+        'types' => AsPrismaList::class . ':' . WorkoutSetType::class,
+        'valuesInt' => AsPrismaList::class . ':int',
+        'valuesSec' => AsPrismaList::class . ':int',
+        'units' => AsPrismaList::class . ':' . WorkoutSetUnit::class,
         'completed' => 'boolean',
     ];
 

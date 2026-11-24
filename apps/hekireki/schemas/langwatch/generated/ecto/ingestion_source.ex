@@ -24,8 +24,8 @@ defmodule LangWatch.IngestionSource do
           name: String.t(),
           description: String.t() | nil,
           ingest_secret_hash: String.t(),
-          parser_config: map(),
-          poller_cursor: map() | nil,
+          parser_config: map() | list() | String.t() | number() | boolean(),
+          poller_cursor: map() | list() | String.t() | number() | boolean() | nil,
           error_count: integer(),
           pull_schedule: String.t() | nil,
           status: String.t(),
@@ -69,10 +69,10 @@ defmodule LangWatch.IngestionSource do
     # - openai_compliance: { bucket, prefix, roleArn, pollEverySec }
     # - claude_compliance: { workspaceApiKeyHash, pollEverySec }
     # - s3_custom: { bucket, prefix, roleArn, parserDsl, pollEverySec }
-    field(:parser_config, :map, default: %{}, source: :parserConfig)
+    field(:parser_config, LangWatch.PrismaJson, default: %{}, source: :parserConfig)
     # For pull-based sources, persisted between polls so the next poll
     # resumes where the last left off (timestamp / cursor / file marker).
-    field(:poller_cursor, :map, source: :pollerCursor)
+    field(:poller_cursor, LangWatch.PrismaJson, source: :pollerCursor)
     # Phase 10 - number of consecutive errors observed by the puller
     # worker. Reset to 0 on a successful run. Drives admin-UI banners
     # ("Microsoft authentication failed - re-authorize") + back-off

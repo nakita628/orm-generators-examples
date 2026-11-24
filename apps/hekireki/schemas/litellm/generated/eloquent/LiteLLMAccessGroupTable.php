@@ -34,6 +34,13 @@ class LiteLLMAccessGroupTable extends Model
     ];
 
     protected $casts = [
+        'access_model_names' => AsPrismaList::class,
+        'access_mcp_server_ids' => AsPrismaList::class,
         'mcp_tool_permissions' => 'array',
+        'access_agent_ids' => AsPrismaList::class,
+        'access_skill_names' => AsPrismaList::class,
+        'access_vector_store_ids' => AsPrismaList::class,
+        'assigned_team_ids' => AsPrismaList::class,
+        'assigned_key_ids' => AsPrismaList::class,
     ];
 }

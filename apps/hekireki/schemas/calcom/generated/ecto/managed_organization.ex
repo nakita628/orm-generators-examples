@@ -5,7 +5,7 @@ defmodule Calcom.ManagedOrganization do
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          managed_organization_id: term(),
+          managed_organization_id: integer(),
           inserted_at: DateTime.t(),
           managed_organization: Calcom.Team.t() | nil,
           manager_organization: Calcom.Team.t() | nil

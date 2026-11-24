@@ -6,8 +6,8 @@ defmodule Dub.InstalledIntegration do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          credentials: map() | nil,
-          settings: map() | nil,
+          credentials: map() | list() | String.t() | number() | boolean() | nil,
+          settings: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: Dub.User.t() | nil,
@@ -20,8 +20,8 @@ defmodule Dub.InstalledIntegration do
 
   schema "InstalledIntegration" do
     field(:id, :string, primary_key: true)
-    field(:credentials, :map)
-    field(:settings, :map)
+    field(:credentials, Dub.PrismaJson)
+    field(:settings, Dub.PrismaJson)
     field(:user_id, :string, source: :userId)
     field(:integration_id, :string, source: :integrationId)
     field(:project_id, :string, source: :projectId)

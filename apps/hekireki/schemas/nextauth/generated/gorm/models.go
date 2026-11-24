@@ -13,12 +13,12 @@ import (
 type User struct {
 	ID            string          `gorm:"column:id;primaryKey" json:"id"`
 	Name          *string         `gorm:"column:name" json:"name"`
-	Email         string          `gorm:"column:email;uniqueIndex;not null" json:"email"`
+	Email         string          `gorm:"column:email;uniqueIndex:User_email_key;not null" json:"email"`
 	EmailVerified *DateTime       `gorm:"column:emailVerified" json:"emailVerified"`
 	Image         *string         `gorm:"column:image" json:"image"`
-	Accounts      []Account       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Sessions      []Session       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Authenticator []Authenticator `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Accounts      []Account       `gorm:"foreignKey:UserID;constraint:Account_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Sessions      []Session       `gorm:"foreignKey:UserID;constraint:Session_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Authenticator []Authenticator `gorm:"foreignKey:UserID;constraint:Authenticator_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (User) TableName() string {
@@ -39,12 +39,12 @@ type Account struct {
 	ProviderAccountID string  `gorm:"column:providerAccountId;primaryKey" json:"providerAccountId"`
 	RefreshToken      *string `gorm:"column:refresh_token" json:"refresh_token"`
 	AccessToken       *string `gorm:"column:access_token" json:"access_token"`
-	ExpiresAt         *int    `gorm:"column:expires_at" json:"expires_at"`
+	ExpiresAt         *int    `gorm:"column:expires_at;size:32" json:"expires_at"`
 	TokenType         *string `gorm:"column:token_type" json:"token_type"`
 	Scope             *string `gorm:"column:scope" json:"scope"`
 	IDToken           *string `gorm:"column:id_token" json:"id_token"`
 	SessionState      *string `gorm:"column:session_state" json:"session_state"`
-	User              *User
+	User              *User   `gorm:"belongsTo"`
 }
 
 func (Account) TableName() string {
@@ -52,10 +52,10 @@ func (Account) TableName() string {
 }
 
 type Session struct {
-	SessionToken string   `gorm:"column:sessionToken;primaryKey;uniqueIndex" json:"sessionToken"`
+	SessionToken string   `gorm:"column:sessionToken;primaryKey;uniqueIndex:Session_sessionToken_key" json:"sessionToken"`
 	UserID       string   `gorm:"column:userId;not null" json:"userId"`
 	Expires      DateTime `gorm:"column:expires;not null" json:"expires"`
-	User         *User
+	User         *User    `gorm:"belongsTo"`
 }
 
 func (Session) TableName() string {
@@ -64,7 +64,7 @@ func (Session) TableName() string {
 
 type VerificationToken struct {
 	Identifier string   `gorm:"column:identifier;primaryKey" json:"identifier"`
-	Token      string   `gorm:"column:token;primaryKey;uniqueIndex" json:"token"`
+	Token      string   `gorm:"column:token;primaryKey;uniqueIndex:VerificationToken_token_key" json:"token"`
 	Expires    DateTime `gorm:"column:expires;not null" json:"expires"`
 }
 
@@ -73,15 +73,15 @@ func (VerificationToken) TableName() string {
 }
 
 type Authenticator struct {
-	CredentialID         string  `gorm:"column:credentialID;primaryKey;uniqueIndex" json:"credentialID"`
+	CredentialID         string  `gorm:"column:credentialID;primaryKey;uniqueIndex:Authenticator_credentialID_key" json:"credentialID"`
 	UserID               string  `gorm:"column:userId;primaryKey" json:"userId"`
 	ProviderAccountID    string  `gorm:"column:providerAccountId;not null" json:"providerAccountId"`
 	CredentialPublicKey  string  `gorm:"column:credentialPublicKey;not null" json:"credentialPublicKey"`
-	Counter              int     `gorm:"column:counter;not null" json:"counter"`
+	Counter              int     `gorm:"column:counter;size:32;not null" json:"counter"`
 	CredentialDeviceType string  `gorm:"column:credentialDeviceType;not null" json:"credentialDeviceType"`
 	CredentialBackedUp   bool    `gorm:"column:credentialBackedUp;not null" json:"credentialBackedUp"`
 	Transports           *string `gorm:"column:transports" json:"transports"`
-	User                 *User
+	User                 *User   `gorm:"belongsTo"`
 }
 
 func (Authenticator) TableName() string {

@@ -23,8 +23,8 @@ defmodule LangWatch.ScimSyncState do
           organization_id: String.t(),
           state: String.t(),
           last_pushed_at: DateTime.t() | nil,
-          last_failure: map() | nil,
-          dead_letters: map(),
+          last_failure: map() | list() | String.t() | number() | boolean() | nil,
+          dead_letters: map() | list() | String.t() | number() | boolean(),
           revoked_cause: String.t() | nil,
           occurred_at: DateTime.t(),
           last_event_id: String.t(),
@@ -45,10 +45,10 @@ defmodule LangWatch.ScimSyncState do
     # The failure standing right now: { op, errorCode, attempts, retiredAtMs,
     # userId, occurredAtMs }. A reason CODE and ids — never a token, never a
     # secret, never an internal hostname.
-    field(:last_failure, :map, source: :lastFailure)
+    field(:last_failure, LangWatch.PrismaJson, source: :lastFailure)
     # Every failure retired without ever being applied, newest last. The dead
     # letters an administrator has to see; retiring never drops one.
-    field(:dead_letters, :map, source: :deadLetters)
+    field(:dead_letters, LangWatch.PrismaJson, default: [], source: :deadLetters)
     # revoke | teardown, once the sync has ended.
     field(:revoked_cause, :string, source: :revokedCause)
     field(:occurred_at, LangWatch.PrismaDateTime, source: :occurredAt)

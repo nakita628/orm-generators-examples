@@ -48,6 +48,8 @@ class LiteLLMPolicyTable extends Model
         'is_latest' => 'boolean',
         'published_at' => 'datetime',
         'production_at' => 'datetime',
+        'guardrails_add' => AsPrismaList::class,
+        'guardrails_remove' => AsPrismaList::class,
         'condition' => 'array',
         'pipeline' => 'array',
     ];

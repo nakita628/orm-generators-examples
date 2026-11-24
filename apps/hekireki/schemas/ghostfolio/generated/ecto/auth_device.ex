@@ -1,12 +1,12 @@
 defmodule Ghostfolio.AuthDevice do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Ghostfolio.PrismaDateTime, autogenerate: {Ghostfolio.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           credential_id: binary(),
           credential_public_key: binary(),
           counter: integer(),
@@ -19,7 +19,7 @@ defmodule Ghostfolio.AuthDevice do
     field(:credential_id, :binary, source: :credentialId)
     field(:credential_public_key, :binary, source: :credentialPublicKey)
     field(:counter, :integer)
-    field(:user_id, :binary_id, source: :userId)
+    field(:user_id, :string, source: :userId)
     belongs_to(:user, Ghostfolio.User, foreign_key: :user_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

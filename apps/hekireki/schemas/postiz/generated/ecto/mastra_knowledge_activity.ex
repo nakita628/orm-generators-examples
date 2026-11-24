@@ -8,7 +8,7 @@ defmodule Postiz.MastraKnowledgeActivity do
           action: String.t(),
           record_type: String.t(),
           record_id: String.t(),
-          scope: map(),
+          scope: map() | list() | String.t() | number() | boolean(),
           scope_key: String.t(),
           source_thread_id: String.t() | nil,
           created_at: DateTime.t(),
@@ -20,7 +20,7 @@ defmodule Postiz.MastraKnowledgeActivity do
     field(:action, :string)
     field(:record_type, :string, source: :recordType)
     field(:record_id, :string, source: :recordId)
-    field(:scope, :map)
+    field(:scope, Postiz.PrismaJson)
     field(:scope_key, :string, source: :scopeKey)
     field(:source_thread_id, :string, source: :sourceThreadId)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)

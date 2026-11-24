@@ -16,7 +16,7 @@ defmodule LangWatch.DiscoveredAgent do
           provider: String.t(),
           raw_agent_id: String.t(),
           display_text: String.t(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           first_seen_at: DateTime.t(),
           last_seen_at: DateTime.t(),
           inserted_at: DateTime.t(),
@@ -32,7 +32,7 @@ defmodule LangWatch.DiscoveredAgent do
     field(:display_text, :string, source: :displayText)
     # Workspace, plan, and kin - provider-native descriptive fields only. Never
     # credentials: this row is read by admin screens, not by any pull path.
-    field(:metadata, :map)
+    field(:metadata, LangWatch.PrismaJson)
     field(:first_seen_at, LangWatch.PrismaDateTime, source: :firstSeenAt)
     field(:last_seen_at, LangWatch.PrismaDateTime, source: :lastSeenAt)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

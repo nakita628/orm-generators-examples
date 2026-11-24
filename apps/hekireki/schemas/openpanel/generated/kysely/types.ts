@@ -227,7 +227,7 @@ export interface Project {
   name: string
   organizationId: string
   eventsCount: Generated<number>
-  types: Generated<ProjectType[]>
+  types: Generated<ColumnType<string, ProjectType[], ProjectType[]>>
   domain: string | null
   cors: Generated<string[]>
   crossDomain: Generated<boolean>

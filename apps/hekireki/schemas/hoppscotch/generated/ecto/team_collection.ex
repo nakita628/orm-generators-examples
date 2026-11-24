@@ -8,7 +8,7 @@ defmodule Hoppscotch.TeamCollection do
           id: String.t(),
           title: String.t(),
           order_index: integer(),
-          data: map() | nil,
+          data: map() | list() | String.t() | number() | boolean() | nil,
           created_on: DateTime.t(),
           updated_at: DateTime.t(),
           parent: Hoppscotch.TeamCollection.t() | nil,
@@ -21,7 +21,7 @@ defmodule Hoppscotch.TeamCollection do
     field(:id, :string, primary_key: true)
     field(:title, :string)
     field(:order_index, :integer, source: :orderIndex)
-    field(:data, :map)
+    field(:data, Hoppscotch.PrismaJson)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:parent_id, :string, source: :parentID)
     field(:team_id, :string, source: :teamID)

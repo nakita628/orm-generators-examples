@@ -7,14 +7,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "heatmap_event")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "heatmap_event_id", column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub website_id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub session_id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub visit_id: String,
+    #[sea_orm(column_name = "heatmap_event_id")]
+    pub id: Uuid,
+    pub website_id: Uuid,
+    pub session_id: Uuid,
+    pub visit_id: Uuid,
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub url_path: String,
     pub event_type: i32,

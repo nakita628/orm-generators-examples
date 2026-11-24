@@ -6,7 +6,7 @@ defmodule Papermark.Feedback do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           link: Papermark.Link.t() | nil,
@@ -15,7 +15,7 @@ defmodule Papermark.Feedback do
 
   schema "Feedback" do
     field(:id, :string, primary_key: true)
-    field(:data, :map)
+    field(:data, Papermark.PrismaJson)
     field(:link_id, :string, source: :linkId)
     belongs_to(:link, Papermark.Link, foreign_key: :link_id, define_field: false, type: :string)
     has_many(:responses, Papermark.FeedbackResponse, foreign_key: :feedback_id, references: :id)

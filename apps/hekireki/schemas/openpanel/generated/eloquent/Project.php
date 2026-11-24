@@ -49,6 +49,8 @@ class Project extends Model
 
     protected $casts = [
         'eventsCount' => 'integer',
+        'types' => AsPrismaList::class . ':' . ProjectType::class,
+        'cors' => AsPrismaList::class,
         'crossDomain' => 'boolean',
         'allowUnsafeRevenueTracking' => 'boolean',
         'aiStoreContent' => 'boolean',

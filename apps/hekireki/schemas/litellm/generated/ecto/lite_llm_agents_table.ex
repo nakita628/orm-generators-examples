@@ -1,18 +1,18 @@
 defmodule LiteLLM.LiteLLMAgentsTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :agent_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :agent_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           agent_name: String.t(),
-          litellm_params: map() | nil,
-          agent_card_params: map(),
-          static_headers: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean() | nil,
+          agent_card_params: map() | list() | String.t() | number() | boolean(),
+          static_headers: map() | list() | String.t() | number() | boolean() | nil,
           extra_headers: [String.t()],
-          kill_switch: map() | nil,
+          kill_switch: map() | list() | String.t() | number() | boolean() | nil,
           agent_access_groups: [String.t()],
           access_group_ids: [String.t()],
           spend: float(),
@@ -34,11 +34,11 @@ defmodule LiteLLM.LiteLLMAgentsTable do
 
   schema "LiteLLM_AgentsTable" do
     field(:agent_name, :string)
-    field(:litellm_params, :map)
-    field(:agent_card_params, :map)
-    field(:static_headers, :map, default: %{})
+    field(:litellm_params, LiteLLM.PrismaJson)
+    field(:agent_card_params, LiteLLM.PrismaJson)
+    field(:static_headers, LiteLLM.PrismaJson, default: %{})
     field(:extra_headers, {:array, :string})
-    field(:kill_switch, :map)
+    field(:kill_switch, LiteLLM.PrismaJson)
     field(:agent_access_groups, {:array, :string})
     field(:access_group_ids, {:array, :string})
     field(:spend, :float, default: 0.0)

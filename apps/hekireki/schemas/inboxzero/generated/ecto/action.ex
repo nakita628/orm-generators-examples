@@ -21,10 +21,10 @@ defmodule InboxZero.Action do
           folder_name: String.t() | nil,
           folder_id: String.t() | nil,
           delay_in_minutes: integer() | nil,
-          static_attachments: map() | nil,
+          static_attachments: map() | list() | String.t() | number() | boolean() | nil,
           integration_name: String.t() | nil,
           integration_tool_name: String.t() | nil,
-          integration_args: map() | nil,
+          integration_args: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           email_account: InboxZero.EmailAccount.t() | nil
@@ -47,10 +47,10 @@ defmodule InboxZero.Action do
     field(:folder_name, :string, source: :folderName)
     field(:folder_id, :string, source: :folderId)
     field(:delay_in_minutes, :integer, source: :delayInMinutes)
-    field(:static_attachments, :map, source: :staticAttachments)
+    field(:static_attachments, InboxZero.PrismaJson, source: :staticAttachments)
     field(:integration_name, :string, source: :integrationName)
     field(:integration_tool_name, :string, source: :integrationToolName)
-    field(:integration_args, :map, source: :integrationArgs)
+    field(:integration_args, InboxZero.PrismaJson, source: :integrationArgs)
     field(:email_account_id, :string, source: :emailAccountId)
     belongs_to(:email_account, InboxZero.EmailAccount, foreign_key: :email_account_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

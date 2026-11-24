@@ -11,7 +11,7 @@ defmodule Postiz.MastraKnowledgeNodes do
           kind: String.t() | nil,
           content: String.t() | nil,
           description: String.t() | nil,
-          scope: map(),
+          scope: map() | list() | String.t() | number() | boolean(),
           scope_key: String.t(),
           version: integer(),
           merged_into: String.t() | nil,
@@ -29,7 +29,7 @@ defmodule Postiz.MastraKnowledgeNodes do
     field(:kind, :string)
     field(:content, :string)
     field(:description, :string)
-    field(:scope, :map)
+    field(:scope, Postiz.PrismaJson)
     field(:scope_key, :string, source: :scopeKey)
     field(:version, :integer)
     field(:merged_into, :string, source: :mergedInto)

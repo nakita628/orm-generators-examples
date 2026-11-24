@@ -1086,7 +1086,7 @@ export interface ApiKey {
   isActive: Generated<boolean>
   expiresAt: Timestamp | null
   lastUsedAt: Timestamp | null
-  scopes: Generated<ApiKeyScope[]>
+  scopes: Generated<ColumnType<string, ApiKeyScope[], ApiKeyScope[]>>
   userId: string
   emailAccountId: string | null
 }

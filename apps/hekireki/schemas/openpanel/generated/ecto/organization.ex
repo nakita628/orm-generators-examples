@@ -10,7 +10,7 @@ defmodule OpenPanel.Organization do
           slug: String.t() | nil,
           timezone: String.t() | nil,
           onboarding: String.t() | nil,
-          attribution: map() | nil,
+          attribution: map() | list() | String.t() | number() | boolean() | nil,
           subscription_id: String.t() | nil,
           subscription_customer_id: String.t() | nil,
           subscription_price_id: String.t() | nil,
@@ -31,7 +31,7 @@ defmodule OpenPanel.Organization do
           subscription_first_started_at: DateTime.t() | nil,
           usage_warning_sent_at: DateTime.t() | nil,
           usage_exceeded_sent_at: DateTime.t() | nil,
-          subscription_discount: map() | nil,
+          subscription_discount: map() | list() | String.t() | number() | boolean() | nil,
           wind_down_started_at: DateTime.t() | nil,
           wind_down_step: String.t() | nil,
           delete_at: DateTime.t() | nil,
@@ -59,7 +59,7 @@ defmodule OpenPanel.Organization do
     field(:timezone, :string)
     field(:onboarding, :string, default: "completed")
     # [IPrismaOrganizationAttribution]
-    field(:attribution, :map)
+    field(:attribution, OpenPanel.PrismaJson)
     field(:subscription_id, :string, source: :subscriptionId)
     field(:subscription_customer_id, :string, source: :subscriptionCustomerId)
     field(:subscription_price_id, :string, source: :subscriptionPriceId)
@@ -83,7 +83,7 @@ defmodule OpenPanel.Organization do
     field(:usage_warning_sent_at, OpenPanel.PrismaDateTime, source: :usageWarningSentAt)
     field(:usage_exceeded_sent_at, OpenPanel.PrismaDateTime, source: :usageExceededSentAt)
     # [IPrismaSubscriptionDiscount]
-    field(:subscription_discount, :map, source: :subscriptionDiscount)
+    field(:subscription_discount, OpenPanel.PrismaJson, source: :subscriptionDiscount)
     field(:wind_down_started_at, OpenPanel.PrismaDateTime, source: :windDownStartedAt)
     # [IPrismaWindDownStep]
     field(:wind_down_step, :string, source: :windDownStep)

@@ -67,6 +67,8 @@ class Monitor extends \Illuminate\Database\Eloquent\Model
         'last_published_at' => 'datetime',
         'last_claimed_at' => 'datetime',
         'last_completed_at' => 'datetime',
+        'tags' => AsPrismaList::class,
+        'trigger_ids' => AsPrismaList::class,
         'alerted_at' => 'datetime',
     ];
 

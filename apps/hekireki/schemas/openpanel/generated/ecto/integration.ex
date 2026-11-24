@@ -5,9 +5,9 @@ defmodule OpenPanel.Integration do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: OpenPanel.Organization.t() | nil,
@@ -18,10 +18,10 @@ defmodule OpenPanel.Integration do
         }
 
   schema "integrations" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     # [IPrismaIntegrationConfig]
-    field(:config, :map)
+    field(:config, OpenPanel.PrismaJson)
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)
     belongs_to(:organization, OpenPanel.Organization, foreign_key: :organization_id, define_field: false, type: :string)

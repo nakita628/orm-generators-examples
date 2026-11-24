@@ -5,6 +5,7 @@ defmodule Calcom.CalVideoSettings do
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          event_type_id: integer(),
           disable_recording_for_organizer: boolean(),
           disable_recording_for_guests: boolean(),
           enable_automatic_transcription: boolean(),
@@ -27,7 +28,7 @@ defmodule Calcom.CalVideoSettings do
     field(:disable_transcription_for_guests, :boolean, default: false, source: :disableTranscriptionForGuests)
     field(:disable_transcription_for_organizer, :boolean, default: false, source: :disableTranscriptionForOrganizer)
     field(:require_email_for_guests, :boolean, default: false, source: :requireEmailForGuests)
-    field(:event_type_id, :id, source: :eventTypeId)
+    field(:event_type_id, :id, primary_key: true, source: :eventTypeId)
     belongs_to(:event_type, Calcom.EventType, foreign_key: :event_type_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

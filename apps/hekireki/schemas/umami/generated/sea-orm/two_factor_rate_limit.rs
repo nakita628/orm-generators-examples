@@ -9,8 +9,7 @@ pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: String,
+    pub user_id: Uuid,
     #[sea_orm(default_value = 0)]
     pub attempts: i32,
     #[sea_orm(column_type = "TimestampWithTimeZone")]

@@ -8,7 +8,7 @@ defmodule Papermark.ChatMessage do
           id: String.t(),
           role: String.t(),
           content: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           chat: Papermark.Chat.t() | nil
         }
@@ -17,7 +17,7 @@ defmodule Papermark.ChatMessage do
     field(:id, :string, primary_key: true)
     field(:role, :string)
     field(:content, :string)
-    field(:metadata, :map)
+    field(:metadata, Papermark.PrismaJson)
     field(:chat_id, :string, source: :chatId)
     belongs_to(:chat, Papermark.Chat, foreign_key: :chat_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

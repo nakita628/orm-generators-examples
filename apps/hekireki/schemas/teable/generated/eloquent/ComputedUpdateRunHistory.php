@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
  * Observability only — the worker never reads it; rows are pruned after a
  * retention window.
  *
- * @property mixed $source_field_ids Source (changed) field ids; populated for seed tasks, where
+ * @property list<string> $source_field_ids Source (changed) field ids; populated for seed tasks, where
  * affected_field_ids carries the trigger fields rather than targets.
  */
 class ComputedUpdateRunHistory extends Model
@@ -69,8 +69,12 @@ class ComputedUpdateRunHistory extends Model
     ];
 
     protected $casts = [
+        'origin_run_ids' => AsPrismaList::class,
         'steps' => 'array',
         'edges' => 'array',
+        'affected_table_ids' => AsPrismaList::class,
+        'affected_field_ids' => AsPrismaList::class,
+        'source_field_ids' => AsPrismaList::class,
         'seed_record_count' => 'integer',
         'stage_depth' => 'integer',
         'run_total_steps' => 'integer',

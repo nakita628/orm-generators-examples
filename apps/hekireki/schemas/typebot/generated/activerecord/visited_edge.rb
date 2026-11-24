@@ -1,5 +1,6 @@
 class VisitedEdge < ApplicationRecord
   self.table_name = "VisitedEdge"
+  self.primary_key = %w[resultId index]
 
   validates :edgeId, presence: true
   validates :index, presence: true, uniqueness: { scope: :resultId }

@@ -38,6 +38,7 @@ class SubscriptionPlan extends Model
         'priceMonthly' => AsDecimal::class,
         'priceYearly' => AsDecimal::class,
         'isActive' => 'boolean',
+        'availableRegions' => AsPrismaList::class,
     ];
 
     public function subscriptions(): HasMany

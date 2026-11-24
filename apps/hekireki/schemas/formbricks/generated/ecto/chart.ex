@@ -22,8 +22,8 @@ defmodule Formbricks.Chart do
           id: String.t(),
           name: String.t(),
           type: atom(),
-          query: map(),
-          config: map(),
+          query: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -37,9 +37,9 @@ defmodule Formbricks.Chart do
     field(:name, :string)
     field(:type, Ecto.Enum, values: [:area, :bar, :pie, :big_number, :matrix])
     # [ChartQuery] - Cube.js query configuration
-    field(:query, :map, default: %{})
+    field(:query, Formbricks.PrismaJson, default: %{})
     # [ChartConfig] - Visualization configuration (colors, labels, formatting)
-    field(:config, :map, default: %{})
+    field(:config, Formbricks.PrismaJson, default: %{})
     field(:workspace_id, :string, source: :workspaceId)
     field(:created_by, :string, source: :createdBy)
     field(:feedback_directory_id, :string, source: :feedbackDirectoryId)

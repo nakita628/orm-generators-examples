@@ -30,9 +30,9 @@ defmodule LangWatch.SelfHostedInstance do
           report_schema_version: integer() | nil,
           organization_id: String.t() | nil,
           issued_license_id: String.t() | nil,
-          user_email_domains: map() | nil,
+          user_email_domains: map() | list() | String.t() | number() | boolean() | nil,
           user_domains: [String.t()],
-          latest_report: map() | nil,
+          latest_report: map() | list() | String.t() | number() | boolean() | nil,
           optional_metrics_reported: boolean(),
           hostname_reported: boolean(),
           report_count: integer(),
@@ -67,7 +67,7 @@ defmodule LangWatch.SelfHostedInstance do
     field(:issued_license_id, :string, source: :issuedLicenseId)
     # Domains with counts, as `{"acme.test": 14}`. Never an address. Null on an
     # install that switched the optional category off.
-    field(:user_email_domains, :map, source: :userEmailDomains)
+    field(:user_email_domains, LangWatch.PrismaJson, source: :userEmailDomains)
     # The same domains as the keys of `userEmailDomains`, flattened so an
     # operator can search for one. A JSON object's keys are the domains
     # themselves, and no query language addresses a key it does not already
@@ -76,7 +76,7 @@ defmodule LangWatch.SelfHostedInstance do
     # What the last report carried, so the list and the drawer read one row:
     # the onboarding ladder, the usage counts and the operational block, under
     # the same keys the dictionary declares.
-    field(:latest_report, :map, source: :latestReport)
+    field(:latest_report, LangWatch.PrismaJson, source: :latestReport)
     # What the last report said the operator had switched off, read from which
     # categories arrived rather than from a field the install could assert.
     field(:optional_metrics_reported, :boolean, default: true, source: :optionalMetricsReported)

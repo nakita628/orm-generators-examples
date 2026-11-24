@@ -56,6 +56,26 @@ class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -964,7 +984,7 @@ class Tag(models.Model):
     name = models.TextField()
     description = models.TextField(null=True)
     color = models.TextField(null=True)
-    use_for = ArrayField(models.TextField(choices=TagUseFor.choices), db_column="useFor", default=tag_use_for_default)
+    use_for = EnumArrayField(models.TextField(choices=TagUseFor.choices), db_enum="\"TagUseFor\"", db_column="useFor", default=tag_use_for_default)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="tags", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="tags", db_column="organizationId", db_index=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -1271,7 +1291,7 @@ class UserOrganization(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="user_organizations", db_column="userId", db_index=False)
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="user_organizations", db_column="organizationId", db_index=False)
-    roles = ArrayField(models.TextField(choices=OrganizationRoles.choices))
+    roles = EnumArrayField(models.TextField(choices=OrganizationRoles.choices), db_enum="\"OrganizationRoles\"")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     calendar_token_id = models.TextField(null=True, unique=True, db_column="calendarTokenId")
@@ -1482,7 +1502,7 @@ class Invite(models.Model):
     invitee_email = models.TextField(db_column="inviteeEmail")
     status = models.TextField(choices=InviteStatuses.choices, default=InviteStatuses.PENDING)
     invite_code = models.TextField(db_column="inviteCode")
-    roles = ArrayField(models.TextField(choices=OrganizationRoles.choices))
+    roles = EnumArrayField(models.TextField(choices=OrganizationRoles.choices), db_enum="\"OrganizationRoles\"")
     invite_message = models.CharField(max_length=1000, null=True, db_column="inviteMessage")
     expires_at = UtcDateTimeField(db_column="expiresAt")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -1940,7 +1960,7 @@ class Update(models.Model):
     image_url = models.TextField(null=True, db_column="imageUrl")
     publish_date = UtcDateTimeField(db_column="publishDate")
     status = models.TextField(choices=UpdateStatus.choices, default=UpdateStatus.DRAFT)
-    target_roles = ArrayField(models.TextField(choices=OrganizationRoles.choices), db_column="targetRoles")
+    target_roles = EnumArrayField(models.TextField(choices=OrganizationRoles.choices), db_enum="\"OrganizationRoles\"", db_column="targetRoles")
     click_count = models.IntegerField(db_column="clickCount", default=0)
     view_count = models.IntegerField(db_column="viewCount", default=0)
     created_by = models.ForeignKey("User", on_delete=models.CASCADE, related_name="created_updates", db_column="createdById", db_index=False)

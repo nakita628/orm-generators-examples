@@ -7,7 +7,7 @@ defmodule LiteLLM.LiteLLMBackgroundInteractionSettlement do
   @type t :: %__MODULE__{
           interaction_id: String.t(),
           custom_llm_provider: String.t(),
-          create_context: map(),
+          create_context: map() | list() | String.t() | number() | boolean(),
           claimed_at: DateTime.t() | nil,
           claimed_by: String.t() | nil,
           settled_at: DateTime.t() | nil,
@@ -18,7 +18,7 @@ defmodule LiteLLM.LiteLLMBackgroundInteractionSettlement do
   schema "LiteLLM_BackgroundInteractionSettlement" do
     field(:interaction_id, :string, primary_key: true)
     field(:custom_llm_provider, :string)
-    field(:create_context, :map)
+    field(:create_context, LiteLLM.PrismaJson)
     field(:claimed_at, LiteLLM.PrismaDateTime)
     field(:claimed_by, :string)
     field(:settled_at, LiteLLM.PrismaDateTime)

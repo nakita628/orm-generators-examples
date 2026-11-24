@@ -1,5 +1,6 @@
 class Answer < ApplicationRecord
   self.table_name = "Answer"
+  self.primary_key = %w[resultId blockId groupId]
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :createdAt

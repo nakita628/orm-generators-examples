@@ -15,7 +15,7 @@ defmodule LangWatch.DashboardWidget do
           project_id: String.t(),
           dashboard_id: String.t() | nil,
           name: String.t(),
-          definition: map(),
+          definition: map() | list() | String.t() | number() | boolean(),
           grid_column: integer(),
           grid_row: integer(),
           col_span: integer(),
@@ -31,7 +31,7 @@ defmodule LangWatch.DashboardWidget do
     field(:dashboard_id, :string, source: :dashboardId)
     field(:name, :string)
     # The widget's srcdoc definition.
-    field(:definition, :map)
+    field(:definition, LangWatch.PrismaJson)
     field(:grid_column, :integer, default: 0, source: :gridColumn)
     field(:grid_row, :integer, default: 0, source: :gridRow)
     field(:col_span, :integer, default: 1, source: :colSpan)

@@ -8,7 +8,7 @@ defmodule Trigger.WorkerInstance do
           id: String.t(),
           name: String.t(),
           resource_identifier: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           last_dequeue_at: DateTime.t() | nil,
           last_heartbeat_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -27,7 +27,7 @@ defmodule Trigger.WorkerInstance do
     # If managed, it will default to the name, e.g. "worker-1"
     # If unmanged, it will be prefixed with the deployment ID e.g. "deploy-123-worker-1"
     field(:resource_identifier, :string, source: :resourceIdentifier)
-    field(:metadata, :map)
+    field(:metadata, Trigger.PrismaJson)
     field(:last_dequeue_at, Trigger.PrismaDateTime, source: :lastDequeueAt)
     field(:last_heartbeat_at, Trigger.PrismaDateTime, source: :lastHeartbeatAt)
     field(:worker_group_id, :string, source: :workerGroupId)

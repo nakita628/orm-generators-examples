@@ -1,12 +1,12 @@
 defmodule Postiz.User do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           email: String.t(),
           password: String.t() | nil,
           provider_name: atom(),
@@ -69,7 +69,7 @@ defmodule Postiz.User do
     field(:send_success_emails, :boolean, default: true, source: :sendSuccessEmails)
     field(:send_failure_emails, :boolean, default: true, source: :sendFailureEmails)
     field(:send_streak_emails, :boolean, default: true, source: :sendStreakEmails)
-    field(:picture_id, :binary_id, source: :pictureId)
+    field(:picture_id, :string, source: :pictureId)
     belongs_to(:picture, Postiz.Media, foreign_key: :picture_id, define_field: false)
     has_one(:agencies, Postiz.SocialMediaAgency, foreign_key: :user_id)
     has_many(:comments, Postiz.Comments, foreign_key: :user_id)

@@ -1,5 +1,6 @@
 class Invitation < ApplicationRecord
   self.table_name = "Invitation"
+  self.primary_key = "token"
 
   attribute :dataroomIds, default: -> { [] }
   alias_attribute :created_at, :createdAt

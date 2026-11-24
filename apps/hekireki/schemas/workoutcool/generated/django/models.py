@@ -43,6 +43,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -374,7 +394,7 @@ class WorkoutSession(models.Model):
     started_at = UtcDateTimeField(db_column="startedAt")
     ended_at = UtcDateTimeField(null=True, db_column="endedAt")
     duration = models.IntegerField(null=True)
-    muscles = ArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), default=list)
+    muscles = EnumArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), db_enum="\"ExerciseAttributeValueEnum\"", default=list)
     rating = models.IntegerField(null=True)
     rating_comment = models.TextField(null=True, db_column="ratingComment")
 
@@ -397,10 +417,10 @@ class WorkoutSet(models.Model):
     workout_session_exercise = models.ForeignKey("WorkoutSessionExercise", on_delete=models.CASCADE, related_name="sets", db_column="workoutSessionExerciseId", db_index=False)
     set_index = models.IntegerField(db_column="setIndex")
     type = models.TextField(choices=WorkoutSetType.choices)
-    types = ArrayField(models.TextField(choices=WorkoutSetType.choices), default=list)
+    types = EnumArrayField(models.TextField(choices=WorkoutSetType.choices), db_enum="\"WorkoutSetType\"", default=list)
     values_int = ArrayField(models.IntegerField(), db_column="valuesInt", default=list)
     values_sec = ArrayField(models.IntegerField(), db_column="valuesSec", default=list)
-    units = ArrayField(models.TextField(choices=WorkoutSetUnit.choices), default=list)
+    units = EnumArrayField(models.TextField(choices=WorkoutSetUnit.choices), db_enum="\"WorkoutSetUnit\"", default=list)
     completed = models.BooleanField(default=False)
 
     class Meta:
@@ -537,7 +557,7 @@ class Program(models.Model):
     duration_weeks = models.IntegerField(db_column="durationWeeks", default=4)
     sessions_per_week = models.IntegerField(db_column="sessionsPerWeek", default=3)
     session_duration_min = models.IntegerField(db_column="sessionDurationMin", default=30)
-    equipment = ArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), default=list)
+    equipment = EnumArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), db_enum="\"ExerciseAttributeValueEnum\"", default=list)
     is_premium = models.BooleanField(db_column="isPremium", default=True)
     is_active = models.BooleanField(db_column="isActive", default=True)
     visibility = models.TextField(choices=ProgramVisibility.choices, default=ProgramVisibility.DRAFT)
@@ -607,7 +627,7 @@ class ProgramSession(models.Model):
     description_pt = models.TextField(db_column="descriptionPt")
     description_ru = models.TextField(db_column="descriptionRu")
     description_zh_cn = models.TextField(db_column="descriptionZhCn")
-    equipment = ArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), default=list)
+    equipment = EnumArrayField(models.TextField(choices=ExerciseAttributeValueEnum.choices), db_enum="\"ExerciseAttributeValueEnum\"", default=list)
     estimated_minutes = models.IntegerField(db_column="estimatedMinutes")
     is_premium = models.BooleanField(db_column="isPremium", default=True)
 
@@ -647,10 +667,10 @@ class ProgramSuggestedSet(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     program_session_exercise = models.ForeignKey("ProgramSessionExercise", on_delete=models.CASCADE, related_name="suggested_sets", db_column="programSessionExerciseId", db_index=False)
     set_index = models.IntegerField(db_column="setIndex")
-    types = ArrayField(models.TextField(choices=WorkoutSetType.choices), default=list)
+    types = EnumArrayField(models.TextField(choices=WorkoutSetType.choices), db_enum="\"WorkoutSetType\"", default=list)
     values_int = ArrayField(models.IntegerField(), db_column="valuesInt", default=list)
     values_sec = ArrayField(models.IntegerField(), db_column="valuesSec", default=list)
-    units = ArrayField(models.TextField(choices=WorkoutSetUnit.choices), default=list)
+    units = EnumArrayField(models.TextField(choices=WorkoutSetUnit.choices), db_enum="\"WorkoutSetUnit\"", default=list)
 
     class Meta:
         db_table = "program_suggested_sets"

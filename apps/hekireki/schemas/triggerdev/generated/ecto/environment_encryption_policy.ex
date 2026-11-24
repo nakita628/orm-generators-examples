@@ -4,6 +4,7 @@ defmodule Trigger.EnvironmentEncryptionPolicy do
   @primary_key false
 
   @type t :: %__MODULE__{
+          environment_id: String.t(),
           revision: integer(),
           wrapping_provider: atom() | nil,
           wrapping_key_reference: String.t() | nil,
@@ -16,7 +17,7 @@ defmodule Trigger.EnvironmentEncryptionPolicy do
     field(:wrapping_provider, Ecto.Enum, values: [:PLATFORM_KEYRING, :AWS_KMS], source: :wrappingProvider)
     field(:wrapping_key_reference, :string, source: :wrappingKeyReference)
     field(:active_key_id, :string, source: :activeKeyId)
-    field(:environment_id, :string, source: :environmentId)
+    field(:environment_id, :string, primary_key: true, source: :environmentId)
     belongs_to(:environment, Trigger.RuntimeEnvironment, foreign_key: :environment_id, define_field: false, type: :string)
   end
 end

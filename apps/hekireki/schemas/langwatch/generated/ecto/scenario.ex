@@ -10,13 +10,13 @@ defmodule LangWatch.Scenario do
           situation: String.t(),
           criteria: [String.t()],
           labels: [String.t()],
-          parameters: map() | nil,
+          parameters: map() | list() | String.t() | number() | boolean() | nil,
           simulator_model: String.t() | nil,
           judge_model: String.t() | nil,
           max_turns: integer() | nil,
           min_turns: integer() | nil,
-          fields: map() | nil,
-          caller_voice: map() | nil,
+          fields: map() | list() | String.t() | number() | boolean() | nil,
+          caller_voice: map() | list() | String.t() | number() | boolean() | nil,
           version: integer(),
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -33,13 +33,13 @@ defmodule LangWatch.Scenario do
     field(:situation, :string)
     field(:criteria, {:array, :string})
     field(:labels, {:array, :string})
-    field(:parameters, :map)
+    field(:parameters, LangWatch.PrismaJson)
     field(:simulator_model, :string, source: :simulatorModel)
     field(:judge_model, :string, source: :judgeModel)
     field(:max_turns, :integer, source: :maxTurns)
     field(:min_turns, :integer, source: :minTurns)
-    field(:fields, :map)
-    field(:caller_voice, :map, source: :callerVoice)
+    field(:fields, LangWatch.PrismaJson)
+    field(:caller_voice, LangWatch.PrismaJson, source: :callerVoice)
     field(:version, :integer, default: 1)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:project_id, :string, source: :projectId)

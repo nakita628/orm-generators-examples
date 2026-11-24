@@ -36,9 +36,9 @@ defmodule Dub.Project do
           users_limit: integer(),
           ai_usage: integer(),
           ai_limit: integer(),
-          store: map() | nil,
-          site_visit_tracking_settings: map() | nil,
-          allowed_hostnames: map() | nil,
+          store: map() | list() | String.t() | number() | boolean() | nil,
+          site_visit_tracking_settings: map() | list() | String.t() | number() | boolean() | nil,
+          allowed_hostnames: map() | list() | String.t() | number() | boolean() | nil,
           publishable_key: String.t() | nil,
           conversion_enabled: boolean(),
           webhook_enabled: boolean(),
@@ -102,9 +102,9 @@ defmodule Dub.Project do
     field(:users_limit, :integer, default: 1, source: :usersLimit)
     field(:ai_usage, :integer, default: 0, source: :aiUsage)
     field(:ai_limit, :integer, default: 10, source: :aiLimit)
-    field(:store, :map)
-    field(:site_visit_tracking_settings, :map, source: :siteVisitTrackingSettings)
-    field(:allowed_hostnames, :map, source: :allowedHostnames)
+    field(:store, Dub.PrismaJson)
+    field(:site_visit_tracking_settings, Dub.PrismaJson, source: :siteVisitTrackingSettings)
+    field(:allowed_hostnames, Dub.PrismaJson, source: :allowedHostnames)
     field(:publishable_key, :string, source: :publishableKey)
     field(:conversion_enabled, :boolean, default: false, source: :conversionEnabled)
     field(:webhook_enabled, :boolean, default: false, source: :webhookEnabled)

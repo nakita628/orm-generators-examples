@@ -5,13 +5,13 @@ defmodule Umami.Website do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           domain: String.t() | nil,
           reset_at: DateTime.t() | nil,
           deleted_at: DateTime.t() | nil,
           recorder_enabled: boolean(),
-          replay_config: map() | nil,
+          replay_config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil,
           user: Umami.User.t() | nil,
@@ -29,16 +29,16 @@ defmodule Umami.Website do
         }
 
   schema "website" do
-    field(:id, :string, primary_key: true, source: :website_id)
+    field(:id, Ecto.UUID, primary_key: true, source: :website_id)
     field(:name, :string)
     field(:domain, :string)
     field(:reset_at, Umami.PrismaDateTime)
     field(:deleted_at, Umami.PrismaDateTime)
     field(:recorder_enabled, :boolean, default: false)
-    field(:replay_config, :map)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
-    belongs_to(:create_user, Umami.User, foreign_key: :created_by, type: :string)
-    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: :string)
+    field(:replay_config, Umami.PrismaJson)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
+    belongs_to(:create_user, Umami.User, foreign_key: :created_by, type: Ecto.UUID)
+    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: Ecto.UUID)
     has_many(:annotations, Umami.Annotation, foreign_key: :website_id, references: :id)
     has_many(:event_data, Umami.EventData, foreign_key: :website_id, references: :id)
     has_many(:reports, Umami.Report, foreign_key: :website_id, references: :id)

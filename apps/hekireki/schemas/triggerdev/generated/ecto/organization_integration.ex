@@ -9,7 +9,7 @@ defmodule Trigger.OrganizationIntegration do
           friendly_id: String.t(),
           service: atom(),
           external_organization_id: String.t() | nil,
-          integration_data: map(),
+          integration_data: map() | list() | String.t() | number() | boolean(),
           deleted_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -25,7 +25,7 @@ defmodule Trigger.OrganizationIntegration do
     field(:service, Ecto.Enum, values: [:SLACK, :VERCEL])
     # Identifier for external, integration's organization (e.g. Vercel's team)
     field(:external_organization_id, :string, source: :externalOrganizationId)
-    field(:integration_data, :map, source: :integrationData)
+    field(:integration_data, Trigger.PrismaJson, source: :integrationData)
     field(:deleted_at, Trigger.PrismaDateTime, source: :deletedAt)
     field(:token_reference_id, :string, source: :tokenReferenceId)
     field(:organization_id, :string, source: :organizationId)

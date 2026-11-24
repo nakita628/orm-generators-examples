@@ -39,6 +39,7 @@ class LiteLLMCustomerMemberTable extends Model
 
     protected $casts = [
         'spend' => 'float',
+        'parent_team_ids' => AsPrismaList::class,
         'budget_override_expires_at' => 'datetime',
     ];
 

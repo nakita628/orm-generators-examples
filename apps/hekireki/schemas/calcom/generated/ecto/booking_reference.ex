@@ -31,9 +31,9 @@ defmodule Calcom.BookingReference do
     field(:deleted, :boolean)
     field(:booking_id, :id, source: :bookingId)
     field(:credential_id, :id, source: :credentialId)
-    field(:delegation_credential_id, :binary_id, source: :delegationCredentialId)
+    field(:delegation_credential_id, :string, source: :delegationCredentialId)
     belongs_to(:booking, Calcom.Booking, foreign_key: :booking_id, define_field: false)
     belongs_to(:credential, Calcom.Credential, foreign_key: :credential_id, define_field: false)
-    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :binary_id)
+    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :string)
   end
 end

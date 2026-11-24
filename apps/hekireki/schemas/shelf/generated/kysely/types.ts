@@ -627,7 +627,7 @@ export interface Tag {
   name: string
   description: string | null
   color: string | null
-  useFor: Generated<TagUseFor[]>
+  useFor: Generated<ColumnType<string, TagUseFor[], TagUseFor[]>>
   userId: string
   organizationId: string
   createdAt: Generated<Timestamp>
@@ -806,7 +806,7 @@ export interface UserOrganization {
   id: string
   userId: string
   organizationId: string
-  roles: OrganizationRoles[]
+  roles: ColumnType<string, OrganizationRoles[], OrganizationRoles[]>
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
   /**
@@ -949,7 +949,7 @@ export interface Invite {
   inviteeEmail: string
   status: Generated<InviteStatuses>
   inviteCode: string
-  roles: OrganizationRoles[]
+  roles: ColumnType<string, OrganizationRoles[], OrganizationRoles[]>
   inviteMessage: string | null
   expiresAt: Timestamp
   createdAt: Generated<Timestamp>
@@ -1243,7 +1243,7 @@ export interface Update {
   imageUrl: string | null
   publishDate: Timestamp
   status: Generated<UpdateStatus>
-  targetRoles: OrganizationRoles[]
+  targetRoles: ColumnType<string, OrganizationRoles[], OrganizationRoles[]>
   clickCount: Generated<number>
   viewCount: Generated<number>
   createdById: string

@@ -21,21 +21,21 @@ defmodule Postiz.MastraObservationalMemory do
           observation_token_count: integer(),
           is_observing: boolean(),
           is_reflecting: boolean(),
-          observed_message_ids: map() | nil,
+          observed_message_ids: map() | list() | String.t() | number() | boolean() | nil,
           observed_timezone: String.t() | nil,
           buffered_observations: String.t() | nil,
           buffered_observation_tokens: integer() | nil,
-          buffered_message_ids: map() | nil,
+          buffered_message_ids: map() | list() | String.t() | number() | boolean() | nil,
           buffered_reflection: String.t() | nil,
           buffered_reflection_tokens: integer() | nil,
           buffered_reflection_input_tokens: integer() | nil,
           reflected_observation_line_count: integer() | nil,
-          buffered_observation_chunks: map() | nil,
+          buffered_observation_chunks: map() | list() | String.t() | number() | boolean() | nil,
           is_buffering_observation: boolean(),
           is_buffering_reflection: boolean(),
           last_buffered_at_tokens: integer(),
           last_buffered_at_time: DateTime.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
           last_observed_at_z: DateTime.t() | nil,
@@ -63,21 +63,21 @@ defmodule Postiz.MastraObservationalMemory do
     field(:observation_token_count, :integer, source: :observationTokenCount)
     field(:is_observing, :boolean, source: :isObserving)
     field(:is_reflecting, :boolean, source: :isReflecting)
-    field(:observed_message_ids, :map, source: :observedMessageIds)
+    field(:observed_message_ids, Postiz.PrismaJson, source: :observedMessageIds)
     field(:observed_timezone, :string, source: :observedTimezone)
     field(:buffered_observations, :string, source: :bufferedObservations)
     field(:buffered_observation_tokens, :integer, source: :bufferedObservationTokens)
-    field(:buffered_message_ids, :map, source: :bufferedMessageIds)
+    field(:buffered_message_ids, Postiz.PrismaJson, source: :bufferedMessageIds)
     field(:buffered_reflection, :string, source: :bufferedReflection)
     field(:buffered_reflection_tokens, :integer, source: :bufferedReflectionTokens)
     field(:buffered_reflection_input_tokens, :integer, source: :bufferedReflectionInputTokens)
     field(:reflected_observation_line_count, :integer, source: :reflectedObservationLineCount)
-    field(:buffered_observation_chunks, :map, source: :bufferedObservationChunks)
+    field(:buffered_observation_chunks, Postiz.PrismaJson, source: :bufferedObservationChunks)
     field(:is_buffering_observation, :boolean, source: :isBufferingObservation)
     field(:is_buffering_reflection, :boolean, source: :isBufferingReflection)
     field(:last_buffered_at_tokens, :integer, source: :lastBufferedAtTokens)
     field(:last_buffered_at_time, Postiz.PrismaDateTime, source: :lastBufferedAtTime)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:updated_at, Postiz.PrismaDateTime, source: :updatedAt)
     field(:last_observed_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :lastObservedAtZ)

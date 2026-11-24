@@ -45,6 +45,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -288,7 +308,7 @@ class User(models.Model):
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     last_signed_in = UtcDateTimeField(db_column="lastSignedIn", default=now_milliseconds)
-    roles = ArrayField(models.TextField(choices=Role.choices), default=user_roles_default)
+    roles = EnumArrayField(models.TextField(choices=Role.choices), db_enum="\"Role\"", default=user_roles_default)
     identity_provider = models.TextField(choices=IdentityProvider.choices, db_column="identityProvider", default=IdentityProvider.DOCUMENSO)
     avatar_image = models.ForeignKey("AvatarImage", on_delete=models.SET_NULL, related_name="user", db_column="avatarImageId", null=True, db_index=False)
     disabled = models.BooleanField(default=False)
@@ -385,7 +405,7 @@ class VerificationToken(models.Model):
 class Webhook(models.Model):
     id = models.TextField(primary_key=True, default=cuid_str)
     webhook_url = models.TextField(db_column="webhookUrl")
-    event_triggers = ArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_column="eventTriggers")
+    event_triggers = EnumArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_enum="\"WebhookTriggerEvents\"", db_column="eventTriggers")
     secret = models.TextField(null=True)
     enabled = models.BooleanField(default=True)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)

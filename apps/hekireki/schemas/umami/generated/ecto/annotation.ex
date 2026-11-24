@@ -5,8 +5,8 @@ defmodule Umami.Annotation do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
-          user_id: String.t() | nil,
+          id: Ecto.UUID.t(),
+          user_id: Ecto.UUID.t() | nil,
           date: DateTime.t(),
           all_day: boolean(),
           note: String.t(),
@@ -16,12 +16,12 @@ defmodule Umami.Annotation do
         }
 
   schema "annotation" do
-    field(:id, :string, primary_key: true, source: :annotation_id)
-    field(:user_id, :string)
+    field(:id, Ecto.UUID, primary_key: true, source: :annotation_id)
+    field(:user_id, Ecto.UUID)
     field(:date, Umami.PrismaDateTime)
     field(:all_day, :boolean, default: true)
     field(:note, :string)
-    belongs_to(:website, Umami.Website, foreign_key: :website_id, type: :string)
+    belongs_to(:website, Umami.Website, foreign_key: :website_id, type: Ecto.UUID)
     timestamps(inserted_at_source: :created_at)
   end
 end

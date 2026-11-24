@@ -9,7 +9,7 @@ defmodule LangWatch.WorkflowVersion do
           version: String.t(),
           commit_message: String.t(),
           auto_saved: boolean(),
-          dsl: map(),
+          dsl: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           author: LangWatch.User.t() | nil,
@@ -26,7 +26,7 @@ defmodule LangWatch.WorkflowVersion do
     field(:version, :string)
     field(:commit_message, :string, source: :commitMessage)
     field(:auto_saved, :boolean, default: false, source: :autoSaved)
-    field(:dsl, :map)
+    field(:dsl, LangWatch.PrismaJson)
     field(:author_id, :string, source: :authorId)
     field(:project_id, :string, source: :projectId)
     field(:workflow_id, :string, source: :workflowId)

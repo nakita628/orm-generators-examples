@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMWorkflowMessage do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :message_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :message_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           role: String.t(),
           content: String.t(),
           sequence_number: integer(),

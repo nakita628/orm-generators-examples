@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMBudgetTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :budget_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :budget_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t() | nil,
           max_budget: float() | nil,
           soft_budget: float() | nil,
@@ -14,11 +14,11 @@ defmodule LiteLLM.LiteLLMBudgetTable do
           tpm_limit: integer() | nil,
           rpm_limit: integer() | nil,
           tpd_limit: integer() | nil,
-          model_max_budget: map() | nil,
-          model_tpm_limit: map() | nil,
-          model_rpm_limit: map() | nil,
+          model_max_budget: map() | list() | String.t() | number() | boolean() | nil,
+          model_tpm_limit: map() | list() | String.t() | number() | boolean() | nil,
+          model_rpm_limit: map() | list() | String.t() | number() | boolean() | nil,
           budget_duration: String.t() | nil,
-          budget_limits: map() | nil,
+          budget_limits: map() | list() | String.t() | number() | boolean() | nil,
           cap_policy: String.t() | nil,
           budget_reset_at: DateTime.t() | nil,
           budget_reset_count: integer(),
@@ -53,11 +53,11 @@ defmodule LiteLLM.LiteLLMBudgetTable do
     field(:tpm_limit, :integer)
     field(:rpm_limit, :integer)
     field(:tpd_limit, :integer)
-    field(:model_max_budget, :map)
-    field(:model_tpm_limit, :map)
-    field(:model_rpm_limit, :map)
+    field(:model_max_budget, LiteLLM.PrismaJson)
+    field(:model_tpm_limit, LiteLLM.PrismaJson)
+    field(:model_rpm_limit, LiteLLM.PrismaJson)
     field(:budget_duration, :string)
-    field(:budget_limits, :map)
+    field(:budget_limits, LiteLLM.PrismaJson)
     field(:cap_policy, :string)
     field(:budget_reset_at, LiteLLM.PrismaDateTime)
     field(:budget_reset_count, :integer, default: 0)

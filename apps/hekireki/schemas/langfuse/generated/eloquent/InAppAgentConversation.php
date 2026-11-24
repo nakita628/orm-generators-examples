@@ -35,6 +35,7 @@ class InAppAgentConversation extends \Illuminate\Database\Eloquent\Model
     protected $casts = [
         'renamed_by_user_at' => 'datetime',
         'visibility_scope' => InAppAgentConversationVisibilityScope::class,
+        'always_allowed_tools' => AsPrismaList::class,
         'deleted_at' => 'datetime',
     ];
 

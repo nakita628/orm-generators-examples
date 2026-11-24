@@ -1,15 +1,15 @@
 defmodule LiteLLM.LiteLLMProxyModelTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :model_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :model_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           model_name: String.t(),
-          litellm_params: map(),
-          model_info: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean(),
+          model_info: map() | list() | String.t() | number() | boolean() | nil,
           blocked: boolean(),
           created_by: String.t(),
           updated_by: String.t(),
@@ -19,8 +19,8 @@ defmodule LiteLLM.LiteLLMProxyModelTable do
 
   schema "LiteLLM_ProxyModelTable" do
     field(:model_name, :string)
-    field(:litellm_params, :map)
-    field(:model_info, :map)
+    field(:litellm_params, LiteLLM.PrismaJson)
+    field(:model_info, LiteLLM.PrismaJson)
     field(:blocked, :boolean, default: false)
     field(:created_by, :string)
     field(:updated_by, :string)

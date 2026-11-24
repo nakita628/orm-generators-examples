@@ -10,7 +10,7 @@ defmodule Trigger.GithubAppInstallation do
           target_id: integer(),
           target_type: String.t(),
           account_handle: String.t(),
-          permissions: map() | nil,
+          permissions: map() | list() | String.t() | number() | boolean() | nil,
           repository_selection: atom(),
           installed_by: String.t() | nil,
           installed_by_user_id: String.t() | nil,
@@ -28,7 +28,7 @@ defmodule Trigger.GithubAppInstallation do
     field(:target_id, :integer, source: :targetId)
     field(:target_type, :string, source: :targetType)
     field(:account_handle, :string, source: :accountHandle)
-    field(:permissions, :map)
+    field(:permissions, Trigger.PrismaJson)
     field(:repository_selection, Ecto.Enum, values: [:ALL, :SELECTED], source: :repositorySelection)
     field(:installed_by, :string, source: :installedBy)
     field(:installed_by_user_id, :string, source: :installedByUserId)

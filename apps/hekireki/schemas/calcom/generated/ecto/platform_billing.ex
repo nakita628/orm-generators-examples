@@ -4,6 +4,7 @@ defmodule Calcom.PlatformBilling do
   @primary_key false
 
   @type t :: %__MODULE__{
+          id: integer(),
           customer_id: String.t(),
           subscription_id: String.t() | nil,
           price_id: String.t() | nil,
@@ -25,8 +26,9 @@ defmodule Calcom.PlatformBilling do
     field(:billing_cycle_end, :integer, source: :billingCycleEnd)
     field(:overdue, :boolean, default: false)
     field(:manager_billing_id, :id, source: :managerBillingId)
+    field(:id, :id, primary_key: true)
     belongs_to(:manager_billing, Calcom.PlatformBilling, foreign_key: :manager_billing_id, define_field: false)
-    belongs_to(:team, Calcom.Team, foreign_key: :id)
+    belongs_to(:team, Calcom.Team, foreign_key: :id, define_field: false)
     has_many(:managed_billings, Calcom.PlatformBilling, foreign_key: :manager_billing_id, references: :id)
   end
 end

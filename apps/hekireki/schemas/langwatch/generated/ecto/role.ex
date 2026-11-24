@@ -9,7 +9,7 @@ defmodule LangWatch.Role do
           organization_id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          permissions: map(),
+          permissions: map() | list() | String.t() | number() | boolean(),
           kind: String.t(),
           occurred_at: DateTime.t(),
           deleted_at: DateTime.t() | nil,
@@ -22,7 +22,7 @@ defmodule LangWatch.Role do
     field(:organization_id, :string, source: :organizationId)
     field(:name, :string)
     field(:description, :string)
-    field(:permissions, :map)
+    field(:permissions, LangWatch.PrismaJson)
     field(:kind, :string, default: "custom")
     field(:occurred_at, LangWatch.PrismaDateTime, source: :occurredAt)
     field(:deleted_at, LangWatch.PrismaDateTime, source: :deletedAt)

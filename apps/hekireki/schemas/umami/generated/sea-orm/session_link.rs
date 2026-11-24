@@ -7,11 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "session_link")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub website_id: String,
+    pub website_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub session_id: String,
+    pub session_id: Uuid,
     #[sea_orm(primary_key, auto_increment = false)]
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub distinct_id: String,

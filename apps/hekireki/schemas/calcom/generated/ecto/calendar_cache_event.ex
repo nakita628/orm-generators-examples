@@ -1,12 +1,12 @@
 defmodule Calcom.CalendarCacheEvent do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           external_id: String.t(),
           external_etag: String.t(),
           i_cal_uid: String.t() | nil,
@@ -45,7 +45,7 @@ defmodule Calcom.CalendarCacheEvent do
     field(:original_start_time, Calcom.PrismaDateTime, source: :originalStartTime)
     field(:external_created_at, Calcom.PrismaDateTime, source: :externalCreatedAt)
     field(:external_updated_at, Calcom.PrismaDateTime, source: :externalUpdatedAt)
-    field(:selected_calendar_id, :binary_id, source: :selectedCalendarId)
+    field(:selected_calendar_id, :string, source: :selectedCalendarId)
     belongs_to(:selected_calendar, Calcom.SelectedCalendar, foreign_key: :selected_calendar_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

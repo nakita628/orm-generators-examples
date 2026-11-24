@@ -19,6 +19,10 @@ class LiteLLMUISettings extends Model
         'ui_settings',
     ];
 
+    protected $attributes = [
+        'id' => 'ui_settings',
+    ];
+
     protected $casts = [
         'ui_settings' => 'array',
     ];

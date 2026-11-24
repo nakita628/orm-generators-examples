@@ -7,7 +7,7 @@ defmodule Jitsu.UserPreferences do
   @type t :: %__MODULE__{
           id: String.t(),
           scope: String.t() | nil,
-          preferences: map(),
+          preferences: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: Jitsu.UserProfile.t() | nil,
@@ -17,7 +17,7 @@ defmodule Jitsu.UserPreferences do
   schema "UserPreferences" do
     field(:id, :string, primary_key: true)
     field(:scope, :string)
-    field(:preferences, :map)
+    field(:preferences, Jitsu.PrismaJson)
     field(:user_id, :string, source: :userId)
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:user, Jitsu.UserProfile, foreign_key: :user_id, define_field: false, type: :string)

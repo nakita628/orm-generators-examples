@@ -16,7 +16,7 @@ defmodule LangWatch.DatasetVersion do
           name: String.t() | nil,
           trigger: String.t(),
           content_hash: String.t(),
-          column_types: map(),
+          column_types: map() | list() | String.t() | number() | boolean(),
           row_count: integer(),
           size_bytes: integer(),
           chunk_count: integer(),
@@ -38,7 +38,7 @@ defmodule LangWatch.DatasetVersion do
     field(:trigger, :string)
     # SHA-256 over the columns and the rows in order; equal content saves no new version.
     field(:content_hash, :string, source: :contentHash)
-    field(:column_types, :map, source: :columnTypes)
+    field(:column_types, LangWatch.PrismaJson, source: :columnTypes)
     field(:row_count, :integer, source: :rowCount)
     field(:size_bytes, :integer, source: :sizeBytes)
     field(:chunk_count, :integer, source: :chunkCount)

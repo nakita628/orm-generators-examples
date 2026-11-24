@@ -7,7 +7,7 @@ defmodule Papermark.OAuthRecord do
   @type t :: %__MODULE__{
           id: String.t(),
           kind: String.t(),
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           grant_id: String.t() | nil,
           user_code: String.t() | nil,
           uid: String.t() | nil,
@@ -19,7 +19,7 @@ defmodule Papermark.OAuthRecord do
   schema "OAuthRecord" do
     field(:id, :string, primary_key: true)
     field(:kind, :string)
-    field(:payload, :map)
+    field(:payload, Papermark.PrismaJson)
     field(:grant_id, :string, source: :grantId)
     field(:user_code, :string, source: :userCode)
     field(:uid, :string)

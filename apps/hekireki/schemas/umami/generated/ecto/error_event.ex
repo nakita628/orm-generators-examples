@@ -4,18 +4,18 @@ defmodule Umami.ErrorEvent do
   @primary_key false
 
   @type t :: %__MODULE__{
-          website_id: String.t(),
-          id: String.t(),
-          issue_id: String.t(),
-          session_id: String.t(),
-          visit_id: String.t(),
+          website_id: Ecto.UUID.t(),
+          id: Ecto.UUID.t(),
+          issue_id: Ecto.UUID.t(),
+          session_id: Ecto.UUID.t(),
+          visit_id: Ecto.UUID.t(),
           created_at: DateTime.t(),
           received_at: DateTime.t(),
           name: String.t(),
           message: String.t(),
           stack: String.t(),
-          frames: map(),
-          tags: map(),
+          frames: map() | list() | String.t() | number() | boolean(),
+          tags: map() | list() | String.t() | number() | boolean(),
           handled: boolean(),
           url_path: String.t(),
           release: String.t(),
@@ -26,18 +26,18 @@ defmodule Umami.ErrorEvent do
         }
 
   schema "error_event" do
-    field(:website_id, :string, primary_key: true)
-    field(:id, :string, primary_key: true, source: :event_id)
-    field(:issue_id, :string)
-    field(:session_id, :string)
-    field(:visit_id, :string)
+    field(:website_id, Ecto.UUID, primary_key: true)
+    field(:id, Ecto.UUID, primary_key: true, source: :event_id)
+    field(:issue_id, Ecto.UUID)
+    field(:session_id, Ecto.UUID)
+    field(:visit_id, Ecto.UUID)
     field(:created_at, Umami.PrismaDateTime)
     field(:received_at, Umami.PrismaDateTime, autogenerate: true)
     field(:name, :string)
     field(:message, :string)
     field(:stack, :string)
-    field(:frames, :map)
-    field(:tags, :map)
+    field(:frames, Umami.PrismaJson)
+    field(:tags, Umami.PrismaJson)
     field(:handled, :boolean)
     field(:url_path, :string)
     field(:release, :string)

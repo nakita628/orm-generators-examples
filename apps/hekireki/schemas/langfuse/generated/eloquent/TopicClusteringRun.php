@@ -42,6 +42,7 @@ class TopicClusteringRun extends \Illuminate\Database\Eloquent\Model
         'config' => 'array',
         'started_at' => 'datetime',
         'finished_at' => 'datetime',
+        'topic_version_ids' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

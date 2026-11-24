@@ -8,8 +8,8 @@ defmodule Jitsu.ProfileBuilder do
           id: String.t(),
           name: String.t(),
           deleted: boolean() | nil,
-          intermediate_storage_credentials: map(),
-          connection_options: map() | nil,
+          intermediate_storage_credentials: map() | list() | String.t() | number() | boolean(),
+          connection_options: map() | list() | String.t() | number() | boolean() | nil,
           version: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -22,8 +22,8 @@ defmodule Jitsu.ProfileBuilder do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:deleted, :boolean, default: false)
-    field(:intermediate_storage_credentials, :map, source: :intermediateStorageCredentials)
-    field(:connection_options, :map, source: :connectionOptions)
+    field(:intermediate_storage_credentials, Jitsu.PrismaJson, source: :intermediateStorageCredentials)
+    field(:connection_options, Jitsu.PrismaJson, source: :connectionOptions)
     field(:version, :integer, default: 0)
     field(:workspace_id, :string, source: :workspaceId)
     field(:destination_id, :string, source: :destinationId)

@@ -1,5 +1,6 @@
 class Session < ApplicationRecord
   self.table_name = "Session"
+  self.primary_key = "sessionToken"
 
   attribute :expires, PrismaDateTime.new
 

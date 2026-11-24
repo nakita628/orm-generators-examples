@@ -7,11 +7,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "report_layouts")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "reportId", column_type = "Uuid")]
-    pub report_id: String,
+    #[sea_orm(column_name = "reportId")]
+    pub report_id: Uuid,
     #[sea_orm(column_name = "gridColumns", default_value = 12)]
     pub grid_columns: i32,
     #[sea_orm(default_value = 0)]

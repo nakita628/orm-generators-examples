@@ -936,7 +936,7 @@ class WebhookDelivery(Base):
     created_at: Mapped[datetime] = mapped_column("createdAt", primary_key=True, default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column("updatedAt", default=utc_now, onupdate=utc_now)
     processed_at: Mapped[Optional[datetime]] = mapped_column("processedAt")
-    retention_days: Mapped[int] = mapped_column("retentionDays", primary_key=True)
+    retention_days: Mapped[int] = mapped_column("retentionDays", primary_key=True, default=30, server_default=text("30"))
     """Retention class in days: the LIST partition key, stamped at ingest from the org's plan and encoded in the id."""
 
     __table_args__ = (

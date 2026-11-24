@@ -44,6 +44,7 @@ class PlatformOAuthClient extends Model
 
     protected $casts = [
         'permissions' => 'integer',
+        'redirectUris' => AsPrismaList::class,
         'organizationId' => 'integer',
         'areEmailsEnabled' => 'boolean',
         'areDefaultEventTypesEnabled' => 'boolean',

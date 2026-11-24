@@ -6,7 +6,7 @@ defmodule Papermark.CustomFieldResponse do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           view: Papermark.View.t() | nil
@@ -14,7 +14,7 @@ defmodule Papermark.CustomFieldResponse do
 
   schema "CustomFieldResponse" do
     field(:id, :string, primary_key: true)
-    field(:data, :map)
+    field(:data, Papermark.PrismaJson)
     field(:view_id, :string, source: :viewId)
     belongs_to(:view, Papermark.View, foreign_key: :view_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

@@ -23,4 +23,8 @@ class LiteLLMUserNotifications extends Model
         'justification',
         'status',
     ];
+
+    protected $casts = [
+        'models' => AsPrismaList::class,
+    ];
 }

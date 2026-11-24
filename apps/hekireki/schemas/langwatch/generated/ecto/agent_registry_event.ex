@@ -17,7 +17,7 @@ defmodule LangWatch.AgentRegistryEvent do
           entry_id: String.t(),
           from_version: integer() | nil,
           to_version: integer() | nil,
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           occurred_at: DateTime.t(),
           delivery_recorded_at: DateTime.t() | nil
         }
@@ -30,7 +30,7 @@ defmodule LangWatch.AgentRegistryEvent do
     field(:entry_id, :string, source: :entryId)
     field(:from_version, :integer, source: :fromVersion)
     field(:to_version, :integer, source: :toVersion)
-    field(:payload, :map)
+    field(:payload, LangWatch.PrismaJson)
     field(:occurred_at, LangWatch.PrismaDateTime, source: :occurredAt)
     field(:delivery_recorded_at, LangWatch.PrismaDateTime, source: :deliveryRecordedAt)
   end

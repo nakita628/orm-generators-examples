@@ -1,5 +1,6 @@
 class SetVariableHistoryItem < ApplicationRecord
   self.table_name = "SetVariableHistoryItem"
+  self.primary_key = %w[resultId index]
 
   validates :index, presence: true, uniqueness: { scope: :resultId }
   validates :variableId, presence: true

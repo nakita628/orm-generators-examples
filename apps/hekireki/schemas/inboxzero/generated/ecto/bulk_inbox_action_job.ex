@@ -7,7 +7,7 @@ defmodule InboxZero.BulkInboxActionJob do
   @type t :: %__MODULE__{
           id: String.t(),
           status: atom(),
-          search: map(),
+          search: map() | list() | String.t() | number() | boolean(),
           action: String.t(),
           label_id: String.t() | nil,
           label_name: String.t() | nil,
@@ -36,7 +36,7 @@ defmodule InboxZero.BulkInboxActionJob do
   schema "BulkInboxActionJob" do
     field(:id, :string, primary_key: true)
     field(:status, Ecto.Enum, values: [:RUNNING, :COMPLETED, :FAILED, :CANCELLED], default: :RUNNING)
-    field(:search, :map)
+    field(:search, InboxZero.PrismaJson)
     field(:action, :string)
     field(:label_id, :string, source: :labelId)
     field(:label_name, :string, source: :labelName)

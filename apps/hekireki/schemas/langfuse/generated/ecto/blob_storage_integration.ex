@@ -5,6 +5,7 @@ defmodule Langfuse.BlobStorageIntegration do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          project_id: String.t(),
           type: atom(),
           bucket_name: String.t(),
           prefix: String.t(),
@@ -26,7 +27,7 @@ defmodule Langfuse.BlobStorageIntegration do
           export_source: atom(),
           export_field_groups: [String.t()],
           compressed: boolean(),
-          export_tuning: map() | nil,
+          export_tuning: map() | list() | String.t() | number() | boolean() | nil,
           run_started_at: DateTime.t() | nil,
           backfill: boolean(),
           last_error: String.t() | nil,
@@ -59,13 +60,14 @@ defmodule Langfuse.BlobStorageIntegration do
     field(:export_source, Ecto.Enum, values: [:TRACES_OBSERVATIONS, :TRACES_OBSERVATIONS_EVENTS, :EVENTS], default: :TRACES_OBSERVATIONS)
     field(:export_field_groups, {:array, :string})
     field(:compressed, :boolean, default: true)
-    field(:export_tuning, :map)
+    field(:export_tuning, Langfuse.PrismaJson)
     field(:run_started_at, Langfuse.PrismaDateTime)
     field(:backfill, :boolean, default: true)
     field(:last_error, :string)
     field(:last_error_at, Langfuse.PrismaDateTime)
     field(:last_failure_notification_sent_at, Langfuse.PrismaDateTime)
-    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
+    field(:project_id, :string, primary_key: true)
+    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :created_at)
   end
 end

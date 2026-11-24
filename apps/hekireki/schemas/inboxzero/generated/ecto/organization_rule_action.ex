@@ -16,7 +16,7 @@ defmodule InboxZero.OrganizationRuleAction do
           url: String.t() | nil,
           folder_name: String.t() | nil,
           delay_in_minutes: integer() | nil,
-          static_attachments: map() | nil,
+          static_attachments: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization_rule: InboxZero.OrganizationRule.t() | nil
@@ -34,7 +34,7 @@ defmodule InboxZero.OrganizationRuleAction do
     field(:url, :string)
     field(:folder_name, :string, source: :folderName)
     field(:delay_in_minutes, :integer, source: :delayInMinutes)
-    field(:static_attachments, :map, source: :staticAttachments)
+    field(:static_attachments, InboxZero.PrismaJson, source: :staticAttachments)
     field(:organization_rule_id, :string, source: :organizationRuleId)
     belongs_to(:organization_rule, InboxZero.OrganizationRule, foreign_key: :organization_rule_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

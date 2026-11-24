@@ -29,6 +29,7 @@ class Credential extends Model
 
     protected $casts = [
         'type' => CredentialType::class,
+        'scopes' => AsPrismaList::class,
         'expires_at' => 'datetime',
     ];
 

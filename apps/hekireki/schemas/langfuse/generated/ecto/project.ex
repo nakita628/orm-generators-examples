@@ -10,7 +10,7 @@ defmodule Langfuse.Project do
           name: String.t(),
           retention_days: integer() | nil,
           has_traces: boolean(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           home_dashboard: Langfuse.Dashboard.t() | nil,
@@ -83,7 +83,7 @@ defmodule Langfuse.Project do
     field(:name, :string)
     field(:retention_days, :integer)
     field(:has_traces, :boolean, default: false)
-    field(:metadata, :map)
+    field(:metadata, Langfuse.PrismaJson)
     belongs_to(:home_dashboard, Langfuse.Dashboard, foreign_key: :home_dashboard_id, type: :string)
     belongs_to(:organization, Langfuse.Organization, foreign_key: :org_id, type: :string)
     has_one(:tracing_readiness_settings, Langfuse.TracingReadinessSettings, foreign_key: :project_id, references: :id)

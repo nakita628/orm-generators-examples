@@ -15,19 +15,19 @@ defmodule Trigger.Organization do
           maximum_deployed_queue_size: integer() | nil,
           deleted_at: DateTime.t() | nil,
           company_size: String.t() | nil,
-          onboarding_data: map() | nil,
-          avatar: map() | nil,
+          onboarding_data: map() | list() | String.t() | number() | boolean() | nil,
+          avatar: map() | list() | String.t() | number() | boolean() | nil,
           runs_enabled: boolean(),
           is_activated: boolean(),
           v2_enabled: boolean(),
           v2_marqs_enabled: boolean(),
           has_requested_v3: boolean(),
-          api_rate_limiter_config: map() | nil,
-          realtime_rate_limiter_config: map() | nil,
-          batch_rate_limit_config: map() | nil,
-          batch_queue_concurrency_config: map() | nil,
-          webhook_limits_config: map() | nil,
-          feature_flags: map() | nil,
+          api_rate_limiter_config: map() | list() | String.t() | number() | boolean() | nil,
+          realtime_rate_limiter_config: map() | list() | String.t() | number() | boolean() | nil,
+          batch_rate_limit_config: map() | list() | String.t() | number() | boolean() | nil,
+          batch_queue_concurrency_config: map() | list() | String.t() | number() | boolean() | nil,
+          webhook_limits_config: map() | list() | String.t() | number() | boolean() | nil,
+          feature_flags: map() | list() | String.t() | number() | boolean() | nil,
           maximum_project_count: integer(),
           max_session_duration: integer() | nil,
           stream_basin_name: String.t() | nil,
@@ -65,8 +65,8 @@ defmodule Trigger.Organization do
     field(:maximum_deployed_queue_size, :integer, source: :maximumDeployedQueueSize)
     field(:deleted_at, Trigger.PrismaDateTime, source: :deletedAt)
     field(:company_size, :string, source: :companySize)
-    field(:onboarding_data, :map, source: :onboardingData)
-    field(:avatar, :map)
+    field(:onboarding_data, Trigger.PrismaJson, source: :onboardingData)
+    field(:avatar, Trigger.PrismaJson)
     field(:runs_enabled, :boolean, default: true, source: :runsEnabled)
     field(:is_activated, :boolean, default: false, source: :v3Enabled)
     # @deprecated
@@ -75,13 +75,13 @@ defmodule Trigger.Organization do
     field(:v2_marqs_enabled, :boolean, default: false, source: :v2MarqsEnabled)
     # @deprecated
     field(:has_requested_v3, :boolean, default: false, source: :hasRequestedV3)
-    field(:api_rate_limiter_config, :map, source: :apiRateLimiterConfig)
-    field(:realtime_rate_limiter_config, :map, source: :realtimeRateLimiterConfig)
-    field(:batch_rate_limit_config, :map, source: :batchRateLimitConfig)
-    field(:batch_queue_concurrency_config, :map, source: :batchQueueConcurrencyConfig)
+    field(:api_rate_limiter_config, Trigger.PrismaJson, source: :apiRateLimiterConfig)
+    field(:realtime_rate_limiter_config, Trigger.PrismaJson, source: :realtimeRateLimiterConfig)
+    field(:batch_rate_limit_config, Trigger.PrismaJson, source: :batchRateLimitConfig)
+    field(:batch_queue_concurrency_config, Trigger.PrismaJson, source: :batchQueueConcurrencyConfig)
     # Webhook limits from the org's plan or the back office: { maxWaitersPerEnvironment, maxWaitersPerEndpoint, concurrency }. Null uses the env defaults.
-    field(:webhook_limits_config, :map, source: :webhookLimitsConfig)
-    field(:feature_flags, :map, source: :featureFlags)
+    field(:webhook_limits_config, Trigger.PrismaJson, source: :webhookLimitsConfig)
+    field(:feature_flags, Trigger.PrismaJson, source: :featureFlags)
     field(:maximum_project_count, :integer, default: 25, source: :maximumProjectCount)
     # Maximum session lifetime in seconds for members of this organization.
     # When set, caps each member's User.sessionDuration. The most restrictive cap across

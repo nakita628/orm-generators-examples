@@ -6,14 +6,14 @@ defmodule LiteLLM.LiteLLMConfigOverrides do
 
   @type t :: %__MODULE__{
           config_type: String.t(),
-          config_value: map(),
+          config_value: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
 
   schema "LiteLLM_ConfigOverrides" do
     field(:config_type, :string, primary_key: true)
-    field(:config_value, :map)
+    field(:config_value, LiteLLM.PrismaJson)
     timestamps(inserted_at_source: :created_at)
   end
 end

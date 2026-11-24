@@ -11,7 +11,7 @@ defmodule Calcom.Payment do
           currency: String.t(),
           success: boolean(),
           refunded: boolean(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           external_id: String.t(),
           payment_option: atom() | nil,
           app: Calcom.App.t() | nil,
@@ -25,7 +25,7 @@ defmodule Calcom.Payment do
     field(:currency, :string)
     field(:success, :boolean)
     field(:refunded, :boolean)
-    field(:data, :map)
+    field(:data, Calcom.PrismaJson)
     field(:external_id, :string, source: :externalId)
     field(:payment_option, Ecto.Enum, values: [:ON_BOOKING, :HOLD], default: :ON_BOOKING, source: :paymentOption)
     field(:app_id, :string, source: :appId)

@@ -41,6 +41,7 @@ class OrganisationAuthenticationPortal extends Model
         'enabled' => 'boolean',
         'defaultOrganisationRole' => OrganisationMemberRole::class,
         'autoProvisionUsers' => 'boolean',
+        'allowedDomains' => AsPrismaList::class,
         'allowPersonalOrganisations' => 'boolean',
     ];
 

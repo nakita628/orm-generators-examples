@@ -8,9 +8,9 @@ defmodule Langfuse.DatasetItem do
           id: String.t(),
           project_id: String.t(),
           status: atom() | nil,
-          input: map() | nil,
-          expected_output: map() | nil,
-          metadata: map() | nil,
+          input: map() | list() | String.t() | number() | boolean() | nil,
+          expected_output: map() | list() | String.t() | number() | boolean() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           source_trace_id: String.t() | nil,
           source_observation_id: String.t() | nil,
           dataset_id: String.t(),
@@ -25,9 +25,9 @@ defmodule Langfuse.DatasetItem do
     field(:id, :string, primary_key: true)
     field(:project_id, :string, primary_key: true)
     field(:status, Ecto.Enum, values: [:ACTIVE, :ARCHIVED], default: :ACTIVE)
-    field(:input, :map)
-    field(:expected_output, :map)
-    field(:metadata, :map)
+    field(:input, Langfuse.PrismaJson)
+    field(:expected_output, Langfuse.PrismaJson)
+    field(:metadata, Langfuse.PrismaJson)
     field(:source_trace_id, :string)
     field(:source_observation_id, :string)
     field(:dataset_id, :string)

@@ -9,7 +9,7 @@ defmodule Papermark.Viewer do
           email: String.t(),
           verified: boolean(),
           invited_at: DateTime.t() | nil,
-          notification_preferences: map() | nil,
+          notification_preferences: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           dataroom: Papermark.Dataroom.t() | nil,
@@ -32,7 +32,7 @@ defmodule Papermark.Viewer do
     field(:email, :string)
     field(:verified, :boolean, default: false)
     field(:invited_at, Papermark.PrismaDateTime, source: :invitedAt)
-    field(:notification_preferences, :map, source: :notificationPreferences)
+    field(:notification_preferences, Papermark.PrismaJson, source: :notificationPreferences)
     field(:dataroom_id, :string, source: :dataroomId)
     field(:team_id, :string, source: :teamId)
     belongs_to(:dataroom, Papermark.Dataroom, foreign_key: :dataroom_id, define_field: false, type: :string)

@@ -2,15 +2,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
+using Npgsql.Internal;
+using Npgsql.Internal.Postgres;
 using Visus.Cuid;
 
 namespace Formbricks.Models;
@@ -224,6 +228,20 @@ public partial class FormbricksContext : DbContext
         npgsql.MapEnum<WorkflowStatus>("WorkflowStatus");
         npgsql.MapEnum<WorkflowRunStatus>("WorkflowRunStatus");
         npgsql.MapEnum<WorkflowRunLogStatus>("WorkflowRunLogStatus");
+        // Reads a numeric of more than 28 decimal places, such as numeric(65,30), into a decimal.
+        // An NpgsqlDataSource passed to UseNpgsql is given the converter by the other MapEnums.
+        foreach (var extension in ((IRelationalDbContextOptionsBuilderInfrastructure)npgsql).OptionsBuilder.Options.Extensions)
+        {
+            if (extension is RelationalOptionsExtension { ConnectionString: not null })
+            {
+                npgsql.ConfigureDataSource(dataSource =>
+                {
+#pragma warning disable NPG9001
+                    dataSource.AddTypeInfoResolverFactory(new WideNumericResolverFactory());
+#pragma warning restore NPG9001
+                });
+            }
+        }
     }
 
     public static void MapEnums(NpgsqlDataSourceBuilder dataSource)
@@ -276,6 +294,10 @@ public partial class FormbricksContext : DbContext
         dataSource.MapEnum<WorkflowStatus>("WorkflowStatus");
         dataSource.MapEnum<WorkflowRunStatus>("WorkflowRunStatus");
         dataSource.MapEnum<WorkflowRunLogStatus>("WorkflowRunLogStatus");
+        // Reads a numeric of more than 28 decimal places, such as numeric(65,30), into a decimal.
+#pragma warning disable NPG9001
+        dataSource.AddTypeInfoResolverFactory(new WideNumericResolverFactory());
+#pragma warning restore NPG9001
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
@@ -4382,3 +4404,123 @@ file sealed class UtcClockConverter : ValueConverter<DateTime, DateTime>
     {
     }
 }
+
+#pragma warning disable NPG9001
+file sealed class WideNumericResolverFactory : PgTypeInfoResolverFactory
+{
+    public override IPgTypeInfoResolver CreateResolver() => new Resolver(false);
+
+    public override IPgTypeInfoResolver CreateArrayResolver() => new Resolver(true);
+
+    private sealed class Resolver : IPgTypeInfoResolver
+    {
+        private readonly TypeInfoMappingCollection _mappings = new();
+
+        public Resolver(bool arrays)
+        {
+            _mappings.AddStructType<decimal>("pg_catalog.numeric", static (options, mapping, _) => mapping.CreateInfo(options, new WideNumericConverter()), isDefault: true);
+            if (arrays)
+            {
+                _mappings.AddStructArrayType<decimal>("pg_catalog.numeric");
+            }
+        }
+
+        public PgTypeInfo? GetTypeInfo(Type? type, DataTypeName? dataTypeName, PgSerializerOptions options) => _mappings.Find(type, dataTypeName, options);
+    }
+}
+
+file sealed class WideNumericConverter : PgBufferedConverter<decimal>
+{
+    // The largest 96-bit integer, which is what a decimal holds its digits in.
+    private static readonly BigInteger MaxMantissa = (BigInteger.One << 96) - 1;
+
+    public override bool CanConvert(DataFormat format, out BufferRequirements bufferRequirements)
+    {
+        bufferRequirements = BufferRequirements.Value;
+        return format is DataFormat.Binary;
+    }
+
+    public override Size GetSize(SizeContext context, decimal value, ref object? writeState) => 8 + (2 * Digits(value, out _).Count);
+
+    // A numeric on the wire: the number of base-10000 digits, the weight of the first of them, the
+    // sign, the number of decimal places the value is shown with, and the digits.
+    protected override decimal ReadCore(PgReader reader)
+    {
+        var count = reader.ReadInt16();
+        var weight = reader.ReadInt16();
+        var sign = reader.ReadUInt16();
+        var scale = Math.Min((int)reader.ReadInt16(), 28);
+        if (sign is not (0x0000 or 0x4000))
+        {
+            throw new InvalidCastException("Numeric NaN and Infinity are not supported by System.Decimal");
+        }
+
+        var mantissa = BigInteger.Zero;
+        for (var i = 0; i < count; i++)
+        {
+            mantissa = (mantissa * 10000) + reader.ReadInt16();
+        }
+
+        // The value as an integer of that many decimal places, rounded half up where it has more.
+        var shift = ((weight + 1 - count) * 4) + scale;
+        mantissa = shift >= 0 ? mantissa * BigInteger.Pow(10, shift) : Rounded(mantissa, BigInteger.Pow(10, -shift));
+        while (mantissa > MaxMantissa && scale > 0)
+        {
+            mantissa = Rounded(mantissa, 10);
+            scale--;
+        }
+
+        if (mantissa > MaxMantissa)
+        {
+            throw new OverflowException("Numeric value does not fit in a System.Decimal");
+        }
+
+        return new decimal((int)(uint)(mantissa & uint.MaxValue), (int)(uint)((mantissa >> 32) & uint.MaxValue), (int)(uint)(mantissa >> 64), sign == 0x4000, (byte)scale);
+    }
+
+    protected override void WriteCore(PgWriter writer, decimal value)
+    {
+        var digits = Digits(value, out var weight);
+        writer.WriteInt16((short)digits.Count);
+        writer.WriteInt16(weight);
+        writer.WriteInt16((short)(value < 0 ? 0x4000 : 0x0000));
+        writer.WriteInt16((short)value.Scale);
+        foreach (var digit in digits)
+        {
+            writer.WriteInt16(digit);
+        }
+    }
+
+    private static BigInteger Rounded(BigInteger value, BigInteger divisor)
+    {
+        var quotient = BigInteger.DivRem(value, divisor, out var remainder);
+        return remainder * 2 >= divisor ? quotient + 1 : quotient;
+    }
+
+    // The base-10000 digits of a decimal, the first one first, without the zeros that end them.
+    private static List<short> Digits(decimal value, out short weight)
+    {
+        Span<int> bits = stackalloc int[4];
+        decimal.GetBits(value, bits);
+        var padding = (4 - (value.Scale % 4)) % 4;
+        var mantissa = ((((BigInteger)(uint)bits[2]) << 64) | (((BigInteger)(uint)bits[1]) << 32) | (uint)bits[0]) * BigInteger.Pow(10, padding);
+        var digits = new List<short>();
+        while (!mantissa.IsZero)
+        {
+            mantissa = BigInteger.DivRem(mantissa, 10000, out var digit);
+            digits.Add((short)digit);
+        }
+
+        weight = (short)(digits.Count == 0 ? 0 : digits.Count - ((value.Scale + padding) / 4) - 1);
+        var zeros = 0;
+        while (zeros < digits.Count && digits[zeros] == 0)
+        {
+            zeros++;
+        }
+
+        digits.RemoveRange(0, zeros);
+        digits.Reverse();
+        return digits;
+    }
+}
+#pragma warning restore NPG9001

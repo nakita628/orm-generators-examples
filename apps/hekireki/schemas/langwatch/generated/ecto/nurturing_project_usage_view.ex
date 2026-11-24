@@ -12,7 +12,7 @@ defmodule LangWatch.NurturingProjectUsageView do
   @type t :: %__MODULE__{
           project_id: String.t(),
           owner: String.t(),
-          folded: map(),
+          folded: map() | list() | String.t() | number() | boolean(),
           applied_event_ids: [String.t()],
           projection_version: String.t(),
           updated_at: DateTime.t()
@@ -24,7 +24,7 @@ defmodule LangWatch.NurturingProjectUsageView do
     # or `evaluation`: the project's evaluation days, written by a subscriber, at most once a day.
     field(:owner, :string, primary_key: true)
     # The project's usage as the fold folded it (NurturingProjectUsageState).
-    field(:folded, :map)
+    field(:folded, LangWatch.PrismaJson)
     # The event ids of the last delivery folded in, so a redelivery folds once.
     field(:applied_event_ids, {:array, :string}, source: :appliedEventIds)
     # A row of another version reads as undecodable and is re-folded from the log.

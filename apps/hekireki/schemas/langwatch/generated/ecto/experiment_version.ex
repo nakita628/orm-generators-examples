@@ -15,7 +15,7 @@ defmodule LangWatch.ExperimentVersion do
           author_id: String.t() | nil,
           author_label: String.t(),
           run_id: String.t() | nil,
-          state: map(),
+          state: map() | list() | String.t() | number() | boolean(),
           schema_version: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -48,7 +48,7 @@ defmodule LangWatch.ExperimentVersion do
     # over their own unsaved edits. Named here, the page adopts the version and
     # carries on.
     field(:run_id, :string, source: :runId)
-    field(:state, :map)
+    field(:state, LangWatch.PrismaJson)
     # Schema version of `state`, so a later shape change can be read forward.
     field(:schema_version, :string, default: "1", source: :schemaVersion)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

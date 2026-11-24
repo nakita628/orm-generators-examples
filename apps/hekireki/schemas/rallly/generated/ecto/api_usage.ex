@@ -5,7 +5,7 @@ defmodule Rallly.ApiUsage do
   @timestamps_opts [type: Rallly.PrismaDateTime, autogenerate: {Rallly.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          space_id: Ecto.UUID.t(),
+          space_id: String.t(),
           resource: atom(),
           period: Date.t(),
           count: integer(),
@@ -21,8 +21,8 @@ defmodule Rallly.ApiUsage do
     field(:count, :integer, default: 0)
     field(:near_limit_warned_at, Rallly.PrismaDateTime)
     field(:at_limit_warned_at, Rallly.PrismaDateTime)
-    field(:space_id, :binary_id, primary_key: true)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, define_field: false, type: :binary_id)
+    field(:space_id, :string, primary_key: true)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, define_field: false, type: :string)
     timestamps(inserted_at: false)
   end
 end

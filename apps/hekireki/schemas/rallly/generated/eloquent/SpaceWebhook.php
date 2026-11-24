@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property string $secret AES-256-GCM under SECRET_PASSWORD (see @rallly/utils/encryption); the plaintext is shown once at creation
- * @property mixed $events Subscribed event names (`poll.closed`, ...); validated by the feature schema, not a DB enum, so the vocabulary grows without migrations
+ * @property list<string> $events Subscribed event names (`poll.closed`, ...); validated by the feature schema, not a DB enum, so the vocabulary grows without migrations
  * @property string $version The payload contract this endpoint was built against (WEBHOOK_VERSION at creation). No default: a writer that forgets it fails instead of recording a stale contract. A breaking payload change branches on this so existing endpoints keep their shape
  * @property \Carbon\CarbonInterface $cursor Fan-out position in the poll activity log: activities created after this instant are still to be delivered. Starts at creation so a new endpoint never replays history
  * @property int $consecutive_failures Exhausted deliveries in a row; reset by any success. The dispatcher disables the endpoint once it reaches its cap
@@ -43,6 +43,7 @@ class SpaceWebhook extends Model
     ];
 
     protected $casts = [
+        'events' => AsPrismaList::class,
         'enabled' => 'boolean',
         'cursor' => 'datetime',
         'last_delivered_at' => 'datetime',

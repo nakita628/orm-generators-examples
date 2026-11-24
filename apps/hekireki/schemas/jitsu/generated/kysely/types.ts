@@ -261,7 +261,7 @@ export interface reverse_sync_control {
   workspace_id: string
   sync_id: string
   run_id: string
-  run_order: Generated<bigint>
+  run_order: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   detached: Generated<boolean>
   revision: string
   target_hash: string
@@ -269,10 +269,12 @@ export interface reverse_sync_control {
   mode: reverse_sync_mode
   extraction: reverse_sync_extraction
   artifact_head: Buffer | null
-  base_sequence: Generated<bigint>
-  next_sequence: Generated<bigint>
-  checkpoint_sequence: Generated<bigint>
-  finish_sequence: bigint | null
+  base_sequence: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  next_sequence: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  checkpoint_sequence: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  finish_sequence: ColumnType<string, bigint | number | string, bigint | number | string> | null
   store: Buffer | null
   provider_state: Buffer | null
   finish_result: Buffer | null
@@ -368,7 +370,7 @@ export interface ProfileBuilderState2 {
 }
 
 export interface StatusChange {
-  id: Generated<bigint>
+  id: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   workspaceId: string
   actorId: string
   type: string
@@ -392,7 +394,7 @@ export interface NotificationState {
   flappingSince: Timestamp | null
   /** @zod.custom(z.coerce.date()) */
   lastNotification: Timestamp
-  statusChangeId: bigint
+  statusChangeId: ColumnType<string, bigint | number | string, bigint | number | string>
   error: string | null
 }
 
@@ -403,7 +405,7 @@ export interface Notification {
   type: string
   tableName: string
   channelId: string
-  statusChangeId: bigint
+  statusChangeId: ColumnType<string, bigint | number | string, bigint | number | string>
   /** @zod.custom(z.coerce.date()) */
   timestamp: Generated<Timestamp>
   status: string
@@ -469,16 +471,44 @@ export interface reprocessing_workers {
   updated_at: Generated<Timestamp>
   completed_at: Timestamp | null
   current_file: string | null
-  current_line: Generated<bigint | null>
+  current_line: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
   current_ts: string | null
   assigned_files: Generated<number | null>
   processed_files: Generated<number | null>
-  total_lines: Generated<bigint | null>
-  success_count: Generated<bigint | null>
-  error_count: Generated<bigint | null>
-  skipped_count: Generated<bigint | null>
-  total_bytes: Generated<bigint | null>
-  processed_bytes: Generated<bigint | null>
+  total_lines: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
+  success_count: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
+  error_count: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
+  skipped_count: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
+  total_bytes: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
+  processed_bytes: Generated<ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null>
   error: string | null
 }
 

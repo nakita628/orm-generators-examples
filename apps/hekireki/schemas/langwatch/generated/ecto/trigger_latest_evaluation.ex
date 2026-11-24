@@ -5,6 +5,7 @@ defmodule LangWatch.TriggerLatestEvaluation do
   @timestamps_opts [type: LangWatch.PrismaDateTime, autogenerate: {LangWatch.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          trigger_id: String.t(),
           project_id: String.t(),
           evaluated_at: DateTime.t(),
           verdict: String.t(),
@@ -26,7 +27,7 @@ defmodule LangWatch.TriggerLatestEvaluation do
     field(:operator, :string)
     field(:time_period_minutes, :integer, source: :timePeriodMinutes)
     field(:skip_code, :string, source: :skipCode)
-    field(:trigger_id, :string, source: :triggerId)
+    field(:trigger_id, :string, primary_key: true, source: :triggerId)
     belongs_to(:trigger, LangWatch.Trigger, foreign_key: :trigger_id, define_field: false, type: :string)
     timestamps(inserted_at: false, updated_at_source: :updatedAt)
   end

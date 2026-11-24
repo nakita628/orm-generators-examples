@@ -7,14 +7,14 @@ defmodule Postiz.MastraDatasets do
           id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          metadata: map() | nil,
-          input_schema: map() | nil,
-          ground_truth_schema: map() | nil,
-          request_context_schema: map() | nil,
-          tags: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
+          input_schema: map() | list() | String.t() | number() | boolean() | nil,
+          ground_truth_schema: map() | list() | String.t() | number() | boolean() | nil,
+          request_context_schema: map() | list() | String.t() | number() | boolean() | nil,
+          tags: map() | list() | String.t() | number() | boolean() | nil,
           target_type: String.t() | nil,
-          target_ids: map() | nil,
-          scorer_ids: map() | nil,
+          target_ids: map() | list() | String.t() | number() | boolean() | nil,
+          scorer_ids: map() | list() | String.t() | number() | boolean() | nil,
           version: integer(),
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -30,14 +30,14 @@ defmodule Postiz.MastraDatasets do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:metadata, :map)
-    field(:input_schema, :map, source: :inputSchema)
-    field(:ground_truth_schema, :map, source: :groundTruthSchema)
-    field(:request_context_schema, :map, source: :requestContextSchema)
-    field(:tags, :map)
+    field(:metadata, Postiz.PrismaJson)
+    field(:input_schema, Postiz.PrismaJson, source: :inputSchema)
+    field(:ground_truth_schema, Postiz.PrismaJson, source: :groundTruthSchema)
+    field(:request_context_schema, Postiz.PrismaJson, source: :requestContextSchema)
+    field(:tags, Postiz.PrismaJson)
     field(:target_type, :string, source: :targetType)
-    field(:target_ids, :map, source: :targetIds)
-    field(:scorer_ids, :map, source: :scorerIds)
+    field(:target_ids, Postiz.PrismaJson, source: :targetIds)
+    field(:scorer_ids, Postiz.PrismaJson, source: :scorerIds)
     field(:version, :integer)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:updated_at, Postiz.PrismaDateTime, source: :updatedAt)

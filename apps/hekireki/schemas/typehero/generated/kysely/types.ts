@@ -130,7 +130,7 @@ export interface Vote {
 export interface SharedSolution {
   id: Generated<number>
   createdAt: Generated<Timestamp>
-  isPinned: Generated<boolean>
+  isPinned: Generated<ColumnType<number, boolean | number, boolean | number>>
   title: string
   description: string
   userId: string | null
@@ -142,7 +142,7 @@ export interface Submission {
   id: Generated<number>
   code: string
   createdAt: Generated<Timestamp>
-  isSuccessful: boolean
+  isSuccessful: ColumnType<number, boolean | number, boolean | number>
   userId: string
   challengeId: number
 }
@@ -178,7 +178,7 @@ export interface Report {
 export interface Comment {
   id: Generated<number>
   text: string
-  visible: Generated<boolean>
+  visible: Generated<ColumnType<number, boolean | number, boolean | number>>
   parentId: number | null
   userId: string
   rootType: Generated<CommentRoot>
@@ -212,9 +212,9 @@ export interface Track {
   slug: string
   description: string
   /** determines if a track can be seen on tracks page */
-  visible: Generated<boolean>
+  visible: Generated<ColumnType<number, boolean | number, boolean | number>>
   /** use this to display coming soon UI */
-  isComingSoon: Generated<boolean>
+  isComingSoon: Generated<ColumnType<number, boolean | number, boolean | number>>
 }
 
 export interface BetaTokens {
@@ -235,7 +235,7 @@ export interface Notification {
   id: Generated<number>
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
-  isRead: Generated<boolean>
+  isRead: Generated<ColumnType<number, boolean | number, boolean | number>>
   type: NotificationType
   toUserId: string
   fromUserId: string

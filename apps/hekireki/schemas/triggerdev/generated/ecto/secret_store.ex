@@ -6,7 +6,7 @@ defmodule Trigger.SecretStore do
 
   @type t :: %__MODULE__{
           key: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           version: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -14,7 +14,7 @@ defmodule Trigger.SecretStore do
 
   schema "SecretStore" do
     field(:key, :string, primary_key: true)
-    field(:value, :map)
+    field(:value, Trigger.PrismaJson)
     field(:version, :string, default: "1")
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

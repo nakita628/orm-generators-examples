@@ -16,7 +16,7 @@ defmodule Formbricks.Integration do
   @type t :: %__MODULE__{
           id: String.t(),
           type: atom(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           workspace: Formbricks.Workspace.t() | nil
         }
 
@@ -24,7 +24,7 @@ defmodule Formbricks.Integration do
     field(:id, :string, primary_key: true)
     field(:type, Ecto.Enum, values: [:googleSheets, :notion, :airtable, :slack])
     # [IntegrationConfig]
-    field(:config, :map)
+    field(:config, Formbricks.PrismaJson)
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:workspace, Formbricks.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
   end

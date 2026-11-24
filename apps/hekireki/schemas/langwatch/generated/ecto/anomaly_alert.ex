@@ -26,9 +26,9 @@ defmodule LangWatch.AnomalyAlert do
           trigger_window_end: DateTime.t(),
           trigger_spend_usd: Decimal.t() | nil,
           trigger_event_count: integer() | nil,
-          detail: map(),
+          detail: map() | list() | String.t() | number() | boolean(),
           state: String.t(),
-          destination_status: map(),
+          destination_status: map() | list() | String.t() | number() | boolean(),
           detected_at: DateTime.t(),
           acknowledged_at: DateTime.t() | nil,
           resolved_at: DateTime.t() | nil,
@@ -51,13 +51,13 @@ defmodule LangWatch.AnomalyAlert do
     field(:trigger_event_count, :integer, source: :triggerEventCount)
     # Per-rule-type extra context: {topActors: [...], baseline: ...,
     # observed: ..., timezone: ..., etc}.
-    field(:detail, :map, default: %{})
+    field(:detail, LangWatch.PrismaJson, default: %{})
     # 'open' | 'acknowledged' | 'resolved'.
     field(:state, :string, default: "open")
     # Per-destination dispatch outcome:
     # { webhook: { lastAttemptIso, lastError?, attemptCount, statusCode? },
     # slack: ..., pagerduty: ..., siem: ..., email: ... }
-    field(:destination_status, :map, default: %{}, source: :destinationStatus)
+    field(:destination_status, LangWatch.PrismaJson, default: %{}, source: :destinationStatus)
     field(:detected_at, LangWatch.PrismaDateTime, autogenerate: true, source: :detectedAt)
     field(:acknowledged_at, LangWatch.PrismaDateTime, source: :acknowledgedAt)
     field(:resolved_at, LangWatch.PrismaDateTime, source: :resolvedAt)

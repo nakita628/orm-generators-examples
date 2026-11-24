@@ -7,14 +7,14 @@ defmodule Blinko.Cache do
   @type t :: %__MODULE__{
           id: integer(),
           key: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
 
   schema "cache" do
     field(:key, :string)
-    field(:value, :map)
+    field(:value, Blinko.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

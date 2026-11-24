@@ -33,6 +33,7 @@ class ViewerGroup extends Model
     ];
 
     protected $casts = [
+        'domains' => AsPrismaList::class,
         'allowAll' => 'boolean',
     ];
 

@@ -11,13 +11,13 @@ defmodule Langfuse.BatchAction do
           table_name: String.t(),
           status: String.t(),
           finished_at: DateTime.t() | nil,
-          query: map(),
-          config: map() | nil,
+          query: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean() | nil,
           total_count: integer() | nil,
           processed_count: integer() | nil,
           failed_count: integer() | nil,
           log: String.t() | nil,
-          cursor: map() | nil,
+          cursor: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil
@@ -30,13 +30,13 @@ defmodule Langfuse.BatchAction do
     field(:table_name, :string)
     field(:status, :string)
     field(:finished_at, Langfuse.PrismaDateTime)
-    field(:query, :map)
-    field(:config, :map)
+    field(:query, Langfuse.PrismaJson)
+    field(:config, Langfuse.PrismaJson)
     field(:total_count, :integer)
     field(:processed_count, :integer)
     field(:failed_count, :integer)
     field(:log, :string)
-    field(:cursor, :map)
+    field(:cursor, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end

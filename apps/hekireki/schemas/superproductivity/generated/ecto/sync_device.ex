@@ -4,7 +4,7 @@ defmodule SuperProductivity.SyncDevice do
   @primary_key false
 
   @type t :: %__MODULE__{
-          user_id: term(),
+          user_id: integer(),
           client_id: String.t(),
           device_name: String.t() | nil,
           user_agent: String.t() | nil,

@@ -10,8 +10,8 @@ pub struct Model {
     #[sea_orm(unique)]
     pub id: String,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "reportId", column_type = "Uuid")]
-    pub report_id: String,
+    #[sea_orm(column_name = "reportId")]
+    pub report_id: Uuid,
     #[sea_orm(column_name = "organizationId")]
     pub organization_id: String,
     #[sea_orm(column_name = "projectId")]

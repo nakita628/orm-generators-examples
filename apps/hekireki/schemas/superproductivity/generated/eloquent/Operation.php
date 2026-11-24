@@ -44,6 +44,7 @@ class Operation extends Model
     protected $casts = [
         'user_id' => 'integer',
         'server_seq' => 'integer',
+        'entity_ids' => AsPrismaList::class,
         'payload' => 'array',
         'payload_bytes' => 'integer',
         'vector_clock' => 'array',

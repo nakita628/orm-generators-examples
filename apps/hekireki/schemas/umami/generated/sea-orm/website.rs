@@ -7,20 +7,17 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "website")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "website_id", column_type = "Uuid")]
-    pub id: String,
+    #[sea_orm(column_name = "website_id")]
+    pub id: Uuid,
     #[sea_orm(column_type = "String(StringLen::N(100))")]
     pub name: String,
     #[sea_orm(column_type = "String(StringLen::N(500))")]
     pub domain: Option<String>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub reset_at: Option<DateTimeWithTimeZone>,
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: Option<String>,
-    #[sea_orm(column_type = "Uuid")]
-    pub team_id: Option<String>,
-    #[sea_orm(column_type = "Uuid")]
-    pub created_by: Option<String>,
+    pub user_id: Option<Uuid>,
+    pub team_id: Option<Uuid>,
+    pub created_by: Option<Uuid>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub created_at: Option<DateTimeWithTimeZone>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]

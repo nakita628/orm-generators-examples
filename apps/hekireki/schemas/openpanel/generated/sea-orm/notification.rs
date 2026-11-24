@@ -7,8 +7,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "notifications")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(column_name = "projectId")]
     pub project_id: String,
     pub title: String,
@@ -23,10 +22,10 @@ pub struct Model {
     pub send_to_app: bool,
     #[sea_orm(column_name = "sendToEmail", default_value = false)]
     pub send_to_email: bool,
-    #[sea_orm(column_name = "integrationId", column_type = "Uuid")]
-    pub integration_id: Option<String>,
-    #[sea_orm(column_name = "notificationRuleId", column_type = "Uuid")]
-    pub notification_rule_id: Option<String>,
+    #[sea_orm(column_name = "integrationId")]
+    pub integration_id: Option<Uuid>,
+    #[sea_orm(column_name = "notificationRuleId")]
+    pub notification_rule_id: Option<Uuid>,
     /// [IPrismaNotificationPayload]
     pub payload: Option<Json>,
 }

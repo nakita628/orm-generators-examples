@@ -11,9 +11,9 @@ defmodule LangWatch.Monitor do
           slug: String.t(),
           execution_mode: atom(),
           enabled: boolean(),
-          preconditions: map(),
-          parameters: map(),
-          mappings: map() | nil,
+          preconditions: map() | list() | String.t() | number() | boolean(),
+          parameters: map() | list() | String.t() | number() | boolean(),
+          mappings: map() | list() | String.t() | number() | boolean() | nil,
           sample: float(),
           level: String.t(),
           thread_idle_timeout: integer() | nil,
@@ -36,9 +36,9 @@ defmodule LangWatch.Monitor do
     field(:slug, :string)
     field(:execution_mode, Ecto.Enum, values: [:ON_MESSAGE, :AS_GUARDRAIL, :MANUALLY], default: :ON_MESSAGE, source: :executionMode)
     field(:enabled, :boolean, default: true)
-    field(:preconditions, :map)
-    field(:parameters, :map)
-    field(:mappings, :map)
+    field(:preconditions, LangWatch.PrismaJson)
+    field(:parameters, LangWatch.PrismaJson)
+    field(:mappings, LangWatch.PrismaJson)
     field(:sample, :float, default: 1.0)
     field(:level, :string, default: "trace")
     field(:thread_idle_timeout, :integer, source: :threadIdleTimeout)

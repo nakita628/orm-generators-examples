@@ -6,7 +6,7 @@ defmodule Hoppscotch.UserEnvironment do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t() | nil,
-          variables: map(),
+          variables: map() | list() | String.t() | number() | boolean(),
           is_global: boolean(),
           user: Hoppscotch.User.t() | nil
         }
@@ -14,7 +14,7 @@ defmodule Hoppscotch.UserEnvironment do
   schema "UserEnvironment" do
     field(:id, :string, primary_key: true)
     field(:name, :string)
-    field(:variables, :map)
+    field(:variables, Hoppscotch.PrismaJson)
     field(:is_global, :boolean, source: :isGlobal)
     field(:user_uid, :string, source: :userUid)
     belongs_to(:user, Hoppscotch.User, foreign_key: :user_uid, define_field: false, type: :string, references: :uid)

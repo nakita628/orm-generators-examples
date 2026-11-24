@@ -1,11 +1,11 @@
 defmodule Calcom.CreditExpenseLog do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           credits: integer() | nil,
           credit_type: atom(),
           date: DateTime.t(),
@@ -31,9 +31,9 @@ defmodule Calcom.CreditExpenseLog do
     field(:call_duration, :integer, source: :callDuration)
     field(:credit_for, Ecto.Enum, values: [:SMS, :CAL_AI_PHONE_CALL], source: :creditFor)
     field(:external_ref, :string, source: :externalRef)
-    field(:credit_balance_id, :binary_id, source: :creditBalanceId)
+    field(:credit_balance_id, :string, source: :creditBalanceId)
     field(:booking_uid, :string, source: :bookingUid)
     belongs_to(:credit_balance, Calcom.CreditBalance, foreign_key: :credit_balance_id, define_field: false)
-    belongs_to(:booking, Calcom.Booking, foreign_key: :booking_uid, define_field: false, type: :string, references: :uid)
+    belongs_to(:booking, Calcom.Booking, foreign_key: :booking_uid, define_field: false, references: :uid)
   end
 end

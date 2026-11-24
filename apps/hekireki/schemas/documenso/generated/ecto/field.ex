@@ -18,7 +18,7 @@ defmodule Documenso.Field do
           height: Decimal.t(),
           custom_text: String.t(),
           inserted: boolean(),
-          field_meta: map() | nil,
+          field_meta: map() | list() | String.t() | number() | boolean() | nil,
           envelope_item: Documenso.EnvelopeItem.t() | nil,
           envelope: Documenso.Envelope.t() | nil,
           recipient: Documenso.Recipient.t() | nil,
@@ -37,7 +37,7 @@ defmodule Documenso.Field do
     field(:custom_text, :string, source: :customText)
     field(:inserted, :boolean)
     # [FieldMeta] @zod.custom.use(ZFieldMetaNotOptionalSchema)
-    field(:field_meta, :map, source: :fieldMeta)
+    field(:field_meta, Documenso.PrismaJson, source: :fieldMeta)
     field(:envelope_item_id, :string, source: :envelopeItemId)
     field(:envelope_id, :string, source: :envelopeId)
     field(:recipient_id, :id, source: :recipientId)

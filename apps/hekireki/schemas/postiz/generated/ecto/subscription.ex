@@ -29,8 +29,8 @@ defmodule Postiz.Subscription do
     field(:total_channels, :integer, source: :totalChannels)
     field(:is_lifetime, :boolean, default: false, source: :isLifetime)
     field(:deleted_at, Postiz.PrismaDateTime, source: :deletedAt)
-    field(:organization_id, :binary_id, source: :organizationId)
-    belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false, type: :binary_id)
+    field(:organization_id, :string, source: :organizationId)
+    belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

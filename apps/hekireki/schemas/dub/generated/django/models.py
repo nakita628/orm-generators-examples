@@ -131,23 +131,23 @@ class WorkspaceRole(models.TextChoices):
 
 
 class Customer(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField(null=True)
-    email = models.TextField(null=True)
-    normalized_email = models.TextField(null=True, db_column="normalizedEmail")
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191, null=True)
+    email = models.CharField(max_length=191, null=True)
+    normalized_email = models.CharField(max_length=191, null=True, db_column="normalizedEmail")
     avatar = models.TextField(null=True)
-    external_id = models.TextField(null=True, db_column="externalId")
-    stripe_customer_id = models.TextField(null=True, unique=True, db_column="stripeCustomerId")
+    external_id = models.CharField(max_length=191, null=True, db_column="externalId")
+    stripe_customer_id = models.CharField(max_length=191, null=True, unique=True, db_column="stripeCustomerId")
     link = models.ForeignKey("Link", on_delete=models.SET_NULL, related_name="customers", db_column="linkId", null=True, db_index=False)
-    click_id = models.TextField(null=True, db_column="clickId")
+    click_id = models.CharField(max_length=191, null=True, db_column="clickId")
     clicked_at = UtcDateTimeField(null=True, db_column="clickedAt")
-    country = models.TextField(null=True)
+    country = models.CharField(max_length=191, null=True)
     sales = models.IntegerField(default=0)
     sale_amount = models.BigIntegerField(db_column="saleAmount", default=0)
     first_sale_at = UtcDateTimeField(null=True, db_column="firstSaleAt")
     subscription_canceled_at = UtcDateTimeField(null=True, db_column="subscriptionCanceledAt")
     project = models.ForeignKey("Project", on_delete=models.RESTRICT, related_name="customers", db_column="projectId", db_index=False)
-    project_connect_id = models.TextField(null=True, db_column="projectConnectId")
+    project_connect_id = models.CharField(max_length=191, null=True, db_column="projectConnectId")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -171,13 +171,13 @@ class Customer(models.Model):
 
 
 class Dashboard(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.CharField(max_length=191, primary_key=True, default=None)
     link = models.OneToOneField("Link", on_delete=models.CASCADE, related_name="dashboard", db_column="linkId", null=True)
     folder = models.OneToOneField("Folder", on_delete=models.CASCADE, related_name="dashboard", db_column="folderId", null=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="dashboards", db_column="projectId", null=True, db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="dashboards", db_column="userId", null=True, db_index=False)
     do_index = models.BooleanField(db_column="doIndex", default=False)
-    password = models.TextField(null=True)
+    password = models.CharField(max_length=191, null=True)
     show_conversions = models.BooleanField(db_column="showConversions", default=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -192,16 +192,16 @@ class Dashboard(models.Model):
 
 
 class Domain(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    slug = models.TextField(unique=True)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    slug = models.CharField(max_length=191, unique=True)
     verified = models.BooleanField(default=False)
-    placeholder = models.TextField(null=True)
+    placeholder = models.CharField(max_length=191, null=True)
     expired_url = models.TextField(null=True, db_column="expiredUrl")
     not_found_url = models.TextField(null=True, db_column="notFoundUrl")
     primary = models.BooleanField(default=False)
     archived = models.BooleanField(default=False)
     last_checked = UtcDateTimeField(db_column="lastChecked", default=now_milliseconds)
-    logo = models.TextField(null=True)
+    logo = models.CharField(max_length=191, null=True)
     apple_app_site_association = models.JSONField(null=True, db_column="appleAppSiteAssociation")
     asset_links = models.JSONField(null=True, db_column="assetLinks")
     deepview_data = models.JSONField(null=True, db_column="deepviewData", default=dict)
@@ -220,8 +220,8 @@ class Domain(models.Model):
 
 
 class RegisteredDomain(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    slug = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    slug = models.CharField(max_length=191)
     project = models.ForeignKey("Project", on_delete=models.RESTRICT, related_name="registered_domains", db_column="projectId", db_index=False)
     domain = models.OneToOneField("Domain", on_delete=models.SET_NULL, related_name="registered_domain", db_column="domainId", null=True)
     auto_renewal_disabled_at = UtcDateTimeField(null=True, db_column="autoRenewalDisabledAt")
@@ -240,7 +240,7 @@ class RegisteredDomain(models.Model):
 
 
 class DefaultDomains(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     dubsh = models.BooleanField(default=True)
     chatgpt = models.BooleanField(default=True)
     sptifi = models.BooleanField(default=True)
@@ -257,8 +257,8 @@ class DefaultDomains(models.Model):
 
 
 class Folder(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191)
     description = models.TextField(null=True)
     project = models.ForeignKey("Project", on_delete=models.RESTRICT, related_name="folders", db_column="projectId", db_index=False)
     type = models.TextField(choices=FolderType.choices, default=FolderType.default)
@@ -278,7 +278,7 @@ class Folder(models.Model):
 
 
 class FolderUser(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     folder = models.ForeignKey("Folder", on_delete=models.CASCADE, related_name="users", db_column="folderId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="folders", db_column="userId", db_index=False)
     role = models.TextField(choices=FolderUserRole.choices, null=True)
@@ -297,7 +297,7 @@ class FolderUser(models.Model):
 
 
 class FolderAccessRequest(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     folder = models.ForeignKey("Folder", on_delete=models.CASCADE, related_name="access_requests", db_column="folderId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="folder_access_requests", db_column="userId", db_index=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -313,21 +313,21 @@ class FolderAccessRequest(models.Model):
 
 
 class Integration(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="integrations", db_column="userId", null=True, db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="integrations", db_column="projectId", db_index=False)
-    name = models.TextField()
-    slug = models.TextField(unique=True)
-    description = models.TextField(null=True)
+    name = models.CharField(max_length=191)
+    slug = models.CharField(max_length=191, unique=True)
+    description = models.CharField(max_length=191, null=True)
     readme = models.TextField(null=True)
-    developer = models.TextField()
-    website = models.TextField()
-    logo = models.TextField(null=True)
+    developer = models.CharField(max_length=191)
+    website = models.CharField(max_length=191)
+    logo = models.CharField(max_length=191, null=True)
     screenshots = models.JSONField(null=True)
     verified = models.BooleanField(default=False)
     install_url = models.TextField(null=True, db_column="installUrl")
     guide_url = models.TextField(null=True, db_column="guideUrl")
-    category = models.TextField(null=True)
+    category = models.CharField(max_length=191, null=True)
     coming_soon = models.BooleanField(db_column="comingSoon", default=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -342,7 +342,7 @@ class Integration(models.Model):
 
 
 class InstalledIntegration(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="installed_integrations", db_column="userId", db_index=False)
     integration = models.ForeignKey("Integration", on_delete=models.CASCADE, related_name="installations", db_column="integrationId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="installed_integrations", db_column="projectId", db_index=False)
@@ -364,9 +364,9 @@ class InstalledIntegration(models.Model):
 
 
 class Invoice(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.CharField(max_length=191, primary_key=True, default=None)
     workspace = models.ForeignKey("Project", on_delete=models.RESTRICT, related_name="invoices", db_column="workspaceId", db_index=False)
-    number = models.TextField(null=True, unique=True)
+    number = models.CharField(max_length=191, null=True, unique=True)
     status = models.TextField(choices=InvoiceStatus.choices, default=InvoiceStatus.processing)
     type = models.TextField(choices=InvoiceType.choices, default=InvoiceType.domainRenewal)
     payment_method = models.TextField(choices=PaymentMethod.choices, null=True, db_column="paymentMethod")
@@ -430,8 +430,8 @@ class JacksonTtl(models.Model):
 
 
 class Job(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191)
     payload = models.JSONField()
     options = models.JSONField(null=True)
     scheduled_at = UtcDateTimeField(db_column="scheduledAt", default=now_milliseconds)
@@ -449,19 +449,19 @@ class Job(models.Model):
 
 
 class Link(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.CharField(max_length=191, primary_key=True, default=None)
     short_domain = models.ForeignKey("Domain", on_delete=models.RESTRICT, related_name="links", to_field="slug", db_column="domain", db_index=False)
-    key = models.TextField()
+    key = models.CharField(max_length=191)
     url = models.TextField()
     short_link = models.CharField(max_length=400, unique=True, db_column="shortLink")
     archived = models.BooleanField(default=False)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
     expired_url = models.TextField(null=True, db_column="expiredUrl")
     disabled_at = UtcDateTimeField(null=True, db_column="disabledAt")
-    password = models.TextField(null=True)
+    password = models.CharField(max_length=191, null=True)
     track_conversion = models.BooleanField(db_column="trackConversion", default=False)
     proxy = models.BooleanField(default=False)
-    title = models.TextField(null=True)
+    title = models.CharField(max_length=191, null=True)
     description = models.CharField(max_length=280, null=True)
     image = models.TextField(null=True)
     video = models.TextField(null=True)
@@ -482,8 +482,8 @@ class Link(models.Model):
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="links", db_column="userId", null=True, db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="links", db_column="projectId", null=True, db_index=False)
     folder = models.ForeignKey("Folder", on_delete=models.SET_NULL, related_name="links", db_column="folderId", null=True, db_index=False)
-    external_id = models.TextField(null=True, db_column="externalId")
-    tenant_id = models.TextField(null=True, db_column="tenantId")
+    external_id = models.CharField(max_length=191, null=True, db_column="externalId")
+    tenant_id = models.CharField(max_length=191, null=True, db_column="tenantId")
     public_stats = models.BooleanField(db_column="publicStats", default=False)
     clicks = models.IntegerField(default=0)
     leads = models.IntegerField(default=0)
@@ -515,7 +515,7 @@ class Link(models.Model):
 
 
 class YearInReview(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     year = models.IntegerField()
     total_links = models.IntegerField(db_column="totalLinks")
     total_clicks = models.IntegerField(db_column="totalClicks")
@@ -533,7 +533,7 @@ class YearInReview(models.Model):
 
 
 class UserNotificationPreferences(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.OneToOneField("User", on_delete=models.CASCADE, related_name="notification_preferences", db_column="userId")
     dub_links = models.BooleanField(db_column="dubLinks", default=True)
 
@@ -542,7 +542,7 @@ class UserNotificationPreferences(models.Model):
 
 
 class NotificationPreference(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     project_user = models.OneToOneField("ProjectUsers", on_delete=models.CASCADE, related_name="notification_preference", db_column="projectUserId")
     link_usage_summary = models.BooleanField(db_column="linkUsageSummary", default=True)
     domain_configuration_updates = models.BooleanField(db_column="domainConfigurationUpdates", default=True)
@@ -552,11 +552,11 @@ class NotificationPreference(models.Model):
 
 
 class OAuthApp(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.CharField(max_length=191, primary_key=True, default=None)
     integration = models.OneToOneField("Integration", on_delete=models.CASCADE, related_name="o_auth_app", db_column="integrationId")
-    client_id = models.TextField(unique=True, db_column="clientId")
-    hashed_client_secret = models.TextField(db_column="hashedClientSecret")
-    partial_client_secret = models.TextField(db_column="partialClientSecret")
+    client_id = models.CharField(max_length=191, unique=True, db_column="clientId")
+    hashed_client_secret = models.CharField(max_length=191, db_column="hashedClientSecret")
+    partial_client_secret = models.CharField(max_length=191, db_column="partialClientSecret")
     redirect_uris = models.JSONField(db_column="redirectUris")
     pkce = models.BooleanField(default=False)
 
@@ -565,15 +565,15 @@ class OAuthApp(models.Model):
 
 
 class OAuthCode(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     o_auth_app = models.ForeignKey("OAuthApp", on_delete=models.CASCADE, related_name="o_auth_codes", to_field="client_id", db_column="clientId", db_index=False)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="o_auth_codes", db_column="userId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="o_auth_codes", db_column="projectId", db_index=False)
-    code = models.TextField(unique=True)
+    code = models.CharField(max_length=191, unique=True)
     scopes = models.TextField(null=True)
-    redirect_uri = models.TextField(db_column="redirectUri")
-    code_challenge = models.TextField(null=True, db_column="codeChallenge")
-    code_challenge_method = models.TextField(null=True, db_column="codeChallengeMethod")
+    redirect_uri = models.CharField(max_length=191, db_column="redirectUri")
+    code_challenge = models.CharField(max_length=191, null=True, db_column="codeChallenge")
+    code_challenge_method = models.CharField(max_length=191, null=True, db_column="codeChallengeMethod")
     expires_at = UtcDateTimeField(db_column="expiresAt")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
@@ -587,10 +587,10 @@ class OAuthCode(models.Model):
 
 
 class OAuthRefreshToken(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     installed_integration = models.ForeignKey("InstalledIntegration", on_delete=models.CASCADE, related_name="refresh_tokens", db_column="installationId", db_index=False)
     access_token = models.ForeignKey("RestrictedToken", on_delete=models.CASCADE, related_name="refresh_tokens", db_column="accessTokenId", db_index=False)
-    hashed_refresh_token = models.TextField(unique=True, db_column="hashedRefreshToken")
+    hashed_refresh_token = models.CharField(max_length=191, unique=True, db_column="hashedRefreshToken")
     expires_at = UtcDateTimeField(db_column="expiresAt")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
 
@@ -603,18 +603,18 @@ class OAuthRefreshToken(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    name = models.TextField(null=True)
-    email = models.TextField(null=True, unique=True)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    name = models.CharField(max_length=191, null=True)
+    email = models.CharField(max_length=191, null=True, unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")
-    image = models.TextField(null=True)
+    image = models.CharField(max_length=191, null=True)
     is_machine = models.BooleanField(db_column="isMachine", default=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
-    password_hash = models.TextField(null=True, db_column="passwordHash")
+    password_hash = models.CharField(max_length=191, null=True, db_column="passwordHash")
     invalid_login_attempts = models.IntegerField(db_column="invalidLoginAttempts", default=0)
     locked_at = UtcDateTimeField(null=True, db_column="lockedAt")
-    default_workspace = models.TextField(null=True, db_column="defaultWorkspace")
-    source = models.TextField(null=True)
+    default_workspace = models.CharField(max_length=191, null=True, db_column="defaultWorkspace")
+    source = models.CharField(max_length=191, null=True)
     sent_mail = models.BooleanField(db_column="sentMail", default=False)
 
     class Meta:
@@ -628,19 +628,19 @@ class User(models.Model):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
-    type = models.TextField()
-    provider = models.TextField()
-    provider_account_id = models.TextField(db_column="providerAccountId")
+    type = models.CharField(max_length=191)
+    provider = models.CharField(max_length=191)
+    provider_account_id = models.CharField(max_length=191, db_column="providerAccountId")
     refresh_token = models.TextField(null=True)
     refresh_token_expires_in = models.IntegerField(null=True)
     access_token = models.TextField(null=True)
     expires_at = models.IntegerField(null=True)
-    token_type = models.TextField(null=True)
-    scope = models.TextField(null=True)
+    token_type = models.CharField(max_length=191, null=True)
+    scope = models.CharField(max_length=191, null=True)
     id_token = models.TextField(null=True)
-    session_state = models.TextField(null=True)
+    session_state = models.CharField(max_length=191, null=True)
 
     class Meta:
         db_table = "Account"
@@ -653,8 +653,8 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    session_token = models.TextField(unique=True, db_column="sessionToken")
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    session_token = models.CharField(max_length=191, unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
 
@@ -666,9 +666,9 @@ class Session(models.Model):
 
 
 class Tag(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField()
-    color = models.TextField(default="blue")
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191)
+    color = models.CharField(max_length=191, default="blue")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="tags", db_column="projectId", null=True, db_index=False)
@@ -685,7 +685,7 @@ class Tag(models.Model):
 
 
 class LinkTag(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     link = models.ForeignKey("Link", on_delete=models.CASCADE, related_name="tags", db_column="linkId", db_index=False)
@@ -703,10 +703,10 @@ class LinkTag(models.Model):
 
 
 class Token(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    name = models.TextField()
-    hashed_key = models.TextField(unique=True, db_column="hashedKey")
-    partial_key = models.TextField(db_column="partialKey")
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    name = models.CharField(max_length=191)
+    hashed_key = models.CharField(max_length=191, unique=True, db_column="hashedKey")
+    partial_key = models.CharField(max_length=191, db_column="partialKey")
     expires = UtcDateTimeField(null=True)
     last_used = UtcDateTimeField(null=True, db_column="lastUsed")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -722,10 +722,10 @@ class Token(models.Model):
 
 
 class RestrictedToken(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    name = models.TextField()
-    hashed_key = models.TextField(unique=True, db_column="hashedKey")
-    partial_key = models.TextField(db_column="partialKey")
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    name = models.CharField(max_length=191)
+    hashed_key = models.CharField(max_length=191, unique=True, db_column="hashedKey")
+    partial_key = models.CharField(max_length=191, db_column="partialKey")
     scopes = models.TextField(null=True)
     expires = UtcDateTimeField(null=True)
     last_used = UtcDateTimeField(null=True, db_column="lastUsed")
@@ -746,8 +746,8 @@ class RestrictedToken(models.Model):
 
 
 class VerificationToken(models.Model):
-    identifier = models.TextField()
-    token = models.TextField(primary_key=True, default=None)
+    identifier = models.CharField(max_length=191)
+    token = models.CharField(max_length=191, primary_key=True, default=None)
     expires = UtcDateTimeField()
 
     class Meta:
@@ -758,8 +758,8 @@ class VerificationToken(models.Model):
 
 
 class EmailVerificationToken(models.Model):
-    identifier = models.TextField()
-    token = models.TextField(primary_key=True, default=None)
+    identifier = models.CharField(max_length=191)
+    token = models.CharField(max_length=191, primary_key=True, default=None)
     expires = UtcDateTimeField()
 
     class Meta:
@@ -770,8 +770,8 @@ class EmailVerificationToken(models.Model):
 
 
 class PasswordResetToken(models.Model):
-    identifier = models.TextField()
-    token = models.TextField(primary_key=True, default=None)
+    identifier = models.CharField(max_length=191)
+    token = models.CharField(max_length=191, primary_key=True, default=None)
     expires = UtcDateTimeField()
 
     class Meta:
@@ -782,8 +782,8 @@ class PasswordResetToken(models.Model):
 
 
 class UtmTemplate(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191)
     utm_source = models.CharField(max_length=255, null=True)
     utm_medium = models.CharField(max_length=255, null=True)
     utm_campaign = models.CharField(max_length=255, null=True)
@@ -807,13 +807,13 @@ class UtmTemplate(models.Model):
 
 
 class Webhook(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.CharField(max_length=191, primary_key=True, default=None)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="webhooks", db_column="projectId", db_index=False)
     installed_integration = models.ForeignKey("InstalledIntegration", on_delete=models.CASCADE, related_name="webhooks", db_column="installationId", null=True, db_index=False)
     receiver = models.TextField(choices=WebhookReceiver.choices, default=WebhookReceiver.user)
-    name = models.TextField()
+    name = models.CharField(max_length=191)
     url = models.TextField()
-    secret = models.TextField()
+    secret = models.CharField(max_length=191)
     triggers = models.JSONField()
     link_scope = models.TextField(choices=LinkScope.choices, null=True, db_column="linkScope")
     consecutive_failures = models.IntegerField(db_column="consecutiveFailures", default=0)
@@ -832,7 +832,7 @@ class Webhook(models.Model):
 
 
 class LinkWebhook(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     link = models.ForeignKey("Link", on_delete=models.CASCADE, related_name="webhooks", db_column="linkId", db_index=False)
     webhook = models.ForeignKey("Webhook", on_delete=models.CASCADE, related_name="links", db_column="webhookId", db_index=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -848,7 +848,7 @@ class LinkWebhook(models.Model):
 
 
 class FolderWebhook(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     folder = models.ForeignKey("Folder", on_delete=models.CASCADE, related_name="webhooks", db_column="folderId", db_index=False)
     webhook = models.ForeignKey("Webhook", on_delete=models.CASCADE, related_name="folders", db_column="webhookId", db_index=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -864,24 +864,24 @@ class FolderWebhook(models.Model):
 
 
 class Project(models.Model):
-    id = models.TextField(primary_key=True, default=None)
-    name = models.TextField()
-    slug = models.TextField(unique=True)
-    logo = models.TextField(null=True)
-    invite_code = models.TextField(null=True, unique=True, db_column="inviteCode")
-    plan = models.TextField(default="free")
+    id = models.CharField(max_length=191, primary_key=True, default=None)
+    name = models.CharField(max_length=191)
+    slug = models.CharField(max_length=191, unique=True)
+    logo = models.CharField(max_length=191, null=True)
+    invite_code = models.CharField(max_length=191, null=True, unique=True, db_column="inviteCode")
+    plan = models.CharField(max_length=191, default="free")
     plan_tier = models.IntegerField(db_column="planTier", default=1)
     plan_period = models.TextField(choices=PlanPeriod.choices, null=True, db_column="planPeriod")
-    stripe_id = models.TextField(null=True, unique=True, db_column="stripeId")
+    stripe_id = models.CharField(max_length=191, null=True, unique=True, db_column="stripeId")
     billing_cycle_start = models.IntegerField(db_column="billingCycleStart")
     billing_cycle_ends_at = UtcDateTimeField(null=True, db_column="billingCycleEndsAt")
     trial_ends_at = UtcDateTimeField(null=True, db_column="trialEndsAt")
     subscription_canceled_at = UtcDateTimeField(null=True, db_column="subscriptionCanceledAt")
     payment_failed_at = UtcDateTimeField(null=True, db_column="paymentFailedAt")
-    invoice_prefix = models.TextField(null=True, unique=True, db_column="invoicePrefix")
-    stripe_connect_id = models.TextField(null=True, db_column="stripeConnectId")
+    invoice_prefix = models.CharField(max_length=191, null=True, unique=True, db_column="invoicePrefix")
+    stripe_connect_id = models.CharField(max_length=191, null=True, db_column="stripeConnectId")
     stripe_connect_mode = models.TextField(choices=StripeConnectMode.choices, null=True, db_column="stripeConnectMode")
-    shopify_store_id = models.TextField(null=True, unique=True, db_column="shopifyStoreId")
+    shopify_store_id = models.CharField(max_length=191, null=True, unique=True, db_column="shopifyStoreId")
     total_links = models.IntegerField(db_column="totalLinks", default=0)
     total_clicks = models.IntegerField(db_column="totalClicks", default=0)
     usage = models.IntegerField(default=0)
@@ -898,11 +898,11 @@ class Project(models.Model):
     store = models.JSONField(null=True)
     site_visit_tracking_settings = models.JSONField(null=True, db_column="siteVisitTrackingSettings")
     allowed_hostnames = models.JSONField(null=True, db_column="allowedHostnames")
-    publishable_key = models.TextField(null=True, unique=True, db_column="publishableKey")
+    publishable_key = models.CharField(max_length=191, null=True, unique=True, db_column="publishableKey")
     conversion_enabled = models.BooleanField(db_column="conversionEnabled", default=False)
     webhook_enabled = models.BooleanField(db_column="webhookEnabled", default=False)
     dot_link_claimed = models.BooleanField(db_column="dotLinkClaimed", default=False)
-    sso_email_domain = models.TextField(null=True, unique=True, db_column="ssoEmailDomain")
+    sso_email_domain = models.CharField(max_length=191, null=True, unique=True, db_column="ssoEmailDomain")
     sso_enforced_at = UtcDateTimeField(null=True, db_column="ssoEnforcedAt")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -923,7 +923,7 @@ class Project(models.Model):
 
 class ProjectInvite(models.Model):
     pk = models.CompositePrimaryKey("email", "project_id")
-    email = models.TextField()
+    email = models.CharField(max_length=191)
     expires = UtcDateTimeField()
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="invites", db_column="projectId", db_index=False)
     role = models.TextField(choices=WorkspaceRole.choices, default=WorkspaceRole.member)
@@ -940,12 +940,12 @@ class ProjectInvite(models.Model):
 
 
 class ProjectUsers(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     role = models.TextField(choices=WorkspaceRole.choices, default=WorkspaceRole.member)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="projects", db_column="userId", db_index=False)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="users", db_column="projectId", db_index=False)
     workspace_preferences = models.JSONField(null=True, db_column="workspacePreferences")
-    default_folder_id = models.TextField(null=True, db_column="defaultFolderId")
+    default_folder_id = models.CharField(max_length=191, null=True, db_column="defaultFolderId")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -961,8 +961,8 @@ class ProjectUsers(models.Model):
 
 
 class SentEmail(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    type = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    type = models.CharField(max_length=191)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="sent_emails", db_column="projectId", null=True, db_index=False)
 

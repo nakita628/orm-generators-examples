@@ -48,6 +48,7 @@ class LiteLLMProjectTable extends Model
 
     protected $casts = [
         'metadata' => 'array',
+        'models' => AsPrismaList::class,
         'spend' => 'float',
         'model_spend' => 'array',
         'model_rpm_limit' => 'array',

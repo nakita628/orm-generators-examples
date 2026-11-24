@@ -43,6 +43,36 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
+class PlainJSONField(models.JSONField):
+    def db_type(self, connection: BaseDatabaseWrapper) -> str | None:
+        return "json" if connection.vendor == "postgresql" else super().db_type(connection)
+
+    def from_db_value(self, value: Any, expression: Any, connection: BaseDatabaseWrapper) -> Any:
+        if connection.vendor != "postgresql":
+            return super().from_db_value(value, expression, connection)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -165,7 +195,7 @@ class ChatMessage(models.Model):
     id = models.TextField(primary_key=True, db_default=RawSQL("gen_random_uuid()", []))
     conversation = models.ForeignKey("Conversation", on_delete=models.CASCADE, related_name="messages", db_column="conversationId", db_index=False)
     role = models.TextField()
-    parts = models.JSONField()
+    parts = PlainJSONField()
     """[IPrismaUIMessageParts]"""
     metadata = models.JSONField(null=True)
     """[IPrismaChatMessageMetadata]"""
@@ -398,7 +428,7 @@ class Project(models.Model):
     name = models.TextField()
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="projects", db_column="organizationId", db_index=False)
     events_count = models.IntegerField(db_column="eventsCount", default=0)
-    types = ArrayField(models.TextField(choices=ProjectType.choices), default=list)
+    types = EnumArrayField(models.TextField(choices=ProjectType.choices), db_enum="\"ProjectType\"", default=list)
     domain = models.TextField(null=True)
     cors = ArrayField(models.TextField(), default=list)
     cross_domain = models.BooleanField(db_column="crossDomain", default=False)

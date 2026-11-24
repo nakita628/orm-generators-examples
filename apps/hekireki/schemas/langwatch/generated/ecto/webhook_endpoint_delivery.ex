@@ -28,7 +28,7 @@ defmodule LangWatch.WebhookEndpointDelivery do
           response_status: integer() | nil,
           latency_ms: integer() | nil,
           error: String.t() | nil,
-          response: map() | nil,
+          response: map() | list() | String.t() | number() | boolean() | nil,
           outcome: atom(),
           fired_at: DateTime.t(),
           inserted_at: DateTime.t(),
@@ -51,7 +51,7 @@ defmodule LangWatch.WebhookEndpointDelivery do
     field(:response_status, :integer, source: :responseStatus)
     field(:latency_ms, :integer, source: :latencyMs)
     field(:error, :string)
-    field(:response, :map)
+    field(:response, LangWatch.PrismaJson)
     field(:outcome, Ecto.Enum, values: [:success, :retryable, :terminal, :pending])
     field(:fired_at, LangWatch.PrismaDateTime, autogenerate: true, source: :firedAt)
     field(:endpoint_id, :string, source: :endpointId)

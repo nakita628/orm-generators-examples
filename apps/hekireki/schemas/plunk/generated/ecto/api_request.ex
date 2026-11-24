@@ -36,8 +36,8 @@ defmodule Plunk.ApiRequest do
     field(:error_message, :string, source: :errorMessage)
     field(:request_size, :integer, source: :requestSize)
     field(:response_size, :integer, source: :responseSize)
-    field(:project_id, :binary_id, source: :projectId)
-    belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false, type: :binary_id)
+    field(:project_id, :string, source: :projectId)
+    belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end
 end

@@ -11,8 +11,7 @@ pub struct Model {
     #[sea_orm(default_value = false)]
     pub disable_user_registration: bool,
     #[sea_orm(unique)]
-    #[sea_orm(column_type = "Uuid")]
-    pub instance_id: String,
+    pub instance_id: Uuid,
     pub app_name: Option<String>,
     pub primary_color: Option<String>,
     pub primary_color_dark: Option<String>,

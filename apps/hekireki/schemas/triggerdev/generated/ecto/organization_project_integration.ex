@@ -7,7 +7,7 @@ defmodule Trigger.OrganizationProjectIntegration do
   @type t :: %__MODULE__{
           id: String.t(),
           external_entity_id: String.t(),
-          integration_data: map(),
+          integration_data: map() | list() | String.t() | number() | boolean(),
           installed_by: String.t() | nil,
           deleted_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule Trigger.OrganizationProjectIntegration do
     # Identifier for webhooks, for example Vercel's projectId
     field(:external_entity_id, :string, source: :externalEntityId)
     # Save useful data like config or external entity name
-    field(:integration_data, :map, source: :integrationData)
+    field(:integration_data, Trigger.PrismaJson, source: :integrationData)
     # UserId who installed the integration
     field(:installed_by, :string, source: :installedBy)
     field(:deleted_at, Trigger.PrismaDateTime, source: :deletedAt)

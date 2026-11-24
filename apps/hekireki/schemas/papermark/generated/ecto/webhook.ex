@@ -10,7 +10,7 @@ defmodule Papermark.Webhook do
           name: String.t(),
           url: String.t(),
           secret: String.t(),
-          triggers: map(),
+          triggers: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           team: Papermark.Team.t() | nil
@@ -22,7 +22,7 @@ defmodule Papermark.Webhook do
     field(:name, :string)
     field(:url, :string)
     field(:secret, :string)
-    field(:triggers, :map)
+    field(:triggers, Papermark.PrismaJson)
     field(:team_id, :string, source: :teamId)
     belongs_to(:team, Papermark.Team, foreign_key: :team_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

@@ -7,13 +7,13 @@ defmodule LiteLLM.LiteLLMLensRun do
           id: String.t(),
           lens_id: String.t(),
           created_at: DateTime.t(),
-          data: map()
+          data: map() | list() | String.t() | number() | boolean()
         }
 
   schema "LiteLLM_LensRun" do
     field(:id, :string, primary_key: true)
     field(:lens_id, :string)
     field(:created_at, LiteLLM.PrismaDateTime)
-    field(:data, :map)
+    field(:data, LiteLLM.PrismaJson)
   end
 end

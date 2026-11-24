@@ -27,6 +27,10 @@ class ProgramSuggestedSet extends Model
 
     protected $casts = [
         'setIndex' => 'integer',
+        'types' => AsPrismaList::class . ':' . WorkoutSetType::class,
+        'valuesInt' => AsPrismaList::class . ':int',
+        'valuesSec' => AsPrismaList::class . ':int',
+        'units' => AsPrismaList::class . ':' . WorkoutSetUnit::class,
     ];
 
     public function programSessionExercise(): BelongsTo

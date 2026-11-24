@@ -5,10 +5,10 @@ defmodule OpenPanel.Cohort do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           description: String.t() | nil,
-          definition: map(),
+          definition: map() | list() | String.t() | number() | boolean(),
           is_static: boolean(),
           profile_count: integer(),
           last_computed_at: DateTime.t() | nil,
@@ -18,11 +18,11 @@ defmodule OpenPanel.Cohort do
         }
 
   schema "cohorts" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     field(:description, :string)
     # [IPrismaCohortDefinition]
-    field(:definition, :map, default: %{})
+    field(:definition, OpenPanel.PrismaJson, default: %{})
     field(:is_static, :boolean, default: false, source: :isStatic)
     field(:profile_count, :integer, default: 0, source: :profileCount)
     field(:last_computed_at, OpenPanel.PrismaDateTime, source: :lastComputedAt)

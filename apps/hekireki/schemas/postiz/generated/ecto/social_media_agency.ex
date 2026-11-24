@@ -1,12 +1,12 @@
 defmodule Postiz.SocialMediaAgency do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           website: String.t() | nil,
           slug: String.t() | nil,
@@ -43,8 +43,8 @@ defmodule Postiz.SocialMediaAgency do
     field(:description, :string)
     field(:approved, :boolean, default: false)
     field(:deleted_at, Postiz.PrismaDateTime, source: :deletedAt)
-    field(:logo_id, :binary_id, source: :logoId)
-    field(:user_id, :binary_id, source: :userId)
+    field(:logo_id, :string, source: :logoId)
+    field(:user_id, :string, source: :userId)
     belongs_to(:logo, Postiz.Media, foreign_key: :logo_id, define_field: false)
     belongs_to(:user, Postiz.User, foreign_key: :user_id, define_field: false)
     has_many(:niches, Postiz.SocialMediaAgencyNiche, foreign_key: :agency_id)

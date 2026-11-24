@@ -17,12 +17,12 @@ defmodule Formbricks.Invite do
 
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Formbricks.PrismaDateTime, autogenerate: {Formbricks.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           email: String.t(),
           name: String.t() | nil,
           expires_at: DateTime.t(),
@@ -43,9 +43,9 @@ defmodule Formbricks.Invite do
     field(:organization_id, :string, source: :organizationId)
     field(:creator_id, :string, source: :creatorId)
     field(:acceptor_id, :string, source: :acceptorId)
-    belongs_to(:organization, Formbricks.Organization, foreign_key: :organization_id, define_field: false, type: :string)
-    belongs_to(:creator, Formbricks.User, foreign_key: :creator_id, define_field: false, type: :string)
-    belongs_to(:acceptor, Formbricks.User, foreign_key: :acceptor_id, define_field: false, type: :string)
+    belongs_to(:organization, Formbricks.Organization, foreign_key: :organization_id, define_field: false)
+    belongs_to(:creator, Formbricks.User, foreign_key: :creator_id, define_field: false)
+    belongs_to(:acceptor, Formbricks.User, foreign_key: :acceptor_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end
 end

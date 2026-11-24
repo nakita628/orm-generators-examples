@@ -17,12 +17,12 @@ defmodule Ghostfolio.AssetProfileSplit do
 
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Ghostfolio.PrismaDateTime, autogenerate: {Ghostfolio.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           date: DateTime.t(),
           denominator: integer(),
           numerator: integer(),
@@ -35,7 +35,7 @@ defmodule Ghostfolio.AssetProfileSplit do
     field(:date, Ghostfolio.PrismaDateTime)
     field(:denominator, :integer)
     field(:numerator, :integer)
-    field(:symbol_profile_id, :binary_id, source: :symbolProfileId)
+    field(:symbol_profile_id, :string, source: :symbolProfileId)
     belongs_to(:symbol_profile, Ghostfolio.SymbolProfile, foreign_key: :symbol_profile_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

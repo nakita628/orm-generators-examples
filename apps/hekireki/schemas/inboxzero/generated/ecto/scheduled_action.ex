@@ -23,8 +23,8 @@ defmodule InboxZero.ScheduledAction do
           folder_name: String.t() | nil,
           folder_id: String.t() | nil,
           scheduled_id: String.t() | nil,
-          static_attachments: map() | nil,
-          selected_attachments: map() | nil,
+          static_attachments: map() | list() | String.t() | number() | boolean() | nil,
+          selected_attachments: map() | list() | String.t() | number() | boolean() | nil,
           executed_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -52,8 +52,8 @@ defmodule InboxZero.ScheduledAction do
     field(:folder_name, :string, source: :folderName)
     field(:folder_id, :string, source: :folderId)
     field(:scheduled_id, :string, source: :scheduledId)
-    field(:static_attachments, :map, source: :staticAttachments)
-    field(:selected_attachments, :map, source: :selectedAttachments)
+    field(:static_attachments, InboxZero.PrismaJson, source: :staticAttachments)
+    field(:selected_attachments, InboxZero.PrismaJson, source: :selectedAttachments)
     field(:executed_at, InboxZero.PrismaDateTime, source: :executedAt)
     field(:executed_rule_id, :string, source: :executedRuleId)
     field(:executed_action_id, :string, source: :executedActionId)

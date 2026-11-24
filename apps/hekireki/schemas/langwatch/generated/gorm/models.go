@@ -4,6 +4,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/lucsky/cuid"
@@ -25,16 +26,16 @@ type Account struct {
 	ProviderAccountID string    `gorm:"column:providerAccountId;uniqueIndex:Account_provider_providerAccountId_key;index:Account_issuer_providerAccountId_idx;not null" json:"providerAccountId"`
 	RefreshToken      *string   `gorm:"column:refresh_token;type:text" json:"refresh_token"`
 	AccessToken       *string   `gorm:"column:access_token;type:text" json:"access_token"`
-	ExpiresAt         *DateTime `gorm:"column:expires_at" json:"expires_at"`
-	ExtExpiresIn      *int      `gorm:"column:ext_expires_in" json:"ext_expires_in"`
+	ExpiresAt         *DateTime `gorm:"column:expires_at;type:timestamp(3)" json:"expires_at"`
+	ExtExpiresIn      *int      `gorm:"column:ext_expires_in;size:32" json:"ext_expires_in"`
 	TokenType         *string   `gorm:"column:token_type" json:"token_type"`
 	Scope             *string   `gorm:"column:scope" json:"scope"`
 	IDToken           *string   `gorm:"column:id_token;type:text" json:"id_token"`
 	SessionState      *string   `gorm:"column:session_state" json:"session_state"`
 	Password          *string   `gorm:"column:password;type:text" json:"password"`
-	CreatedAt         DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User              *User
+	CreatedAt         DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User              *User     `gorm:"belongsTo"`
 }
 
 func (Account) TableName() string {
@@ -71,12 +72,12 @@ type AccountCredential struct {
 	AccessToken           *string   `gorm:"column:accessToken;type:text" json:"accessToken"`
 	RefreshToken          *string   `gorm:"column:refreshToken;type:text" json:"refreshToken"`
 	IDToken               *string   `gorm:"column:idToken;type:text" json:"idToken"`
-	AccessTokenExpiresAt  *DateTime `gorm:"column:accessTokenExpiresAt" json:"accessTokenExpiresAt"`
-	RefreshTokenExpiresAt *DateTime `gorm:"column:refreshTokenExpiresAt" json:"refreshTokenExpiresAt"`
+	AccessTokenExpiresAt  *DateTime `gorm:"column:accessTokenExpiresAt;type:timestamp(3)" json:"accessTokenExpiresAt"`
+	RefreshTokenExpiresAt *DateTime `gorm:"column:refreshTokenExpiresAt;type:timestamp(3)" json:"refreshTokenExpiresAt"`
 	Scope                 *string   `gorm:"column:scope" json:"scope"`
-	CreatedAt             DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User                  *User
+	CreatedAt             DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User                  *User     `gorm:"belongsTo"`
 }
 
 func (AccountCredential) TableName() string {
@@ -104,9 +105,9 @@ func (*AccountCredential) BeforeUpdate(tx *gorm.DB) error {
 
 type Session struct {
 	ID           string   `gorm:"column:id;primaryKey" json:"id"`
-	SessionToken string   `gorm:"column:sessionToken;uniqueIndex;not null" json:"sessionToken"`
+	SessionToken string   `gorm:"column:sessionToken;uniqueIndex:Session_sessionToken_key;not null" json:"sessionToken"`
 	UserID       string   `gorm:"column:userId;index:Session_userId_idx;not null" json:"userId"`
-	Expires      DateTime `gorm:"column:expires;not null" json:"expires"`
+	Expires      DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
 	IPAddress    *string  `gorm:"column:ipAddress" json:"ipAddress"`
 	UserAgent    *string  `gorm:"column:userAgent;type:text" json:"userAgent"`
 	// Which of the user's sign-in methods minted this session (D06). NULL on
@@ -119,7 +120,7 @@ type Session struct {
 	// on any ordinary password sign-in. An organization that requires a second
 	// factor reads this when a member reaches its data; it is never read at
 	// mint and never ends a session.
-	Amr []string `gorm:"column:amr;serializer:json;not null" json:"amr"`
+	Amr ScalarList[string] `gorm:"column:amr;type:text[]" json:"amr"`
 	// Minted while the account had never signed in: the session its sign-up
 	// started, which skips the secure-account offer. False on every later one
 	// and on every session that predates the column (specs/identity/passkeys.feature).
@@ -155,7 +156,7 @@ type Session struct {
 	// When the borrowed access lapses. A session outlives its impersonation
 	// window: past this the claims are ignored and the operator is themselves
 	// again, with nothing ended.
-	ImpersonationExpiresAt *DateTime `gorm:"column:impersonationExpiresAt" json:"impersonationExpiresAt"`
+	ImpersonationExpiresAt *DateTime `gorm:"column:impersonationExpiresAt;type:timestamp(3)" json:"impersonationExpiresAt"`
 	// When this session was last used, for the idle timeout an organization
 	// may set (GAC-10, specs/identity/org-session-lifetime.feature).
 	//
@@ -174,10 +175,10 @@ type Session struct {
 	// active than it was, never less - and it is what lets a window turned on
 	// today end the sessions that have been idle since February instead of
 	// waiting a day for a stamp they have never had.
-	LastSeenAt *DateTime `gorm:"column:lastSeenAt" json:"lastSeenAt"`
-	CreatedAt  DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt  DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User       *User
+	LastSeenAt *DateTime `gorm:"column:lastSeenAt;type:timestamp(3)" json:"lastSeenAt"`
+	CreatedAt  DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt  DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User       *User     `gorm:"belongsTo"`
 }
 
 func (Session) TableName() string {
@@ -211,8 +212,8 @@ func (*Session) BeforeUpdate(tx *gorm.DB) error {
 // Spec: modules/user/specs/user.feature
 type UserErasure struct {
 	ID               string   `gorm:"column:id;primaryKey" json:"id"`
-	AccountCreatedAt DateTime `gorm:"column:accountCreatedAt;index:UserErasure_accountCreatedAt_idx;not null" json:"accountCreatedAt"`
-	ErasedAt         DateTime `gorm:"column:erasedAt;not null" json:"erasedAt"`
+	AccountCreatedAt DateTime `gorm:"column:accountCreatedAt;index:UserErasure_accountCreatedAt_idx;type:timestamp(3);not null" json:"accountCreatedAt"`
+	ErasedAt         DateTime `gorm:"column:erasedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"erasedAt"`
 }
 
 func (UserErasure) TableName() string {
@@ -233,7 +234,7 @@ func (m *UserErasure) BeforeCreate(tx *gorm.DB) error {
 type User struct {
 	ID                        string  `gorm:"column:id;primaryKey" json:"id"`
 	Name                      *string `gorm:"column:name" json:"name"`
-	Email                     *string `gorm:"column:email;uniqueIndex" json:"email"`
+	Email                     *string `gorm:"column:email;uniqueIndex:User_email_key" json:"email"`
 	EmailVerified             bool    `gorm:"column:emailVerified;default:false;not null" json:"emailVerified"`
 	SignupConfirmationPending bool    `gorm:"column:signupConfirmationPending;default:false;not null" json:"signupConfirmationPending"`
 	PasskeySignupClaimHash    *string `gorm:"column:passkeySignupClaimHash" json:"passkeySignupClaimHash"`
@@ -245,12 +246,12 @@ type User struct {
 	// confirmed and when it is turned off, and challenges every sign-in while
 	// it is true. The lifecycle - and the history - lives on MfaEnrollment.
 	TwoFactorEnabled              bool      `gorm:"column:twoFactorEnabled;default:false;not null" json:"twoFactorEnabled"`
-	CreatedAt                     DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                     DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	LastLoginAt                   *DateTime `gorm:"column:lastLoginAt" json:"lastLoginAt"`
-	DeactivatedAt                 *DateTime `gorm:"column:deactivatedAt" json:"deactivatedAt"`
+	CreatedAt                     DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                     DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	LastLoginAt                   *DateTime `gorm:"column:lastLoginAt;type:timestamp(3)" json:"lastLoginAt"`
+	DeactivatedAt                 *DateTime `gorm:"column:deactivatedAt;type:timestamp(3)" json:"deactivatedAt"`
 	LastHomePath                  *string   `gorm:"column:lastHomePath" json:"lastHomePath"`
-	TracesExplorerTourDismissedAt *DateTime `gorm:"column:tracesExplorerTourDismissedAt" json:"tracesExplorerTourDismissedAt"`
+	TracesExplorerTourDismissedAt *DateTime `gorm:"column:tracesExplorerTourDismissedAt;type:timestamp(3)" json:"tracesExplorerTourDismissedAt"`
 	// How Langy should reach this person's code when a task needs a change
 	// (ADR-129). "github" means they chose the pull request path and asked to
 	// be remembered; NULL means ask. A shared local folder is never stored
@@ -262,13 +263,13 @@ type User struct {
 	// reasons: a per-browser record forgets on a new device, which is exactly
 	// where the offer should be MORE eager, and an interval nobody can enforce
 	// is not an interval. NULL means never asked.
-	PasskeyNudgeDismissedAt *DateTime `gorm:"column:passkeyNudgeDismissedAt" json:"passkeyNudgeDismissedAt"`
+	PasskeyNudgeDismissedAt *DateTime `gorm:"column:passkeyNudgeDismissedAt;type:timestamp(3)" json:"passkeyNudgeDismissedAt"`
 	// The domains this person has said "no thanks" to being offered their
 	// colleagues on (D12). Per domain rather than one flag: somebody who
 	// changes jobs and verifies a second address should be offered their new
 	// employer's organization, not silenced forever by a decision they made
 	// about the old one. Empty means never dismissed anything.
-	JoinOfferDismissedDomains []string `gorm:"column:joinOfferDismissedDomains;serializer:json;not null" json:"joinOfferDismissedDomains"`
+	JoinOfferDismissedDomains ScalarList[string] `gorm:"column:joinOfferDismissedDomains;type:text[]" json:"joinOfferDismissedDomains"`
 	// This person's answer about browser notifications, one entry per topic:
 	// { "langy": "enabled" | "declined" }. A topic that is absent was never
 	// answered. The browser's own permission is not stored here.
@@ -277,49 +278,49 @@ type User struct {
 	// When an operator marked this person's password as no longer trusted. A
 	// password sign-in opens no session while it is set; any write of a new
 	// password hash clears it. Spec: modules/auth/specs/forced-password-reset.feature
-	PasswordResetRequiredAt  *DateTime                `gorm:"column:passwordResetRequiredAt" json:"passwordResetRequiredAt"`
-	Accounts                 []Account                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	AccountCredentials       []AccountCredential      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Sessions                 []Session                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TwoFactors               []TwoFactor              `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Passkeys                 []Passkey                `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TeamMemberships          []TeamUser               `gorm:"foreignKey:UserID"`
-	OrgMemberships           []OrganizationUser       `gorm:"foreignKey:UserID"`
-	ScimUserResources        []ScimUserResource       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Annotation               []Annotation             `gorm:"foreignKey:UserID"`
-	ShareLinks               []ShareLink              `gorm:"foreignKey:UserID"`
-	Workflow                 []Workflow               `gorm:"foreignKey:PublishedByID"`
-	WorkflowVersion          []WorkflowVersion        `gorm:"foreignKey:AuthorID"`
-	AnnotationQueues         []AnnotationQueueMembers `gorm:"foreignKey:UserID"`
-	AssignedQueueItems       []AnnotationQueueItem    `gorm:"foreignKey:UserID"`
-	CreatedQueueItems        []AnnotationQueueItem    `gorm:"foreignKey:CreatedByUserID"`
-	LlmPromptConfigVersions  []LlmPromptConfigVersion `gorm:"foreignKey:AuthorID"`
-	Scenarios                []Scenario               `gorm:"foreignKey:LastUpdatedByID"`
-	InviteRequests           []OrganizationInvite     `gorm:"foreignKey:RequestedBy"`
-	SecretsCreated           []ProjectSecret          `gorm:"foreignKey:CreatedByID"`
-	SecretsUpdated           []ProjectSecret          `gorm:"foreignKey:UpdatedByID"`
-	SavedViews               []SavedView              `gorm:"foreignKey:UserID"`
-	VersionTagsCreated       []PromptTagAssignment    `gorm:"foreignKey:CreatedByID"`
-	VersionTagsUpdated       []PromptTagAssignment    `gorm:"foreignKey:UpdatedByID"`
-	PromptTagsCreated        []PromptTag              `gorm:"foreignKey:CreatedByID"`
-	PromptTagsUpdated        []PromptTag              `gorm:"foreignKey:UpdatedByID"`
-	GroupMemberships         []GroupMembership        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	RoleBindings             []RoleBinding            `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	ScimExternalIds          []ScimExternalID         `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	APIKeys                  []APIKey                 `gorm:"foreignKey:UserID;constraint:OnDelete:RESTRICT"`
-	GatewayBudgetsCreated    []GatewayBudget          `gorm:"foreignKey:CreatedByID"`
-	PrincipalVirtualKeys     []VirtualKey             `gorm:"foreignKey:PrincipalUserID;constraint:OnDelete:SET NULL"`
-	PersonalTeams            []Team                   `gorm:"foreignKey:OwnerUserID"`
-	PersonalProjects         []Project                `gorm:"foreignKey:OwnerUserID"`
-	RoutingPoliciesCreated   []RoutingPolicy          `gorm:"foreignKey:CreatedByID;constraint:OnDelete:SET NULL"`
-	RoutingPoliciesUpdated   []RoutingPolicy          `gorm:"foreignKey:UpdatedByID;constraint:OnDelete:SET NULL"`
-	GatewayGuardrailsCreated []GatewayGuardrail       `gorm:"foreignKey:CreatedByID;constraint:OnDelete:SET NULL"`
-	GatewayGuardrailsUpdated []GatewayGuardrail       `gorm:"foreignKey:UpdatedByID;constraint:OnDelete:SET NULL"`
-	IngestionSourcesCreated  []IngestionSource        `gorm:"foreignKey:CreatedByID;constraint:OnDelete:SET NULL"`
-	AnomalyRulesCreated      []AnomalyRule            `gorm:"foreignKey:CreatedByID;constraint:OnDelete:SET NULL"`
-	PinnedTraces             []PinnedTrace            `gorm:"foreignKey:UserID"`
-	TraceEditOverlaysCreated []TraceEditOverlay       `gorm:"foreignKey:CreatedByID"`
-	TraceEditOverlaysUpdated []TraceEditOverlay       `gorm:"foreignKey:UpdatedByID"`
+	PasswordResetRequiredAt  *DateTime                `gorm:"column:passwordResetRequiredAt;type:timestamp(3)" json:"passwordResetRequiredAt"`
+	Accounts                 []Account                `gorm:"foreignKey:UserID;constraint:Account_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AccountCredentials       []AccountCredential      `gorm:"foreignKey:UserID;constraint:AccountCredential_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Sessions                 []Session                `gorm:"foreignKey:UserID;constraint:Session_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TwoFactors               []TwoFactor              `gorm:"foreignKey:UserID;constraint:TwoFactor_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Passkeys                 []Passkey                `gorm:"foreignKey:UserID;constraint:Passkey_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TeamMemberships          []TeamUser               `gorm:"foreignKey:UserID;constraint:TeamUser_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	OrgMemberships           []OrganizationUser       `gorm:"foreignKey:UserID;constraint:OrganizationUser_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	ScimUserResources        []ScimUserResource       `gorm:"foreignKey:UserID;constraint:ScimUserResource_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Annotation               []Annotation             `gorm:"foreignKey:UserID;constraint:Annotation_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	ShareLinks               []ShareLink              `gorm:"foreignKey:UserID;constraint:ShareLink_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Workflow                 []Workflow               `gorm:"foreignKey:PublishedByID;constraint:Workflow_publishedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	WorkflowVersion          []WorkflowVersion        `gorm:"foreignKey:AuthorID;constraint:WorkflowVersion_authorId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AnnotationQueues         []AnnotationQueueMembers `gorm:"foreignKey:UserID;constraint:AnnotationQueueMembers_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AssignedQueueItems       []AnnotationQueueItem    `gorm:"foreignKey:UserID;constraint:AnnotationQueueItem_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CreatedQueueItems        []AnnotationQueueItem    `gorm:"foreignKey:CreatedByUserID;constraint:AnnotationQueueItem_createdByUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	LlmPromptConfigVersions  []LlmPromptConfigVersion `gorm:"foreignKey:AuthorID;constraint:LlmPromptConfigVersion_authorId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Scenarios                []Scenario               `gorm:"foreignKey:LastUpdatedByID;constraint:Scenario_lastUpdatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	InviteRequests           []OrganizationInvite     `gorm:"foreignKey:RequestedBy;constraint:OrganizationInvite_requestedBy_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	SecretsCreated           []ProjectSecret          `gorm:"foreignKey:CreatedByID;constraint:ProjectSecret_createdById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SecretsUpdated           []ProjectSecret          `gorm:"foreignKey:UpdatedByID;constraint:ProjectSecret_updatedById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SavedViews               []SavedView              `gorm:"foreignKey:UserID;constraint:SavedView_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	VersionTagsCreated       []PromptTagAssignment    `gorm:"foreignKey:CreatedByID;constraint:PromptTagAssignment_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	VersionTagsUpdated       []PromptTagAssignment    `gorm:"foreignKey:UpdatedByID;constraint:PromptTagAssignment_updatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PromptTagsCreated        []PromptTag              `gorm:"foreignKey:CreatedByID;constraint:PromptTag_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PromptTagsUpdated        []PromptTag              `gorm:"foreignKey:UpdatedByID;constraint:PromptTag_updatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GroupMemberships         []GroupMembership        `gorm:"foreignKey:UserID;constraint:GroupMembership_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleBindings             []RoleBinding            `gorm:"foreignKey:UserID;constraint:RoleBinding_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ScimExternalIds          []ScimExternalID         `gorm:"foreignKey:UserID;constraint:ScimExternalId_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIKeys                  []APIKey                 `gorm:"foreignKey:UserID;constraint:ApiKey_userId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	GatewayBudgetsCreated    []GatewayBudget          `gorm:"foreignKey:CreatedByID;constraint:GatewayBudget_createdById_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	PrincipalVirtualKeys     []VirtualKey             `gorm:"foreignKey:PrincipalUserID;constraint:VirtualKey_principalUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PersonalTeams            []Team                   `gorm:"foreignKey:OwnerUserID;constraint:Team_ownerUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PersonalProjects         []Project                `gorm:"foreignKey:OwnerUserID;constraint:Project_ownerUserId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	RoutingPoliciesCreated   []RoutingPolicy          `gorm:"foreignKey:CreatedByID;constraint:RoutingPolicy_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	RoutingPoliciesUpdated   []RoutingPolicy          `gorm:"foreignKey:UpdatedByID;constraint:RoutingPolicy_updatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewayGuardrailsCreated []GatewayGuardrail       `gorm:"foreignKey:CreatedByID;constraint:GatewayGuardrail_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewayGuardrailsUpdated []GatewayGuardrail       `gorm:"foreignKey:UpdatedByID;constraint:GatewayGuardrail_updatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	IngestionSourcesCreated  []IngestionSource        `gorm:"foreignKey:CreatedByID;constraint:IngestionSource_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AnomalyRulesCreated      []AnomalyRule            `gorm:"foreignKey:CreatedByID;constraint:AnomalyRule_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PinnedTraces             []PinnedTrace            `gorm:"foreignKey:UserID;constraint:PinnedTrace_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TraceEditOverlaysCreated []TraceEditOverlay       `gorm:"foreignKey:CreatedByID;constraint:TraceEditOverlay_createdById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TraceEditOverlaysUpdated []TraceEditOverlay       `gorm:"foreignKey:UpdatedByID;constraint:TraceEditOverlay_updatedById_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (User) TableName() string {
@@ -353,9 +354,9 @@ type VerificationToken struct {
 	Identifier string `gorm:"column:identifier;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"identifier"`
 	// Not unique alone: better-auth stores plain values here (a user id, a counter). See WEB-19201.
 	Token     string   `gorm:"column:token;uniqueIndex:VerificationToken_identifier_token_key;not null" json:"token"`
-	Expires   DateTime `gorm:"column:expires;not null" json:"expires"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	Expires   DateTime `gorm:"column:expires;type:timestamp(3);not null" json:"expires"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (VerificationToken) TableName() string {
@@ -397,12 +398,12 @@ type Identifier struct {
 	ProviderAccountID *string   `gorm:"column:providerAccountId;index:Identifier_provider_providerAccountId_idx;index:Identifier_issuer_providerAccountId_idx" json:"providerAccountId"`
 	State             string    `gorm:"column:state;not null" json:"state"`
 	ConnectionID      *string   `gorm:"column:connectionId" json:"connectionId"`
-	VerifiedAt        *DateTime `gorm:"column:verifiedAt" json:"verifiedAt"`
-	AttachedAt        DateTime  `gorm:"column:attachedAt;not null" json:"attachedAt"`
-	DetachedAt        *DateTime `gorm:"column:detachedAt" json:"detachedAt"`
-	LastUsedAt        *DateTime `gorm:"column:lastUsedAt" json:"lastUsedAt"`
-	CreatedAt         DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	VerifiedAt        *DateTime `gorm:"column:verifiedAt;type:timestamp(3)" json:"verifiedAt"`
+	AttachedAt        DateTime  `gorm:"column:attachedAt;type:timestamp(3);not null" json:"attachedAt"`
+	DetachedAt        *DateTime `gorm:"column:detachedAt;type:timestamp(3)" json:"detachedAt"`
+	LastUsedAt        *DateTime `gorm:"column:lastUsedAt;type:timestamp(3)" json:"lastUsedAt"`
+	CreatedAt         DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (Identifier) TableName() string {
@@ -435,9 +436,9 @@ type IdentitySignInSwitch struct {
 	UserID             string   `gorm:"column:userId;primaryKey" json:"userId"`
 	OnIdentifiers      bool     `gorm:"column:onIdentifiers;not null" json:"onIdentifiers"`
 	Pinned             bool     `gorm:"column:pinned;default:false;not null" json:"pinned"`
-	SwitchedAt         DateTime `gorm:"column:switchedAt;not null" json:"switchedAt"`
+	SwitchedAt         DateTime `gorm:"column:switchedAt;type:timestamp(3);not null" json:"switchedAt"`
 	LastAppliedEventID *string  `gorm:"column:lastAppliedEventId" json:"lastAppliedEventId"`
-	UpdatedAt          DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt          DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (IdentitySignInSwitch) TableName() string {
@@ -465,7 +466,7 @@ type IdentifierReservation struct {
 	UserID          string   `gorm:"column:userId;index:IdentifierReservation_userId_idx;not null" json:"userId"`
 	IdentifierID    string   `gorm:"column:identifierId;index:IdentifierReservation_identifierId_idx;not null" json:"identifierId"`
 	CommandID       string   `gorm:"column:commandId;not null" json:"commandId"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt       DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (IdentifierReservation) TableName() string {
@@ -483,11 +484,11 @@ func (m *IdentifierReservation) BeforeCreate(tx *gorm.DB) error {
 type IdentityProjectionCursor struct {
 	UserID            string   `gorm:"column:userId;primaryKey" json:"userId"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
-	AcceptedAt        DateTime `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
-	OccurredAt        DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	AcceptedAt        DateTime `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
+	OccurredAt        DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
-	CreatedAt         DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt         DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (IdentityProjectionCursor) TableName() string {
@@ -529,11 +530,11 @@ type TwoFactor struct {
 	Secret                  string    `gorm:"column:secret;index:TwoFactor_secret_idx;type:text;not null" json:"secret"`
 	BackupCodes             string    `gorm:"column:backupCodes;type:text;not null" json:"backupCodes"`
 	Verified                *bool     `gorm:"column:verified;default:true;not null" json:"verified"`
-	FailedVerificationCount int       `gorm:"column:failedVerificationCount;default:0;not null" json:"failedVerificationCount"`
-	LockedUntil             *DateTime `gorm:"column:lockedUntil" json:"lockedUntil"`
-	CreatedAt               DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt               DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User                    *User
+	FailedVerificationCount int       `gorm:"column:failedVerificationCount;size:32;default:0;not null" json:"failedVerificationCount"`
+	LockedUntil             *DateTime `gorm:"column:lockedUntil;type:timestamp(3)" json:"lockedUntil"`
+	CreatedAt               DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt               DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User                    *User     `gorm:"belongsTo"`
 }
 
 func (TwoFactor) TableName() string {
@@ -588,15 +589,15 @@ func (*TwoFactor) BeforeUpdate(tx *gorm.DB) error {
 type SignInAttemptLock struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// Keyed hash of the normalised address. Never the address itself.
-	IdentifierHash string `gorm:"column:identifierHash;uniqueIndex;not null" json:"identifierHash"`
+	IdentifierHash string `gorm:"column:identifierHash;uniqueIndex:SignInAttemptLock_identifierHash_key;not null" json:"identifierHash"`
 	// Consecutive failures since the last success. Reset by a success, not by
 	// time - "five consecutive", not five ever.
-	FailedCount int `gorm:"column:failedCount;default:0;not null" json:"failedCount"`
+	FailedCount int `gorm:"column:failedCount;size:32;default:0;not null" json:"failedCount"`
 	// When the current lock lifts. Null when not locked.
-	LockedUntil *DateTime `gorm:"column:lockedUntil;index:SignInAttemptLock_lockedUntil_idx" json:"lockedUntil"`
+	LockedUntil *DateTime `gorm:"column:lockedUntil;index:SignInAttemptLock_lockedUntil_idx;type:timestamp(3)" json:"lockedUntil"`
 	// Locks taken since the last success. At five this stops lifting by
 	// itself and becomes an incident - see `heldForReview`.
-	ConsecutiveLockouts int `gorm:"column:consecutiveLockouts;default:0;not null" json:"consecutiveLockouts"`
+	ConsecutiveLockouts int `gorm:"column:consecutiveLockouts;size:32;default:0;not null" json:"consecutiveLockouts"`
 	// Held past its lock because the count of locks reached the ceiling the
 	// control names. Cleared by an administrator, or by the owner proving
 	// mailbox control through a password reset - the second is what keeps a
@@ -607,8 +608,8 @@ type SignInAttemptLock struct {
 	// Null for an address with no account - those rows are the reason this is
 	// nullable, and the reason this table is not hung off User.
 	UserID    *string  `gorm:"column:userId;index:SignInAttemptLock_userId_idx" json:"userId"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SignInAttemptLock) TableName() string {
@@ -652,14 +653,14 @@ type Passkey struct {
 	PublicKey    string   `gorm:"column:publicKey;type:text;not null" json:"publicKey"`
 	UserID       string   `gorm:"column:userId;index:Passkey_userId_idx;not null" json:"userId"`
 	CredentialID string   `gorm:"column:credentialID;index:Passkey_credentialID_idx;not null" json:"credentialID"`
-	Counter      int      `gorm:"column:counter;default:0;not null" json:"counter"`
+	Counter      int      `gorm:"column:counter;size:32;default:0;not null" json:"counter"`
 	DeviceType   string   `gorm:"column:deviceType;not null" json:"deviceType"`
 	BackedUp     bool     `gorm:"column:backedUp;default:false;not null" json:"backedUp"`
 	Transports   *string  `gorm:"column:transports" json:"transports"`
 	Aaguid       *string  `gorm:"column:aaguid" json:"aaguid"`
-	CreatedAt    DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User         *User
+	CreatedAt    DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User         *User    `gorm:"belongsTo"`
 }
 
 func (Passkey) TableName() string {
@@ -713,22 +714,22 @@ type MfaEnrollment struct {
 	Method *string `gorm:"column:method" json:"method"`
 	// NONE | PENDING | ENABLED | EXPIRED | DISABLED
 	State       string    `gorm:"column:state;index:MfaEnrollment_state_idx;not null" json:"state"`
-	EnrolledAt  *DateTime `gorm:"column:enrolledAt" json:"enrolledAt"`
-	ConfirmedAt *DateTime `gorm:"column:confirmedAt" json:"confirmedAt"`
-	ExpiredAt   *DateTime `gorm:"column:expiredAt" json:"expiredAt"`
-	DisabledAt  *DateTime `gorm:"column:disabledAt" json:"disabledAt"`
+	EnrolledAt  *DateTime `gorm:"column:enrolledAt;type:timestamp(3)" json:"enrolledAt"`
+	ConfirmedAt *DateTime `gorm:"column:confirmedAt;type:timestamp(3)" json:"confirmedAt"`
+	ExpiredAt   *DateTime `gorm:"column:expiredAt;type:timestamp(3)" json:"expiredAt"`
+	DisabledAt  *DateTime `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
 	// password+totp | org-admin - who ended it, and on whose authority.
 	DisabledVia     *string `gorm:"column:disabledVia" json:"disabledVia"`
-	BackupCodeCount int     `gorm:"column:backupCodeCount;default:0;not null" json:"backupCodeCount"`
+	BackupCodeCount int     `gorm:"column:backupCodeCount;size:32;default:0;not null" json:"backupCodeCount"`
 	// Positions already spent, ascending. Never codes.
-	ConsumedBackupCodeIndexes []int    `gorm:"column:consumedBackupCodeIndexes;serializer:json;not null" json:"consumedBackupCodeIndexes"`
-	FailedCount               int      `gorm:"column:failedCount;default:0;not null" json:"failedCount"`
-	OccurredAt                DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	LastEventID               string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
-	AcceptedAt                DateTime `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
-	ProjectionVersion         string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
-	CreatedAt                 DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                 DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ConsumedBackupCodeIndexes ScalarList[int] `gorm:"column:consumedBackupCodeIndexes;type:integer[]" json:"consumedBackupCodeIndexes"`
+	FailedCount               int             `gorm:"column:failedCount;size:32;default:0;not null" json:"failedCount"`
+	OccurredAt                DateTime        `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	LastEventID               string          `gorm:"column:lastEventId;not null" json:"lastEventId"`
+	AcceptedAt                DateTime        `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
+	ProjectionVersion         string          `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
+	CreatedAt                 DateTime        `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                 DateTime        `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (MfaEnrollment) TableName() string {
@@ -777,24 +778,24 @@ type SsoConnection struct {
 	// DRAFT | CLAIMED | APPROVED | REJECTED | DISCARDED |
 	// VERIFICATION_PENDING | VERIFIED | ACTIVE | SUSPENDED |
 	// TEARDOWN_PENDING | TORN_DOWN
-	State          string   `gorm:"column:state;index:SsoConnection_state_idx;not null" json:"state"`
-	ClaimedDomains []string `gorm:"column:claimedDomains;serializer:json;not null" json:"claimedDomains"`
+	State          string             `gorm:"column:state;index:SsoConnection_state_idx;not null" json:"state"`
+	ClaimedDomains ScalarList[string] `gorm:"column:claimedDomains;type:text[]" json:"claimedDomains"`
 	// [{ domain, state, claimedAtMs, claimedByActorId, decidedAtMs,
 	// decidedByActorId, authority, waitedMs, note }] - every claim this
 	// connection has made and how long each waited to be decided. The tier-3
 	// approval queue is a read of this column, and the epic's Open Q2 wants
 	// that latency measured from the day the queue exists.
-	DomainClaims    datatypes.JSON `gorm:"column:domainClaims;default:'[]';not null" json:"domainClaims"`
-	ApprovedDomains []string       `gorm:"column:approvedDomains;serializer:json;not null" json:"approvedDomains"`
+	DomainClaims    datatypes.JSON     `gorm:"column:domainClaims;default:'[]';not null" json:"domainClaims"`
+	ApprovedDomains ScalarList[string] `gorm:"column:approvedDomains;type:text[]" json:"approvedDomains"`
 	// The only domains that ever route, and only while state is ACTIVE.
-	VerifiedDomains []string `gorm:"column:verifiedDomains;index:SsoConnection_verifiedDomains_idx;serializer:json;not null" json:"verifiedDomains"`
+	VerifiedDomains ScalarList[string] `gorm:"column:verifiedDomains;index:SsoConnection_verifiedDomains_idx;type:text[]" json:"verifiedDomains"`
 	// The subset of `verifiedDomains` whose published record stayed missing
 	// through its grace window (ADR-123). They still ROUTE - everyone already
 	// here signs in unchanged - and they stop vouching for anybody NEW: no
 	// provisioning on first sign-in, no walking in by domain. A column rather
 	// than a read of the JSON below, because both questions are asked on a
 	// sign-in path and have to be one indexed predicate.
-	LapsedDomains []string `gorm:"column:lapsedDomains;index:SsoConnection_lapsedDomains_idx;serializer:json;not null" json:"lapsedDomains"`
+	LapsedDomains ScalarList[string] `gorm:"column:lapsedDomains;index:SsoConnection_lapsedDomains_idx;type:text[]" json:"lapsedDomains"`
 	// [{ domain, method, actorId, verifiedAtMs, proofState, firstAbsentAtMs,
 	// graceEndsAtMs }] - what proved each verified domain, who, and whether
 	// that evidence is still there. Kept on the row rather than only in the
@@ -825,7 +826,7 @@ type SsoConnection struct {
 	// copy of it: a connection always has a behaviour, and separately
 	// somebody has or has not decided on it. Going live waits for the
 	// deciding - "turn everybody away" is a decision too.
-	ArrivalPolicyDecidedAt *DateTime `gorm:"column:arrivalPolicyDecidedAt" json:"arrivalPolicyDecidedAt"`
+	ArrivalPolicyDecidedAt *DateTime `gorm:"column:arrivalPolicyDecidedAt;type:timestamp(3)" json:"arrivalPolicyDecidedAt"`
 	// self-serve | legacy-grandfathered
 	Source             string  `gorm:"column:source;not null" json:"source"`
 	TestLoginAccountID *string `gorm:"column:testLoginAccountId" json:"testLoginAccountId"`
@@ -838,27 +839,27 @@ type SsoConnection struct {
 	// SETUP | GRACE_LEGACY | GRACE_DIRECT | FINALIZING | FINALIZED.
 	// Null means this connection is not a legacy-to-direct replacement.
 	MigrationPhase *string   `gorm:"column:migrationPhase;index:SsoConnection_organizationId_migrationPhase_idx" json:"migrationPhase"`
-	GraceStartedAt *DateTime `gorm:"column:graceStartedAt" json:"graceStartedAt"`
+	GraceStartedAt *DateTime `gorm:"column:graceStartedAt;type:timestamp(3)" json:"graceStartedAt"`
 	// When an administrator last selected the normal route. This is audit
 	// evidence only: routing is derived from `migrationPhase`, never recency.
-	RouteChangedAt          *DateTime `gorm:"column:routeChangedAt" json:"routeChangedAt"`
-	FinalizationRequestedAt *DateTime `gorm:"column:finalizationRequestedAt" json:"finalizationRequestedAt"`
-	FinalizedAt             *DateTime `gorm:"column:finalizedAt" json:"finalizedAt"`
+	RouteChangedAt          *DateTime `gorm:"column:routeChangedAt;type:timestamp(3)" json:"routeChangedAt"`
+	FinalizationRequestedAt *DateTime `gorm:"column:finalizationRequestedAt;type:timestamp(3)" json:"finalizationRequestedAt"`
+	FinalizedAt             *DateTime `gorm:"column:finalizedAt;type:timestamp(3)" json:"finalizedAt"`
 	// { domain, note } - the last ops rejection, read back on a re-claim.
 	Rejection datatypes.JSON `gorm:"column:rejection" json:"rejection"`
 	CreatedBy *string        `gorm:"column:createdBy" json:"createdBy"`
 	// While TEARDOWN_PENDING: when the process manager's wake completes it.
-	TearDownAfter     *DateTime `gorm:"column:tearDownAfter" json:"tearDownAfter"`
-	OccurredAt        DateTime  `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	TearDownAfter     *DateTime `gorm:"column:tearDownAfter;type:timestamp(3)" json:"tearDownAfter"`
+	OccurredAt        DateTime  `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 	LastEventID       string    `gorm:"column:lastEventId;not null" json:"lastEventId"`
-	AcceptedAt        DateTime  `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        DateTime  `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
 	ProjectionVersion string    `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// Event-derived, not database-managed: `@default(now())` / `@updatedAt`
 	// would make a replayed row differ from the row it rebuilds, which is
 	// exactly the parity this projection has to keep.
-	CreatedAt     DateTime                    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime                    `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ReproofCursor *SsoConnectionReproofCursor `gorm:"foreignKey:ConnectionID;constraint:OnDelete:CASCADE"`
+	CreatedAt     DateTime                    `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime                    `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	ReproofCursor *SsoConnectionReproofCursor `gorm:"foreignKey:ConnectionID;constraint:SsoConnectionReproofCursor_connectionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (SsoConnection) TableName() string {
@@ -872,11 +873,11 @@ type SsoConnectionRegistrationSlot struct {
 	OrganizationID string `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	// legacy | direct
 	Kind                 string   `gorm:"column:kind;primaryKey" json:"kind"`
-	ConnectionID         string   `gorm:"column:connectionId;uniqueIndex;not null" json:"connectionId"`
+	ConnectionID         string   `gorm:"column:connectionId;uniqueIndex:SsoConnectionRegistrationSlot_connectionId_key;not null" json:"connectionId"`
 	ReplacesConnectionID *string  `gorm:"column:replacesConnectionId" json:"replacesConnectionId"`
 	CommandID            string   `gorm:"column:commandId;not null" json:"commandId"`
-	CreatedAt            DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt            DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SsoConnectionRegistrationSlot) TableName() string {
@@ -911,8 +912,8 @@ func (*SsoConnectionRegistrationSlot) BeforeUpdate(tx *gorm.DB) error {
 // every connection, including one whose proof has started wavering.
 type SsoConnectionReproofCursor struct {
 	ConnectionID  string         `gorm:"column:connectionId;primaryKey" json:"connectionId"`
-	LastReproofAt DateTime       `gorm:"column:lastReproofAt;index:SsoConnectionReproofCursor_lastReproofAt_idx;not null" json:"lastReproofAt"`
-	Connection    *SsoConnection `gorm:"foreignKey:ConnectionID"`
+	LastReproofAt DateTime       `gorm:"column:lastReproofAt;index:SsoConnectionReproofCursor_lastReproofAt_idx;type:timestamp(3);not null" json:"lastReproofAt"`
+	Connection    *SsoConnection `gorm:"foreignKey:ConnectionID;belongsTo"`
 }
 
 func (SsoConnectionReproofCursor) TableName() string {
@@ -947,8 +948,8 @@ type SsoCredential struct {
 	// oidc-client-id | oidc-client-secret | saml-idp-config
 	Kind       string   `gorm:"column:kind;not null" json:"kind"`
 	Ciphertext string   `gorm:"column:ciphertext;not null" json:"ciphertext"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt  DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt  DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SsoCredential) TableName() string {
@@ -1026,7 +1027,7 @@ func (*SsoCredential) BeforeUpdate(tx *gorm.DB) error {
 type SsoVerifiedDomain struct {
 	Domain         string                    `gorm:"column:domain;primaryKey;uniqueIndex:SsoVerifiedDomain_domain_organizationId_key" json:"domain"`
 	OrganizationID string                    `gorm:"column:organizationId;uniqueIndex:SsoVerifiedDomain_domain_organizationId_key;index:SsoVerifiedDomain_organizationId_idx;not null" json:"organizationId"`
-	Holders        []SsoVerifiedDomainHolder `gorm:"foreignKey:Domain,OrganizationID;references:Domain,OrganizationID;constraint:OnDelete:CASCADE"`
+	Holders        []SsoVerifiedDomainHolder `gorm:"foreignKey:Domain,OrganizationID;references:Domain,OrganizationID;constraint:SsoVerifiedDomainHolder_domain_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (SsoVerifiedDomain) TableName() string {
@@ -1045,7 +1046,7 @@ type SsoVerifiedDomainHolder struct {
 	Domain         string             `gorm:"column:domain;primaryKey" json:"domain"`
 	ConnectionID   string             `gorm:"column:connectionId;primaryKey;index:SsoVerifiedDomainHolder_connectionId_idx" json:"connectionId"`
 	OrganizationID string             `gorm:"column:organizationId;index:SsoVerifiedDomainHolder_organizationId_idx;not null" json:"organizationId"`
-	Ownership      *SsoVerifiedDomain `gorm:"foreignKey:Domain,OrganizationID;references:Domain,OrganizationID"`
+	Ownership      *SsoVerifiedDomain `gorm:"foreignKey:Domain,OrganizationID;references:Domain,OrganizationID;belongsTo"`
 }
 
 func (SsoVerifiedDomainHolder) TableName() string {
@@ -1057,10 +1058,10 @@ func (SsoVerifiedDomainHolder) TableName() string {
 // member actually authenticated through the replacement before cutover.
 type SsoAuthenticationActivity struct {
 	ID              string   `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID  string   `gorm:"column:organizationId;index:SsoAuthenticationActivity_organizationId_connectionId_authenticatedAt_idx;index:SsoAuthenticationActivity_organizationId_userId_idx;not null" json:"organizationId"`
-	ConnectionID    string   `gorm:"column:connectionId;index:SsoAuthenticationActivity_organizationId_connectionId_authenticatedAt_idx;not null" json:"connectionId"`
+	OrganizationID  string   `gorm:"column:organizationId;index:SsoAuthenticationActivity_organizationId_connectionId_authe_idx;index:SsoAuthenticationActivity_organizationId_userId_idx;not null" json:"organizationId"`
+	ConnectionID    string   `gorm:"column:connectionId;index:SsoAuthenticationActivity_organizationId_connectionId_authe_idx;not null" json:"connectionId"`
 	UserID          string   `gorm:"column:userId;index:SsoAuthenticationActivity_organizationId_userId_idx;not null" json:"userId"`
-	AuthenticatedAt DateTime `gorm:"column:authenticatedAt;index:SsoAuthenticationActivity_organizationId_connectionId_authenticatedAt_idx;not null" json:"authenticatedAt"`
+	AuthenticatedAt DateTime `gorm:"column:authenticatedAt;index:SsoAuthenticationActivity_organizationId_connectionId_authe_idx;type:timestamp(3);not null" json:"authenticatedAt"`
 	// The provider-side account the assertion named; null before #7633's arrival door recorded it.
 	ProviderAccountID *string `gorm:"column:providerAccountId" json:"providerAccountId"`
 }
@@ -1075,7 +1076,7 @@ type SsoProvider struct {
 	OidcConfig     *string `gorm:"column:oidcConfig" json:"oidcConfig"`
 	SamlConfig     *string `gorm:"column:samlConfig" json:"samlConfig"`
 	UserID         *string `gorm:"column:userId" json:"userId"`
-	ProviderID     string  `gorm:"column:providerId;uniqueIndex;not null" json:"providerId"`
+	ProviderID     string  `gorm:"column:providerId;uniqueIndex:SsoProvider_providerId_key;not null" json:"providerId"`
 	OrganizationID *string `gorm:"column:organizationId;index:SsoProvider_organizationId_idx" json:"organizationId"`
 	Domain         string  `gorm:"column:domain;index:SsoProvider_domain_idx;not null" json:"domain"`
 }
@@ -1109,16 +1110,16 @@ type SsoBreakGlassBinding struct {
 	UserID string `gorm:"column:userId;index:SsoBreakGlassBinding_userId_idx;not null" json:"userId"`
 	// Who granted it. A way back in is never self-served.
 	GrantedByUserID string   `gorm:"column:grantedByUserId;not null" json:"grantedByUserId"`
-	GrantedAt       DateTime `gorm:"column:grantedAt;not null" json:"grantedAt"`
-	ExpiresAt       DateTime `gorm:"column:expiresAt;index:SsoBreakGlassBinding_organizationId_expiresAt_idx;not null" json:"expiresAt"`
+	GrantedAt       DateTime `gorm:"column:grantedAt;type:timestamp(3);not null" json:"grantedAt"`
+	ExpiresAt       DateTime `gorm:"column:expiresAt;index:SsoBreakGlassBinding_organizationId_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
 	// Set when a renewal replaced this row; the row itself is never edited.
-	SupersededAt *DateTime `gorm:"column:supersededAt" json:"supersededAt"`
+	SupersededAt *DateTime `gorm:"column:supersededAt;type:timestamp(3)" json:"supersededAt"`
 	// The binding this one renewed, so the previous end date stays readable.
 	RenewedFromID *string `gorm:"column:renewedFromId" json:"renewedFromId"`
 	// Which of the fourteen, seven and one day warnings have been sent, so a
 	// sweep that runs twice in a day never says the same thing twice.
-	WarnedDays []int    `gorm:"column:warnedDays;serializer:json;not null" json:"warnedDays"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	WarnedDays ScalarList[int] `gorm:"column:warnedDays;type:integer[]" json:"warnedDays"`
+	CreatedAt  DateTime        `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (SsoBreakGlassBinding) TableName() string {
@@ -1138,9 +1139,9 @@ func (m *SsoBreakGlassBinding) BeforeCreate(tx *gorm.DB) error {
 // matching activation, or an explicit cancellation, may consume it.
 type SsoActivationRecoveryReservation struct {
 	CommandID      string   `gorm:"column:commandId;primaryKey" json:"commandId"`
-	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:SsoActivationRecoveryReservation_organizationId_connectionId_key;index:SsoActivationRecoveryReservation_organizationId_idx;not null" json:"organizationId"`
-	ConnectionID   string   `gorm:"column:connectionId;uniqueIndex:SsoActivationRecoveryReservation_organizationId_connectionId_key;not null" json:"connectionId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:SsoActivationRecoveryReservation_organizationId_connectionI_key;index:SsoActivationRecoveryReservation_organizationId_idx;not null" json:"organizationId"`
+	ConnectionID   string   `gorm:"column:connectionId;uniqueIndex:SsoActivationRecoveryReservation_organizationId_connectionI_key;not null" json:"connectionId"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (SsoActivationRecoveryReservation) TableName() string {
@@ -1183,8 +1184,8 @@ type JoinRequest struct {
 	// the terminal lands a Developer seat whatever the joiner seat says.
 	Origin *string `gorm:"column:origin;default:'web';not null" json:"origin"`
 	// While PENDING: when the day-14 wake lapses it. Null once resolved.
-	ExpiresAt  *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
-	ResolvedAt *DateTime `gorm:"column:resolvedAt" json:"resolvedAt"`
+	ExpiresAt  *DateTime `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	ResolvedAt *DateTime `gorm:"column:resolvedAt;type:timestamp(3)" json:"resolvedAt"`
 	// user | policy | invite - who ended it. `policy` is domain auto-join's
 	// own principal, deliberately not the one SSO auto-join uses.
 	ResolvedByType *string `gorm:"column:resolvedByType" json:"resolvedByType"`
@@ -1194,15 +1195,15 @@ type JoinRequest struct {
 	WithdrawalCause *string `gorm:"column:withdrawalCause" json:"withdrawalCause"`
 	// The SSO connection a single sign-on arrival was admitted through; null otherwise.
 	ConnectionID      *string  `gorm:"column:connectionId" json:"connectionId"`
-	OccurredAt        DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt        DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
-	AcceptedAt        DateTime `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        DateTime `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// Event-derived, not database-managed: `@default(now())` / `@updatedAt`
 	// would make a replayed row differ from the row it rebuilds, which is
 	// exactly the parity this projection has to keep.
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (JoinRequest) TableName() string {
@@ -1214,11 +1215,11 @@ type TeamUser struct {
 	TeamID         string      `gorm:"column:teamId;primaryKey;index:TeamUser_teamId_idx" json:"teamId"`
 	Role           string      `gorm:"column:role;not null" json:"role"`
 	AssignedRoleID *string     `gorm:"column:assignedRoleId;index:TeamUser_assignedRoleId_idx" json:"assignedRoleId"`
-	CreatedAt      DateTime    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime    `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	AssignedRole   *CustomRole `gorm:"foreignKey:AssignedRoleID"`
-	User           *User
-	Team           *Team
+	CreatedAt      DateTime    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime    `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	AssignedRole   *CustomRole `gorm:"foreignKey:AssignedRoleID;belongsTo"`
+	User           *User       `gorm:"belongsTo"`
+	Team           *Team       `gorm:"belongsTo"`
 }
 
 func (TeamUser) TableName() string {
@@ -1248,8 +1249,8 @@ type OrganizationUser struct {
 	UserID         string   `gorm:"column:userId;primaryKey;index:OrganizationUser_userId_idx" json:"userId"`
 	OrganizationID string   `gorm:"column:organizationId;primaryKey;index:OrganizationUser_organizationId_idx" json:"organizationId"`
 	Role           string   `gorm:"column:role;not null" json:"role"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	// Department assignment for spend attribution (the people lens).
 	// Single-valued, org-scoped, accounting-only (never gates access).
 	// Plain column ref (relationMode="prisma"); the service validates the
@@ -1261,7 +1262,7 @@ type OrganizationUser struct {
 	// Reversible: re-enabling restores access if a seat is available.
 	// Seat counting excludes disabled memberships. See
 	// seat-reconciliation.feature.
-	DisabledAt *DateTime `gorm:"column:disabledAt" json:"disabledAt"`
+	DisabledAt *DateTime `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
 	// Stable grant intent for an unfinished automatic SSO admission.
 	// Cleared after the authoritative grant is observed; never inferred from missing access.
 	PendingSsoGrantID *string `gorm:"column:pendingSsoGrantId" json:"pendingSsoGrantId"`
@@ -1271,12 +1272,12 @@ type OrganizationUser struct {
 	MembershipStamp string `gorm:"column:membershipStamp;default:gen_random_uuid()::text;not null" json:"membershipStamp"`
 	// When this membership started holding the full seat it holds now; null means createdAt.
 	// Anchors the 30-day seat hold (specs/licensing/seat-rotation.feature).
-	FullSeatSince *DateTime `gorm:"column:fullSeatSince" json:"fullSeatSince"`
+	FullSeatSince *DateTime `gorm:"column:fullSeatSince;type:timestamp(3)" json:"fullSeatSince"`
 	// Set when admission wrote this membership disabled because no seat was free: the person
 	// is waiting for one. Cleared when the membership is enabled.
-	SeatPendingSince *DateTime `gorm:"column:seatPendingSince" json:"seatPendingSince"`
-	User             *User
-	Organization     *Organization
+	SeatPendingSince *DateTime     `gorm:"column:seatPendingSince;type:timestamp(3)" json:"seatPendingSince"`
+	User             *User         `gorm:"belongsTo"`
+	Organization     *Organization `gorm:"belongsTo"`
 }
 
 func (OrganizationUser) TableName() string {
@@ -1313,12 +1314,12 @@ type SeatHold struct {
 	Email *string `gorm:"column:email" json:"email"`
 	Name  *string `gorm:"column:name" json:"name"`
 	// When the person took the seat this hold keeps.
-	SeatTakenAt DateTime `gorm:"column:seatTakenAt;not null" json:"seatTakenAt"`
+	SeatTakenAt DateTime `gorm:"column:seatTakenAt;type:timestamp(3);not null" json:"seatTakenAt"`
 	// seatTakenAt plus 30 days; expired holds are ignored by every count and deleted hourly.
-	HeldUntil DateTime `gorm:"column:heldUntil;index:SeatHold_heldUntil_idx;not null" json:"heldUntil"`
+	HeldUntil DateTime `gorm:"column:heldUntil;index:SeatHold_heldUntil_idx;type:timestamp(3);not null" json:"heldUntil"`
 	// REMOVED | DISABLED | DEMOTED
 	Reason    string   `gorm:"column:reason;not null" json:"reason"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (SeatHold) TableName() string {
@@ -1352,15 +1353,15 @@ type SeatRequest struct {
 	// okta | entra | google | onelogin | jumpcloud | ping | auth0 | oidc | saml
 	IdpKind *string `gorm:"column:idpKind" json:"idpKind"`
 	// When sales were told about this request; reset when it reopens.
-	SalesNotifiedAt  *DateTime `gorm:"column:salesNotifiedAt" json:"salesNotifiedAt"`
-	OpenedAt         DateTime  `gorm:"column:openedAt;not null" json:"openedAt"`
-	ResolvedAt       *DateTime `gorm:"column:resolvedAt" json:"resolvedAt"`
+	SalesNotifiedAt  *DateTime `gorm:"column:salesNotifiedAt;type:timestamp(3)" json:"salesNotifiedAt"`
+	OpenedAt         DateTime  `gorm:"column:openedAt;type:timestamp(3);not null" json:"openedAt"`
+	ResolvedAt       *DateTime `gorm:"column:resolvedAt;type:timestamp(3)" json:"resolvedAt"`
 	ResolvedByUserID *string   `gorm:"column:resolvedByUserId" json:"resolvedByUserId"`
 	// Set when an approval claims the request, cleared once its seat is given; an approval
 	// still pending long after is one whose seat never landed, and is reopened.
-	SeatPendingSince *DateTime `gorm:"column:seatPendingSince" json:"seatPendingSince"`
-	CreatedAt        DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt        DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	SeatPendingSince *DateTime `gorm:"column:seatPendingSince;type:timestamp(3)" json:"seatPendingSince"`
+	CreatedAt        DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt        DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SeatRequest) TableName() string {
@@ -1392,8 +1393,8 @@ type OrganizationSeatLease struct {
 	OrganizationID string `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	// Random per hold, so a release deletes only its own lease.
 	Holder    string   `gorm:"column:holder;not null" json:"holder"`
-	ExpiresAt DateTime `gorm:"column:expiresAt;not null" json:"expiresAt"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	ExpiresAt DateTime `gorm:"column:expiresAt;type:timestamp(3);not null" json:"expiresAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (OrganizationSeatLease) TableName() string {
@@ -1422,9 +1423,9 @@ type OrganizationAccessNotice struct {
 	DayKey string `gorm:"column:dayKey;uniqueIndex:OrganizationAccessNotice_organizationId_kind_email_dayKey_key;not null" json:"dayKey"`
 	// Whether the seat request it announces was also refused by the identity provider.
 	IdpRefused bool     `gorm:"column:idpRefused;default:false;not null" json:"idpRefused"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// Set once the notice was handed to the mailer; null if a send never started.
-	MailedAt *DateTime `gorm:"column:mailedAt" json:"mailedAt"`
+	MailedAt *DateTime `gorm:"column:mailedAt;type:timestamp(3)" json:"mailedAt"`
 }
 
 func (OrganizationAccessNotice) TableName() string {
@@ -1442,22 +1443,22 @@ func (m *OrganizationAccessNotice) BeforeCreate(tx *gorm.DB) error {
 type Team struct {
 	ID             string    `gorm:"column:id;primaryKey" json:"id"`
 	Name           string    `gorm:"column:name;not null" json:"name"`
-	Slug           string    `gorm:"column:slug;uniqueIndex;not null" json:"slug"`
+	Slug           string    `gorm:"column:slug;uniqueIndex:Team_slug_key;not null" json:"slug"`
 	OrganizationID string    `gorm:"column:organizationId;index:Team_organizationId_idx;not null" json:"organizationId"`
-	CreatedAt      DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ArchivedAt     *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
+	CreatedAt      DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt     *DateTime `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
 	IsPersonal     bool      `gorm:"column:isPersonal;index:Team_isPersonal_idx;default:false;not null" json:"isPersonal"`
 	OwnerUserID    *string   `gorm:"column:ownerUserId;type:varchar(255)" json:"ownerUserId"`
 	// Department assignment inherited as the default for members and
 	// projects that have none of their own. Accounting-only.
-	DepartmentID     *string `gorm:"column:departmentId;index:Team_departmentId_idx" json:"departmentId"`
-	Organization     *Organization
-	OwnerUser        *User             `gorm:"foreignKey:OwnerUserID"`
-	Members          []TeamUser        `gorm:"foreignKey:TeamID"`
-	Projects         []Project         `gorm:"foreignKey:TeamID"`
-	IngestionSources []IngestionSource `gorm:"foreignKey:TeamID;constraint:OnDelete:SET NULL"`
-	AiToolEntryTeams []AiToolEntryTeam `gorm:"foreignKey:TeamID;constraint:OnDelete:CASCADE"`
+	DepartmentID     *string           `gorm:"column:departmentId;index:Team_departmentId_idx" json:"departmentId"`
+	Organization     *Organization     `gorm:"belongsTo"`
+	OwnerUser        *User             `gorm:"foreignKey:OwnerUserID;belongsTo"`
+	Members          []TeamUser        `gorm:"foreignKey:TeamID;constraint:TeamUser_teamId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Projects         []Project         `gorm:"foreignKey:TeamID;constraint:Project_teamId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	IngestionSources []IngestionSource `gorm:"foreignKey:TeamID;constraint:IngestionSource_teamId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	AiToolEntryTeams []AiToolEntryTeam `gorm:"foreignKey:TeamID;constraint:AiToolEntryTeam_teamId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Team) TableName() string {
@@ -1494,14 +1495,14 @@ type Organization struct {
 	// Spec: modules/ops/specs/checkup-canary-project.feature.
 	Kind                  *string  `gorm:"column:kind;default:'customer';not null" json:"kind"`
 	PhoneNumber           *string  `gorm:"column:phoneNumber" json:"phoneNumber"`
-	Slug                  string   `gorm:"column:slug;uniqueIndex;not null" json:"slug"`
-	CreatedAt             DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	UsageSpendingMaxLimit *int     `gorm:"column:usageSpendingMaxLimit" json:"usageSpendingMaxLimit"`
+	Slug                  string   `gorm:"column:slug;uniqueIndex:Organization_slug_key;not null" json:"slug"`
+	CreatedAt             DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	UsageSpendingMaxLimit *int     `gorm:"column:usageSpendingMaxLimit;size:32" json:"usageSpendingMaxLimit"`
 	// The largest file a dataset image or file cell accepts for this
 	// organization, in mebibytes. Null means the default. Set by an operator
 	// from the back office only; every other dataset size limit scales with it.
-	DatasetAttachmentMaxMb *int `gorm:"column:datasetAttachmentMaxMb" json:"datasetAttachmentMaxMb"`
+	DatasetAttachmentMaxMb *int `gorm:"column:datasetAttachmentMaxMb;size:32" json:"datasetAttachmentMaxMb"`
 	// The label of this organization's `CLICKHOUSE_URL__<label>__<id>` route, recorded by the
 	// organization module the first time it is seen. Once set, a missing route refuses the
 	// organization instead of serving it from the shared ClickHouse. Null: never private.
@@ -1510,7 +1511,7 @@ type Organization struct {
 	// The same for `DATAPLANE_S3__<label>__<id>`. Spec: specs/private-dataplane/s3-routing.feature.
 	PrivateS3Label *string `gorm:"column:privateS3Label" json:"privateS3Label"`
 	// When either label was first recorded.
-	PrivateDataplaneSeenAt *DateTime `gorm:"column:privateDataplaneSeenAt" json:"privateDataplaneSeenAt"`
+	PrivateDataplaneSeenAt *DateTime `gorm:"column:privateDataplaneSeenAt;type:timestamp(3)" json:"privateDataplaneSeenAt"`
 	// Phase 8 - admin-configurable max lifetime for CLI device-flow
 	// sessions, in days. 0 = unbounded (default, mirrors GitHub CLI /
 	// gh-style flows). Companies that need finite session lifetime
@@ -1519,7 +1520,7 @@ type Organization struct {
 	// endpoint rejects refresh attempts where now - issued_at exceeds
 	// this value, regardless of the underlying refresh-token TTL.
 	// Spec: specs/ai-governance/sessions/session-ttl.feature.
-	MaxSessionDurationDays int `gorm:"column:maxSessionDurationDays;default:0;not null" json:"maxSessionDurationDays"`
+	MaxSessionDurationDays int `gorm:"column:maxSessionDurationDays;size:32;default:0;not null" json:"maxSessionDurationDays"`
 	// Every member of this organization can prove a second factor (D06). A
 	// MEMBERSHIP CONDITION, not a session policy: it is asked when a member
 	// reaches this organization's data, it holds the ones who cannot prove
@@ -1535,16 +1536,16 @@ type Organization struct {
 	// When the docs playground was last turned off, written in the same update as the switch. A
 	// docs session key minted at or before it never authenticates again, nor any key minted under
 	// one, so turning it back on revives none of them (ADR-185, amendment of 2026-11-14).
-	DocsPlaygroundSessionsDisabledAt *DateTime `gorm:"column:docsPlaygroundSessionsDisabledAt" json:"docsPlaygroundSessionsDisabledAt"`
+	DocsPlaygroundSessionsDisabledAt *DateTime `gorm:"column:docsPlaygroundSessionsDisabledAt;type:timestamp(3)" json:"docsPlaygroundSessionsDisabledAt"`
 	// How many consecutive failed sign-ins lock an account (GAC-09).
 	// 0 = never lock, which is the default and what every organization that
 	// has not asked for this keeps. Counts EVERY credential together - a
 	// password, a one-time code, a backup code, a passkey - because five per
 	// factor hands an attacker one budget per factor.
 	// Spec: specs/identity/org-account-lockout.feature.
-	LockoutAfterFailedAttempts int `gorm:"column:lockoutAfterFailedAttempts;default:0;not null" json:"lockoutAfterFailedAttempts"`
+	LockoutAfterFailedAttempts int `gorm:"column:lockoutAfterFailedAttempts;size:32;default:0;not null" json:"lockoutAfterFailedAttempts"`
 	// How long a lock lasts, in minutes. Ignored while the threshold is 0.
-	LockoutMinutes *int `gorm:"column:lockoutMinutes;default:30;not null" json:"lockoutMinutes"`
+	LockoutMinutes *int `gorm:"column:lockoutMinutes;size:32;default:30;not null" json:"lockoutMinutes"`
 	// How long a BROWSER session may sit idle before it ends, in minutes
 	// (GAC-10). 0 = no idle timeout. Activity rolls the window, which is the
 	// "refreshed every hour" half of the control.
@@ -1557,12 +1558,12 @@ type Organization struct {
 	// is enforced when the CLI refreshes. Two surfaces, two lifetimes, two
 	// decisions an administrator makes separately.
 	// Spec: specs/identity/org-session-lifetime.feature.
-	SessionIdleTimeoutMinutes *int `gorm:"column:sessionIdleTimeoutMinutes;default:1440;not null" json:"sessionIdleTimeoutMinutes"`
+	SessionIdleTimeoutMinutes *int `gorm:"column:sessionIdleTimeoutMinutes;size:32;default:1440;not null" json:"sessionIdleTimeoutMinutes"`
 	// The ceiling on a browser session from the moment it was minted, in
 	// minutes, which no amount of activity extends. 0 = no ceiling, the
 	// default. Offered beside the idle timeout because a session kept alive
 	// forever by a polling page is not really bounded.
-	SessionMaxLifetimeMinutes int            `gorm:"column:sessionMaxLifetimeMinutes;default:0;not null" json:"sessionMaxLifetimeMinutes"`
+	SessionMaxLifetimeMinutes int            `gorm:"column:sessionMaxLifetimeMinutes;size:32;default:0;not null" json:"sessionMaxLifetimeMinutes"`
 	SignupData                datatypes.JSON `gorm:"column:signupData" json:"signupData"`
 	SignedDPA                 bool           `gorm:"column:signedDPA;default:false;not null" json:"signedDPA"`
 	ElasticsearchNodeURL      *string        `gorm:"column:elasticsearchNodeUrl" json:"elasticsearchNodeUrl"`
@@ -1573,8 +1574,8 @@ type Organization struct {
 	S3SecretAccessKey         *string        `gorm:"column:s3SecretAccessKey" json:"s3SecretAccessKey"`
 	S3Bucket                  *string        `gorm:"column:s3Bucket" json:"s3Bucket"`
 	UseCustomS3               bool           `gorm:"column:useCustomS3;default:false;not null" json:"useCustomS3"`
-	SentPlanLimitAlert        *DateTime      `gorm:"column:sentPlanLimitAlert" json:"sentPlanLimitAlert"`
-	SsoDomain                 *string        `gorm:"column:ssoDomain;uniqueIndex" json:"ssoDomain"`
+	SentPlanLimitAlert        *DateTime      `gorm:"column:sentPlanLimitAlert;type:timestamp(3)" json:"sentPlanLimitAlert"`
+	SsoDomain                 *string        `gorm:"column:ssoDomain;uniqueIndex:Organization_ssoDomain_key" json:"ssoDomain"`
 	SsoProvider               *string        `gorm:"column:ssoProvider;index:Organization_ssoProvider_idx" json:"ssoProvider"`
 	// How colleagues on a matching domain get in (D12, ADR-117):
 	// `off` (invisible to them entirely) | `request` (they ask, an admin
@@ -1595,8 +1596,8 @@ type Organization struct {
 	// Empty means automatic joining admits nobody whatever `domainJoin` says -
 	// which is what keeps a setting left on from admitting a domain nobody
 	// ever agreed to.
-	JoinDomains     []string `gorm:"column:joinDomains;serializer:json;not null" json:"joinDomains"`
-	PresenceEnabled *bool    `gorm:"column:presenceEnabled;default:true;not null" json:"presenceEnabled"`
+	JoinDomains     ScalarList[string] `gorm:"column:joinDomains;type:text[]" json:"joinDomains"`
+	PresenceEnabled *bool              `gorm:"column:presenceEnabled;default:true;not null" json:"presenceEnabled"`
 	// Org-level trace-sharing kill switch. Off = trace share links cannot be
 	// created in ANY project of this org, and existing links stop resolving —
 	// the org toggle is the global switch, the per-project
@@ -1616,12 +1617,12 @@ type Organization struct {
 	// ADR-038.
 	PrimaryIntent          *string   `gorm:"column:primaryIntent" json:"primaryIntent"`
 	PromoCode              *string   `gorm:"column:promoCode" json:"promoCode"`
-	StripeCustomerID       *string   `gorm:"column:stripeCustomerId;uniqueIndex" json:"stripeCustomerId"`
+	StripeCustomerID       *string   `gorm:"column:stripeCustomerId;uniqueIndex:Organization_stripeCustomerId_key" json:"stripeCustomerId"`
 	Currency               string    `gorm:"column:currency;default:'EUR';not null" json:"currency"`
 	PricingModel           string    `gorm:"column:pricingModel;default:'TIERED';not null" json:"pricingModel"`
 	License                *string   `gorm:"column:license;type:text" json:"license"`
-	LicenseExpiresAt       *DateTime `gorm:"column:licenseExpiresAt" json:"licenseExpiresAt"`
-	LicenseLastValidatedAt *DateTime `gorm:"column:licenseLastValidatedAt" json:"licenseLastValidatedAt"`
+	LicenseExpiresAt       *DateTime `gorm:"column:licenseExpiresAt;type:timestamp(3)" json:"licenseExpiresAt"`
+	LicenseLastValidatedAt *DateTime `gorm:"column:licenseLastValidatedAt;type:timestamp(3)" json:"licenseLastValidatedAt"`
 	// A customer that runs LangWatch self-hosted. The hosted usage, budgets and
 	// invoices of its connected installs attach to this organization (ADR-139).
 	SelfHostedCustomer bool `gorm:"column:selfHostedCustomer;default:false;not null" json:"selfHostedCustomer"`
@@ -1632,46 +1633,46 @@ type Organization struct {
 	// administrator who switched one off keeps it off across license changes
 	// (ADR-139, section 2). A license that names no service reaches nothing,
 	// whatever this column holds.
-	ConnectServicesDisabled []string `gorm:"column:connectServicesDisabled;serializer:json;not null" json:"connectServicesDisabled"`
+	ConnectServicesDisabled ScalarList[string] `gorm:"column:connectServicesDisabled;type:text[]" json:"connectServicesDisabled"`
 	// When a member of this organization switched Instant Evals on from the
 	// search bar, which is the organization's consent to have judged text sent
 	// to the judge's provider. Null until then: a self-serve organization is
 	// never opted in on its behalf, and an enterprise one is switched on by an
 	// operator through the release flag after asking, never here.
-	InstantEvalsEnabledAt *DateTime `gorm:"column:instantEvalsEnabledAt" json:"instantEvalsEnabledAt"`
+	InstantEvalsEnabledAt *DateTime `gorm:"column:instantEvalsEnabledAt;type:timestamp(3)" json:"instantEvalsEnabledAt"`
 	// The member who switched them on, so the audit trail names a person and
 	// not just a moment.
 	InstantEvalsEnabledByUserID *string `gorm:"column:instantEvalsEnabledByUserId" json:"instantEvalsEnabledByUserId"`
 	// When the last license sync succeeded.
-	ConnectLastSyncAt *DateTime `gorm:"column:connectLastSyncAt" json:"connectLastSyncAt"`
+	ConnectLastSyncAt *DateTime `gorm:"column:connectLastSyncAt;type:timestamp(3)" json:"connectLastSyncAt"`
 	// The code of the failure the last sync ended on, cleared on the next
 	// success. Settings, Connect renders the copy for it.
 	ConnectLastSyncError *string                        `gorm:"column:connectLastSyncError" json:"connectLastSyncError"`
-	Members              []OrganizationUser             `gorm:"foreignKey:OrganizationID"`
-	Teams                []Team                         `gorm:"foreignKey:OrganizationID"`
-	WebhookEndpoints     []WebhookEndpoint              `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	OrganizationInvite   []OrganizationInvite           `gorm:"foreignKey:OrganizationID"`
-	CustomRoles          []CustomRole                   `gorm:"foreignKey:OrganizationID"`
-	Notifications        []Notification                 `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	Subscriptions        []Subscription                 `gorm:"foreignKey:OrganizationID"`
-	ScimTokens           []ScimToken                    `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	ScimRequestLog       []ScimRequestLog               `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	PromptTags           []PromptTag                    `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	Groups               []Group                        `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	RoleBindings         []RoleBinding                  `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	APIKeys              []APIKey                       `gorm:"foreignKey:OrganizationID;constraint:OnDelete:RESTRICT"`
-	IssuedLicenses       []IssuedLicense                `gorm:"foreignKey:OrganizationID;constraint:OnDelete:RESTRICT"`
-	GatewayChangeEvents  []GatewayChangeEvent           `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	RoutingPolicies      []RoutingPolicy                `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	IngestionSources     []IngestionSource              `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	AnomalyRules         []AnomalyRule                  `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	AnomalyAlerts        []AnomalyAlert                 `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	AiToolEntries        []AiToolEntry                  `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	IngestionTemplates   []IngestionTemplate            `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	GithubInstallations  []GithubInstallation           `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	GithubPullRequests   []GithubPullRequest            `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	GithubBranchPrChecks []GithubBranchPullRequestCheck `gorm:"foreignKey:OrganizationID;constraint:OnDelete:CASCADE"`
-	ConnectedBilling     *ConnectedBillingAccount       `gorm:"foreignKey:OrganizationID;constraint:OnDelete:RESTRICT"`
+	Members              []OrganizationUser             `gorm:"foreignKey:OrganizationID;constraint:OrganizationUser_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Teams                []Team                         `gorm:"foreignKey:OrganizationID;constraint:Team_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	WebhookEndpoints     []WebhookEndpoint              `gorm:"foreignKey:OrganizationID;constraint:WebhookEndpoint_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	OrganizationInvite   []OrganizationInvite           `gorm:"foreignKey:OrganizationID;constraint:OrganizationInvite_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	CustomRoles          []CustomRole                   `gorm:"foreignKey:OrganizationID;constraint:CustomRole_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Notifications        []Notification                 `gorm:"foreignKey:OrganizationID;constraint:Notification_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Subscriptions        []Subscription                 `gorm:"foreignKey:OrganizationID;constraint:Subscription_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	ScimTokens           []ScimToken                    `gorm:"foreignKey:OrganizationID;constraint:ScimToken_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ScimRequestLog       []ScimRequestLog               `gorm:"foreignKey:OrganizationID;constraint:ScimRequestLog_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	PromptTags           []PromptTag                    `gorm:"foreignKey:OrganizationID;constraint:PromptTag_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Groups               []Group                        `gorm:"foreignKey:OrganizationID;constraint:Group_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleBindings         []RoleBinding                  `gorm:"foreignKey:OrganizationID;constraint:RoleBinding_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIKeys              []APIKey                       `gorm:"foreignKey:OrganizationID;constraint:ApiKey_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	IssuedLicenses       []IssuedLicense                `gorm:"foreignKey:OrganizationID;constraint:IssuedLicense_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	GatewayChangeEvents  []GatewayChangeEvent           `gorm:"foreignKey:OrganizationID;constraint:GatewayChangeEvent_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoutingPolicies      []RoutingPolicy                `gorm:"foreignKey:OrganizationID;constraint:RoutingPolicy_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	IngestionSources     []IngestionSource              `gorm:"foreignKey:OrganizationID;constraint:IngestionSource_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AnomalyRules         []AnomalyRule                  `gorm:"foreignKey:OrganizationID;constraint:AnomalyRule_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AnomalyAlerts        []AnomalyAlert                 `gorm:"foreignKey:OrganizationID;constraint:AnomalyAlert_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AiToolEntries        []AiToolEntry                  `gorm:"foreignKey:OrganizationID;constraint:AiToolEntry_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	IngestionTemplates   []IngestionTemplate            `gorm:"foreignKey:OrganizationID;constraint:IngestionTemplate_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GithubInstallations  []GithubInstallation           `gorm:"foreignKey:OrganizationID;constraint:GithubInstallation_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GithubPullRequests   []GithubPullRequest            `gorm:"foreignKey:OrganizationID;constraint:GithubPullRequest_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GithubBranchPrChecks []GithubBranchPullRequestCheck `gorm:"foreignKey:OrganizationID;constraint:GithubBranchPullRequestCheck_organizationId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	ConnectedBilling     *ConnectedBillingAccount       `gorm:"foreignKey:OrganizationID;constraint:ConnectedBillingAccount_organizationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Organization) TableName() string {
@@ -1709,9 +1710,9 @@ func (*Organization) BeforeUpdate(tx *gorm.DB) error {
 type IssuedLicense struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// The `licenseId` inside the signed license (`lic-<uuid>`).
-	LicenseID string `gorm:"column:licenseId;uniqueIndex;not null" json:"licenseId"`
+	LicenseID string `gorm:"column:licenseId;uniqueIndex:IssuedLicense_licenseId_key;not null" json:"licenseId"`
 	// SHA-256 of the `lwl_` token. Looked up on every credential resolution.
-	TokenHash string `gorm:"column:tokenHash;uniqueIndex;not null" json:"tokenHash"`
+	TokenHash string `gorm:"column:tokenHash;uniqueIndex:IssuedLicense_tokenHash_key;not null" json:"tokenHash"`
 	// The customer organization on LangWatch Cloud. Null for a license that is
 	// recorded but not linked to a customer yet, such as a self-serve purchase:
 	// it resolves to nothing until an operator links it.
@@ -1720,62 +1721,62 @@ type IssuedLicense struct {
 	OrganizationName string `gorm:"column:organizationName;not null" json:"organizationName"`
 	Email            string `gorm:"column:email;not null" json:"email"`
 	PlanType         string `gorm:"column:planType;not null" json:"planType"`
-	MaxMembers       int    `gorm:"column:maxMembers;not null" json:"maxMembers"`
+	MaxMembers       int    `gorm:"column:maxMembers;size:32;not null" json:"maxMembers"`
 	// The lite seats sold: null when not stated or when unlimited. Never a stand-in number.
-	MaxMembersLite *int `gorm:"column:maxMembersLite" json:"maxMembersLite"`
+	MaxMembersLite *int `gorm:"column:maxMembersLite;size:32" json:"maxMembersLite"`
 	// True when the license sells unlimited lite seats; maxMembersLite is then null.
 	LiteSeatsUnlimited bool `gorm:"column:liteSeatsUnlimited;default:false;not null" json:"liteSeatsUnlimited"`
 	// The Developer seats sold: null when not stated, which sells none.
-	MaxMembersDeveloper *int     `gorm:"column:maxMembersDeveloper" json:"maxMembersDeveloper"`
-	IssuedAt            DateTime `gorm:"column:issuedAt;not null" json:"issuedAt"`
-	ExpiresAt           DateTime `gorm:"column:expiresAt;index:IssuedLicense_expiresAt_idx;not null" json:"expiresAt"`
+	MaxMembersDeveloper *int     `gorm:"column:maxMembersDeveloper;size:32" json:"maxMembersDeveloper"`
+	IssuedAt            DateTime `gorm:"column:issuedAt;type:timestamp(3);not null" json:"issuedAt"`
+	ExpiresAt           DateTime `gorm:"column:expiresAt;index:IssuedLicense_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
 	Source              string   `gorm:"column:source;not null" json:"source"`
 	// The operator who issued or registered it. Null for the purchase flow and the script.
 	IssuedByID    *string   `gorm:"column:issuedById" json:"issuedById"`
-	RevokedAt     *DateTime `gorm:"column:revokedAt" json:"revokedAt"`
+	RevokedAt     *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	RevokedByID   *string   `gorm:"column:revokedById" json:"revokedById"`
 	RevokedReason *string   `gorm:"column:revokedReason" json:"revokedReason"`
 	// Set when the install first presents the license that replaced this one.
-	SupersededAt *DateTime `gorm:"column:supersededAt" json:"supersededAt"`
+	SupersededAt *DateTime `gorm:"column:supersededAt;type:timestamp(3)" json:"supersededAt"`
 	// The id of the IssuedLicense this one replaces, when it was reissued. A
 	// plain column ref (relationMode="prisma" cannot declare a self-relation on
 	// Postgres); the registry service validates it. Unique, so a license is
 	// replaced by one license at most.
-	ReplacesID *string `gorm:"column:replacesId;uniqueIndex" json:"replacesId"`
+	ReplacesID *string `gorm:"column:replacesId;uniqueIndex:IssuedLicense_replacesId_key" json:"replacesId"`
 	// A reissued license waiting to be delivered over sync, encrypted. Erased
 	// when the install first presents it. The only license text the registry holds.
 	PendingDeliveryLicense *string `gorm:"column:pendingDeliveryLicense;type:text" json:"pendingDeliveryLicense"`
 	// Hosted services this license may call, such as `instant_evals`.
-	Services []string `gorm:"column:services;serializer:json;not null" json:"services"`
+	Services ScalarList[string] `gorm:"column:services;type:text[]" json:"services"`
 	// The annual rate of one seat, in cents of `seatCurrency`. Needed to prorate added seats.
-	SeatRateCents *int    `gorm:"column:seatRateCents" json:"seatRateCents"`
+	SeatRateCents *int    `gorm:"column:seatRateCents;size:32" json:"seatRateCents"`
 	SeatCurrency  *string `gorm:"column:seatCurrency" json:"seatCurrency"`
 	// The prepaid usage commit for the term, in USD cents.
-	CommitUsdCents int `gorm:"column:commitUsdCents;default:0;not null" json:"commitUsdCents"`
+	CommitUsdCents int `gorm:"column:commitUsdCents;size:32;default:0;not null" json:"commitUsdCents"`
 	// Whether usage may continue past the commit, up to `overageMaxUsdCents`.
 	OverageEnabled     bool `gorm:"column:overageEnabled;default:false;not null" json:"overageEnabled"`
-	OverageMaxUsdCents *int `gorm:"column:overageMaxUsdCents" json:"overageMaxUsdCents"`
+	OverageMaxUsdCents *int `gorm:"column:overageMaxUsdCents;size:32" json:"overageMaxUsdCents"`
 	// The install this license is bound to. Set on first use, cleared by an operator.
 	InstanceID      *string   `gorm:"column:instanceId" json:"instanceId"`
-	InstanceBoundAt *DateTime `gorm:"column:instanceBoundAt" json:"instanceBoundAt"`
+	InstanceBoundAt *DateTime `gorm:"column:instanceBoundAt;type:timestamp(3)" json:"instanceBoundAt"`
 	// The last license sync this install reported: when it arrived, the
 	// LangWatch version that sent it, and the seats in use at that moment.
 	// Null until the install syncs for the first time.
-	LastSyncAt          *DateTime `gorm:"column:lastSyncAt" json:"lastSyncAt"`
+	LastSyncAt          *DateTime `gorm:"column:lastSyncAt;type:timestamp(3)" json:"lastSyncAt"`
 	LastSyncVersion     *string   `gorm:"column:lastSyncVersion" json:"lastSyncVersion"`
-	ReportedMembers     *int      `gorm:"column:reportedMembers" json:"reportedMembers"`
-	ReportedMembersLite *int      `gorm:"column:reportedMembersLite" json:"reportedMembersLite"`
+	ReportedMembers     *int      `gorm:"column:reportedMembers;size:32" json:"reportedMembers"`
+	ReportedMembersLite *int      `gorm:"column:reportedMembersLite;size:32" json:"reportedMembersLite"`
 	// The managed gateway key (purpose CONNECT) that hosted-service traffic of
 	// this license runs under. One per license, so spend rows name the install.
 	// Created when the license first resolves. A plain column, not a relation.
-	VirtualKeyID *string `gorm:"column:virtualKeyId;uniqueIndex" json:"virtualKeyId"`
+	VirtualKeyID *string `gorm:"column:virtualKeyId;uniqueIndex:IssuedLicense_virtualKeyId_key" json:"virtualKeyId"`
 	// The seats of the license this one replaced, set only when a seat change
 	// raised a linked license. Billing reads it through licensing to invoice
 	// the added seats, so the fact commits with the license or not at all.
-	SeatsRaisedFrom *int     `gorm:"column:seatsRaisedFrom;index:IssuedLicense_seatsRaisedFrom_idx" json:"seatsRaisedFrom"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization    *Organization
+	SeatsRaisedFrom *int          `gorm:"column:seatsRaisedFrom;index:IssuedLicense_seatsRaisedFrom_idx;size:32" json:"seatsRaisedFrom"`
+	CreatedAt       DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime      `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization    *Organization `gorm:"belongsTo"`
 }
 
 func (IssuedLicense) TableName() string {
@@ -1810,9 +1811,9 @@ func (*IssuedLicense) BeforeUpdate(tx *gorm.DB) error {
 type OrganizationLicense struct {
 	OrganizationID string    `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	LicenseKey     *string   `gorm:"column:licenseKey;type:text" json:"licenseKey"`
-	ExpiresAt      *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
-	ValidatedAt    *DateTime `gorm:"column:validatedAt" json:"validatedAt"`
-	UpdatedAt      DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ExpiresAt      *DateTime `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	ValidatedAt    *DateTime `gorm:"column:validatedAt;type:timestamp(3)" json:"validatedAt"`
+	UpdatedAt      DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (OrganizationLicense) TableName() string {
@@ -1846,7 +1847,7 @@ func (*OrganizationLicense) BeforeUpdate(tx *gorm.DB) error {
 type ActivationCode struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// SHA-256 of the normalised code. Looked up on every redemption.
-	CodeHash string `gorm:"column:codeHash;uniqueIndex;not null" json:"codeHash"`
+	CodeHash string `gorm:"column:codeHash;uniqueIndex:ActivationCode_codeHash_key;not null" json:"codeHash"`
 	// The last four characters, so an operator tells two codes apart in a list
 	// without the list holding either one.
 	CodeHint string `gorm:"column:codeHint;not null" json:"codeHint"`
@@ -1855,34 +1856,34 @@ type ActivationCode struct {
 	OrganizationName string `gorm:"column:organizationName;not null" json:"organizationName"`
 	Email            string `gorm:"column:email;not null" json:"email"`
 	PlanType         string `gorm:"column:planType;not null" json:"planType"`
-	MaxMembers       int    `gorm:"column:maxMembers;not null" json:"maxMembers"`
+	MaxMembers       int    `gorm:"column:maxMembers;size:32;not null" json:"maxMembers"`
 	// The lite seats the minted license carries: null when unlimited. Never a stand-in number.
-	MaxMembersLite *int `gorm:"column:maxMembersLite;default:0" json:"maxMembersLite"`
+	MaxMembersLite *int `gorm:"column:maxMembersLite;size:32;default:0" json:"maxMembersLite"`
 	// True when the minted license carries unlimited lite seats; maxMembersLite is then null.
 	LiteSeatsUnlimited bool `gorm:"column:liteSeatsUnlimited;default:false;not null" json:"liteSeatsUnlimited"`
 	// The Developer seats the minted license carries: null when not stated, which sells none.
-	MaxMembersDeveloper *int `gorm:"column:maxMembersDeveloper" json:"maxMembersDeveloper"`
+	MaxMembersDeveloper *int `gorm:"column:maxMembersDeveloper;size:32" json:"maxMembersDeveloper"`
 	// How long the license this code mints runs for.
-	LicenseTermDays int `gorm:"column:licenseTermDays;not null" json:"licenseTermDays"`
+	LicenseTermDays int `gorm:"column:licenseTermDays;size:32;not null" json:"licenseTermDays"`
 	// Hosted services the minted license may call.
-	Services []string `gorm:"column:services;serializer:json;not null" json:"services"`
+	Services ScalarList[string] `gorm:"column:services;type:text[]" json:"services"`
 	// When the code stops working, which is not the term of what it mints.
-	ExpiresAt DateTime `gorm:"column:expiresAt;index:ActivationCode_expiresAt_idx;not null" json:"expiresAt"`
+	ExpiresAt DateTime `gorm:"column:expiresAt;index:ActivationCode_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
 	// A code a customer may redeem on more than one install, for a rollout.
 	Reusable bool `gorm:"column:reusable;default:false;not null" json:"reusable"`
 	// Set by the redemption that won, which is what makes a single-use code
 	// single use: the write itself carries the condition.
-	RedeemedAt           *DateTime `gorm:"column:redeemedAt" json:"redeemedAt"`
+	RedeemedAt           *DateTime `gorm:"column:redeemedAt;type:timestamp(3)" json:"redeemedAt"`
 	RedeemedByInstanceID *string   `gorm:"column:redeemedByInstanceId" json:"redeemedByInstanceId"`
 	// The license the winning redemption minted.
 	IssuedLicenseID *string `gorm:"column:issuedLicenseId" json:"issuedLicenseId"`
 	// How many installs have redeemed it, which only moves on a reusable code.
-	RedemptionCount int       `gorm:"column:redemptionCount;default:0;not null" json:"redemptionCount"`
-	RevokedAt       *DateTime `gorm:"column:revokedAt" json:"revokedAt"`
+	RedemptionCount int       `gorm:"column:redemptionCount;size:32;default:0;not null" json:"redemptionCount"`
+	RevokedAt       *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	RevokedByID     *string   `gorm:"column:revokedById" json:"revokedById"`
 	CreatedByID     *string   `gorm:"column:createdById" json:"createdById"`
-	CreatedAt       DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ActivationCode) TableName() string {
@@ -1919,22 +1920,22 @@ func (*ActivationCode) BeforeUpdate(tx *gorm.DB) error {
 // provider id, so running onboarding or a renewal twice changes nothing.
 type ConnectedBillingAccount struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string `gorm:"column:organizationId;uniqueIndex;not null" json:"organizationId"`
+	OrganizationID string `gorm:"column:organizationId;uniqueIndex:ConnectedBillingAccount_organizationId_key;not null" json:"organizationId"`
 	// The customer at the payment provider. Invoiced, never charged.
-	StripeCustomerID string `gorm:"column:stripeCustomerId;uniqueIndex;not null" json:"stripeCustomerId"`
+	StripeCustomerID string `gorm:"column:stripeCustomerId;uniqueIndex:ConnectedBillingAccount_stripeCustomerId_key;not null" json:"stripeCustomerId"`
 	// The one metered subscription, and the item hosted usage is reported on.
 	// Null between the customer being created and the subscription existing,
 	// which is where a half-finished onboarding resumes from.
 	UsageSubscriptionID     *string  `gorm:"column:usageSubscriptionId" json:"usageSubscriptionId"`
 	UsageSubscriptionItemID *string  `gorm:"column:usageSubscriptionItemId" json:"usageSubscriptionItemId"`
-	TermStartsAt            DateTime `gorm:"column:termStartsAt;not null" json:"termStartsAt"`
-	TermEndsAt              DateTime `gorm:"column:termEndsAt;not null" json:"termEndsAt"`
+	TermStartsAt            DateTime `gorm:"column:termStartsAt;type:timestamp(3);not null" json:"termStartsAt"`
+	TermEndsAt              DateTime `gorm:"column:termEndsAt;type:timestamp(3);not null" json:"termEndsAt"`
 	// Prepaid usage for the term, in USD cents. The credit grants add up to it.
-	CommitUsdCents int `gorm:"column:commitUsdCents;default:0;not null" json:"commitUsdCents"`
+	CommitUsdCents int `gorm:"column:commitUsdCents;size:32;default:0;not null" json:"commitUsdCents"`
 	// The seat contract, which may be in another currency than hosted usage.
 	SeatCurrency  string `gorm:"column:seatCurrency;not null" json:"seatCurrency"`
-	SeatRateCents int    `gorm:"column:seatRateCents;not null" json:"seatRateCents"`
-	Seats         int    `gorm:"column:seats;not null" json:"seats"`
+	SeatRateCents int    `gorm:"column:seatRateCents;size:32;not null" json:"seatRateCents"`
+	Seats         int    `gorm:"column:seats;size:32;not null" json:"seats"`
 	// `us_bank_transfer` or `eu_bank_transfer` when the customer pays into a
 	// virtual bank account at the provider. Null when it wires to LangWatch's
 	// own account and finance marks the invoice paid.
@@ -1945,9 +1946,9 @@ type ConnectedBillingAccount struct {
 	// term to be finalized: the new term's end and commit, and who asked.
 	PendingRenewal datatypes.JSON `gorm:"column:pendingRenewal" json:"pendingRenewal"`
 	CreatedByID    *string        `gorm:"column:createdById" json:"createdById"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization   *Organization
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization   *Organization  `gorm:"belongsTo"`
 }
 
 func (ConnectedBillingAccount) TableName() string {
@@ -1985,15 +1986,15 @@ type ConnectedCreditGrant struct {
 	// `IssuedLicense.replacesId`: relationMode="prisma" carries no foreign keys.
 	AccountID string `gorm:"column:accountId;index:ConnectedCreditGrant_accountId_idx;not null" json:"accountId"`
 	// The grant at the payment provider. Unique, so a retry records one row.
-	StripeCreditGrantID string `gorm:"column:stripeCreditGrantId;uniqueIndex;not null" json:"stripeCreditGrantId"`
-	AmountUsdCents      int    `gorm:"column:amountUsdCents;not null" json:"amountUsdCents"`
+	StripeCreditGrantID string `gorm:"column:stripeCreditGrantId;uniqueIndex:ConnectedCreditGrant_stripeCreditGrantId_key;not null" json:"stripeCreditGrantId"`
+	AmountUsdCents      int    `gorm:"column:amountUsdCents;size:32;not null" json:"amountUsdCents"`
 	Kind                string `gorm:"column:kind;not null" json:"kind"`
 	// The term this credit was granted for, and when the provider lets it lapse:
 	// after the last invoice of that term has been finalized, never on the day
 	// the term ends.
-	TermEndsAt DateTime `gorm:"column:termEndsAt;not null" json:"termEndsAt"`
-	ExpiresAt  DateTime `gorm:"column:expiresAt;not null" json:"expiresAt"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	TermEndsAt DateTime `gorm:"column:termEndsAt;type:timestamp(3);not null" json:"termEndsAt"`
+	ExpiresAt  DateTime `gorm:"column:expiresAt;type:timestamp(3);not null" json:"expiresAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (ConnectedCreditGrant) TableName() string {
@@ -2017,16 +2018,16 @@ type ConnectedInvoice struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// The `ConnectedBillingAccount` row, as a plain column ref.
 	AccountID       string `gorm:"column:accountId;index:ConnectedInvoice_accountId_idx;not null" json:"accountId"`
-	StripeInvoiceID string `gorm:"column:stripeInvoiceId;uniqueIndex;not null" json:"stripeInvoiceId"`
+	StripeInvoiceID string `gorm:"column:stripeInvoiceId;uniqueIndex:ConnectedInvoice_stripeInvoiceId_key;not null" json:"stripeInvoiceId"`
 	Kind            string `gorm:"column:kind;not null" json:"kind"`
 	Currency        string `gorm:"column:currency;not null" json:"currency"`
-	AmountCents     int    `gorm:"column:amountCents;not null" json:"amountCents"`
+	AmountCents     int    `gorm:"column:amountCents;size:32;not null" json:"amountCents"`
 	// The provider's own status: `draft`, `open`, `paid`, `void` or `uncollectible`.
 	Status          string    `gorm:"column:status;not null" json:"status"`
-	PaidOutOfBandAt *DateTime `gorm:"column:paidOutOfBandAt" json:"paidOutOfBandAt"`
-	TermStartsAt    *DateTime `gorm:"column:termStartsAt" json:"termStartsAt"`
-	CreatedAt       DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	PaidOutOfBandAt *DateTime `gorm:"column:paidOutOfBandAt;type:timestamp(3)" json:"paidOutOfBandAt"`
+	TermStartsAt    *DateTime `gorm:"column:termStartsAt;type:timestamp(3)" json:"termStartsAt"`
+	CreatedAt       DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ConnectedInvoice) TableName() string {
@@ -2085,14 +2086,14 @@ type ScimRequestLog struct {
 	// raw path: a path carries ids and query strings, and this is read by
 	// people rather than matched by machines.
 	Resource string `gorm:"column:resource;not null" json:"resource"`
-	Status   int    `gorm:"column:status;not null" json:"status"`
+	Status   int    `gorm:"column:status;size:32;not null" json:"status"`
 	// A stable slug, only on a refusal, so a reader branches on this and never
 	// on the sentence beside it.
 	Reason *string `gorm:"column:reason" json:"reason"`
 	// Our own short sentence, customer-safe.
-	Detail       *string  `gorm:"column:detail" json:"detail"`
-	OccurredAt   DateTime `gorm:"column:occurredAt;index:ScimRequestLog_organizationId_occurredAt_idx;index:ScimRequestLog_connectionId_occurredAt_idx;index:ScimRequestLog_occurredAt_idx;not null" json:"occurredAt"`
-	Organization *Organization
+	Detail       *string       `gorm:"column:detail" json:"detail"`
+	OccurredAt   DateTime      `gorm:"column:occurredAt;index:ScimRequestLog_organizationId_occurredAt_idx;index:ScimRequestLog_connectionId_occurredAt_idx;index:ScimRequestLog_occurredAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"occurredAt"`
+	Organization *Organization `gorm:"belongsTo"`
 }
 
 func (ScimRequestLog) TableName() string {
@@ -2134,7 +2135,7 @@ type ScimToken struct {
 	// same string, and without this the lookup would answer with whichever row
 	// the planner reached first: one customer's directory provisioning and
 	// deleting another customer's people.
-	HashedToken string `gorm:"column:hashedToken;uniqueIndex;not null" json:"hashedToken"`
+	HashedToken string `gorm:"column:hashedToken;uniqueIndex:ScimToken_hashedToken_key;not null" json:"hashedToken"`
 	// How `hashedToken` was derived, so the two schemes can coexist while
 	// tokens minted under the old one are still in use.
 	//
@@ -2142,11 +2143,11 @@ type ScimToken struct {
 	// for a value a person chose — a database dump of those is a wordlist away
 	// from live credentials. `hmac-sha256` is keyed on the deployment's own
 	// secret, so a dump on its own is inert. Every new row is the latter.
-	HashScheme   *string   `gorm:"column:hashScheme;default:'sha256';not null" json:"hashScheme"`
-	Description  *string   `gorm:"column:description" json:"description"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	LastUsedAt   *DateTime `gorm:"column:lastUsedAt" json:"lastUsedAt"`
-	Organization *Organization
+	HashScheme   *string       `gorm:"column:hashScheme;default:'sha256';not null" json:"hashScheme"`
+	Description  *string       `gorm:"column:description" json:"description"`
+	CreatedAt    DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	LastUsedAt   *DateTime     `gorm:"column:lastUsedAt;type:timestamp(3)" json:"lastUsedAt"`
+	Organization *Organization `gorm:"belongsTo"`
 }
 
 func (ScimToken) TableName() string {
@@ -2181,9 +2182,9 @@ type ScimExternalID struct {
 	ConnectionID   string   `gorm:"column:connectionId;uniqueIndex:ScimExternalId_connectionId_externalId_key;index:ScimExternalId_connectionId_idx;not null" json:"connectionId"`
 	ExternalID     string   `gorm:"column:externalId;uniqueIndex:ScimExternalId_connectionId_externalId_key;not null" json:"externalId"`
 	UserID         string   `gorm:"column:userId;index:ScimExternalId_organizationId_userId_idx;index:ScimExternalId_userId_idx;not null" json:"userId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User           *User
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User           *User    `gorm:"belongsTo"`
 }
 
 func (ScimExternalID) TableName() string {
@@ -2219,10 +2220,10 @@ type ScimUserResource struct {
 	UserName       string    `gorm:"column:userName;index:ScimUserResource_organizationId_userName_idx;not null" json:"userName"`
 	Name           *string   `gorm:"column:name" json:"name"`
 	Active         *bool     `gorm:"column:active;default:true;not null" json:"active"`
-	DeletedAt      *DateTime `gorm:"column:deletedAt" json:"deletedAt"`
-	CreatedAt      DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User           *User
+	DeletedAt      *DateTime `gorm:"column:deletedAt;type:timestamp(3)" json:"deletedAt"`
+	CreatedAt      DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User           *User     `gorm:"belongsTo"`
 }
 
 func (ScimUserResource) TableName() string {
@@ -2278,7 +2279,7 @@ type ScimSyncState struct {
 	OrganizationID string `gorm:"column:organizationId;index:ScimSyncState_organizationId_idx;not null" json:"organizationId"`
 	// TOKEN_ISSUED | SYNCING | ERROR | REVOKED
 	State        string    `gorm:"column:state;index:ScimSyncState_state_idx;not null" json:"state"`
-	LastPushedAt *DateTime `gorm:"column:lastPushedAt" json:"lastPushedAt"`
+	LastPushedAt *DateTime `gorm:"column:lastPushedAt;type:timestamp(3)" json:"lastPushedAt"`
 	// The failure standing right now: { op, errorCode, attempts, retiredAtMs,
 	// userId, occurredAtMs }. A reason CODE and ids — never a token, never a
 	// secret, never an internal hostname.
@@ -2288,15 +2289,15 @@ type ScimSyncState struct {
 	DeadLetters datatypes.JSON `gorm:"column:deadLetters;default:'[]';not null" json:"deadLetters"`
 	// revoke | teardown, once the sync has ended.
 	RevokedCause      *string  `gorm:"column:revokedCause" json:"revokedCause"`
-	OccurredAt        DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt        DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
-	AcceptedAt        DateTime `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        DateTime `gorm:"column:acceptedAt;type:timestamp(3);not null" json:"acceptedAt"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// Event-derived, not database-managed: `@default(now())` / `@updatedAt`
 	// would make a replayed row differ from the row it rebuilds, which is
 	// exactly the parity this projection has to keep.
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ScimSyncState) TableName() string {
@@ -2315,12 +2316,12 @@ type ScimSsoConnectionView struct {
 	// The connection as the reducer folded it (SsoConnectionState + LastEventOccurredAt).
 	Folded datatypes.JSON `gorm:"column:folded;not null" json:"folded"`
 	// The event ids of the last delivery folded in, so a redelivery folds once.
-	AppliedEventIds []string `gorm:"column:appliedEventIds;serializer:json;not null" json:"appliedEventIds"`
+	AppliedEventIds ScalarList[string] `gorm:"column:appliedEventIds;type:text[]" json:"appliedEventIds"`
 	// A row of another version reads as undecodable and is re-folded from the log.
 	ProjectionVersion string `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// Event-derived, so a replayed row equals the row it rebuilds.
-	CreatedAt DateTime `gorm:"column:createdAt;index:ScimSsoConnectionView_organizationId_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;index:ScimSsoConnectionView_organizationId_createdAt_idx;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ScimSsoConnectionView) TableName() string {
@@ -2335,14 +2336,14 @@ type OrganizationSeatPeak struct {
 	// The organization, which is also the aggregate id.
 	OrganizationID string `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	// When the opening snapshot was taken, epoch milliseconds.
-	OpenedAt       float64 `gorm:"column:openedAt;not null" json:"openedAt"`
-	FullSeats      int     `gorm:"column:fullSeats;not null" json:"fullSeats"`
-	LiteSeats      int     `gorm:"column:liteSeats;not null" json:"liteSeats"`
-	DeveloperSeats int     `gorm:"column:developerSeats;not null" json:"developerSeats"`
+	OpenedAt       float64 `gorm:"column:openedAt;type:double precision;not null" json:"openedAt"`
+	FullSeats      int     `gorm:"column:fullSeats;size:32;not null" json:"fullSeats"`
+	LiteSeats      int     `gorm:"column:liteSeats;size:32;not null" json:"liteSeats"`
+	DeveloperSeats int     `gorm:"column:developerSeats;size:32;not null" json:"developerSeats"`
 	// The latest change time applied to any holder; invitations expire up to it.
-	LatestChangeAt float64 `gorm:"column:latestChangeAt;not null" json:"latestChangeAt"`
+	LatestChangeAt float64 `gorm:"column:latestChangeAt;type:double precision;not null" json:"latestChangeAt"`
 	// Changes whose `from` disagreed with the seat the fold held.
-	Mismatches int `gorm:"column:mismatches;not null" json:"mismatches"`
+	Mismatches int `gorm:"column:mismatches;size:32;not null" json:"mismatches"`
 }
 
 func (OrganizationSeatPeak) TableName() string {
@@ -2351,18 +2352,18 @@ func (OrganizationSeatPeak) TableName() string {
 
 // One member's or pending invitation's seat as the seat peak last applied it (ADR-002).
 type OrganizationSeatPeakHolder struct {
-	OrganizationID string `gorm:"column:organizationId;primaryKey;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_expiresAt_idx;index:OrganizationSeatPeakHolder_organizationId_suppressedBy_idx" json:"organizationId"`
+	OrganizationID string `gorm:"column:organizationId;primaryKey;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_e_idx;index:OrganizationSeatPeakHolder_organizationId_suppressedBy_idx" json:"organizationId"`
 	// `member`, `invitation` or `hold` (a seat held after somebody left).
-	HolderKind string `gorm:"column:holderKind;primaryKey;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_expiresAt_idx" json:"holderKind"`
+	HolderKind string `gorm:"column:holderKind;primaryKey;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_e_idx" json:"holderKind"`
 	// The member's or the hold's userId, or the invitation's id.
 	HolderID string `gorm:"column:holderId;primaryKey" json:"holderId"`
 	// `full`, `lite`, `developer` or `none`.
-	Seat          string  `gorm:"column:seat;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_expiresAt_idx;not null" json:"seat"`
-	LastChangedAt float64 `gorm:"column:lastChangedAt;not null" json:"lastChangedAt"`
+	Seat          string  `gorm:"column:seat;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_e_idx;not null" json:"seat"`
+	LastChangedAt float64 `gorm:"column:lastChangedAt;type:double precision;not null" json:"lastChangedAt"`
 	// Absent for a seat the opening snapshot recorded.
 	LastChangeID *string `gorm:"column:lastChangeId" json:"lastChangeId"`
 	// An invitation's expiry; null for a member or an invitation that never expires.
-	ExpiresAt *float64 `gorm:"column:expiresAt;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_expiresAt_idx" json:"expiresAt"`
+	ExpiresAt *float64 `gorm:"column:expiresAt;index:OrganizationSeatPeakHolder_organizationId_holderKind_seat_e_idx;type:double precision" json:"expiresAt"`
 	// The fold gave the invitation's seat back at `expiresAt`.
 	ExpiredByFold bool `gorm:"column:expiredByFold;default:false;not null" json:"expiredByFold"`
 	// A hold whose seat a live full invitation to its address took: that invitation's id.
@@ -2380,12 +2381,12 @@ type OrganizationSeatPeakMonth struct {
 	OrganizationID string `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	// `YYYY-MM`.
 	Month      string  `gorm:"column:month;primaryKey" json:"month"`
-	FullPeak   int     `gorm:"column:fullPeak;not null" json:"fullPeak"`
-	FullPeakAt float64 `gorm:"column:fullPeakAt;not null" json:"fullPeakAt"`
-	LitePeak   int     `gorm:"column:litePeak;not null" json:"litePeak"`
-	LitePeakAt float64 `gorm:"column:litePeakAt;not null" json:"litePeakAt"`
-	FullAtEnd  int     `gorm:"column:fullAtEnd;not null" json:"fullAtEnd"`
-	LiteAtEnd  int     `gorm:"column:liteAtEnd;not null" json:"liteAtEnd"`
+	FullPeak   int     `gorm:"column:fullPeak;size:32;not null" json:"fullPeak"`
+	FullPeakAt float64 `gorm:"column:fullPeakAt;type:double precision;not null" json:"fullPeakAt"`
+	LitePeak   int     `gorm:"column:litePeak;size:32;not null" json:"litePeak"`
+	LitePeakAt float64 `gorm:"column:litePeakAt;type:double precision;not null" json:"litePeakAt"`
+	FullAtEnd  int     `gorm:"column:fullAtEnd;size:32;not null" json:"fullAtEnd"`
+	LiteAtEnd  int     `gorm:"column:liteAtEnd;size:32;not null" json:"liteAtEnd"`
 }
 
 func (OrganizationSeatPeakMonth) TableName() string {
@@ -2395,18 +2396,18 @@ func (OrganizationSeatPeakMonth) TableName() string {
 type Project struct {
 	ID     string `gorm:"column:id;primaryKey" json:"id"`
 	Name   string `gorm:"column:name;not null" json:"name"`
-	Slug   string `gorm:"column:slug;uniqueIndex;not null" json:"slug"`
-	APIKey string `gorm:"column:apiKey;uniqueIndex;not null" json:"apiKey"`
+	Slug   string `gorm:"column:slug;uniqueIndex:Project_slug_key;not null" json:"slug"`
+	APIKey string `gorm:"column:apiKey;uniqueIndex:Project_apiKey_key;not null" json:"apiKey"`
 	// When the legacy apiKey last authenticated a request, written at most once a
 	// minute per project and process. Spec: modules/api-key/specs/request-credential-type.feature
-	LegacyAPIKeyLastUsedAt *DateTime `gorm:"column:legacyApiKeyLastUsedAt" json:"legacyApiKeyLastUsedAt"`
+	LegacyAPIKeyLastUsedAt *DateTime `gorm:"column:legacyApiKeyLastUsedAt;type:timestamp(3)" json:"legacyApiKeyLastUsedAt"`
 	// Random per-project secret whose SHA-256 digest is this project's LangWatchQL
 	// SQL tenant capability in ClickHouse. Deliberately NOT the API key: the
 	// credential a caller authenticates with and the capability the database
 	// resolves a tenant from stay decoupled, so rotating one never invalidates
 	// the other, and a leak of the ClickHouse key map's input discloses nothing
 	// a caller could authenticate with. Generated by the database on insert.
-	LwqlKey   string `gorm:"column:lwqlKey;uniqueIndex;default:(gen_random_uuid())::text;not null" json:"lwqlKey"`
+	LwqlKey   string `gorm:"column:lwqlKey;uniqueIndex:Project_lwqlKey_key;default:(gen_random_uuid())::text;not null" json:"lwqlKey"`
 	TeamID    string `gorm:"column:teamId;index:Project_teamId_idx;index:Project_teamId_kind_idx;not null" json:"teamId"`
 	Language  string `gorm:"column:language;not null" json:"language"`
 	Framework string `gorm:"column:framework;not null" json:"framework"`
@@ -2435,8 +2436,8 @@ type Project struct {
 	AggregateRule       datatypes.JSON `gorm:"column:aggregateRule" json:"aggregateRule"`
 	FirstMessage        bool           `gorm:"column:firstMessage;default:false;not null" json:"firstMessage"`
 	Integrated          bool           `gorm:"column:integrated;default:false;not null" json:"integrated"`
-	CreatedAt           DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt           DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt           DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt           DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	UserLinkTemplate    *string        `gorm:"column:userLinkTemplate" json:"userLinkTemplate"`
 	TraceSharingEnabled *bool          `gorm:"column:traceSharingEnabled;default:true;not null" json:"traceSharingEnabled"`
 	PresenceEnabled     *bool          `gorm:"column:presenceEnabled;default:true;not null" json:"presenceEnabled"`
@@ -2444,7 +2445,7 @@ type Project struct {
 	S3AccessKeyID       *string        `gorm:"column:s3AccessKeyId" json:"s3AccessKeyId"`
 	S3SecretAccessKey   *string        `gorm:"column:s3SecretAccessKey" json:"s3SecretAccessKey"`
 	S3Bucket            *string        `gorm:"column:s3Bucket" json:"s3Bucket"`
-	ArchivedAt          *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
+	ArchivedAt          *DateTime      `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
 	IsPersonal          bool           `gorm:"column:isPersonal;index:Project_isPersonal_idx;default:false;not null" json:"isPersonal"`
 	OwnerUserID         *string        `gorm:"column:ownerUserId;index:Project_ownerUserId_idx;type:varchar(255)" json:"ownerUserId"`
 	// Per-feature unlock flags for personal projects only. Shape:
@@ -2481,43 +2482,43 @@ type Project struct {
 	// recent, so a busy project costs at most one update an hour per column.
 	// No index: every read is by project id, which is the primary key.
 	// See specs/coding-agent/project-menu-links.feature.
-	LastCodingAgentSessionAt     *DateTime `gorm:"column:lastCodingAgentSessionAt" json:"lastCodingAgentSessionAt"`
-	LastCodingAgentPullRequestAt *DateTime `gorm:"column:lastCodingAgentPullRequestAt" json:"lastCodingAgentPullRequestAt"`
-	Team                         *Team
-	OwnerUser                    *User                     `gorm:"foreignKey:OwnerUserID"`
-	Checks                       []Monitor                 `gorm:"foreignKey:ProjectID"`
-	Costs                        []Cost                    `gorm:"foreignKey:ProjectID"`
-	Topics                       []Topic                   `gorm:"foreignKey:ProjectID"`
-	Datasets                     []Dataset                 `gorm:"foreignKey:ProjectID"`
-	DatasetRecords               []DatasetRecord           `gorm:"foreignKey:ProjectID"`
-	CustomGraphs                 []CustomGraph             `gorm:"foreignKey:ProjectID"`
-	Dashboards                   []Dashboard               `gorm:"foreignKey:ProjectID"`
-	BatchEvaluations             []BatchEvaluation         `gorm:"foreignKey:ProjectID"`
-	Triggers                     []Trigger                 `gorm:"foreignKey:ProjectID"`
-	Experiments                  []Experiment              `gorm:"foreignKey:ProjectID"`
-	Annotations                  []Annotation              `gorm:"foreignKey:ProjectID"`
-	ProjectSecrets               []ProjectSecret           `gorm:"foreignKey:ProjectID"`
-	TriggerSent                  []TriggerSent             `gorm:"foreignKey:ProjectID"`
-	WebhookDeliveries            []WebhookEndpointDelivery `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	AnnotationScores             []AnnotationScore         `gorm:"foreignKey:ProjectID"`
-	ShareLinks                   []ShareLink               `gorm:"foreignKey:ProjectID"`
-	Workflows                    []Workflow                `gorm:"foreignKey:ProjectID"`
-	WorkflowVersion              []WorkflowVersion         `gorm:"foreignKey:ProjectID"`
-	AnnotationQueue              []AnnotationQueue         `gorm:"foreignKey:ProjectID"`
-	AnnotationQueueItem          []AnnotationQueueItem     `gorm:"foreignKey:ProjectID"`
-	LlmPromptConfigs             []LlmPromptConfig         `gorm:"foreignKey:ProjectID"`
-	Analytics                    []Analytics               `gorm:"foreignKey:ProjectID"`
-	Notifications                []Notification            `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	Agents                       []Agent                   `gorm:"foreignKey:ProjectID"`
-	Evaluators                   []Evaluator               `gorm:"foreignKey:ProjectID"`
-	Scenarios                    []Scenario                `gorm:"foreignKey:ProjectID"`
-	SuiteConfigurations          []SimulationSuite         `gorm:"foreignKey:ProjectID"`
-	SavedViews                   []SavedView               `gorm:"foreignKey:ProjectID"`
-	GatewayGuardrails            []GatewayGuardrail        `gorm:"foreignKey:ProjectID;constraint:OnDelete:CASCADE"`
-	GatewayChangeEvents          []GatewayChangeEvent      `gorm:"foreignKey:ProjectID;constraint:OnDelete:SET NULL"`
-	PinnedTraces                 []PinnedTrace             `gorm:"foreignKey:ProjectID"`
-	TraceEditOverlays            []TraceEditOverlay        `gorm:"foreignKey:ProjectID"`
-	EmailSuppressions            []EmailSuppression        `gorm:"foreignKey:ProjectID"`
+	LastCodingAgentSessionAt     *DateTime                 `gorm:"column:lastCodingAgentSessionAt;type:timestamp(3)" json:"lastCodingAgentSessionAt"`
+	LastCodingAgentPullRequestAt *DateTime                 `gorm:"column:lastCodingAgentPullRequestAt;type:timestamp(3)" json:"lastCodingAgentPullRequestAt"`
+	Team                         *Team                     `gorm:"belongsTo"`
+	OwnerUser                    *User                     `gorm:"foreignKey:OwnerUserID;belongsTo"`
+	Checks                       []Monitor                 `gorm:"foreignKey:ProjectID;constraint:Monitor_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Costs                        []Cost                    `gorm:"foreignKey:ProjectID;constraint:Cost_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Topics                       []Topic                   `gorm:"foreignKey:ProjectID;constraint:Topic_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Datasets                     []Dataset                 `gorm:"foreignKey:ProjectID;constraint:Dataset_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	DatasetRecords               []DatasetRecord           `gorm:"foreignKey:ProjectID;constraint:DatasetRecord_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	CustomGraphs                 []CustomGraph             `gorm:"foreignKey:ProjectID;constraint:CustomGraph_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Dashboards                   []Dashboard               `gorm:"foreignKey:ProjectID;constraint:Dashboard_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	BatchEvaluations             []BatchEvaluation         `gorm:"foreignKey:ProjectID;constraint:BatchEvaluation_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Triggers                     []Trigger                 `gorm:"foreignKey:ProjectID;constraint:Trigger_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Experiments                  []Experiment              `gorm:"foreignKey:ProjectID;constraint:Experiment_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Annotations                  []Annotation              `gorm:"foreignKey:ProjectID;constraint:Annotation_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	ProjectSecrets               []ProjectSecret           `gorm:"foreignKey:ProjectID;constraint:ProjectSecret_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	TriggerSent                  []TriggerSent             `gorm:"foreignKey:ProjectID;constraint:TriggerSent_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	WebhookDeliveries            []WebhookEndpointDelivery `gorm:"foreignKey:ProjectID;constraint:WebhookEndpointDelivery_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	AnnotationScores             []AnnotationScore         `gorm:"foreignKey:ProjectID;constraint:AnnotationScore_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	ShareLinks                   []ShareLink               `gorm:"foreignKey:ProjectID;constraint:ShareLink_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Workflows                    []Workflow                `gorm:"foreignKey:ProjectID;constraint:Workflow_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	WorkflowVersion              []WorkflowVersion         `gorm:"foreignKey:ProjectID;constraint:WorkflowVersion_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AnnotationQueue              []AnnotationQueue         `gorm:"foreignKey:ProjectID;constraint:AnnotationQueue_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AnnotationQueueItem          []AnnotationQueueItem     `gorm:"foreignKey:ProjectID;constraint:AnnotationQueueItem_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	LlmPromptConfigs             []LlmPromptConfig         `gorm:"foreignKey:ProjectID;constraint:LlmPromptConfig_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Analytics                    []Analytics               `gorm:"foreignKey:ProjectID;constraint:Analytics_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Notifications                []Notification            `gorm:"foreignKey:ProjectID;constraint:Notification_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Agents                       []Agent                   `gorm:"foreignKey:ProjectID;constraint:Agent_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Evaluators                   []Evaluator               `gorm:"foreignKey:ProjectID;constraint:Evaluator_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Scenarios                    []Scenario                `gorm:"foreignKey:ProjectID;constraint:Scenario_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SuiteConfigurations          []SimulationSuite         `gorm:"foreignKey:ProjectID;constraint:SimulationSuite_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SavedViews                   []SavedView               `gorm:"foreignKey:ProjectID;constraint:SavedView_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	GatewayGuardrails            []GatewayGuardrail        `gorm:"foreignKey:ProjectID;constraint:GatewayGuardrail_projectId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	GatewayChangeEvents          []GatewayChangeEvent      `gorm:"foreignKey:ProjectID;constraint:GatewayChangeEvent_projectId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	PinnedTraces                 []PinnedTrace             `gorm:"foreignKey:ProjectID;constraint:PinnedTrace_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	TraceEditOverlays            []TraceEditOverlay        `gorm:"foreignKey:ProjectID;constraint:TraceEditOverlay_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	EmailSuppressions            []EmailSuppression        `gorm:"foreignKey:ProjectID;constraint:EmailSuppression_projectId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Project) TableName() string {
@@ -2555,9 +2556,9 @@ type Department struct {
 	ID             string    `gorm:"column:id;primaryKey" json:"id"`
 	OrganizationID string    `gorm:"column:organizationId;index:Department_organizationId_idx;not null" json:"organizationId"`
 	Name           string    `gorm:"column:name;not null" json:"name"`
-	CreatedAt      DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ArchivedAt     *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
+	CreatedAt      DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt     *DateTime `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
 }
 
 func (Department) TableName() string {
@@ -2603,10 +2604,10 @@ type DepartmentMembershipHistory struct {
 	OrganizationID string   `gorm:"column:organizationId;index:DepartmentMembershipHistory_organizationId_userId_validFrom_idx;not null" json:"organizationId"`
 	UserID         string   `gorm:"column:userId;index:DepartmentMembershipHistory_organizationId_userId_validFrom_idx;not null" json:"userId"`
 	DepartmentID   string   `gorm:"column:departmentId;not null" json:"departmentId"`
-	ValidFrom      DateTime `gorm:"column:validFrom;index:DepartmentMembershipHistory_organizationId_userId_validFrom_idx;not null" json:"validFrom"`
+	ValidFrom      DateTime `gorm:"column:validFrom;index:DepartmentMembershipHistory_organizationId_userId_validFrom_idx;type:timestamp(3);not null" json:"validFrom"`
 	// Null means the link is open. Reassignment and clearing close it.
-	ValidTo   *DateTime `gorm:"column:validTo" json:"validTo"`
-	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	ValidTo   *DateTime `gorm:"column:validTo;type:timestamp(3)" json:"validTo"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (DepartmentMembershipHistory) TableName() string {
@@ -2638,8 +2639,8 @@ type PlatformToolPolicy struct {
 	ToolSlug        string   `gorm:"column:toolSlug;uniqueIndex:PlatformToolPolicy_organizationId_toolSlug_key;not null" json:"toolSlug"`
 	AllowVk         *bool    `gorm:"column:allowVk;default:true;not null" json:"allowVk"`
 	AllowOtelDirect *bool    `gorm:"column:allowOtelDirect;default:true;not null" json:"allowOtelDirect"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (PlatformToolPolicy) TableName() string {
@@ -2671,8 +2672,8 @@ func (*PlatformToolPolicy) BeforeUpdate(tx *gorm.DB) error {
 type OrganizationInvite struct {
 	ID                      string         `gorm:"column:id;primaryKey" json:"id"`
 	Email                   string         `gorm:"column:email;not null" json:"email"`
-	InviteCode              string         `gorm:"column:inviteCode;uniqueIndex;not null" json:"inviteCode"`
-	Expiration              *DateTime      `gorm:"column:expiration" json:"expiration"`
+	InviteCode              string         `gorm:"column:inviteCode;uniqueIndex:OrganizationInvite_inviteCode_key;not null" json:"inviteCode"`
+	Expiration              *DateTime      `gorm:"column:expiration;type:timestamp(3)" json:"expiration"`
 	Status                  string         `gorm:"column:status;default:'PENDING';not null" json:"status"`
 	OrganizationID          string         `gorm:"column:organizationId;index:OrganizationInvite_organizationId_idx;not null" json:"organizationId"`
 	TeamIds                 string         `gorm:"column:teamIds;not null" json:"teamIds"`
@@ -2682,10 +2683,10 @@ type OrganizationInvite struct {
 	SubscriptionID          *string        `gorm:"column:subscriptionId" json:"subscriptionId"`
 	AcceptedByUserID        *string        `gorm:"column:acceptedByUserId" json:"acceptedByUserId"`
 	AcceptedViaIdentifierID *string        `gorm:"column:acceptedViaIdentifierId" json:"acceptedViaIdentifierId"`
-	CreatedAt               DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt               DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization            *Organization
-	RequestedByUser         *User `gorm:"foreignKey:RequestedBy"`
+	CreatedAt               DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt               DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization            *Organization  `gorm:"belongsTo"`
+	RequestedByUser         *User          `gorm:"foreignKey:RequestedBy;belongsTo"`
 }
 
 func (OrganizationInvite) TableName() string {
@@ -2717,7 +2718,7 @@ func (*OrganizationInvite) BeforeUpdate(tx *gorm.DB) error {
 type Monitor struct {
 	ID                string         `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID         string         `gorm:"column:projectId;uniqueIndex:Monitor_projectId_slug_key;index:Monitor_projectId_idx;not null" json:"projectId"`
-	ExperimentID      *string        `gorm:"column:experimentId;uniqueIndex" json:"experimentId"`
+	ExperimentID      *string        `gorm:"column:experimentId;uniqueIndex:Monitor_experimentId_key" json:"experimentId"`
 	EvaluatorID       *string        `gorm:"column:evaluatorId;index:Monitor_evaluatorId_idx" json:"evaluatorId"`
 	CheckType         string         `gorm:"column:checkType;not null" json:"checkType"`
 	Name              string         `gorm:"column:name;not null" json:"name"`
@@ -2727,19 +2728,19 @@ type Monitor struct {
 	Preconditions     datatypes.JSON `gorm:"column:preconditions;not null" json:"preconditions"`
 	Parameters        datatypes.JSON `gorm:"column:parameters;not null" json:"parameters"`
 	Mappings          datatypes.JSON `gorm:"column:mappings" json:"mappings"`
-	Sample            *float64       `gorm:"column:sample;default:1;not null" json:"sample"`
+	Sample            *float64       `gorm:"column:sample;type:double precision;default:1;not null" json:"sample"`
 	Level             *string        `gorm:"column:level;default:'trace';not null" json:"level"`
-	ThreadIdleTimeout *int           `gorm:"column:threadIdleTimeout" json:"threadIdleTimeout"`
-	CreatedAt         DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	AutoPausedAt      *DateTime      `gorm:"column:autoPausedAt" json:"autoPausedAt"`
+	ThreadIdleTimeout *int           `gorm:"column:threadIdleTimeout;size:32" json:"threadIdleTimeout"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	AutoPausedAt      *DateTime      `gorm:"column:autoPausedAt;type:timestamp(3)" json:"autoPausedAt"`
 	AutoPausedReason  *string        `gorm:"column:autoPausedReason" json:"autoPausedReason"`
 	EvaluatorLabel    *string        `gorm:"column:evaluatorLabel" json:"evaluatorLabel"`
 	CreatedByID       *string        `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID       *string        `gorm:"column:updatedById" json:"updatedById"`
-	Project           *Project
-	Experiment        *Experiment
-	Evaluator         *Evaluator
+	Project           *Project       `gorm:"belongsTo"`
+	Experiment        *Experiment    `gorm:"belongsTo"`
+	Evaluator         *Evaluator     `gorm:"belongsTo"`
 }
 
 func (Monitor) TableName() string {
@@ -2775,12 +2776,12 @@ type Cost struct {
 	CostName      *string        `gorm:"column:costName" json:"costName"`
 	ReferenceType string         `gorm:"column:referenceType;index:Cost_referenceType_referenceId_idx;not null" json:"referenceType"`
 	ReferenceID   string         `gorm:"column:referenceId;index:Cost_referenceType_referenceId_idx;not null" json:"referenceId"`
-	Amount        float64        `gorm:"column:amount;not null" json:"amount"`
+	Amount        float64        `gorm:"column:amount;type:double precision;not null" json:"amount"`
 	Currency      string         `gorm:"column:currency;not null" json:"currency"`
-	CreatedAt     DateTime       `gorm:"column:createdAt;index:Cost_projectId_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt     DateTime       `gorm:"column:createdAt;index:Cost_projectId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	ExtraInfo     datatypes.JSON `gorm:"column:extraInfo" json:"extraInfo"`
-	Project       *Project
+	Project       *Project       `gorm:"belongsTo"`
 }
 
 func (Cost) TableName() string {
@@ -2822,18 +2823,18 @@ type Topic struct {
 	ParentID               *string        `gorm:"column:parentId;index:Topic_parentId_idx" json:"parentId"`
 	EmbeddingsModel        string         `gorm:"column:embeddings_model;not null" json:"embeddings_model"`
 	Centroid               datatypes.JSON `gorm:"column:centroid;not null" json:"centroid"`
-	P95Distance            float64        `gorm:"column:p95Distance;not null" json:"p95Distance"`
+	P95Distance            float64        `gorm:"column:p95Distance;type:double precision;not null" json:"p95Distance"`
 	AutomaticallyGenerated *bool          `gorm:"column:automaticallyGenerated;default:true;not null" json:"automaticallyGenerated"`
 	// The `topics_recorded` event that recorded this topic (its id in the
 	// event log). Null means the row predates event ownership and has not
 	// been seeded onto the stream yet; the projection sets it on every row
 	// it writes.
 	LastEventID *string  `gorm:"column:lastEventId" json:"lastEventId"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project     *Project
-	Parent      *Topic  `gorm:"foreignKey:ParentID"`
-	Subtopics   []Topic `gorm:"foreignKey:ParentID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project     *Project `gorm:"belongsTo"`
+	Parent      *Topic   `gorm:"foreignKey:ParentID;belongsTo"`
+	Subtopics   []Topic  `gorm:"foreignKey:ParentID;constraint:Topic_parentId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
 }
 
 func (Topic) TableName() string {
@@ -2863,30 +2864,30 @@ func (*Topic) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Dataset struct {
-	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID            string         `gorm:"column:projectId;uniqueIndex:Dataset_projectId_slug_key;not null" json:"projectId"`
-	Name                 string         `gorm:"column:name;not null" json:"name"`
-	Slug                 string         `gorm:"column:slug;uniqueIndex:Dataset_projectId_slug_key;not null" json:"slug"`
-	ColumnTypes          datatypes.JSON `gorm:"column:columnTypes;not null" json:"columnTypes"`
-	CreatedAt            DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ArchivedAt           *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
-	Mapping              datatypes.JSON `gorm:"column:mapping" json:"mapping"`
-	UseS3                bool           `gorm:"column:useS3;default:false;not null" json:"useS3"`
-	S3RecordCount        *int           `gorm:"column:s3RecordCount" json:"s3RecordCount"`
-	ContentLayout        *string        `gorm:"column:contentLayout;default:'postgres';not null" json:"contentLayout"`
-	Status               *string        `gorm:"column:status;default:'ready';not null" json:"status"`
-	StatusError          *string        `gorm:"column:statusError" json:"statusError"`
-	StagingKey           *string        `gorm:"column:stagingKey" json:"stagingKey"`
-	SourceStoredObjectID *string        `gorm:"column:sourceStoredObjectId" json:"sourceStoredObjectId"`
-	UploadFilename       *string        `gorm:"column:uploadFilename" json:"uploadFilename"`
-	RowCount             *int           `gorm:"column:rowCount" json:"rowCount"`
-	SizeBytes            *int64         `gorm:"column:sizeBytes" json:"sizeBytes"`
-	ChunkCount           *int           `gorm:"column:chunkCount" json:"chunkCount"`
-	ChunkOffsets         datatypes.JSON `gorm:"column:chunkOffsets" json:"chunkOffsets"`
-	Project              *Project
-	DatasetRecords       []DatasetRecord   `gorm:"foreignKey:DatasetID"`
-	BatchEvaluations     []BatchEvaluation `gorm:"foreignKey:DatasetID"`
+	ID                   string            `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID            string            `gorm:"column:projectId;uniqueIndex:Dataset_projectId_slug_key;not null" json:"projectId"`
+	Name                 string            `gorm:"column:name;not null" json:"name"`
+	Slug                 string            `gorm:"column:slug;uniqueIndex:Dataset_projectId_slug_key;not null" json:"slug"`
+	ColumnTypes          datatypes.JSON    `gorm:"column:columnTypes;not null" json:"columnTypes"`
+	CreatedAt            DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime          `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt           *DateTime         `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	Mapping              datatypes.JSON    `gorm:"column:mapping" json:"mapping"`
+	UseS3                bool              `gorm:"column:useS3;default:false;not null" json:"useS3"`
+	S3RecordCount        *int              `gorm:"column:s3RecordCount;size:32" json:"s3RecordCount"`
+	ContentLayout        *string           `gorm:"column:contentLayout;default:'postgres';not null" json:"contentLayout"`
+	Status               *string           `gorm:"column:status;default:'ready';not null" json:"status"`
+	StatusError          *string           `gorm:"column:statusError" json:"statusError"`
+	StagingKey           *string           `gorm:"column:stagingKey" json:"stagingKey"`
+	SourceStoredObjectID *string           `gorm:"column:sourceStoredObjectId" json:"sourceStoredObjectId"`
+	UploadFilename       *string           `gorm:"column:uploadFilename" json:"uploadFilename"`
+	RowCount             *int              `gorm:"column:rowCount;size:32" json:"rowCount"`
+	SizeBytes            *int64            `gorm:"column:sizeBytes" json:"sizeBytes"`
+	ChunkCount           *int              `gorm:"column:chunkCount;size:32" json:"chunkCount"`
+	ChunkOffsets         datatypes.JSON    `gorm:"column:chunkOffsets" json:"chunkOffsets"`
+	Project              *Project          `gorm:"belongsTo"`
+	DatasetRecords       []DatasetRecord   `gorm:"foreignKey:DatasetID;constraint:DatasetRecord_datasetId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	BatchEvaluations     []BatchEvaluation `gorm:"foreignKey:DatasetID;constraint:BatchEvaluation_datasetId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Dataset) TableName() string {
@@ -2920,10 +2921,10 @@ type DatasetRecord struct {
 	DatasetID string         `gorm:"column:datasetId;index:DatasetRecord_datasetId_idx;index:DatasetRecord_projectId_datasetId_idx;not null" json:"datasetId"`
 	ProjectID string         `gorm:"column:projectId;index:DatasetRecord_projectId_idx;index:DatasetRecord_projectId_datasetId_idx;not null" json:"projectId"`
 	Entry     datatypes.JSON `gorm:"column:entry;not null" json:"entry"`
-	CreatedAt DateTime       `gorm:"column:createdAt;index:DatasetRecord_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Dataset   *Dataset
-	Project   *Project
+	CreatedAt DateTime       `gorm:"column:createdAt;index:DatasetRecord_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Dataset   *Dataset       `gorm:"belongsTo"`
+	Project   *Project       `gorm:"belongsTo"`
 }
 
 func (DatasetRecord) TableName() string {
@@ -2957,7 +2958,7 @@ type DatasetVersion struct {
 	ID        string `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID string `gorm:"column:projectId;index:DatasetVersion_projectId_datasetId_idx;not null" json:"projectId"`
 	DatasetID string `gorm:"column:datasetId;uniqueIndex:DatasetVersion_datasetId_version_key;index:DatasetVersion_projectId_datasetId_idx;not null" json:"datasetId"`
-	Version   int    `gorm:"column:version;uniqueIndex:DatasetVersion_datasetId_version_key;not null" json:"version"`
+	Version   int    `gorm:"column:version;uniqueIndex:DatasetVersion_datasetId_version_key;size:32;not null" json:"version"`
 	// A name given by hand; a named version is never thinned by retention.
 	Name *string `gorm:"column:name" json:"name"`
 	// "autosave", "manual", "experiment_run", "restore" or "initial".
@@ -2965,16 +2966,16 @@ type DatasetVersion struct {
 	// SHA-256 over the columns and the rows in order; equal content saves no new version.
 	ContentHash         string         `gorm:"column:contentHash;not null" json:"contentHash"`
 	ColumnTypes         datatypes.JSON `gorm:"column:columnTypes;not null" json:"columnTypes"`
-	RowCount            int            `gorm:"column:rowCount;not null" json:"rowCount"`
+	RowCount            int            `gorm:"column:rowCount;size:32;not null" json:"rowCount"`
 	SizeBytes           int64          `gorm:"column:sizeBytes;not null" json:"sizeBytes"`
-	ChunkCount          int            `gorm:"column:chunkCount;not null" json:"chunkCount"`
-	RestoredFromVersion *int           `gorm:"column:restoredFromVersion" json:"restoredFromVersion"`
+	ChunkCount          int            `gorm:"column:chunkCount;size:32;not null" json:"chunkCount"`
+	RestoredFromVersion *int           `gorm:"column:restoredFromVersion;size:32" json:"restoredFromVersion"`
 	AuthorID            *string        `gorm:"column:authorId" json:"authorId"`
 	// "user", "api_key" or "system": who saved the version when authorId is null.
 	AuthorKind *string `gorm:"column:authorKind" json:"authorKind"`
 	// Set when an experiment pins this version; a pinned version is never thinned.
-	PinnedAt  *DateTime `gorm:"column:pinnedAt" json:"pinnedAt"`
-	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	PinnedAt  *DateTime `gorm:"column:pinnedAt;type:timestamp(3)" json:"pinnedAt"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (DatasetVersion) TableName() string {
@@ -2997,7 +2998,7 @@ type DatasetVersionRun struct {
 	VersionID    string   `gorm:"column:versionId;index:DatasetVersionRun_versionId_idx;not null" json:"versionId"`
 	RunID        string   `gorm:"column:runId;uniqueIndex:DatasetVersionRun_projectId_runId_datasetId_key;not null" json:"runId"`
 	ExperimentID *string  `gorm:"column:experimentId" json:"experimentId"`
-	CreatedAt    DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt    DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (DatasetVersionRun) TableName() string {
@@ -3021,7 +3022,7 @@ type Dashboard struct {
 	// member's favourites and never writes this; kept because the legacy
 	// Analytics reports section and the REST reorder endpoint still write it,
 	// and a rolling deploy's older image still reads it.
-	Order int `gorm:"column:order;index:Dashboard_projectId_order_idx;default:0;not null" json:"order"`
+	Order int `gorm:"column:order;index:Dashboard_projectId_order_idx;size:32;default:0;not null" json:"order"`
 	// Free text under the board's name; null until a member writes one.
 	// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
 	Description *string `gorm:"column:description" json:"description"`
@@ -3034,11 +3035,11 @@ type Dashboard struct {
 	// The owning project's organization, stamped when the board is first set to
 	// ORGANIZATION; null before. No relation, per the database rule.
 	// Retiring: Dashboards v2 boards live in DashboardsV2, so no new write sets it.
-	OrganizationID *string  `gorm:"column:organizationId;index:Dashboard_organizationId_scope_idx" json:"organizationId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project        *Project
-	Graphs         []CustomGraph `gorm:"foreignKey:DashboardID;constraint:OnDelete:CASCADE"`
+	OrganizationID *string       `gorm:"column:organizationId;index:Dashboard_organizationId_scope_idx" json:"organizationId"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project        *Project      `gorm:"belongsTo"`
+	Graphs         []CustomGraph `gorm:"foreignKey:DashboardID;constraint:CustomGraph_dashboardId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Dashboard) TableName() string {
@@ -3081,8 +3082,8 @@ type DashboardFavourite struct {
 	TemplateID *string `gorm:"column:templateId;uniqueIndex:DashboardFavourite_userId_projectId_templateId_key" json:"templateId"`
 	ProjectID  string  `gorm:"column:projectId;uniqueIndex:DashboardFavourite_userId_projectId_templateId_key;index:DashboardFavourite_userId_projectId_position_idx;not null" json:"projectId"`
 	// The member's drag order among their own stars in the project.
-	Position  int      `gorm:"column:position;index:DashboardFavourite_userId_projectId_position_idx;not null" json:"position"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	Position  int      `gorm:"column:position;index:DashboardFavourite_userId_projectId_position_idx;size:32;not null" json:"position"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (DashboardFavourite) TableName() string {
@@ -3120,8 +3121,8 @@ type DashboardsV2 struct {
 	// Deprecated: unused since each widget query names its own sources (dashboards-v2 AC200,
 	// 2026-10-28); dropped in a later migration, once no serving release reads it.
 	ExcludedOrigins datatypes.JSON `gorm:"column:excludedOrigins" json:"excludedOrigins"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (DashboardsV2) TableName() string {
@@ -3161,12 +3162,12 @@ type DashboardWidget struct {
 	Name        string  `gorm:"column:name;not null" json:"name"`
 	// The widget's srcdoc definition.
 	Definition datatypes.JSON `gorm:"column:definition;not null" json:"definition"`
-	GridColumn int            `gorm:"column:gridColumn;default:0;not null" json:"gridColumn"`
-	GridRow    int            `gorm:"column:gridRow;default:0;not null" json:"gridRow"`
-	ColSpan    *int           `gorm:"column:colSpan;default:1;not null" json:"colSpan"`
-	RowSpan    *int           `gorm:"column:rowSpan;default:1;not null" json:"rowSpan"`
-	CreatedAt  DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt  DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	GridColumn int            `gorm:"column:gridColumn;size:32;default:0;not null" json:"gridColumn"`
+	GridRow    int            `gorm:"column:gridRow;size:32;default:0;not null" json:"gridRow"`
+	ColSpan    *int           `gorm:"column:colSpan;size:32;default:1;not null" json:"colSpan"`
+	RowSpan    *int           `gorm:"column:rowSpan;size:32;default:1;not null" json:"rowSpan"`
+	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt  DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (DashboardWidget) TableName() string {
@@ -3207,18 +3208,18 @@ type InsightProjection struct {
 	// bad | watch | good
 	Tone                 string  `gorm:"column:tone;not null" json:"tone"`
 	Topic                *string `gorm:"column:topic" json:"topic"`
-	ValidDays            int     `gorm:"column:validDays;not null" json:"validDays"`
+	ValidDays            int     `gorm:"column:validDays;size:32;not null" json:"validDays"`
 	Lwql                 *string `gorm:"column:lwql" json:"lwql"`
 	SourceConversationID *string `gorm:"column:sourceConversationId" json:"sourceConversationId"`
 	SourceMessageID      *string `gorm:"column:sourceMessageId" json:"sourceMessageId"`
 	FiledByUserID        *string `gorm:"column:filedByUserId" json:"filedByUserId"`
-	FiledAt              float64 `gorm:"column:filedAt;index:InsightProjection_projectId_filedAt_idx;index:InsightProjection_projectId_ownerUserId_filedAt_idx;not null" json:"filedAt"`
+	FiledAt              float64 `gorm:"column:filedAt;index:InsightProjection_projectId_filedAt_idx;index:InsightProjection_projectId_ownerUserId_filedAt_idx;type:double precision;not null" json:"filedAt"`
 	// Set by a later run that found the insight still true.
-	RenewedAt         *float64 `gorm:"column:renewedAt" json:"renewedAt"`
-	CreatedAt         float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt         float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
-	OccurredAt        float64  `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt        float64  `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	RenewedAt         *float64 `gorm:"column:renewedAt;type:double precision" json:"renewedAt"`
+	CreatedAt         float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt         float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
+	OccurredAt        float64  `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt        float64  `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// The board and widget it came from. A pointer only, never a relation: the row reads the
@@ -3230,9 +3231,9 @@ type InsightProjection struct {
 	// chat | run
 	FiledVia *string `gorm:"column:filedVia;default:'chat';not null" json:"filedVia"`
 	// The fixed window `lwql` replays over (epoch milliseconds, half-open) and its step.
-	ReplayStart              *float64 `gorm:"column:replayStart" json:"replayStart"`
-	ReplayEnd                *float64 `gorm:"column:replayEnd" json:"replayEnd"`
-	ReplayGranularitySeconds *int     `gorm:"column:replayGranularitySeconds" json:"replayGranularitySeconds"`
+	ReplayStart              *float64 `gorm:"column:replayStart;type:double precision" json:"replayStart"`
+	ReplayEnd                *float64 `gorm:"column:replayEnd;type:double precision" json:"replayEnd"`
+	ReplayGranularitySeconds *int     `gorm:"column:replayGranularitySeconds;size:32" json:"replayGranularitySeconds"`
 	// The values in force when it was filed: `{ period, parameters }`.
 	ReplayContext datatypes.JSON `gorm:"column:replayContext" json:"replayContext"`
 	// Whose insight it is: the one person who reads it. NULL on a row folded before the
@@ -3255,13 +3256,13 @@ type InsightReaderProjection struct {
 	ProjectID         string   `gorm:"column:projectId;uniqueIndex:InsightReaderProjection_projectId_insightId_userId_key;index:InsightReaderProjection_projectId_userId_idx;not null" json:"projectId"`
 	InsightID         string   `gorm:"column:insightId;uniqueIndex:InsightReaderProjection_projectId_insightId_userId_key;not null" json:"insightId"`
 	UserID            string   `gorm:"column:userId;uniqueIndex:InsightReaderProjection_projectId_insightId_userId_key;index:InsightReaderProjection_projectId_userId_idx;not null" json:"userId"`
-	SeenAt            *float64 `gorm:"column:seenAt" json:"seenAt"`
-	ArchivedAt        *float64 `gorm:"column:archivedAt" json:"archivedAt"`
-	KeptAt            *float64 `gorm:"column:keptAt" json:"keptAt"`
-	CreatedAt         float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt         float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
-	OccurredAt        float64  `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt        float64  `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	SeenAt            *float64 `gorm:"column:seenAt;type:double precision" json:"seenAt"`
+	ArchivedAt        *float64 `gorm:"column:archivedAt;type:double precision" json:"archivedAt"`
+	KeptAt            *float64 `gorm:"column:keptAt;type:double precision" json:"keptAt"`
+	CreatedAt         float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt         float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
+	OccurredAt        float64  `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt        float64  `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -3276,37 +3277,37 @@ func (InsightReaderProjection) TableName() string {
 type InsightDailyScheduleProjection struct {
 	// The schedule id, which is also its aggregate id: one per project, person and board.
 	ID        string `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID string `gorm:"column:projectId;uniqueIndex:InsightDailyScheduleProjection_projectId_userId_boardKind_boardId_key;not null" json:"projectId"`
-	UserID    string `gorm:"column:userId;uniqueIndex:InsightDailyScheduleProjection_projectId_userId_boardKind_boardId_key;not null" json:"userId"`
+	ProjectID string `gorm:"column:projectId;uniqueIndex:InsightDailySchedule_projectId_userId_board_key;not null" json:"projectId"`
+	UserID    string `gorm:"column:userId;uniqueIndex:InsightDailySchedule_projectId_userId_board_key;not null" json:"userId"`
 	// dashboard | template. A pointer only, never a relation: a run checks the board is there.
-	BoardKind string `gorm:"column:boardKind;uniqueIndex:InsightDailyScheduleProjection_projectId_userId_boardKind_boardId_key;not null" json:"boardKind"`
-	BoardID   string `gorm:"column:boardId;uniqueIndex:InsightDailyScheduleProjection_projectId_userId_boardKind_boardId_key;not null" json:"boardId"`
+	BoardKind string `gorm:"column:boardKind;uniqueIndex:InsightDailySchedule_projectId_userId_board_key;not null" json:"boardKind"`
+	BoardID   string `gorm:"column:boardId;uniqueIndex:InsightDailySchedule_projectId_userId_board_key;not null" json:"boardId"`
 	BoardName string `gorm:"column:boardName;not null" json:"boardName"`
 	// on | off | undecided.
 	State *string `gorm:"column:state;default:'undecided';not null" json:"state"`
 	// board_deleted | skipped_days | member_removed | project_archived. Why the system turned
 	// it off. NULL while it is on, and when the person turned it off.
 	OffReason   *string `gorm:"column:offReason" json:"offReason"`
-	Hour        *int    `gorm:"column:hour" json:"hour"`
+	Hour        *int    `gorm:"column:hour;size:32" json:"hour"`
 	Timezone    *string `gorm:"column:timezone" json:"timezone"`
-	MaxInsights *int    `gorm:"column:maxInsights" json:"maxInsights"`
+	MaxInsights *int    `gorm:"column:maxInsights;size:32" json:"maxInsights"`
 	// The last run that recorded an outcome. NULL until one did.
 	LastRunID *string  `gorm:"column:lastRunId" json:"lastRunId"`
-	LastRunAt *float64 `gorm:"column:lastRunAt" json:"lastRunAt"`
+	LastRunAt *float64 `gorm:"column:lastRunAt;type:double precision" json:"lastRunAt"`
 	// filed | nothing | failed | skipped
 	LastRunOutcome *string `gorm:"column:lastRunOutcome" json:"lastRunOutcome"`
 	LastRunReason  *string `gorm:"column:lastRunReason" json:"lastRunReason"`
-	LastRunFiled   *int    `gorm:"column:lastRunFiled" json:"lastRunFiled"`
+	LastRunFiled   *int    `gorm:"column:lastRunFiled;size:32" json:"lastRunFiled"`
 	// How many insights the run found still true and renewed.
-	LastRunRenewed        *int    `gorm:"column:lastRunRenewed" json:"lastRunRenewed"`
+	LastRunRenewed        *int    `gorm:"column:lastRunRenewed;size:32" json:"lastRunRenewed"`
 	LastRunConversationID *string `gorm:"column:lastRunConversationId" json:"lastRunConversationId"`
 	// The scheduled days in a row whose run ended skipped, and the slot of the newest counted.
-	ConsecutiveSkips  int      `gorm:"column:consecutiveSkips;default:0;not null" json:"consecutiveSkips"`
-	SkipStreakSlot    *float64 `gorm:"column:skipStreakSlot" json:"skipStreakSlot"`
-	CreatedAt         float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt         float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
-	OccurredAt        float64  `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt        float64  `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	ConsecutiveSkips  int      `gorm:"column:consecutiveSkips;size:32;default:0;not null" json:"consecutiveSkips"`
+	SkipStreakSlot    *float64 `gorm:"column:skipStreakSlot;type:double precision" json:"skipStreakSlot"`
+	CreatedAt         float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt         float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
+	OccurredAt        float64  `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt        float64  `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -3323,16 +3324,16 @@ type SavedView struct {
 	Filters   datatypes.JSON `gorm:"column:filters;default:'{}';not null" json:"filters"`
 	Query     *string        `gorm:"column:query" json:"query"`
 	Period    datatypes.JSON `gorm:"column:period" json:"period"`
-	Order     int            `gorm:"column:order;index:SavedView_projectId_order_idx;index:SavedView_projectId_kind_order_idx;default:0;not null" json:"order"`
+	Order     int            `gorm:"column:order;index:SavedView_projectId_order_idx;index:SavedView_projectId_kind_order_idx;size:32;default:0;not null" json:"order"`
 	// Discriminator for the two storage shapes that share this table:
 	// - "v1-traces-filter" (default) - legacy /messages page filter map saved views
 	// - "v2-traces-lens"             - new traces v2 lens configs (columns, addons, grouping, sort, filterText) encoded inside `filters` JSON
 	// Each client filters by its own kind on read so neither sees the other's rows.
 	Kind      *string  `gorm:"column:kind;index:SavedView_projectId_kind_order_idx;default:'v1-traces-filter';not null" json:"kind"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project   *Project
-	User      *User
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project   *Project `gorm:"belongsTo"`
+	User      *User    `gorm:"belongsTo"`
 }
 
 func (SavedView) TableName() string {
@@ -3377,18 +3378,18 @@ type CustomGraph struct {
 	// now live in DashboardWidget; nothing new writes this kind
 	// Each reader filters by its own kind, so neither sees the other's rows and
 	// a builder chart can never be interpreted as a workbench definition.
-	Kind        *string  `gorm:"column:kind;index:CustomGraph_projectId_kind_idx;default:'builder';not null" json:"kind"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	DashboardID *string  `gorm:"column:dashboardId;index:CustomGraph_dashboardId_idx" json:"dashboardId"`
-	GridColumn  int      `gorm:"column:gridColumn;default:0;not null" json:"gridColumn"`
-	GridRow     int      `gorm:"column:gridRow;default:0;not null" json:"gridRow"`
-	ColSpan     *int     `gorm:"column:colSpan;default:1;not null" json:"colSpan"`
-	RowSpan     *int     `gorm:"column:rowSpan;default:1;not null" json:"rowSpan"`
-	Project     *Project
-	Dashboard   *Dashboard
-	TriggerSent []TriggerSent `gorm:"foreignKey:CustomGraphID;constraint:OnDelete:CASCADE"`
-	Trigger     *Trigger      `gorm:"foreignKey:CustomGraphID;constraint:OnDelete:CASCADE"`
+	Kind        *string       `gorm:"column:kind;index:CustomGraph_projectId_kind_idx;default:'builder';not null" json:"kind"`
+	CreatedAt   DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	DashboardID *string       `gorm:"column:dashboardId;index:CustomGraph_dashboardId_idx" json:"dashboardId"`
+	GridColumn  int           `gorm:"column:gridColumn;size:32;default:0;not null" json:"gridColumn"`
+	GridRow     int           `gorm:"column:gridRow;size:32;default:0;not null" json:"gridRow"`
+	ColSpan     *int          `gorm:"column:colSpan;size:32;default:1;not null" json:"colSpan"`
+	RowSpan     *int          `gorm:"column:rowSpan;size:32;default:1;not null" json:"rowSpan"`
+	Project     *Project      `gorm:"belongsTo"`
+	Dashboard   *Dashboard    `gorm:"belongsTo"`
+	TriggerSent []TriggerSent `gorm:"foreignKey:CustomGraphID;constraint:TriggerSent_customGraphId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Trigger     *Trigger      `gorm:"foreignKey:CustomGraphID;constraint:Trigger_customGraphId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (CustomGraph) TableName() string {
@@ -3423,19 +3424,19 @@ type BatchEvaluation struct {
 	ProjectID    string         `gorm:"column:projectId;index:BatchEvaluation_projectId_idx;not null" json:"projectId"`
 	Data         datatypes.JSON `gorm:"column:data;default:'{}';not null" json:"data"`
 	Status       string         `gorm:"column:status;not null" json:"status"`
-	Score        float64        `gorm:"column:score;not null" json:"score"`
+	Score        float64        `gorm:"column:score;type:double precision;not null" json:"score"`
 	Label        *string        `gorm:"column:label" json:"label"`
 	Passed       bool           `gorm:"column:passed;not null" json:"passed"`
 	Details      string         `gorm:"column:details;not null" json:"details"`
-	Cost         float64        `gorm:"column:cost;not null" json:"cost"`
+	Cost         float64        `gorm:"column:cost;type:double precision;not null" json:"cost"`
 	DatasetSlug  string         `gorm:"column:datasetSlug;not null" json:"datasetSlug"`
 	DatasetID    string         `gorm:"column:datasetId;index:BatchEvaluation_datasetId_idx;not null" json:"datasetId"`
 	Evaluation   string         `gorm:"column:evaluation;not null" json:"evaluation"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Experiment   *Experiment
-	Project      *Project
-	Dataset      *Dataset
+	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Experiment   *Experiment    `gorm:"belongsTo"`
+	Project      *Project       `gorm:"belongsTo"`
+	Dataset      *Dataset       `gorm:"belongsTo"`
 }
 
 func (BatchEvaluation) TableName() string {
@@ -3465,35 +3466,35 @@ func (*BatchEvaluation) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Trigger struct {
-	ID                   string         `gorm:"column:id;primaryKey" json:"id"`
-	Name                 string         `gorm:"column:name;not null" json:"name"`
-	ProjectID            string         `gorm:"column:projectId;index:Trigger_projectId_idx;not null" json:"projectId"`
-	Action               string         `gorm:"column:action;not null" json:"action"`
-	TriggerKind          string         `gorm:"column:triggerKind;default:'AUTOMATION';not null" json:"triggerKind"`
-	ActionParams         datatypes.JSON `gorm:"column:actionParams;not null" json:"actionParams"`
-	Filters              datatypes.JSON `gorm:"column:filters;not null" json:"filters"`
-	FilterQuery          *string        `gorm:"column:filterQuery" json:"filterQuery"`
-	LastRunAt            float64        `gorm:"column:lastRunAt;default:0;not null" json:"lastRunAt"`
-	CreatedAt            DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Active               *bool          `gorm:"column:active;default:true;not null" json:"active"`
-	PausedReason         *string        `gorm:"column:pausedReason" json:"pausedReason"`
-	PausedAt             *DateTime      `gorm:"column:pausedAt;type:timestamptz(3)" json:"pausedAt"`
-	Message              *string        `gorm:"column:message" json:"message"`
-	Deleted              bool           `gorm:"column:deleted;default:false;not null" json:"deleted"`
-	AlertType            *string        `gorm:"column:alertType" json:"alertType"`
-	SlackTemplateType    *string        `gorm:"column:slackTemplateType" json:"slackTemplateType"`
-	SlackTemplate        *string        `gorm:"column:slackTemplate" json:"slackTemplate"`
-	EmailSubjectTemplate *string        `gorm:"column:emailSubjectTemplate" json:"emailSubjectTemplate"`
-	EmailBodyTemplate    *string        `gorm:"column:emailBodyTemplate" json:"emailBodyTemplate"`
-	NotificationCadence  *string        `gorm:"column:notificationCadence;default:'immediate';not null" json:"notificationCadence"`
-	TraceDebounceMs      *int           `gorm:"column:traceDebounceMs;default:30000;not null" json:"traceDebounceMs"`
-	CustomGraphID        *string        `gorm:"column:customGraphId;uniqueIndex" json:"customGraphId"`
-	Project              *Project
-	CustomGraph          *CustomGraph
-	TriggerSent          []TriggerSent             `gorm:"foreignKey:TriggerID"`
-	WebhookDeliveries    []WebhookEndpointDelivery `gorm:"foreignKey:TriggerID;constraint:OnDelete:CASCADE"`
-	LatestEvaluation     *TriggerLatestEvaluation  `gorm:"foreignKey:TriggerID;constraint:OnDelete:CASCADE"`
+	ID                   string                    `gorm:"column:id;primaryKey" json:"id"`
+	Name                 string                    `gorm:"column:name;not null" json:"name"`
+	ProjectID            string                    `gorm:"column:projectId;index:Trigger_projectId_idx;not null" json:"projectId"`
+	Action               string                    `gorm:"column:action;not null" json:"action"`
+	TriggerKind          string                    `gorm:"column:triggerKind;default:'AUTOMATION';not null" json:"triggerKind"`
+	ActionParams         datatypes.JSON            `gorm:"column:actionParams;not null" json:"actionParams"`
+	Filters              datatypes.JSON            `gorm:"column:filters;not null" json:"filters"`
+	FilterQuery          *string                   `gorm:"column:filterQuery" json:"filterQuery"`
+	LastRunAt            float64                   `gorm:"column:lastRunAt;type:double precision;default:0;not null" json:"lastRunAt"`
+	CreatedAt            DateTime                  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime                  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Active               *bool                     `gorm:"column:active;default:true;not null" json:"active"`
+	PausedReason         *string                   `gorm:"column:pausedReason" json:"pausedReason"`
+	PausedAt             *DateTime                 `gorm:"column:pausedAt;type:timestamptz(3)" json:"pausedAt"`
+	Message              *string                   `gorm:"column:message" json:"message"`
+	Deleted              bool                      `gorm:"column:deleted;default:false;not null" json:"deleted"`
+	AlertType            *string                   `gorm:"column:alertType" json:"alertType"`
+	SlackTemplateType    *string                   `gorm:"column:slackTemplateType" json:"slackTemplateType"`
+	SlackTemplate        *string                   `gorm:"column:slackTemplate" json:"slackTemplate"`
+	EmailSubjectTemplate *string                   `gorm:"column:emailSubjectTemplate" json:"emailSubjectTemplate"`
+	EmailBodyTemplate    *string                   `gorm:"column:emailBodyTemplate" json:"emailBodyTemplate"`
+	NotificationCadence  *string                   `gorm:"column:notificationCadence;default:'immediate';not null" json:"notificationCadence"`
+	TraceDebounceMs      *int                      `gorm:"column:traceDebounceMs;size:32;default:30000;not null" json:"traceDebounceMs"`
+	CustomGraphID        *string                   `gorm:"column:customGraphId;uniqueIndex:Trigger_customGraphId_key" json:"customGraphId"`
+	Project              *Project                  `gorm:"belongsTo"`
+	CustomGraph          *CustomGraph              `gorm:"belongsTo"`
+	TriggerSent          []TriggerSent             `gorm:"foreignKey:TriggerID;constraint:TriggerSent_triggerId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	WebhookDeliveries    []WebhookEndpointDelivery `gorm:"foreignKey:TriggerID;constraint:WebhookEndpointDelivery_triggerId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	LatestEvaluation     *TriggerLatestEvaluation  `gorm:"foreignKey:TriggerID;constraint:TriggerLatestEvaluation_triggerId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Trigger) TableName() string {
@@ -3532,19 +3533,19 @@ type SlackIntegration struct {
 	ID                  string   `gorm:"column:id;primaryKey" json:"id"`
 	Name                string   `gorm:"column:name;not null" json:"name"`
 	Kind                string   `gorm:"column:kind;not null" json:"kind"`
-	ScopeType           string   `gorm:"column:scopeType;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFingerprint_key;index:SlackIntegration_scopeType_scopeId_idx;not null" json:"scopeType"`
-	ScopeID             string   `gorm:"column:scopeId;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFingerprint_key;index:SlackIntegration_scopeType_scopeId_idx;not null" json:"scopeId"`
-	OrganizationID      string   `gorm:"column:organizationId;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFingerprint_key;not null" json:"organizationId"`
+	ScopeType           string   `gorm:"column:scopeType;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFin_key;index:SlackIntegration_scopeType_scopeId_idx;not null" json:"scopeType"`
+	ScopeID             string   `gorm:"column:scopeId;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFin_key;index:SlackIntegration_scopeType_scopeId_idx;not null" json:"scopeId"`
+	OrganizationID      string   `gorm:"column:organizationId;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFin_key;not null" json:"organizationId"`
 	BotTokenEncrypted   *string  `gorm:"column:botTokenEncrypted" json:"botTokenEncrypted"`
 	WebhookURLEncrypted *string  `gorm:"column:webhookUrlEncrypted" json:"webhookUrlEncrypted"`
-	SecretFingerprint   string   `gorm:"column:secretFingerprint;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFingerprint_key;not null" json:"secretFingerprint"`
+	SecretFingerprint   string   `gorm:"column:secretFingerprint;uniqueIndex:SlackIntegration_organizationId_scopeType_scopeId_secretFin_key;not null" json:"secretFingerprint"`
 	SecretHint          string   `gorm:"column:secretHint;not null" json:"secretHint"`
 	SlackTeamID         *string  `gorm:"column:slackTeamId" json:"slackTeamId"`
 	SlackTeamName       *string  `gorm:"column:slackTeamName" json:"slackTeamName"`
 	CreatedByID         string   `gorm:"column:createdById;not null" json:"createdById"`
 	UpdatedByID         string   `gorm:"column:updatedById;not null" json:"updatedById"`
-	CreatedAt           DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt           DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt           DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt           DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SlackIntegration) TableName() string {
@@ -3583,8 +3584,8 @@ type SlackConnectionClaim struct {
 	ClaimantLabel  string   `gorm:"column:claimantLabel;not null" json:"claimantLabel"`
 	OrganizationID string   `gorm:"column:organizationId;index:slack_connection_claim_organizationId_idx;not null" json:"organizationId"`
 	ProjectID      string   `gorm:"column:projectId;not null" json:"projectId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SlackConnectionClaim) TableName() string {
@@ -3656,31 +3657,31 @@ type WebhookEndpoint struct {
 	// gap. Null once the window closes or if the secret was never rolled.
 	PreviousSecretEncrypted *string `gorm:"column:previousSecretEncrypted" json:"previousSecretEncrypted"`
 	// When the previous secret stops being signed with and accepted.
-	PreviousSecretExpiresAt *DateTime `gorm:"column:previousSecretExpiresAt" json:"previousSecretExpiresAt"`
-	EnabledEvents           []string  `gorm:"column:enabledEvents;serializer:json;not null" json:"enabledEvents"`
-	Status                  string    `gorm:"column:status;index:WebhookEndpoint_organizationId_status_idx;default:'ACTIVE';not null" json:"status"`
+	PreviousSecretExpiresAt *DateTime          `gorm:"column:previousSecretExpiresAt;type:timestamp(3)" json:"previousSecretExpiresAt"`
+	EnabledEvents           ScalarList[string] `gorm:"column:enabledEvents;type:text[]" json:"enabledEvents"`
+	Status                  string             `gorm:"column:status;index:WebhookEndpoint_organizationId_status_idx;default:'ACTIVE';not null" json:"status"`
 	// Why the endpoint is disabled: "auto_failures_72h" or "manual".
 	DisabledReason *string   `gorm:"column:disabledReason" json:"disabledReason"`
-	DisabledAt     *DateTime `gorm:"column:disabledAt" json:"disabledAt"`
+	DisabledAt     *DateTime `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
 	// Start of the current consecutive-failure streak; cleared on any 2xx.
 	// 72 hours of unbroken failures from this instant auto-disables.
-	FailingSince *DateTime `gorm:"column:failingSince" json:"failingSince"`
+	FailingSince *DateTime `gorm:"column:failingSince;type:timestamp(3)" json:"failingSince"`
 	// Delivery controls, each server-bounded (see webhookDeliveryControls
 	// constants): envelopes per POST, coalescing window before a partial
 	// batch ships, and concurrent POSTs to this receiver.
-	MaxBatchSize    *int `gorm:"column:maxBatchSize;default:100;not null" json:"maxBatchSize"`
-	MaxBatchDelayMs *int `gorm:"column:maxBatchDelayMs;default:250;not null" json:"maxBatchDelayMs"`
-	MaxInFlight     *int `gorm:"column:maxInFlight;default:4;not null" json:"maxInFlight"`
+	MaxBatchSize    *int `gorm:"column:maxBatchSize;size:32;default:100;not null" json:"maxBatchSize"`
+	MaxBatchDelayMs *int `gorm:"column:maxBatchDelayMs;size:32;default:250;not null" json:"maxBatchDelayMs"`
+	MaxInFlight     *int `gorm:"column:maxInFlight;size:32;default:4;not null" json:"maxInFlight"`
 	// Self-hosted only: deliveries accept the receiver's self-signed TLS
 	// certificate. Off by default; the hosted product ignores it.
-	AllowSelfSignedCertificate bool      `gorm:"column:allowSelfSignedCertificate;default:false;not null" json:"allowSelfSignedCertificate"`
-	LastSuccessAt              *DateTime `gorm:"column:lastSuccessAt" json:"lastSuccessAt"`
-	LastFailureAt              *DateTime `gorm:"column:lastFailureAt" json:"lastFailureAt"`
-	ArchivedAt                 *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt                  DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                  DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization               *Organization
-	Deliveries                 []WebhookEndpointDelivery `gorm:"foreignKey:EndpointID;constraint:OnDelete:CASCADE"`
+	AllowSelfSignedCertificate bool                      `gorm:"column:allowSelfSignedCertificate;default:false;not null" json:"allowSelfSignedCertificate"`
+	LastSuccessAt              *DateTime                 `gorm:"column:lastSuccessAt;type:timestamp(3)" json:"lastSuccessAt"`
+	LastFailureAt              *DateTime                 `gorm:"column:lastFailureAt;type:timestamp(3)" json:"lastFailureAt"`
+	ArchivedAt                 *DateTime                 `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt                  DateTime                  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                  DateTime                  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization               *Organization             `gorm:"belongsTo"`
+	Deliveries                 []WebhookEndpointDelivery `gorm:"foreignKey:EndpointID;constraint:WebhookEndpointDelivery_endpointId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WebhookEndpoint) TableName() string {
@@ -3730,18 +3731,18 @@ type WebhookEndpointDelivery struct {
 	// 1-based attempt and the batch's envelope count. Both null on automations
 	// rows, which record neither: one trigger fire is one event, and the
 	// channel's sender does not thread its attempt number into the log.
-	Attempt        *int             `gorm:"column:attempt" json:"attempt"`
-	EventCount     *int             `gorm:"column:eventCount" json:"eventCount"`
-	ResponseStatus *int             `gorm:"column:responseStatus" json:"responseStatus"`
-	LatencyMs      *int             `gorm:"column:latencyMs" json:"latencyMs"`
+	Attempt        *int             `gorm:"column:attempt;size:32" json:"attempt"`
+	EventCount     *int             `gorm:"column:eventCount;size:32" json:"eventCount"`
+	ResponseStatus *int             `gorm:"column:responseStatus;size:32" json:"responseStatus"`
+	LatencyMs      *int             `gorm:"column:latencyMs;size:32" json:"latencyMs"`
 	Error          *string          `gorm:"column:error" json:"error"`
 	Response       datatypes.JSON   `gorm:"column:response" json:"response"`
 	Outcome        string           `gorm:"column:outcome;not null" json:"outcome"`
-	FiredAt        DateTime         `gorm:"column:firedAt;index:WebhookEndpointDelivery_endpointId_firedAt_idx;index:WebhookEndpointDelivery_organizationId_firedAt_idx;index:WebhookEndpointDelivery_firedAt_idx;index:WebhookEndpointDelivery_projectId_triggerId_firedAt_idx;not null" json:"firedAt"`
-	CreatedAt      DateTime         `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Endpoint       *WebhookEndpoint `gorm:"foreignKey:EndpointID"`
-	Project        *Project
-	Trigger        *Trigger
+	FiredAt        DateTime         `gorm:"column:firedAt;index:WebhookEndpointDelivery_endpointId_firedAt_idx;index:WebhookEndpointDelivery_organizationId_firedAt_idx;index:WebhookEndpointDelivery_firedAt_idx;index:WebhookEndpointDelivery_projectId_triggerId_firedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firedAt"`
+	CreatedAt      DateTime         `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Endpoint       *WebhookEndpoint `gorm:"foreignKey:EndpointID;belongsTo"`
+	Project        *Project         `gorm:"belongsTo"`
+	Trigger        *Trigger         `gorm:"belongsTo"`
 }
 
 func (WebhookEndpointDelivery) TableName() string {
@@ -3763,21 +3764,21 @@ func (m *WebhookEndpointDelivery) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Experiment struct {
-	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	Name             *string        `gorm:"column:name" json:"name"`
-	Type             string         `gorm:"column:type;not null" json:"type"`
-	Slug             string         `gorm:"column:slug;uniqueIndex:Experiment_projectId_slug_key;not null" json:"slug"`
-	ProjectID        string         `gorm:"column:projectId;uniqueIndex:Experiment_projectId_slug_key;index:Experiment_projectId_idx;index:Experiment_projectId_archivedAt_idx;not null" json:"projectId"`
-	WorkflowID       *string        `gorm:"column:workflowId;index:Experiment_workflowId_idx" json:"workflowId"`
-	CreatedAt        DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt        DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	ArchivedAt       *DateTime      `gorm:"column:archivedAt;index:Experiment_projectId_archivedAt_idx" json:"archivedAt"`
-	WorkbenchState   datatypes.JSON `gorm:"column:workbenchState" json:"workbenchState"`
-	WorkbenchVersion int            `gorm:"column:workbenchVersion;default:0;not null" json:"workbenchVersion"`
-	Project          *Project
-	Workflow         *Workflow
-	BatchEvaluations []BatchEvaluation `gorm:"foreignKey:ExperimentID"`
-	Monitor          *Monitor          `gorm:"foreignKey:ExperimentID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	ID               string            `gorm:"column:id;primaryKey" json:"id"`
+	Name             *string           `gorm:"column:name" json:"name"`
+	Type             string            `gorm:"column:type;not null" json:"type"`
+	Slug             string            `gorm:"column:slug;uniqueIndex:Experiment_projectId_slug_key;not null" json:"slug"`
+	ProjectID        string            `gorm:"column:projectId;uniqueIndex:Experiment_projectId_slug_key;index:Experiment_projectId_idx;index:Experiment_projectId_archivedAt_idx;not null" json:"projectId"`
+	WorkflowID       *string           `gorm:"column:workflowId;index:Experiment_workflowId_idx" json:"workflowId"`
+	CreatedAt        DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt        DateTime          `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt       *DateTime         `gorm:"column:archivedAt;index:Experiment_projectId_archivedAt_idx;type:timestamp(3)" json:"archivedAt"`
+	WorkbenchState   datatypes.JSON    `gorm:"column:workbenchState" json:"workbenchState"`
+	WorkbenchVersion int               `gorm:"column:workbenchVersion;size:32;default:0;not null" json:"workbenchVersion"`
+	Project          *Project          `gorm:"belongsTo"`
+	Workflow         *Workflow         `gorm:"belongsTo"`
+	BatchEvaluations []BatchEvaluation `gorm:"foreignKey:ExperimentID;constraint:BatchEvaluation_experimentId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Monitor          *Monitor          `gorm:"foreignKey:ExperimentID;constraint:Monitor_experimentId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
 }
 
 func (Experiment) TableName() string {
@@ -3813,13 +3814,13 @@ type ExperimentVersion struct {
 	// The number the version is addressed and displayed by. Numbered rows hold
 	// a gap-free sequence. The rolling autosave row rides on the counter
 	// instead, which is what keeps it clear of that sequence.
-	Version int `gorm:"column:version;uniqueIndex:ExperimentVersion_experimentId_version_key;index:ExperimentVersion_projectId_experimentId_version_idx;not null" json:"version"`
+	Version int `gorm:"column:version;uniqueIndex:ExperimentVersion_experimentId_version_key;index:ExperimentVersion_projectId_experimentId_version_idx;size:32;not null" json:"version"`
 	// `Experiment.workbenchVersion` at the moment this row was last written.
 	// The rolling row is rewritten in place, so this is the only column that
 	// says how recent its content is, and the version list sorts and pages by
 	// it. It also joins a row to the live state: the row whose `counterVersion`
 	// equals the experiment's counter holds what the workbench shows now.
-	CounterVersion int     `gorm:"column:counterVersion;index:ExperimentVersion_projectId_experimentId_counterVersion_idx;not null" json:"counterVersion"`
+	CounterVersion int     `gorm:"column:counterVersion;index:ExperimentVersion_projectId_experimentId_counterVersion_idx;size:32;not null" json:"counterVersion"`
 	AutoSaved      bool    `gorm:"column:autoSaved;index:ExperimentVersion_projectId_experimentId_autoSaved_idx;default:false;not null" json:"autoSaved"`
 	CommitMessage  *string `gorm:"column:commitMessage" json:"commitMessage"`
 	AuthorID       *string `gorm:"column:authorId" json:"authorId"`
@@ -3836,8 +3837,8 @@ type ExperimentVersion struct {
 	State datatypes.JSON `gorm:"column:state;not null" json:"state"`
 	// Schema version of `state`, so a later shape change can be read forward.
 	SchemaVersion *string  `gorm:"column:schemaVersion;default:'1';not null" json:"schemaVersion"`
-	CreatedAt     DateTime `gorm:"column:createdAt;index:ExperimentVersion_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt     DateTime `gorm:"column:createdAt;index:ExperimentVersion_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ExperimentVersion) TableName() string {
@@ -3873,16 +3874,16 @@ type Annotation struct {
 	Comment        *string        `gorm:"column:comment" json:"comment"`
 	IsThumbsUp     *bool          `gorm:"column:isThumbsUp" json:"isThumbsUp"`
 	UserID         *string        `gorm:"column:userId;index:Annotation_userId_idx" json:"userId"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	Email          *string        `gorm:"column:email" json:"email"`
 	ScoreOptions   datatypes.JSON `gorm:"column:scoreOptions" json:"scoreOptions"`
 	ExpectedOutput *string        `gorm:"column:expectedOutput" json:"expectedOutput"`
 	AnchorKind     *string        `gorm:"column:anchorKind;index:Annotation_projectId_traceId_anchorKind_idx" json:"anchorKind"`
 	AnchorID       *string        `gorm:"column:anchorId" json:"anchorId"`
 	AnchorPath     *string        `gorm:"column:anchorPath" json:"anchorPath"`
-	Project        *Project
-	User           *User
+	Project        *Project       `gorm:"belongsTo"`
+	User           *User          `gorm:"belongsTo"`
 }
 
 func (Annotation) TableName() string {
@@ -3922,21 +3923,21 @@ type ModelProvider struct {
 	CustomModels               datatypes.JSON       `gorm:"column:customModels" json:"customModels"`
 	CustomEmbeddingsModels     datatypes.JSON       `gorm:"column:customEmbeddingsModels" json:"customEmbeddingsModels"`
 	DeploymentMapping          datatypes.JSON       `gorm:"column:deploymentMapping" json:"deploymentMapping"`
-	RateLimitRpm               *int                 `gorm:"column:rateLimitRpm" json:"rateLimitRpm"`
-	RateLimitTpm               *int                 `gorm:"column:rateLimitTpm" json:"rateLimitTpm"`
-	RateLimitRpd               *int                 `gorm:"column:rateLimitRpd" json:"rateLimitRpd"`
+	RateLimitRpm               *int                 `gorm:"column:rateLimitRpm;size:32" json:"rateLimitRpm"`
+	RateLimitTpm               *int                 `gorm:"column:rateLimitTpm;size:32" json:"rateLimitTpm"`
+	RateLimitRpd               *int                 `gorm:"column:rateLimitRpd;size:32" json:"rateLimitRpd"`
 	RotationPolicy             string               `gorm:"column:rotationPolicy;default:'MANUAL';not null" json:"rotationPolicy"`
 	ProviderConfig             datatypes.JSON       `gorm:"column:providerConfig" json:"providerConfig"`
-	FallbackPriorityGlobal     *int                 `gorm:"column:fallbackPriorityGlobal;index:ModelProvider_fallbackPriorityGlobal_idx" json:"fallbackPriorityGlobal"`
+	FallbackPriorityGlobal     *int                 `gorm:"column:fallbackPriorityGlobal;index:ModelProvider_fallbackPriorityGlobal_idx;size:32" json:"fallbackPriorityGlobal"`
 	LangySkipPermissionsModels datatypes.JSON       `gorm:"column:langySkipPermissionsModels" json:"langySkipPermissionsModels"`
 	HealthStatus               string               `gorm:"column:healthStatus;index:ModelProvider_healthStatus_idx;default:'UNKNOWN';not null" json:"healthStatus"`
-	CircuitOpenedAt            *DateTime            `gorm:"column:circuitOpenedAt" json:"circuitOpenedAt"`
-	LastHealthCheckAt          *DateTime            `gorm:"column:lastHealthCheckAt" json:"lastHealthCheckAt"`
-	DisabledAt                 *DateTime            `gorm:"column:disabledAt" json:"disabledAt"`
-	CreatedAt                  DateTime             `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                  DateTime             `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CircuitOpenedAt            *DateTime            `gorm:"column:circuitOpenedAt;type:timestamp(3)" json:"circuitOpenedAt"`
+	LastHealthCheckAt          *DateTime            `gorm:"column:lastHealthCheckAt;type:timestamp(3)" json:"lastHealthCheckAt"`
+	DisabledAt                 *DateTime            `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
+	CreatedAt                  DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                  DateTime             `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	OrganizationID             string               `gorm:"column:organizationId;uniqueIndex:ModelProvider_organizationId_routingHandle_key;index:ModelProvider_organizationId_idx;not null" json:"organizationId"`
-	Scopes                     []ModelProviderScope `gorm:"foreignKey:ModelProviderID;constraint:OnDelete:CASCADE"`
+	Scopes                     []ModelProviderScope `gorm:"foreignKey:ModelProviderID;constraint:ModelProviderScope_modelProviderId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ModelProvider) TableName() string {
@@ -3966,12 +3967,12 @@ func (*ModelProvider) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type ModelProviderScope struct {
-	ID              string   `gorm:"column:id;primaryKey" json:"id"`
-	ModelProviderID string   `gorm:"column:modelProviderId;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_modelProviderId_idx;not null" json:"modelProviderId"`
-	ScopeType       string   `gorm:"column:scopeType;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_scopeType_scopeId_idx;not null" json:"scopeType"`
-	ScopeID         string   `gorm:"column:scopeId;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_scopeType_scopeId_idx;not null" json:"scopeId"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	ModelProvider   *ModelProvider
+	ID              string         `gorm:"column:id;primaryKey" json:"id"`
+	ModelProviderID string         `gorm:"column:modelProviderId;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_modelProviderId_idx;not null" json:"modelProviderId"`
+	ScopeType       string         `gorm:"column:scopeType;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_scopeType_scopeId_idx;not null" json:"scopeType"`
+	ScopeID         string         `gorm:"column:scopeId;uniqueIndex:ModelProviderScope_modelProviderId_scopeType_scopeId_key;index:ModelProviderScope_scopeType_scopeId_idx;not null" json:"scopeId"`
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	ModelProvider   *ModelProvider `gorm:"belongsTo"`
 }
 
 func (ModelProviderScope) TableName() string {
@@ -3993,10 +3994,10 @@ type ModelDefaultConfig struct {
 	ID             string                    `gorm:"column:id;primaryKey" json:"id"`
 	Config         datatypes.JSON            `gorm:"column:config;not null" json:"config"`
 	AuthorID       *string                   `gorm:"column:authorId" json:"authorId"`
-	CreatedAt      DateTime                  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime                  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt      DateTime                  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime                  `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 	OrganizationID string                    `gorm:"column:organizationId;index:ModelDefaultConfig_organizationId_idx;not null" json:"organizationId"`
-	Scopes         []ModelDefaultConfigScope `gorm:"foreignKey:ConfigID;constraint:OnDelete:CASCADE"`
+	Scopes         []ModelDefaultConfigScope `gorm:"foreignKey:ConfigID;constraint:ModelDefaultConfigScope_configId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ModelDefaultConfig) TableName() string {
@@ -4030,8 +4031,8 @@ type ModelDefaultConfigScope struct {
 	ConfigID  string              `gorm:"column:configId;uniqueIndex:ModelDefaultConfigScope_configId_scopeType_scopeId_key;index:ModelDefaultConfigScope_configId_idx;not null" json:"configId"`
 	ScopeType string              `gorm:"column:scopeType;uniqueIndex:ModelDefaultConfigScope_configId_scopeType_scopeId_key;index:ModelDefaultConfigScope_scopeType_scopeId_idx;not null" json:"scopeType"`
 	ScopeID   string              `gorm:"column:scopeId;uniqueIndex:ModelDefaultConfigScope_configId_scopeType_scopeId_key;index:ModelDefaultConfigScope_scopeType_scopeId_idx;not null" json:"scopeId"`
-	CreatedAt DateTime            `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Config    *ModelDefaultConfig `gorm:"foreignKey:ConfigID"`
+	CreatedAt DateTime            `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Config    *ModelDefaultConfig `gorm:"foreignKey:ConfigID;belongsTo"`
 }
 
 func (ModelDefaultConfigScope) TableName() string {
@@ -4063,7 +4064,7 @@ func (m *ModelDefaultConfigScope) BeforeCreate(tx *gorm.DB) error {
 type GithubInstallation struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// GitHub installation id (numeric; stored as string). Globally unique.
-	InstallationID string `gorm:"column:installationId;uniqueIndex;not null" json:"installationId"`
+	InstallationID string `gorm:"column:installationId;uniqueIndex:GithubInstallation_installationId_key;not null" json:"installationId"`
 	OrganizationID string `gorm:"column:organizationId;index:GithubInstallation_organizationId_idx;not null" json:"organizationId"`
 	// The GitHub account (organization or user) the App is installed on.
 	AccountLogin string `gorm:"column:accountLogin;not null" json:"accountLogin"`
@@ -4079,10 +4080,10 @@ type GithubInstallation struct {
 	Repositories datatypes.JSON `gorm:"column:repositories" json:"repositories"`
 	// Set when GitHub suspends the installation; cleared on unsuspend. A
 	// suspended installation cannot mint tokens.
-	SuspendedAt  *DateTime `gorm:"column:suspendedAt" json:"suspendedAt"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization *Organization
+	SuspendedAt  *DateTime     `gorm:"column:suspendedAt;type:timestamp(3)" json:"suspendedAt"`
+	CreatedAt    DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization *Organization `gorm:"belongsTo"`
 }
 
 func (GithubInstallation) TableName() string {
@@ -4122,37 +4123,37 @@ func (*GithubInstallation) BeforeUpdate(tx *gorm.DB) error {
 // itself as current truth.
 type GithubPullRequest struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string `gorm:"column:organizationId;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_prNumber_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_headBranch_idx;not null" json:"organizationId"`
+	OrganizationID string `gorm:"column:organizationId;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryF_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryF_idx;not null" json:"organizationId"`
 	// The GitHub host the repository lives on, e.g. "github.com".
-	RepositoryHost string `gorm:"column:repositoryHost;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_prNumber_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_headBranch_idx;not null" json:"repositoryHost"`
+	RepositoryHost string `gorm:"column:repositoryHost;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryF_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryF_idx;not null" json:"repositoryHost"`
 	// "owner/repo", stored LOWERCASED so a lookup matches whatever casing the
 	// session reported.
-	RepositoryFullName string `gorm:"column:repositoryFullName;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_prNumber_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_headBranch_idx;not null" json:"repositoryFullName"`
+	RepositoryFullName string `gorm:"column:repositoryFullName;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryF_key;index:GithubPullRequest_organizationId_repositoryHost_repositoryF_idx;not null" json:"repositoryFullName"`
 	// The branch the pull request was opened from.
-	HeadBranch string `gorm:"column:headBranch;index:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_headBranch_idx;not null" json:"headBranch"`
-	PrNumber   int    `gorm:"column:prNumber;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryFullName_prNumber_key;not null" json:"prNumber"`
+	HeadBranch string `gorm:"column:headBranch;index:GithubPullRequest_organizationId_repositoryHost_repositoryF_idx;not null" json:"headBranch"`
+	PrNumber   int    `gorm:"column:prNumber;uniqueIndex:GithubPullRequest_organizationId_repositoryHost_repositoryF_key;size:32;not null" json:"prNumber"`
 	HTMLURL    string `gorm:"column:htmlUrl;not null" json:"htmlUrl"`
 	Title      string `gorm:"column:title;not null" json:"title"`
 	// GitHub's own state string: "open" or "closed".
 	State       string    `gorm:"column:state;not null" json:"state"`
 	IsDraft     bool      `gorm:"column:isDraft;default:false;not null" json:"isDraft"`
 	AuthorLogin *string   `gorm:"column:authorLogin" json:"authorLogin"`
-	PrCreatedAt DateTime  `gorm:"column:prCreatedAt;not null" json:"prCreatedAt"`
-	PrClosedAt  *DateTime `gorm:"column:prClosedAt" json:"prClosedAt"`
-	PrMergedAt  *DateTime `gorm:"column:prMergedAt" json:"prMergedAt"`
+	PrCreatedAt DateTime  `gorm:"column:prCreatedAt;type:timestamp(3);not null" json:"prCreatedAt"`
+	PrClosedAt  *DateTime `gorm:"column:prClosedAt;type:timestamp(3)" json:"prClosedAt"`
+	PrMergedAt  *DateTime `gorm:"column:prMergedAt;type:timestamp(3)" json:"prMergedAt"`
 	// GitHub's own `updated_at` for the snapshot this row holds, and the
 	// freshness guard on every write to it: a snapshot older than the stored one
 	// is skipped. GitHub may deliver webhooks out of order, and without the
 	// guard a late `opened` lands after `closed` and reopens a merged pull
 	// request. NULL means the row predates the column, so any write is accepted.
-	PrUpdatedAt *DateTime `gorm:"column:prUpdatedAt" json:"prUpdatedAt"`
+	PrUpdatedAt *DateTime `gorm:"column:prUpdatedAt;type:timestamp(3)" json:"prUpdatedAt"`
 	// When this row was first mapped to its branch.
-	MappedAt DateTime `gorm:"column:mappedAt;not null" json:"mappedAt"`
+	MappedAt DateTime `gorm:"column:mappedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"mappedAt"`
 	// When the snapshot columns were last refreshed from GitHub.
-	LastCheckedAt DateTime `gorm:"column:lastCheckedAt;not null" json:"lastCheckedAt"`
-	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization  *Organization
+	LastCheckedAt DateTime      `gorm:"column:lastCheckedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"lastCheckedAt"`
+	CreatedAt     DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization  *Organization `gorm:"belongsTo"`
 }
 
 func (GithubPullRequest) TableName() string {
@@ -4195,26 +4196,26 @@ func (*GithubPullRequest) BeforeUpdate(tx *gorm.DB) error {
 // Spec: specs/integrations/github-connection.feature.
 type GithubBranchPullRequestCheck struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string `gorm:"column:organizationId;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost_repositoryFullName_headBranch_key;not null" json:"organizationId"`
-	RepositoryHost string `gorm:"column:repositoryHost;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost_repositoryFullName_headBranch_key;not null" json:"repositoryHost"`
+	OrganizationID string `gorm:"column:organizationId;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost__key;not null" json:"organizationId"`
+	RepositoryHost string `gorm:"column:repositoryHost;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost__key;not null" json:"repositoryHost"`
 	// "owner/repo", stored LOWERCASED, matching GithubPullRequest.
-	RepositoryFullName string   `gorm:"column:repositoryFullName;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost_repositoryFullName_headBranch_key;not null" json:"repositoryFullName"`
-	HeadBranch         string   `gorm:"column:headBranch;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost_repositoryFullName_headBranch_key;not null" json:"headBranch"`
-	LastCheckedAt      DateTime `gorm:"column:lastCheckedAt;not null" json:"lastCheckedAt"`
-	PrCount            int      `gorm:"column:prCount;default:0;not null" json:"prCount"`
+	RepositoryFullName string   `gorm:"column:repositoryFullName;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost__key;not null" json:"repositoryFullName"`
+	HeadBranch         string   `gorm:"column:headBranch;uniqueIndex:GithubBranchPullRequestCheck_organizationId_repositoryHost__key;not null" json:"headBranch"`
+	LastCheckedAt      DateTime `gorm:"column:lastCheckedAt;type:timestamp(3);not null" json:"lastCheckedAt"`
+	PrCount            int      `gorm:"column:prCount;size:32;default:0;not null" json:"prCount"`
 	// Set while the branch resolves to no pull request; cleared once one is
 	// found.
-	NotFoundAt *DateTime `gorm:"column:notFoundAt;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_notFoundAt_idx" json:"notFoundAt"`
+	NotFoundAt *DateTime `gorm:"column:notFoundAt;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_n_idx;type:timestamp(3)" json:"notFoundAt"`
 	// The earliest instant GitHub may be asked about this branch again.
-	RecheckAfter *DateTime `gorm:"column:recheckAfter;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_notFoundAt_idx" json:"recheckAfter"`
+	RecheckAfter *DateTime `gorm:"column:recheckAfter;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_n_idx;type:timestamp(3)" json:"recheckAfter"`
 	// Consecutive lookups that found nothing, backing off the recheck.
-	Attempts int `gorm:"column:attempts;default:0;not null" json:"attempts"`
+	Attempts int `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	// When a reader last asked about this branch, whether or not GitHub was
 	// called.
-	LastRequestedAt DateTime `gorm:"column:lastRequestedAt;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_notFoundAt_idx;not null" json:"lastRequestedAt"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization    *Organization
+	LastRequestedAt DateTime      `gorm:"column:lastRequestedAt;index:GithubBranchPullRequestCheck_recheckAfter_lastRequestedAt_n_idx;type:timestamp(3);not null" json:"lastRequestedAt"`
+	CreatedAt       DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization    *Organization `gorm:"belongsTo"`
 }
 
 func (GithubBranchPullRequestCheck) TableName() string {
@@ -4260,10 +4261,10 @@ type LangyConversationProjection struct {
 	Origin         *string  `gorm:"column:origin;default:'interactive';not null" json:"origin"`
 	Status         string   `gorm:"column:status;not null" json:"status"`
 	IsShared       bool     `gorm:"column:isShared;default:false;not null" json:"isShared"`
-	SharedAt       *float64 `gorm:"column:sharedAt" json:"sharedAt"`
+	SharedAt       *float64 `gorm:"column:sharedAt;type:double precision" json:"sharedAt"`
 	SharedByID     *string  `gorm:"column:sharedById" json:"sharedById"`
-	MessageCount   int      `gorm:"column:messageCount;default:0;not null" json:"messageCount"`
-	LastActivityAt *float64 `gorm:"column:lastActivityAt;index:LangyConversationProjection_projectId_userId_lastActivityAt_idx" json:"lastActivityAt"`
+	MessageCount   int      `gorm:"column:messageCount;size:32;default:0;not null" json:"messageCount"`
+	LastActivityAt *float64 `gorm:"column:lastActivityAt;index:LangyConversationProjection_projectId_userId_lastActivityAt_idx;type:double precision" json:"lastActivityAt"`
 	// The turn in flight, or null when idle (busy guard reads this).
 	CurrentTurnID *string `gorm:"column:currentTurnId" json:"currentTurnId"`
 	LastError     *string `gorm:"column:lastError" json:"lastError"`
@@ -4274,13 +4275,13 @@ type LangyConversationProjection struct {
 	PendingHandoffTurnID *string `gorm:"column:pendingHandoffTurnId" json:"pendingHandoffTurnId"`
 	// Per-conversation HMAC key for worker stream frames; server-side only.
 	RunToken   *string  `gorm:"column:runToken" json:"runToken"`
-	ArchivedAt *float64 `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt  float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt  float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
+	ArchivedAt *float64 `gorm:"column:archivedAt;type:double precision" json:"archivedAt"`
+	CreatedAt  float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt  float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
 	// Business time of the latest applied event.
-	OccurredAt float64 `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt float64 `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
 	// Event-log acceptance time. Together with lastEventId this is the cursor.
-	AcceptedAt        float64 `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        float64 `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string  `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string  `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -4308,9 +4309,9 @@ type LangyTurnRequest struct {
 	TurnID         string   `gorm:"column:turnId;not null" json:"turnId"`
 	Status         string   `gorm:"column:status;not null" json:"status"`
 	LeaseOwner     string   `gorm:"column:leaseOwner;not null" json:"leaseOwner"`
-	LeaseExpiresAt DateTime `gorm:"column:leaseExpiresAt;not null" json:"leaseExpiresAt"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	LeaseExpiresAt DateTime `gorm:"column:leaseExpiresAt;type:timestamp(3);not null" json:"leaseExpiresAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (LangyTurnRequest) TableName() string {
@@ -4351,9 +4352,9 @@ type LangyActiveTurn struct {
 	UserID         string   `gorm:"column:userId;index:LangyActiveTurn_projectId_userId_idx;not null" json:"userId"`
 	Status         string   `gorm:"column:status;not null" json:"status"`
 	LeaseOwner     string   `gorm:"column:leaseOwner;not null" json:"leaseOwner"`
-	LeaseExpiresAt DateTime `gorm:"column:leaseExpiresAt;not null" json:"leaseExpiresAt"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	LeaseExpiresAt DateTime `gorm:"column:leaseExpiresAt;type:timestamp(3);not null" json:"leaseExpiresAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (LangyActiveTurn) TableName() string {
@@ -4385,9 +4386,9 @@ func (*LangyActiveTurn) BeforeUpdate(tx *gorm.DB) error {
 // Rebuildable per-turn operational render document.
 type LangyConversationTurnProjection struct {
 	ID             string `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID      string `gorm:"column:projectId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_turnId_key;index:LangyConversationTurnProjection_projectId_conversationId_updatedAt_idx;not null" json:"projectId"`
-	ConversationID string `gorm:"column:conversationId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_turnId_key;index:LangyConversationTurnProjection_projectId_conversationId_updatedAt_idx;not null" json:"conversationId"`
-	TurnID         string `gorm:"column:turnId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_turnId_key;not null" json:"turnId"`
+	ProjectID      string `gorm:"column:projectId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_tu_key;index:LangyConversationTurnProjection_projectId_conversationId_up_idx;not null" json:"projectId"`
+	ConversationID string `gorm:"column:conversationId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_tu_key;index:LangyConversationTurnProjection_projectId_conversationId_up_idx;not null" json:"conversationId"`
+	TurnID         string `gorm:"column:turnId;uniqueIndex:LangyConversationTurnProjection_projectId_conversationId_tu_key;not null" json:"turnId"`
 	// LangyConversationTurnStatus. Deliberately TEXT, not a Postgres enum: this
 	// is a PROJECTION — one writer (the fold), rebuildable from the event log,
 	// and nothing queries or indexes on it. An enum bought no selectivity here,
@@ -4404,12 +4405,12 @@ type LangyConversationTurnProjection struct {
 	// LangyPlanItemData[] | null — null means the turn never kept a plan.
 	Plan              datatypes.JSON `gorm:"column:plan" json:"plan"`
 	Error             *string        `gorm:"column:error" json:"error"`
-	StartedAt         *float64       `gorm:"column:startedAt" json:"startedAt"`
-	EndedAt           *float64       `gorm:"column:endedAt" json:"endedAt"`
-	CreatedAt         float64        `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt         float64        `gorm:"column:updatedAt;index:LangyConversationTurnProjection_projectId_conversationId_updatedAt_idx;not null" json:"updatedAt"`
-	OccurredAt        float64        `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt        float64        `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	StartedAt         *float64       `gorm:"column:startedAt;type:double precision" json:"startedAt"`
+	EndedAt           *float64       `gorm:"column:endedAt;type:double precision" json:"endedAt"`
+	CreatedAt         float64        `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt         float64        `gorm:"column:updatedAt;index:LangyConversationTurnProjection_projectId_conversationId_up_idx;type:double precision;not null" json:"updatedAt"`
+	OccurredAt        float64        `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt        float64        `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string         `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string         `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -4434,10 +4435,10 @@ type LangyMessageProjection struct {
 	Role           string         `gorm:"column:role;not null" json:"role"`
 	Parts          datatypes.JSON `gorm:"column:parts;not null" json:"parts"`
 	SourceEventID  string         `gorm:"column:sourceEventId;uniqueIndex:LangyMessageProjection_projectId_sourceEventId_key;not null" json:"sourceEventId"`
-	OccurredAt     float64        `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt     float64        `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
-	CreatedAt      float64        `gorm:"column:createdAt;index:LangyMessageProjection_projectId_conversationId_createdAt_idx;not null" json:"createdAt"`
-	UpdatedAt      float64        `gorm:"column:updatedAt;not null" json:"updatedAt"`
+	OccurredAt     float64        `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt     float64        `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
+	CreatedAt      float64        `gorm:"column:createdAt;index:LangyMessageProjection_projectId_conversationId_createdAt_idx;type:double precision;not null" json:"createdAt"`
+	UpdatedAt      float64        `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
 }
 
 func (LangyMessageProjection) TableName() string {
@@ -4458,11 +4459,11 @@ type ProjectSecret struct {
 	EncryptedValue string   `gorm:"column:encryptedValue;not null" json:"encryptedValue"`
 	CreatedByID    string   `gorm:"column:createdById;not null" json:"createdById"`
 	UpdatedByID    string   `gorm:"column:updatedById;not null" json:"updatedById"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project        *Project
-	CreatedBy      *User `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy      *User `gorm:"foreignKey:UpdatedByID"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project        *Project `gorm:"belongsTo"`
+	CreatedBy      *User    `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy      *User    `gorm:"foreignKey:UpdatedByID;belongsTo"`
 }
 
 func (ProjectSecret) TableName() string {
@@ -4492,18 +4493,18 @@ func (*ProjectSecret) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TriggerSent struct {
-	ID              string    `gorm:"column:id;primaryKey;index:TriggerSent_projectId_triggerId_createdAt_id_idx" json:"id"`
-	TriggerID       string    `gorm:"column:triggerId;uniqueIndex:TriggerSent_triggerId_traceId_key;index:TriggerSent_triggerId_idx;index:TriggerSent_projectId_triggerId_createdAt_id_idx;not null" json:"triggerId"`
-	TraceID         *string   `gorm:"column:traceId;uniqueIndex:TriggerSent_triggerId_traceId_key" json:"traceId"`
-	CustomGraphID   *string   `gorm:"column:customGraphId;index:TriggerSent_customGraphId_idx" json:"customGraphId"`
-	ProjectID       string    `gorm:"column:projectId;index:TriggerSent_projectId_idx;index:TriggerSent_projectId_triggerId_createdAt_id_idx;not null" json:"projectId"`
-	ResolvedAt      *DateTime `gorm:"column:resolvedAt;index:TriggerSent_resolvedAt_idx" json:"resolvedAt"`
-	OpenIncidentKey *string   `gorm:"column:openIncidentKey;uniqueIndex" json:"openIncidentKey"`
-	CreatedAt       DateTime  `gorm:"column:createdAt;index:TriggerSent_projectId_triggerId_createdAt_id_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CustomGraph     *CustomGraph
-	Project         *Project
-	Trigger         *Trigger
+	ID              string       `gorm:"column:id;primaryKey;index:TriggerSent_projectId_triggerId_createdAt_id_idx" json:"id"`
+	TriggerID       string       `gorm:"column:triggerId;uniqueIndex:TriggerSent_triggerId_traceId_key;index:TriggerSent_triggerId_idx;index:TriggerSent_projectId_triggerId_createdAt_id_idx;not null" json:"triggerId"`
+	TraceID         *string      `gorm:"column:traceId;uniqueIndex:TriggerSent_triggerId_traceId_key" json:"traceId"`
+	CustomGraphID   *string      `gorm:"column:customGraphId;index:TriggerSent_customGraphId_idx" json:"customGraphId"`
+	ProjectID       string       `gorm:"column:projectId;index:TriggerSent_projectId_idx;index:TriggerSent_projectId_triggerId_createdAt_id_idx;not null" json:"projectId"`
+	ResolvedAt      *DateTime    `gorm:"column:resolvedAt;index:TriggerSent_resolvedAt_idx;type:timestamp(3)" json:"resolvedAt"`
+	OpenIncidentKey *string      `gorm:"column:openIncidentKey;uniqueIndex:TriggerSent_openIncidentKey_key" json:"openIncidentKey"`
+	CreatedAt       DateTime     `gorm:"column:createdAt;index:TriggerSent_projectId_triggerId_createdAt_id_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime     `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CustomGraph     *CustomGraph `gorm:"belongsTo"`
+	Project         *Project     `gorm:"belongsTo"`
+	Trigger         *Trigger     `gorm:"belongsTo"`
 }
 
 func (TriggerSent) TableName() string {
@@ -4537,13 +4538,13 @@ type TriggerLatestEvaluation struct {
 	ProjectID         string   `gorm:"column:projectId;index:TriggerLatestEvaluation_projectId_idx;not null" json:"projectId"`
 	EvaluatedAt       DateTime `gorm:"column:evaluatedAt;type:timestamptz(3);not null" json:"evaluatedAt"`
 	Verdict           string   `gorm:"column:verdict;not null" json:"verdict"`
-	ObservedValue     *float64 `gorm:"column:observedValue" json:"observedValue"`
-	Threshold         *float64 `gorm:"column:threshold" json:"threshold"`
+	ObservedValue     *float64 `gorm:"column:observedValue;type:double precision" json:"observedValue"`
+	Threshold         *float64 `gorm:"column:threshold;type:double precision" json:"threshold"`
 	Operator          *string  `gorm:"column:operator" json:"operator"`
-	TimePeriodMinutes *int     `gorm:"column:timePeriodMinutes" json:"timePeriodMinutes"`
+	TimePeriodMinutes *int     `gorm:"column:timePeriodMinutes;size:32" json:"timePeriodMinutes"`
 	SkipCode          *string  `gorm:"column:skipCode" json:"skipCode"`
 	UpdatedAt         DateTime `gorm:"column:updatedAt;type:timestamptz(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	Trigger           *Trigger
+	Trigger           *Trigger `gorm:"belongsTo"`
 }
 
 func (TriggerLatestEvaluation) TableName() string {
@@ -4572,8 +4573,8 @@ type EmailSuppression struct {
 	Email     string   `gorm:"column:email;uniqueIndex:EmailSuppression_projectId_email_triggerId_key;not null" json:"email"`
 	TriggerID *string  `gorm:"column:triggerId;uniqueIndex:EmailSuppression_projectId_email_triggerId_key" json:"triggerId"`
 	Reason    *string  `gorm:"column:reason;default:'unsubscribe';not null" json:"reason"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Project   *Project
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Project   *Project `gorm:"belongsTo"`
 }
 
 func (EmailSuppression) TableName() string {
@@ -4592,20 +4593,20 @@ func (m *EmailSuppression) BeforeCreate(tx *gorm.DB) error {
 }
 
 type AnnotationScore struct {
-	ID                    string         `gorm:"column:id;primaryKey" json:"id"`
-	Name                  string         `gorm:"column:name;not null" json:"name"`
-	ProjectID             string         `gorm:"column:projectId;index:AnnotationScore_projectId_idx;not null" json:"projectId"`
-	CreatedAt             DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt             *DateTime      `gorm:"column:deletedAt" json:"deletedAt"`
-	Description           *string        `gorm:"column:description" json:"description"`
-	Active                *bool          `gorm:"column:active;default:true;not null" json:"active"`
-	DataType              *string        `gorm:"column:dataType" json:"dataType"`
-	Options               datatypes.JSON `gorm:"column:options" json:"options"`
-	DefaultValue          datatypes.JSON `gorm:"column:defaultValue" json:"defaultValue"`
-	Global                bool           `gorm:"column:global;default:false;not null" json:"global"`
-	Project               *Project
-	AnnotationQueueScores []AnnotationQueueScores `gorm:"foreignKey:AnnotationScoreID"`
+	ID                    string                  `gorm:"column:id;primaryKey" json:"id"`
+	Name                  string                  `gorm:"column:name;not null" json:"name"`
+	ProjectID             string                  `gorm:"column:projectId;index:AnnotationScore_projectId_idx;not null" json:"projectId"`
+	CreatedAt             DateTime                `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime                `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	DeletedAt             *DateTime               `gorm:"column:deletedAt;type:timestamp(3)" json:"deletedAt"`
+	Description           *string                 `gorm:"column:description" json:"description"`
+	Active                *bool                   `gorm:"column:active;default:true;not null" json:"active"`
+	DataType              *string                 `gorm:"column:dataType" json:"dataType"`
+	Options               datatypes.JSON          `gorm:"column:options" json:"options"`
+	DefaultValue          datatypes.JSON          `gorm:"column:defaultValue" json:"defaultValue"`
+	Global                bool                    `gorm:"column:global;default:false;not null" json:"global"`
+	Project               *Project                `gorm:"belongsTo"`
+	AnnotationQueueScores []AnnotationQueueScores `gorm:"foreignKey:AnnotationScoreID;constraint:AnnotationQueueScores_annotationScoreId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (AnnotationScore) TableName() string {
@@ -4635,17 +4636,17 @@ func (*AnnotationScore) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AnnotationQueue struct {
-	ID                    string   `gorm:"column:id;primaryKey" json:"id"`
-	Name                  string   `gorm:"column:name;not null" json:"name"`
-	Slug                  string   `gorm:"column:slug;uniqueIndex:AnnotationQueue_projectId_slug_key;not null" json:"slug"`
-	ProjectID             string   `gorm:"column:projectId;uniqueIndex:AnnotationQueue_projectId_slug_key;index:AnnotationQueue_projectId_idx;not null" json:"projectId"`
-	Description           *string  `gorm:"column:description" json:"description"`
-	CreatedAt             DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project               *Project
-	Members               []AnnotationQueueMembers `gorm:"foreignKey:AnnotationQueueID"`
-	AnnotationQueueScores []AnnotationQueueScores  `gorm:"foreignKey:AnnotationQueueID"`
-	AnnotationQueueItems  []AnnotationQueueItem    `gorm:"foreignKey:AnnotationQueueID"`
+	ID                    string                   `gorm:"column:id;primaryKey" json:"id"`
+	Name                  string                   `gorm:"column:name;not null" json:"name"`
+	Slug                  string                   `gorm:"column:slug;uniqueIndex:AnnotationQueue_projectId_slug_key;not null" json:"slug"`
+	ProjectID             string                   `gorm:"column:projectId;uniqueIndex:AnnotationQueue_projectId_slug_key;index:AnnotationQueue_projectId_idx;not null" json:"projectId"`
+	Description           *string                  `gorm:"column:description" json:"description"`
+	CreatedAt             DateTime                 `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime                 `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project               *Project                 `gorm:"belongsTo"`
+	Members               []AnnotationQueueMembers `gorm:"foreignKey:AnnotationQueueID;constraint:AnnotationQueueMembers_annotationQueueId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AnnotationQueueScores []AnnotationQueueScores  `gorm:"foreignKey:AnnotationQueueID;constraint:AnnotationQueueScores_annotationQueueId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AnnotationQueueItems  []AnnotationQueueItem    `gorm:"foreignKey:AnnotationQueueID;constraint:AnnotationQueueItem_annotationQueueId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (AnnotationQueue) TableName() string {
@@ -4675,10 +4676,10 @@ func (*AnnotationQueue) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AnnotationQueueMembers struct {
-	AnnotationQueueID string `gorm:"column:annotationQueueId;primaryKey;index:AnnotationQueueMembers_annotationQueueId_idx" json:"annotationQueueId"`
-	UserID            string `gorm:"column:userId;primaryKey;index:AnnotationQueueMembers_userId_idx" json:"userId"`
-	User              *User
-	AnnotationQueue   *AnnotationQueue
+	AnnotationQueueID string           `gorm:"column:annotationQueueId;primaryKey;index:AnnotationQueueMembers_annotationQueueId_idx" json:"annotationQueueId"`
+	UserID            string           `gorm:"column:userId;primaryKey;index:AnnotationQueueMembers_userId_idx" json:"userId"`
+	User              *User            `gorm:"belongsTo"`
+	AnnotationQueue   *AnnotationQueue `gorm:"belongsTo"`
 }
 
 func (AnnotationQueueMembers) TableName() string {
@@ -4686,10 +4687,10 @@ func (AnnotationQueueMembers) TableName() string {
 }
 
 type AnnotationQueueScores struct {
-	AnnotationQueueID string `gorm:"column:annotationQueueId;primaryKey;index:AnnotationQueueScores_annotationQueueId_idx" json:"annotationQueueId"`
-	AnnotationScoreID string `gorm:"column:annotationScoreId;primaryKey;index:AnnotationQueueScores_annotationScoreId_idx" json:"annotationScoreId"`
-	AnnotationScore   *AnnotationScore
-	AnnotationQueue   *AnnotationQueue
+	AnnotationQueueID string           `gorm:"column:annotationQueueId;primaryKey;index:AnnotationQueueScores_annotationQueueId_idx" json:"annotationQueueId"`
+	AnnotationScoreID string           `gorm:"column:annotationScoreId;primaryKey;index:AnnotationQueueScores_annotationScoreId_idx" json:"annotationScoreId"`
+	AnnotationScore   *AnnotationScore `gorm:"belongsTo"`
+	AnnotationQueue   *AnnotationQueue `gorm:"belongsTo"`
 }
 
 func (AnnotationQueueScores) TableName() string {
@@ -4700,20 +4701,20 @@ type AnnotationQueueItem struct {
 	ID                string    `gorm:"column:id;primaryKey" json:"id"`
 	AnnotationQueueID *string   `gorm:"column:annotationQueueId;uniqueIndex:AnnotationQueueItem_traceId_annotationQueueId_projectId_key;index:AnnotationQueueItem_annotationQueueId_idx;index:AnnotationQueueItem_annotationQueueId_doneAt_idx" json:"annotationQueueId"`
 	UserID            *string   `gorm:"column:userId;uniqueIndex:AnnotationQueueItem_traceId_userId_projectId_key;index:AnnotationQueueItem_userId_idx;index:AnnotationQueueItem_projectId_userId_doneAt_idx" json:"userId"`
-	CreatedAt         DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt         DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByUserID   *string   `gorm:"column:createdByUserId" json:"createdByUserId"`
 	TraceID           string    `gorm:"column:traceId;uniqueIndex:AnnotationQueueItem_traceId_userId_projectId_key;uniqueIndex:AnnotationQueueItem_traceId_annotationQueueId_projectId_key;not null" json:"traceId"`
 	ProjectID         string    `gorm:"column:projectId;uniqueIndex:AnnotationQueueItem_traceId_userId_projectId_key;uniqueIndex:AnnotationQueueItem_traceId_annotationQueueId_projectId_key;index:AnnotationQueueItem_projectId_idx;index:AnnotationQueueItem_projectId_doneAt_idx;index:AnnotationQueueItem_projectId_userId_doneAt_idx;not null" json:"projectId"`
-	DoneAt            *DateTime `gorm:"column:doneAt;index:AnnotationQueueItem_projectId_doneAt_idx;index:AnnotationQueueItem_projectId_userId_doneAt_idx;index:AnnotationQueueItem_annotationQueueId_doneAt_idx" json:"doneAt"`
+	DoneAt            *DateTime `gorm:"column:doneAt;index:AnnotationQueueItem_projectId_doneAt_idx;index:AnnotationQueueItem_projectId_userId_doneAt_idx;index:AnnotationQueueItem_annotationQueueId_doneAt_idx;type:timestamp(3)" json:"doneAt"`
 	// Set while the annotator wants this item's trace added to a dataset once
 	// the queue walk is finished. Persisted rather than kept in the browser so
 	// the selection survives a refresh and stays visible to teammates.
-	MarkedForDatasetAt *DateTime `gorm:"column:markedForDatasetAt" json:"markedForDatasetAt"`
-	AnnotationQueue    *AnnotationQueue
-	User               *User `gorm:"foreignKey:UserID"`
-	CreatedByUser      *User `gorm:"foreignKey:CreatedByUserID"`
-	Project            *Project
+	MarkedForDatasetAt *DateTime        `gorm:"column:markedForDatasetAt;type:timestamp(3)" json:"markedForDatasetAt"`
+	AnnotationQueue    *AnnotationQueue `gorm:"belongsTo"`
+	User               *User            `gorm:"foreignKey:UserID;belongsTo"`
+	CreatedByUser      *User            `gorm:"foreignKey:CreatedByUserID;belongsTo"`
+	Project            *Project         `gorm:"belongsTo"`
 }
 
 func (AnnotationQueueItem) TableName() string {
@@ -4744,20 +4745,20 @@ func (*AnnotationQueueItem) BeforeUpdate(tx *gorm.DB) error {
 
 type ShareLink struct {
 	ID           string    `gorm:"column:id;primaryKey" json:"id"`
-	Token        string    `gorm:"column:token;uniqueIndex;not null" json:"token"`
+	Token        string    `gorm:"column:token;uniqueIndex:ShareLink_token_key;not null" json:"token"`
 	ResourceType string    `gorm:"column:resourceType;index:ShareLink_projectId_resourceType_resourceId_idx;not null" json:"resourceType"`
 	ResourceID   string    `gorm:"column:resourceId;index:ShareLink_projectId_resourceType_resourceId_idx;not null" json:"resourceId"`
 	ThreadID     *string   `gorm:"column:threadId" json:"threadId"`
 	ProjectID    string    `gorm:"column:projectId;index:ShareLink_projectId_resourceType_resourceId_idx;not null" json:"projectId"`
 	UserID       *string   `gorm:"column:userId;index:ShareLink_userId_idx" json:"userId"`
 	Visibility   string    `gorm:"column:visibility;default:'PUBLIC';not null" json:"visibility"`
-	ExpiresAt    *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
-	MaxViews     *int      `gorm:"column:maxViews" json:"maxViews"`
-	ViewCount    int       `gorm:"column:viewCount;default:0;not null" json:"viewCount"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project      *Project
-	User         *User
+	ExpiresAt    *DateTime `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	MaxViews     *int      `gorm:"column:maxViews;size:32" json:"maxViews"`
+	ViewCount    int       `gorm:"column:viewCount;size:32;default:0;not null" json:"viewCount"`
+	CreatedAt    DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project      *Project  `gorm:"belongsTo"`
+	User         *User     `gorm:"belongsTo"`
 }
 
 func (ShareLink) TableName() string {
@@ -4793,9 +4794,9 @@ type PinnedTrace struct {
 	UserID    *string  `gorm:"column:userId" json:"userId"`
 	Source    string   `gorm:"column:source;default:'manual';not null" json:"source"`
 	Reason    *string  `gorm:"column:reason" json:"reason"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Project   *Project
-	User      *User
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Project   *Project `gorm:"belongsTo"`
+	User      *User    `gorm:"belongsTo"`
 }
 
 func (PinnedTrace) TableName() string {
@@ -4820,11 +4821,11 @@ type TraceEditOverlay struct {
 	Patch       datatypes.JSON `gorm:"column:patch;not null" json:"patch"`
 	CreatedByID *string        `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID *string        `gorm:"column:updatedById" json:"updatedById"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project     *Project
-	CreatedBy   *User `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy   *User `gorm:"foreignKey:UpdatedByID"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project     *Project       `gorm:"belongsTo"`
+	CreatedBy   *User          `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy   *User          `gorm:"foreignKey:UpdatedByID;belongsTo"`
 }
 
 func (TraceEditOverlay) TableName() string {
@@ -4854,8 +4855,8 @@ type TraceIngestSourceBilling struct {
 	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	SourceType     string   `gorm:"column:sourceType;primaryKey" json:"sourceType"`
 	Billed         bool     `gorm:"column:billed;not null" json:"billed"`
-	RecordedAt     DateTime `gorm:"column:recordedAt;not null" json:"recordedAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	RecordedAt     DateTime `gorm:"column:recordedAt;type:timestamp(3);not null" json:"recordedAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (TraceIngestSourceBilling) TableName() string {
@@ -4884,9 +4885,9 @@ type RetentionPolicy struct {
 	ScopeType      string   `gorm:"column:scopeType;uniqueIndex:RetentionPolicy_scopeType_scopeId_category_key;index:RetentionPolicy_scopeType_scopeId_idx;not null" json:"scopeType"`
 	ScopeID        string   `gorm:"column:scopeId;uniqueIndex:RetentionPolicy_scopeType_scopeId_category_key;index:RetentionPolicy_scopeType_scopeId_idx;not null" json:"scopeId"`
 	Category       string   `gorm:"column:category;uniqueIndex:RetentionPolicy_scopeType_scopeId_category_key;not null" json:"category"`
-	RetentionDays  int      `gorm:"column:retentionDays;not null" json:"retentionDays"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	RetentionDays  int      `gorm:"column:retentionDays;size:32;not null" json:"retentionDays"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (RetentionPolicy) TableName() string {
@@ -4922,8 +4923,8 @@ type DataPrivacyPolicy struct {
 	ScopeID        string         `gorm:"column:scopeId;uniqueIndex:DataPrivacyPolicy_scopeType_scopeId_personalOnly_key;index:DataPrivacyPolicy_scopeType_scopeId_idx;not null" json:"scopeId"`
 	PersonalOnly   bool           `gorm:"column:personalOnly;uniqueIndex:DataPrivacyPolicy_scopeType_scopeId_personalOnly_key;default:false;not null" json:"personalOnly"`
 	Config         datatypes.JSON `gorm:"column:config;not null" json:"config"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (DataPrivacyPolicy) TableName() string {
@@ -4955,7 +4956,7 @@ func (*DataPrivacyPolicy) BeforeUpdate(tx *gorm.DB) error {
 type InstantEvalJudgeProject struct {
 	ProjectID      string   `gorm:"column:projectId;primaryKey" json:"projectId"`
 	OrganizationID string   `gorm:"column:organizationId;not null" json:"organizationId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (InstantEvalJudgeProject) TableName() string {
@@ -4965,7 +4966,7 @@ func (InstantEvalJudgeProject) TableName() string {
 type InstantEvalJudgeUsageBilling struct {
 	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	UsageBilled    bool     `gorm:"column:usageBilled;not null" json:"usageBilled"`
-	OccurredAt     DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt     DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 	FromCatchUp    bool     `gorm:"column:fromCatchUp;not null" json:"fromCatchUp"`
 }
 
@@ -4977,7 +4978,7 @@ type InstantEvalJudgeSpend struct {
 	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	RequestID      string   `gorm:"column:requestId;primaryKey" json:"requestId"`
 	SpendNanoUsd   int64    `gorm:"column:spendNanoUsd;not null" json:"spendNanoUsd"`
-	OccurredAt     DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt     DateTime `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
 }
 
 func (InstantEvalJudgeSpend) TableName() string {
@@ -4992,13 +4993,13 @@ type CustomLLMModelCost struct {
 	ProjectID                   *string  `gorm:"column:projectId;index:CustomLLMModelCost_projectId_idx" json:"projectId"`
 	Model                       string   `gorm:"column:model;not null" json:"model"`
 	Regex                       string   `gorm:"column:regex;not null" json:"regex"`
-	InputCostPerToken           *float64 `gorm:"column:inputCostPerToken" json:"inputCostPerToken"`
-	OutputCostPerToken          *float64 `gorm:"column:outputCostPerToken" json:"outputCostPerToken"`
-	CacheReadCostPerToken       *float64 `gorm:"column:cacheReadCostPerToken" json:"cacheReadCostPerToken"`
-	CacheCreationCostPerToken   *float64 `gorm:"column:cacheCreationCostPerToken" json:"cacheCreationCostPerToken"`
-	CacheCreation1hCostPerToken *float64 `gorm:"column:cacheCreation1hCostPerToken" json:"cacheCreation1hCostPerToken"`
-	CreatedAt                   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	InputCostPerToken           *float64 `gorm:"column:inputCostPerToken;type:double precision" json:"inputCostPerToken"`
+	OutputCostPerToken          *float64 `gorm:"column:outputCostPerToken;type:double precision" json:"outputCostPerToken"`
+	CacheReadCostPerToken       *float64 `gorm:"column:cacheReadCostPerToken;type:double precision" json:"cacheReadCostPerToken"`
+	CacheCreationCostPerToken   *float64 `gorm:"column:cacheCreationCostPerToken;type:double precision" json:"cacheCreationCostPerToken"`
+	CacheCreation1hCostPerToken *float64 `gorm:"column:cacheCreation1hCostPerToken;type:double precision" json:"cacheCreation1hCostPerToken"`
+	CreatedAt                   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                   DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (CustomLLMModelCost) TableName() string {
@@ -5028,31 +5029,31 @@ func (*CustomLLMModelCost) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Workflow struct {
-	ID                   string    `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID            string    `gorm:"column:projectId;index:Workflow_projectId_idx;not null" json:"projectId"`
-	Name                 string    `gorm:"column:name;not null" json:"name"`
-	Icon                 string    `gorm:"column:icon;not null" json:"icon"`
-	Description          string    `gorm:"column:description;not null" json:"description"`
-	CreatedAt            DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	LatestVersionID      *string   `gorm:"column:latestVersionId;index:Workflow_latestVersionId_idx" json:"latestVersionId"`
-	CurrentVersionID     *string   `gorm:"column:currentVersionId;index:Workflow_currentVersionId_idx" json:"currentVersionId"`
-	PublishedID          *string   `gorm:"column:publishedId" json:"publishedId"`
-	PublishedByID        *string   `gorm:"column:publishedById;index:Workflow_publishedById_idx" json:"publishedById"`
-	ArchivedAt           *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
-	IsEvaluator          bool      `gorm:"column:isEvaluator;default:false;not null" json:"isEvaluator"`
-	IsComponent          bool      `gorm:"column:isComponent;default:false;not null" json:"isComponent"`
-	CopiedFromWorkflowID *string   `gorm:"column:copiedFromWorkflowId;index:Workflow_copiedFromWorkflowId_idx" json:"copiedFromWorkflowId"`
-	Project              *Project
-	LatestVersion        *WorkflowVersion  `gorm:"foreignKey:LatestVersionID"`
-	CurrentVersion       *WorkflowVersion  `gorm:"foreignKey:CurrentVersionID"`
-	PublishedBy          *User             `gorm:"foreignKey:PublishedByID"`
-	CopiedFrom           *Workflow         `gorm:"foreignKey:CopiedFromWorkflowID"`
-	Versions             []WorkflowVersion `gorm:"foreignKey:WorkflowID"`
-	Experiments          []Experiment      `gorm:"foreignKey:WorkflowID"`
-	CopiedWorkflows      []Workflow        `gorm:"foreignKey:CopiedFromWorkflowID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
-	Agents               []Agent           `gorm:"foreignKey:WorkflowID"`
-	Evaluators           []Evaluator       `gorm:"foreignKey:WorkflowID"`
+	ID                   string            `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID            string            `gorm:"column:projectId;index:Workflow_projectId_idx;not null" json:"projectId"`
+	Name                 string            `gorm:"column:name;not null" json:"name"`
+	Icon                 string            `gorm:"column:icon;not null" json:"icon"`
+	Description          string            `gorm:"column:description;not null" json:"description"`
+	CreatedAt            DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime          `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	LatestVersionID      *string           `gorm:"column:latestVersionId;index:Workflow_latestVersionId_idx" json:"latestVersionId"`
+	CurrentVersionID     *string           `gorm:"column:currentVersionId;index:Workflow_currentVersionId_idx" json:"currentVersionId"`
+	PublishedID          *string           `gorm:"column:publishedId" json:"publishedId"`
+	PublishedByID        *string           `gorm:"column:publishedById;index:Workflow_publishedById_idx" json:"publishedById"`
+	ArchivedAt           *DateTime         `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	IsEvaluator          bool              `gorm:"column:isEvaluator;default:false;not null" json:"isEvaluator"`
+	IsComponent          bool              `gorm:"column:isComponent;default:false;not null" json:"isComponent"`
+	CopiedFromWorkflowID *string           `gorm:"column:copiedFromWorkflowId;index:Workflow_copiedFromWorkflowId_idx" json:"copiedFromWorkflowId"`
+	Project              *Project          `gorm:"belongsTo"`
+	LatestVersion        *WorkflowVersion  `gorm:"foreignKey:LatestVersionID;belongsTo"`
+	CurrentVersion       *WorkflowVersion  `gorm:"foreignKey:CurrentVersionID;belongsTo"`
+	PublishedBy          *User             `gorm:"foreignKey:PublishedByID;belongsTo"`
+	CopiedFrom           *Workflow         `gorm:"foreignKey:CopiedFromWorkflowID;belongsTo"`
+	Versions             []WorkflowVersion `gorm:"foreignKey:WorkflowID;constraint:WorkflowVersion_workflowId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Experiments          []Experiment      `gorm:"foreignKey:WorkflowID;constraint:Experiment_workflowId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CopiedWorkflows      []Workflow        `gorm:"foreignKey:CopiedFromWorkflowID;constraint:Workflow_copiedFromWorkflowId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	Agents               []Agent           `gorm:"foreignKey:WorkflowID;constraint:Agent_workflowId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Evaluators           []Evaluator       `gorm:"foreignKey:WorkflowID;constraint:Evaluator_workflowId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (Workflow) TableName() string {
@@ -5082,24 +5083,24 @@ func (*Workflow) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WorkflowVersion struct {
-	ID                       string         `gorm:"column:id;primaryKey" json:"id"`
-	Version                  string         `gorm:"column:version;uniqueIndex:WorkflowVersion_workflowId_version_key;not null" json:"version"`
-	CommitMessage            string         `gorm:"column:commitMessage;not null" json:"commitMessage"`
-	AuthorID                 string         `gorm:"column:authorId;index:WorkflowVersion_authorId_idx;not null" json:"authorId"`
-	ProjectID                string         `gorm:"column:projectId;index:WorkflowVersion_projectId_idx;not null" json:"projectId"`
-	WorkflowID               string         `gorm:"column:workflowId;uniqueIndex:WorkflowVersion_workflowId_version_key;index:WorkflowVersion_workflowId_idx;not null" json:"workflowId"`
-	ParentID                 *string        `gorm:"column:parentId;index:WorkflowVersion_parentId_idx" json:"parentId"`
-	AutoSaved                bool           `gorm:"column:autoSaved;default:false;not null" json:"autoSaved"`
-	CreatedAt                DateTime       `gorm:"column:createdAt;index:WorkflowVersion_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Dsl                      datatypes.JSON `gorm:"column:dsl;not null" json:"dsl"`
-	Author                   *User          `gorm:"foreignKey:AuthorID"`
-	Project                  *Project
-	Workflow                 *Workflow
-	Parent                   *WorkflowVersion  `gorm:"foreignKey:ParentID"`
-	Children                 []WorkflowVersion `gorm:"foreignKey:ParentID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
-	WorkflowAsLatestVersion  []Workflow        `gorm:"foreignKey:LatestVersionID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
-	WorkflowAsCurrentVersion []Workflow        `gorm:"foreignKey:CurrentVersionID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	ID                       string            `gorm:"column:id;primaryKey" json:"id"`
+	Version                  string            `gorm:"column:version;uniqueIndex:WorkflowVersion_workflowId_version_key;not null" json:"version"`
+	CommitMessage            string            `gorm:"column:commitMessage;not null" json:"commitMessage"`
+	AuthorID                 string            `gorm:"column:authorId;index:WorkflowVersion_authorId_idx;not null" json:"authorId"`
+	ProjectID                string            `gorm:"column:projectId;index:WorkflowVersion_projectId_idx;not null" json:"projectId"`
+	WorkflowID               string            `gorm:"column:workflowId;uniqueIndex:WorkflowVersion_workflowId_version_key;index:WorkflowVersion_workflowId_idx;not null" json:"workflowId"`
+	ParentID                 *string           `gorm:"column:parentId;index:WorkflowVersion_parentId_idx" json:"parentId"`
+	AutoSaved                bool              `gorm:"column:autoSaved;default:false;not null" json:"autoSaved"`
+	CreatedAt                DateTime          `gorm:"column:createdAt;index:WorkflowVersion_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                DateTime          `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Dsl                      datatypes.JSON    `gorm:"column:dsl;not null" json:"dsl"`
+	Author                   *User             `gorm:"foreignKey:AuthorID;belongsTo"`
+	Project                  *Project          `gorm:"belongsTo"`
+	Workflow                 *Workflow         `gorm:"belongsTo"`
+	Parent                   *WorkflowVersion  `gorm:"foreignKey:ParentID;belongsTo"`
+	Children                 []WorkflowVersion `gorm:"foreignKey:ParentID;constraint:WorkflowVersion_parentId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	WorkflowAsLatestVersion  []Workflow        `gorm:"foreignKey:LatestVersionID;constraint:Workflow_latestVersionId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	WorkflowAsCurrentVersion []Workflow        `gorm:"foreignKey:CurrentVersionID;constraint:Workflow_currentVersionId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
 }
 
 func (WorkflowVersion) TableName() string {
@@ -5130,7 +5131,7 @@ func (*WorkflowVersion) BeforeUpdate(tx *gorm.DB) error {
 
 type AuditLog struct {
 	ID             string         `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;index:AuditLog_createdAt_idx;index:AuditLog_organizationId_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;index:AuditLog_createdAt_idx;index:AuditLog_organizationId_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UserID         *string        `gorm:"column:userId;index:AuditLog_userId_idx" json:"userId"`
 	ProjectID      *string        `gorm:"column:projectId;index:AuditLog_projectId_idx" json:"projectId"`
 	OrganizationID *string        `gorm:"column:organizationId;index:AuditLog_organizationId_createdAt_idx" json:"organizationId"`
@@ -5156,7 +5157,7 @@ type AuditLog struct {
 	Before      datatypes.JSON `gorm:"column:before" json:"before"`
 	After       datatypes.JSON `gorm:"column:after" json:"after"`
 	// A producer's outbox key: a redelivered audit intent finds its row here (Alex, audit R2).
-	IdempotencyKey *string `gorm:"column:idempotencyKey;uniqueIndex" json:"idempotencyKey"`
+	IdempotencyKey *string `gorm:"column:idempotencyKey;uniqueIndex:AuditLog_idempotencyKey_key" json:"idempotencyKey"`
 }
 
 func (AuditLog) TableName() string {
@@ -5175,21 +5176,21 @@ func (m *AuditLog) BeforeCreate(tx *gorm.DB) error {
 }
 
 type LlmPromptConfig struct {
-	ID                 string    `gorm:"column:id;primaryKey" json:"id"`
-	Handle             *string   `gorm:"column:handle;uniqueIndex" json:"handle"`
-	Name               string    `gorm:"column:name;not null" json:"name"`
-	ProjectID          string    `gorm:"column:projectId;index:LlmPromptConfig_projectId_idx;not null" json:"projectId"`
-	CreatedAt          DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt          DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt          *DateTime `gorm:"column:deletedAt" json:"deletedAt"`
-	OrganizationID     string    `gorm:"column:organizationId;index:LlmPromptConfig_organizationId_scope_idx;not null" json:"organizationId"`
-	Scope              string    `gorm:"column:scope;index:LlmPromptConfig_organizationId_scope_idx;default:'PROJECT';not null" json:"scope"`
-	CopiedFromPromptID *string   `gorm:"column:copiedFromPromptId;index:LlmPromptConfig_copiedFromPromptId_idx" json:"copiedFromPromptId"`
-	Project            *Project
-	CopiedFrom         *LlmPromptConfig         `gorm:"foreignKey:CopiedFromPromptID"`
-	CopiedPrompts      []LlmPromptConfig        `gorm:"foreignKey:CopiedFromPromptID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
-	Versions           []LlmPromptConfigVersion `gorm:"foreignKey:ConfigID;constraint:OnDelete:CASCADE"`
-	VersionTags        []PromptTagAssignment    `gorm:"foreignKey:ConfigID;constraint:OnDelete:CASCADE"`
+	ID                 string                   `gorm:"column:id;primaryKey" json:"id"`
+	Handle             *string                  `gorm:"column:handle;uniqueIndex:LlmPromptConfig_handle_key" json:"handle"`
+	Name               string                   `gorm:"column:name;not null" json:"name"`
+	ProjectID          string                   `gorm:"column:projectId;index:LlmPromptConfig_projectId_idx;not null" json:"projectId"`
+	CreatedAt          DateTime                 `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt          DateTime                 `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	DeletedAt          *DateTime                `gorm:"column:deletedAt;type:timestamp(3)" json:"deletedAt"`
+	OrganizationID     string                   `gorm:"column:organizationId;index:LlmPromptConfig_organizationId_scope_idx;not null" json:"organizationId"`
+	Scope              string                   `gorm:"column:scope;index:LlmPromptConfig_organizationId_scope_idx;default:'PROJECT';not null" json:"scope"`
+	CopiedFromPromptID *string                  `gorm:"column:copiedFromPromptId;index:LlmPromptConfig_copiedFromPromptId_idx" json:"copiedFromPromptId"`
+	Project            *Project                 `gorm:"belongsTo"`
+	CopiedFrom         *LlmPromptConfig         `gorm:"foreignKey:CopiedFromPromptID;belongsTo"`
+	CopiedPrompts      []LlmPromptConfig        `gorm:"foreignKey:CopiedFromPromptID;constraint:LlmPromptConfig_copiedFromPromptId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	Versions           []LlmPromptConfigVersion `gorm:"foreignKey:ConfigID;constraint:LlmPromptConfigVersion_configId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	VersionTags        []PromptTagAssignment    `gorm:"foreignKey:ConfigID;constraint:PromptTagAssignment_configId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (LlmPromptConfig) TableName() string {
@@ -5220,18 +5221,18 @@ func (*LlmPromptConfig) BeforeUpdate(tx *gorm.DB) error {
 
 type LlmPromptConfigVersion struct {
 	ID                string                `gorm:"column:id;primaryKey" json:"id"`
-	Version           int                   `gorm:"column:version;uniqueIndex:LlmPromptConfigVersion_configId_version_key;not null" json:"version"`
+	Version           int                   `gorm:"column:version;uniqueIndex:LlmPromptConfigVersion_configId_version_key;size:32;not null" json:"version"`
 	CommitMessage     *string               `gorm:"column:commitMessage" json:"commitMessage"`
 	AuthorID          *string               `gorm:"column:authorId;index:LlmPromptConfigVersion_authorId_idx" json:"authorId"`
 	ConfigID          string                `gorm:"column:configId;uniqueIndex:LlmPromptConfigVersion_configId_version_key;index:LlmPromptConfigVersion_configId_idx;not null" json:"configId"`
 	ConfigData        datatypes.JSON        `gorm:"column:config;not null" json:"config"`
 	SchemaVersion     string                `gorm:"column:schemaVersion;not null" json:"schemaVersion"`
 	RuntimeParameters datatypes.JSON        `gorm:"column:runtimeParameters;default:'{}';not null" json:"runtimeParameters"`
-	CreatedAt         DateTime              `gorm:"column:createdAt;index:LlmPromptConfigVersion_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt         DateTime              `gorm:"column:createdAt;index:LlmPromptConfigVersion_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	ProjectID         string                `gorm:"column:projectId;not null" json:"projectId"`
-	Author            *User                 `gorm:"foreignKey:AuthorID"`
-	Config            *LlmPromptConfig      `gorm:"foreignKey:ConfigID"`
-	VersionTags       []PromptTagAssignment `gorm:"foreignKey:VersionID;constraint:OnDelete:CASCADE"`
+	Author            *User                 `gorm:"foreignKey:AuthorID;belongsTo"`
+	Config            *LlmPromptConfig      `gorm:"foreignKey:ConfigID;belongsTo"`
+	VersionTags       []PromptTagAssignment `gorm:"foreignKey:VersionID;constraint:PromptTagAssignment_versionId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (LlmPromptConfigVersion) TableName() string {
@@ -5255,15 +5256,15 @@ type PromptTagAssignment struct {
 	VersionID   string                  `gorm:"column:versionId;index:PromptTagAssignment_versionId_idx;not null" json:"versionId"`
 	TagID       string                  `gorm:"column:tagId;uniqueIndex:PromptTagAssignment_configId_tagId_key;index:PromptTagAssignment_tagId_idx;not null" json:"tagId"`
 	ProjectID   string                  `gorm:"column:projectId;index:PromptTagAssignment_projectId_idx;not null" json:"projectId"`
-	CreatedAt   DateTime                `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime                `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt   DateTime                `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime                `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByID *string                 `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID *string                 `gorm:"column:updatedById" json:"updatedById"`
-	Config      *LlmPromptConfig        `gorm:"foreignKey:ConfigID"`
-	Version     *LlmPromptConfigVersion `gorm:"foreignKey:VersionID"`
-	PromptTag   *PromptTag              `gorm:"foreignKey:TagID"`
-	CreatedBy   *User                   `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy   *User                   `gorm:"foreignKey:UpdatedByID"`
+	Config      *LlmPromptConfig        `gorm:"foreignKey:ConfigID;belongsTo"`
+	Version     *LlmPromptConfigVersion `gorm:"foreignKey:VersionID;belongsTo"`
+	PromptTag   *PromptTag              `gorm:"foreignKey:TagID;belongsTo"`
+	CreatedBy   *User                   `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy   *User                   `gorm:"foreignKey:UpdatedByID;belongsTo"`
 }
 
 func (PromptTagAssignment) TableName() string {
@@ -5293,17 +5294,17 @@ func (*PromptTagAssignment) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type PromptTag struct {
-	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:PromptTag_organizationId_name_key;index:PromptTag_organizationId_idx;not null" json:"organizationId"`
-	Name           string   `gorm:"column:name;uniqueIndex:PromptTag_organizationId_name_key;not null" json:"name"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID    *string  `gorm:"column:createdById" json:"createdById"`
-	UpdatedByID    *string  `gorm:"column:updatedById" json:"updatedById"`
-	Organization   *Organization
-	CreatedBy      *User                 `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy      *User                 `gorm:"foreignKey:UpdatedByID"`
-	Assignments    []PromptTagAssignment `gorm:"foreignKey:TagID;constraint:OnDelete:CASCADE"`
+	ID             string                `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID string                `gorm:"column:organizationId;uniqueIndex:PromptTag_organizationId_name_key;index:PromptTag_organizationId_idx;not null" json:"organizationId"`
+	Name           string                `gorm:"column:name;uniqueIndex:PromptTag_organizationId_name_key;not null" json:"name"`
+	CreatedAt      DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime              `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID    *string               `gorm:"column:createdById" json:"createdById"`
+	UpdatedByID    *string               `gorm:"column:updatedById" json:"updatedById"`
+	Organization   *Organization         `gorm:"belongsTo"`
+	CreatedBy      *User                 `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy      *User                 `gorm:"foreignKey:UpdatedByID;belongsTo"`
+	Assignments    []PromptTagAssignment `gorm:"foreignKey:TagID;constraint:PromptTagAssignment_tagId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (PromptTag) TableName() string {
@@ -5337,11 +5338,11 @@ type Analytics struct {
 	ProjectID    string         `gorm:"column:projectId;index:Analytics_createdAt_key_projectId_numericValue_idx;index:Analytics_projectId_idx;not null" json:"projectId"`
 	Key          string         `gorm:"column:key;index:Analytics_createdAt_key_projectId_numericValue_idx;not null" json:"key"`
 	Value        datatypes.JSON `gorm:"column:value" json:"value"`
-	NumericValue *float64       `gorm:"column:numericValue;index:Analytics_createdAt_key_projectId_numericValue_idx" json:"numericValue"`
+	NumericValue *float64       `gorm:"column:numericValue;index:Analytics_createdAt_key_projectId_numericValue_idx;type:double precision" json:"numericValue"`
 	StringValue  *string        `gorm:"column:stringValue" json:"stringValue"`
 	BoolValue    *bool          `gorm:"column:boolValue" json:"boolValue"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;index:Analytics_createdAt_key_projectId_numericValue_idx;autoCreateTime:false;not null" json:"createdAt"`
-	Project      *Project
+	CreatedAt    DateTime       `gorm:"column:createdAt;index:Analytics_createdAt_key_projectId_numericValue_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Project      *Project       `gorm:"belongsTo"`
 }
 
 func (Analytics) TableName() string {
@@ -5366,11 +5367,11 @@ type CustomRole struct {
 	Description    *string        `gorm:"column:description" json:"description"`
 	Permissions    datatypes.JSON `gorm:"column:permissions;not null" json:"permissions"`
 	Kind           *string        `gorm:"column:kind;default:'custom';not null" json:"kind"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization   *Organization
-	AssignedUsers  []TeamUser    `gorm:"foreignKey:AssignedRoleID"`
-	RoleBindings   []RoleBinding `gorm:"foreignKey:CustomRoleID"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization   *Organization  `gorm:"belongsTo"`
+	AssignedUsers  []TeamUser     `gorm:"foreignKey:AssignedRoleID;constraint:TeamUser_assignedRoleId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	RoleBindings   []RoleBinding  `gorm:"foreignKey:CustomRoleID;constraint:RoleBinding_customRoleId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (CustomRole) TableName() string {
@@ -5404,11 +5405,11 @@ type Notification struct {
 	OrganizationID *string        `gorm:"column:organizationId;index:Notification_organizationId_idx" json:"organizationId"`
 	ProjectID      *string        `gorm:"column:projectId;index:Notification_projectId_idx" json:"projectId"`
 	Metadata       datatypes.JSON `gorm:"column:metadata;not null" json:"metadata"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;index:Notification_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	SentAt         DateTime       `gorm:"column:sentAt;index:Notification_sentAt_idx;not null" json:"sentAt"`
-	Organization   *Organization
-	Project        *Project
+	CreatedAt      DateTime       `gorm:"column:createdAt;index:Notification_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	SentAt         DateTime       `gorm:"column:sentAt;index:Notification_sentAt_idx;type:timestamp(3);not null" json:"sentAt"`
+	Organization   *Organization  `gorm:"belongsTo"`
+	Project        *Project       `gorm:"belongsTo"`
 }
 
 func (Notification) TableName() string {
@@ -5449,16 +5450,16 @@ type Agent struct {
 	OwnerUserID       *string        `gorm:"column:ownerUserId" json:"ownerUserId"`
 	HostLabel         *string        `gorm:"column:hostLabel" json:"hostLabel"`
 	IdentityKey       *string        `gorm:"column:identityKey;uniqueIndex:Agent_projectId_identityKey_key" json:"identityKey"`
-	LastSeenAt        *DateTime      `gorm:"column:lastSeenAt;index:Agent_projectId_lastSeenAt_idx" json:"lastSeenAt"`
-	ArchivedAt        *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt         DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt         DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	LastSeenAt        *DateTime      `gorm:"column:lastSeenAt;index:Agent_projectId_lastSeenAt_idx;type:timestamp(3)" json:"lastSeenAt"`
+	ArchivedAt        *DateTime      `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt         DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt         DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByID       *string        `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID       *string        `gorm:"column:updatedById" json:"updatedById"`
-	Project           *Project
-	Workflow          *Workflow
-	CopiedFrom        *Agent  `gorm:"foreignKey:CopiedFromAgentID"`
-	CopiedAgents      []Agent `gorm:"foreignKey:CopiedFromAgentID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	Project           *Project       `gorm:"belongsTo"`
+	Workflow          *Workflow      `gorm:"belongsTo"`
+	CopiedFrom        *Agent         `gorm:"foreignKey:CopiedFromAgentID;belongsTo"`
+	CopiedAgents      []Agent        `gorm:"foreignKey:CopiedFromAgentID;constraint:Agent_copiedFromAgentId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
 }
 
 func (Agent) TableName() string {
@@ -5492,7 +5493,7 @@ type AgentVersion struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID     string         `gorm:"column:projectId;index:AgentVersion_projectId_idx;not null" json:"projectId"`
 	AgentID       string         `gorm:"column:agentId;uniqueIndex:AgentVersion_agentId_version_key;not null" json:"agentId"`
-	Version       int            `gorm:"column:version;uniqueIndex:AgentVersion_agentId_version_key;not null" json:"version"`
+	Version       int            `gorm:"column:version;uniqueIndex:AgentVersion_agentId_version_key;size:32;not null" json:"version"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
 	Type          string         `gorm:"column:type;not null" json:"type"`
 	Config        datatypes.JSON `gorm:"column:config;not null" json:"config"`
@@ -5501,7 +5502,7 @@ type AgentVersion struct {
 	AuthorID      *string        `gorm:"column:authorId" json:"authorId"`
 	// "user", "api_key" or "system": who wrote the version when authorId is null.
 	AuthorKind *string  `gorm:"column:authorKind" json:"authorKind"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (AgentVersion) TableName() string {
@@ -5525,8 +5526,8 @@ type AgentVersionLabel struct {
 	VersionID   string   `gorm:"column:versionId;index:AgentVersionLabel_versionId_idx;not null" json:"versionId"`
 	CreatedByID *string  `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID *string  `gorm:"column:updatedById" json:"updatedById"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (AgentVersionLabel) TableName() string {
@@ -5553,25 +5554,25 @@ func (*AgentVersionLabel) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Evaluator struct {
-	ID                    string         `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID             string         `gorm:"column:projectId;uniqueIndex:Evaluator_projectId_slug_key;index:Evaluator_projectId_idx;not null" json:"projectId"`
-	Name                  string         `gorm:"column:name;not null" json:"name"`
-	Slug                  *string        `gorm:"column:slug;uniqueIndex:Evaluator_projectId_slug_key" json:"slug"`
-	Type                  string         `gorm:"column:type;not null" json:"type"`
-	Config                datatypes.JSON `gorm:"column:config;not null" json:"config"`
-	WorkflowID            *string        `gorm:"column:workflowId;index:Evaluator_workflowId_idx" json:"workflowId"`
-	CopiedFromEvaluatorID *string        `gorm:"column:copiedFromEvaluatorId;index:Evaluator_copiedFromEvaluatorId_idx" json:"copiedFromEvaluatorId"`
-	ArchivedAt            *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt             DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID           *string        `gorm:"column:createdById" json:"createdById"`
-	UpdatedByID           *string        `gorm:"column:updatedById" json:"updatedById"`
-	Project               *Project
-	Workflow              *Workflow
-	CopiedFrom            *Evaluator         `gorm:"foreignKey:CopiedFromEvaluatorID"`
-	CopiedEvaluators      []Evaluator        `gorm:"foreignKey:CopiedFromEvaluatorID;constraint:OnUpdate:RESTRICT,OnDelete:RESTRICT"`
-	Monitors              []Monitor          `gorm:"foreignKey:EvaluatorID"`
-	GatewayGuardrails     []GatewayGuardrail `gorm:"foreignKey:EvaluatorID;constraint:OnDelete:RESTRICT"`
+	ID                    string             `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID             string             `gorm:"column:projectId;uniqueIndex:Evaluator_projectId_slug_key;index:Evaluator_projectId_idx;not null" json:"projectId"`
+	Name                  string             `gorm:"column:name;not null" json:"name"`
+	Slug                  *string            `gorm:"column:slug;uniqueIndex:Evaluator_projectId_slug_key" json:"slug"`
+	Type                  string             `gorm:"column:type;not null" json:"type"`
+	Config                datatypes.JSON     `gorm:"column:config;not null" json:"config"`
+	WorkflowID            *string            `gorm:"column:workflowId;index:Evaluator_workflowId_idx" json:"workflowId"`
+	CopiedFromEvaluatorID *string            `gorm:"column:copiedFromEvaluatorId;index:Evaluator_copiedFromEvaluatorId_idx" json:"copiedFromEvaluatorId"`
+	ArchivedAt            *DateTime          `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt             DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime           `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID           *string            `gorm:"column:createdById" json:"createdById"`
+	UpdatedByID           *string            `gorm:"column:updatedById" json:"updatedById"`
+	Project               *Project           `gorm:"belongsTo"`
+	Workflow              *Workflow          `gorm:"belongsTo"`
+	CopiedFrom            *Evaluator         `gorm:"foreignKey:CopiedFromEvaluatorID;belongsTo"`
+	CopiedEvaluators      []Evaluator        `gorm:"foreignKey:CopiedFromEvaluatorID;constraint:Evaluator_copiedFromEvaluatorId_fkey,OnUpdate:RESTRICT,OnDelete:RESTRICT"`
+	Monitors              []Monitor          `gorm:"foreignKey:EvaluatorID;constraint:Monitor_evaluatorId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	GatewayGuardrails     []GatewayGuardrail `gorm:"foreignKey:EvaluatorID;constraint:GatewayGuardrail_evaluatorId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Evaluator) TableName() string {
@@ -5605,7 +5606,7 @@ type EvaluatorVersion struct {
 	ID            string         `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID     string         `gorm:"column:projectId;index:EvaluatorVersion_projectId_idx;not null" json:"projectId"`
 	EvaluatorID   string         `gorm:"column:evaluatorId;uniqueIndex:EvaluatorVersion_evaluatorId_version_key;not null" json:"evaluatorId"`
-	Version       int            `gorm:"column:version;uniqueIndex:EvaluatorVersion_evaluatorId_version_key;not null" json:"version"`
+	Version       int            `gorm:"column:version;uniqueIndex:EvaluatorVersion_evaluatorId_version_key;size:32;not null" json:"version"`
 	Name          string         `gorm:"column:name;not null" json:"name"`
 	Type          string         `gorm:"column:type;not null" json:"type"`
 	Config        datatypes.JSON `gorm:"column:config;not null" json:"config"`
@@ -5614,7 +5615,7 @@ type EvaluatorVersion struct {
 	AuthorID      *string        `gorm:"column:authorId" json:"authorId"`
 	// "user", "api_key" or "system": who wrote the version when authorId is null.
 	AuthorKind *string  `gorm:"column:authorKind" json:"authorKind"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (EvaluatorVersion) TableName() string {
@@ -5638,8 +5639,8 @@ type EvaluatorVersionLabel struct {
 	VersionID   string   `gorm:"column:versionId;index:EvaluatorVersionLabel_versionId_idx;not null" json:"versionId"`
 	CreatedByID *string  `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID *string  `gorm:"column:updatedById" json:"updatedById"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (EvaluatorVersionLabel) TableName() string {
@@ -5666,29 +5667,29 @@ func (*EvaluatorVersionLabel) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Scenario struct {
-	ID              string         `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID       string         `gorm:"column:projectId;index:Scenario_projectId_idx;index:Scenario_projectId_testSuiteId_idx;not null" json:"projectId"`
-	Name            string         `gorm:"column:name;not null" json:"name"`
-	Situation       string         `gorm:"column:situation;not null" json:"situation"`
-	Criteria        []string       `gorm:"column:criteria;serializer:json;not null" json:"criteria"`
-	Labels          []string       `gorm:"column:labels;serializer:json;not null" json:"labels"`
-	Parameters      datatypes.JSON `gorm:"column:parameters" json:"parameters"`
-	SimulatorModel  *string        `gorm:"column:simulatorModel" json:"simulatorModel"`
-	JudgeModel      *string        `gorm:"column:judgeModel" json:"judgeModel"`
-	MaxTurns        *int           `gorm:"column:maxTurns" json:"maxTurns"`
-	MinTurns        *int           `gorm:"column:minTurns" json:"minTurns"`
-	Fields          datatypes.JSON `gorm:"column:fields" json:"fields"`
-	CallerVoice     datatypes.JSON `gorm:"column:callerVoice" json:"callerVoice"`
-	TestSuiteID     *string        `gorm:"column:testSuiteId;index:Scenario_projectId_testSuiteId_idx" json:"testSuiteId"`
-	Version         *int           `gorm:"column:version;default:1;not null" json:"version"`
-	LastUpdatedByID *string        `gorm:"column:lastUpdatedById" json:"lastUpdatedById"`
-	ArchivedAt      *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project         *Project
-	TestSuite       *SimulationSuite  `gorm:"foreignKey:TestSuiteID"`
-	LastUpdatedBy   *User             `gorm:"foreignKey:LastUpdatedByID"`
-	Versions        []ScenarioVersion `gorm:"foreignKey:ScenarioID;constraint:OnDelete:CASCADE"`
+	ID              string             `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID       string             `gorm:"column:projectId;index:Scenario_projectId_idx;index:Scenario_projectId_testSuiteId_idx;not null" json:"projectId"`
+	Name            string             `gorm:"column:name;not null" json:"name"`
+	Situation       string             `gorm:"column:situation;not null" json:"situation"`
+	Criteria        ScalarList[string] `gorm:"column:criteria;type:text[]" json:"criteria"`
+	Labels          ScalarList[string] `gorm:"column:labels;type:text[]" json:"labels"`
+	Parameters      datatypes.JSON     `gorm:"column:parameters" json:"parameters"`
+	SimulatorModel  *string            `gorm:"column:simulatorModel" json:"simulatorModel"`
+	JudgeModel      *string            `gorm:"column:judgeModel" json:"judgeModel"`
+	MaxTurns        *int               `gorm:"column:maxTurns;size:32" json:"maxTurns"`
+	MinTurns        *int               `gorm:"column:minTurns;size:32" json:"minTurns"`
+	Fields          datatypes.JSON     `gorm:"column:fields" json:"fields"`
+	CallerVoice     datatypes.JSON     `gorm:"column:callerVoice" json:"callerVoice"`
+	TestSuiteID     *string            `gorm:"column:testSuiteId;index:Scenario_projectId_testSuiteId_idx" json:"testSuiteId"`
+	Version         *int               `gorm:"column:version;size:32;default:1;not null" json:"version"`
+	LastUpdatedByID *string            `gorm:"column:lastUpdatedById" json:"lastUpdatedById"`
+	ArchivedAt      *DateTime          `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt       DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime           `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project         *Project           `gorm:"belongsTo"`
+	TestSuite       *SimulationSuite   `gorm:"foreignKey:TestSuiteID;belongsTo"`
+	LastUpdatedBy   *User              `gorm:"foreignKey:LastUpdatedByID;belongsTo"`
+	Versions        []ScenarioVersion  `gorm:"foreignKey:ScenarioID;constraint:ScenarioVersion_scenarioId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Scenario) TableName() string {
@@ -5724,7 +5725,7 @@ type ScenarioVersion struct {
 	// tenant without a join. The service is what keeps the pair honest: no
 	// composite foreign key can, under relationMode="prisma".
 	ProjectID string  `gorm:"column:projectId;index:ScenarioVersion_projectId_scenarioId_version_idx;not null" json:"projectId"`
-	Version   int     `gorm:"column:version;uniqueIndex:ScenarioVersion_scenarioId_version_key;index:ScenarioVersion_projectId_scenarioId_version_idx;not null" json:"version"`
+	Version   int     `gorm:"column:version;uniqueIndex:ScenarioVersion_scenarioId_version_key;index:ScenarioVersion_projectId_scenarioId_version_idx;size:32;not null" json:"version"`
 	AuthorID  *string `gorm:"column:authorId" json:"authorId"`
 	// Who wrote this version: "user", "api", "cli" or "langy".
 	AuthorLabel       string  `gorm:"column:authorLabel;not null" json:"authorLabel"`
@@ -5733,12 +5734,12 @@ type ScenarioVersion struct {
 	// field set as saved and the names of the fields this save changed.
 	Snapshot datatypes.JSON `gorm:"column:snapshot;not null" json:"snapshot"`
 	// Schema version of `snapshot`, so a later shape change can be read forward.
-	SchemaVersion *int     `gorm:"column:schemaVersion;default:1;not null" json:"schemaVersion"`
-	CreatedAt     DateTime `gorm:"column:createdAt;index:ScenarioVersion_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	SchemaVersion *int     `gorm:"column:schemaVersion;size:32;default:1;not null" json:"schemaVersion"`
+	CreatedAt     DateTime `gorm:"column:createdAt;index:ScenarioVersion_createdAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// Deleting the case takes its history with it. Under relationMode="prisma"
 	// the cascade is the client's, so a raw SQL delete still has to clear these
 	// rows itself.
-	Scenario *Scenario
+	Scenario *Scenario `gorm:"belongsTo"`
 }
 
 func (ScenarioVersion) TableName() string {
@@ -5757,26 +5758,26 @@ func (m *ScenarioVersion) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SimulationSuite struct {
-	ID                 string         `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID          string         `gorm:"column:projectId;uniqueIndex:SimulationSuite_projectId_slug_key;index:SimulationSuite_projectId_idx;index:SimulationSuite_projectId_kind_idx;not null" json:"projectId"`
-	Name               string         `gorm:"column:name;not null" json:"name"`
-	Slug               string         `gorm:"column:slug;uniqueIndex:SimulationSuite_projectId_slug_key;not null" json:"slug"`
-	Description        *string        `gorm:"column:description" json:"description"`
-	ScenarioIds        []string       `gorm:"column:scenarioIds;serializer:json;not null" json:"scenarioIds"`
-	Targets            datatypes.JSON `gorm:"column:targets;not null" json:"targets"`
-	RepeatCount        *int           `gorm:"column:repeatCount;default:1;not null" json:"repeatCount"`
-	Labels             []string       `gorm:"column:labels;serializer:json;not null" json:"labels"`
-	SimulatorModel     *string        `gorm:"column:simulatorModel" json:"simulatorModel"`
-	JudgeModel         *string        `gorm:"column:judgeModel" json:"judgeModel"`
-	Kind               *string        `gorm:"column:kind;index:SimulationSuite_projectId_kind_idx;default:'run_plan';not null" json:"kind"`
-	Scope              datatypes.JSON `gorm:"column:scope" json:"scope"`
-	Fields             datatypes.JSON `gorm:"column:fields" json:"fields"`
-	Evaluators         datatypes.JSON `gorm:"column:evaluators" json:"evaluators"`
-	ArchivedAt         *DateTime      `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt          DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt          DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Project            *Project
-	TestSuiteScenarios []Scenario `gorm:"foreignKey:TestSuiteID;constraint:OnDelete:SET NULL"`
+	ID                 string             `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID          string             `gorm:"column:projectId;uniqueIndex:SimulationSuite_projectId_slug_key;index:SimulationSuite_projectId_idx;index:SimulationSuite_projectId_kind_idx;not null" json:"projectId"`
+	Name               string             `gorm:"column:name;not null" json:"name"`
+	Slug               string             `gorm:"column:slug;uniqueIndex:SimulationSuite_projectId_slug_key;not null" json:"slug"`
+	Description        *string            `gorm:"column:description" json:"description"`
+	ScenarioIds        ScalarList[string] `gorm:"column:scenarioIds;type:text[]" json:"scenarioIds"`
+	Targets            datatypes.JSON     `gorm:"column:targets;not null" json:"targets"`
+	RepeatCount        *int               `gorm:"column:repeatCount;size:32;default:1;not null" json:"repeatCount"`
+	Labels             ScalarList[string] `gorm:"column:labels;type:text[]" json:"labels"`
+	SimulatorModel     *string            `gorm:"column:simulatorModel" json:"simulatorModel"`
+	JudgeModel         *string            `gorm:"column:judgeModel" json:"judgeModel"`
+	Kind               *string            `gorm:"column:kind;index:SimulationSuite_projectId_kind_idx;default:'run_plan';not null" json:"kind"`
+	Scope              datatypes.JSON     `gorm:"column:scope" json:"scope"`
+	Fields             datatypes.JSON     `gorm:"column:fields" json:"fields"`
+	Evaluators         datatypes.JSON     `gorm:"column:evaluators" json:"evaluators"`
+	ArchivedAt         *DateTime          `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt          DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt          DateTime           `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Project            *Project           `gorm:"belongsTo"`
+	TestSuiteScenarios []Scenario         `gorm:"foreignKey:TestSuiteID;constraint:Scenario_testSuiteId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (SimulationSuite) TableName() string {
@@ -5809,61 +5810,61 @@ type Subscription struct {
 	ID                    string    `gorm:"column:id;primaryKey" json:"id"`
 	OrganizationID        string    `gorm:"column:organizationId;index:Subscription_organizationId_idx;not null" json:"organizationId"`
 	Plan                  string    `gorm:"column:plan;not null" json:"plan"`
-	StripeSubscriptionID  *string   `gorm:"column:stripeSubscriptionId;uniqueIndex" json:"stripeSubscriptionId"`
+	StripeSubscriptionID  *string   `gorm:"column:stripeSubscriptionId;uniqueIndex:Subscription_stripeSubscriptionId_key" json:"stripeSubscriptionId"`
 	Status                string    `gorm:"column:status;not null" json:"status"`
-	StartDate             *DateTime `gorm:"column:startDate" json:"startDate"`
-	EndDate               *DateTime `gorm:"column:endDate" json:"endDate"`
-	LastPaymentFailedDate *DateTime `gorm:"column:lastPaymentFailedDate" json:"lastPaymentFailedDate"`
-	CreatedAt             DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt             DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	MaxMembers            *int      `gorm:"column:maxMembers" json:"maxMembers"`
-	MaxProjects           *int      `gorm:"column:maxProjects" json:"maxProjects"`
-	MaxMessagesPerMonth   *int      `gorm:"column:maxMessagesPerMonth" json:"maxMessagesPerMonth"`
-	MaxWorkflows          *int      `gorm:"column:maxWorkflows" json:"maxWorkflows"`
-	MaxRetentionDays      *int      `gorm:"column:maxRetentionDays" json:"maxRetentionDays"`
-	MaxMembersLite        *int      `gorm:"column:maxMembersLite" json:"maxMembersLite"`
+	StartDate             *DateTime `gorm:"column:startDate;type:timestamp(3)" json:"startDate"`
+	EndDate               *DateTime `gorm:"column:endDate;type:timestamp(3)" json:"endDate"`
+	LastPaymentFailedDate *DateTime `gorm:"column:lastPaymentFailedDate;type:timestamp(3)" json:"lastPaymentFailedDate"`
+	CreatedAt             DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt             DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	MaxMembers            *int      `gorm:"column:maxMembers;size:32" json:"maxMembers"`
+	MaxProjects           *int      `gorm:"column:maxProjects;size:32" json:"maxProjects"`
+	MaxMessagesPerMonth   *int      `gorm:"column:maxMessagesPerMonth;size:32" json:"maxMessagesPerMonth"`
+	MaxWorkflows          *int      `gorm:"column:maxWorkflows;size:32" json:"maxWorkflows"`
+	MaxRetentionDays      *int      `gorm:"column:maxRetentionDays;size:32" json:"maxRetentionDays"`
+	MaxMembersLite        *int      `gorm:"column:maxMembersLite;size:32" json:"maxMembersLite"`
 	// Developer seats the organization pays for; null falls to the plan's own cap.
-	MaxMembersDeveloper  *int `gorm:"column:maxMembersDeveloper" json:"maxMembersDeveloper"`
-	MaxTeams             *int `gorm:"column:maxTeams" json:"maxTeams"`
-	MaxPrompts           *int `gorm:"column:maxPrompts" json:"maxPrompts"`
-	MaxEvaluators        *int `gorm:"column:maxEvaluators" json:"maxEvaluators"`
-	MaxScenarios         *int `gorm:"column:maxScenarios" json:"maxScenarios"`
-	MaxAgents            *int `gorm:"column:maxAgents" json:"maxAgents"`
-	MaxExperiments       *int `gorm:"column:maxExperiments" json:"maxExperiments"`
-	MaxOnlineEvaluations *int `gorm:"column:maxOnlineEvaluations" json:"maxOnlineEvaluations"`
-	MaxDatasets          *int `gorm:"column:maxDatasets" json:"maxDatasets"`
-	MaxDashboards        *int `gorm:"column:maxDashboards" json:"maxDashboards"`
-	MaxCustomGraphs      *int `gorm:"column:maxCustomGraphs" json:"maxCustomGraphs"`
-	MaxAutomations       *int `gorm:"column:maxAutomations" json:"maxAutomations"`
+	MaxMembersDeveloper  *int `gorm:"column:maxMembersDeveloper;size:32" json:"maxMembersDeveloper"`
+	MaxTeams             *int `gorm:"column:maxTeams;size:32" json:"maxTeams"`
+	MaxPrompts           *int `gorm:"column:maxPrompts;size:32" json:"maxPrompts"`
+	MaxEvaluators        *int `gorm:"column:maxEvaluators;size:32" json:"maxEvaluators"`
+	MaxScenarios         *int `gorm:"column:maxScenarios;size:32" json:"maxScenarios"`
+	MaxAgents            *int `gorm:"column:maxAgents;size:32" json:"maxAgents"`
+	MaxExperiments       *int `gorm:"column:maxExperiments;size:32" json:"maxExperiments"`
+	MaxOnlineEvaluations *int `gorm:"column:maxOnlineEvaluations;size:32" json:"maxOnlineEvaluations"`
+	MaxDatasets          *int `gorm:"column:maxDatasets;size:32" json:"maxDatasets"`
+	MaxDashboards        *int `gorm:"column:maxDashboards;size:32" json:"maxDashboards"`
+	MaxCustomGraphs      *int `gorm:"column:maxCustomGraphs;size:32" json:"maxCustomGraphs"`
+	MaxAutomations       *int `gorm:"column:maxAutomations;size:32" json:"maxAutomations"`
 	// Seats paid for this period that stay usable after a seat decrease, until seatsKeptUntil.
-	SeatsKept      *int      `gorm:"column:seatsKept" json:"seatsKept"`
-	SeatsKeptUntil *DateTime `gorm:"column:seatsKeptUntil" json:"seatsKeptUntil"`
+	SeatsKept      *int      `gorm:"column:seatsKept;size:32" json:"seatsKept"`
+	SeatsKeptUntil *DateTime `gorm:"column:seatsKeptUntil;type:timestamp(3)" json:"seatsKeptUntil"`
 	// The seat quantity the last finished seat change set the seat line to; provider events never write it.
-	SeatLineQuantity   *int      `gorm:"column:seatLineQuantity" json:"seatLineQuantity"`
-	SeatLineQuantityAt *DateTime `gorm:"column:seatLineQuantityAt" json:"seatLineQuantityAt"`
+	SeatLineQuantity   *int      `gorm:"column:seatLineQuantity;size:32" json:"seatLineQuantity"`
+	SeatLineQuantityAt *DateTime `gorm:"column:seatLineQuantityAt;type:timestamp(3)" json:"seatLineQuantityAt"`
 	// A Stripe seat line write recorded before it is sent and cleared once it is known to have
 	// finished under the lease; one left behind is settled by the seat line repair.
 	// Every seat quantity written while this record was pending.
-	SeatLineWriteQuantities []int `gorm:"column:seatLineWriteQuantities;serializer:json;not null" json:"seatLineWriteQuantities"`
+	SeatLineWriteQuantities ScalarList[int] `gorm:"column:seatLineWriteQuantities;type:integer[]" json:"seatLineWriteQuantities"`
 	// The first write still pending; a later holder's write keeps it.
-	SeatLineWriteSince *DateTime `gorm:"column:seatLineWriteSince" json:"seatLineWriteSince"`
+	SeatLineWriteSince *DateTime `gorm:"column:seatLineWriteSince;type:timestamp(3)" json:"seatLineWriteSince"`
 	// The latest write sent; the repair waits a grace window after it.
-	SeatLineWriteAt        *DateTime `gorm:"column:seatLineWriteAt" json:"seatLineWriteAt"`
-	SeatLineWriteAttempts  *int      `gorm:"column:seatLineWriteAttempts" json:"seatLineWriteAttempts"`
-	SeatLineWriteFlaggedAt *DateTime `gorm:"column:seatLineWriteFlaggedAt" json:"seatLineWriteFlaggedAt"`
+	SeatLineWriteAt        *DateTime `gorm:"column:seatLineWriteAt;type:timestamp(3)" json:"seatLineWriteAt"`
+	SeatLineWriteAttempts  *int      `gorm:"column:seatLineWriteAttempts;size:32" json:"seatLineWriteAttempts"`
+	SeatLineWriteFlaggedAt *DateTime `gorm:"column:seatLineWriteFlaggedAt;type:timestamp(3)" json:"seatLineWriteFlaggedAt"`
 	// The seat quantity Stripe should bill if a seat change stops after lifting the seat line; null once settled.
-	SeatRepairQuantity *int `gorm:"column:seatRepairQuantity" json:"seatRepairQuantity"`
+	SeatRepairQuantity *int `gorm:"column:seatRepairQuantity;size:32" json:"seatRepairQuantity"`
 	// The quantity the change lifted the line to; the repair moves the line back only while Stripe still bills it.
-	SeatRepairLiftedQuantity *int      `gorm:"column:seatRepairLiftedQuantity" json:"seatRepairLiftedQuantity"`
-	SeatRepairSince          *DateTime `gorm:"column:seatRepairSince" json:"seatRepairSince"`
-	SeatRepairAttempts       *int      `gorm:"column:seatRepairAttempts" json:"seatRepairAttempts"`
+	SeatRepairLiftedQuantity *int      `gorm:"column:seatRepairLiftedQuantity;size:32" json:"seatRepairLiftedQuantity"`
+	SeatRepairSince          *DateTime `gorm:"column:seatRepairSince;type:timestamp(3)" json:"seatRepairSince"`
+	SeatRepairAttempts       *int      `gorm:"column:seatRepairAttempts;size:32" json:"seatRepairAttempts"`
 	// Set once the seat line repair has failed often enough that Ops should look at it.
-	SeatRepairFlaggedAt *DateTime `gorm:"column:seatRepairFlaggedAt" json:"seatRepairFlaggedAt"`
+	SeatRepairFlaggedAt *DateTime `gorm:"column:seatRepairFlaggedAt;type:timestamp(3)" json:"seatRepairFlaggedAt"`
 	// The lease a seat change or seat line repair holds while it reads and moves the seat line.
-	SeatLineLeaseToken *string   `gorm:"column:seatLineLeaseToken" json:"seatLineLeaseToken"`
-	SeatLineLeaseUntil *DateTime `gorm:"column:seatLineLeaseUntil" json:"seatLineLeaseUntil"`
-	Organization       *Organization
-	Invoices           []Invoice `gorm:"foreignKey:SubscriptionID"`
+	SeatLineLeaseToken *string       `gorm:"column:seatLineLeaseToken" json:"seatLineLeaseToken"`
+	SeatLineLeaseUntil *DateTime     `gorm:"column:seatLineLeaseUntil;type:timestamp(3)" json:"seatLineLeaseUntil"`
+	Organization       *Organization `gorm:"belongsTo"`
+	Invoices           []Invoice     `gorm:"foreignKey:SubscriptionID;constraint:Invoice_subscriptionId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Subscription) TableName() string {
@@ -5893,16 +5894,16 @@ func (*Subscription) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Invoice struct {
-	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	SubscriptionID string   `gorm:"column:subscriptionId;index:Invoice_subscriptionId_idx;not null" json:"subscriptionId"`
-	TotalAmount    float64  `gorm:"column:totalAmount;not null" json:"totalAmount"`
-	Currency       string   `gorm:"column:currency;not null" json:"currency"`
-	DueDate        DateTime `gorm:"column:dueDate;not null" json:"dueDate"`
-	Paid           bool     `gorm:"column:paid;default:false;not null" json:"paid"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Subscription   *Subscription
-	LineItems      []InvoiceItem `gorm:"foreignKey:InvoiceID"`
+	ID             string        `gorm:"column:id;primaryKey" json:"id"`
+	SubscriptionID string        `gorm:"column:subscriptionId;index:Invoice_subscriptionId_idx;not null" json:"subscriptionId"`
+	TotalAmount    float64       `gorm:"column:totalAmount;type:double precision;not null" json:"totalAmount"`
+	Currency       string        `gorm:"column:currency;not null" json:"currency"`
+	DueDate        DateTime      `gorm:"column:dueDate;type:timestamp(3);not null" json:"dueDate"`
+	Paid           bool          `gorm:"column:paid;default:false;not null" json:"paid"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Subscription   *Subscription `gorm:"belongsTo"`
+	LineItems      []InvoiceItem `gorm:"foreignKey:InvoiceID;constraint:InvoiceItem_invoiceId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Invoice) TableName() string {
@@ -5935,10 +5936,10 @@ type InvoiceItem struct {
 	ID          string   `gorm:"column:id;primaryKey" json:"id"`
 	InvoiceID   string   `gorm:"column:invoiceId;index:InvoiceItem_invoiceId_idx;not null" json:"invoiceId"`
 	Description string   `gorm:"column:description;not null" json:"description"`
-	Amount      float64  `gorm:"column:amount;not null" json:"amount"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Invoice     *Invoice
+	Amount      float64  `gorm:"column:amount;type:double precision;not null" json:"amount"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Invoice     *Invoice `gorm:"belongsTo"`
 }
 
 func (InvoiceItem) TableName() string {
@@ -5976,12 +5977,12 @@ type Group struct {
 	ScimSource     *string `gorm:"column:scimSource" json:"scimSource"`
 	// D08: which SSO connection provisioned this group. Null for manually
 	// created groups and for the SCIM groups that predate connection scoping.
-	ScimConnectionID *string  `gorm:"column:scimConnectionId;uniqueIndex:Group_scimConnectionId_externalId_key;index:Group_scimConnectionId_idx" json:"scimConnectionId"`
-	CreatedAt        DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt        DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization     *Organization
-	Members          []GroupMembership `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE"`
-	RoleBindings     []RoleBinding     `gorm:"foreignKey:GroupID;constraint:OnDelete:CASCADE"`
+	ScimConnectionID *string           `gorm:"column:scimConnectionId;uniqueIndex:Group_scimConnectionId_externalId_key;index:Group_scimConnectionId_idx" json:"scimConnectionId"`
+	CreatedAt        DateTime          `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt        DateTime          `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization     *Organization     `gorm:"belongsTo"`
+	Members          []GroupMembership `gorm:"foreignKey:GroupID;constraint:GroupMembership_groupId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RoleBindings     []RoleBinding     `gorm:"foreignKey:GroupID;constraint:RoleBinding_groupId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Group) TableName() string {
@@ -6013,9 +6014,9 @@ func (*Group) BeforeUpdate(tx *gorm.DB) error {
 type GroupMembership struct {
 	UserID    string   `gorm:"column:userId;primaryKey;index:GroupMembership_userId_idx" json:"userId"`
 	GroupID   string   `gorm:"column:groupId;primaryKey;index:GroupMembership_groupId_idx" json:"groupId"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User      *User
-	Group     *Group
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	User      *User    `gorm:"belongsTo"`
+	Group     *Group   `gorm:"belongsTo"`
 }
 
 func (GroupMembership) TableName() string {
@@ -6033,9 +6034,9 @@ func (m *GroupMembership) BeforeCreate(tx *gorm.DB) error {
 // Who authz treats as gone, from user's and identity's facts; authz never reads User (ARCHITECTURE.md, "Platform operators are a grant").
 type AuthzUserStanding struct {
 	UserID            string    `gorm:"column:userId;primaryKey" json:"userId"`
-	DeactivatedAt     *DateTime `gorm:"column:deactivatedAt" json:"deactivatedAt"`
-	ErasedAt          *DateTime `gorm:"column:erasedAt" json:"erasedAt"`
-	StandingChangedAt DateTime  `gorm:"column:standingChangedAt;not null" json:"standingChangedAt"`
+	DeactivatedAt     *DateTime `gorm:"column:deactivatedAt;type:timestamp(3)" json:"deactivatedAt"`
+	ErasedAt          *DateTime `gorm:"column:erasedAt;type:timestamp(3)" json:"erasedAt"`
+	StandingChangedAt DateTime  `gorm:"column:standingChangedAt;type:timestamp(3);not null" json:"standingChangedAt"`
 }
 
 func (AuthzUserStanding) TableName() string {
@@ -6049,9 +6050,9 @@ type AuthzEngineSwitch struct {
 	OrganizationID     string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	OnEngine           bool     `gorm:"column:onEngine;not null" json:"onEngine"`
 	Pinned             bool     `gorm:"column:pinned;default:false;not null" json:"pinned"`
-	SwitchedAt         DateTime `gorm:"column:switchedAt;not null" json:"switchedAt"`
+	SwitchedAt         DateTime `gorm:"column:switchedAt;type:timestamp(3);not null" json:"switchedAt"`
 	LastAppliedEventID *string  `gorm:"column:lastAppliedEventId" json:"lastAppliedEventId"`
-	UpdatedAt          DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt          DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (AuthzEngineSwitch) TableName() string {
@@ -6079,7 +6080,7 @@ type AuthzOrganizationPolicy struct {
 	OrganizationID               string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	BraidsOrganizationAdminsOnly bool     `gorm:"column:braidsOrganizationAdminsOnly;default:false;not null" json:"braidsOrganizationAdminsOnly"`
 	UpdatedByUserID              string   `gorm:"column:updatedByUserId;not null" json:"updatedByUserId"`
-	UpdatedAt                    DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt                    DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (AuthzOrganizationPolicy) TableName() string {
@@ -6103,22 +6104,22 @@ func (*AuthzOrganizationPolicy) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type RoleBinding struct {
-	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string   `gorm:"column:organizationId;index:RoleBinding_organizationId_idx;not null" json:"organizationId"`
-	UserID         *string  `gorm:"column:userId;index:RoleBinding_userId_idx" json:"userId"`
-	GroupID        *string  `gorm:"column:groupId;index:RoleBinding_groupId_idx" json:"groupId"`
-	APIKeyID       *string  `gorm:"column:apiKeyId;index:RoleBinding_apiKeyId_idx" json:"apiKeyId"`
-	Role           string   `gorm:"column:role;not null" json:"role"`
-	CustomRoleID   *string  `gorm:"column:customRoleId" json:"customRoleId"`
-	ScopeType      string   `gorm:"column:scopeType;index:RoleBinding_scopeType_scopeId_idx;not null" json:"scopeType"`
-	ScopeID        string   `gorm:"column:scopeId;index:RoleBinding_scopeType_scopeId_idx;not null" json:"scopeId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Organization   *Organization
-	User           *User
-	Group          *Group
-	APIKey         *APIKey
-	CustomRole     *CustomRole
+	ID             string        `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID string        `gorm:"column:organizationId;index:RoleBinding_organizationId_idx;not null" json:"organizationId"`
+	UserID         *string       `gorm:"column:userId;index:RoleBinding_userId_idx" json:"userId"`
+	GroupID        *string       `gorm:"column:groupId;index:RoleBinding_groupId_idx" json:"groupId"`
+	APIKeyID       *string       `gorm:"column:apiKeyId;index:RoleBinding_apiKeyId_idx" json:"apiKeyId"`
+	Role           string        `gorm:"column:role;not null" json:"role"`
+	CustomRoleID   *string       `gorm:"column:customRoleId" json:"customRoleId"`
+	ScopeType      string        `gorm:"column:scopeType;index:RoleBinding_scopeType_scopeId_idx;not null" json:"scopeType"`
+	ScopeID        string        `gorm:"column:scopeId;index:RoleBinding_scopeType_scopeId_idx;not null" json:"scopeId"`
+	CreatedAt      DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Organization   *Organization `gorm:"belongsTo"`
+	User           *User         `gorm:"belongsTo"`
+	Group          *Group        `gorm:"belongsTo"`
+	APIKey         *APIKey       `gorm:"belongsTo"`
+	CustomRole     *CustomRole   `gorm:"belongsTo"`
 }
 
 func (RoleBinding) TableName() string {
@@ -6157,19 +6158,19 @@ type Grant struct {
 	Source          string         `gorm:"column:source;not null" json:"source"`
 	ScopeType       string         `gorm:"column:scopeType;index:Grant_organizationId_scopeType_scopeId_idx;not null" json:"scopeType"`
 	ScopeID         string         `gorm:"column:scopeId;index:Grant_organizationId_scopeType_scopeId_idx;index:Grant_projectId_resourceKind_scopeId_idx;not null" json:"scopeId"`
-	Token           *string        `gorm:"column:token;uniqueIndex" json:"token"`
+	Token           *string        `gorm:"column:token;uniqueIndex:Grant_token_key" json:"token"`
 	Permission      *string        `gorm:"column:permission" json:"permission"`
 	ResourceKind    *string        `gorm:"column:resourceKind;index:Grant_projectId_resourceKind_scopeId_idx" json:"resourceKind"`
 	ProjectID       *string        `gorm:"column:projectId;index:Grant_projectId_resourceKind_scopeId_idx" json:"projectId"`
 	CreatedByUserID *string        `gorm:"column:createdByUserId" json:"createdByUserId"`
-	ExpiresAt       *DateTime      `gorm:"column:expiresAt" json:"expiresAt"`
-	MaxViews        *int           `gorm:"column:maxViews" json:"maxViews"`
+	ExpiresAt       *DateTime      `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	MaxViews        *int           `gorm:"column:maxViews;size:32" json:"maxViews"`
 	Condition       datatypes.JSON `gorm:"column:condition" json:"condition"`
 	ReplacesGrantID *string        `gorm:"column:replacesGrantId" json:"replacesGrantId"`
-	OccurredAt      DateTime       `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	RevokedAt       *DateTime      `gorm:"column:revokedAt" json:"revokedAt"`
+	OccurredAt      DateTime       `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	RevokedAt       *DateTime      `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	RevokedReason   *string        `gorm:"column:revokedReason" json:"revokedReason"`
 }
 
@@ -6200,10 +6201,10 @@ type GrantUsage struct {
 	GrantID        string    `gorm:"column:grantId;primaryKey" json:"grantId"`
 	OrganizationID string    `gorm:"column:organizationId;index:GrantUsage_organizationId_idx;not null" json:"organizationId"`
 	ProjectID      string    `gorm:"column:projectId;index:GrantUsage_projectId_idx;not null" json:"projectId"`
-	ViewCount      int       `gorm:"column:viewCount;default:0;not null" json:"viewCount"`
-	LastViewedAt   *DateTime `gorm:"column:lastViewedAt" json:"lastViewedAt"`
-	CreatedAt      DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ViewCount      int       `gorm:"column:viewCount;size:32;default:0;not null" json:"viewCount"`
+	LastViewedAt   *DateTime `gorm:"column:lastViewedAt;type:timestamp(3)" json:"lastViewedAt"`
+	CreatedAt      DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (GrantUsage) TableName() string {
@@ -6236,10 +6237,10 @@ type Role struct {
 	Description    *string        `gorm:"column:description" json:"description"`
 	Permissions    datatypes.JSON `gorm:"column:permissions;not null" json:"permissions"`
 	Kind           *string        `gorm:"column:kind;default:'custom';not null" json:"kind"`
-	OccurredAt     DateTime       `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	DeletedAt      *DateTime      `gorm:"column:deletedAt" json:"deletedAt"`
+	OccurredAt     DateTime       `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	DeletedAt      *DateTime      `gorm:"column:deletedAt;type:timestamp(3)" json:"deletedAt"`
 }
 
 func (Role) TableName() string {
@@ -6269,15 +6270,15 @@ type APIKey struct {
 	ID              string    `gorm:"column:id;primaryKey" json:"id"`
 	Name            string    `gorm:"column:name;not null" json:"name"`
 	Description     *string   `gorm:"column:description" json:"description"`
-	LookupID        string    `gorm:"column:lookupId;uniqueIndex;index:ApiKey_lookupId_idx;not null" json:"lookupId"`
+	LookupID        string    `gorm:"column:lookupId;uniqueIndex:ApiKey_lookupId_key;index:ApiKey_lookupId_idx;not null" json:"lookupId"`
 	HashedSecret    string    `gorm:"column:hashedSecret;not null" json:"hashedSecret"`
 	PermissionMode  *string   `gorm:"column:permissionMode;default:'all';not null" json:"permissionMode"`
 	UserID          *string   `gorm:"column:userId;index:ApiKey_userId_idx" json:"userId"`
 	CreatedByUserID *string   `gorm:"column:createdByUserId" json:"createdByUserId"`
 	OrganizationID  string    `gorm:"column:organizationId;index:ApiKey_organizationId_idx;not null" json:"organizationId"`
-	ExpiresAt       *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
-	LastUsedAt      *DateTime `gorm:"column:lastUsedAt" json:"lastUsedAt"`
-	RevokedAt       *DateTime `gorm:"column:revokedAt" json:"revokedAt"`
+	ExpiresAt       *DateTime `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	LastUsedAt      *DateTime `gorm:"column:lastUsedAt;type:timestamp(3)" json:"lastUsedAt"`
+	RevokedAt       *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
 	// Why the key was revoked, set with `revokedAt`: "user" when a person
 	// revoked it (the API-keys page, the REST API, the devices tab), "rotation"
 	// when a mint replaced it, "session" when the CLI login key it was parented
@@ -6321,12 +6322,12 @@ type APIKey struct {
 	// The browser session that minted a docs session key (ADR-185), so signing
 	// out of that session revokes it. NULL for every other key. Unindexed:
 	// sign-out filters by the indexed `userId` first.
-	CreatedByBrowserSessionID *string  `gorm:"column:createdByBrowserSessionId" json:"createdByBrowserSessionId"`
-	CreatedAt                 DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                 DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User                      *User
-	Organization              *Organization
-	RoleBindings              []RoleBinding `gorm:"foreignKey:APIKeyID;constraint:OnDelete:RESTRICT"`
+	CreatedByBrowserSessionID *string       `gorm:"column:createdByBrowserSessionId" json:"createdByBrowserSessionId"`
+	CreatedAt                 DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                 DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	User                      *User         `gorm:"belongsTo"`
+	Organization              *Organization `gorm:"belongsTo"`
+	RoleBindings              []RoleBinding `gorm:"foreignKey:APIKeyID;constraint:RoleBinding_apiKeyId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (APIKey) TableName() string {
@@ -6361,14 +6362,14 @@ type SigningKey struct {
 	OrganizationID   string    `gorm:"column:organizationId;index:SigningKey_organizationId_idx;not null" json:"organizationId"`
 	ProjectID        string    `gorm:"column:projectId;index:SigningKey_projectId_idx;not null" json:"projectId"`
 	Name             string    `gorm:"column:name;not null" json:"name"`
-	PublicID         string    `gorm:"column:publicId;uniqueIndex;not null" json:"publicId"`
+	PublicID         string    `gorm:"column:publicId;uniqueIndex:SigningKey_publicId_key;not null" json:"publicId"`
 	SecretCiphertext string    `gorm:"column:secretCiphertext;not null" json:"secretCiphertext"`
 	CreatedByUserID  string    `gorm:"column:createdByUserId;not null" json:"createdByUserId"`
-	CreatedAt        DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	RotatedAt        *DateTime `gorm:"column:rotatedAt" json:"rotatedAt"`
-	VerifiesUntil    *DateTime `gorm:"column:verifiesUntil" json:"verifiesUntil"`
-	RevokedAt        *DateTime `gorm:"column:revokedAt" json:"revokedAt"`
-	LastUsedAt       *DateTime `gorm:"column:lastUsedAt" json:"lastUsedAt"`
+	CreatedAt        DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	RotatedAt        *DateTime `gorm:"column:rotatedAt;type:timestamp(3)" json:"rotatedAt"`
+	VerifiesUntil    *DateTime `gorm:"column:verifiesUntil;type:timestamp(3)" json:"verifiesUntil"`
+	RevokedAt        *DateTime `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
+	LastUsedAt       *DateTime `gorm:"column:lastUsedAt;type:timestamp(3)" json:"lastUsedAt"`
 }
 
 func (SigningKey) TableName() string {
@@ -6387,7 +6388,7 @@ type ProjectActiveDay struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
 	ProjectID string   `gorm:"column:projectId;uniqueIndex:ProjectActiveDay_projectId_day_key;not null" json:"projectId"`
 	Day       string   `gorm:"column:day;uniqueIndex:ProjectActiveDay_projectId_day_key;not null" json:"day"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (ProjectActiveDay) TableName() string {
@@ -6421,7 +6422,7 @@ func (NurturingProject) TableName() string {
 // copy lands.
 type NurturingUncopiedProject struct {
 	ProjectID   string   `gorm:"column:projectId;primaryKey" json:"projectId"`
-	FirstSeenAt DateTime `gorm:"column:firstSeenAt;not null" json:"firstSeenAt"`
+	FirstSeenAt DateTime `gorm:"column:firstSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstSeenAt"`
 }
 
 func (NurturingUncopiedProject) TableName() string {
@@ -6442,9 +6443,9 @@ func (m *NurturingUncopiedProject) BeforeCreate(tx *gorm.DB) error {
 type NurturingOrganizationMember struct {
 	OrganizationID string    `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	UserID         string    `gorm:"column:userId;primaryKey;index:NurturingOrganizationMember_userId_idx" json:"userId"`
-	JoinedAt       *DateTime `gorm:"column:joinedAt" json:"joinedAt"`
-	LeftAt         *DateTime `gorm:"column:leftAt" json:"leftAt"`
-	ReturnedAt     *DateTime `gorm:"column:returnedAt" json:"returnedAt"`
+	JoinedAt       *DateTime `gorm:"column:joinedAt;type:timestamp(3)" json:"joinedAt"`
+	LeftAt         *DateTime `gorm:"column:leftAt;type:timestamp(3)" json:"leftAt"`
+	ReturnedAt     *DateTime `gorm:"column:returnedAt;type:timestamp(3)" json:"returnedAt"`
 }
 
 func (NurturingOrganizationMember) TableName() string {
@@ -6456,7 +6457,7 @@ func (NurturingOrganizationMember) TableName() string {
 // NurturingOrganization row.
 type NurturingOrganizationCreated struct {
 	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
-	CreatedAt      DateTime `gorm:"column:createdAt;index:NurturingOrganizationCreated_createdAt_idx;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;index:NurturingOrganizationCreated_createdAt_idx;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (NurturingOrganizationCreated) TableName() string {
@@ -6466,20 +6467,20 @@ func (NurturingOrganizationCreated) TableName() string {
 // Nurturing's read model per organization: its admin and its milestone counts.
 // `seeded` marks an organization learned from the project backfill: its first_* already happened.
 type NurturingOrganization struct {
-	OrganizationID       string    `gorm:"column:organizationId;primaryKey" json:"organizationId"`
-	AdminUserID          *string   `gorm:"column:adminUserId" json:"adminUserId"`
-	Seeded               bool      `gorm:"column:seeded;default:false;not null" json:"seeded"`
-	EvaluationCount      int       `gorm:"column:evaluationCount;default:0;not null" json:"evaluationCount"`
-	SimulationRunCount   int       `gorm:"column:simulationRunCount;default:0;not null" json:"simulationRunCount"`
-	CodingFirstSessionAt *DateTime `gorm:"column:codingFirstSessionAt" json:"codingFirstSessionAt"`
-	CodingAgentTypes     []string  `gorm:"column:codingAgentTypes;serializer:json;not null" json:"codingAgentTypes"`
-	CodingActiveDays     int       `gorm:"column:codingActiveDays;default:0;not null" json:"codingActiveDays"`
-	CodingLastActiveDay  *string   `gorm:"column:codingLastActiveDay" json:"codingLastActiveDay"`
-	CodingTerminalTypes  []string  `gorm:"column:codingTerminalTypes;serializer:json;not null" json:"codingTerminalTypes"`
-	CodingRepositoryKeys []string  `gorm:"column:codingRepositoryKeys;serializer:json;not null" json:"codingRepositoryKeys"`
-	CodingFirstDays      []int     `gorm:"column:codingFirstDays;serializer:json;not null" json:"codingFirstDays"`
-	LastTraceAt          *DateTime `gorm:"column:lastTraceAt" json:"lastTraceAt"`
-	UpdatedAt            DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	OrganizationID       string             `gorm:"column:organizationId;primaryKey" json:"organizationId"`
+	AdminUserID          *string            `gorm:"column:adminUserId" json:"adminUserId"`
+	Seeded               bool               `gorm:"column:seeded;default:false;not null" json:"seeded"`
+	EvaluationCount      int                `gorm:"column:evaluationCount;size:32;default:0;not null" json:"evaluationCount"`
+	SimulationRunCount   int                `gorm:"column:simulationRunCount;size:32;default:0;not null" json:"simulationRunCount"`
+	CodingFirstSessionAt *DateTime          `gorm:"column:codingFirstSessionAt;type:timestamp(3)" json:"codingFirstSessionAt"`
+	CodingAgentTypes     ScalarList[string] `gorm:"column:codingAgentTypes;type:text[]" json:"codingAgentTypes"`
+	CodingActiveDays     int                `gorm:"column:codingActiveDays;size:32;default:0;not null" json:"codingActiveDays"`
+	CodingLastActiveDay  *string            `gorm:"column:codingLastActiveDay" json:"codingLastActiveDay"`
+	CodingTerminalTypes  ScalarList[string] `gorm:"column:codingTerminalTypes;type:text[]" json:"codingTerminalTypes"`
+	CodingRepositoryKeys ScalarList[string] `gorm:"column:codingRepositoryKeys;type:text[]" json:"codingRepositoryKeys"`
+	CodingFirstDays      ScalarList[int]    `gorm:"column:codingFirstDays;type:integer[]" json:"codingFirstDays"`
+	LastTraceAt          *DateTime          `gorm:"column:lastTraceAt;type:timestamp(3)" json:"lastTraceAt"`
+	UpdatedAt            DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (NurturingOrganization) TableName() string {
@@ -6513,11 +6514,11 @@ type NurturingProjectUsageView struct {
 	// The project's usage as the fold folded it (NurturingProjectUsageState).
 	Folded datatypes.JSON `gorm:"column:folded;not null" json:"folded"`
 	// The event ids of the last delivery folded in, so a redelivery folds once.
-	AppliedEventIds []string `gorm:"column:appliedEventIds;serializer:json;not null" json:"appliedEventIds"`
+	AppliedEventIds ScalarList[string] `gorm:"column:appliedEventIds;type:text[]" json:"appliedEventIds"`
 	// A row of another version reads as undecodable and is re-folded from the log.
 	ProjectionVersion string `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 	// Event-derived, so a replayed row equals the row it rebuilds.
-	UpdatedAt DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (NurturingProjectUsageView) TableName() string {
@@ -6531,13 +6532,13 @@ type NurturingProjectTraceDay struct {
 	ProjectID string `gorm:"column:projectId;primaryKey" json:"projectId"`
 	// UTC `YYYY-MM-DD` of the root spans' append time.
 	Day        string `gorm:"column:day;primaryKey" json:"day"`
-	TraceCount int    `gorm:"column:traceCount;default:0;not null" json:"traceCount"`
+	TraceCount int    `gorm:"column:traceCount;size:32;default:0;not null" json:"traceCount"`
 	// Traces trace recorded failed (lw.trace.trace_failed).
-	ErrorCount int `gorm:"column:errorCount;default:0;not null" json:"errorCount"`
+	ErrorCount int `gorm:"column:errorCount;size:32;default:0;not null" json:"errorCount"`
 	// Append time of the newest root span.
-	LastTraceAt *DateTime `gorm:"column:lastTraceAt" json:"lastTraceAt"`
+	LastTraceAt *DateTime `gorm:"column:lastTraceAt;type:timestamp(3)" json:"lastTraceAt"`
 	// Append time of the newest trace_failed.
-	LastFailedTraceAt *DateTime `gorm:"column:lastFailedTraceAt" json:"lastFailedTraceAt"`
+	LastFailedTraceAt *DateTime `gorm:"column:lastFailedTraceAt;type:timestamp(3)" json:"lastFailedTraceAt"`
 }
 
 func (NurturingProjectTraceDay) TableName() string {
@@ -6571,11 +6572,11 @@ type BillingMeterCheckpoint struct {
 	OrganizationID       string   `gorm:"column:organizationId;uniqueIndex:BillingMeterCheckpoint_organizationId_billingMonth_meter_key;not null" json:"organizationId"`
 	BillingMonth         string   `gorm:"column:billingMonth;uniqueIndex:BillingMeterCheckpoint_organizationId_billingMonth_meter_key;not null" json:"billingMonth"`
 	Meter                *string  `gorm:"column:meter;uniqueIndex:BillingMeterCheckpoint_organizationId_billingMonth_meter_key;default:'langwatch_billable_events';not null" json:"meter"`
-	LastReportedTotal    int      `gorm:"column:lastReportedTotal;default:0;not null" json:"lastReportedTotal"`
-	PendingReportedTotal *int     `gorm:"column:pendingReportedTotal" json:"pendingReportedTotal"`
-	ConsecutiveFailures  int      `gorm:"column:consecutiveFailures;default:0;not null" json:"consecutiveFailures"`
+	LastReportedTotal    int      `gorm:"column:lastReportedTotal;size:32;default:0;not null" json:"lastReportedTotal"`
+	PendingReportedTotal *int     `gorm:"column:pendingReportedTotal;size:32" json:"pendingReportedTotal"`
+	ConsecutiveFailures  int      `gorm:"column:consecutiveFailures;size:32;default:0;not null" json:"consecutiveFailures"`
 	LastCountedEventID   *string  `gorm:"column:lastCountedEventId" json:"lastCountedEventId"`
-	UpdatedAt            DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt            DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (BillingMeterCheckpoint) TableName() string {
@@ -6602,42 +6603,42 @@ func (*BillingMeterCheckpoint) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type VirtualKey struct {
-	ID                       string         `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID           string         `gorm:"column:organizationId;uniqueIndex:VirtualKey_organizationId_externalId_key;index:VirtualKey_organizationId_idx;index:VirtualKey_organizationId_purpose_idx;not null" json:"organizationId"`
-	Name                     string         `gorm:"column:name;not null" json:"name"`
-	Description              *string        `gorm:"column:description" json:"description"`
-	Status                   string         `gorm:"column:status;index:VirtualKey_status_idx;default:'ACTIVE';not null" json:"status"`
-	Purpose                  string         `gorm:"column:purpose;index:VirtualKey_organizationId_purpose_idx;default:'USER';not null" json:"purpose"`
-	ExternalID               *string        `gorm:"column:externalId;uniqueIndex:VirtualKey_organizationId_externalId_key" json:"externalId"`
-	Metadata                 datatypes.JSON `gorm:"column:metadata;default:'{}';not null" json:"metadata"`
-	DisabledAt               *DateTime      `gorm:"column:disabledAt" json:"disabledAt"`
-	DisabledReason           *string        `gorm:"column:disabledReason" json:"disabledReason"`
-	ExpiresAt                *DateTime      `gorm:"column:expiresAt" json:"expiresAt"`
-	HashedSecret             string         `gorm:"column:hashedSecret;uniqueIndex;not null" json:"hashedSecret"`
-	DisplayPrefix            string         `gorm:"column:displayPrefix;index:VirtualKey_displayPrefix_idx;not null" json:"displayPrefix"`
-	PrincipalUserID          *string        `gorm:"column:principalUserId;index:VirtualKey_principalUserId_idx" json:"principalUserId"`
-	TraceProjectID           *string        `gorm:"column:traceProjectId" json:"traceProjectId"`
-	Config                   datatypes.JSON `gorm:"column:config;default:'{}';not null" json:"config"`
-	Revision                 int64          `gorm:"column:revision;index:VirtualKey_revision_idx;default:0;not null" json:"revision"`
-	PreviousHashedSecret     *string        `gorm:"column:previousHashedSecret" json:"previousHashedSecret"`
-	PreviousSecretValidUntil *DateTime      `gorm:"column:previousSecretValidUntil" json:"previousSecretValidUntil"`
-	RevokedAt                *DateTime      `gorm:"column:revokedAt" json:"revokedAt"`
-	RevokedByID              *string        `gorm:"column:revokedById" json:"revokedById"`
-	CreatedAt                DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID              string         `gorm:"column:createdById;not null" json:"createdById"`
-	LastUsedAt               *DateTime      `gorm:"column:lastUsedAt" json:"lastUsedAt"`
-	RoutingPolicyID          *string        `gorm:"column:routingPolicyId;index:VirtualKey_routingPolicyId_idx" json:"routingPolicyId"`
-	RoutingMode              string         `gorm:"column:routingMode;default:'NONE';not null" json:"routingMode"`
-	ConnectServices          []string       `gorm:"column:connectServices;serializer:json;not null" json:"connectServices"`
-	LicenseTokenHash         *string        `gorm:"column:licenseTokenHash;uniqueIndex" json:"licenseTokenHash"`
-	LicenseInstanceID        *string        `gorm:"column:licenseInstanceId" json:"licenseInstanceId"`
-	LicenseExpiresAt         *DateTime      `gorm:"column:licenseExpiresAt" json:"licenseExpiresAt"`
-	LicenseID                *string        `gorm:"column:licenseId" json:"licenseId"`
-	PrincipalUser            *User          `gorm:"foreignKey:PrincipalUserID"`
-	RoutingPolicy            *RoutingPolicy
-	Scopes                   []VirtualKeyScope     `gorm:"foreignKey:VirtualKeyID;constraint:OnDelete:CASCADE"`
-	LedgerEntries            []GatewayBudgetLedger `gorm:"foreignKey:VirtualKeyID;constraint:OnDelete:CASCADE"`
+	ID                       string                `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID           string                `gorm:"column:organizationId;uniqueIndex:VirtualKey_organizationId_externalId_key;index:VirtualKey_organizationId_idx;index:VirtualKey_organizationId_purpose_idx;not null" json:"organizationId"`
+	Name                     string                `gorm:"column:name;not null" json:"name"`
+	Description              *string               `gorm:"column:description" json:"description"`
+	Status                   string                `gorm:"column:status;index:VirtualKey_status_idx;default:'ACTIVE';not null" json:"status"`
+	Purpose                  string                `gorm:"column:purpose;index:VirtualKey_organizationId_purpose_idx;default:'USER';not null" json:"purpose"`
+	ExternalID               *string               `gorm:"column:externalId;uniqueIndex:VirtualKey_organizationId_externalId_key" json:"externalId"`
+	Metadata                 datatypes.JSON        `gorm:"column:metadata;default:'{}';not null" json:"metadata"`
+	DisabledAt               *DateTime             `gorm:"column:disabledAt;type:timestamp(3)" json:"disabledAt"`
+	DisabledReason           *string               `gorm:"column:disabledReason" json:"disabledReason"`
+	ExpiresAt                *DateTime             `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	HashedSecret             string                `gorm:"column:hashedSecret;uniqueIndex:VirtualKey_hashedSecret_key;not null" json:"hashedSecret"`
+	DisplayPrefix            string                `gorm:"column:displayPrefix;index:VirtualKey_displayPrefix_idx;not null" json:"displayPrefix"`
+	PrincipalUserID          *string               `gorm:"column:principalUserId;index:VirtualKey_principalUserId_idx" json:"principalUserId"`
+	TraceProjectID           *string               `gorm:"column:traceProjectId" json:"traceProjectId"`
+	Config                   datatypes.JSON        `gorm:"column:config;default:'{}';not null" json:"config"`
+	Revision                 int64                 `gorm:"column:revision;index:VirtualKey_revision_idx;default:0;not null" json:"revision"`
+	PreviousHashedSecret     *string               `gorm:"column:previousHashedSecret" json:"previousHashedSecret"`
+	PreviousSecretValidUntil *DateTime             `gorm:"column:previousSecretValidUntil;type:timestamp(3)" json:"previousSecretValidUntil"`
+	RevokedAt                *DateTime             `gorm:"column:revokedAt;type:timestamp(3)" json:"revokedAt"`
+	RevokedByID              *string               `gorm:"column:revokedById" json:"revokedById"`
+	CreatedAt                DateTime              `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                DateTime              `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID              string                `gorm:"column:createdById;not null" json:"createdById"`
+	LastUsedAt               *DateTime             `gorm:"column:lastUsedAt;type:timestamp(3)" json:"lastUsedAt"`
+	RoutingPolicyID          *string               `gorm:"column:routingPolicyId;index:VirtualKey_routingPolicyId_idx" json:"routingPolicyId"`
+	RoutingMode              string                `gorm:"column:routingMode;default:'NONE';not null" json:"routingMode"`
+	ConnectServices          ScalarList[string]    `gorm:"column:connectServices;type:text[]" json:"connectServices"`
+	LicenseTokenHash         *string               `gorm:"column:licenseTokenHash;uniqueIndex:VirtualKey_licenseTokenHash_key" json:"licenseTokenHash"`
+	LicenseInstanceID        *string               `gorm:"column:licenseInstanceId" json:"licenseInstanceId"`
+	LicenseExpiresAt         *DateTime             `gorm:"column:licenseExpiresAt;type:timestamp(3)" json:"licenseExpiresAt"`
+	LicenseID                *string               `gorm:"column:licenseId" json:"licenseId"`
+	PrincipalUser            *User                 `gorm:"foreignKey:PrincipalUserID;belongsTo"`
+	RoutingPolicy            *RoutingPolicy        `gorm:"belongsTo"`
+	Scopes                   []VirtualKeyScope     `gorm:"foreignKey:VirtualKeyID;constraint:VirtualKeyScope_virtualKeyId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	LedgerEntries            []GatewayBudgetLedger `gorm:"foreignKey:VirtualKeyID;constraint:GatewayBudgetLedger_virtualKeyId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (VirtualKey) TableName() string {
@@ -6667,12 +6668,12 @@ func (*VirtualKey) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type VirtualKeyScope struct {
-	ID           string   `gorm:"column:id;primaryKey" json:"id"`
-	VirtualKeyID string   `gorm:"column:virtualKeyId;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_virtualKeyId_idx;not null" json:"virtualKeyId"`
-	ScopeType    string   `gorm:"column:scopeType;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_scopeType_scopeId_idx;not null" json:"scopeType"`
-	ScopeID      string   `gorm:"column:scopeId;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_scopeType_scopeId_idx;not null" json:"scopeId"`
-	CreatedAt    DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	VirtualKey   *VirtualKey
+	ID           string      `gorm:"column:id;primaryKey" json:"id"`
+	VirtualKeyID string      `gorm:"column:virtualKeyId;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_virtualKeyId_idx;not null" json:"virtualKeyId"`
+	ScopeType    string      `gorm:"column:scopeType;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_scopeType_scopeId_idx;not null" json:"scopeType"`
+	ScopeID      string      `gorm:"column:scopeId;uniqueIndex:VirtualKeyScope_virtualKeyId_scopeType_scopeId_key;index:VirtualKeyScope_scopeType_scopeId_idx;not null" json:"scopeId"`
+	CreatedAt    DateTime    `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	VirtualKey   *VirtualKey `gorm:"belongsTo"`
 }
 
 func (VirtualKeyScope) TableName() string {
@@ -6691,24 +6692,24 @@ func (m *VirtualKeyScope) BeforeCreate(tx *gorm.DB) error {
 }
 
 type RoutingPolicy struct {
-	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID   string         `gorm:"column:organizationId;index:RoutingPolicy_organizationId_idx;not null" json:"organizationId"`
-	Name             string         `gorm:"column:name;not null" json:"name"`
-	Description      *string        `gorm:"column:description" json:"description"`
-	ModelProviderIds datatypes.JSON `gorm:"column:modelProviderIds;default:'[]';not null" json:"modelProviderIds"`
-	ModelAliases     datatypes.JSON `gorm:"column:modelAliases;default:'{}';not null" json:"modelAliases"`
-	DefaultModel     *string        `gorm:"column:defaultModel" json:"defaultModel"`
-	PolicyRules      datatypes.JSON `gorm:"column:policyRules;default:'{}';not null" json:"policyRules"`
-	IsDefault        bool           `gorm:"column:isDefault;default:false;not null" json:"isDefault"`
-	CreatedAt        DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt        DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID      *string        `gorm:"column:createdById" json:"createdById"`
-	UpdatedByID      *string        `gorm:"column:updatedById" json:"updatedById"`
-	Organization     *Organization
-	CreatedBy        *User                `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy        *User                `gorm:"foreignKey:UpdatedByID"`
-	VirtualKeys      []VirtualKey         `gorm:"foreignKey:RoutingPolicyID;constraint:OnDelete:SET NULL"`
-	Scopes           []RoutingPolicyScope `gorm:"foreignKey:RoutingPolicyID;constraint:OnDelete:CASCADE"`
+	ID               string               `gorm:"column:id;primaryKey" json:"id"`
+	OrganizationID   string               `gorm:"column:organizationId;index:RoutingPolicy_organizationId_idx;not null" json:"organizationId"`
+	Name             string               `gorm:"column:name;not null" json:"name"`
+	Description      *string              `gorm:"column:description" json:"description"`
+	ModelProviderIds datatypes.JSON       `gorm:"column:modelProviderIds;default:'[]';not null" json:"modelProviderIds"`
+	ModelAliases     datatypes.JSON       `gorm:"column:modelAliases;default:'{}';not null" json:"modelAliases"`
+	DefaultModel     *string              `gorm:"column:defaultModel" json:"defaultModel"`
+	PolicyRules      datatypes.JSON       `gorm:"column:policyRules;default:'{}';not null" json:"policyRules"`
+	IsDefault        bool                 `gorm:"column:isDefault;default:false;not null" json:"isDefault"`
+	CreatedAt        DateTime             `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt        DateTime             `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID      *string              `gorm:"column:createdById" json:"createdById"`
+	UpdatedByID      *string              `gorm:"column:updatedById" json:"updatedById"`
+	Organization     *Organization        `gorm:"belongsTo"`
+	CreatedBy        *User                `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy        *User                `gorm:"foreignKey:UpdatedByID;belongsTo"`
+	VirtualKeys      []VirtualKey         `gorm:"foreignKey:RoutingPolicyID;constraint:VirtualKey_routingPolicyId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Scopes           []RoutingPolicyScope `gorm:"foreignKey:RoutingPolicyID;constraint:RoutingPolicyScope_routingPolicyId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (RoutingPolicy) TableName() string {
@@ -6738,12 +6739,12 @@ func (*RoutingPolicy) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type RoutingPolicyScope struct {
-	ID              string   `gorm:"column:id;primaryKey" json:"id"`
-	RoutingPolicyID string   `gorm:"column:routingPolicyId;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_routingPolicyId_idx;not null" json:"routingPolicyId"`
-	ScopeType       string   `gorm:"column:scopeType;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_scopeType_scopeId_idx;not null" json:"scopeType"`
-	ScopeID         string   `gorm:"column:scopeId;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_scopeType_scopeId_idx;not null" json:"scopeId"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	RoutingPolicy   *RoutingPolicy
+	ID              string         `gorm:"column:id;primaryKey" json:"id"`
+	RoutingPolicyID string         `gorm:"column:routingPolicyId;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_routingPolicyId_idx;not null" json:"routingPolicyId"`
+	ScopeType       string         `gorm:"column:scopeType;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_scopeType_scopeId_idx;not null" json:"scopeType"`
+	ScopeID         string         `gorm:"column:scopeId;uniqueIndex:RoutingPolicyScope_routingPolicyId_scopeType_scopeId_key;index:RoutingPolicyScope_scopeType_scopeId_idx;not null" json:"scopeId"`
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	RoutingPolicy   *RoutingPolicy `gorm:"belongsTo"`
 }
 
 func (RoutingPolicyScope) TableName() string {
@@ -6762,22 +6763,22 @@ func (m *RoutingPolicyScope) BeforeCreate(tx *gorm.DB) error {
 }
 
 type GatewayGuardrail struct {
-	ID          string    `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID   string    `gorm:"column:projectId;index:GatewayGuardrail_projectId_idx;index:GatewayGuardrail_projectId_archivedAt_idx;not null" json:"projectId"`
-	Name        string    `gorm:"column:name;not null" json:"name"`
-	Description *string   `gorm:"column:description" json:"description"`
-	EvaluatorID string    `gorm:"column:evaluatorId;index:GatewayGuardrail_evaluatorId_idx;not null" json:"evaluatorId"`
-	Direction   string    `gorm:"column:direction;not null" json:"direction"`
-	FailureMode string    `gorm:"column:failureMode;default:'FAIL_CLOSED';not null" json:"failureMode"`
-	ArchivedAt  *DateTime `gorm:"column:archivedAt;index:GatewayGuardrail_projectId_archivedAt_idx" json:"archivedAt"`
-	CreatedAt   DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID *string   `gorm:"column:createdById" json:"createdById"`
-	UpdatedByID *string   `gorm:"column:updatedById" json:"updatedById"`
-	Project     *Project
-	Evaluator   *Evaluator
-	CreatedBy   *User `gorm:"foreignKey:CreatedByID"`
-	UpdatedBy   *User `gorm:"foreignKey:UpdatedByID"`
+	ID          string     `gorm:"column:id;primaryKey" json:"id"`
+	ProjectID   string     `gorm:"column:projectId;index:GatewayGuardrail_projectId_idx;index:GatewayGuardrail_projectId_archivedAt_idx;not null" json:"projectId"`
+	Name        string     `gorm:"column:name;not null" json:"name"`
+	Description *string    `gorm:"column:description" json:"description"`
+	EvaluatorID string     `gorm:"column:evaluatorId;index:GatewayGuardrail_evaluatorId_idx;not null" json:"evaluatorId"`
+	Direction   string     `gorm:"column:direction;not null" json:"direction"`
+	FailureMode string     `gorm:"column:failureMode;default:'FAIL_CLOSED';not null" json:"failureMode"`
+	ArchivedAt  *DateTime  `gorm:"column:archivedAt;index:GatewayGuardrail_projectId_archivedAt_idx;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt   DateTime   `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime   `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID *string    `gorm:"column:createdById" json:"createdById"`
+	UpdatedByID *string    `gorm:"column:updatedById" json:"updatedById"`
+	Project     *Project   `gorm:"belongsTo"`
+	Evaluator   *Evaluator `gorm:"belongsTo"`
+	CreatedBy   *User      `gorm:"foreignKey:CreatedByID;belongsTo"`
+	UpdatedBy   *User      `gorm:"foreignKey:UpdatedByID;belongsTo"`
 }
 
 func (GatewayGuardrail) TableName() string {
@@ -6853,7 +6854,7 @@ type IngestionSource struct {
 	// ("Microsoft authentication failed - re-authorize") + back-off
 	// scheduling when the source has been broken for a while.
 	// Spec: specs/ai-governance/puller-framework/puller-adapter-contract.feature
-	ErrorCount int `gorm:"column:errorCount;default:0;not null" json:"errorCount"`
+	ErrorCount int `gorm:"column:errorCount;size:32;default:0;not null" json:"errorCount"`
 	// Phase 10 - cron schedule for pull-mode sources. Validated by the
 	// adapter's pullConfig schema; mirrored here for fast worker
 	// dispatch. Null for push-mode sources.
@@ -6882,7 +6883,7 @@ type IngestionSource struct {
 	ProviderAccountID *string `gorm:"column:providerAccountId" json:"providerAccountId"`
 	// Last event timestamp observed (any direction). Surfaces in the
 	// admin UI as "last event 2 minutes ago".
-	LastEventAt *DateTime `gorm:"column:lastEventAt" json:"lastEventAt"`
+	LastEventAt *DateTime `gorm:"column:lastEventAt;type:timestamp(3)" json:"lastEventAt"`
 	// ADR-128 - when a pull run last reached the provider without erroring,
 	// mirrored from the ingestionPullRunStatus projection. Deliberately NOT
 	// lastEventAt: an empty period is a working puller, and a run that
@@ -6890,7 +6891,7 @@ type IngestionSource struct {
 	// the "no data since" cut-off, below which a day's spend is unknown
 	// rather than zero.
 	// Spec: specs/governance/ingestion-source-health.feature
-	LastSuccessAt *DateTime `gorm:"column:lastSuccessAt" json:"lastSuccessAt"`
+	LastSuccessAt *DateTime `gorm:"column:lastSuccessAt;type:timestamp(3)" json:"lastSuccessAt"`
 	// ADR-128 - how far the last run actually read, and whether it reached the
 	// end. Mirrored from the ingestionPullRunStatus projection, in the same way
 	// and for the same reason as lastSuccessAt above: every reader of this
@@ -6907,7 +6908,7 @@ type IngestionSource struct {
 	// is what every row written before this existed reads as, and unknown must
 	// never render as either answer.
 	// Spec: specs/governance/ingestion-source-health.feature
-	LastReadThroughAt   *DateTime `gorm:"column:lastReadThroughAt" json:"lastReadThroughAt"`
+	LastReadThroughAt   *DateTime `gorm:"column:lastReadThroughAt;type:timestamp(3)" json:"lastReadThroughAt"`
 	LastRunCompleteness *string   `gorm:"column:lastRunCompleteness" json:"lastRunCompleteness"`
 	// ADR-088 - the window this source read while pulled cost recording was
 	// off for the organization, so its spend was dropped rather than priced.
@@ -6917,15 +6918,15 @@ type IngestionSource struct {
 	// than as unknown. Widened by any run that drops a priced item, cleared
 	// only when a later run re-reads back across the whole window.
 	// Spec: specs/governance/pulled-usage-cost-gap.feature
-	UnpricedUsageSince   *DateTime `gorm:"column:unpricedUsageSince" json:"unpricedUsageSince"`
-	UnpricedUsageThrough *DateTime `gorm:"column:unpricedUsageThrough" json:"unpricedUsageThrough"`
-	ArchivedAt           *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt            DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID          *string   `gorm:"column:createdById" json:"createdById"`
-	Organization         *Organization
-	Team                 *Team
-	CreatedBy            *User `gorm:"foreignKey:CreatedByID"`
+	UnpricedUsageSince   *DateTime     `gorm:"column:unpricedUsageSince;type:timestamp(3)" json:"unpricedUsageSince"`
+	UnpricedUsageThrough *DateTime     `gorm:"column:unpricedUsageThrough;type:timestamp(3)" json:"unpricedUsageThrough"`
+	ArchivedAt           *DateTime     `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt            DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID          *string       `gorm:"column:createdById" json:"createdById"`
+	Organization         *Organization `gorm:"belongsTo"`
+	Team                 *Team         `gorm:"belongsTo"`
+	CreatedBy            *User         `gorm:"foreignKey:CreatedByID;belongsTo"`
 }
 
 func (IngestionSource) TableName() string {
@@ -6998,14 +6999,14 @@ type AnomalyRule struct {
 	// 'active' (default - evaluator picks it up) | 'disabled' (admin
 	// paused; rule rows kept for audit). 'archived' uses archivedAt
 	// timestamp instead so we can filter `archivedAt IS NULL` cheaply.
-	Status       *string   `gorm:"column:status;index:AnomalyRule_status_idx;default:'active';not null" json:"status"`
-	ArchivedAt   *DateTime `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID  *string   `gorm:"column:createdById" json:"createdById"`
-	Organization *Organization
-	CreatedBy    *User          `gorm:"foreignKey:CreatedByID"`
-	Alerts       []AnomalyAlert `gorm:"foreignKey:RuleID;constraint:OnDelete:CASCADE"`
+	Status       *string        `gorm:"column:status;index:AnomalyRule_status_idx;default:'active';not null" json:"status"`
+	ArchivedAt   *DateTime      `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID  *string        `gorm:"column:createdById" json:"createdById"`
+	Organization *Organization  `gorm:"belongsTo"`
+	CreatedBy    *User          `gorm:"foreignKey:CreatedByID;belongsTo"`
+	Alerts       []AnomalyAlert `gorm:"foreignKey:RuleID;constraint:AnomalyAlert_ruleId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (AnomalyRule) TableName() string {
@@ -7055,11 +7056,11 @@ type AnomalyAlert struct {
 	RuleName string `gorm:"column:ruleName;not null" json:"ruleName"`
 	RuleType string `gorm:"column:ruleType;not null" json:"ruleType"`
 	// Window the trigger refers to (UTC).
-	TriggerWindowStart DateTime `gorm:"column:triggerWindowStart;uniqueIndex:AnomalyAlert_ruleId_triggerWindowStart_key;not null" json:"triggerWindowStart"`
-	TriggerWindowEnd   DateTime `gorm:"column:triggerWindowEnd;not null" json:"triggerWindowEnd"`
+	TriggerWindowStart DateTime `gorm:"column:triggerWindowStart;uniqueIndex:AnomalyAlert_ruleId_triggerWindowStart_key;type:timestamp(3);not null" json:"triggerWindowStart"`
+	TriggerWindowEnd   DateTime `gorm:"column:triggerWindowEnd;type:timestamp(3);not null" json:"triggerWindowEnd"`
 	// Numeric trigger context. Per-rule-type detail in `detail` JSONB.
 	TriggerSpendUsd   *float64 `gorm:"column:triggerSpendUsd;type:decimal(18,6)" json:"triggerSpendUsd"`
-	TriggerEventCount *int     `gorm:"column:triggerEventCount" json:"triggerEventCount"`
+	TriggerEventCount *int     `gorm:"column:triggerEventCount;size:32" json:"triggerEventCount"`
 	// Per-rule-type extra context: {topActors: [...], baseline: ...,
 	// observed: ..., timezone: ..., etc}.
 	Detail datatypes.JSON `gorm:"column:detail;default:'{}';not null" json:"detail"`
@@ -7069,11 +7070,11 @@ type AnomalyAlert struct {
 	// { webhook: { lastAttemptIso, lastError?, attemptCount, statusCode? },
 	// slack: ..., pagerduty: ..., siem: ..., email: ... }
 	DestinationStatus datatypes.JSON `gorm:"column:destinationStatus;default:'{}';not null" json:"destinationStatus"`
-	DetectedAt        DateTime       `gorm:"column:detectedAt;index:AnomalyAlert_organizationId_detectedAt_idx;not null" json:"detectedAt"`
-	AcknowledgedAt    *DateTime      `gorm:"column:acknowledgedAt" json:"acknowledgedAt"`
-	ResolvedAt        *DateTime      `gorm:"column:resolvedAt" json:"resolvedAt"`
-	Organization      *Organization
-	Rule              *AnomalyRule `gorm:"foreignKey:RuleID"`
+	DetectedAt        DateTime       `gorm:"column:detectedAt;index:AnomalyAlert_organizationId_detectedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"detectedAt"`
+	AcknowledgedAt    *DateTime      `gorm:"column:acknowledgedAt;type:timestamp(3)" json:"acknowledgedAt"`
+	ResolvedAt        *DateTime      `gorm:"column:resolvedAt;type:timestamp(3)" json:"resolvedAt"`
+	Organization      *Organization  `gorm:"belongsTo"`
+	Rule              *AnomalyRule   `gorm:"foreignKey:RuleID;belongsTo"`
 }
 
 func (AnomalyAlert) TableName() string {
@@ -7139,7 +7140,7 @@ type AiToolEntry struct {
 	// type-default in UI
 	IconAsset *string `gorm:"column:iconAsset;type:text" json:"iconAsset"`
 	// Admin-curated sort within the user-facing portal grid.
-	Order int `gorm:"column:order;default:0;not null" json:"order"`
+	Order int `gorm:"column:order;size:32;default:0;not null" json:"order"`
 	// When false the entry is hidden from the user-facing list but
 	// remains in the admin list (so admins can re-enable without
 	// losing per-entry config). Disabled is "soft-hide", archived is
@@ -7148,23 +7149,23 @@ type AiToolEntry struct {
 	// Per-type config JSON. Validated via zod discriminated union
 	// at the service layer (see AiToolEntryService).
 	Config       datatypes.JSON `gorm:"column:config;default:'{}';not null" json:"config"`
-	ArchivedAt   *DateTime      `gorm:"column:archivedAt;index:AiToolEntry_organizationId_enabled_archivedAt_idx" json:"archivedAt"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt   *DateTime      `gorm:"column:archivedAt;index:AiToolEntry_organizationId_enabled_archivedAt_idx;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByID  *string        `gorm:"column:createdById" json:"createdById"`
 	UpdatedByID  *string        `gorm:"column:updatedById" json:"updatedById"`
-	Organization *Organization
+	Organization *Organization  `gorm:"belongsTo"`
 	// @deprecated Multi-team scope. Superseded by `departments` - the
 	// "Visible to" model is now WHOLE ORGANIZATION or a set of
 	// DEPARTMENTS. Rows are no longer written here (the table is kept
 	// for now to avoid a destructive drop); readers prefer `departments`.
-	Teams []AiToolEntryTeam `gorm:"foreignKey:EntryID;constraint:OnDelete:CASCADE"`
+	Teams []AiToolEntryTeam `gorm:"foreignKey:EntryID;constraint:AiToolEntryTeam_entryId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 	// Department scope. Empty = org-wide (visible to every member).
 	// Non-empty = visible only to members whose `departmentId` is in
 	// this set. Mirrored onto the legacy scope/scopeId pair for
 	// back-compat reads (scope='organization' when empty,
 	// scope='department' otherwise).
-	Departments []AiToolEntryDepartment `gorm:"foreignKey:EntryID;constraint:OnDelete:CASCADE"`
+	Departments []AiToolEntryDepartment `gorm:"foreignKey:EntryID;constraint:AiToolEntryDepartment_entryId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (AiToolEntry) TableName() string {
@@ -7200,8 +7201,8 @@ type AiToolEntryTeam struct {
 	ID      string       `gorm:"column:id;primaryKey" json:"id"`
 	EntryID string       `gorm:"column:entryId;uniqueIndex:AiToolEntryTeam_entryId_teamId_key;not null" json:"entryId"`
 	TeamID  string       `gorm:"column:teamId;uniqueIndex:AiToolEntryTeam_entryId_teamId_key;index:AiToolEntryTeam_teamId_idx;not null" json:"teamId"`
-	Entry   *AiToolEntry `gorm:"foreignKey:EntryID"`
-	Team    *Team
+	Entry   *AiToolEntry `gorm:"foreignKey:EntryID;belongsTo"`
+	Team    *Team        `gorm:"belongsTo"`
 }
 
 func (AiToolEntryTeam) TableName() string {
@@ -7225,7 +7226,7 @@ type AiToolEntryDepartment struct {
 	ID           string       `gorm:"column:id;primaryKey" json:"id"`
 	EntryID      string       `gorm:"column:entryId;uniqueIndex:AiToolEntryDepartment_entryId_departmentId_key;not null" json:"entryId"`
 	DepartmentID string       `gorm:"column:departmentId;uniqueIndex:AiToolEntryDepartment_entryId_departmentId_key;index:AiToolEntryDepartment_departmentId_idx;not null" json:"departmentId"`
-	Entry        *AiToolEntry `gorm:"foreignKey:EntryID"`
+	Entry        *AiToolEntry `gorm:"foreignKey:EntryID;belongsTo"`
 }
 
 func (AiToolEntryDepartment) TableName() string {
@@ -7296,13 +7297,13 @@ type IngestionTemplate struct {
 	PlatformPublished bool `gorm:"column:platformPublished;default:false;not null" json:"platformPublished"`
 	// Admin/platform enable. False = hidden from /me catalog. Existing
 	// ingestion keys continue to land traces; new installs are blocked.
-	Enabled      *bool     `gorm:"column:enabled;default:true;not null" json:"enabled"`
-	ArchivedAt   *DateTime `gorm:"column:archivedAt;index:IngestionTemplate_organizationId_archivedAt_idx" json:"archivedAt"`
-	CreatedAt    DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	CreatedByID  *string   `gorm:"column:createdById" json:"createdById"`
-	UpdatedByID  *string   `gorm:"column:updatedById" json:"updatedById"`
-	Organization *Organization
+	Enabled      *bool         `gorm:"column:enabled;default:true;not null" json:"enabled"`
+	ArchivedAt   *DateTime     `gorm:"column:archivedAt;index:IngestionTemplate_organizationId_archivedAt_idx;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt    DateTime      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedByID  *string       `gorm:"column:createdById" json:"createdById"`
+	UpdatedByID  *string       `gorm:"column:updatedById" json:"updatedById"`
+	Organization *Organization `gorm:"belongsTo"`
 }
 
 func (IngestionTemplate) TableName() string {
@@ -7336,7 +7337,7 @@ type GatewayConnectUpstream struct {
 	BaseURL        string   `gorm:"column:baseUrl;not null" json:"baseUrl"`
 	EncryptedToken string   `gorm:"column:encryptedToken;not null" json:"encryptedToken"`
 	InstanceID     string   `gorm:"column:instanceId;not null" json:"instanceId"`
-	UpdatedAt      DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt      DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (GatewayConnectUpstream) TableName() string {
@@ -7363,7 +7364,7 @@ type GatewayTraceExportKey struct {
 	ProjectID      string   `gorm:"column:projectId;primaryKey" json:"projectId"`
 	APIKeyID       string   `gorm:"column:apiKeyId;not null" json:"apiKeyId"`
 	EncryptedToken string   `gorm:"column:encryptedToken;not null" json:"encryptedToken"`
-	CreatedAt      DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt      DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (GatewayTraceExportKey) TableName() string {
@@ -7393,18 +7394,18 @@ type GatewayBudget struct {
 	ExternalID             *string                       `gorm:"column:externalId;uniqueIndex:GatewayBudget_organizationId_externalId_key" json:"externalId"`
 	Metadata               datatypes.JSON                `gorm:"column:metadata;default:'{}';not null" json:"metadata"`
 	SpentUsd               float64                       `gorm:"column:spentUsd;type:decimal(18,6);default:0;not null" json:"spentUsd"`
-	CurrentPeriodStartedAt DateTime                      `gorm:"column:currentPeriodStartedAt;not null" json:"currentPeriodStartedAt"`
-	ResetsAt               DateTime                      `gorm:"column:resetsAt;index:GatewayBudget_resetsAt_idx;not null" json:"resetsAt"`
-	LastResetAt            *DateTime                     `gorm:"column:lastResetAt" json:"lastResetAt"`
-	CycleAnchorAt          *DateTime                     `gorm:"column:cycleAnchorAt" json:"cycleAnchorAt"`
-	ArchivedAt             *DateTime                     `gorm:"column:archivedAt" json:"archivedAt"`
-	CreatedAt              DateTime                      `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt              DateTime                      `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CurrentPeriodStartedAt DateTime                      `gorm:"column:currentPeriodStartedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"currentPeriodStartedAt"`
+	ResetsAt               DateTime                      `gorm:"column:resetsAt;index:GatewayBudget_resetsAt_idx;type:timestamp(3);not null" json:"resetsAt"`
+	LastResetAt            *DateTime                     `gorm:"column:lastResetAt;type:timestamp(3)" json:"lastResetAt"`
+	CycleAnchorAt          *DateTime                     `gorm:"column:cycleAnchorAt;type:timestamp(3)" json:"cycleAnchorAt"`
+	ArchivedAt             *DateTime                     `gorm:"column:archivedAt;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt              DateTime                      `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt              DateTime                      `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByID            string                        `gorm:"column:createdById;not null" json:"createdById"`
 	ManagedByVirtualKeyID  *string                       `gorm:"column:managedByVirtualKeyId;index:GatewayBudget_managedByVirtualKeyId_idx" json:"managedByVirtualKeyId"`
-	CreatedBy              *User                         `gorm:"foreignKey:CreatedByID"`
-	LedgerEntries          []GatewayBudgetLedger         `gorm:"foreignKey:BudgetID;constraint:OnDelete:CASCADE"`
-	BucketBoundaries       []GatewayBudgetBucketBoundary `gorm:"foreignKey:BudgetID;constraint:OnDelete:CASCADE"`
+	CreatedBy              *User                         `gorm:"foreignKey:CreatedByID;belongsTo"`
+	LedgerEntries          []GatewayBudgetLedger         `gorm:"foreignKey:BudgetID;constraint:GatewayBudgetLedger_budgetId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	BucketBoundaries       []GatewayBudgetBucketBoundary `gorm:"foreignKey:BudgetID;constraint:GatewayBudgetBucketBoundary_budgetId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (GatewayBudget) TableName() string {
@@ -7441,10 +7442,10 @@ type GatewayBudgetBucketBoundary struct {
 	OrganizationID  string         `gorm:"column:organizationId;index:GatewayBudgetBucketBoundary_organizationId_idx;not null" json:"organizationId"`
 	BudgetID        string         `gorm:"column:budgetId;uniqueIndex:GatewayBudgetBucketBoundary_budgetId_bucketScopeId_key;not null" json:"budgetId"`
 	BucketScopeID   string         `gorm:"column:bucketScopeId;uniqueIndex:GatewayBudgetBucketBoundary_budgetId_bucketScopeId_key;not null" json:"bucketScopeId"`
-	PeriodStartedAt DateTime       `gorm:"column:periodStartedAt;not null" json:"periodStartedAt"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Budget          *GatewayBudget `gorm:"foreignKey:BudgetID"`
+	PeriodStartedAt DateTime       `gorm:"column:periodStartedAt;type:timestamp(3);not null" json:"periodStartedAt"`
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
+	Budget          *GatewayBudget `gorm:"foreignKey:BudgetID;belongsTo"`
 }
 
 func (GatewayBudgetBucketBoundary) TableName() string {
@@ -7481,16 +7482,16 @@ type GatewayBudgetLedger struct {
 	ProviderKey      *string        `gorm:"column:providerKey" json:"providerKey"`
 	GatewayRequestID string         `gorm:"column:gatewayRequestId;uniqueIndex:GatewayBudgetLedger_budgetId_gatewayRequestId_key;index:GatewayBudgetLedger_gatewayRequestId_idx;not null" json:"gatewayRequestId"`
 	AmountUsd        float64        `gorm:"column:amountUsd;type:decimal(18,6);not null" json:"amountUsd"`
-	TokensInput      int            `gorm:"column:tokensInput;default:0;not null" json:"tokensInput"`
-	TokensOutput     int            `gorm:"column:tokensOutput;default:0;not null" json:"tokensOutput"`
-	TokensCacheRead  int            `gorm:"column:tokensCacheRead;default:0;not null" json:"tokensCacheRead"`
-	TokensCacheWrite int            `gorm:"column:tokensCacheWrite;default:0;not null" json:"tokensCacheWrite"`
+	TokensInput      int            `gorm:"column:tokensInput;size:32;default:0;not null" json:"tokensInput"`
+	TokensOutput     int            `gorm:"column:tokensOutput;size:32;default:0;not null" json:"tokensOutput"`
+	TokensCacheRead  int            `gorm:"column:tokensCacheRead;size:32;default:0;not null" json:"tokensCacheRead"`
+	TokensCacheWrite int            `gorm:"column:tokensCacheWrite;size:32;default:0;not null" json:"tokensCacheWrite"`
 	Model            string         `gorm:"column:model;not null" json:"model"`
-	DurationMs       *int           `gorm:"column:durationMs" json:"durationMs"`
+	DurationMs       *int           `gorm:"column:durationMs;size:32" json:"durationMs"`
 	Status           string         `gorm:"column:status;default:'SUCCESS';not null" json:"status"`
-	OccurredAt       DateTime       `gorm:"column:occurredAt;index:GatewayBudgetLedger_occurredAt_idx;not null" json:"occurredAt"`
-	Budget           *GatewayBudget `gorm:"foreignKey:BudgetID"`
-	VirtualKey       *VirtualKey
+	OccurredAt       DateTime       `gorm:"column:occurredAt;index:GatewayBudgetLedger_occurredAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"occurredAt"`
+	Budget           *GatewayBudget `gorm:"foreignKey:BudgetID;belongsTo"`
+	VirtualKey       *VirtualKey    `gorm:"belongsTo"`
 }
 
 func (GatewayBudgetLedger) TableName() string {
@@ -7517,9 +7518,9 @@ type GatewayChangeEvent struct {
 	ModelProviderID *string        `gorm:"column:modelProviderId" json:"modelProviderId"`
 	ProjectID       *string        `gorm:"column:projectId;index:GatewayChangeEvent_projectId_revision_idx" json:"projectId"`
 	Payload         datatypes.JSON `gorm:"column:payload" json:"payload"`
-	CreatedAt       DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Organization    *Organization
-	Project         *Project
+	CreatedAt       DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Organization    *Organization  `gorm:"belongsTo"`
+	Project         *Project       `gorm:"belongsTo"`
 }
 
 func (GatewayChangeEvent) TableName() string {
@@ -7539,14 +7540,14 @@ type GatewayCacheRule struct {
 	OrganizationID string         `gorm:"column:organizationId;index:GatewayCacheRule_organizationId_archivedAt_priority_idx;index:GatewayCacheRule_organizationId_enabled_priority_idx;not null" json:"organizationId"`
 	Name           string         `gorm:"column:name;not null" json:"name"`
 	Description    *string        `gorm:"column:description" json:"description"`
-	Priority       *int           `gorm:"column:priority;index:GatewayCacheRule_organizationId_archivedAt_priority_idx;index:GatewayCacheRule_organizationId_enabled_priority_idx;default:100;not null" json:"priority"`
+	Priority       *int           `gorm:"column:priority;index:GatewayCacheRule_organizationId_archivedAt_priority_idx;index:GatewayCacheRule_organizationId_enabled_priority_idx;size:32;default:100;not null" json:"priority"`
 	Enabled        *bool          `gorm:"column:enabled;index:GatewayCacheRule_organizationId_enabled_priority_idx;default:true;not null" json:"enabled"`
 	Matchers       datatypes.JSON `gorm:"column:matchers;not null" json:"matchers"`
 	Action         datatypes.JSON `gorm:"column:action;not null" json:"action"`
 	ModeEnum       string         `gorm:"column:modeEnum;not null" json:"modeEnum"`
-	ArchivedAt     *DateTime      `gorm:"column:archivedAt;index:GatewayCacheRule_organizationId_archivedAt_priority_idx" json:"archivedAt"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt      DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ArchivedAt     *DateTime      `gorm:"column:archivedAt;index:GatewayCacheRule_organizationId_archivedAt_priority_idx;type:timestamp(3)" json:"archivedAt"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 	CreatedByID    string         `gorm:"column:createdById;not null" json:"createdById"`
 }
 
@@ -7581,8 +7582,8 @@ type FeatureFlag struct {
 	Enabled      bool           `gorm:"column:enabled;not null" json:"enabled"`
 	Rules        datatypes.JSON `gorm:"column:rules" json:"rules"`
 	LastEditedBy *string        `gorm:"column:lastEditedBy" json:"lastEditedBy"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt    DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (FeatureFlag) TableName() string {
@@ -7617,8 +7618,8 @@ type FeatureFlagExperimentSetting struct {
 	SubjectID       string   `gorm:"column:subjectId;primaryKey;index:FeatureFlagExperimentSetting_subjectType_subjectId_idx" json:"subjectId"`
 	Enabled         bool     `gorm:"column:enabled;not null" json:"enabled"`
 	ChangedByUserID *string  `gorm:"column:changedByUserId" json:"changedByUserId"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (FeatureFlagExperimentSetting) TableName() string {
@@ -7653,7 +7654,7 @@ type ProcessManagerInstance struct {
 	TenantID    string         `gorm:"column:tenantId;not null" json:"tenantId"`
 	UserID      *string        `gorm:"column:userId" json:"userId"`
 	State       datatypes.JSON `gorm:"column:state;not null" json:"state"`
-	Revision    int            `gorm:"column:revision;not null" json:"revision"`
+	Revision    int            `gorm:"column:revision;size:32;not null" json:"revision"`
 	NextWakeAt  *DateTime      `gorm:"column:nextWakeAt;index:ProcessManagerInstance_nextWakeAt_idx;type:timestamptz(3)" json:"nextWakeAt"`
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamptz(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
@@ -7672,9 +7673,9 @@ func (m *ProcessManagerInstance) BeforeCreate(_ *gorm.DB) error {
 // Idempotency marker for a source event consumed by a process definition.
 type ProcessManagerInbox struct {
 	ID          string `gorm:"column:id;primaryKey" json:"id"`
-	ProcessName string `gorm:"column:processName;uniqueIndex:ProcessManagerInbox_processName_projectId_sourceEventKey_key;index:ProcessManagerInbox_processName_projectId_processKey_consumedAt_idx;not null" json:"processName"`
-	ProjectID   string `gorm:"column:projectId;uniqueIndex:ProcessManagerInbox_processName_projectId_sourceEventKey_key;index:ProcessManagerInbox_processName_projectId_processKey_consumedAt_idx;not null" json:"projectId"`
-	ProcessKey  string `gorm:"column:processKey;index:ProcessManagerInbox_processName_projectId_processKey_consumedAt_idx;not null" json:"processKey"`
+	ProcessName string `gorm:"column:processName;uniqueIndex:ProcessManagerInbox_processName_projectId_sourceEventKey_key;index:ProcessManagerInbox_processName_projectId_processKey_consum_idx;not null" json:"processName"`
+	ProjectID   string `gorm:"column:projectId;uniqueIndex:ProcessManagerInbox_processName_projectId_sourceEventKey_key;index:ProcessManagerInbox_processName_projectId_processKey_consum_idx;not null" json:"projectId"`
+	ProcessKey  string `gorm:"column:processKey;index:ProcessManagerInbox_processName_projectId_processKey_consum_idx;not null" json:"processKey"`
 	TenantID    string `gorm:"column:tenantId;not null" json:"tenantId"`
 	// The raw source event id, kept UNINDEXED for diagnostics. A caller composes
 	// this and its length is that domain's business, so it must never carry a
@@ -7696,7 +7697,7 @@ type ProcessManagerInbox struct {
 	// per-processKey advisory lock cover everything else. A follow-up migration
 	// adds NOT NULL once the fleet has cycled and closes it.
 	SourceEventKey *string  `gorm:"column:sourceEventKey;uniqueIndex:ProcessManagerInbox_processName_projectId_sourceEventKey_key" json:"sourceEventKey"`
-	ConsumedAt     DateTime `gorm:"column:consumedAt;index:ProcessManagerInbox_processName_projectId_processKey_consumedAt_idx;index:ProcessManagerInbox_consumedAt_idx;type:timestamptz(3);not null" json:"consumedAt"`
+	ConsumedAt     DateTime `gorm:"column:consumedAt;index:ProcessManagerInbox_processName_projectId_processKey_consum_idx;index:ProcessManagerInbox_consumedAt_idx;type:timestamptz(3);not null" json:"consumedAt"`
 }
 
 func (ProcessManagerInbox) TableName() string {
@@ -7713,9 +7714,9 @@ func (m *ProcessManagerInbox) BeforeCreate(_ *gorm.DB) error {
 // Transactional intents emitted by a durable process transition.
 type ProcessManagerOutbox struct {
 	ID            string                        `gorm:"column:id;primaryKey" json:"id"`
-	ProcessName   string                        `gorm:"column:processName;uniqueIndex:ProcessManagerOutbox_processName_projectId_messageKey_key;index:ProcessManagerOutbox_processName_projectId_processKey_createdAt_idx;index:ProcessManagerOutbox_status_processName_nextAttemptAt_idx;not null" json:"processName"`
-	ProjectID     string                        `gorm:"column:projectId;uniqueIndex:ProcessManagerOutbox_processName_projectId_messageKey_key;index:ProcessManagerOutbox_processName_projectId_processKey_createdAt_idx;not null" json:"projectId"`
-	ProcessKey    string                        `gorm:"column:processKey;index:ProcessManagerOutbox_processName_projectId_processKey_createdAt_idx;not null" json:"processKey"`
+	ProcessName   string                        `gorm:"column:processName;uniqueIndex:ProcessManagerOutbox_processName_projectId_messageKey_key;index:ProcessManagerOutbox_processName_projectId_processKey_creat_idx;index:ProcessManagerOutbox_status_processName_nextAttemptAt_idx;not null" json:"processName"`
+	ProjectID     string                        `gorm:"column:projectId;uniqueIndex:ProcessManagerOutbox_processName_projectId_messageKey_key;index:ProcessManagerOutbox_processName_projectId_processKey_creat_idx;not null" json:"projectId"`
+	ProcessKey    string                        `gorm:"column:processKey;index:ProcessManagerOutbox_processName_projectId_processKey_creat_idx;not null" json:"processKey"`
 	TenantID      string                        `gorm:"column:tenantId;not null" json:"tenantId"`
 	UserID        *string                       `gorm:"column:userId" json:"userId"`
 	MessageKey    string                        `gorm:"column:messageKey;uniqueIndex:ProcessManagerOutbox_processName_projectId_messageKey_key;not null" json:"messageKey"`
@@ -7724,14 +7725,14 @@ type ProcessManagerOutbox struct {
 	TraceCarrier  datatypes.JSON                `gorm:"column:traceCarrier;not null" json:"traceCarrier"`
 	SourceEventID *string                       `gorm:"column:sourceEventId" json:"sourceEventId"`
 	Status        string                        `gorm:"column:status;index:ProcessManagerOutbox_status_nextAttemptAt_leasedUntil_idx;index:ProcessManagerOutbox_status_processName_nextAttemptAt_idx;default:'pending';not null" json:"status"`
-	Attempts      int                           `gorm:"column:attempts;default:0;not null" json:"attempts"`
+	Attempts      int                           `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	NextAttemptAt DateTime                      `gorm:"column:nextAttemptAt;index:ProcessManagerOutbox_status_nextAttemptAt_leasedUntil_idx;index:ProcessManagerOutbox_status_processName_nextAttemptAt_idx;type:timestamptz(3);not null" json:"nextAttemptAt"`
 	LeasedUntil   *DateTime                     `gorm:"column:leasedUntil;index:ProcessManagerOutbox_status_nextAttemptAt_leasedUntil_idx;type:timestamptz(3)" json:"leasedUntil"`
-	LeaseToken    *string                       `gorm:"column:leaseToken;uniqueIndex" json:"leaseToken"`
+	LeaseToken    *string                       `gorm:"column:leaseToken;uniqueIndex:ProcessManagerOutbox_leaseToken_key" json:"leaseToken"`
 	DispatchedAt  *DateTime                     `gorm:"column:dispatchedAt;type:timestamptz(3)" json:"dispatchedAt"`
-	CreatedAt     DateTime                      `gorm:"column:createdAt;index:ProcessManagerOutbox_processName_projectId_processKey_createdAt_idx;type:timestamptz(3);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt     DateTime                      `gorm:"column:createdAt;index:ProcessManagerOutbox_processName_projectId_processKey_creat_idx;type:timestamptz(3);autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime                      `gorm:"column:updatedAt;type:timestamptz(3);autoUpdateTime:false;not null" json:"updatedAt"`
-	AttemptLog    []ProcessManagerOutboxAttempt `gorm:"foreignKey:OutboxID;constraint:OnDelete:CASCADE"`
+	AttemptLog    []ProcessManagerOutboxAttempt `gorm:"foreignKey:OutboxID;constraint:ProcessManagerOutboxAttempt_outboxId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ProcessManagerOutbox) TableName() string {
@@ -7754,15 +7755,15 @@ type ProcessManagerOutboxAttempt struct {
 	OutboxID  string `gorm:"column:outboxId;index:ProcessManagerOutboxAttempt_outboxId_attempt_idx;not null" json:"outboxId"`
 	ProjectID string `gorm:"column:projectId;not null" json:"projectId"`
 	// 1-based attempt number, as the dispatcher counts it.
-	Attempt    int      `gorm:"column:attempt;index:ProcessManagerOutboxAttempt_outboxId_attempt_idx;not null" json:"attempt"`
+	Attempt    int      `gorm:"column:attempt;index:ProcessManagerOutboxAttempt_outboxId_attempt_idx;size:32;not null" json:"attempt"`
 	OccurredAt DateTime `gorm:"column:occurredAt;type:timestamptz(3);not null" json:"occurredAt"`
 	Outcome    string   `gorm:"column:outcome;not null" json:"outcome"`
 	ErrorType  string   `gorm:"column:errorType;not null" json:"errorType"`
 	// The safe failure diagnostic the dispatcher already computes for its
 	// span — never a raw provider body.
 	ErrorMessage string                `gorm:"column:errorMessage;not null" json:"errorMessage"`
-	RetryAfterMs *int                  `gorm:"column:retryAfterMs" json:"retryAfterMs"`
-	Outbox       *ProcessManagerOutbox `gorm:"foreignKey:OutboxID"`
+	RetryAfterMs *int                  `gorm:"column:retryAfterMs;size:32" json:"retryAfterMs"`
+	Outbox       *ProcessManagerOutbox `gorm:"foreignKey:OutboxID;belongsTo"`
 }
 
 func (ProcessManagerOutboxAttempt) TableName() string {
@@ -7782,10 +7783,10 @@ func (m *ProcessManagerOutboxAttempt) BeforeCreate(_ *gorm.DB) error {
 type TopicClusteringRunProjection struct {
 	// KSUID (`topicrun_…`), generated by the repository on first upsert.
 	ID                 string   `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID          string   `gorm:"column:projectId;uniqueIndex;not null" json:"projectId"`
-	LastRequestedAt    *float64 `gorm:"column:lastRequestedAt" json:"lastRequestedAt"`
+	ProjectID          string   `gorm:"column:projectId;uniqueIndex:TopicClusteringRunProjection_projectId_key;not null" json:"projectId"`
+	LastRequestedAt    *float64 `gorm:"column:lastRequestedAt;type:double precision" json:"lastRequestedAt"`
 	LastRequestTrigger *string  `gorm:"column:lastRequestTrigger" json:"lastRequestTrigger"`
-	LastRunAt          *float64 `gorm:"column:lastRunAt" json:"lastRunAt"`
+	LastRunAt          *float64 `gorm:"column:lastRunAt;type:double precision" json:"lastRunAt"`
 	// completed | skipped | failed
 	LastRunOutcome       *string `gorm:"column:lastRunOutcome" json:"lastRunOutcome"`
 	LastRunMode          *string `gorm:"column:lastRunMode" json:"lastRunMode"`
@@ -7794,22 +7795,22 @@ type TopicClusteringRunProjection struct {
 	LastRunErrorCode     *string `gorm:"column:lastRunErrorCode" json:"lastRunErrorCode"`
 	// True when the customer can resolve the failure (credentials, quota).
 	LastRunErrorUserActionable bool    `gorm:"column:lastRunErrorUserActionable;default:false;not null" json:"lastRunErrorUserActionable"`
-	LastRunTracesProcessed     int     `gorm:"column:lastRunTracesProcessed;default:0;not null" json:"lastRunTracesProcessed"`
-	LastRunTopicsCount         int     `gorm:"column:lastRunTopicsCount;default:0;not null" json:"lastRunTopicsCount"`
-	LastRunSubtopicsCount      int     `gorm:"column:lastRunSubtopicsCount;default:0;not null" json:"lastRunSubtopicsCount"`
-	LastRunPages               int     `gorm:"column:lastRunPages;default:0;not null" json:"lastRunPages"`
+	LastRunTracesProcessed     int     `gorm:"column:lastRunTracesProcessed;size:32;default:0;not null" json:"lastRunTracesProcessed"`
+	LastRunTopicsCount         int     `gorm:"column:lastRunTopicsCount;size:32;default:0;not null" json:"lastRunTopicsCount"`
+	LastRunSubtopicsCount      int     `gorm:"column:lastRunSubtopicsCount;size:32;default:0;not null" json:"lastRunSubtopicsCount"`
+	LastRunPages               int     `gorm:"column:lastRunPages;size:32;default:0;not null" json:"lastRunPages"`
 	InProgressRunID            *string `gorm:"column:inProgressRunId" json:"inProgressRunId"`
-	InProgressTraces           int     `gorm:"column:inProgressTraces;default:0;not null" json:"inProgressTraces"`
-	InProgressPages            int     `gorm:"column:inProgressPages;default:0;not null" json:"inProgressPages"`
+	InProgressTraces           int     `gorm:"column:inProgressTraces;size:32;default:0;not null" json:"inProgressTraces"`
+	InProgressPages            int     `gorm:"column:inProgressPages;size:32;default:0;not null" json:"inProgressPages"`
 	// Business time the in-progress run opened; bounds how long the read
 	// model may report it as running (mirrors the process's stale-run guard).
-	InProgressStartedAt *float64 `gorm:"column:inProgressStartedAt" json:"inProgressStartedAt"`
-	CreatedAt           float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt           float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
+	InProgressStartedAt *float64 `gorm:"column:inProgressStartedAt;type:double precision" json:"inProgressStartedAt"`
+	CreatedAt           float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt           float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
 	// Business time of the latest applied event.
-	OccurredAt float64 `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt float64 `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
 	// Event-log acceptance time. Together with lastEventId this is the cursor.
-	AcceptedAt        float64 `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        float64 `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string  `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string  `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -7824,13 +7825,13 @@ func (TopicClusteringRunProjection) TableName() string {
 type TopicModelProjection struct {
 	// KSUID (`topicmodel_…`), generated by the repository on first upsert.
 	ID        string  `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID string  `gorm:"column:projectId;uniqueIndex;not null" json:"projectId"`
-	CreatedAt float64 `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt float64 `gorm:"column:updatedAt;not null" json:"updatedAt"`
+	ProjectID string  `gorm:"column:projectId;uniqueIndex:TopicModelProjection_projectId_key;not null" json:"projectId"`
+	CreatedAt float64 `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt float64 `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
 	// Business time of the latest applied event.
-	OccurredAt float64 `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt float64 `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
 	// Event-log acceptance time. Together with lastEventId this is the cursor.
-	AcceptedAt        float64 `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        float64 `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string  `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string  `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -7845,14 +7846,14 @@ func (TopicModelProjection) TableName() string {
 type TopicClusteringRunHistoryProjection struct {
 	// KSUID (`topicrunhist_…`), generated by the repository on first upsert.
 	ID        string         `gorm:"column:id;primaryKey" json:"id"`
-	ProjectID string         `gorm:"column:projectId;uniqueIndex;not null" json:"projectId"`
+	ProjectID string         `gorm:"column:projectId;uniqueIndex:TopicClusteringRunHistoryProjection_projectId_key;not null" json:"projectId"`
 	Runs      datatypes.JSON `gorm:"column:runs;not null" json:"runs"`
-	CreatedAt float64        `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt float64        `gorm:"column:updatedAt;not null" json:"updatedAt"`
+	CreatedAt float64        `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt float64        `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
 	// Business time of the latest applied event.
-	OccurredAt float64 `gorm:"column:occurredAt;not null" json:"occurredAt"`
+	OccurredAt float64 `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
 	// Event-log acceptance time. Together with lastEventId this is the cursor.
-	AcceptedAt        float64 `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	AcceptedAt        float64 `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID       string  `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion string  `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -7864,24 +7865,24 @@ func (TopicClusteringRunHistoryProjection) TableName() string {
 // Rebuildable per-source pull checkpoint and operator-facing run status.
 type IngestionPullRunProjection struct {
 	ID                string   `gorm:"column:id;primaryKey" json:"id"`
-	SourceID          string   `gorm:"column:sourceId;uniqueIndex;not null" json:"sourceId"`
+	SourceID          string   `gorm:"column:sourceId;uniqueIndex:IngestionPullRunProjection_sourceId_key;not null" json:"sourceId"`
 	ProjectID         string   `gorm:"column:projectId;index:IngestionPullRunProjection_projectId_idx;not null" json:"projectId"`
 	Enabled           bool     `gorm:"column:enabled;default:false;not null" json:"enabled"`
 	Cron              *string  `gorm:"column:cron" json:"cron"`
 	Cursor            *string  `gorm:"column:cursor" json:"cursor"`
-	LastRunAt         *float64 `gorm:"column:lastRunAt" json:"lastRunAt"`
+	LastRunAt         *float64 `gorm:"column:lastRunAt;type:double precision" json:"lastRunAt"`
 	LastRunOutcome    *string  `gorm:"column:lastRunOutcome" json:"lastRunOutcome"`
-	LastRunEventCount int      `gorm:"column:lastRunEventCount;default:0;not null" json:"lastRunEventCount"`
+	LastRunEventCount int      `gorm:"column:lastRunEventCount;size:32;default:0;not null" json:"lastRunEventCount"`
 	LastRunError      *string  `gorm:"column:lastRunError" json:"lastRunError"`
 	LastRunErrorCode  *string  `gorm:"column:lastRunErrorCode" json:"lastRunErrorCode"`
-	ConsecutiveErrors int      `gorm:"column:consecutiveErrors;default:0;not null" json:"consecutiveErrors"`
+	ConsecutiveErrors int      `gorm:"column:consecutiveErrors;size:32;default:0;not null" json:"consecutiveErrors"`
 	// When a run last completed without erroring. Backfilled by replay, which
 	// is why the projection version moved with this column.
-	LastSuccessAt *float64 `gorm:"column:lastSuccessAt" json:"lastSuccessAt"`
+	LastSuccessAt *float64 `gorm:"column:lastSuccessAt;type:double precision" json:"lastSuccessAt"`
 	// Identity of the run whose outcome this row reflects. Outcomes from a
 	// superseded run arrive with a smaller value and are ignored, so a late
 	// completion cannot regress Cursor or the status fields.
-	LastRunScheduledFor *float64 `gorm:"column:lastRunScheduledFor" json:"lastRunScheduledFor"`
+	LastRunScheduledFor *float64 `gorm:"column:lastRunScheduledFor;type:double precision" json:"lastRunScheduledFor"`
 	// ADR-128 - how far the last run read, in epoch milliseconds, and whether
 	// it reached the end. The fold writes both; the IngestionSource row mirrors
 	// them for the screens. Null read-through means no run has reported one.
@@ -7892,7 +7893,7 @@ type IngestionPullRunProjection struct {
 	// safe: a row that has never seen a run carrying these stays null and every
 	// reader already handles unknown.
 	// Spec: specs/governance/ingestion-source-health.feature
-	LastReadThroughAt   *float64 `gorm:"column:lastReadThroughAt" json:"lastReadThroughAt"`
+	LastReadThroughAt   *float64 `gorm:"column:lastReadThroughAt;type:double precision" json:"lastReadThroughAt"`
 	LastRunCompleteness *string  `gorm:"column:lastRunCompleteness" json:"lastRunCompleteness"`
 	// The last time somebody asked this source to enumerate its agents, and how
 	// that ask ended. A listing is a different scope on the same connection as
@@ -7913,11 +7914,11 @@ type IngestionPullRunProjection struct {
 	// so a superseded listing cannot overwrite the one that replaced it. The
 	// name predates that job and is kept because renaming a column is a
 	// migration; the fold's own field docs are the statement of record.
-	LastAgentsListingAt      *float64 `gorm:"column:lastAgentsListingAt" json:"lastAgentsListingAt"`
+	LastAgentsListingAt      *float64 `gorm:"column:lastAgentsListingAt;type:double precision" json:"lastAgentsListingAt"`
 	LastAgentsListingOutcome *string  `gorm:"column:lastAgentsListingOutcome" json:"lastAgentsListingOutcome"`
-	LastAgentsListingCount   *int     `gorm:"column:lastAgentsListingCount" json:"lastAgentsListingCount"`
+	LastAgentsListingCount   *int     `gorm:"column:lastAgentsListingCount;size:32" json:"lastAgentsListingCount"`
 	LastAgentsListingReason  *string  `gorm:"column:lastAgentsListingReason" json:"lastAgentsListingReason"`
-	LastAgentsListingStatus  *int     `gorm:"column:lastAgentsListingStatus" json:"lastAgentsListingStatus"`
+	LastAgentsListingStatus  *int     `gorm:"column:lastAgentsListingStatus;size:32" json:"lastAgentsListingStatus"`
 	// The same for people, in its own set of columns rather than sharing the
 	// agents set with a kind discriminator. A source can be refused for people
 	// and fine for agents, and one shared set holds only the most recent listing
@@ -7936,16 +7937,16 @@ type IngestionPullRunProjection struct {
 	// happened then, which on a small tenant identifies the person as surely as
 	// a name would. So no trend line, no history drawer, no per-run export, and
 	// never beside a per-person list.
-	LastPeopleListingAt      *float64 `gorm:"column:lastPeopleListingAt" json:"lastPeopleListingAt"`
+	LastPeopleListingAt      *float64 `gorm:"column:lastPeopleListingAt;type:double precision" json:"lastPeopleListingAt"`
 	LastPeopleListingOutcome *string  `gorm:"column:lastPeopleListingOutcome" json:"lastPeopleListingOutcome"`
-	LastPeopleDirectoryCount *int     `gorm:"column:lastPeopleDirectoryCount" json:"lastPeopleDirectoryCount"`
-	LastPeopleWithheldCount  *int     `gorm:"column:lastPeopleWithheldCount" json:"lastPeopleWithheldCount"`
+	LastPeopleDirectoryCount *int     `gorm:"column:lastPeopleDirectoryCount;size:32" json:"lastPeopleDirectoryCount"`
+	LastPeopleWithheldCount  *int     `gorm:"column:lastPeopleWithheldCount;size:32" json:"lastPeopleWithheldCount"`
 	LastPeopleListingReason  *string  `gorm:"column:lastPeopleListingReason" json:"lastPeopleListingReason"`
-	LastPeopleListingStatus  *int     `gorm:"column:lastPeopleListingStatus" json:"lastPeopleListingStatus"`
-	CreatedAt                float64  `gorm:"column:createdAt;not null" json:"createdAt"`
-	UpdatedAt                float64  `gorm:"column:updatedAt;not null" json:"updatedAt"`
-	OccurredAt               float64  `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	AcceptedAt               float64  `gorm:"column:acceptedAt;not null" json:"acceptedAt"`
+	LastPeopleListingStatus  *int     `gorm:"column:lastPeopleListingStatus;size:32" json:"lastPeopleListingStatus"`
+	CreatedAt                float64  `gorm:"column:createdAt;type:double precision;not null" json:"createdAt"`
+	UpdatedAt                float64  `gorm:"column:updatedAt;type:double precision;not null" json:"updatedAt"`
+	OccurredAt               float64  `gorm:"column:occurredAt;type:double precision;not null" json:"occurredAt"`
+	AcceptedAt               float64  `gorm:"column:acceptedAt;type:double precision;not null" json:"acceptedAt"`
 	LastEventID              string   `gorm:"column:lastEventId;not null" json:"lastEventId"`
 	ProjectionVersion        string   `gorm:"column:projectionVersion;not null" json:"projectionVersion"`
 }
@@ -7961,14 +7962,14 @@ type ScheduledJob struct {
 	TargetID    string    `gorm:"column:targetId;uniqueIndex:ScheduledJob_targetType_targetId_key;not null" json:"targetId"`
 	Cron        string    `gorm:"column:cron;not null" json:"cron"`
 	Timezone    string    `gorm:"column:timezone;not null" json:"timezone"`
-	NextRunAt   DateTime  `gorm:"column:nextRunAt;index:ScheduledJob_active_nextRunAt_idx;not null" json:"nextRunAt"`
-	LastSlot    *DateTime `gorm:"column:lastSlot" json:"lastSlot"`
-	CurrentSlot *DateTime `gorm:"column:currentSlot" json:"currentSlot"`
-	Attempts    int       `gorm:"column:attempts;default:0;not null" json:"attempts"`
+	NextRunAt   DateTime  `gorm:"column:nextRunAt;index:ScheduledJob_active_nextRunAt_idx;type:timestamp(3);not null" json:"nextRunAt"`
+	LastSlot    *DateTime `gorm:"column:lastSlot;type:timestamp(3)" json:"lastSlot"`
+	CurrentSlot *DateTime `gorm:"column:currentSlot;type:timestamp(3)" json:"currentSlot"`
+	Attempts    int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	LastError   *string   `gorm:"column:lastError" json:"lastError"`
 	Active      *bool     `gorm:"column:active;index:ScheduledJob_active_nextRunAt_idx;default:true;not null" json:"active"`
-	CreatedAt   DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime  `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt   DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime  `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ScheduledJob) TableName() string {
@@ -7999,7 +8000,7 @@ func (*ScheduledJob) BeforeUpdate(tx *gorm.DB) error {
 
 type BugReport struct {
 	ID               string         `gorm:"column:id;primaryKey" json:"id"`
-	CreatedAt        DateTime       `gorm:"column:createdAt;index:BugReport_createdAt_idx;type:timestamptz(3);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt        DateTime       `gorm:"column:createdAt;index:BugReport_createdAt_idx;type:timestamptz(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	Source           string         `gorm:"column:source;not null" json:"source"`
 	Kind             string         `gorm:"column:kind;not null" json:"kind"`
 	Title            string         `gorm:"column:title;not null" json:"title"`
@@ -8034,11 +8035,11 @@ type IdempotencyReceipt struct {
 	Key                string   `gorm:"column:key;uniqueIndex:IdempotencyReceipt_scopeId_key_key;not null" json:"key"`
 	ClaimID            string   `gorm:"column:claimId;not null" json:"claimId"`
 	RequestFingerprint string   `gorm:"column:requestFingerprint;not null" json:"requestFingerprint"`
-	ResponseStatus     *int     `gorm:"column:responseStatus" json:"responseStatus"`
+	ResponseStatus     *int     `gorm:"column:responseStatus;size:32" json:"responseStatus"`
 	ResponseBody       *string  `gorm:"column:responseBody;type:text" json:"responseBody"`
-	CreatedAt          DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	HeartbeatAt        DateTime `gorm:"column:heartbeatAt;not null" json:"heartbeatAt"`
-	ExpiresAt          DateTime `gorm:"column:expiresAt;index:IdempotencyReceipt_expiresAt_idx;not null" json:"expiresAt"`
+	CreatedAt          DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	HeartbeatAt        DateTime `gorm:"column:heartbeatAt;type:timestamp(3);not null" json:"heartbeatAt"`
+	ExpiresAt          DateTime `gorm:"column:expiresAt;index:IdempotencyReceipt_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
 }
 
 func (IdempotencyReceipt) TableName() string {
@@ -8068,21 +8069,21 @@ type GatewayRealtimeSession struct {
 	RequestedModel       *string        `gorm:"column:requestedModel" json:"requestedModel"`
 	VendorConversationID *string        `gorm:"column:vendorConversationId;uniqueIndex:GatewayRealtimeSession_vendor_vendorConversationId_key" json:"vendorConversationId"`
 	Status               string         `gorm:"column:status;index:GatewayRealtimeSession_virtualKeyId_status_mintedAt_idx;index:GatewayRealtimeSession_projectId_status_mintedAt_idx;index:GatewayRealtimeSession_status_metering_mintedAt_idx;default:'OPEN';not null" json:"status"`
-	MintedAt             DateTime       `gorm:"column:mintedAt;index:GatewayRealtimeSession_virtualKeyId_status_mintedAt_idx;index:GatewayRealtimeSession_projectId_status_mintedAt_idx;index:GatewayRealtimeSession_status_metering_mintedAt_idx;not null" json:"mintedAt"`
-	ClosedAt             *DateTime      `gorm:"column:closedAt" json:"closedAt"`
+	MintedAt             DateTime       `gorm:"column:mintedAt;index:GatewayRealtimeSession_virtualKeyId_status_mintedAt_idx;index:GatewayRealtimeSession_projectId_status_mintedAt_idx;index:GatewayRealtimeSession_status_metering_mintedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"mintedAt"`
+	ClosedAt             *DateTime      `gorm:"column:closedAt;type:timestamp(3)" json:"closedAt"`
 	CloseReason          *string        `gorm:"column:closeReason" json:"closeReason"`
 	TraceID              *string        `gorm:"column:traceId" json:"traceId"`
 	VendorCostRaw        datatypes.JSON `gorm:"column:vendorCostRaw" json:"vendorCostRaw"`
 	Kind                 *string        `gorm:"column:kind" json:"kind"`
 	Metering             *string        `gorm:"column:metering;index:GatewayRealtimeSession_status_metering_mintedAt_idx" json:"metering"`
-	CredentialExpiresAt  *DateTime      `gorm:"column:credentialExpiresAt" json:"credentialExpiresAt"`
+	CredentialExpiresAt  *DateTime      `gorm:"column:credentialExpiresAt;type:timestamp(3)" json:"credentialExpiresAt"`
 	TranscriptionModel   *string        `gorm:"column:transcriptionModel" json:"transcriptionModel"`
 	EndUserID            *string        `gorm:"column:endUserId" json:"endUserId"`
-	LastReportAt         *DateTime      `gorm:"column:lastReportAt" json:"lastReportAt"`
+	LastReportAt         *DateTime      `gorm:"column:lastReportAt;type:timestamp(3)" json:"lastReportAt"`
 	ReportedCostNanoUsd  int64          `gorm:"column:reportedCostNanoUsd;default:0;not null" json:"reportedCostNanoUsd"`
-	ReportCount          int            `gorm:"column:reportCount;default:0;not null" json:"reportCount"`
-	CreatedAt            DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt            DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	ReportCount          int            `gorm:"column:reportCount;size:32;default:0;not null" json:"reportCount"`
+	CreatedAt            DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt            DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (GatewayRealtimeSession) TableName() string {
@@ -8119,7 +8120,7 @@ type GatewayRealtimeSessionReport struct {
 	Model       string         `gorm:"column:model;not null" json:"model"`
 	Usage       datatypes.JSON `gorm:"column:usage;not null" json:"usage"`
 	CostNanoUsd int64          `gorm:"column:costNanoUsd;not null" json:"costNanoUsd"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (GatewayRealtimeSessionReport) TableName() string {
@@ -8142,9 +8143,9 @@ type SystemMigrationTenantState struct {
 	TenantID      string         `gorm:"column:tenantId;primaryKey" json:"tenantId"`
 	Status        string         `gorm:"column:status;index:SystemMigrationTenantState_migrationName_status_idx;not null" json:"status"`
 	Report        datatypes.JSON `gorm:"column:report" json:"report"`
-	OccurredAt    DateTime       `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	CreatedAt     DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	OccurredAt    DateTime       `gorm:"column:occurredAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"occurredAt"`
+	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SystemMigrationTenantState) TableName() string {
@@ -8177,7 +8178,7 @@ type SystemMigrationEnrollment struct {
 	OrganizationID   string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
 	MigrationName    string   `gorm:"column:migrationName;primaryKey;index:SystemMigrationEnrollment_migrationName_idx" json:"migrationName"`
 	EnrolledByUserID string   `gorm:"column:enrolledByUserId;not null" json:"enrolledByUserId"`
-	CreatedAt        DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt        DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (SystemMigrationEnrollment) TableName() string {
@@ -8207,15 +8208,15 @@ type StoredObject struct {
 	StorageProvider           *string        `gorm:"column:storageProvider" json:"storageProvider"`
 	StorageDestinationID      *string        `gorm:"column:storageDestinationId" json:"storageDestinationId"`
 	StorageProviderRelativeID *string        `gorm:"column:storageProviderRelativeId;type:text" json:"storageProviderRelativeId"`
-	Generation                int            `gorm:"column:generation;default:0;not null" json:"generation"`
+	Generation                int            `gorm:"column:generation;size:32;default:0;not null" json:"generation"`
 	Audiences                 datatypes.JSON `gorm:"column:audiences;not null" json:"audiences"`
-	ExpiresAt                 *DateTime      `gorm:"column:expiresAt;index:StoredObject_status_expiresAt_idx" json:"expiresAt"`
-	AvailableAt               *DateTime      `gorm:"column:availableAt" json:"availableAt"`
-	DeletedAt                 *DateTime      `gorm:"column:deletedAt" json:"deletedAt"`
+	ExpiresAt                 *DateTime      `gorm:"column:expiresAt;index:StoredObject_status_expiresAt_idx;type:timestamp(3)" json:"expiresAt"`
+	AvailableAt               *DateTime      `gorm:"column:availableAt;type:timestamp(3)" json:"availableAt"`
+	DeletedAt                 *DateTime      `gorm:"column:deletedAt;type:timestamp(3)" json:"deletedAt"`
 	Source                    string         `gorm:"column:source;not null" json:"source"`
 	LegacyFingerprint         *string        `gorm:"column:legacyFingerprint" json:"legacyFingerprint"`
-	CreatedAt                 DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt                 DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt                 DateTime       `gorm:"column:createdAt;type:timestamp(3);autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt                 DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (StoredObject) TableName() string {
@@ -8270,18 +8271,18 @@ type DiscoveredPerson struct {
 	// blank field in the tenant's directory and a person no directory lists are
 	// the same null here.
 	Department  *string  `gorm:"column:department" json:"department"`
-	FirstSeenAt DateTime `gorm:"column:firstSeenAt;not null" json:"firstSeenAt"`
-	LastSeenAt  DateTime `gorm:"column:lastSeenAt;index:DiscoveredPerson_organizationId_lastSeenAt_idx;not null" json:"lastSeenAt"`
+	FirstSeenAt DateTime `gorm:"column:firstSeenAt;type:timestamp(3);not null" json:"firstSeenAt"`
+	LastSeenAt  DateTime `gorm:"column:lastSeenAt;index:DiscoveredPerson_organizationId_lastSeenAt_idx;type:timestamp(3);not null" json:"lastSeenAt"`
 	// Set when this row's identity has been erased. The row survives so its
 	// spend stays attributable to *someone*; the identifier does not.
-	ErasedAt *DateTime `gorm:"column:erasedAt" json:"erasedAt"`
+	ErasedAt *DateTime `gorm:"column:erasedAt;type:timestamp(3)" json:"erasedAt"`
 	// Set alongside `erasedAt` and cleared once the daily cost rows have been
 	// removed and their rebuild requested. Non-null means the ClickHouse half
 	// of the erasure did not finish — a crash between the delete and the
 	// replay leaves days short by the erased amount, and without this marker a
 	// re-run reads `erasedAt`, short-circuits, and reports a clean erasure that
 	// did no work. The re-run resumes at that step instead.
-	MoneyRowsPendingAt *DateTime `gorm:"column:moneyRowsPendingAt" json:"moneyRowsPendingAt"`
+	MoneyRowsPendingAt *DateTime `gorm:"column:moneyRowsPendingAt;type:timestamp(3)" json:"moneyRowsPendingAt"`
 	// The earliest day to rebuild from, recorded BEFORE the rows are deleted.
 	// Once they are gone there is nothing left to ask which days they were on,
 	// so a resume with no record of this could only replay everything or
@@ -8292,11 +8293,11 @@ type DiscoveredPerson struct {
 	// identity because evidence pointed at two candidates, or contradicted an
 	// existing link. Stored HERE rather than on the suggestion rows, because a
 	// halt on auto-linking that a recompute or a restart clears is not a halt.
-	SuspendedAt *DateTime `gorm:"column:suspendedAt" json:"suspendedAt"`
+	SuspendedAt *DateTime `gorm:"column:suspendedAt;type:timestamp(3)" json:"suspendedAt"`
 	// What tripped the suspension, for the human who reviews it.
 	SuspendedReason *string  `gorm:"column:suspendedReason" json:"suspendedReason"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (DiscoveredPerson) TableName() string {
@@ -8338,10 +8339,10 @@ type DiscoveredAgent struct {
 	// Workspace, plan, and kin - provider-native descriptive fields only. Never
 	// credentials: this row is read by admin screens, not by any pull path.
 	Metadata    datatypes.JSON `gorm:"column:metadata;not null" json:"metadata"`
-	FirstSeenAt DateTime       `gorm:"column:firstSeenAt;not null" json:"firstSeenAt"`
-	LastSeenAt  DateTime       `gorm:"column:lastSeenAt;index:DiscoveredAgent_organizationId_lastSeenAt_idx;not null" json:"lastSeenAt"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime       `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	FirstSeenAt DateTime       `gorm:"column:firstSeenAt;type:timestamp(3);not null" json:"firstSeenAt"`
+	LastSeenAt  DateTime       `gorm:"column:lastSeenAt;index:DiscoveredAgent_organizationId_lastSeenAt_idx;type:timestamp(3);not null" json:"lastSeenAt"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (DiscoveredAgent) TableName() string {
@@ -8380,14 +8381,14 @@ type AgentRegistryEntry struct {
 	SourceKey   string         `gorm:"column:sourceKey;uniqueIndex:AgentRegistryEntry_organizationId_sourceKey_key;not null" json:"sourceKey"`
 	Source      string         `gorm:"column:source;not null" json:"source"`
 	Status      string         `gorm:"column:status;not null" json:"status"`
-	Version     int            `gorm:"column:version;not null" json:"version"`
+	Version     int            `gorm:"column:version;size:32;not null" json:"version"`
 	Fingerprint string         `gorm:"column:fingerprint;not null" json:"fingerprint"`
 	Entry       datatypes.JSON `gorm:"column:entry;not null" json:"entry"`
-	FirstSeenAt DateTime       `gorm:"column:firstSeenAt;not null" json:"firstSeenAt"`
-	LastSeenAt  *DateTime      `gorm:"column:lastSeenAt" json:"lastSeenAt"`
-	RemovedAt   *DateTime      `gorm:"column:removedAt" json:"removedAt"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime       `gorm:"column:updatedAt;index:AgentRegistryEntry_organizationId_updatedAt_idx;autoUpdateTime:false;not null" json:"updatedAt"`
+	FirstSeenAt DateTime       `gorm:"column:firstSeenAt;type:timestamp(3);not null" json:"firstSeenAt"`
+	LastSeenAt  *DateTime      `gorm:"column:lastSeenAt;type:timestamp(3)" json:"lastSeenAt"`
+	RemovedAt   *DateTime      `gorm:"column:removedAt;type:timestamp(3)" json:"removedAt"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime       `gorm:"column:updatedAt;index:AgentRegistryEntry_organizationId_updatedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (AgentRegistryEntry) TableName() string {
@@ -8425,11 +8426,11 @@ type AgentRegistryEvent struct {
 	Sequence           int64          `gorm:"column:sequence;uniqueIndex:AgentRegistryEvent_organizationId_sequence_key;not null" json:"sequence"`
 	Type               string         `gorm:"column:type;not null" json:"type"`
 	EntryID            string         `gorm:"column:entryId;index:AgentRegistryEvent_organizationId_entryId_idx;not null" json:"entryId"`
-	FromVersion        *int           `gorm:"column:fromVersion" json:"fromVersion"`
-	ToVersion          *int           `gorm:"column:toVersion" json:"toVersion"`
+	FromVersion        *int           `gorm:"column:fromVersion;size:32" json:"fromVersion"`
+	ToVersion          *int           `gorm:"column:toVersion;size:32" json:"toVersion"`
 	Payload            datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
-	OccurredAt         DateTime       `gorm:"column:occurredAt;not null" json:"occurredAt"`
-	DeliveryRecordedAt *DateTime      `gorm:"column:deliveryRecordedAt;index:AgentRegistryEvent_organizationId_deliveryRecordedAt_idx" json:"deliveryRecordedAt"`
+	OccurredAt         DateTime       `gorm:"column:occurredAt;type:timestamp(3);not null" json:"occurredAt"`
+	DeliveryRecordedAt *DateTime      `gorm:"column:deliveryRecordedAt;index:AgentRegistryEvent_organizationId_deliveryRecordedAt_idx;type:timestamp(3)" json:"deliveryRecordedAt"`
 }
 
 func (AgentRegistryEvent) TableName() string {
@@ -8447,7 +8448,7 @@ func (m *AgentRegistryEvent) BeforeCreate(_ *gorm.DB) error {
 // agents it already had are not announced. Every reconcile after it pushes its changes.
 type AgentRegistryBaseline struct {
 	OrganizationID string   `gorm:"column:organizationId;primaryKey" json:"organizationId"`
-	BaselinedAt    DateTime `gorm:"column:baselinedAt;not null" json:"baselinedAt"`
+	BaselinedAt    DateTime `gorm:"column:baselinedAt;type:timestamp(3);not null" json:"baselinedAt"`
 }
 
 func (AgentRegistryBaseline) TableName() string {
@@ -8474,10 +8475,10 @@ type IdentityMatch struct {
 	// equality is the primary evidence; a directory id corroborates but never
 	// stands alone (ADR-128 §12).
 	EvidenceKind string   `gorm:"column:evidenceKind;not null" json:"evidenceKind"`
-	ValidFrom    DateTime `gorm:"column:validFrom;not null" json:"validFrom"`
+	ValidFrom    DateTime `gorm:"column:validFrom;type:timestamp(3);not null" json:"validFrom"`
 	// Null means the link is open. Offboarding and corrections close it.
-	ValidTo   *DateTime `gorm:"column:validTo" json:"validTo"`
-	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	ValidTo   *DateTime `gorm:"column:validTo;type:timestamp(3)" json:"validTo"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (IdentityMatch) TableName() string {
@@ -8513,8 +8514,8 @@ type GovernanceTenantHistory struct {
 	OrganizationID string `gorm:"column:organizationId;uniqueIndex:GovernanceTenantHistory_organizationId_tenantId_key;index:GovernanceTenantHistory_organizationId_idx;not null" json:"organizationId"`
 	// A hidden governance project id this organization has written rows under.
 	TenantID    string   `gorm:"column:tenantId;uniqueIndex:GovernanceTenantHistory_organizationId_tenantId_key;not null" json:"tenantId"`
-	FirstUsedAt DateTime `gorm:"column:firstUsedAt;not null" json:"firstUsedAt"`
-	LastUsedAt  DateTime `gorm:"column:lastUsedAt;not null" json:"lastUsedAt"`
+	FirstUsedAt DateTime `gorm:"column:firstUsedAt;type:timestamp(3);not null" json:"firstUsedAt"`
+	LastUsedAt  DateTime `gorm:"column:lastUsedAt;type:timestamp(3);not null" json:"lastUsedAt"`
 }
 
 func (GovernanceTenantHistory) TableName() string {
@@ -8547,10 +8548,10 @@ func (m *GovernanceTenantHistory) BeforeCreate(_ *gorm.DB) error {
 // different person under a different provider.
 type ErasedIdentifierSuppression struct {
 	ID             string   `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identifierHash_key;index:ErasedIdentifierSuppression_organizationId_idx;not null" json:"organizationId"`
-	Provider       string   `gorm:"column:provider;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identifierHash_key;not null" json:"provider"`
-	IdentifierHash string   `gorm:"column:identifierHash;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identifierHash_key;not null" json:"identifierHash"`
-	ErasedAt       DateTime `gorm:"column:erasedAt;not null" json:"erasedAt"`
+	OrganizationID string   `gorm:"column:organizationId;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identif_key;index:ErasedIdentifierSuppression_organizationId_idx;not null" json:"organizationId"`
+	Provider       string   `gorm:"column:provider;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identif_key;not null" json:"provider"`
+	IdentifierHash string   `gorm:"column:identifierHash;uniqueIndex:ErasedIdentifierSuppression_organizationId_provider_identif_key;not null" json:"identifierHash"`
+	ErasedAt       DateTime `gorm:"column:erasedAt;type:timestamp(3);not null" json:"erasedAt"`
 }
 
 func (ErasedIdentifierSuppression) TableName() string {
@@ -8584,16 +8585,16 @@ func (m *ErasedIdentifierSuppression) BeforeCreate(_ *gorm.DB) error {
 // halt.
 type IdentityMatchSuggestion struct {
 	ID                 string `gorm:"column:id;primaryKey" json:"id"`
-	OrganizationID     string `gorm:"column:organizationId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_userId_key;index:IdentityMatchSuggestion_organizationId_score_idx;not null" json:"organizationId"`
-	DiscoveredPersonID string `gorm:"column:discoveredPersonId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_userId_key;not null" json:"discoveredPersonId"`
+	OrganizationID     string `gorm:"column:organizationId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_u_key;index:IdentityMatchSuggestion_organizationId_score_idx;not null" json:"organizationId"`
+	DiscoveredPersonID string `gorm:"column:discoveredPersonId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_u_key;not null" json:"discoveredPersonId"`
 	// The platform user this might be. Not nullable: a suggestion with no
 	// candidate is not a suggestion.
-	UserID string `gorm:"column:userId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_userId_key;not null" json:"userId"`
+	UserID string `gorm:"column:userId;uniqueIndex:IdentityMatchSuggestion_organizationId_discoveredPersonId_u_key;not null" json:"userId"`
 	// Similarity of the two name texts, after the prefilter, in [0, 1]. A
 	// display hint and an ordering key - never a threshold anything auto-links
 	// on, which is the whole distinction this table exists to hold.
-	Score      float64  `gorm:"column:score;index:IdentityMatchSuggestion_organizationId_score_idx;not null" json:"score"`
-	ComputedAt DateTime `gorm:"column:computedAt;not null" json:"computedAt"`
+	Score      float64  `gorm:"column:score;index:IdentityMatchSuggestion_organizationId_score_idx;type:double precision;not null" json:"score"`
+	ComputedAt DateTime `gorm:"column:computedAt;type:timestamp(3);not null" json:"computedAt"`
 }
 
 func (IdentityMatchSuggestion) TableName() string {
@@ -8619,27 +8620,27 @@ type ConnectedSeatChange struct {
 	// The reissued `IssuedLicense` row that carries the new seat count. A
 	// plain column ref, like `replacesId`: relationMode="prisma" carries no
 	// foreign keys.
-	LicenseID string `gorm:"column:licenseId;uniqueIndex;not null" json:"licenseId"`
+	LicenseID string `gorm:"column:licenseId;uniqueIndex:ConnectedSeatChange_licenseId_key;not null" json:"licenseId"`
 	// The `ConnectedBillingAccount` row the invoice is raised against. Null
 	// when the customer had no billing account (`not_onboarded`).
 	AccountID *string `gorm:"column:accountId;index:ConnectedSeatChange_accountId_idx" json:"accountId"`
 	// The customer organization the license belongs to.
 	OrganizationID *string `gorm:"column:organizationId;index:ConnectedSeatChange_organizationId_idx" json:"organizationId"`
 	// When the seats changed, which is the day the proration counts from.
-	ChangedAt DateTime `gorm:"column:changedAt;not null" json:"changedAt"`
+	ChangedAt DateTime `gorm:"column:changedAt;type:timestamp(3);not null" json:"changedAt"`
 	// Seats on the new license above the seats on the one it replaced.
-	AddedSeats int `gorm:"column:addedSeats;not null" json:"addedSeats"`
+	AddedSeats int `gorm:"column:addedSeats;size:32;not null" json:"addedSeats"`
 	// What one added seat costs for the rest of the term, in cents of `currency`.
-	UnitAmountCents int `gorm:"column:unitAmountCents;not null" json:"unitAmountCents"`
+	UnitAmountCents int `gorm:"column:unitAmountCents;size:32;not null" json:"unitAmountCents"`
 	// `unitAmountCents` times `addedSeats`. Zero when nothing is owed.
-	AmountCents int `gorm:"column:amountCents;not null" json:"amountCents"`
+	AmountCents int `gorm:"column:amountCents;size:32;not null" json:"amountCents"`
 	// Null when no billing account named one (`not_onboarded`).
 	Currency *string `gorm:"column:currency" json:"currency"`
 	// The one-off invoice the added seats were billed on.
 	StripeInvoiceID *string  `gorm:"column:stripeInvoiceId" json:"stripeInvoiceId"`
 	State           string   `gorm:"column:state;index:ConnectedSeatChange_state_idx;not null" json:"state"`
-	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt       DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt       DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt       DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (ConnectedSeatChange) TableName() string {
@@ -8676,8 +8677,8 @@ type ConnectedStatement struct {
 	// The `ConnectedBillingAccount` row. A plain column ref.
 	AccountID string `gorm:"column:accountId;uniqueIndex:ConnectedStatement_accountId_month_key;index:ConnectedStatement_accountId_idx;not null" json:"accountId"`
 	// First day of the month the statement covers, in UTC.
-	Month  DateTime `gorm:"column:month;uniqueIndex:ConnectedStatement_accountId_month_key;not null" json:"month"`
-	SentAt DateTime `gorm:"column:sentAt;not null" json:"sentAt"`
+	Month  DateTime `gorm:"column:month;uniqueIndex:ConnectedStatement_accountId_month_key;type:timestamp(3);not null" json:"month"`
+	SentAt DateTime `gorm:"column:sentAt;type:timestamp(3);not null" json:"sentAt"`
 }
 
 func (ConnectedStatement) TableName() string {
@@ -8700,10 +8701,10 @@ type LicenseRenewalClaim struct {
 	StripeSubscriptionID string `gorm:"column:stripeSubscriptionId;not null" json:"stripeSubscriptionId"`
 	// Fences completion and release to the delivery that holds the claim.
 	ClaimToken string   `gorm:"column:claimToken;not null" json:"claimToken"`
-	ClaimedAt  DateTime `gorm:"column:claimedAt;not null" json:"claimedAt"`
+	ClaimedAt  DateTime `gorm:"column:claimedAt;type:timestamp(3);not null" json:"claimedAt"`
 	// The signed licence between minting and mailing, so a retry mails it again instead of minting another; cleared once delivered.
 	IssuedLicense datatypes.JSON `gorm:"column:issuedLicense" json:"issuedLicense"`
-	DeliveredAt   *DateTime      `gorm:"column:deliveredAt" json:"deliveredAt"`
+	DeliveredAt   *DateTime      `gorm:"column:deliveredAt;type:timestamp(3)" json:"deliveredAt"`
 	// The `licenseId` inside the delivered licence.
 	LicenseID *string `gorm:"column:licenseId" json:"licenseId"`
 }
@@ -8728,13 +8729,13 @@ type InstanceIdentity struct {
 	// primary key and re-reads the winner's id.
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// A random UUID. Carries nothing about the customer.
-	InstanceID string   `gorm:"column:instanceId;uniqueIndex;not null" json:"instanceId"`
-	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	InstanceID string   `gorm:"column:instanceId;uniqueIndex:InstanceIdentity_instanceId_key;not null" json:"instanceId"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// When the usage report last reached LangWatch, and why the last attempt
 	// did not. Both are what the checkup page reads to say whether reporting
 	// works, which nothing recorded before: the sender logged success as soon
 	// as `fetch` resolved and never looked at the response.
-	LastReportAt    *DateTime `gorm:"column:lastReportAt" json:"lastReportAt"`
+	LastReportAt    *DateTime `gorm:"column:lastReportAt;type:timestamp(3)" json:"lastReportAt"`
 	LastReportError *string   `gorm:"column:lastReportError" json:"lastReportError"`
 	// The optional category of the usage report, switched off from the checkup
 	// page. With it off the report still says which release runs and how many
@@ -8773,9 +8774,9 @@ func (m *InstanceIdentity) BeforeCreate(tx *gorm.DB) error {
 type SelfHostedInstance struct {
 	ID string `gorm:"column:id;primaryKey" json:"id"`
 	// The UUID the install minted for itself. The join key for everything else.
-	InstanceID  string   `gorm:"column:instanceId;uniqueIndex;not null" json:"instanceId"`
-	FirstSeenAt DateTime `gorm:"column:firstSeenAt;not null" json:"firstSeenAt"`
-	LastSeenAt  DateTime `gorm:"column:lastSeenAt;index:SelfHostedInstance_lastSeenAt_idx;not null" json:"lastSeenAt"`
+	InstanceID  string   `gorm:"column:instanceId;uniqueIndex:SelfHostedInstance_instanceId_key;not null" json:"instanceId"`
+	FirstSeenAt DateTime `gorm:"column:firstSeenAt;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"firstSeenAt"`
+	LastSeenAt  DateTime `gorm:"column:lastSeenAt;index:SelfHostedInstance_lastSeenAt_idx;type:timestamp(3);not null" json:"lastSeenAt"`
 	// What the install says about itself.
 	Version       *string `gorm:"column:version" json:"version"`
 	InstallMethod *string `gorm:"column:installMethod" json:"installMethod"`
@@ -8785,8 +8786,8 @@ type SelfHostedInstance struct {
 	Environment *string `gorm:"column:environment" json:"environment"`
 	// The day the install itself says it first came up, which predates the
 	// first report on an install that switched reporting on later.
-	InstalledAt         *DateTime `gorm:"column:installedAt" json:"installedAt"`
-	ReportSchemaVersion *int      `gorm:"column:reportSchemaVersion" json:"reportSchemaVersion"`
+	InstalledAt         *DateTime `gorm:"column:installedAt;type:timestamp(3)" json:"installedAt"`
+	ReportSchemaVersion *int      `gorm:"column:reportSchemaVersion;size:32" json:"reportSchemaVersion"`
 	// The customer, and the license that named them. Plain column refs rather
 	// than relations, like `IssuedLicense.replacesId`: relationMode="prisma"
 	// carries no foreign keys, and the receiver resolves both from the license
@@ -8800,7 +8801,7 @@ type SelfHostedInstance struct {
 	// operator can search for one. A JSON object's keys are the domains
 	// themselves, and no query language addresses a key it does not already
 	// know the name of.
-	UserDomains []string `gorm:"column:userDomains;serializer:json;not null" json:"userDomains"`
+	UserDomains ScalarList[string] `gorm:"column:userDomains;type:text[]" json:"userDomains"`
 	// What the last report carried, so the list and the drawer read one row:
 	// the onboarding ladder, the usage counts and the operational block, under
 	// the same keys the dictionary declares.
@@ -8812,14 +8813,14 @@ type SelfHostedInstance struct {
 	// How many reports have landed, and how many fields the last one carried
 	// that this release has no name for. A count above zero says the senders
 	// are ahead of the receiver.
-	ReportCount       int `gorm:"column:reportCount;default:0;not null" json:"reportCount"`
-	LastUnknownFields int `gorm:"column:lastUnknownFields;default:0;not null" json:"lastUnknownFields"`
+	ReportCount       int `gorm:"column:reportCount;size:32;default:0;not null" json:"reportCount"`
+	LastUnknownFields int `gorm:"column:lastUnknownFields;size:32;default:0;not null" json:"lastUnknownFields"`
 	// The lead signals already raised for this install. A signal on this list
 	// is never raised again, which is what keeps a large install from
 	// reporting that it is large every morning.
-	RaisedSignals []string `gorm:"column:raisedSignals;serializer:json;not null" json:"raisedSignals"`
-	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt     DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	RaisedSignals ScalarList[string] `gorm:"column:raisedSignals;type:text[]" json:"raisedSignals"`
+	CreatedAt     DateTime           `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt     DateTime           `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SelfHostedInstance) TableName() string {
@@ -8863,16 +8864,16 @@ type SelfHostedInstanceDiagnostic struct {
 	StepID          string  `gorm:"column:stepId;not null" json:"stepId"`
 	StepDescription *string `gorm:"column:stepDescription" json:"stepDescription"`
 	Release         *string `gorm:"column:release" json:"release"`
-	Attempt         int     `gorm:"column:attempt;not null" json:"attempt"`
+	Attempt         int     `gorm:"column:attempt;size:32;not null" json:"attempt"`
 	// `operator` or `automatic`.
 	Trigger    string   `gorm:"column:trigger;not null" json:"trigger"`
-	ByteLength int      `gorm:"column:byteLength;not null" json:"byteLength"`
+	ByteLength int      `gorm:"column:byteLength;size:32;not null" json:"byteLength"`
 	ObjectKey  string   `gorm:"column:objectKey;not null" json:"objectKey"`
-	ReceivedAt DateTime `gorm:"column:receivedAt;index:SelfHostedInstanceDiagnostic_instanceId_receivedAt_idx;not null" json:"receivedAt"`
+	ReceivedAt DateTime `gorm:"column:receivedAt;index:SelfHostedInstanceDiagnostic_instanceId_receivedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"receivedAt"`
 	// When the lifecycle rule removes the bundle; the row is listed until then.
-	ExpiresAt DateTime `gorm:"column:expiresAt;not null" json:"expiresAt"`
+	ExpiresAt DateTime `gorm:"column:expiresAt;type:timestamp(3);not null" json:"expiresAt"`
 	// Set on the report that posted this step and release's one Slack message.
-	SlackAnnouncedAt *DateTime `gorm:"column:slackAnnouncedAt" json:"slackAnnouncedAt"`
+	SlackAnnouncedAt *DateTime `gorm:"column:slackAnnouncedAt;type:timestamp(3)" json:"slackAnnouncedAt"`
 }
 
 func (SelfHostedInstanceDiagnostic) TableName() string {
@@ -8902,12 +8903,12 @@ type SelfHostedNotice struct {
 	FixedIn *string `gorm:"column:fixedIn" json:"fixedIn"`
 	// `draft`, `published` or `withdrawn`. Only a published notice that has not expired is sent.
 	Status      string    `gorm:"column:status;not null" json:"status"`
-	ExpiresAt   *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
-	PublishedAt *DateTime `gorm:"column:publishedAt" json:"publishedAt"`
+	ExpiresAt   *DateTime `gorm:"column:expiresAt;type:timestamp(3)" json:"expiresAt"`
+	PublishedAt *DateTime `gorm:"column:publishedAt;type:timestamp(3)" json:"publishedAt"`
 	// The staff member who published it, by user id.
 	PublishedBy *string  `gorm:"column:publishedBy" json:"publishedBy"`
-	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	CreatedAt   DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	UpdatedAt   DateTime `gorm:"column:updatedAt;type:timestamp(3);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SelfHostedNotice) TableName() string {
@@ -8941,11 +8942,11 @@ type SelfHostedInstanceReport struct {
 	// The `SelfHostedInstance.instanceId` this report came from. A plain column
 	// ref for the same reason the instance row's refs are.
 	InstanceID          string   `gorm:"column:instanceId;index:SelfHostedInstanceReport_instanceId_receivedAt_idx;not null" json:"instanceId"`
-	ReceivedAt          DateTime `gorm:"column:receivedAt;index:SelfHostedInstanceReport_instanceId_receivedAt_idx;index:SelfHostedInstanceReport_receivedAt_idx;not null" json:"receivedAt"`
+	ReceivedAt          DateTime `gorm:"column:receivedAt;index:SelfHostedInstanceReport_instanceId_receivedAt_idx;index:SelfHostedInstanceReport_receivedAt_idx;type:timestamp(3);default:CURRENT_TIMESTAMP;not null" json:"receivedAt"`
 	Version             *string  `gorm:"column:version" json:"version"`
-	ReportSchemaVersion *int     `gorm:"column:reportSchemaVersion" json:"reportSchemaVersion"`
+	ReportSchemaVersion *int     `gorm:"column:reportSchemaVersion;size:32" json:"reportSchemaVersion"`
 	// Fields this release had no name for. Counted, never stored by name.
-	UnknownFields int `gorm:"column:unknownFields;default:0;not null" json:"unknownFields"`
+	UnknownFields int `gorm:"column:unknownFields;size:32;default:0;not null" json:"unknownFields"`
 	// The validated report, with every unknown field already dropped.
 	Payload datatypes.JSON `gorm:"column:payload;not null" json:"payload"`
 }
@@ -8974,15 +8975,15 @@ type WebPushSubscription struct {
 	// person through notification's own subscriber on the user lifecycle.
 	UserID string `gorm:"column:userId;index:WebPushSubscription_userId_idx;not null" json:"userId"`
 	// The push service URL the browser handed out. Unique per browser.
-	Endpoint string `gorm:"column:endpoint;uniqueIndex;not null" json:"endpoint"`
+	Endpoint string `gorm:"column:endpoint;uniqueIndex:WebPushSubscription_endpoint_key;not null" json:"endpoint"`
 	// The browser's P-256 public key and auth secret, base64url, as the
 	// browser reports them. Payloads are encrypted to these.
 	P256dh    string   `gorm:"column:p256dh;not null" json:"p256dh"`
 	Auth      string   `gorm:"column:auth;not null" json:"auth"`
 	UserAgent *string  `gorm:"column:userAgent" json:"userAgent"`
-	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	// When the push service last accepted a push for this browser.
-	LastSuccessAt *DateTime `gorm:"column:lastSuccessAt" json:"lastSuccessAt"`
+	LastSuccessAt *DateTime `gorm:"column:lastSuccessAt;type:timestamp(3)" json:"lastSuccessAt"`
 }
 
 func (WebPushSubscription) TableName() string {
@@ -9009,7 +9010,7 @@ type WebPushVapidKey struct {
 	PublicKey string `gorm:"column:publicKey;not null" json:"publicKey"`
 	// The private key, base64url, encrypted with the process encryption key.
 	PrivateKeyEncrypted string   `gorm:"column:privateKeyEncrypted;not null" json:"privateKeyEncrypted"`
-	CreatedAt           DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt           DateTime `gorm:"column:createdAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 }
 
 func (WebPushVapidKey) TableName() string {
@@ -9033,7 +9034,7 @@ type SignInProviderMount struct {
 	Mounted  bool    `gorm:"column:mounted;not null" json:"mounted"`
 	// The last sso event applied: the row's idempotency guard and its version.
 	LastAppliedEventID string   `gorm:"column:lastAppliedEventId;not null" json:"lastAppliedEventId"`
-	UpdatedAt          DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
+	UpdatedAt          DateTime `gorm:"column:updatedAt;type:timestamp(3);default:CURRENT_TIMESTAMP;autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
 func (SignInProviderMount) TableName() string {
@@ -9103,4 +9104,129 @@ func readPrismaTime(src any) (time.Time, error) {
 		return time.Time{}, fmt.Errorf("a DateTime column held %q", value)
 	}
 	return time.Time{}, fmt.Errorf("a DateTime column held %T", src)
+}
+
+type ScalarList[T string | int | int64 | float64 | bool] []T
+
+func (list ScalarList[T]) Value() (driver.Value, error) {
+	items := make([]string, len(list))
+	for i, item := range list {
+		switch value := any(item).(type) {
+		case string:
+			items[i] = `"` + strings.NewReplacer(`\`, `\\`, `"`, `\"`).Replace(value) + `"`
+		case int:
+			items[i] = strconv.FormatInt(int64(value), 10)
+		case int64:
+			items[i] = strconv.FormatInt(value, 10)
+		case float64:
+			items[i] = strings.NewReplacer("+Inf", "Infinity", "-Inf", "-Infinity").Replace(strconv.FormatFloat(value, 'g', -1, 64))
+		case bool:
+			items[i] = strconv.FormatBool(value)
+		}
+	}
+	return "{" + strings.Join(items, ",") + "}", nil
+}
+
+func (list *ScalarList[T]) Scan(src any) error {
+	var text string
+	switch value := src.(type) {
+	case nil:
+		*list = ScalarList[T]{}
+		return nil
+	case []byte:
+		text = string(value)
+	case string:
+		text = value
+	default:
+		return fmt.Errorf("an array column held %T", src)
+	}
+	items, err := arrayItems(text)
+	if err != nil {
+		return err
+	}
+	read := make(ScalarList[T], len(items))
+	for i, item := range items {
+		var value any
+		var parseErr error
+		switch any(read[i]).(type) {
+		case string:
+			value = item
+		case int:
+			value, parseErr = strconv.Atoi(item)
+		case int64:
+			value, parseErr = strconv.ParseInt(item, 10, 64)
+		case float64:
+			value, parseErr = strconv.ParseFloat(item, 64)
+		case bool:
+			switch item {
+			case "t", "true":
+				value = true
+			case "f", "false":
+				value = false
+			default:
+				parseErr = fmt.Errorf("%q is not a boolean", item)
+			}
+		}
+		if parseErr != nil {
+			return fmt.Errorf("an array column held %q: %w", text, parseErr)
+		}
+		read[i] = value.(T)
+	}
+	*list = read
+	return nil
+}
+
+// arrayItems splits the text form of a one-dimensional PostgreSQL array into its elements,
+// unquoted. A NULL element (an unquoted NULL) is an error: a Prisma list holds none, and the
+// string "NULL" is written quoted.
+func arrayItems(text string) ([]string, error) {
+	// An array whose lower bound is not 1 is printed with its bounds first: [0:1]={x,a}.
+	if strings.HasPrefix(text, "[") {
+		if eq := strings.Index(text, "="); eq >= 0 {
+			text = text[eq+1:]
+		}
+	}
+	if len(text) < 2 || text[0] != '{' || text[len(text)-1] != '}' {
+		return nil, fmt.Errorf("an array column held %q", text)
+	}
+	body := text[1 : len(text)-1]
+	items := []string{}
+	if body == "" {
+		return items, nil
+	}
+	var item strings.Builder
+	quoted, escaped, wasQuoted := false, false, false
+	end := func() error {
+		if !wasQuoted && item.String() == "NULL" {
+			return fmt.Errorf("an array column held a NULL element: %q", text)
+		}
+		items = append(items, item.String())
+		item.Reset()
+		wasQuoted = false
+		return nil
+	}
+	// Every delimiter is ASCII, so the text is walked byte by byte and any other byte kept as it is.
+	for i := 0; i < len(body); i++ {
+		r := body[i]
+		switch {
+		case escaped:
+			item.WriteByte(r)
+			escaped = false
+		case r == '\\':
+			escaped = true
+		case r == '"':
+			quoted = !quoted
+			wasQuoted = true
+		case r == ',' && !quoted:
+			if err := end(); err != nil {
+				return nil, err
+			}
+		default:
+			item.WriteByte(r)
+		}
+	}
+	if err := end(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

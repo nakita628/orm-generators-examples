@@ -11,7 +11,7 @@ defmodule LangWatch.OrganizationInvite do
           expiration: DateTime.t() | nil,
           status: atom(),
           team_ids: String.t(),
-          team_assignments: map() | nil,
+          team_assignments: map() | list() | String.t() | number() | boolean() | nil,
           role: atom(),
           subscription_id: String.t() | nil,
           accepted_by_user_id: String.t() | nil,
@@ -29,7 +29,7 @@ defmodule LangWatch.OrganizationInvite do
     field(:expiration, LangWatch.PrismaDateTime)
     field(:status, Ecto.Enum, values: [:PENDING, :ACCEPTED, :WAITING_APPROVAL, :PAYMENT_PENDING, :REVOKED], default: :PENDING)
     field(:team_ids, :string, source: :teamIds)
-    field(:team_assignments, :map, source: :teamAssignments)
+    field(:team_assignments, LangWatch.PrismaJson, source: :teamAssignments)
     field(:role, Ecto.Enum, values: [:ADMIN, :MEMBER, :EXTERNAL, :DEVELOPER])
     field(:subscription_id, :string, source: :subscriptionId)
     field(:accepted_by_user_id, :string, source: :acceptedByUserId)

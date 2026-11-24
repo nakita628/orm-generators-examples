@@ -8,7 +8,7 @@ defmodule LiteLLM.LiteLLMTelemetryReport do
           id: String.t(),
           window_start: float(),
           window_end: float(),
-          report: map(),
+          report: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t()
         }
 
@@ -16,7 +16,7 @@ defmodule LiteLLM.LiteLLMTelemetryReport do
     field(:id, :string, primary_key: true)
     field(:window_start, :float)
     field(:window_end, :float)
-    field(:report, :map)
+    field(:report, LiteLLM.PrismaJson)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end
 end

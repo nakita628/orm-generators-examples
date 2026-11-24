@@ -6,7 +6,7 @@ defmodule LiteLLM.LiteLLMModelTable do
 
   @type t :: %__MODULE__{
           id: integer(),
-          model_aliases: map() | nil,
+          model_aliases: map() | list() | String.t() | number() | boolean() | nil,
           created_by: String.t(),
           updated_by: String.t(),
           inserted_at: DateTime.t(),
@@ -15,7 +15,7 @@ defmodule LiteLLM.LiteLLMModelTable do
         }
 
   schema "LiteLLM_ModelTable" do
-    field(:model_aliases, :map, source: :aliases)
+    field(:model_aliases, LiteLLM.PrismaJson, source: :aliases)
     field(:created_by, :string)
     field(:updated_by, :string)
     has_one(:team, LiteLLM.LiteLLMTeamTable, foreign_key: :model_id)

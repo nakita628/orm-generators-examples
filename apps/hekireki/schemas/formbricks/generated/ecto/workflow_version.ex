@@ -8,7 +8,7 @@ defmodule Formbricks.WorkflowVersion do
           workflow_id: String.t(),
           workspace_id: String.t(),
           version: integer(),
-          definition: map(),
+          definition: map() | list() | String.t() | number() | boolean(),
           published_at: DateTime.t(),
           publisher: Formbricks.User.t() | nil,
           runs: [Formbricks.WorkflowRun.t()]
@@ -20,7 +20,7 @@ defmodule Formbricks.WorkflowVersion do
     field(:workspace_id, :string, source: :workspaceId)
     field(:version, :integer)
     # [WorkflowExecutableDefinition]
-    field(:definition, :map)
+    field(:definition, Formbricks.PrismaJson)
     field(:published_at, Formbricks.PrismaDateTime, autogenerate: true, source: :publishedAt)
     field(:published_by, :string, source: :publishedBy)
     belongs_to(:publisher, Formbricks.User, foreign_key: :published_by, define_field: false, type: :string)

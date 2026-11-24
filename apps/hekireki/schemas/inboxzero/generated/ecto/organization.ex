@@ -9,7 +9,7 @@ defmodule InboxZero.Organization do
           name: String.t(),
           slug: String.t(),
           logo: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           sso_provider: InboxZero.SsoProvider.t() | nil,
@@ -25,7 +25,7 @@ defmodule InboxZero.Organization do
     field(:name, :string)
     field(:slug, :string)
     field(:logo, :string)
-    field(:metadata, :map)
+    field(:metadata, InboxZero.PrismaJson)
     has_one(:sso_provider, InboxZero.SsoProvider, foreign_key: :organization_id, references: :id)
     has_many(:members, InboxZero.Member, foreign_key: :organization_id, references: :id)
     has_many(:sessions, InboxZero.Session, foreign_key: :active_organization_id, references: :id)

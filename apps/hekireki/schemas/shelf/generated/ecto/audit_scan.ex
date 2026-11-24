@@ -9,7 +9,7 @@ defmodule Shelf.AuditScan do
           code: String.t() | nil,
           asset_title: String.t() | nil,
           was_expected: boolean() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           scanned_at: DateTime.t(),
           inserted_at: DateTime.t(),
           audit_session: Shelf.AuditSession.t() | nil,
@@ -38,7 +38,7 @@ defmodule Shelf.AuditScan do
     # other row carries a snapshot, so null is never merely "old".
     field(:asset_title, :string, source: :assetTitle)
     field(:was_expected, :boolean, source: :wasExpected)
-    field(:metadata, :map)
+    field(:metadata, Shelf.PrismaJson)
     field(:scanned_at, Shelf.PrismaDateTime, autogenerate: true, source: :scannedAt)
     field(:audit_session_id, :string, source: :auditSessionId)
     field(:audit_asset_id, :string, source: :auditAssetId)

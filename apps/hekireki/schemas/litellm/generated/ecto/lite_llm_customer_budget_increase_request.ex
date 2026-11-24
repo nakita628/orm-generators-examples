@@ -1,11 +1,11 @@
 defmodule LiteLLM.LiteLLMCustomerBudgetIncreaseRequest do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :request_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :request_id}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           requested_max_budget: float(),
           expires_at: DateTime.t() | nil,
           reason: String.t() | nil,

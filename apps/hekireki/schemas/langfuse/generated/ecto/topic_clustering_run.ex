@@ -9,7 +9,7 @@ defmodule Langfuse.TopicClusteringRun do
           facet_id: String.t(),
           facet_version: integer(),
           status: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           error: String.t() | nil,
           started_at: DateTime.t() | nil,
           finished_at: DateTime.t() | nil,
@@ -25,7 +25,7 @@ defmodule Langfuse.TopicClusteringRun do
     field(:facet_id, :string)
     field(:facet_version, :integer)
     field(:status, :string, default: "pending")
-    field(:config, :map, default: %{})
+    field(:config, Langfuse.PrismaJson, default: %{})
     field(:error, :string)
     field(:started_at, Langfuse.PrismaDateTime)
     field(:finished_at, Langfuse.PrismaDateTime)

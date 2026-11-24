@@ -26,6 +26,10 @@ class VisitorGroup extends Model
         'teamId',
     ];
 
+    protected $casts = [
+        'emails' => AsPrismaList::class,
+    ];
+
     public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class, 'teamId');

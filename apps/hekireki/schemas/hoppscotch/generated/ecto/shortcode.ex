@@ -6,8 +6,8 @@ defmodule Hoppscotch.Shortcode do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          request: map(),
-          embed_properties: map() | nil,
+          request: map() | list() | String.t() | number() | boolean(),
+          embed_properties: map() | list() | String.t() | number() | boolean() | nil,
           created_on: DateTime.t(),
           updated_at: DateTime.t(),
           user: Hoppscotch.User.t() | nil
@@ -15,8 +15,8 @@ defmodule Hoppscotch.Shortcode do
 
   schema "Shortcode" do
     field(:id, :string, primary_key: true)
-    field(:request, :map)
-    field(:embed_properties, :map, source: :embedProperties)
+    field(:request, Hoppscotch.PrismaJson)
+    field(:embed_properties, Hoppscotch.PrismaJson, source: :embedProperties)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:creator_uid, :string, source: :creatorUid)
     belongs_to(:user, Hoppscotch.User, foreign_key: :creator_uid, define_field: false, type: :string, references: :uid)

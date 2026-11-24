@@ -5,9 +5,9 @@ defmodule Umami.WebsiteEvent do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
-          website_id: String.t(),
-          visit_id: String.t(),
+          id: Ecto.UUID.t(),
+          website_id: Ecto.UUID.t(),
+          visit_id: Ecto.UUID.t(),
           url_path: String.t(),
           url_query: String.t() | nil,
           utm_source: String.t() | nil,
@@ -40,9 +40,9 @@ defmodule Umami.WebsiteEvent do
         }
 
   schema "website_event" do
-    field(:id, :string, primary_key: true, source: :event_id)
-    field(:website_id, :string)
-    field(:visit_id, :string)
+    field(:id, Ecto.UUID, primary_key: true, source: :event_id)
+    field(:website_id, Ecto.UUID)
+    field(:visit_id, Ecto.UUID)
     field(:url_path, :string)
     field(:url_query, :string)
     field(:utm_source, :string)
@@ -69,7 +69,7 @@ defmodule Umami.WebsiteEvent do
     field(:cls, :decimal)
     field(:fcp, :decimal)
     field(:ttfb, :decimal)
-    belongs_to(:session, Umami.Session, foreign_key: :session_id, type: :string)
+    belongs_to(:session, Umami.Session, foreign_key: :session_id, type: Ecto.UUID)
     has_many(:event_data, Umami.EventData, foreign_key: :website_event_id, references: :id)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end

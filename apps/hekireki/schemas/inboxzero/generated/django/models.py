@@ -44,6 +44,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -1780,7 +1800,7 @@ class ApiKey(models.Model):
     is_active = models.BooleanField(db_column="isActive", default=True)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")
     last_used_at = UtcDateTimeField(null=True, db_column="lastUsedAt")
-    scopes = ArrayField(models.TextField(choices=ApiKeyScope.choices), default=list)
+    scopes = EnumArrayField(models.TextField(choices=ApiKeyScope.choices), db_enum="\"ApiKeyScope\"", default=list)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="api_keys", db_column="userId", db_index=False)
     email_account = models.ForeignKey("EmailAccount", on_delete=models.CASCADE, related_name="api_keys", db_column="emailAccountId", null=True, db_index=False)
     objects = AutoNowQuerySet.as_manager()

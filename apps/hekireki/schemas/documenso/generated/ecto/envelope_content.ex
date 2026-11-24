@@ -9,7 +9,7 @@ defmodule Documenso.EnvelopeContent do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          content_meta: map(),
+          content_meta: map() | list() | String.t() | number() | boolean(),
           envelope_item: Documenso.EnvelopeItem.t() | nil,
           envelope: Documenso.Envelope.t() | nil,
           data_content: Documenso.DataContent.t() | nil
@@ -18,7 +18,7 @@ defmodule Documenso.EnvelopeContent do
   schema "EnvelopeContent" do
     field(:id, :string, primary_key: true)
     # [EnvelopeContentMeta] @zod.custom.use(ZEnvelopeContentMetaSchema)
-    field(:content_meta, :map, source: :contentMeta)
+    field(:content_meta, Documenso.PrismaJson, source: :contentMeta)
     field(:envelope_item_id, :string, source: :envelopeItemId)
     field(:envelope_id, :string, source: :envelopeId)
     # Any number of contents may point at the same data content, e.g. a

@@ -42,6 +42,16 @@ class AutoNowDateTimeField(models.DateTimeField):  # type: ignore[type-arg]
         return value
 
 
+class PlainJSONField(models.JSONField):
+    def db_type(self, connection: BaseDatabaseWrapper) -> str | None:
+        return "json" if connection.vendor == "postgresql" else super().db_type(connection)
+
+    def from_db_value(self, value: Any, expression: Any, connection: BaseDatabaseWrapper) -> Any:
+        if connection.vendor != "postgresql":
+            return super().from_db_value(value, expression, connection)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -93,7 +103,7 @@ class Attachments(models.Model):
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     perfix_path = models.TextField(null=True, db_column="perfixPath", default="")
     depth = models.IntegerField(null=True)
-    metadata = models.JSONField(null=True)
+    metadata = PlainJSONField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -103,7 +113,7 @@ class Attachments(models.Model):
 class Config(models.Model):
     id = models.AutoField(primary_key=True)
     key = models.TextField(default="")
-    config = models.JSONField(null=True)
+    config = PlainJSONField(null=True)
     user = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="configs", db_column="userId", null=True, db_index=False)
 
     class Meta:
@@ -124,7 +134,7 @@ class Notes(models.Model):
     share_expiry_date = models.DateTimeField(null=True, db_column="shareExpiryDate")
     share_max_view = models.IntegerField(null=True, db_column="shareMaxView", default=0)
     share_view_count = models.IntegerField(null=True, db_column="shareViewCount", default=0)
-    metadata = models.JSONField(null=True)
+    metadata = PlainJSONField(null=True)
     account = models.ForeignKey("Accounts", on_delete=models.SET_NULL, related_name="notes", db_column="accountId", null=True, db_index=False)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -211,7 +221,7 @@ class Notifications(models.Model):
     type = models.TextField()
     title = models.TextField()
     content = models.TextField()
-    metadata = models.JSONField(null=True)
+    metadata = PlainJSONField(null=True)
     is_read = models.BooleanField(db_column="isRead", default=False)
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="notifications", db_column="accountId", db_index=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -225,7 +235,7 @@ class Notifications(models.Model):
 class Cache(models.Model):
     id = models.AutoField(primary_key=True)
     key = models.TextField(unique=True)
-    value = models.JSONField()
+    value = PlainJSONField()
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -236,7 +246,7 @@ class Cache(models.Model):
 
 class Plugin(models.Model):
     id = models.AutoField(primary_key=True)
-    metadata = models.JSONField()
+    metadata = PlainJSONField()
     path = models.TextField()
     is_use = models.BooleanField(db_column="isUse", default=True)
     is_dev = models.BooleanField(db_column="isDev", default=False)
@@ -271,7 +281,7 @@ class Message(models.Model):
     conversation = models.ForeignKey("Conversation", on_delete=models.RESTRICT, related_name="messages", db_column="conversationId", db_index=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
-    metadata = models.JSONField(null=True)
+    metadata = PlainJSONField(null=True)
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -285,7 +295,7 @@ class NoteHistory(models.Model):
     id = models.AutoField(primary_key=True)
     note = models.ForeignKey("Notes", on_delete=models.CASCADE, related_name="histories", db_column="noteId", db_index=False)
     content = models.TextField()
-    metadata = models.JSONField(null=True)
+    metadata = PlainJSONField(null=True)
     version = models.IntegerField()
     account_id = models.IntegerField(null=True, db_column="accountId")
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
@@ -340,7 +350,7 @@ class AiProviders(models.Model):
     provider = models.CharField(max_length=50)
     base_url = models.CharField(max_length=500, null=True, db_column="baseURL")
     api_key = models.CharField(max_length=500, null=True, db_column="apiKey")
-    config = models.JSONField(null=True)
+    config = PlainJSONField(null=True)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -355,8 +365,8 @@ class AiModels(models.Model):
     provider = models.ForeignKey("AiProviders", on_delete=models.CASCADE, related_name="models", db_column="providerId", db_index=False)
     title = models.CharField(max_length=255)
     model_key = models.CharField(max_length=255, db_column="modelKey")
-    capabilities = models.JSONField()
-    config = models.JSONField(null=True)
+    capabilities = PlainJSONField()
+    config = PlainJSONField(null=True)
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -376,7 +386,7 @@ class AiScheduledTask(models.Model):
     schedule = models.CharField(max_length=100)
     is_enabled = models.BooleanField(db_column="isEnabled", default=True)
     last_run = models.DateTimeField(null=True, db_column="lastRun")
-    last_result = models.JSONField(null=True, db_column="lastResult")
+    last_result = PlainJSONField(null=True, db_column="lastResult")
     account = models.ForeignKey("Accounts", on_delete=models.RESTRICT, related_name="ai_scheduled_tasks", db_column="accountId", db_index=False)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -395,10 +405,10 @@ class McpServers(models.Model):
     description = models.TextField(null=True)
     type = models.CharField(max_length=50)
     command = models.TextField(null=True)
-    args = models.JSONField(null=True)
+    args = PlainJSONField(null=True)
     url = models.CharField(max_length=500, null=True)
-    env = models.JSONField(null=True)
-    headers = models.JSONField(null=True)
+    env = PlainJSONField(null=True)
+    headers = PlainJSONField(null=True)
     is_enabled = models.BooleanField(db_column="isEnabled", default=True)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = AutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -416,7 +426,7 @@ class Fonts(models.Model):
     file_data = models.BinaryField(null=True, db_column="fileData")
     is_local = models.BooleanField(db_column="isLocal", default=False)
     is_system = models.BooleanField(db_column="isSystem", default=False)
-    weights = models.JSONField()
+    weights = PlainJSONField()
     category = models.CharField(max_length=50, default="sans-serif")
     sort_order = models.IntegerField(db_column="sortOrder", default=0)
     created_at = models.DateTimeField(db_column="createdAt", default=now_milliseconds)

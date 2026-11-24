@@ -24,7 +24,7 @@ defmodule Papermark.Dataroom do
           allow_bulk_download: boolean(),
           show_last_updated: boolean(),
           introduction_enabled: boolean(),
-          introduction_content: map() | nil,
+          introduction_content: map() | list() | String.t() | number() | boolean() | nil,
           is_frozen: boolean(),
           frozen_at: DateTime.t() | nil,
           freeze_archive_url: String.t() | nil,
@@ -73,7 +73,7 @@ defmodule Papermark.Dataroom do
     field(:allow_bulk_download, :boolean, default: true, source: :allowBulkDownload)
     field(:show_last_updated, :boolean, default: true, source: :showLastUpdated)
     field(:introduction_enabled, :boolean, default: false, source: :introductionEnabled)
-    field(:introduction_content, :map, source: :introductionContent)
+    field(:introduction_content, Papermark.PrismaJson, source: :introductionContent)
     field(:is_frozen, :boolean, default: false, source: :isFrozen)
     field(:frozen_at, Papermark.PrismaDateTime, source: :frozenAt)
     field(:freeze_archive_url, :string, source: :freezeArchiveUrl)

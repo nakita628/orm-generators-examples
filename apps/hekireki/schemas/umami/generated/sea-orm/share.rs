@@ -7,10 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "share")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "share_id", column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub entity_id: String,
+    #[sea_orm(column_name = "share_id")]
+    pub id: Uuid,
+    pub entity_id: Uuid,
     #[sea_orm(column_type = "String(StringLen::N(200))")]
     pub name: String,
     pub share_type: i32,

@@ -5,11 +5,11 @@ defmodule LiteLLM.LiteLLMLensSignalConfig do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          data: map()
+          data: map() | list() | String.t() | number() | boolean()
         }
 
   schema "LiteLLM_LensSignalConfig" do
     field(:id, :string, primary_key: true)
-    field(:data, :map)
+    field(:data, LiteLLM.PrismaJson)
   end
 end

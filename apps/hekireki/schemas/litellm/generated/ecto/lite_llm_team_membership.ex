@@ -16,6 +16,6 @@ defmodule LiteLLM.LiteLLMTeamMembership do
     field(:team_id, :string, primary_key: true)
     field(:spend, :float, default: 0.0)
     field(:total_spend, :float, default: 0.0)
-    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :binary_id)
+    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :string)
   end
 end

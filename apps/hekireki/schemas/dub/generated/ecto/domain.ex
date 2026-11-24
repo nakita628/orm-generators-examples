@@ -15,9 +15,9 @@ defmodule Dub.Domain do
           archived: boolean(),
           last_checked: DateTime.t(),
           logo: String.t() | nil,
-          apple_app_site_association: map() | nil,
-          asset_links: map() | nil,
-          deepview_data: map() | nil,
+          apple_app_site_association: map() | list() | String.t() | number() | boolean() | nil,
+          asset_links: map() | list() | String.t() | number() | boolean() | nil,
+          deepview_data: map() | list() | String.t() | number() | boolean() | nil,
           link_retention_days: integer() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -37,9 +37,9 @@ defmodule Dub.Domain do
     field(:archived, :boolean, default: false)
     field(:last_checked, Dub.PrismaDateTime, autogenerate: true, source: :lastChecked)
     field(:logo, :string)
-    field(:apple_app_site_association, :map, source: :appleAppSiteAssociation)
-    field(:asset_links, :map, source: :assetLinks)
-    field(:deepview_data, :map, default: %{}, source: :deepviewData)
+    field(:apple_app_site_association, Dub.PrismaJson, source: :appleAppSiteAssociation)
+    field(:asset_links, Dub.PrismaJson, source: :assetLinks)
+    field(:deepview_data, Dub.PrismaJson, default: %{}, source: :deepviewData)
     field(:link_retention_days, :integer, source: :linkRetentionDays)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, Dub.Project, foreign_key: :project_id, define_field: false, type: :string)

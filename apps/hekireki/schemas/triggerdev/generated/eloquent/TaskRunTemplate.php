@@ -47,5 +47,6 @@ class TaskRunTemplate extends Model
         'ttlSeconds' => 'integer',
         'maxAttempts' => 'integer',
         'maxDurationSeconds' => 'integer',
+        'tags' => AsPrismaList::class,
     ];
 }

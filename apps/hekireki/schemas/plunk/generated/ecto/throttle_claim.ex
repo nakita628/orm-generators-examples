@@ -11,12 +11,12 @@ defmodule Plunk.ThrottleClaim do
 
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           key: String.t(),
           recipient_key: String.t(),
           email_id: String.t() | nil,
@@ -35,9 +35,9 @@ defmodule Plunk.ThrottleClaim do
     field(:email_id, :string, source: :emailId)
     field(:window_seconds, :integer, source: :windowSeconds)
     field(:expires_at, Plunk.PrismaDateTime, source: :expiresAt)
-    field(:project_id, :binary_id, source: :projectId)
-    field(:contact_id, :binary_id, source: :contactId)
-    field(:workflow_id, :binary_id, source: :workflowId)
+    field(:project_id, :string, source: :projectId)
+    field(:contact_id, :string, source: :contactId)
+    field(:workflow_id, :string, source: :workflowId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     belongs_to(:contact, Plunk.Contact, foreign_key: :contact_id, define_field: false)
     belongs_to(:workflow, Plunk.Workflow, foreign_key: :workflow_id, define_field: false)

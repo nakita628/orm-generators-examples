@@ -11,8 +11,8 @@ defmodule LangWatch.GatewayCacheRule do
           description: String.t() | nil,
           priority: integer(),
           enabled: boolean(),
-          matchers: map(),
-          action: map(),
+          matchers: map() | list() | String.t() | number() | boolean(),
+          action: map() | list() | String.t() | number() | boolean(),
           mode_enum: atom(),
           archived_at: DateTime.t() | nil,
           created_by_id: String.t(),
@@ -27,8 +27,8 @@ defmodule LangWatch.GatewayCacheRule do
     field(:description, :string)
     field(:priority, :integer, default: 100)
     field(:enabled, :boolean, default: true)
-    field(:matchers, :map)
-    field(:action, :map)
+    field(:matchers, LangWatch.PrismaJson)
+    field(:action, LangWatch.PrismaJson)
     field(:mode_enum, Ecto.Enum, values: [:RESPECT, :FORCE, :DISABLE], source: :modeEnum)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:created_by_id, :string, source: :createdById)

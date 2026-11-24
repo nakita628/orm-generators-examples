@@ -11,7 +11,7 @@ defmodule Documenso.VerificationToken do
           token: String.t(),
           completed: boolean(),
           expires: DateTime.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           user: Documenso.User.t() | nil
         }
@@ -22,7 +22,7 @@ defmodule Documenso.VerificationToken do
     field(:token, :string)
     field(:completed, :boolean, default: false)
     field(:expires, Documenso.PrismaDateTime)
-    field(:metadata, :map)
+    field(:metadata, Documenso.PrismaJson)
     field(:user_id, :id, source: :userId)
     belongs_to(:user, Documenso.User, foreign_key: :user_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

@@ -18,7 +18,7 @@ defmodule Trigger.RuntimeEnvironment do
           preview_auto_archive_next_check_at: DateTime.t() | nil,
           preview_auto_archive_cursor_created_at: DateTime.t() | nil,
           preview_auto_archive_cursor_id: String.t() | nil,
-          git: map() | nil,
+          git: map() | list() | String.t() | number() | boolean() | nil,
           archived_at: DateTime.t() | nil,
           shortcode: String.t(),
           maximum_concurrency_limit: integer(),
@@ -26,7 +26,7 @@ defmodule Trigger.RuntimeEnvironment do
           paused: boolean(),
           pause_source: atom() | nil,
           auto_enable_internal_sources: boolean(),
-          built_in_environment_variable_overrides: map() | nil,
+          built_in_environment_variable_overrides: map() | list() | String.t() | number() | boolean() | nil,
           tunnel_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -87,7 +87,7 @@ defmodule Trigger.RuntimeEnvironment do
     field(:preview_auto_archive_next_check_at, Trigger.PrismaDateTime, source: :previewAutoArchiveNextCheckAt)
     field(:preview_auto_archive_cursor_created_at, Trigger.PrismaDateTime, source: :previewAutoArchiveCursorCreatedAt)
     field(:preview_auto_archive_cursor_id, :string, source: :previewAutoArchiveCursorId)
-    field(:git, :map)
+    field(:git, Trigger.PrismaJson)
     # When set API calls will fail
     field(:archived_at, Trigger.PrismaDateTime, source: :archivedAt)
     # A memorable code for the environment
@@ -98,7 +98,7 @@ defmodule Trigger.RuntimeEnvironment do
     field(:pause_source, Ecto.Enum, values: [:BILLING_LIMIT, :ADMIN_BAN], source: :pauseSource)
     field(:auto_enable_internal_sources, :boolean, default: true, source: :autoEnableInternalSources)
     # Allows us to customize the built-in environment variables for a specific environment, like TRIGGER_OTEL_SPAN_ATTRIBUTE_VALUE_LENGTH_LIMIT
-    field(:built_in_environment_variable_overrides, :map, source: :builtInEnvironmentVariableOverrides)
+    field(:built_in_environment_variable_overrides, Trigger.PrismaJson, source: :builtInEnvironmentVariableOverrides)
     field(:tunnel_id, :string, source: :tunnelId)
     field(:parent_environment_id, :string, source: :parentEnvironmentId)
     field(:organization_id, :string, source: :organizationId)

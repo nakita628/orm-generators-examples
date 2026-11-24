@@ -14,7 +14,7 @@ defmodule Linkwarden.Subscription do
           store_original_transaction_id: String.t() | nil,
           store_product_id: String.t() | nil,
           google_purchase_token: String.t() | nil,
-          store_metadata: map() | nil,
+          store_metadata: map() | list() | String.t() | number() | boolean() | nil,
           stripe_subscription_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -31,7 +31,7 @@ defmodule Linkwarden.Subscription do
     field(:store_original_transaction_id, :string, source: :storeOriginalTransactionId)
     field(:store_product_id, :string, source: :storeProductId)
     field(:google_purchase_token, :string, source: :googlePurchaseToken)
-    field(:store_metadata, :map, source: :storeMetadata)
+    field(:store_metadata, Linkwarden.PrismaJson, source: :storeMetadata)
     field(:stripe_subscription_id, :string, source: :stripeSubscriptionId)
     field(:user_id, :id, source: :userId)
     belongs_to(:user, Linkwarden.User, foreign_key: :user_id, define_field: false)

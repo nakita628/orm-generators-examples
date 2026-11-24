@@ -19,7 +19,7 @@ defmodule Formbricks.OauthAccessToken do
           resources: [String.t()],
           requested_user_info_claims: [String.t()],
           revoked: DateTime.t() | nil,
-          confirmation: map() | nil,
+          confirmation: map() | list() | String.t() | number() | boolean() | nil,
           client: Formbricks.OauthClient.t() | nil,
           session: Formbricks.Session.t() | nil,
           user: Formbricks.User.t() | nil,
@@ -39,7 +39,7 @@ defmodule Formbricks.OauthAccessToken do
     field(:resources, {:array, :string})
     field(:requested_user_info_claims, {:array, :string}, source: :requestedUserInfoClaims)
     field(:revoked, Formbricks.PrismaDateTime)
-    field(:confirmation, :map)
+    field(:confirmation, Formbricks.PrismaJson)
     field(:client_id, :string, source: :clientId)
     field(:session_id, :string, source: :sessionId)
     field(:user_id, :string, source: :userId)

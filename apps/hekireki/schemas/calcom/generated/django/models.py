@@ -45,6 +45,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -1261,7 +1281,7 @@ class Webhook(models.Model):
     payload_template = models.TextField(null=True, db_column="payloadTemplate")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     active = models.BooleanField(default=True)
-    event_triggers = ArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_column="eventTriggers")
+    event_triggers = EnumArrayField(models.TextField(choices=WebhookTriggerEvents.choices), db_enum="\"WebhookTriggerEvents\"", db_column="eventTriggers")
     app = models.ForeignKey("App", on_delete=models.CASCADE, related_name="webhook", db_column="appId", null=True, db_index=False)
     secret = models.TextField(null=True)
     platform = models.BooleanField(default=False)
@@ -1374,7 +1394,7 @@ class App(models.Model):
     slug = models.TextField(primary_key=True, default=None)
     dir_name = models.TextField(unique=True, db_column="dirName")
     keys = models.JSONField(null=True)
-    categories = ArrayField(models.TextField(choices=AppCategories.choices))
+    categories = EnumArrayField(models.TextField(choices=AppCategories.choices), db_enum="\"AppCategories\"")
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     enabled = models.BooleanField(default=False)
@@ -1403,7 +1423,7 @@ class Feedback(models.Model):
 
 
 class Deployment(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, default=1)
     """This is a single row table, so we use a fixed id"""
     logo = models.TextField(null=True)
     theme = models.JSONField(null=True)
@@ -1575,7 +1595,7 @@ class AccessCode(models.Model):
     code = models.TextField()
     client = models.ForeignKey("OAuthClient", on_delete=models.CASCADE, related_name="access_codes", db_column="clientId", null=True, db_index=False)
     expires_at = UtcDateTimeField(db_column="expiresAt")
-    scopes = ArrayField(models.TextField(choices=AccessScope.choices))
+    scopes = EnumArrayField(models.TextField(choices=AccessScope.choices), db_enum="\"AccessScope\"")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="access_codes", db_column="userId", null=True, db_index=False)
     team = models.ForeignKey("Team", on_delete=models.CASCADE, related_name="access_codes", db_column="teamId", null=True, db_index=False)
     code_challenge = models.TextField(null=True, db_column="codeChallenge")
@@ -2646,6 +2666,7 @@ class BookingTimeStatus(models.Model):
 
     class Meta:
         db_table = "BookingTimeStatus"
+        managed = False
 
 
 class BookingTimeStatusDenormalized(models.Model):
@@ -2677,6 +2698,7 @@ class BookingTimeStatusDenormalized(models.Model):
 
     class Meta:
         db_table = "BookingTimeStatusDenormalized"
+        managed = False
 
 
 class UserEventtype(models.Model):

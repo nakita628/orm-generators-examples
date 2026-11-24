@@ -25,7 +25,7 @@ defmodule LangWatch.GithubInstallation do
           account_type: String.t(),
           account_id: String.t(),
           repository_selection: String.t(),
-          repositories: map() | nil,
+          repositories: map() | list() | String.t() | number() | boolean() | nil,
           suspended_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -47,7 +47,7 @@ defmodule LangWatch.GithubInstallation do
     field(:repository_selection, :string, source: :repositorySelection)
     # Cached repository list [{ id, fullName }] when repositorySelection =
     # "selected". Null when "all" (the full set is resolved live at mint time).
-    field(:repositories, :map)
+    field(:repositories, LangWatch.PrismaJson)
     # Set when GitHub suspends the installation; cleared on unsuspend. A
     # suspended installation cannot mint tokens.
     field(:suspended_at, LangWatch.PrismaDateTime, source: :suspendedAt)

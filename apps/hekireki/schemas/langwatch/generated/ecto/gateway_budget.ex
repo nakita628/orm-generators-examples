@@ -17,7 +17,7 @@ defmodule LangWatch.GatewayBudget do
           on_breach: atom(),
           timezone: String.t() | nil,
           external_id: String.t() | nil,
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           spent_usd: Decimal.t(),
           current_period_started_at: DateTime.t(),
           resets_at: DateTime.t(),
@@ -45,7 +45,7 @@ defmodule LangWatch.GatewayBudget do
     field(:on_breach, Ecto.Enum, values: [:BLOCK, :WARN], default: :BLOCK, source: :onBreach)
     field(:timezone, :string)
     field(:external_id, :string, source: :externalId)
-    field(:metadata, :map, default: %{})
+    field(:metadata, LangWatch.PrismaJson, default: %{})
     field(:spent_usd, :decimal, default: Decimal.new("0"), source: :spentUsd)
     field(:current_period_started_at, LangWatch.PrismaDateTime, autogenerate: true, source: :currentPeriodStartedAt)
     field(:resets_at, LangWatch.PrismaDateTime, source: :resetsAt)

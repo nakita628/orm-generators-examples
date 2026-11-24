@@ -1,5 +1,6 @@
 class ShareOverview < ApplicationRecord
   self.table_name = "shares"
+  self.primary_key = "id"
 
   attribute :public, default: false
   alias_attribute :created_at, :createdAt

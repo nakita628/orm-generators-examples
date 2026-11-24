@@ -6,7 +6,7 @@ defmodule Jitsu.EmailLog do
   @type t :: %__MODULE__{
           id: String.t(),
           time: DateTime.t(),
-          email: map(),
+          email: map() | list() | String.t() | number() | boolean(),
           error: String.t() | nil,
           preview_url: String.t() | nil,
           message_id: String.t() | nil,
@@ -16,7 +16,7 @@ defmodule Jitsu.EmailLog do
   schema "EmailLog" do
     field(:id, :string, primary_key: true)
     field(:time, Jitsu.PrismaDateTime, autogenerate: true)
-    field(:email, :map)
+    field(:email, Jitsu.PrismaJson)
     field(:error, :string)
     field(:preview_url, :string, source: :previewUrl)
     field(:message_id, :string, source: :messageId)

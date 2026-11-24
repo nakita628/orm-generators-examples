@@ -16,8 +16,8 @@ defmodule LangWatch.ProcessManagerOutbox do
           user_id: String.t() | nil,
           message_key: String.t(),
           intent_type: String.t(),
-          payload: map(),
-          trace_carrier: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
+          trace_carrier: map() | list() | String.t() | number() | boolean(),
           source_event_id: String.t() | nil,
           status: atom(),
           attempts: integer(),
@@ -39,8 +39,8 @@ defmodule LangWatch.ProcessManagerOutbox do
     field(:user_id, :string, source: :userId)
     field(:message_key, :string, source: :messageKey)
     field(:intent_type, :string, source: :intentType)
-    field(:payload, :map)
-    field(:trace_carrier, :map, source: :traceCarrier)
+    field(:payload, LangWatch.PrismaJson)
+    field(:trace_carrier, LangWatch.PrismaJson, source: :traceCarrier)
     field(:source_event_id, :string, source: :sourceEventId)
     field(:status, Ecto.Enum, values: [:pending, :dispatched, :dead, :discarded], default: :pending)
     field(:attempts, :integer, default: 0)

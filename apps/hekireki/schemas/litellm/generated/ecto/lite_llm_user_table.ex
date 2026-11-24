@@ -5,7 +5,7 @@ defmodule LiteLLM.LiteLLMUserTable do
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          budget_limits: map() | nil,
+          budget_limits: map() | list() | String.t() | number() | boolean() | nil,
           user_id: String.t(),
           user_alias: String.t() | nil,
           team_id: String.t() | nil,
@@ -19,7 +19,7 @@ defmodule LiteLLM.LiteLLMUserTable do
           spend: float(),
           user_email: String.t() | nil,
           models: [String.t()],
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           max_parallel_requests: integer() | nil,
           tpm_limit: integer() | nil,
           rpm_limit: integer() | nil,
@@ -27,8 +27,8 @@ defmodule LiteLLM.LiteLLMUserTable do
           budget_reset_at: DateTime.t() | nil,
           allowed_cache_controls: [String.t()],
           policies: [String.t()],
-          model_spend: map(),
-          model_max_budget: map(),
+          model_spend: map() | list() | String.t() | number() | boolean(),
+          model_max_budget: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t() | nil,
           updated_at: DateTime.t() | nil,
           litellm_organization_table: LiteLLM.LiteLLMOrganizationTable.t() | nil,
@@ -41,7 +41,7 @@ defmodule LiteLLM.LiteLLMUserTable do
         }
 
   schema "LiteLLM_UserTable" do
-    field(:budget_limits, :map)
+    field(:budget_limits, LiteLLM.PrismaJson)
     field(:user_id, :string, primary_key: true)
     field(:user_alias, :string)
     field(:team_id, :string)
@@ -55,7 +55,7 @@ defmodule LiteLLM.LiteLLMUserTable do
     field(:spend, :float, default: 0.0)
     field(:user_email, :string)
     field(:models, {:array, :string})
-    field(:metadata, :map, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:max_parallel_requests, :integer)
     field(:tpm_limit, :integer)
     field(:rpm_limit, :integer)
@@ -63,10 +63,10 @@ defmodule LiteLLM.LiteLLMUserTable do
     field(:budget_reset_at, LiteLLM.PrismaDateTime)
     field(:allowed_cache_controls, {:array, :string})
     field(:policies, {:array, :string})
-    field(:model_spend, :map, default: %{})
-    field(:model_max_budget, :map, default: %{})
-    belongs_to(:litellm_organization_table, LiteLLM.LiteLLMOrganizationTable, foreign_key: :organization_id, type: :binary_id)
-    belongs_to(:object_permission, LiteLLM.LiteLLMObjectPermissionTable, foreign_key: :object_permission_id, type: :binary_id)
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
+    field(:model_max_budget, LiteLLM.PrismaJson, default: %{})
+    belongs_to(:litellm_organization_table, LiteLLM.LiteLLMOrganizationTable, foreign_key: :organization_id, type: :string)
+    belongs_to(:object_permission, LiteLLM.LiteLLMObjectPermissionTable, foreign_key: :object_permission_id, type: :string)
     has_many(:verified_subjects, LiteLLM.LiteLLMVerifiedSubject, foreign_key: :user_id, references: :user_id)
     has_many(:organization_memberships, LiteLLM.LiteLLMOrganizationMembership, foreign_key: :user_id, references: :user_id)
     has_many(:invitations_created, LiteLLM.LiteLLMInvitationLink, foreign_key: :created_by, references: :user_id)

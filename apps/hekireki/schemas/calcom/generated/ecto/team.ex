@@ -17,7 +17,7 @@ defmodule Calcom.Team do
           hide_team_profile_link: boolean(),
           is_private: boolean(),
           hide_book_ateam_member: boolean(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           theme: String.t() | nil,
           rr_reset_interval: atom() | nil,
           rr_timestamp_basis: atom(),
@@ -32,7 +32,7 @@ defmodule Calcom.Team do
           is_platform: boolean(),
           sms_lock_state: atom(),
           sms_lock_reviewed_by_admin: boolean(),
-          booking_limits: map() | nil,
+          booking_limits: map() | list() | String.t() | number() | boolean() | nil,
           include_managed_events_in_limits: boolean(),
           auto_opt_in_features: boolean(),
           inserted_at: DateTime.t(),
@@ -91,7 +91,7 @@ defmodule Calcom.Team do
     field(:is_private, :boolean, default: false, source: :isPrivate)
     field(:hide_book_ateam_member, :boolean, default: false, source: :hideBookATeamMember)
     # @zod.import(["import { teamMetadataSchema } from '../../zod-utils'"]).custom.use(teamMetadataSchema)
-    field(:metadata, :map)
+    field(:metadata, Calcom.PrismaJson)
     field(:theme, :string)
     field(:rr_reset_interval, Ecto.Enum, values: [:MONTH, :DAY], default: :MONTH, source: :rrResetInterval)
     field(:rr_timestamp_basis, Ecto.Enum, values: [:CREATED_AT, :START_TIME], default: :CREATED_AT, source: :rrTimestampBasis)
@@ -107,7 +107,7 @@ defmodule Calcom.Team do
     field(:sms_lock_state, Ecto.Enum, values: [:LOCKED, :UNLOCKED, :REVIEW_NEEDED], default: :UNLOCKED, source: :smsLockState)
     field(:sms_lock_reviewed_by_admin, :boolean, default: false, source: :smsLockReviewedByAdmin)
     # @zod.import(["import { intervalLimitsType } from '../../zod-utils'"]).custom.use(intervalLimitsType)
-    field(:booking_limits, :map, source: :bookingLimits)
+    field(:booking_limits, Calcom.PrismaJson, source: :bookingLimits)
     field(:include_managed_events_in_limits, :boolean, default: false, source: :includeManagedEventsInLimits)
     field(:auto_opt_in_features, :boolean, default: false, source: :autoOptInFeatures)
     field(:parent_id, :id, source: :parentId)

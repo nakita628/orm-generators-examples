@@ -997,7 +997,7 @@ export interface Media {
   bucket_path: string
   bucket_name: string
   content_type: string
-  content_length: bigint
+  content_length: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 export interface TraceMedia {
@@ -1205,8 +1205,8 @@ export interface Monitor {
   view: MonitorView
   filters: unknown
   metric: unknown
-  window_ms: bigint
-  cadence_ms: bigint
+  window_ms: ColumnType<string, bigint | number | string, bigint | number | string>
+  cadence_ms: ColumnType<string, bigint | number | string, bigint | number | string>
   threshold_operator: MonitorThresholdOperator
   alert_threshold: string
   warning_threshold: string | null
@@ -1215,7 +1215,7 @@ export interface Monitor {
   no_data: unknown
   renotify: unknown
   status: Generated<MonitorStatus>
-  scheduler_batch_id: bigint
+  scheduler_batch_id: ColumnType<string, bigint | number | string, bigint | number | string>
   next_run_at: Timestamp | null
   last_published_at: Timestamp | null
   last_claimed_at: Timestamp | null

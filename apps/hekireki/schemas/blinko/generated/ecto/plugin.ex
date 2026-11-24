@@ -6,7 +6,7 @@ defmodule Blinko.Plugin do
 
   @type t :: %__MODULE__{
           id: integer(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           path: String.t(),
           is_use: boolean(),
           is_dev: boolean(),
@@ -15,7 +15,7 @@ defmodule Blinko.Plugin do
         }
 
   schema "plugin" do
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:path, :string)
     field(:is_use, :boolean, default: true, source: :isUse)
     field(:is_dev, :boolean, default: false, source: :isDev)

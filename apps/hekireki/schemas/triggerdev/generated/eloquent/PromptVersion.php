@@ -38,6 +38,7 @@ class PromptVersion extends Model
         'version' => 'integer',
         'chatContent' => 'array',
         'config' => 'array',
+        'labels' => AsPrismaList::class,
     ];
 
     public function prompt(): BelongsTo

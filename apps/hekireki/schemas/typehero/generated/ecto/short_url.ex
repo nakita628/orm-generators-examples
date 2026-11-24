@@ -23,8 +23,8 @@ defmodule TypeHero.ShortURL do
     field(:expires_at, TypeHero.PrismaDateTime, source: :expiresAt)
     # the number of times the short url has redirected to the original url
     field(:clicks, :integer, default: 0)
-    field(:user_id, :binary_id, source: :userId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:user_id, :string, source: :userId)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end
 end

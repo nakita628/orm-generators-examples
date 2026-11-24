@@ -35,6 +35,8 @@ class Skill extends \Illuminate\Database\Eloquent\Model
     protected $casts = [
         'frontmatter' => 'array',
         'version' => 'integer',
+        'tags' => AsPrismaList::class,
+        'labels' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

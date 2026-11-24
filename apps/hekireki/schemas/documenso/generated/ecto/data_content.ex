@@ -13,7 +13,7 @@ defmodule Documenso.DataContent do
           id: String.t(),
           type: atom(),
           data: String.t(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           envelope_contents: [Documenso.EnvelopeContent.t()]
         }
 
@@ -23,7 +23,7 @@ defmodule Documenso.DataContent do
     field(:type, Ecto.Enum, values: [:S3_PATH, :BYTES, :BYTES_64])
     field(:data, :string)
     # [DataContentMeta] @zod.custom.use(ZDataContentMetaSchema)
-    field(:metadata, :map)
+    field(:metadata, Documenso.PrismaJson)
     has_many(:envelope_contents, Documenso.EnvelopeContent, foreign_key: :data_content_id, references: :id)
   end
 end

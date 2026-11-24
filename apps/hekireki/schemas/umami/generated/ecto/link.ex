@@ -5,7 +5,7 @@ defmodule Umami.Link do
   @timestamps_opts [type: Umami.PrismaDateTime, autogenerate: {Umami.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           url: String.t(),
           slug: String.t(),
@@ -17,13 +17,13 @@ defmodule Umami.Link do
         }
 
   schema "link" do
-    field(:id, :string, primary_key: true, source: :link_id)
+    field(:id, Ecto.UUID, primary_key: true, source: :link_id)
     field(:name, :string)
     field(:url, :string)
     field(:slug, :string)
     field(:deleted_at, Umami.PrismaDateTime)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
-    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: :string)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
+    belongs_to(:team, Umami.Team, foreign_key: :team_id, type: Ecto.UUID)
     timestamps(inserted_at_source: :created_at)
   end
 end

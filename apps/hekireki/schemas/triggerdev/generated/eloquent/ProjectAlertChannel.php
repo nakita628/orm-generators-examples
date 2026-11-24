@@ -46,6 +46,8 @@ class ProjectAlertChannel extends Model
         'enabled' => 'boolean',
         'type' => ProjectAlertChannelType::class,
         'properties' => 'array',
+        'alertTypes' => AsPrismaList::class . ':' . ProjectAlertType::class,
+        'environmentTypes' => AsPrismaList::class . ':' . RuntimeEnvironmentType::class,
         'errorAlertConfig' => 'array',
     ];
 

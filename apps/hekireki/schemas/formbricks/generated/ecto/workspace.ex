@@ -22,8 +22,8 @@ defmodule Formbricks.Workspace do
           id: String.t(),
           name: String.t(),
           legacy_environment_id: String.t() | nil,
-          styling: map(),
-          config: map(),
+          styling: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean(),
           recontact_days: integer(),
           link_survey_branding: boolean(),
           in_app_survey_branding: boolean(),
@@ -32,11 +32,11 @@ defmodule Formbricks.Workspace do
           overlay: atom(),
           overlay_color: String.t() | nil,
           overlay_opacity: integer() | nil,
-          logo: map() | nil,
+          logo: map() | list() | String.t() | number() | boolean() | nil,
           app_setup_completed: boolean(),
           custom_head_scripts: String.t() | nil,
-          custom_css: map() | nil,
-          custom_css_previous: map() | nil,
+          custom_css: map() | list() | String.t() | number() | boolean() | nil,
+          custom_css_previous: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: Formbricks.Organization.t() | nil,
@@ -67,9 +67,9 @@ defmodule Formbricks.Workspace do
     field(:name, :string)
     field(:legacy_environment_id, :string, source: :legacyEnvironmentId)
     # [Styling]
-    field(:styling, :map, default: %{"allowStyleOverwrite" => true})
+    field(:styling, Formbricks.PrismaJson, default: %{"allowStyleOverwrite" => true})
     # [WorkspaceConfig]
-    field(:config, :map, default: %{})
+    field(:config, Formbricks.PrismaJson, default: %{})
     field(:recontact_days, :integer, default: 7, source: :recontactDays)
     field(:link_survey_branding, :boolean, default: true, source: :linkSurveyBranding)
     field(:in_app_survey_branding, :boolean, default: true, source: :inAppSurveyBranding)
@@ -80,14 +80,14 @@ defmodule Formbricks.Workspace do
     field(:overlay_color, :string, source: :overlayColor)
     field(:overlay_opacity, :integer, source: :overlayOpacity)
     # [Logo]
-    field(:logo, :map)
+    field(:logo, Formbricks.PrismaJson)
     field(:app_setup_completed, :boolean, default: false, source: :appSetupCompleted)
     field(:custom_head_scripts, :string, source: :customHeadScripts)
     # [CustomCssStored] Workspace custom CSS (ENG-2949), written only by the shared save service.
-    field(:custom_css, :map, source: :customCss)
+    field(:custom_css, Formbricks.PrismaJson, source: :customCss)
     # [CustomCssStored] The one recoverable previous workspace CSS revision, source included. Restored by
     # submitting its source again through the current processor and authorization checks.
-    field(:custom_css_previous, :map, source: :customCssPrevious)
+    field(:custom_css_previous, Formbricks.PrismaJson, source: :customCssPrevious)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, Formbricks.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     has_many(:languages, Formbricks.Language, foreign_key: :workspace_id, references: :id)

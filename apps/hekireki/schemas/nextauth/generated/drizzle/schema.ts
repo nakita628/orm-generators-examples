@@ -24,14 +24,14 @@ export const user = sqliteTable(
   'User',
   {
     id: text('id')
-      .primaryKey()
+      .notNull()
       .$defaultFn(() => cuid()),
     name: text('name'),
     email: text('email').notNull(),
     emailVerified: utcDateTime('emailVerified'),
     image: text('image'),
   },
-  (table) => [uniqueIndex('User_email_key').on(table.email)],
+  (table) => [primaryKey({ columns: [table.id] }), uniqueIndex('User_email_key').on(table.email)],
 )
 
 export const account = sqliteTable(

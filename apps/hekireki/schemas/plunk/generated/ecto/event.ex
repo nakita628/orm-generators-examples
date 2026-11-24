@@ -1,14 +1,14 @@
 defmodule Plunk.Event do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
-          data: map() | nil,
+          data: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           project: Plunk.Project.t() | nil,
           contact: Plunk.Contact.t() | nil,
@@ -17,10 +17,10 @@ defmodule Plunk.Event do
 
   schema "events" do
     field(:name, :string)
-    field(:data, :map)
-    field(:project_id, :binary_id, source: :projectId)
-    field(:contact_id, :binary_id, source: :contactId)
-    field(:email_id, :binary_id, source: :emailId)
+    field(:data, Plunk.PrismaJson)
+    field(:project_id, :string, source: :projectId)
+    field(:contact_id, :string, source: :contactId)
+    field(:email_id, :string, source: :emailId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     belongs_to(:contact, Plunk.Contact, foreign_key: :contact_id, define_field: false)
     belongs_to(:email, Plunk.Email, foreign_key: :email_id, define_field: false)

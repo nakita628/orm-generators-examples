@@ -8,7 +8,7 @@ defmodule Jitsu.ConfigurationObject do
           id: String.t(),
           deleted: boolean() | nil,
           type: String.t(),
-          config: map() | nil,
+          config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Jitsu.Workspace.t() | nil,
@@ -22,7 +22,7 @@ defmodule Jitsu.ConfigurationObject do
     field(:id, :string, primary_key: true)
     field(:deleted, :boolean, default: false)
     field(:type, :string)
-    field(:config, :map)
+    field(:config, Jitsu.PrismaJson)
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:workspace, Jitsu.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
     has_many(:from_links, Jitsu.ConfigurationObjectLink, foreign_key: :to_id, references: :id)

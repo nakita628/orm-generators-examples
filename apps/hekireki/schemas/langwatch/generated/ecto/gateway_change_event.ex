@@ -10,7 +10,7 @@ defmodule LangWatch.GatewayChangeEvent do
           virtual_key_id: String.t() | nil,
           budget_id: String.t() | nil,
           model_provider_id: String.t() | nil,
-          payload: map() | nil,
+          payload: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           organization: LangWatch.Organization.t() | nil,
           project: LangWatch.Project.t() | nil
@@ -21,7 +21,7 @@ defmodule LangWatch.GatewayChangeEvent do
     field(:virtual_key_id, :string, source: :virtualKeyId)
     field(:budget_id, :string, source: :budgetId)
     field(:model_provider_id, :string, source: :modelProviderId)
-    field(:payload, :map)
+    field(:payload, LangWatch.PrismaJson)
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)
     belongs_to(:organization, LangWatch.Organization, foreign_key: :organization_id, define_field: false, type: :string)

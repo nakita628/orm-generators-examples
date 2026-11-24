@@ -5,7 +5,7 @@ defmodule Calcom.User do
 
   @type t :: %__MODULE__{
           id: integer(),
-          uuid: String.t(),
+          uuid: Ecto.UUID.t(),
           username: String.t() | nil,
           name: String.t() | nil,
           email: String.t(),
@@ -37,7 +37,7 @@ defmodule Calcom.User do
           allow_seoindexing: boolean() | nil,
           receive_monthly_digest_email: boolean() | nil,
           requires_booker_email_verification: boolean() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           verified: boolean() | nil,
           role: atom(),
           locked: boolean(),
@@ -100,7 +100,7 @@ defmodule Calcom.User do
         }
 
   schema "users" do
-    field(:uuid, :string, autogenerate: {Ecto.UUID, :generate, []})
+    field(:uuid, Ecto.UUID, autogenerate: {Ecto.UUID, :generate, []})
     field(:username, :string)
     field(:name, :string)
     # @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
@@ -134,7 +134,7 @@ defmodule Calcom.User do
     field(:receive_monthly_digest_email, :boolean, default: true, source: :receiveMonthlyDigestEmail)
     field(:requires_booker_email_verification, :boolean, default: false, source: :requiresBookerEmailVerification)
     # @zod.import(["import { userMetadata } from '../../zod-utils'"]).custom.use(userMetadata)
-    field(:metadata, :map)
+    field(:metadata, Calcom.PrismaJson)
     field(:verified, :boolean, default: false)
     field(:role, Ecto.Enum, values: [:USER, :ADMIN], default: :USER)
     field(:locked, :boolean, default: false)

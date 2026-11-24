@@ -7,7 +7,7 @@ defmodule Documenso.DocumentAuditLog do
   @type t :: %__MODULE__{
           id: String.t(),
           type: String.t(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           name: String.t() | nil,
           email: String.t() | nil,
           user_id: integer() | nil,
@@ -20,7 +20,7 @@ defmodule Documenso.DocumentAuditLog do
   schema "DocumentAuditLog" do
     field(:id, :string, primary_key: true)
     field(:type, :string)
-    field(:data, :map)
+    field(:data, Documenso.PrismaJson)
     field(:name, :string)
     field(:email, :string)
     field(:user_id, :integer, source: :userId)

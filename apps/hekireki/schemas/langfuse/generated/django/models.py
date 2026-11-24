@@ -45,6 +45,16 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class PlainJSONField(models.JSONField):
+    def db_type(self, connection: BaseDatabaseWrapper) -> str | None:
+        return "json" if connection.vendor == "postgresql" else super().db_type(connection)
+
+    def from_db_value(self, value: Any, expression: Any, connection: BaseDatabaseWrapper) -> Any:
+        if connection.vendor != "postgresql":
+            return super().from_db_value(value, expression, connection)
+        return value
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -894,8 +904,8 @@ class Dataset(models.Model):
     remote_experiment_display_secret_key = models.TextField(null=True)
     remote_experiment_request_headers = models.JSONField(null=True)
     remote_experiment_display_headers = models.JSONField(null=True)
-    input_schema = models.JSONField(null=True)
-    expected_output_schema = models.JSONField(null=True)
+    input_schema = PlainJSONField(null=True)
+    expected_output_schema = PlainJSONField(null=True)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
     objects = AutoNowQuerySet.as_manager()
@@ -1032,7 +1042,7 @@ class Prompt(models.Model):
     version = models.IntegerField()
     type = models.TextField(default="text")
     is_active = models.BooleanField(null=True)
-    config = models.JSONField(default=dict)
+    config = PlainJSONField(default=dict)
     tags = ArrayField(models.TextField(), default=list)
     labels = ArrayField(models.TextField(), default=list)
     commit_message = models.TextField(null=True)
@@ -1811,7 +1821,7 @@ class LlmSchema(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="llm_schema", db_index=False)
     name = models.TextField()
     description = models.TextField()
-    schema = models.JSONField()
+    schema = PlainJSONField()
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:
@@ -1828,7 +1838,7 @@ class LlmTool(models.Model):
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="llm_tool", db_index=False)
     name = models.TextField()
     description = models.TextField()
-    parameters = models.JSONField()
+    parameters = PlainJSONField()
     objects = AutoNowQuerySet.as_manager()
 
     class Meta:

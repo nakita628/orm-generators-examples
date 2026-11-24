@@ -8,7 +8,7 @@ defmodule Trigger.ProjectAlertStorage do
           id: String.t(),
           alert_type: atom(),
           storage_id: String.t(),
-          storage_data: map(),
+          storage_data: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Trigger.Project.t() | nil,
@@ -19,7 +19,7 @@ defmodule Trigger.ProjectAlertStorage do
     field(:id, :string, primary_key: true)
     field(:alert_type, Ecto.Enum, values: [:TASK_RUN, :TASK_RUN_ATTEMPT, :DEPLOYMENT_FAILURE, :DEPLOYMENT_SUCCESS, :ERROR_GROUP, :DASHBOARD_AGENT_WATCH], source: :alertType)
     field(:storage_id, :string, source: :storageId)
-    field(:storage_data, :map, source: :storageData)
+    field(:storage_data, Trigger.PrismaJson, source: :storageData)
     field(:project_id, :string, source: :projectId)
     field(:alert_channel_id, :string, source: :alertChannelId)
     belongs_to(:project, Trigger.Project, foreign_key: :project_id, define_field: false, type: :string)

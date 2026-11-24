@@ -7,12 +7,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "annotation")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "annotation_id", column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub website_id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: Option<String>,
+    #[sea_orm(column_name = "annotation_id")]
+    pub id: Uuid,
+    pub website_id: Uuid,
+    pub user_id: Option<Uuid>,
     #[sea_orm(column_type = "TimestampWithTimeZone")]
     pub date: DateTimeWithTimeZone,
     #[sea_orm(default_value = true)]

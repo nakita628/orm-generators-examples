@@ -9,8 +9,8 @@ defmodule Formbricks.WorkflowRunLog do
           step_id: String.t(),
           step_type: String.t(),
           status: atom(),
-          input: map(),
-          output: map(),
+          input: map() | list() | String.t() | number() | boolean(),
+          output: map() | list() | String.t() | number() | boolean(),
           error: String.t() | nil,
           started_at: DateTime.t() | nil,
           finished_at: DateTime.t() | nil,
@@ -24,9 +24,9 @@ defmodule Formbricks.WorkflowRunLog do
     field(:step_type, :string, source: :stepType)
     field(:status, Ecto.Enum, values: [:pending, :running, :succeeded, :failed, :skipped], default: :pending)
     # [WorkflowRunLogInput]
-    field(:input, :map, default: %{})
+    field(:input, Formbricks.PrismaJson, default: %{})
     # [WorkflowRunLogOutput]
-    field(:output, :map, default: %{})
+    field(:output, Formbricks.PrismaJson, default: %{})
     field(:error, :string)
     field(:started_at, Formbricks.PrismaDateTime, source: :startedAt)
     field(:finished_at, Formbricks.PrismaDateTime, source: :finishedAt)

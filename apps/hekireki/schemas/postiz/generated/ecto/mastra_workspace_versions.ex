@@ -9,15 +9,15 @@ defmodule Postiz.MastraWorkspaceVersions do
           version_number: integer(),
           name: String.t(),
           description: String.t() | nil,
-          filesystem: map() | nil,
-          sandbox: map() | nil,
-          mounts: map() | nil,
-          search: map() | nil,
-          skills: map() | nil,
-          tools: map() | nil,
+          filesystem: map() | list() | String.t() | number() | boolean() | nil,
+          sandbox: map() | list() | String.t() | number() | boolean() | nil,
+          mounts: map() | list() | String.t() | number() | boolean() | nil,
+          search: map() | list() | String.t() | number() | boolean() | nil,
+          skills: map() | list() | String.t() | number() | boolean() | nil,
+          tools: map() | list() | String.t() | number() | boolean() | nil,
           auto_sync: boolean() | nil,
           operation_timeout: integer() | nil,
-          changed_fields: map() | nil,
+          changed_fields: map() | list() | String.t() | number() | boolean() | nil,
           change_message: String.t() | nil,
           created_at: DateTime.t(),
           created_at_z: DateTime.t() | nil
@@ -29,15 +29,15 @@ defmodule Postiz.MastraWorkspaceVersions do
     field(:version_number, :integer, source: :versionNumber)
     field(:name, :string)
     field(:description, :string)
-    field(:filesystem, :map)
-    field(:sandbox, :map)
-    field(:mounts, :map)
-    field(:search, :map)
-    field(:skills, :map)
-    field(:tools, :map)
+    field(:filesystem, Postiz.PrismaJson)
+    field(:sandbox, Postiz.PrismaJson)
+    field(:mounts, Postiz.PrismaJson)
+    field(:search, Postiz.PrismaJson)
+    field(:skills, Postiz.PrismaJson)
+    field(:tools, Postiz.PrismaJson)
     field(:auto_sync, :boolean, source: :autoSync)
     field(:operation_timeout, :integer, source: :operationTimeout)
-    field(:changed_fields, :map, source: :changedFields)
+    field(:changed_fields, Postiz.PrismaJson, source: :changedFields)
     field(:change_message, :string, source: :changeMessage)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

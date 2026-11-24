@@ -8,8 +8,8 @@ defmodule Papermark.DocumentPage do
           id: String.t(),
           page_number: integer(),
           embedded_links: [String.t()],
-          page_links: map() | nil,
-          metadata: map() | nil,
+          page_links: map() | list() | String.t() | number() | boolean() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           file: String.t(),
           storage_type: atom(),
           inserted_at: DateTime.t(),
@@ -21,8 +21,8 @@ defmodule Papermark.DocumentPage do
     field(:id, :string, primary_key: true)
     field(:page_number, :integer, source: :pageNumber)
     field(:embedded_links, {:array, :string}, source: :embeddedLinks)
-    field(:page_links, :map, source: :pageLinks)
-    field(:metadata, :map)
+    field(:page_links, Papermark.PrismaJson, source: :pageLinks)
+    field(:metadata, Papermark.PrismaJson)
     field(:file, :string)
     field(:storage_type, Ecto.Enum, values: [:S3_PATH, :VERCEL_BLOB], default: :VERCEL_BLOB, source: :storageType)
     field(:version_id, :string, source: :versionId)

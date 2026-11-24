@@ -7,8 +7,8 @@ defmodule LangWatch.CustomGraph do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          graph: map(),
-          filters: map() | nil,
+          graph: map() | list() | String.t() | number() | boolean(),
+          filters: map() | list() | String.t() | number() | boolean() | nil,
           kind: String.t(),
           grid_column: integer(),
           grid_row: integer(),
@@ -26,8 +26,8 @@ defmodule LangWatch.CustomGraph do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     # The chart's definition, in the shape its `kind` names.
-    field(:graph, :map)
-    field(:filters, :map)
+    field(:graph, LangWatch.PrismaJson)
+    field(:filters, LangWatch.PrismaJson)
     # Discriminator for the chart shapes that share this table:
     # - "builder" (default) - the chart builder's own `graph` payload
     # - "workbench_sql"     - a saved LangWatchQL workbench chart, whose

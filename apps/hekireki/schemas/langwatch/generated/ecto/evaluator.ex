@@ -9,7 +9,7 @@ defmodule LangWatch.Evaluator do
           name: String.t(),
           slug: String.t() | nil,
           type: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           archived_at: DateTime.t() | nil,
           created_by_id: String.t() | nil,
           updated_by_id: String.t() | nil,
@@ -28,7 +28,7 @@ defmodule LangWatch.Evaluator do
     field(:name, :string)
     field(:slug, :string)
     field(:type, :string)
-    field(:config, :map)
+    field(:config, LangWatch.PrismaJson)
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:created_by_id, :string, source: :createdById)
     field(:updated_by_id, :string, source: :updatedById)

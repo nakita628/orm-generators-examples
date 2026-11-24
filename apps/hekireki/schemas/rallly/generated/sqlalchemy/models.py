@@ -268,7 +268,7 @@ class ScheduledEventInvite(Base):
 class InstanceSettings(Base):
     __tablename__ = "instance_settings"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=False, default=1, server_default=text("1"))
     disable_user_registration: Mapped[bool] = mapped_column(default=False, server_default=text("false"))
     instance_id: Mapped[uuid_mod.UUID] = mapped_column(Uuid, server_default=text("gen_random_uuid()"))
     app_name: Mapped[Optional[str]]

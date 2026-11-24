@@ -8,10 +8,10 @@ defmodule Teable.ComputedUpdateDeadLetter do
           base_id: String.t(),
           worker_lane: String.t(),
           seed_table_id: String.t(),
-          seed_record_ids: map() | nil,
+          seed_record_ids: map() | list() | String.t() | number() | boolean() | nil,
           change_type: String.t(),
-          steps: map() | nil,
-          edges: map() | nil,
+          steps: map() | list() | String.t() | number() | boolean() | nil,
+          edges: map() | list() | String.t() | number() | boolean() | nil,
           status: String.t(),
           attempts: integer(),
           max_attempts: integer(),
@@ -21,7 +21,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
           last_error: String.t() | nil,
           estimated_complexity: integer(),
           plan_hash: String.t(),
-          dirty_stats: map() | nil,
+          dirty_stats: map() | list() | String.t() | number() | boolean() | nil,
           run_id: String.t(),
           origin_run_ids: [String.t()],
           run_total_steps: integer(),
@@ -32,7 +32,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
           source_changed_at: DateTime.t() | nil,
           stage_depth: integer(),
           predecessor_task_id: String.t() | nil,
-          trace_data: map() | nil,
+          trace_data: map() | list() | String.t() | number() | boolean() | nil,
           failed_at: DateTime.t(),
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -44,10 +44,10 @@ defmodule Teable.ComputedUpdateDeadLetter do
     field(:base_id, :string)
     field(:worker_lane, :string, default: "production")
     field(:seed_table_id, :string)
-    field(:seed_record_ids, :map)
+    field(:seed_record_ids, Teable.PrismaJson)
     field(:change_type, :string)
-    field(:steps, :map)
-    field(:edges, :map)
+    field(:steps, Teable.PrismaJson)
+    field(:edges, Teable.PrismaJson)
     field(:status, :string)
     field(:attempts, :integer, default: 0)
     field(:max_attempts, :integer, default: 8)
@@ -57,7 +57,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
     field(:last_error, :string)
     field(:estimated_complexity, :integer, default: 0)
     field(:plan_hash, :string)
-    field(:dirty_stats, :map)
+    field(:dirty_stats, Teable.PrismaJson)
     field(:run_id, :string)
     field(:origin_run_ids, {:array, :string})
     field(:run_total_steps, :integer, default: 0)
@@ -68,7 +68,7 @@ defmodule Teable.ComputedUpdateDeadLetter do
     field(:source_changed_at, Teable.PrismaDateTime)
     field(:stage_depth, :integer, default: 0)
     field(:predecessor_task_id, :string)
-    field(:trace_data, :map)
+    field(:trace_data, Teable.PrismaJson)
     field(:failed_at, Teable.PrismaDateTime)
     field(:created_at, Teable.PrismaDateTime)
     field(:updated_at, Teable.PrismaDateTime)

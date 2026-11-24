@@ -7,7 +7,7 @@ defmodule Blinko.NoteHistory do
   @type t :: %__MODULE__{
           id: integer(),
           content: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           version: integer(),
           account_id: integer() | nil,
           inserted_at: DateTime.t(),
@@ -16,7 +16,7 @@ defmodule Blinko.NoteHistory do
 
   schema "noteHistory" do
     field(:content, :string)
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:version, :integer)
     field(:account_id, :integer, source: :accountId)
     field(:note_id, :id, source: :noteId)

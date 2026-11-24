@@ -12,12 +12,12 @@ defmodule Typebot.User do
           email_verified: DateTime.t() | nil,
           image: String.t() | nil,
           company: String.t() | nil,
-          onboarding_categories: map(),
+          onboarding_categories: map() | list() | String.t() | number() | boolean(),
           referral: String.t() | nil,
           graph_navigation: atom() | nil,
           preferred_app_appearance: String.t() | nil,
-          displayed_in_app_notifications: map() | nil,
-          group_titles_auto_generation: map() | nil,
+          displayed_in_app_notifications: map() | list() | String.t() | number() | boolean() | nil,
+          group_titles_auto_generation: map() | list() | String.t() | number() | boolean() | nil,
           preferred_language: String.t() | nil,
           terms_accepted_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -39,12 +39,12 @@ defmodule Typebot.User do
     field(:email_verified, Typebot.PrismaDateTime, source: :emailVerified)
     field(:image, :string)
     field(:company, :string)
-    field(:onboarding_categories, :map, source: :onboardingCategories)
+    field(:onboarding_categories, Typebot.PrismaJson, source: :onboardingCategories)
     field(:referral, :string)
     field(:graph_navigation, Ecto.Enum, values: [:MOUSE, :TRACKPAD], source: :graphNavigation)
     field(:preferred_app_appearance, :string, source: :preferredAppAppearance)
-    field(:displayed_in_app_notifications, :map, source: :displayedInAppNotifications)
-    field(:group_titles_auto_generation, :map, source: :groupTitlesAutoGeneration)
+    field(:displayed_in_app_notifications, Typebot.PrismaJson, source: :displayedInAppNotifications)
+    field(:group_titles_auto_generation, Typebot.PrismaJson, source: :groupTitlesAutoGeneration)
     field(:preferred_language, :string, source: :preferredLanguage)
     field(:terms_accepted_at, Typebot.PrismaDateTime, source: :termsAcceptedAt)
     has_many(:accounts, Typebot.Account, foreign_key: :user_id, references: :id)

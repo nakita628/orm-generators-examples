@@ -9,6 +9,7 @@ defmodule SuperProductivity.CaptureKey do
   @primary_key false
 
   @type t :: %__MODULE__{
+          user_id: integer(),
           public_key: String.t(),
           fingerprint: String.t(),
           created_at: integer(),
@@ -22,6 +23,7 @@ defmodule SuperProductivity.CaptureKey do
     field(:fingerprint, :string)
     field(:created_at, :integer)
     field(:disabled_at, :integer)
-    belongs_to(:user, SuperProductivity.User, foreign_key: :user_id)
+    field(:user_id, :id, primary_key: true)
+    belongs_to(:user, SuperProductivity.User, foreign_key: :user_id, define_field: false)
   end
 end

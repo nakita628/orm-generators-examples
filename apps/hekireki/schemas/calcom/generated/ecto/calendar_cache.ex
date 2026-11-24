@@ -5,10 +5,10 @@ defmodule Calcom.CalendarCache do
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          credential_id: term(),
+          credential_id: integer(),
           id: String.t() | nil,
           key: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           expires_at: DateTime.t(),
           user_id: integer() | nil,
           updated_at: DateTime.t(),
@@ -18,7 +18,7 @@ defmodule Calcom.CalendarCache do
   schema "CalendarCache" do
     field(:id, :string, autogenerate: {Ecto.UUID, :generate, []})
     field(:key, :string, primary_key: true)
-    field(:value, :map)
+    field(:value, Calcom.PrismaJson)
     field(:expires_at, Calcom.PrismaDateTime, source: :expiresAt)
     field(:user_id, :integer, source: :userId)
     field(:credential_id, :id, primary_key: true, source: :credentialId)

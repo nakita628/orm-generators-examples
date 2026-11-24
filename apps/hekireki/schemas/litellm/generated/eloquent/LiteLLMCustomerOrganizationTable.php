@@ -36,6 +36,7 @@ class LiteLLMCustomerOrganizationTable extends Model
 
     protected $casts = [
         'spend' => 'float',
+        'budget_template_ids' => AsPrismaList::class,
     ];
 
     public function budget(): BelongsTo

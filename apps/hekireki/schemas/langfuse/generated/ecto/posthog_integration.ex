@@ -5,6 +5,7 @@ defmodule Langfuse.PosthogIntegration do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          project_id: String.t(),
           encrypted_posthog_api_key: String.t(),
           posthog_host_name: String.t(),
           last_sync_at: DateTime.t() | nil,
@@ -26,7 +27,8 @@ defmodule Langfuse.PosthogIntegration do
     field(:backfill, :boolean, default: true)
     field(:last_error, :string)
     field(:last_error_at, Langfuse.PrismaDateTime)
-    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
+    field(:project_id, :string, primary_key: true)
+    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end
 end

@@ -5,11 +5,11 @@ defmodule OpenPanel.Member do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           role: String.t(),
           email: String.t(),
           project_scope: atom(),
-          meta: map() | nil,
+          meta: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: OpenPanel.User.t() | nil,
@@ -19,11 +19,11 @@ defmodule OpenPanel.Member do
         }
 
   schema "members" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:role, :string)
     field(:email, :string)
     field(:project_scope, Ecto.Enum, values: [:all, :selected], default: :all, source: :projectScope)
-    field(:meta, :map)
+    field(:meta, OpenPanel.PrismaJson)
     field(:user_id, :string, source: :userId)
     field(:invited_by_id, :string, source: :invitedById)
     field(:organization_id, :string, source: :organizationId)

@@ -7,7 +7,7 @@ defmodule Calcom.App do
   @type t :: %__MODULE__{
           slug: String.t(),
           dir_name: String.t(),
-          keys: map() | nil,
+          keys: map() | list() | String.t() | number() | boolean() | nil,
           categories: atom(),
           enabled: boolean(),
           inserted_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule Calcom.App do
   schema "App" do
     field(:slug, :string, primary_key: true)
     field(:dir_name, :string, source: :dirName)
-    field(:keys, :map)
+    field(:keys, Calcom.PrismaJson)
     field(:categories, {:array, Ecto.Enum}, values: [:calendar, :messaging, :other, :payment, :video, :web3, :automation, :analytics, :conferencing, :crm])
     field(:enabled, :boolean, default: false)
     has_many(:credentials, Calcom.Credential, foreign_key: :app_id, references: :slug)

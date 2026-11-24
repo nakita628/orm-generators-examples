@@ -7,7 +7,7 @@ defmodule Langfuse.SsoConfig do
   @type t :: %__MODULE__{
           domain: String.t(),
           auth_provider: String.t(),
-          auth_config: map() | nil,
+          auth_config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -15,7 +15,7 @@ defmodule Langfuse.SsoConfig do
   schema "sso_configs" do
     field(:domain, :string, primary_key: true)
     field(:auth_provider, :string)
-    field(:auth_config, :map)
+    field(:auth_config, Langfuse.PrismaJson)
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -9,9 +9,9 @@ defmodule Teable.BaseDataDbMoveJob do
           source_connection_id: String.t() | nil,
           target_connection_id: String.t() | nil,
           state: atom(),
-          inventory: map() | nil,
-          copy_stats: map() | nil,
-          validation_stats: map() | nil,
+          inventory: map() | list() | String.t() | number() | boolean() | nil,
+          copy_stats: map() | list() | String.t() | number() | boolean() | nil,
+          validation_stats: map() | list() | String.t() | number() | boolean() | nil,
           last_error: String.t() | nil,
           started_at: DateTime.t() | nil,
           completed_at: DateTime.t() | nil,
@@ -28,9 +28,9 @@ defmodule Teable.BaseDataDbMoveJob do
     field(:source_connection_id, :string)
     field(:target_connection_id, :string)
     field(:state, Ecto.Enum, values: [:pending, :waiting_worker, :copying_base_schema, :copying_shared_rows, :validating, :switching, :succeeded, :failed, :cancelled], default: :pending)
-    field(:inventory, :map)
-    field(:copy_stats, :map)
-    field(:validation_stats, :map)
+    field(:inventory, Teable.PrismaJson)
+    field(:copy_stats, Teable.PrismaJson)
+    field(:validation_stats, Teable.PrismaJson)
     field(:last_error, :string)
     field(:started_at, Teable.PrismaDateTime)
     field(:completed_at, Teable.PrismaDateTime)

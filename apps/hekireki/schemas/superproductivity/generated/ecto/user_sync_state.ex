@@ -4,13 +4,14 @@ defmodule SuperProductivity.UserSyncState do
   @primary_key false
 
   @type t :: %__MODULE__{
+          user_id: integer(),
           last_seq: integer(),
           last_snapshot_seq: integer() | nil,
           snapshot_data: binary() | nil,
           snapshot_at: integer() | nil,
           snapshot_schema_version: integer() | nil,
           latest_full_state_seq: integer() | nil,
-          latest_full_state_vector_clock: map() | nil,
+          latest_full_state_vector_clock: map() | list() | String.t() | number() | boolean() | nil,
           latest_state_replacement_seq: integer() | nil,
           user: SuperProductivity.User.t() | nil
         }
@@ -22,8 +23,9 @@ defmodule SuperProductivity.UserSyncState do
     field(:snapshot_at, :integer)
     field(:snapshot_schema_version, :integer, default: 1)
     field(:latest_full_state_seq, :integer)
-    field(:latest_full_state_vector_clock, :map)
+    field(:latest_full_state_vector_clock, SuperProductivity.PrismaJson)
     field(:latest_state_replacement_seq, :integer)
-    belongs_to(:user, SuperProductivity.User, foreign_key: :user_id)
+    field(:user_id, :id, primary_key: true)
+    belongs_to(:user, SuperProductivity.User, foreign_key: :user_id, define_field: false)
   end
 end

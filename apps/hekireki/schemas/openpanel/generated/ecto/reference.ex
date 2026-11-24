@@ -5,7 +5,7 @@ defmodule OpenPanel.Reference do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           title: String.t(),
           description: String.t() | nil,
           date: DateTime.t(),
@@ -15,7 +15,7 @@ defmodule OpenPanel.Reference do
         }
 
   schema "references" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:title, :string)
     field(:description, :string)
     field(:date, OpenPanel.PrismaDateTime, autogenerate: true)

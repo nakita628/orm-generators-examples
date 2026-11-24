@@ -14,7 +14,7 @@ defmodule LangWatch.ScimSsoConnectionView do
   @type t :: %__MODULE__{
           id: String.t(),
           organization_id: String.t(),
-          folded: map(),
+          folded: map() | list() | String.t() | number() | boolean(),
           applied_event_ids: [String.t()],
           projection_version: String.t(),
           created_at: DateTime.t(),
@@ -26,7 +26,7 @@ defmodule LangWatch.ScimSsoConnectionView do
     field(:id, :string, primary_key: true)
     field(:organization_id, :string, source: :organizationId)
     # The connection as the reducer folded it (SsoConnectionState + LastEventOccurredAt).
-    field(:folded, :map)
+    field(:folded, LangWatch.PrismaJson)
     # The event ids of the last delivery folded in, so a redelivery folds once.
     field(:applied_event_ids, {:array, :string}, source: :appliedEventIds)
     # A row of another version reads as undecodable and is re-folded from the log.

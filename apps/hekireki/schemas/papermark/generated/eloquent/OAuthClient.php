@@ -33,6 +33,11 @@ class OAuthClient extends Model
         'metadataUrl',
     ];
 
+    protected $casts = [
+        'redirectUris' => AsPrismaList::class,
+        'grantTypes' => AsPrismaList::class,
+    ];
+
     public function tokens(): HasMany
     {
         return $this->hasMany(RestrictedToken::class, 'clientId');

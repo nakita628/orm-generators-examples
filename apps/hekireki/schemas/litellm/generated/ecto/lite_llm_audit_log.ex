@@ -1,19 +1,19 @@
 defmodule LiteLLM.LiteLLMAuditLog do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           updated_at: DateTime.t(),
           changed_by: String.t(),
           changed_by_api_key: String.t(),
           action: String.t(),
           table_name: String.t(),
           object_id: String.t(),
-          before_value: map() | nil,
-          updated_values: map() | nil
+          before_value: map() | list() | String.t() | number() | boolean() | nil,
+          updated_values: map() | list() | String.t() | number() | boolean() | nil
         }
 
   schema "LiteLLM_AuditLog" do
@@ -23,7 +23,7 @@ defmodule LiteLLM.LiteLLMAuditLog do
     field(:action, :string)
     field(:table_name, :string)
     field(:object_id, :string)
-    field(:before_value, :map)
-    field(:updated_values, :map)
+    field(:before_value, LiteLLM.PrismaJson)
+    field(:updated_values, LiteLLM.PrismaJson)
   end
 end

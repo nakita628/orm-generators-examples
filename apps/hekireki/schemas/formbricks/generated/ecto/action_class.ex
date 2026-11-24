@@ -22,7 +22,7 @@ defmodule Formbricks.ActionClass do
           description: String.t() | nil,
           type: atom(),
           key: String.t() | nil,
-          no_code_config: map() | nil,
+          no_code_config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -37,7 +37,7 @@ defmodule Formbricks.ActionClass do
     field(:type, Ecto.Enum, values: [:code, :noCode])
     field(:key, :string)
     # [ActionClassNoCodeConfig]
-    field(:no_code_config, :map, source: :noCodeConfig)
+    field(:no_code_config, Formbricks.PrismaJson, source: :noCodeConfig)
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:workspace, Formbricks.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
     has_many(:survey_triggers, Formbricks.SurveyTrigger, foreign_key: :action_class_id, references: :id)

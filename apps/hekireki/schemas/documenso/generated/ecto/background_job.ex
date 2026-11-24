@@ -7,7 +7,7 @@ defmodule Documenso.BackgroundJob do
   @type t :: %__MODULE__{
           id: String.t(),
           status: atom(),
-          payload: map() | nil,
+          payload: map() | list() | String.t() | number() | boolean() | nil,
           retried: integer(),
           max_retries: integer(),
           job_id: String.t(),
@@ -23,7 +23,7 @@ defmodule Documenso.BackgroundJob do
   schema "BackgroundJob" do
     field(:id, :string, primary_key: true)
     field(:status, Ecto.Enum, values: [:PENDING, :PROCESSING, :COMPLETED, :FAILED], default: :PENDING)
-    field(:payload, :map)
+    field(:payload, Documenso.PrismaJson)
     field(:retried, :integer, default: 0)
     field(:max_retries, :integer, default: 3, source: :maxRetries)
     field(:job_id, :string, source: :jobId)

@@ -7,9 +7,9 @@ defmodule Hoppscotch.UserRequest do
   @type t :: %__MODULE__{
           id: String.t(),
           title: String.t(),
-          request: map(),
+          request: map() | list() | String.t() | number() | boolean(),
           type: atom(),
-          mock_examples: map() | nil,
+          mock_examples: map() | list() | String.t() | number() | boolean() | nil,
           order_index: integer(),
           created_on: DateTime.t(),
           updated_at: DateTime.t(),
@@ -20,9 +20,9 @@ defmodule Hoppscotch.UserRequest do
   schema "UserRequest" do
     field(:id, :string, primary_key: true)
     field(:title, :string)
-    field(:request, :map)
+    field(:request, Hoppscotch.PrismaJson)
     field(:type, Ecto.Enum, values: [:REST, :GQL])
-    field(:mock_examples, :map, source: :mockExamples)
+    field(:mock_examples, Hoppscotch.PrismaJson, source: :mockExamples)
     field(:order_index, :integer, source: :orderIndex)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:collection_id, :string, source: :collectionID)

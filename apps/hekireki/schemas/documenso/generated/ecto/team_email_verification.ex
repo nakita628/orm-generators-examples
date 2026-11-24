@@ -5,6 +5,7 @@ defmodule Documenso.TeamEmailVerification do
   @timestamps_opts [type: Documenso.PrismaDateTime, autogenerate: {Documenso.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          team_id: integer(),
           name: String.t(),
           email: String.t(),
           token: String.t(),
@@ -20,7 +21,7 @@ defmodule Documenso.TeamEmailVerification do
     field(:token, :string)
     field(:completed, :boolean, default: false)
     field(:expires_at, Documenso.PrismaDateTime, source: :expiresAt)
-    field(:team_id, :id, source: :teamId)
+    field(:team_id, :id, primary_key: true, source: :teamId)
     belongs_to(:team, Documenso.Team, foreign_key: :team_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end

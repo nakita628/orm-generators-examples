@@ -146,18 +146,18 @@ class CommentRoot(models.TextChoices):
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
-    type = models.TextField()
-    provider = models.TextField()
-    provider_account_id = models.TextField(db_column="providerAccountId")
-    refresh_token = models.TextField(null=True)
-    access_token = models.TextField(null=True)
+    type = models.CharField(max_length=191)
+    provider = models.CharField(max_length=191)
+    provider_account_id = models.CharField(max_length=191, db_column="providerAccountId")
+    refresh_token = models.CharField(max_length=191, null=True)
+    access_token = models.CharField(max_length=191, null=True)
     expires_at = models.IntegerField(null=True)
-    token_type = models.TextField(null=True)
-    scope = models.TextField(null=True)
-    id_token = models.TextField(null=True)
-    session_state = models.TextField(null=True)
+    token_type = models.CharField(max_length=191, null=True)
+    scope = models.CharField(max_length=191, null=True)
+    id_token = models.CharField(max_length=191, null=True)
+    session_state = models.CharField(max_length=191, null=True)
 
     class Meta:
         db_table = "Account"
@@ -170,8 +170,8 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    session_token = models.TextField(unique=True, db_column="sessionToken")
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    session_token = models.CharField(max_length=191, unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
 
@@ -183,7 +183,7 @@ class Session(models.Model):
 
 
 class Role(models.Model):
-    id = models.TextField(primary_key=True, default=uuid4_str)
+    id = models.CharField(max_length=191, primary_key=True, default=uuid4_str)
     user: "models.ManyToManyField[User, RoleToUser]" = models.ManyToManyField("User", through="RoleToUser", related_name="roles")
     role = models.TextField(choices=RoleTypes.choices, unique=True)
 
@@ -194,7 +194,7 @@ class Role(models.Model):
 class UserLink(models.Model):
     """This is a table that contains all the user links they can add to profile"""
 
-    id = models.TextField(primary_key=True, default=uuid4_str)
+    id = models.CharField(max_length=191, primary_key=True, default=uuid4_str)
     url = models.CharField(max_length=256)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
@@ -205,11 +205,11 @@ class UserLink(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=uuid4_str)
-    name = models.TextField()
-    email = models.TextField(unique=True)
+    id = models.CharField(max_length=191, primary_key=True, default=uuid4_str)
+    name = models.CharField(max_length=191)
+    email = models.CharField(max_length=191, unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")
-    image = models.TextField(null=True)
+    image = models.CharField(max_length=191, null=True)
     bio = models.CharField(max_length=1000, default="")
     """this is the bio that shows up on the profile page"""
     user_links: "models.ManyToManyField[UserLink, UserToUserLink]" = models.ManyToManyField("UserLink", through="UserToUserLink", related_name="user")
@@ -225,8 +225,8 @@ class User(models.Model):
 
 
 class VerificationToken(models.Model):
-    identifier = models.TextField()
-    token = models.TextField(primary_key=True, default=None)
+    identifier = models.CharField(max_length=191)
+    token = models.CharField(max_length=191, primary_key=True, default=None)
     expires = UtcDateTimeField()
 
     class Meta:
@@ -237,7 +237,7 @@ class VerificationToken(models.Model):
 
 
 class Tag(models.Model):
-    id = models.TextField(primary_key=True, default=uuid4_str)
+    id = models.CharField(max_length=191, primary_key=True, default=uuid4_str)
     tag = models.TextField(choices=Tags.choices, unique=True)
 
     class Meta:
@@ -249,11 +249,11 @@ class Challenge(models.Model):
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(db_column="updatedAt", auto_now=True)
     difficulty = models.TextField(choices=Difficulty.choices)
-    name = models.TextField(unique=True)
-    slug = models.TextField(unique=True)
+    name = models.CharField(max_length=191, unique=True)
+    slug = models.CharField(max_length=191, unique=True)
     description = models.TextField()
     """this is the description to describe the challenge on description panel"""
-    short_description = models.TextField(db_column="shortDescription")
+    short_description = models.CharField(max_length=191, db_column="shortDescription")
     """this is a short blue thats shown on the explore card"""
     code = models.TextField()
     """Starter code for the challenge"""
@@ -298,7 +298,7 @@ class SharedSolution(models.Model):
     id = models.AutoField(primary_key=True)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     is_pinned = models.BooleanField(db_column="isPinned", default=False)
-    title = models.TextField()
+    title = models.CharField(max_length=191)
     description = models.TextField()
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="shared_solution", db_column="userId", null=True, db_index=False)
     challenge = models.ForeignKey("Challenge", on_delete=models.SET_NULL, related_name="shared_solution", db_column="challengeId", null=True, db_index=False)
@@ -415,7 +415,7 @@ class Comment(models.Model):
 
 
 class ImageUpload(models.Model):
-    id = models.TextField(primary_key=True, default=uuid4_str)
+    id = models.CharField(max_length=191, primary_key=True, default=uuid4_str)
     """the id of the db row"""
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="image_upload", db_column="userId", db_index=False)
     """the user id fk"""
@@ -448,8 +448,8 @@ class TrackChallenge(models.Model):
 
 class Track(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.TextField(unique=True)
-    slug = models.TextField(unique=True)
+    name = models.CharField(max_length=191, unique=True)
+    slug = models.CharField(max_length=191, unique=True)
     description = models.TextField()
     visible = models.BooleanField(default=True)
     """determines if a track can be seen on tracks page"""
@@ -463,7 +463,7 @@ class Track(models.Model):
 
 class BetaTokens(models.Model):
     id = models.AutoField(primary_key=True)
-    token = models.TextField(unique=True)
+    token = models.CharField(max_length=191, unique=True)
     user = models.ForeignKey("User", on_delete=models.SET_NULL, related_name="beta_tokens", db_column="userId", null=True, db_index=False)
 
     class Meta:
@@ -477,7 +477,7 @@ class Donation(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="donations", db_column="userId", db_index=False)
     amount = models.IntegerField()
-    stripe_checkout_session_id = models.TextField(unique=True, db_column="stripeCheckoutSessionId")
+    stripe_checkout_session_id = models.CharField(max_length=191, unique=True, db_column="stripeCheckoutSessionId")
     created_at = UtcDateTimeField(null=True, db_column="createdAt", default=now_milliseconds)
 
     class Meta:
@@ -496,11 +496,11 @@ class Notification(models.Model):
     to_user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="to_user_notification", db_column="toUserId", db_index=False)
     from_user = models.ForeignKey("User", on_delete=models.RESTRICT, related_name="from_user_notification", db_column="fromUserId", db_index=False)
     comment = models.ForeignKey("Comment", on_delete=models.SET_NULL, related_name="notification", db_column="commentId", null=True, db_index=False)
-    content = models.TextField(null=True)
+    content = models.CharField(max_length=191, null=True)
     """could be comment text or solution title to avoid having to join to grab this data"""
-    blurb = models.TextField(null=True)
+    blurb = models.CharField(max_length=191, null=True)
     """can be used to replace the blurb (eg: mention you in a comment)"""
-    url = models.TextField()
+    url = models.CharField(max_length=191)
     """use this instead of building the url on the fly (avoids a lot of joins and perf hits to build a string)"""
     challenge = models.ForeignKey("Challenge", on_delete=models.SET_NULL, related_name="notification", db_column="challengeId", null=True, db_index=False)
     shared_solution = models.ForeignKey("SharedSolution", on_delete=models.SET_NULL, related_name="notification", db_column="sharedSolutionId", null=True, db_index=False)
@@ -521,7 +521,7 @@ class ShortURL(models.Model):
     id = models.AutoField(primary_key=True)
     original_url = models.TextField(db_column="originalUrl")
     """the original full url that we want to shorten e.g. https://www.url.com"""
-    short_url_slug = models.TextField(unique=True, db_column="shortUrlSlug")
+    short_url_slug = models.CharField(max_length=191, unique=True, db_column="shortUrlSlug")
     """slug for the short url e.g. url.com/[shortUrlSlug]"""
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)
     expires_at = UtcDateTimeField(null=True, db_column="expiresAt")

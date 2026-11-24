@@ -37,6 +37,7 @@ class LiteLLMEndUserTable extends Model
 
     protected $casts = [
         'spend' => 'float',
+        'models' => AsPrismaList::class,
         'blocked' => 'boolean',
     ];
 

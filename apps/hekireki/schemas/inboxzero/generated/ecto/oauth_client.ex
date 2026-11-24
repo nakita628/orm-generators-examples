@@ -38,7 +38,7 @@ defmodule InboxZero.OauthClient do
           require_pkce: boolean() | nil,
           dpop_bound_access_tokens: boolean() | nil,
           reference_id: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           user: InboxZero.User.t() | nil,
           oauth_client_resources: [InboxZero.OauthClientResource.t()],
           oauthrefreshtokens: [InboxZero.OauthRefreshToken.t()],
@@ -81,7 +81,7 @@ defmodule InboxZero.OauthClient do
     field(:require_pkce, :boolean, source: :requirePKCE)
     field(:dpop_bound_access_tokens, :boolean, default: false, source: :dpopBoundAccessTokens)
     field(:reference_id, :string, source: :referenceId)
-    field(:metadata, :map)
+    field(:metadata, InboxZero.PrismaJson)
     field(:user_id, :string, source: :userId)
     belongs_to(:user, InboxZero.User, foreign_key: :user_id, define_field: false, type: :string)
     has_many(:oauth_client_resources, InboxZero.OauthClientResource, foreign_key: :client_id, references: :client_id)

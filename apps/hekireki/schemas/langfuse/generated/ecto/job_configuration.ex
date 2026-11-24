@@ -12,9 +12,9 @@ defmodule Langfuse.JobConfiguration do
           block_reason: atom() | nil,
           block_message: String.t() | nil,
           score_name: String.t(),
-          filter: map(),
+          filter: map() | list() | String.t() | number() | boolean(),
           target_object: String.t(),
-          variable_mapping: map(),
+          variable_mapping: map() | list() | String.t() | number() | boolean(),
           sampling: Decimal.t(),
           delay: integer(),
           time_scope: [String.t()],
@@ -32,9 +32,9 @@ defmodule Langfuse.JobConfiguration do
     field(:block_reason, Ecto.Enum, values: [:LLM_CONNECTION_AUTH_INVALID, :LLM_CONNECTION_BILLING_EXHAUSTED, :LLM_CONNECTION_ENDPOINT_UNREACHABLE, :LLM_CONNECTION_MISSING, :DEFAULT_EVAL_MODEL_MISSING, :EVAL_MODEL_CONFIG_INVALID, :EVAL_MODEL_UNAVAILABLE, :PROVIDER_ACCOUNT_NOT_READY])
     field(:block_message, :string)
     field(:score_name, :string)
-    field(:filter, :map)
+    field(:filter, Langfuse.PrismaJson)
     field(:target_object, :string)
-    field(:variable_mapping, :map)
+    field(:variable_mapping, Langfuse.PrismaJson)
     field(:sampling, :decimal)
     field(:delay, :integer)
     field(:time_scope, {:array, :string})

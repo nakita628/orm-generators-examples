@@ -23,7 +23,7 @@ defmodule LangWatch.Organization do
           lockout_minutes: integer(),
           session_idle_timeout_minutes: integer(),
           session_max_lifetime_minutes: integer(),
-          signup_data: map() | nil,
+          signup_data: map() | list() | String.t() | number() | boolean() | nil,
           signed_dpa: boolean(),
           elasticsearch_node_url: String.t() | nil,
           elasticsearch_api_key: String.t() | nil,
@@ -160,7 +160,7 @@ defmodule LangWatch.Organization do
     # default. Offered beside the idle timeout because a session kept alive
     # forever by a polling page is not really bounded.
     field(:session_max_lifetime_minutes, :integer, default: 0, source: :sessionMaxLifetimeMinutes)
-    field(:signup_data, :map, source: :signupData)
+    field(:signup_data, LangWatch.PrismaJson, source: :signupData)
     field(:signed_dpa, :boolean, default: false, source: :signedDPA)
     field(:elasticsearch_node_url, :string, source: :elasticsearchNodeUrl)
     field(:elasticsearch_api_key, :string, source: :elasticsearchApiKey)

@@ -1,12 +1,12 @@
 defmodule Postiz.PayoutProblems do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           status: String.t(),
           amount: integer(),
           inserted_at: DateTime.t(),
@@ -19,11 +19,11 @@ defmodule Postiz.PayoutProblems do
   schema "PayoutProblems" do
     field(:status, :string)
     field(:amount, :integer)
-    field(:order_id, :binary_id, source: :orderId)
+    field(:order_id, :string, source: :orderId)
     field(:post_id, :string, source: :postId)
-    field(:user_id, :binary_id, source: :userId)
+    field(:user_id, :string, source: :userId)
     belongs_to(:order, Postiz.Orders, foreign_key: :order_id, define_field: false)
-    belongs_to(:post, Postiz.Post, foreign_key: :post_id, define_field: false, type: :string)
+    belongs_to(:post, Postiz.Post, foreign_key: :post_id, define_field: false)
     belongs_to(:user, Postiz.User, foreign_key: :user_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

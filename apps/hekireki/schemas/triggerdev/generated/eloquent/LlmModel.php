@@ -44,6 +44,7 @@ class LlmModel extends Model
         'start_date' => 'datetime',
         'context_window' => 'integer',
         'max_output_tokens' => 'integer',
+        'capabilities' => AsPrismaList::class,
         'is_hidden' => 'boolean',
     ];
 

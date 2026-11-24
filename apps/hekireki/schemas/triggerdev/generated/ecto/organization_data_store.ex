@@ -14,7 +14,7 @@ defmodule Trigger.OrganizationDataStore do
           key: String.t(),
           organization_ids: [String.t()],
           kind: atom(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -27,7 +27,7 @@ defmodule Trigger.OrganizationDataStore do
     field(:organization_ids, {:array, :string}, source: :organizationIds)
     field(:kind, Ecto.Enum, values: [:CLICKHOUSE])
     # Versioned config JSON. Structure is discriminated by the top-level `version` field.
-    field(:config, :map)
+    field(:config, Trigger.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

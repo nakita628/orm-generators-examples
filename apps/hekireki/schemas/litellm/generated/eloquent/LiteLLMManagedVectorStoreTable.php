@@ -31,5 +31,6 @@ class LiteLLMManagedVectorStoreTable extends Model
     protected $casts = [
         'resource_object' => 'array',
         'model_mappings' => 'array',
+        'flat_model_resource_ids' => AsPrismaList::class,
     ];
 }

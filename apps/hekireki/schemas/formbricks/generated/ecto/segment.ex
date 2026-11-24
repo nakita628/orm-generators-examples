@@ -20,7 +20,7 @@ defmodule Formbricks.Segment do
           title: String.t(),
           description: String.t() | nil,
           is_private: boolean(),
-          filters: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Formbricks.Workspace.t() | nil,
@@ -33,7 +33,7 @@ defmodule Formbricks.Segment do
     field(:description, :string)
     field(:is_private, :boolean, default: true, source: :isPrivate)
     # [SegmentFilter]
-    field(:filters, :map)
+    field(:filters, Formbricks.PrismaJson, default: [])
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:workspace, Formbricks.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
     has_many(:surveys, Formbricks.Survey, foreign_key: :segment_id, references: :id)

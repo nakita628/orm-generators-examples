@@ -100,6 +100,8 @@ class Link extends Model
     protected $casts = [
         'linkType' => LinkType::class,
         'expiresAt' => 'datetime',
+        'allowList' => AsPrismaList::class,
+        'denyList' => AsPrismaList::class,
         'emailProtected' => 'boolean',
         'emailAuthenticated' => 'boolean',
         'allowDownload' => 'boolean',
@@ -120,6 +122,7 @@ class Link extends Model
         'enableAIAgents' => 'boolean',
         'enableUpload' => 'boolean',
         'isFileRequestOnly' => 'boolean',
+        'uploadFolderIds' => AsPrismaList::class,
         'enableIndexFile' => 'boolean',
     ];
 

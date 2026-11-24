@@ -21,7 +21,7 @@ defmodule Formbricks.SurveyQuota do
           id: String.t(),
           name: String.t(),
           limit: integer(),
-          logic: map(),
+          logic: map() | list() | String.t() | number() | boolean(),
           action: atom(),
           ending_card_id: String.t() | nil,
           count_partial_submissions: boolean(),
@@ -36,7 +36,7 @@ defmodule Formbricks.SurveyQuota do
     field(:name, :string)
     field(:limit, :integer)
     # [SurveyQuotaLogic]
-    field(:logic, :map, default: %{})
+    field(:logic, Formbricks.PrismaJson, default: %{})
     field(:action, Ecto.Enum, values: [:endSurvey, :continueSurvey])
     field(:ending_card_id, :string, source: :endingCardId)
     field(:count_partial_submissions, :boolean, default: false, source: :countPartialSubmissions)

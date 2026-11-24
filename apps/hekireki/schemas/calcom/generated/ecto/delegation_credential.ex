@@ -1,13 +1,13 @@
 defmodule Calcom.DelegationCredential do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
-          service_account_key: map(),
+          id: String.t(),
+          service_account_key: map() | list() | String.t() | number() | boolean(),
           enabled: boolean(),
           last_enabled_at: DateTime.t() | nil,
           last_disabled_at: DateTime.t() | nil,
@@ -24,7 +24,7 @@ defmodule Calcom.DelegationCredential do
 
   schema "DelegationCredential" do
     # @zod.import(["import { serviceAccountKeySchema } from '../../zod-utils'"]).custom.use(serviceAccountKeySchema)
-    field(:service_account_key, :map, source: :serviceAccountKey)
+    field(:service_account_key, Calcom.PrismaJson, source: :serviceAccountKey)
     field(:enabled, :boolean, default: false)
     field(:last_enabled_at, Calcom.PrismaDateTime, source: :lastEnabledAt)
     field(:last_disabled_at, Calcom.PrismaDateTime, source: :lastDisabledAt)

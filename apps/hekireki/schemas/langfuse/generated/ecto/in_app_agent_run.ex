@@ -14,7 +14,7 @@ defmodule Langfuse.InAppAgentRun do
           error_message: String.t() | nil,
           finished_at: DateTime.t() | nil,
           status: String.t() | nil,
-          request: map() | nil,
+          request: map() | list() | String.t() | number() | boolean() | nil,
           claimed_at: DateTime.t() | nil,
           heartbeat_at: DateTime.t() | nil,
           cancel_requested_at: DateTime.t() | nil,
@@ -33,7 +33,7 @@ defmodule Langfuse.InAppAgentRun do
     field(:error_message, :string)
     field(:finished_at, Langfuse.PrismaDateTime)
     field(:status, :string)
-    field(:request, :map)
+    field(:request, Langfuse.PrismaJson)
     field(:claimed_at, Langfuse.PrismaDateTime)
     field(:heartbeat_at, Langfuse.PrismaDateTime)
     field(:cancel_requested_at, Langfuse.PrismaDateTime)

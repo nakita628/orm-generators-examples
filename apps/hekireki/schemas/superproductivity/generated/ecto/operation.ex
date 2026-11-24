@@ -12,9 +12,9 @@ defmodule SuperProductivity.Operation do
           entity_type: String.t(),
           entity_id: String.t() | nil,
           entity_ids: [String.t()],
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           payload_bytes: integer(),
-          vector_clock: map(),
+          vector_clock: map() | list() | String.t() | number() | boolean(),
           schema_version: integer(),
           client_timestamp: integer(),
           received_at: integer(),
@@ -33,9 +33,9 @@ defmodule SuperProductivity.Operation do
     field(:entity_type, :string)
     field(:entity_id, :string)
     field(:entity_ids, {:array, :string})
-    field(:payload, :map)
+    field(:payload, SuperProductivity.PrismaJson)
     field(:payload_bytes, :integer, default: 0)
-    field(:vector_clock, :map)
+    field(:vector_clock, SuperProductivity.PrismaJson)
     field(:schema_version, :integer)
     field(:client_timestamp, :integer)
     field(:received_at, :integer)

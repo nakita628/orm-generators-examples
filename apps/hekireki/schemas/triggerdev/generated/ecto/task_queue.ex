@@ -22,7 +22,7 @@ defmodule Trigger.TaskQueue do
           total_concurrency_limit_overridden_at: DateTime.t() | nil,
           total_concurrency_limit_overridden_by: String.t() | nil,
           total_concurrency_limit_base: integer() | nil,
-          rate_limit: map() | nil,
+          rate_limit: map() | list() | String.t() | number() | boolean() | nil,
           paused: boolean(),
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -68,7 +68,7 @@ defmodule Trigger.TaskQueue do
     field(:total_concurrency_limit_overridden_by, :string, source: :totalConcurrencyLimitOverriddenBy)
     # If totalConcurrencyLimit is overridden, the declared value it reverts to on reset
     field(:total_concurrency_limit_base, :integer, source: :totalConcurrencyLimitBase)
-    field(:rate_limit, :map, source: :rateLimit)
+    field(:rate_limit, Trigger.PrismaJson, source: :rateLimit)
     field(:paused, :boolean, default: false)
     # Hidden from the dashboard queue list. Display-only: never read on trigger/dequeue paths.
     field(:archived_at, Trigger.PrismaDateTime, source: :archivedAt)

@@ -1,12 +1,12 @@
 defmodule Calcom.SelectedCalendar do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           integration: String.t(),
           external_id: String.t(),
           google_channel_id: String.t() | nil,
@@ -67,7 +67,7 @@ defmodule Calcom.SelectedCalendar do
     field(:max_attempts, :integer, default: 3, source: :maxAttempts)
     field(:user_id, :id, source: :userId)
     field(:credential_id, :id, source: :credentialId)
-    field(:delegation_credential_id, :binary_id, source: :delegationCredentialId)
+    field(:delegation_credential_id, :string, source: :delegationCredentialId)
     field(:event_type_id, :id, source: :eventTypeId)
     belongs_to(:user, Calcom.User, foreign_key: :user_id, define_field: false, type: :id)
     belongs_to(:credential, Calcom.Credential, foreign_key: :credential_id, define_field: false, type: :id)

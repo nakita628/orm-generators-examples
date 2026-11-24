@@ -11,7 +11,7 @@ defmodule Rallly.PollActivity do
           participant_id: String.t() | nil,
           invite_id: String.t() | nil,
           option_id: String.t() | nil,
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           poll: Rallly.Poll.t() | nil
         }
@@ -25,7 +25,7 @@ defmodule Rallly.PollActivity do
     field(:participant_id, :string)
     field(:invite_id, :string)
     field(:option_id, :string)
-    field(:payload, :map, default: %{})
+    field(:payload, Rallly.PrismaJson, default: %{})
     belongs_to(:poll, Rallly.Poll, foreign_key: :poll_id, type: :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end

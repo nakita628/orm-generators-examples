@@ -67,6 +67,7 @@ class BlobStorageIntegration extends \Illuminate\Database\Eloquent\Model
         'export_mode' => BlobStorageExportMode::class,
         'export_start_date' => 'datetime',
         'export_source' => AnalyticsIntegrationExportSource::class,
+        'export_field_groups' => AsPrismaList::class,
         'compressed' => 'boolean',
         'export_tuning' => 'array',
         'run_started_at' => 'datetime',

@@ -11,7 +11,7 @@ defmodule LangWatch.ScenarioVersion do
           author_id: String.t() | nil,
           author_label: String.t(),
           change_description: String.t() | nil,
-          snapshot: map(),
+          snapshot: map() | list() | String.t() | number() | boolean(),
           schema_version: integer(),
           inserted_at: DateTime.t(),
           scenario: LangWatch.Scenario.t() | nil
@@ -30,7 +30,7 @@ defmodule LangWatch.ScenarioVersion do
     field(:change_description, :string, source: :changeDescription)
     # Envelope { schemaVersion, fields, changedFields } holding the editable
     # field set as saved and the names of the fields this save changed.
-    field(:snapshot, :map)
+    field(:snapshot, LangWatch.PrismaJson)
     # Schema version of `snapshot`, so a later shape change can be read forward.
     field(:schema_version, :integer, default: 1, source: :schemaVersion)
     field(:scenario_id, :string, source: :scenarioId)

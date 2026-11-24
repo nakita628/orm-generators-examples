@@ -29,6 +29,7 @@ class Trigger extends \Illuminate\Database\Eloquent\Model
     ];
 
     protected $casts = [
+        'eventActions' => AsPrismaList::class,
         'filter' => 'array',
         'status' => JobConfigState::class,
     ];

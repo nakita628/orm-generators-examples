@@ -7,7 +7,7 @@ defmodule Calcom.EventTypeCustomInput do
           id: integer(),
           label: String.t(),
           type: atom(),
-          options: map() | nil,
+          options: map() | list() | String.t() | number() | boolean() | nil,
           required: boolean(),
           placeholder: String.t(),
           event_type: Calcom.EventType.t() | nil
@@ -17,7 +17,7 @@ defmodule Calcom.EventTypeCustomInput do
     field(:label, :string)
     field(:type, Ecto.Enum, values: [TEXT: "text", TEXTLONG: "textLong", NUMBER: "number", BOOL: "bool", RADIO: "radio", PHONE: "phone"])
     # @zod.import(["import { customInputOptionSchema } from '../../zod-utils'"]).custom.use(customInputOptionSchema)
-    field(:options, :map)
+    field(:options, Calcom.PrismaJson)
     field(:required, :boolean)
     field(:placeholder, :string, default: "")
     field(:event_type_id, :id, source: :eventTypeId)

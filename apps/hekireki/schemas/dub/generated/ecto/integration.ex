@@ -13,7 +13,7 @@ defmodule Dub.Integration do
           developer: String.t(),
           website: String.t(),
           logo: String.t() | nil,
-          screenshots: map() | nil,
+          screenshots: map() | list() | String.t() | number() | boolean() | nil,
           verified: boolean(),
           install_url: String.t() | nil,
           guide_url: String.t() | nil,
@@ -36,7 +36,7 @@ defmodule Dub.Integration do
     field(:developer, :string)
     field(:website, :string)
     field(:logo, :string)
-    field(:screenshots, :map)
+    field(:screenshots, Dub.PrismaJson)
     field(:verified, :boolean, default: false)
     field(:install_url, :string, source: :installUrl)
     field(:guide_url, :string, source: :guideUrl)

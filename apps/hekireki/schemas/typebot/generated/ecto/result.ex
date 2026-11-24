@@ -6,7 +6,7 @@ defmodule Typebot.Result do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          variables: map(),
+          variables: map() | list() | String.t() | number() | boolean(),
           is_completed: boolean(),
           has_started: boolean() | nil,
           is_archived: boolean() | nil,
@@ -22,7 +22,7 @@ defmodule Typebot.Result do
 
   schema "Result" do
     field(:id, :string, primary_key: true)
-    field(:variables, :map)
+    field(:variables, Typebot.PrismaJson)
     field(:is_completed, :boolean, source: :isCompleted)
     field(:has_started, :boolean, source: :hasStarted)
     field(:is_archived, :boolean, default: false, source: :isArchived)

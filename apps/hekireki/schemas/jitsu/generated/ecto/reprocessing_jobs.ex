@@ -5,7 +5,7 @@ defmodule Jitsu.ReprocessingJobs do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           status: String.t(),
           created_at: DateTime.t(),
           started_at: DateTime.t() | nil,
@@ -19,7 +19,7 @@ defmodule Jitsu.ReprocessingJobs do
 
   schema "reprocessing_jobs" do
     field(:id, :string, primary_key: true)
-    field(:config, :map)
+    field(:config, Jitsu.PrismaJson)
     field(:status, :string)
     field(:created_at, Jitsu.PrismaDateTime)
     field(:started_at, Jitsu.PrismaDateTime)

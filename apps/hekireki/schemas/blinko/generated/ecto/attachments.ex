@@ -15,7 +15,7 @@ defmodule Blinko.Attachments do
           sort_order: integer(),
           perfix_path: String.t() | nil,
           depth: integer() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           note: Blinko.Notes.t() | nil,
@@ -32,7 +32,7 @@ defmodule Blinko.Attachments do
     field(:sort_order, :integer, default: 0, source: :sortOrder)
     field(:perfix_path, :string, default: "", source: :perfixPath)
     field(:depth, :integer)
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:note_id, :id, source: :noteId)
     field(:account_id, :id, source: :accountId)
     belongs_to(:note, Blinko.Notes, foreign_key: :note_id, define_field: false)

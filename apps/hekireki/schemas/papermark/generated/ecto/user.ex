@@ -18,7 +18,7 @@ defmodule Papermark.User do
           ends_at: DateTime.t() | nil,
           referral_track: atom() | nil,
           referral_track_selected_at: DateTime.t() | nil,
-          referral_profile: map() | nil,
+          referral_profile: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           accounts: [Papermark.Account.t()],
           sessions: [Papermark.Session.t()],
@@ -57,7 +57,7 @@ defmodule Papermark.User do
     field(:ends_at, Papermark.PrismaDateTime, source: :endsAt)
     field(:referral_track, Ecto.Enum, values: [:AFFILIATE, :PARTNER_DISCOUNT], source: :referralTrack)
     field(:referral_track_selected_at, Papermark.PrismaDateTime, source: :referralTrackSelectedAt)
-    field(:referral_profile, :map, source: :referralProfile)
+    field(:referral_profile, Papermark.PrismaJson, source: :referralProfile)
     has_many(:accounts, Papermark.Account, foreign_key: :user_id, references: :id)
     has_many(:sessions, Papermark.Session, foreign_key: :user_id, references: :id)
     has_many(:documents, Papermark.Document, foreign_key: :owner_id, references: :id)

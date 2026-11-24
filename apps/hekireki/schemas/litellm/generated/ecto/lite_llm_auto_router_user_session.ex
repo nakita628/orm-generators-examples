@@ -12,7 +12,7 @@ defmodule LiteLLM.LiteLLMAutoRouterUserSession do
           first_turn_at: DateTime.t(),
           last_turn_at: DateTime.t(),
           last_model: String.t(),
-          models: map(),
+          models: map() | list() | String.t() | number() | boolean(),
           turns: integer(),
           unordered_turns: integer(),
           covered_turns: integer(),
@@ -33,11 +33,11 @@ defmodule LiteLLM.LiteLLMAutoRouterUserSession do
           savings_estimated_turns: integer(),
           savings_estimated_actual_spend: float(),
           savings_estimated_saved_spend: float(),
-          savings_estimated_baseline_models: map(),
+          savings_estimated_baseline_models: map() | list() | String.t() | number() | boolean(),
           classifier_cost: float(),
           classifier_cost_recorded_turns: integer(),
-          tier_turns: map(),
-          baseline_models: map()
+          tier_turns: map() | list() | String.t() | number() | boolean(),
+          baseline_models: map() | list() | String.t() | number() | boolean()
         }
 
   schema "LiteLLM_AutoRouterUserSession" do
@@ -49,7 +49,7 @@ defmodule LiteLLM.LiteLLMAutoRouterUserSession do
     field(:first_turn_at, LiteLLM.PrismaDateTime)
     field(:last_turn_at, LiteLLM.PrismaDateTime)
     field(:last_model, :string)
-    field(:models, :map, default: %{})
+    field(:models, LiteLLM.PrismaJson, default: %{})
     field(:turns, :integer, default: 0)
     field(:unordered_turns, :integer, default: 0)
     field(:covered_turns, :integer, default: 0)
@@ -70,10 +70,10 @@ defmodule LiteLLM.LiteLLMAutoRouterUserSession do
     field(:savings_estimated_turns, :integer, default: 0)
     field(:savings_estimated_actual_spend, :float, default: 0.0)
     field(:savings_estimated_saved_spend, :float, default: 0.0)
-    field(:savings_estimated_baseline_models, :map, default: %{})
+    field(:savings_estimated_baseline_models, LiteLLM.PrismaJson, default: %{})
     field(:classifier_cost, :float, default: 0.0)
     field(:classifier_cost_recorded_turns, :integer, default: 0)
-    field(:tier_turns, :map, default: %{})
-    field(:baseline_models, :map, default: %{})
+    field(:tier_turns, LiteLLM.PrismaJson, default: %{})
+    field(:baseline_models, LiteLLM.PrismaJson, default: %{})
   end
 end

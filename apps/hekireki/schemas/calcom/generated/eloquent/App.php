@@ -34,6 +34,7 @@ class App extends Model
 
     protected $casts = [
         'keys' => 'array',
+        'categories' => AsPrismaList::class . ':' . AppCategories::class,
         'enabled' => 'boolean',
     ];
 

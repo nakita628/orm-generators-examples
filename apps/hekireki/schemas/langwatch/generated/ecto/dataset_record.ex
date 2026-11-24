@@ -6,7 +6,7 @@ defmodule LangWatch.DatasetRecord do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          entry: map(),
+          entry: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           dataset: LangWatch.Dataset.t() | nil,
@@ -15,7 +15,7 @@ defmodule LangWatch.DatasetRecord do
 
   schema "DatasetRecord" do
     field(:id, :string, primary_key: true)
-    field(:entry, :map)
+    field(:entry, LangWatch.PrismaJson)
     field(:dataset_id, :string, source: :datasetId)
     field(:project_id, :string, source: :projectId)
     belongs_to(:dataset, LangWatch.Dataset, foreign_key: :dataset_id, define_field: false, type: :string)

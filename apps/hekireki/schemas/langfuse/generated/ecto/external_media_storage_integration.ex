@@ -5,6 +5,7 @@ defmodule Langfuse.ExternalMediaStorageIntegration do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          project_id: String.t(),
           type: atom(),
           bucket_name: String.t(),
           prefix: String.t() | nil,
@@ -33,7 +34,8 @@ defmodule Langfuse.ExternalMediaStorageIntegration do
     field(:region, :string)
     field(:endpoint, :string)
     field(:force_path_style, :boolean)
-    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
+    field(:project_id, :string, primary_key: true)
+    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -8,7 +8,7 @@ defmodule Documenso.BackgroundJobTask do
           id: String.t(),
           name: String.t(),
           status: atom(),
-          result: map() | nil,
+          result: map() | list() | String.t() | number() | boolean() | nil,
           retried: integer(),
           max_retries: integer(),
           completed_at: DateTime.t() | nil,
@@ -21,7 +21,7 @@ defmodule Documenso.BackgroundJobTask do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:status, Ecto.Enum, values: [:PENDING, :COMPLETED, :FAILED], default: :PENDING)
-    field(:result, :map)
+    field(:result, Documenso.PrismaJson)
     field(:retried, :integer, default: 0)
     field(:max_retries, :integer, default: 3, source: :maxRetries)
     field(:completed_at, Documenso.PrismaDateTime, source: :completedAt)

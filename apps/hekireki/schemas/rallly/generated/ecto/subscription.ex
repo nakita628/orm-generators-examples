@@ -52,7 +52,7 @@ defmodule Rallly.Subscription do
     field(:api_poll_retained_tier, :string)
     field(:api_poll_retained_until, Rallly.PrismaDateTime)
     belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end
 end

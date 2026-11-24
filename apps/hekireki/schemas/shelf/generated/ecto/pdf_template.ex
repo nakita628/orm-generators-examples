@@ -15,7 +15,7 @@ defmodule Shelf.PdfTemplate do
           id: String.t(),
           name: String.t(),
           kind: atom(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           is_default: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -29,7 +29,7 @@ defmodule Shelf.PdfTemplate do
     # The layout's switches. Read through `parseBookingTemplateConfig`,
     # which fills any key a stored row lacks from the Checklist template's
     # values.
-    field(:config, :map, default: %{})
+    field(:config, Shelf.PrismaJson, default: %{})
     # The template the PDF dialog offers first. One per workspace and kind,
     # enforced by a partial unique index in raw SQL (migration
     # 20261103120000_add_pdf_templates). Names are also unique per workspace

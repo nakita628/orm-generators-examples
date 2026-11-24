@@ -5,7 +5,7 @@ defmodule Postiz.MastraSchedules do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          target: map(),
+          target: map() | list() | String.t() | number() | boolean(),
           cron: String.t(),
           timezone: String.t() | nil,
           status: String.t(),
@@ -14,14 +14,14 @@ defmodule Postiz.MastraSchedules do
           last_run_id: String.t() | nil,
           created_at: integer(),
           updated_at: integer(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           owner_type: String.t() | nil,
           owner_id: String.t() | nil
         }
 
   schema "mastra_schedules" do
     field(:id, :string, primary_key: true)
-    field(:target, :map)
+    field(:target, Postiz.PrismaJson)
     field(:cron, :string)
     field(:timezone, :string)
     field(:status, :string)
@@ -30,7 +30,7 @@ defmodule Postiz.MastraSchedules do
     field(:last_run_id, :string)
     field(:created_at, :integer)
     field(:updated_at, :integer)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
     field(:owner_type, :string)
     field(:owner_id, :string)
   end

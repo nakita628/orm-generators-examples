@@ -5,12 +5,13 @@ defmodule Ghostfolio.AssetProfileOverrides do
   @timestamps_opts [type: Ghostfolio.PrismaDateTime, autogenerate: {Ghostfolio.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          symbol_profile_id: String.t(),
           asset_class: atom() | nil,
           asset_sub_class: atom() | nil,
-          countries: map() | nil,
-          holdings: map() | nil,
+          countries: map() | list() | String.t() | number() | boolean() | nil,
+          holdings: map() | list() | String.t() | number() | boolean() | nil,
           name: String.t() | nil,
-          sectors: map() | nil,
+          sectors: map() | list() | String.t() | number() | boolean() | nil,
           url: String.t() | nil,
           updated_at: DateTime.t(),
           symbol_profile: Ghostfolio.SymbolProfile.t() | nil
@@ -19,13 +20,13 @@ defmodule Ghostfolio.AssetProfileOverrides do
   schema "SymbolProfileOverrides" do
     field(:asset_class, Ecto.Enum, values: [:ALTERNATIVE_INVESTMENT, :COMMODITY, :EQUITY, :FIXED_INCOME, :LIQUIDITY, :REAL_ESTATE], source: :assetClass)
     field(:asset_sub_class, Ecto.Enum, values: [:BOND, :CASH, :COLLECTIBLE, :COMMODITY, :CRYPTOCURRENCY, :ETF, :LOAN, :MUTUALFUND, :PRECIOUS_METAL, :PRIVATE_EQUITY, :STOCK], source: :assetSubClass)
-    field(:countries, :map)
-    field(:holdings, :map)
+    field(:countries, Ghostfolio.PrismaJson, default: [])
+    field(:holdings, Ghostfolio.PrismaJson, default: [])
     field(:name, :string)
-    field(:sectors, :map)
+    field(:sectors, Ghostfolio.PrismaJson, default: [])
     field(:url, :string)
-    field(:symbol_profile_id, :binary_id, source: :symbolProfileId)
-    belongs_to(:symbol_profile, Ghostfolio.SymbolProfile, foreign_key: :symbol_profile_id, define_field: false, type: :binary_id)
+    field(:symbol_profile_id, :string, primary_key: true, source: :symbolProfileId)
+    belongs_to(:symbol_profile, Ghostfolio.SymbolProfile, foreign_key: :symbol_profile_id, define_field: false, type: :string)
     timestamps(inserted_at: false, updated_at_source: :updatedAt)
   end
 end

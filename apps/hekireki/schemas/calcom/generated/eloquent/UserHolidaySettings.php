@@ -22,6 +22,7 @@ class UserHolidaySettings extends Model
 
     protected $casts = [
         'userId' => 'integer',
+        'disabledIds' => AsPrismaList::class,
     ];
 
     public function user(): BelongsTo

@@ -12,7 +12,7 @@ defmodule Papermark.View do
           viewed_at: DateTime.t(),
           downloaded_at: DateTime.t() | nil,
           download_type: atom() | nil,
-          download_metadata: map() | nil,
+          download_metadata: map() | list() | String.t() | number() | boolean() | nil,
           view_type: atom(),
           is_archived: boolean(),
           link: Papermark.Link.t() | nil,
@@ -42,7 +42,7 @@ defmodule Papermark.View do
     field(:viewed_at, Papermark.PrismaDateTime, autogenerate: true, source: :viewedAt)
     field(:downloaded_at, Papermark.PrismaDateTime, source: :downloadedAt)
     field(:download_type, Ecto.Enum, values: [:SINGLE, :BULK, :FOLDER], source: :downloadType)
-    field(:download_metadata, :map, source: :downloadMetadata)
+    field(:download_metadata, Papermark.PrismaJson, source: :downloadMetadata)
     field(:view_type, Ecto.Enum, values: [:DOCUMENT_VIEW, :DATAROOM_VIEW], default: :DOCUMENT_VIEW, source: :viewType)
     field(:is_archived, :boolean, default: false, source: :isArchived)
     field(:link_id, :string, source: :linkId)

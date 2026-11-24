@@ -14,7 +14,7 @@ defmodule LangWatch.Project do
           language: String.t(),
           framework: String.t(),
           kind: String.t(),
-          aggregate_rule: map() | nil,
+          aggregate_rule: map() | list() | String.t() | number() | boolean() | nil,
           first_message: boolean(),
           integrated: boolean(),
           user_link_template: String.t() | nil,
@@ -26,9 +26,9 @@ defmodule LangWatch.Project do
           s3_bucket: String.t() | nil,
           archived_at: DateTime.t() | nil,
           is_personal: boolean(),
-          personal_features: map(),
+          personal_features: map() | list() | String.t() | number() | boolean(),
           department_id: String.t() | nil,
-          langy_egress_allowlist: map() | nil,
+          langy_egress_allowlist: map() | list() | String.t() | number() | boolean() | nil,
           last_coding_agent_session_at: DateTime.t() | nil,
           last_coding_agent_pull_request_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -109,7 +109,7 @@ defmodule LangWatch.Project do
     # every other kind; decided in ADR-177. Shapes: { kind: "all-personal" } |
     # { kind: "personal-by-department", departmentId } |
     # { kind: "explicit", projectIds: string[] }.
-    field(:aggregate_rule, :map, source: :aggregateRule)
+    field(:aggregate_rule, LangWatch.PrismaJson, source: :aggregateRule)
     field(:first_message, :boolean, default: false, source: :firstMessage)
     field(:integrated, :boolean, default: false)
     field(:user_link_template, :string, source: :userLinkTemplate)
@@ -130,7 +130,7 @@ defmodule LangWatch.Project do
     # offline migration scripts can still operate on the data).
     # Team / org-scope projects are not feature-gated - this column
     # is meaningful only when `isPersonal=true`.
-    field(:personal_features, :map, default: %{}, source: :personalFeatures)
+    field(:personal_features, LangWatch.PrismaJson, default: %{}, source: :personalFeatures)
     # Department assignment for spend attribution (the project / agent
     # lens, used when a trace has no principal user). Accounting-only.
     field(:department_id, :string, source: :departmentId)
@@ -143,7 +143,7 @@ defmodule LangWatch.Project do
     # gateway — so it lives on the project, not the VirtualKey. Resolved by
     # LangyCredentialService.getEgressAllowlist and threaded through the
     # per-request credentials envelope. See specs/langy/langy-egress-enforcement.feature.
-    field(:langy_egress_allowlist, :map, source: :langyEgressAllowlist)
+    field(:langy_egress_allowlist, LangWatch.PrismaJson, source: :langyEgressAllowlist)
     # When a coding-agent session was last folded for this project, and when a
     # pull request was last mapped for a branch one of those sessions ran on.
     # Both are instrumentation signals, not counters: the project sidebar shows

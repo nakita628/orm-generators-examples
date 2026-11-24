@@ -18,7 +18,7 @@ defmodule Blinko.Notes do
           share_expiry_date: DateTime.t() | nil,
           share_max_view: integer() | nil,
           share_view_count: integer() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           sort_order: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -45,7 +45,7 @@ defmodule Blinko.Notes do
     field(:share_expiry_date, Blinko.PrismaDateTime, source: :shareExpiryDate)
     field(:share_max_view, :integer, default: 0, source: :shareMaxView)
     field(:share_view_count, :integer, default: 0, source: :shareViewCount)
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:sort_order, :integer, default: 0, source: :sortOrder)
     field(:account_id, :id, source: :accountId)
     belongs_to(:account, Blinko.Accounts, foreign_key: :account_id, define_field: false)

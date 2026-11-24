@@ -6,8 +6,8 @@ defmodule Papermark.WorkflowStepLog do
   @type t :: %__MODULE__{
           id: String.t(),
           conditions_matched: boolean(),
-          condition_results: map() | nil,
-          actions_executed: map() | nil,
+          condition_results: map() | list() | String.t() | number() | boolean() | nil,
+          actions_executed: map() | list() | String.t() | number() | boolean() | nil,
           executed_at: DateTime.t(),
           duration: integer() | nil,
           error: String.t() | nil,
@@ -18,8 +18,8 @@ defmodule Papermark.WorkflowStepLog do
   schema "WorkflowStepLog" do
     field(:id, :string, primary_key: true)
     field(:conditions_matched, :boolean, source: :conditionsMatched)
-    field(:condition_results, :map, source: :conditionResults)
-    field(:actions_executed, :map, source: :actionsExecuted)
+    field(:condition_results, Papermark.PrismaJson, source: :conditionResults)
+    field(:actions_executed, Papermark.PrismaJson, source: :actionsExecuted)
     field(:executed_at, Papermark.PrismaDateTime, autogenerate: true, source: :executedAt)
     field(:duration, :integer)
     field(:error, :string)

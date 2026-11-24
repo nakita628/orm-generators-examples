@@ -36,6 +36,7 @@ class DocumentAnnotation extends Model
 
     protected $casts = [
         'content' => 'array',
+        'pages' => AsPrismaList::class . ':int',
         'isVisible' => 'boolean',
     ];
 

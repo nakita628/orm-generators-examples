@@ -10,8 +10,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "BookingReport")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "bookingUid")]
     pub booking_uid: String,
@@ -33,10 +32,10 @@ pub struct Model {
     pub status: BookingReportStatus,
     #[sea_orm(column_name = "systemStatus", default_value = "PENDING")]
     pub system_status: SystemReportStatus,
-    #[sea_orm(column_name = "watchlistId", column_type = "Uuid")]
-    pub watchlist_id: Option<String>,
-    #[sea_orm(column_name = "globalWatchlistId", column_type = "Uuid")]
-    pub global_watchlist_id: Option<String>,
+    #[sea_orm(column_name = "watchlistId")]
+    pub watchlist_id: Option<Uuid>,
+    #[sea_orm(column_name = "globalWatchlistId")]
+    pub global_watchlist_id: Option<Uuid>,
 }
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
@@ -106,7 +105,7 @@ impl Related<super::watchlist::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::new_v4().to_string()),
+            id: Set(uuid::Uuid::new_v4()),
             ..ActiveModelTrait::default()
         }
     }

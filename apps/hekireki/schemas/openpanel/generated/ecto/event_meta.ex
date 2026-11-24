@@ -5,7 +5,7 @@ defmodule OpenPanel.EventMeta do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           name: String.t(),
           conversion: boolean() | nil,
           color: String.t() | nil,
@@ -16,7 +16,7 @@ defmodule OpenPanel.EventMeta do
         }
 
   schema "event_meta" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:name, :string)
     field(:conversion, :boolean)
     field(:color, :string)

@@ -8,8 +8,8 @@ defmodule Blinko.AiModels do
           id: integer(),
           title: String.t(),
           model_key: String.t(),
-          capabilities: map(),
-          config: map() | nil,
+          capabilities: map() | list() | String.t() | number() | boolean(),
+          config: map() | list() | String.t() | number() | boolean() | nil,
           sort_order: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -19,8 +19,8 @@ defmodule Blinko.AiModels do
   schema "aiModels" do
     field(:title, :string)
     field(:model_key, :string, source: :modelKey)
-    field(:capabilities, :map)
-    field(:config, :map)
+    field(:capabilities, Blinko.PrismaJson)
+    field(:config, Blinko.PrismaJson)
     field(:sort_order, :integer, default: 0, source: :sortOrder)
     field(:provider_id, :id, source: :providerId)
     belongs_to(:provider, Blinko.AiProviders, foreign_key: :provider_id, define_field: false)

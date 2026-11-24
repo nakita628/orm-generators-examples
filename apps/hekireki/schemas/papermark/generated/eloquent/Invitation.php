@@ -36,6 +36,7 @@ class Invitation extends Model
     protected $casts = [
         'expires' => 'datetime',
         'role' => Role::class,
+        'dataroomIds' => AsPrismaList::class,
     ];
 
     public function team(): BelongsTo

@@ -13,7 +13,7 @@ defmodule LiteLLM.LiteLLMAlert do
           status: String.t(),
           window_start: DateTime.t(),
           window_end: DateTime.t(),
-          evidence: map(),
+          evidence: map() | list() | String.t() | number() | boolean(),
           updated_by: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -27,7 +27,7 @@ defmodule LiteLLM.LiteLLMAlert do
     field(:status, :string, default: "open")
     field(:window_start, LiteLLM.PrismaDateTime)
     field(:window_end, LiteLLM.PrismaDateTime)
-    field(:evidence, :map)
+    field(:evidence, LiteLLM.PrismaJson)
     field(:updated_by, :string)
     timestamps(inserted_at_source: :created_at)
   end

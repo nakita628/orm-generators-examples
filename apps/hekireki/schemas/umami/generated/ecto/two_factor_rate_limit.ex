@@ -16,7 +16,7 @@ defmodule Umami.TwoFactorRateLimit do
     field(:id, :string, primary_key: true)
     field(:attempts, :integer, default: 0)
     field(:locked_until, Umami.PrismaDateTime)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
     timestamps(inserted_at: false)
   end
 end

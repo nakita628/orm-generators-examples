@@ -1,17 +1,17 @@
 defmodule LiteLLM.LiteLLMAccessGroupTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :access_group_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :access_group_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           access_group_name: String.t(),
           description: String.t() | nil,
           access_model_names: [String.t()],
           access_mcp_server_ids: [String.t()],
-          mcp_tool_permissions: map() | nil,
+          mcp_tool_permissions: map() | list() | String.t() | number() | boolean() | nil,
           access_agent_ids: [String.t()],
           access_skill_names: [String.t()],
           access_vector_store_ids: [String.t()],
@@ -28,7 +28,7 @@ defmodule LiteLLM.LiteLLMAccessGroupTable do
     field(:description, :string)
     field(:access_model_names, {:array, :string})
     field(:access_mcp_server_ids, {:array, :string})
-    field(:mcp_tool_permissions, :map)
+    field(:mcp_tool_permissions, LiteLLM.PrismaJson)
     field(:access_agent_ids, {:array, :string})
     field(:access_skill_names, {:array, :string})
     field(:access_vector_store_ids, {:array, :string})

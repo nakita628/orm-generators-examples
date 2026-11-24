@@ -6,8 +6,8 @@ defmodule Hoppscotch.UserHistory do
   @type t :: %__MODULE__{
           id: String.t(),
           req_type: atom(),
-          request: map(),
-          response_metadata: map(),
+          request: map() | list() | String.t() | number() | boolean(),
+          response_metadata: map() | list() | String.t() | number() | boolean(),
           is_starred: boolean(),
           executed_on: DateTime.t(),
           user: Hoppscotch.User.t() | nil
@@ -16,8 +16,8 @@ defmodule Hoppscotch.UserHistory do
   schema "UserHistory" do
     field(:id, :string, primary_key: true)
     field(:req_type, Ecto.Enum, values: [:REST, :GQL], source: :reqType)
-    field(:request, :map)
-    field(:response_metadata, :map, source: :responseMetadata)
+    field(:request, Hoppscotch.PrismaJson)
+    field(:response_metadata, Hoppscotch.PrismaJson, source: :responseMetadata)
     field(:is_starred, :boolean, source: :isStarred)
     field(:executed_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :executedOn)
     field(:user_uid, :string, source: :userUid)

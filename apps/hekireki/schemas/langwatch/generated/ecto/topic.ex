@@ -17,7 +17,7 @@ defmodule LangWatch.Topic do
           id: String.t(),
           name: String.t(),
           embeddings_model: String.t(),
-          centroid: map(),
+          centroid: map() | list() | String.t() | number() | boolean(),
           p95_distance: float(),
           automatically_generated: boolean(),
           last_event_id: String.t() | nil,
@@ -32,7 +32,7 @@ defmodule LangWatch.Topic do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:embeddings_model, :string)
-    field(:centroid, :map)
+    field(:centroid, LangWatch.PrismaJson)
     field(:p95_distance, :float, source: :p95Distance)
     field(:automatically_generated, :boolean, default: true, source: :automaticallyGenerated)
     # The `topics_recorded` event that recorded this topic (its id in the

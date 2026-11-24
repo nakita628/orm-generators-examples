@@ -12,7 +12,7 @@ defmodule Blinko.Fonts do
           file_data: binary() | nil,
           is_local: boolean(),
           is_system: boolean(),
-          weights: map(),
+          weights: map() | list() | String.t() | number() | boolean(),
           category: String.t(),
           sort_order: integer(),
           inserted_at: DateTime.t(),
@@ -26,7 +26,7 @@ defmodule Blinko.Fonts do
     field(:file_data, :binary, source: :fileData)
     field(:is_local, :boolean, default: false, source: :isLocal)
     field(:is_system, :boolean, default: false, source: :isSystem)
-    field(:weights, :map)
+    field(:weights, Blinko.PrismaJson)
     field(:category, :string, default: "sans-serif")
     field(:sort_order, :integer, default: 0, source: :sortOrder)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

@@ -1,16 +1,16 @@
 defmodule Plunk.Segment do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           description: String.t() | nil,
           type: atom(),
-          condition: map() | nil,
+          condition: map() | list() | String.t() | number() | boolean() | nil,
           track_membership: boolean(),
           member_count: integer(),
           inserted_at: DateTime.t(),
@@ -24,10 +24,10 @@ defmodule Plunk.Segment do
     field(:name, :string)
     field(:description, :string)
     field(:type, Ecto.Enum, values: [:DYNAMIC, :STATIC], default: :DYNAMIC)
-    field(:condition, :map)
+    field(:condition, Plunk.PrismaJson)
     field(:track_membership, :boolean, default: false, source: :trackMembership)
     field(:member_count, :integer, default: 0, source: :memberCount)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     has_many(:memberships, Plunk.SegmentMembership, foreign_key: :segment_id)
     has_many(:campaigns, Plunk.Campaign, foreign_key: :segment_id)

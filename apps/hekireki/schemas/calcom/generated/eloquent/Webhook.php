@@ -49,6 +49,7 @@ class Webhook extends Model
         'teamId' => 'integer',
         'eventTypeId' => 'integer',
         'active' => 'boolean',
+        'eventTriggers' => AsPrismaList::class . ':' . WebhookTriggerEvents::class,
         'platform' => 'boolean',
         'time' => 'integer',
         'timeUnit' => TimeUnit::class,

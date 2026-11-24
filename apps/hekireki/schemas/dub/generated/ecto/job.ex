@@ -7,8 +7,8 @@ defmodule Dub.Job do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          payload: map(),
-          options: map() | nil,
+          payload: map() | list() | String.t() | number() | boolean(),
+          options: map() | list() | String.t() | number() | boolean() | nil,
           scheduled_at: DateTime.t(),
           attempts: integer(),
           last_error: String.t() | nil,
@@ -19,8 +19,8 @@ defmodule Dub.Job do
   schema "Job" do
     field(:id, :string, primary_key: true)
     field(:name, :string)
-    field(:payload, :map)
-    field(:options, :map)
+    field(:payload, Dub.PrismaJson)
+    field(:options, Dub.PrismaJson)
     field(:scheduled_at, Dub.PrismaDateTime, autogenerate: true, source: :scheduledAt)
     field(:attempts, :integer, default: 0)
     field(:last_error, :string, source: :lastError)

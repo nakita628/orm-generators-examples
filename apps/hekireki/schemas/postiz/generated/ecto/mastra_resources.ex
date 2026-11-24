@@ -6,7 +6,7 @@ defmodule Postiz.MastraResources do
   @type t :: %__MODULE__{
           id: String.t(),
           working_memory: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           created_at: DateTime.t(),
           updated_at: DateTime.t(),
           created_at_z: DateTime.t() | nil,
@@ -16,7 +16,7 @@ defmodule Postiz.MastraResources do
   schema "mastra_resources" do
     field(:id, :string, primary_key: true)
     field(:working_memory, :string, source: :workingMemory)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:updated_at, Postiz.PrismaDateTime, source: :updatedAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

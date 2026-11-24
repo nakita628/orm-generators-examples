@@ -5,6 +5,7 @@ defmodule Langfuse.TracingReadinessSettings do
   @timestamps_opts [type: Langfuse.PrismaDateTime, autogenerate: {Langfuse.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
+          project_id: String.t(),
           trace_idle_ms: integer() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -15,7 +16,8 @@ defmodule Langfuse.TracingReadinessSettings do
 
   schema "tracing_readiness_settings" do
     field(:trace_idle_ms, :integer)
-    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
+    field(:project_id, :string, primary_key: true)
+    belongs_to(:project, Langfuse.Project, foreign_key: :project_id, define_field: false, type: :string)
     belongs_to(:created_by_user, Langfuse.User, foreign_key: :created_by, type: :string)
     belongs_to(:updated_by_user, Langfuse.User, foreign_key: :updated_by, type: :string)
     timestamps(inserted_at_source: :created_at)

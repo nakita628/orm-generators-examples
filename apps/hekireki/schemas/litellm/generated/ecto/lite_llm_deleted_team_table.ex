@@ -1,19 +1,19 @@
 defmodule LiteLLM.LiteLLMDeletedTeamTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           team_id: String.t(),
           team_alias: String.t() | nil,
           organization_id: String.t() | nil,
           object_permission_id: String.t() | nil,
           admins: [String.t()],
           members: [String.t()],
-          members_with_roles: map(),
-          metadata: map(),
+          members_with_roles: map() | list() | String.t() | number() | boolean(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           max_budget: float() | nil,
           soft_budget: float() | nil,
           spend: float(),
@@ -25,9 +25,9 @@ defmodule LiteLLM.LiteLLMDeletedTeamTable do
           budget_duration: String.t() | nil,
           budget_reset_at: DateTime.t() | nil,
           blocked: boolean(),
-          model_spend: map(),
-          model_max_budget: map(),
-          router_settings: map() | nil,
+          model_spend: map() | list() | String.t() | number() | boolean(),
+          model_max_budget: map() | list() | String.t() | number() | boolean(),
+          router_settings: map() | list() | String.t() | number() | boolean() | nil,
           team_member_permissions: [String.t()],
           access_group_ids: [String.t()],
           policies: [String.t()],
@@ -48,8 +48,8 @@ defmodule LiteLLM.LiteLLMDeletedTeamTable do
     field(:object_permission_id, :string)
     field(:admins, {:array, :string})
     field(:members, {:array, :string})
-    field(:members_with_roles, :map, default: %{})
-    field(:metadata, :map, default: %{})
+    field(:members_with_roles, LiteLLM.PrismaJson, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:max_budget, :float)
     field(:soft_budget, :float)
     field(:spend, :float, default: 0.0)
@@ -61,9 +61,9 @@ defmodule LiteLLM.LiteLLMDeletedTeamTable do
     field(:budget_duration, :string)
     field(:budget_reset_at, LiteLLM.PrismaDateTime)
     field(:blocked, :boolean, default: false)
-    field(:model_spend, :map, default: %{})
-    field(:model_max_budget, :map, default: %{})
-    field(:router_settings, :map, default: %{})
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
+    field(:model_max_budget, LiteLLM.PrismaJson, default: %{})
+    field(:router_settings, LiteLLM.PrismaJson, default: %{})
     field(:team_member_permissions, {:array, :string})
     field(:access_group_ids, {:array, :string})
     field(:policies, {:array, :string})

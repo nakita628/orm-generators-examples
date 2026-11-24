@@ -10,10 +10,10 @@ import (
 )
 
 type APIKeys struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name          *string  `gorm:"column:name" json:"name"`
-	Secret        *string  `gorm:"column:secret;uniqueIndex" json:"secret"`
-	CreatedBy     *int     `gorm:"column:createdBy" json:"createdBy"`
+	Secret        *string  `gorm:"column:secret;uniqueIndex:api_keys_secret_key" json:"secret"`
+	CreatedBy     *int     `gorm:"column:createdBy;size:32" json:"createdBy"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
 }
@@ -34,18 +34,18 @@ func (m *APIKeys) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceDocuments struct {
-	ID                 int                 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	DocID              string              `gorm:"column:docId;uniqueIndex;not null" json:"docId"`
+	ID                 int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	DocID              string              `gorm:"column:docId;uniqueIndex:workspace_documents_docId_key;not null" json:"docId"`
 	Filename           string              `gorm:"column:filename;not null" json:"filename"`
 	Docpath            string              `gorm:"column:docpath;not null" json:"docpath"`
-	WorkspaceID        int                 `gorm:"column:workspaceId;not null" json:"workspaceId"`
+	WorkspaceID        int                 `gorm:"column:workspaceId;size:32;not null" json:"workspaceId"`
 	Metadata           *string             `gorm:"column:metadata" json:"metadata"`
 	Pinned             *bool               `gorm:"column:pinned;default:false" json:"pinned"`
 	Watched            *bool               `gorm:"column:watched;default:false" json:"watched"`
 	CreatedAt          DateTime            `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt      DateTime            `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Workspace          *Workspaces         `gorm:"foreignKey:WorkspaceID"`
-	DocumentSyncQueues *DocumentSyncQueues `gorm:"foreignKey:WorkspaceDocID;constraint:OnDelete:CASCADE"`
+	Workspace          *Workspaces         `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	DocumentSyncQueues *DocumentSyncQueues `gorm:"foreignKey:WorkspaceDocID;constraint:document_sync_queues_workspaceDocId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WorkspaceDocuments) TableName() string {
@@ -64,13 +64,13 @@ func (m *WorkspaceDocuments) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Invites struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Code          string   `gorm:"column:code;uniqueIndex;not null" json:"code"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Code          string   `gorm:"column:code;uniqueIndex:invites_code_key;not null" json:"code"`
 	Status        *string  `gorm:"column:status;default:'pending';not null" json:"status"`
-	ClaimedBy     *int     `gorm:"column:claimedBy" json:"claimedBy"`
+	ClaimedBy     *int     `gorm:"column:claimedBy;size:32" json:"claimedBy"`
 	WorkspaceIds  *string  `gorm:"column:workspaceIds" json:"workspaceIds"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	CreatedBy     int      `gorm:"column:createdBy;not null" json:"createdBy"`
+	CreatedBy     int      `gorm:"column:createdBy;size:32;not null" json:"createdBy"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
 }
 
@@ -90,8 +90,8 @@ func (m *Invites) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SystemSettings struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Label         string   `gorm:"column:label;uniqueIndex;not null" json:"label"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Label         string   `gorm:"column:label;uniqueIndex:system_settings_label_key;not null" json:"label"`
 	Value         *string  `gorm:"column:value" json:"value"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
@@ -113,34 +113,34 @@ func (m *SystemSettings) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Users struct {
-	ID                        int                         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Username                  *string                     `gorm:"column:username;uniqueIndex" json:"username"`
+	ID                        int                         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Username                  *string                     `gorm:"column:username;uniqueIndex:users_username_key" json:"username"`
 	Password                  string                      `gorm:"column:password;not null" json:"password"`
 	PfpFilename               *string                     `gorm:"column:pfpFilename" json:"pfpFilename"`
 	Role                      *string                     `gorm:"column:role;default:'default';not null" json:"role"`
-	Suspended                 int                         `gorm:"column:suspended;default:0;not null" json:"suspended"`
+	Suspended                 int                         `gorm:"column:suspended;size:32;default:0;not null" json:"suspended"`
 	SeenRecoveryCodes         *bool                       `gorm:"column:seen_recovery_codes;default:false" json:"seen_recovery_codes"`
 	CreatedAt                 DateTime                    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt             DateTime                    `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	DailyMessageLimit         *int                        `gorm:"column:dailyMessageLimit" json:"dailyMessageLimit"`
+	DailyMessageLimit         *int                        `gorm:"column:dailyMessageLimit;size:32" json:"dailyMessageLimit"`
 	Bio                       *string                     `gorm:"column:bio;default:''" json:"bio"`
 	WebPushSubscriptionConfig *string                     `gorm:"column:web_push_subscription_config" json:"web_push_subscription_config"`
-	WorkspaceChats            []WorkspaceChats            `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	WorkspaceUsers            []WorkspaceUsers            `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	EmbedConfigs              []EmbedConfigs              `gorm:"foreignKey:UsersID"`
-	EmbedChats                []EmbedChats                `gorm:"foreignKey:UsersID"`
-	Threads                   []WorkspaceThreads          `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	RecoveryCodes             []RecoveryCodes             `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	PasswordResetTokens       []PasswordResetTokens       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	WorkspaceAgentInvocations []WorkspaceAgentInvocations `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	SlashCommandPresets       []SlashCommandPresets       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	BrowserExtensionAPIKeys   []BrowserExtensionAPIKeys   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TemporaryAuthTokens       []TemporaryAuthTokens       `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	SystemPromptVariables     []SystemPromptVariables     `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	PromptHistory             []PromptHistory             `gorm:"foreignKey:ModifiedBy"`
-	DesktopMobileDevices      []DesktopMobileDevices      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	WorkspaceParsedFiles      []WorkspaceParsedFiles      `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	Memories                  []Memories                  `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	WorkspaceChats            []WorkspaceChats            `gorm:"foreignKey:UserID;constraint:workspace_chats_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkspaceUsers            []WorkspaceUsers            `gorm:"foreignKey:UserID;constraint:workspace_users_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	EmbedConfigs              []EmbedConfigs              `gorm:"foreignKey:UsersID;constraint:embed_configs_usersId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	EmbedChats                []EmbedChats                `gorm:"foreignKey:UsersID;constraint:embed_chats_usersId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Threads                   []WorkspaceThreads          `gorm:"foreignKey:UserID;constraint:workspace_threads_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	RecoveryCodes             []RecoveryCodes             `gorm:"foreignKey:UserID;constraint:recovery_codes_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	PasswordResetTokens       []PasswordResetTokens       `gorm:"foreignKey:UserID;constraint:password_reset_tokens_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkspaceAgentInvocations []WorkspaceAgentInvocations `gorm:"foreignKey:UserID;constraint:workspace_agent_invocations_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	SlashCommandPresets       []SlashCommandPresets       `gorm:"foreignKey:UserID;constraint:slash_command_presets_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	BrowserExtensionAPIKeys   []BrowserExtensionAPIKeys   `gorm:"foreignKey:UserID;constraint:browser_extension_api_keys_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TemporaryAuthTokens       []TemporaryAuthTokens       `gorm:"foreignKey:UserID;constraint:temporary_auth_tokens_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	SystemPromptVariables     []SystemPromptVariables     `gorm:"foreignKey:UserID;constraint:system_prompt_variables_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	PromptHistory             []PromptHistory             `gorm:"foreignKey:ModifiedBy;constraint:prompt_history_modifiedBy_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	DesktopMobileDevices      []DesktopMobileDevices      `gorm:"foreignKey:UserID;constraint:desktop_mobile_devices_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkspaceParsedFiles      []WorkspaceParsedFiles      `gorm:"foreignKey:UserID;constraint:workspace_parsed_files_userId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Memories                  []Memories                  `gorm:"foreignKey:UserID;constraint:memories_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Users) TableName() string {
@@ -159,11 +159,11 @@ func (m *Users) BeforeCreate(tx *gorm.DB) error {
 }
 
 type RecoveryCodes struct {
-	ID        int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserID    int      `gorm:"column:user_id;index:recovery_codes_user_id_idx;not null" json:"user_id"`
+	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UserID    int      `gorm:"column:user_id;index:recovery_codes_user_id_idx;size:32;not null" json:"user_id"`
 	CodeHash  string   `gorm:"column:code_hash;not null" json:"code_hash"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User      *Users   `gorm:"foreignKey:UserID"`
+	User      *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (RecoveryCodes) TableName() string {
@@ -179,12 +179,12 @@ func (m *RecoveryCodes) BeforeCreate(tx *gorm.DB) error {
 }
 
 type PasswordResetTokens struct {
-	ID        int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserID    int      `gorm:"column:user_id;index:password_reset_tokens_user_id_idx;not null" json:"user_id"`
-	Token     string   `gorm:"column:token;uniqueIndex;not null" json:"token"`
+	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UserID    int      `gorm:"column:user_id;index:password_reset_tokens_user_id_idx;size:32;not null" json:"user_id"`
+	Token     string   `gorm:"column:token;uniqueIndex:password_reset_tokens_token_key;not null" json:"token"`
 	ExpiresAt DateTime `gorm:"column:expiresAt;not null" json:"expiresAt"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User      *Users   `gorm:"foreignKey:UserID"`
+	User      *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (PasswordResetTokens) TableName() string {
@@ -200,7 +200,7 @@ func (m *PasswordResetTokens) BeforeCreate(tx *gorm.DB) error {
 }
 
 type DocumentVectors struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	DocID         string   `gorm:"column:docId;not null" json:"docId"`
 	VectorID      string   `gorm:"column:vectorId;not null" json:"vectorId"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
@@ -223,35 +223,35 @@ func (m *DocumentVectors) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Workspaces struct {
-	ID                         int                          `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID                         int                          `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name                       string                       `gorm:"column:name;not null" json:"name"`
-	Slug                       string                       `gorm:"column:slug;uniqueIndex;not null" json:"slug"`
+	Slug                       string                       `gorm:"column:slug;uniqueIndex:workspaces_slug_key;not null" json:"slug"`
 	VectorTag                  *string                      `gorm:"column:vectorTag" json:"vectorTag"`
 	CreatedAt                  DateTime                     `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	OpenAiTemp                 *float64                     `gorm:"column:openAiTemp" json:"openAiTemp"`
-	OpenAiHistory              *int                         `gorm:"column:openAiHistory;default:20;not null" json:"openAiHistory"`
+	OpenAiHistory              *int                         `gorm:"column:openAiHistory;size:32;default:20;not null" json:"openAiHistory"`
 	LastUpdatedAt              DateTime                     `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
 	OpenAiPrompt               *string                      `gorm:"column:openAiPrompt" json:"openAiPrompt"`
 	SimilarityThreshold        *float64                     `gorm:"column:similarityThreshold;default:0.25" json:"similarityThreshold"`
 	ChatProvider               *string                      `gorm:"column:chatProvider" json:"chatProvider"`
 	ChatModel                  *string                      `gorm:"column:chatModel" json:"chatModel"`
-	TopN                       *int                         `gorm:"column:topN;default:4" json:"topN"`
+	TopN                       *int                         `gorm:"column:topN;size:32;default:4" json:"topN"`
 	ChatMode                   *string                      `gorm:"column:chatMode;default:'chat'" json:"chatMode"`
 	PfpFilename                *string                      `gorm:"column:pfpFilename" json:"pfpFilename"`
 	AgentProvider              *string                      `gorm:"column:agentProvider" json:"agentProvider"`
 	AgentModel                 *string                      `gorm:"column:agentModel" json:"agentModel"`
 	QueryRefusalResponse       *string                      `gorm:"column:queryRefusalResponse" json:"queryRefusalResponse"`
 	VectorSearchMode           *string                      `gorm:"column:vectorSearchMode;default:'default'" json:"vectorSearchMode"`
-	RouterID                   *int                         `gorm:"column:router_id" json:"router_id"`
-	WorkspaceUsers             []WorkspaceUsers             `gorm:"foreignKey:WorkspaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	Documents                  []WorkspaceDocuments         `gorm:"foreignKey:WorkspaceID"`
-	WorkspaceSuggestedMessages []WorkspaceSuggestedMessages `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
-	EmbedConfigs               []EmbedConfigs               `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
-	Threads                    []WorkspaceThreads           `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
-	WorkspaceAgentInvocations  []WorkspaceAgentInvocations  `gorm:"foreignKey:WorkspaceID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
-	PromptHistory              []PromptHistory              `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
-	WorkspaceParsedFiles       []WorkspaceParsedFiles       `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
-	Memories                   []Memories                   `gorm:"foreignKey:WorkspaceID;constraint:OnDelete:CASCADE"`
+	RouterID                   *int                         `gorm:"column:router_id;size:32" json:"router_id"`
+	WorkspaceUsers             []WorkspaceUsers             `gorm:"foreignKey:WorkspaceID;constraint:workspace_users_workspace_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Documents                  []WorkspaceDocuments         `gorm:"foreignKey:WorkspaceID;constraint:workspace_documents_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	WorkspaceSuggestedMessages []WorkspaceSuggestedMessages `gorm:"foreignKey:WorkspaceID;constraint:workspace_suggested_messages_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	EmbedConfigs               []EmbedConfigs               `gorm:"foreignKey:WorkspaceID;constraint:embed_configs_workspace_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Threads                    []WorkspaceThreads           `gorm:"foreignKey:WorkspaceID;constraint:workspace_threads_workspace_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkspaceAgentInvocations  []WorkspaceAgentInvocations  `gorm:"foreignKey:WorkspaceID;constraint:workspace_agent_invocations_workspace_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	PromptHistory              []PromptHistory              `gorm:"foreignKey:WorkspaceID;constraint:prompt_history_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	WorkspaceParsedFiles       []WorkspaceParsedFiles       `gorm:"foreignKey:WorkspaceID;constraint:workspace_parsed_files_workspaceId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Memories                   []Memories                   `gorm:"foreignKey:WorkspaceID;constraint:memories_workspace_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Workspaces) TableName() string {
@@ -270,16 +270,16 @@ func (m *Workspaces) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceThreads struct {
-	ID                   int                    `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID                   int                    `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name                 string                 `gorm:"column:name;not null" json:"name"`
-	Slug                 string                 `gorm:"column:slug;uniqueIndex;not null" json:"slug"`
-	WorkspaceID          int                    `gorm:"column:workspace_id;index:workspace_threads_workspace_id_idx;not null" json:"workspace_id"`
-	UserID               *int                   `gorm:"column:user_id;index:workspace_threads_user_id_idx" json:"user_id"`
+	Slug                 string                 `gorm:"column:slug;uniqueIndex:workspace_threads_slug_key;not null" json:"slug"`
+	WorkspaceID          int                    `gorm:"column:workspace_id;index:workspace_threads_workspace_id_idx;size:32;not null" json:"workspace_id"`
+	UserID               *int                   `gorm:"column:user_id;index:workspace_threads_user_id_idx;size:32" json:"user_id"`
 	CreatedAt            DateTime               `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt        DateTime               `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Workspace            *Workspaces            `gorm:"foreignKey:WorkspaceID"`
-	User                 *Users                 `gorm:"foreignKey:UserID"`
-	WorkspaceParsedFiles []WorkspaceParsedFiles `gorm:"foreignKey:ThreadID;constraint:OnDelete:CASCADE"`
+	Workspace            *Workspaces            `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	User                 *Users                 `gorm:"foreignKey:UserID;belongsTo"`
+	WorkspaceParsedFiles []WorkspaceParsedFiles `gorm:"foreignKey:ThreadID;constraint:workspace_parsed_files_threadId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (WorkspaceThreads) TableName() string {
@@ -298,13 +298,13 @@ func (m *WorkspaceThreads) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceSuggestedMessages struct {
-	ID            int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	WorkspaceID   int         `gorm:"column:workspaceId;index:workspace_suggested_messages_workspaceId_idx;not null" json:"workspaceId"`
+	ID            int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	WorkspaceID   int         `gorm:"column:workspaceId;index:workspace_suggested_messages_workspaceId_idx;size:32;not null" json:"workspaceId"`
 	Heading       string      `gorm:"column:heading;not null" json:"heading"`
 	Message       string      `gorm:"column:message;not null" json:"message"`
 	CreatedAt     DateTime    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime    `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Workspace     *Workspaces `gorm:"foreignKey:WorkspaceID"`
+	Workspace     *Workspaces `gorm:"foreignKey:WorkspaceID;belongsTo"`
 }
 
 func (WorkspaceSuggestedMessages) TableName() string {
@@ -323,19 +323,19 @@ func (m *WorkspaceSuggestedMessages) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceChats struct {
-	ID              int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	WorkspaceID     int      `gorm:"column:workspaceId;not null" json:"workspaceId"`
+	ID              int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	WorkspaceID     int      `gorm:"column:workspaceId;size:32;not null" json:"workspaceId"`
 	Prompt          string   `gorm:"column:prompt;not null" json:"prompt"`
 	Response        string   `gorm:"column:response;not null" json:"response"`
 	Include         *bool    `gorm:"column:include;default:true;not null" json:"include"`
-	UserID          *int     `gorm:"column:user_id" json:"user_id"`
-	ThreadID        *int     `gorm:"column:thread_id" json:"thread_id"`
+	UserID          *int     `gorm:"column:user_id;size:32" json:"user_id"`
+	ThreadID        *int     `gorm:"column:thread_id;size:32" json:"thread_id"`
 	APISessionID    *string  `gorm:"column:api_session_id" json:"api_session_id"`
 	CreatedAt       DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt   DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
 	FeedbackScore   *bool    `gorm:"column:feedbackScore" json:"feedbackScore"`
 	MemoryProcessed *bool    `gorm:"column:memory_processed" json:"memory_processed"`
-	Users           *Users   `gorm:"foreignKey:UserID"`
+	Users           *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (WorkspaceChats) TableName() string {
@@ -354,17 +354,17 @@ func (m *WorkspaceChats) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceAgentInvocations struct {
-	ID            int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID          string      `gorm:"column:uuid;uniqueIndex;index:workspace_agent_invocations_uuid_idx;not null" json:"uuid"`
+	ID            int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID          string      `gorm:"column:uuid;uniqueIndex:workspace_agent_invocations_uuid_key;index:workspace_agent_invocations_uuid_idx;not null" json:"uuid"`
 	Prompt        string      `gorm:"column:prompt;not null" json:"prompt"`
 	Closed        bool        `gorm:"column:closed;default:false;not null" json:"closed"`
-	UserID        *int        `gorm:"column:user_id" json:"user_id"`
-	ThreadID      *int        `gorm:"column:thread_id" json:"thread_id"`
-	WorkspaceID   int         `gorm:"column:workspace_id;not null" json:"workspace_id"`
+	UserID        *int        `gorm:"column:user_id;size:32" json:"user_id"`
+	ThreadID      *int        `gorm:"column:thread_id;size:32" json:"thread_id"`
+	WorkspaceID   int         `gorm:"column:workspace_id;size:32;not null" json:"workspace_id"`
 	CreatedAt     DateTime    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime    `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	User          *Users      `gorm:"foreignKey:UserID"`
-	Workspace     *Workspaces `gorm:"foreignKey:WorkspaceID"`
+	User          *Users      `gorm:"foreignKey:UserID;belongsTo"`
+	Workspace     *Workspaces `gorm:"foreignKey:WorkspaceID;belongsTo"`
 }
 
 func (WorkspaceAgentInvocations) TableName() string {
@@ -383,13 +383,13 @@ func (m *WorkspaceAgentInvocations) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceUsers struct {
-	ID            int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserID        int         `gorm:"column:user_id;not null" json:"user_id"`
-	WorkspaceID   int         `gorm:"column:workspace_id;not null" json:"workspace_id"`
+	ID            int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UserID        int         `gorm:"column:user_id;size:32;not null" json:"user_id"`
+	WorkspaceID   int         `gorm:"column:workspace_id;size:32;not null" json:"workspace_id"`
 	CreatedAt     DateTime    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime    `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Workspaces    *Workspaces `gorm:"foreignKey:WorkspaceID"`
-	Users         *Users      `gorm:"foreignKey:UserID"`
+	Workspaces    *Workspaces `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	Users         *Users      `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (WorkspaceUsers) TableName() string {
@@ -408,11 +408,11 @@ func (m *WorkspaceUsers) BeforeCreate(tx *gorm.DB) error {
 }
 
 type CacheData struct {
-	ID            int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID            int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name          string    `gorm:"column:name;not null" json:"name"`
 	Data          string    `gorm:"column:data;not null" json:"data"`
 	BelongsTo     *string   `gorm:"column:belongsTo" json:"belongsTo"`
-	ByID          *int      `gorm:"column:byId" json:"byId"`
+	ByID          *int      `gorm:"column:byId;size:32" json:"byId"`
 	ExpiresAt     *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
 	CreatedAt     DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime  `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
@@ -434,24 +434,24 @@ func (m *CacheData) BeforeCreate(tx *gorm.DB) error {
 }
 
 type EmbedConfigs struct {
-	ID                       int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID                     string      `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	Enabled                  bool        `gorm:"column:enabled;default:false;not null" json:"enabled"`
-	ChatMode                 *string     `gorm:"column:chat_mode;default:'query';not null" json:"chat_mode"`
-	AllowlistDomains         *string     `gorm:"column:allowlist_domains" json:"allowlist_domains"`
-	AllowModelOverride       bool        `gorm:"column:allow_model_override;default:false;not null" json:"allow_model_override"`
-	AllowTemperatureOverride bool        `gorm:"column:allow_temperature_override;default:false;not null" json:"allow_temperature_override"`
-	AllowPromptOverride      bool        `gorm:"column:allow_prompt_override;default:false;not null" json:"allow_prompt_override"`
-	MaxChatsPerDay           *int        `gorm:"column:max_chats_per_day" json:"max_chats_per_day"`
-	MaxChatsPerSession       *int        `gorm:"column:max_chats_per_session" json:"max_chats_per_session"`
-	MessageLimit             *int        `gorm:"column:message_limit;default:20" json:"message_limit"`
-	WorkspaceID              int         `gorm:"column:workspace_id;not null" json:"workspace_id"`
-	CreatedBy                *int        `gorm:"column:createdBy" json:"createdBy"`
-	UsersID                  *int        `gorm:"column:usersId" json:"usersId"`
-	CreatedAt                DateTime    `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Workspace                *Workspaces `gorm:"foreignKey:WorkspaceID"`
-	Users                    *Users
-	EmbedChats               []EmbedChats `gorm:"foreignKey:EmbedID;constraint:OnDelete:CASCADE"`
+	ID                       int          `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID                     string       `gorm:"column:uuid;uniqueIndex:embed_configs_uuid_key;not null" json:"uuid"`
+	Enabled                  bool         `gorm:"column:enabled;default:false;not null" json:"enabled"`
+	ChatMode                 *string      `gorm:"column:chat_mode;default:'query';not null" json:"chat_mode"`
+	AllowlistDomains         *string      `gorm:"column:allowlist_domains" json:"allowlist_domains"`
+	AllowModelOverride       bool         `gorm:"column:allow_model_override;default:false;not null" json:"allow_model_override"`
+	AllowTemperatureOverride bool         `gorm:"column:allow_temperature_override;default:false;not null" json:"allow_temperature_override"`
+	AllowPromptOverride      bool         `gorm:"column:allow_prompt_override;default:false;not null" json:"allow_prompt_override"`
+	MaxChatsPerDay           *int         `gorm:"column:max_chats_per_day;size:32" json:"max_chats_per_day"`
+	MaxChatsPerSession       *int         `gorm:"column:max_chats_per_session;size:32" json:"max_chats_per_session"`
+	MessageLimit             *int         `gorm:"column:message_limit;size:32;default:20" json:"message_limit"`
+	WorkspaceID              int          `gorm:"column:workspace_id;size:32;not null" json:"workspace_id"`
+	CreatedBy                *int         `gorm:"column:createdBy;size:32" json:"createdBy"`
+	UsersID                  *int         `gorm:"column:usersId;size:32" json:"usersId"`
+	CreatedAt                DateTime     `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
+	Workspace                *Workspaces  `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	Users                    *Users       `gorm:"belongsTo"`
+	EmbedChats               []EmbedChats `gorm:"foreignKey:EmbedID;constraint:embed_chats_embed_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (EmbedConfigs) TableName() string {
@@ -467,17 +467,17 @@ func (m *EmbedConfigs) BeforeCreate(tx *gorm.DB) error {
 }
 
 type EmbedChats struct {
-	ID                    int           `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID                    int           `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Prompt                string        `gorm:"column:prompt;not null" json:"prompt"`
 	Response              string        `gorm:"column:response;not null" json:"response"`
 	SessionID             string        `gorm:"column:session_id;not null" json:"session_id"`
 	Include               *bool         `gorm:"column:include;default:true;not null" json:"include"`
 	ConnectionInformation *string       `gorm:"column:connection_information" json:"connection_information"`
-	EmbedID               int           `gorm:"column:embed_id;not null" json:"embed_id"`
-	UsersID               *int          `gorm:"column:usersId" json:"usersId"`
+	EmbedID               int           `gorm:"column:embed_id;size:32;not null" json:"embed_id"`
+	UsersID               *int          `gorm:"column:usersId;size:32" json:"usersId"`
 	CreatedAt             DateTime      `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	EmbedConfig           *EmbedConfigs `gorm:"foreignKey:EmbedID"`
-	Users                 *Users
+	EmbedConfig           *EmbedConfigs `gorm:"foreignKey:EmbedID;belongsTo"`
+	Users                 *Users        `gorm:"belongsTo"`
 }
 
 func (EmbedChats) TableName() string {
@@ -493,10 +493,10 @@ func (m *EmbedChats) BeforeCreate(tx *gorm.DB) error {
 }
 
 type EventLogs struct {
-	ID         int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID         int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Event      string   `gorm:"column:event;index:event_logs_event_idx;not null" json:"event"`
 	Metadata   *string  `gorm:"column:metadata" json:"metadata"`
-	UserID     *int     `gorm:"column:userId" json:"userId"`
+	UserID     *int     `gorm:"column:userId;size:32" json:"userId"`
 	OccurredAt DateTime `gorm:"column:occurredAt;not null" json:"occurredAt"`
 }
 
@@ -513,15 +513,15 @@ func (m *EventLogs) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SlashCommandPresets struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Command       string   `gorm:"column:command;uniqueIndex:slash_command_presets_uid_command_key;not null" json:"command"`
 	Prompt        string   `gorm:"column:prompt;not null" json:"prompt"`
 	Description   string   `gorm:"column:description;not null" json:"description"`
-	UID           int      `gorm:"column:uid;uniqueIndex:slash_command_presets_uid_command_key;default:0;not null" json:"uid"`
-	UserID        *int     `gorm:"column:userId" json:"userId"`
+	UID           int      `gorm:"column:uid;uniqueIndex:slash_command_presets_uid_command_key;size:32;default:0;not null" json:"uid"`
+	UserID        *int     `gorm:"column:userId;size:32" json:"userId"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	User          *Users   `gorm:"foreignKey:UserID"`
+	User          *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (SlashCommandPresets) TableName() string {
@@ -540,14 +540,14 @@ func (m *SlashCommandPresets) BeforeCreate(tx *gorm.DB) error {
 }
 
 type DocumentSyncQueues struct {
-	ID             int                      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	StaleAfterMs   *int                     `gorm:"column:staleAfterMs;default:604800000;not null" json:"staleAfterMs"`
+	ID             int                      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	StaleAfterMs   *int                     `gorm:"column:staleAfterMs;size:32;default:604800000;not null" json:"staleAfterMs"`
 	NextSyncAt     DateTime                 `gorm:"column:nextSyncAt;not null" json:"nextSyncAt"`
 	CreatedAt      DateTime                 `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastSyncedAt   DateTime                 `gorm:"column:lastSyncedAt;not null" json:"lastSyncedAt"`
-	WorkspaceDocID int                      `gorm:"column:workspaceDocId;uniqueIndex;not null" json:"workspaceDocId"`
-	WorkspaceDoc   *WorkspaceDocuments      `gorm:"foreignKey:WorkspaceDocID"`
-	Runs           []DocumentSyncExecutions `gorm:"foreignKey:QueueID;constraint:OnDelete:CASCADE"`
+	WorkspaceDocID int                      `gorm:"column:workspaceDocId;uniqueIndex:document_sync_queues_workspaceDocId_key;size:32;not null" json:"workspaceDocId"`
+	WorkspaceDoc   *WorkspaceDocuments      `gorm:"foreignKey:WorkspaceDocID;belongsTo"`
+	Runs           []DocumentSyncExecutions `gorm:"foreignKey:QueueID;constraint:document_sync_executions_queueId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (DocumentSyncQueues) TableName() string {
@@ -566,12 +566,12 @@ func (m *DocumentSyncQueues) BeforeCreate(tx *gorm.DB) error {
 }
 
 type DocumentSyncExecutions struct {
-	ID        int                 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	QueueID   int                 `gorm:"column:queueId;not null" json:"queueId"`
+	ID        int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	QueueID   int                 `gorm:"column:queueId;size:32;not null" json:"queueId"`
 	Status    *string             `gorm:"column:status;default:'unknown';not null" json:"status"`
 	Result    *string             `gorm:"column:result" json:"result"`
 	CreatedAt DateTime            `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Queue     *DocumentSyncQueues `gorm:"foreignKey:QueueID"`
+	Queue     *DocumentSyncQueues `gorm:"foreignKey:QueueID;belongsTo"`
 }
 
 func (DocumentSyncExecutions) TableName() string {
@@ -587,12 +587,12 @@ func (m *DocumentSyncExecutions) BeforeCreate(tx *gorm.DB) error {
 }
 
 type BrowserExtensionAPIKeys struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Key           string   `gorm:"column:key;uniqueIndex;not null" json:"key"`
-	UserID        *int     `gorm:"column:user_id;index:browser_extension_api_keys_user_id_idx" json:"user_id"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Key           string   `gorm:"column:key;uniqueIndex:browser_extension_api_keys_key_key;not null" json:"key"`
+	UserID        *int     `gorm:"column:user_id;index:browser_extension_api_keys_user_id_idx;size:32" json:"user_id"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt DateTime `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	User          *Users   `gorm:"foreignKey:UserID"`
+	User          *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (BrowserExtensionAPIKeys) TableName() string {
@@ -619,12 +619,12 @@ func (*BrowserExtensionAPIKeys) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TemporaryAuthTokens struct {
-	ID        int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Token     string   `gorm:"column:token;uniqueIndex;index:temporary_auth_tokens_token_idx;not null" json:"token"`
-	UserID    int      `gorm:"column:userId;index:temporary_auth_tokens_userId_idx;not null" json:"userId"`
+	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Token     string   `gorm:"column:token;uniqueIndex:temporary_auth_tokens_token_key;index:temporary_auth_tokens_token_idx;not null" json:"token"`
+	UserID    int      `gorm:"column:userId;index:temporary_auth_tokens_userId_idx;size:32;not null" json:"userId"`
 	ExpiresAt DateTime `gorm:"column:expiresAt;not null" json:"expiresAt"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User      *Users   `gorm:"foreignKey:UserID"`
+	User      *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (TemporaryAuthTokens) TableName() string {
@@ -640,15 +640,15 @@ func (m *TemporaryAuthTokens) BeforeCreate(tx *gorm.DB) error {
 }
 
 type SystemPromptVariables struct {
-	ID          int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Key         string   `gorm:"column:key;uniqueIndex;not null" json:"key"`
+	ID          int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Key         string   `gorm:"column:key;uniqueIndex:system_prompt_variables_key_key;not null" json:"key"`
 	Value       *string  `gorm:"column:value" json:"value"`
 	Description *string  `gorm:"column:description" json:"description"`
 	Type        *string  `gorm:"column:type;default:'system';not null" json:"type"`
-	UserID      *int     `gorm:"column:userId;index:system_prompt_variables_userId_idx" json:"userId"`
+	UserID      *int     `gorm:"column:userId;index:system_prompt_variables_userId_idx;size:32" json:"userId"`
 	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	User        *Users   `gorm:"foreignKey:UserID"`
+	User        *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (SystemPromptVariables) TableName() string {
@@ -675,13 +675,13 @@ func (*SystemPromptVariables) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type PromptHistory struct {
-	ID          int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	WorkspaceID int         `gorm:"column:workspaceId;index:prompt_history_workspaceId_idx;not null" json:"workspaceId"`
+	ID          int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	WorkspaceID int         `gorm:"column:workspaceId;index:prompt_history_workspaceId_idx;size:32;not null" json:"workspaceId"`
 	Prompt      string      `gorm:"column:prompt;not null" json:"prompt"`
-	ModifiedBy  *int        `gorm:"column:modifiedBy" json:"modifiedBy"`
+	ModifiedBy  *int        `gorm:"column:modifiedBy;size:32" json:"modifiedBy"`
 	ModifiedAt  DateTime    `gorm:"column:modifiedAt;not null" json:"modifiedAt"`
-	Workspace   *Workspaces `gorm:"foreignKey:WorkspaceID"`
-	User        *Users      `gorm:"foreignKey:ModifiedBy"`
+	Workspace   *Workspaces `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	User        *Users      `gorm:"foreignKey:ModifiedBy;belongsTo"`
 }
 
 func (PromptHistory) TableName() string {
@@ -697,14 +697,14 @@ func (m *PromptHistory) BeforeCreate(tx *gorm.DB) error {
 }
 
 type DesktopMobileDevices struct {
-	ID         int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID         int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	DeviceOs   string   `gorm:"column:deviceOs;not null" json:"deviceOs"`
 	DeviceName string   `gorm:"column:deviceName;not null" json:"deviceName"`
-	Token      string   `gorm:"column:token;uniqueIndex;not null" json:"token"`
+	Token      string   `gorm:"column:token;uniqueIndex:desktop_mobile_devices_token_key;not null" json:"token"`
 	Approved   bool     `gorm:"column:approved;default:false;not null" json:"approved"`
-	UserID     *int     `gorm:"column:userId;index:desktop_mobile_devices_userId_idx" json:"userId"`
+	UserID     *int     `gorm:"column:userId;index:desktop_mobile_devices_userId_idx;size:32" json:"userId"`
 	CreatedAt  DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User       *Users   `gorm:"foreignKey:UserID"`
+	User       *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (DesktopMobileDevices) TableName() string {
@@ -720,17 +720,17 @@ func (m *DesktopMobileDevices) BeforeCreate(tx *gorm.DB) error {
 }
 
 type WorkspaceParsedFiles struct {
-	ID                 int               `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Filename           string            `gorm:"column:filename;uniqueIndex;not null" json:"filename"`
-	WorkspaceID        int               `gorm:"column:workspaceId;index:workspace_parsed_files_workspaceId_idx;not null" json:"workspaceId"`
-	UserID             *int              `gorm:"column:userId;index:workspace_parsed_files_userId_idx" json:"userId"`
-	ThreadID           *int              `gorm:"column:threadId" json:"threadId"`
+	ID                 int               `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Filename           string            `gorm:"column:filename;uniqueIndex:workspace_parsed_files_filename_key;not null" json:"filename"`
+	WorkspaceID        int               `gorm:"column:workspaceId;index:workspace_parsed_files_workspaceId_idx;size:32;not null" json:"workspaceId"`
+	UserID             *int              `gorm:"column:userId;index:workspace_parsed_files_userId_idx;size:32" json:"userId"`
+	ThreadID           *int              `gorm:"column:threadId;size:32" json:"threadId"`
 	Metadata           *string           `gorm:"column:metadata" json:"metadata"`
-	TokenCountEstimate *int              `gorm:"column:tokenCountEstimate;default:0" json:"tokenCountEstimate"`
+	TokenCountEstimate *int              `gorm:"column:tokenCountEstimate;size:32;default:0" json:"tokenCountEstimate"`
 	CreatedAt          DateTime          `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	Workspace          *Workspaces       `gorm:"foreignKey:WorkspaceID"`
-	User               *Users            `gorm:"foreignKey:UserID"`
-	Thread             *WorkspaceThreads `gorm:"foreignKey:ThreadID"`
+	Workspace          *Workspaces       `gorm:"foreignKey:WorkspaceID;belongsTo"`
+	User               *Users            `gorm:"foreignKey:UserID;belongsTo"`
+	Thread             *WorkspaceThreads `gorm:"foreignKey:ThreadID;belongsTo"`
 }
 
 func (WorkspaceParsedFiles) TableName() string {
@@ -746,8 +746,8 @@ func (m *WorkspaceParsedFiles) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ExternalCommunicationConnectors struct {
-	ID            int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Type          string   `gorm:"column:type;uniqueIndex;not null" json:"type"`
+	ID            int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Type          string   `gorm:"column:type;uniqueIndex:external_communication_connectors_type_key;not null" json:"type"`
 	Config        *string  `gorm:"column:config;default:'{}';not null" json:"config"`
 	Active        bool     `gorm:"column:active;default:false;not null" json:"active"`
 	CreatedAt     DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
@@ -770,7 +770,7 @@ func (m *ExternalCommunicationConnectors) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ScheduledJobs struct {
-	ID        int                `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int                `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name      string             `gorm:"column:name;not null" json:"name"`
 	Prompt    string             `gorm:"column:prompt;not null" json:"prompt"`
 	Tools     *string            `gorm:"column:tools" json:"tools"`
@@ -780,7 +780,7 @@ type ScheduledJobs struct {
 	NextRunAt *DateTime          `gorm:"column:nextRunAt" json:"nextRunAt"`
 	CreatedAt DateTime           `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime           `gorm:"column:updatedAt;autoUpdateTime:false;not null" json:"updatedAt"`
-	Runs      []ScheduledJobRuns `gorm:"foreignKey:JobID;constraint:OnDelete:CASCADE"`
+	Runs      []ScheduledJobRuns `gorm:"foreignKey:JobID;constraint:scheduled_job_runs_jobId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ScheduledJobs) TableName() string {
@@ -799,15 +799,15 @@ func (m *ScheduledJobs) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ScheduledJobRuns struct {
-	ID          int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	JobID       int            `gorm:"column:jobId;index:scheduled_job_runs_jobId_idx;not null" json:"jobId"`
+	ID          int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	JobID       int            `gorm:"column:jobId;index:scheduled_job_runs_jobId_idx;size:32;not null" json:"jobId"`
 	Status      *string        `gorm:"column:status;default:'queued';not null" json:"status"`
 	Result      *string        `gorm:"column:result" json:"result"`
 	Error       *string        `gorm:"column:error" json:"error"`
 	StartedAt   DateTime       `gorm:"column:startedAt;not null" json:"startedAt"`
 	CompletedAt *DateTime      `gorm:"column:completedAt" json:"completedAt"`
 	ReadAt      *DateTime      `gorm:"column:readAt" json:"readAt"`
-	Job         *ScheduledJobs `gorm:"foreignKey:JobID"`
+	Job         *ScheduledJobs `gorm:"foreignKey:JobID;belongsTo"`
 }
 
 func (ScheduledJobRuns) TableName() string {
@@ -823,16 +823,16 @@ func (m *ScheduledJobRuns) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Memories struct {
-	ID          int         `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UserID      *int        `gorm:"column:user_id;index:memories_user_id_workspace_id_idx;index:memories_user_id_scope_idx" json:"user_id"`
-	WorkspaceID *int        `gorm:"column:workspace_id;index:memories_user_id_workspace_id_idx" json:"workspace_id"`
+	ID          int         `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UserID      *int        `gorm:"column:user_id;index:memories_user_id_workspace_id_idx;index:memories_user_id_scope_idx;size:32" json:"user_id"`
+	WorkspaceID *int        `gorm:"column:workspace_id;index:memories_user_id_workspace_id_idx;size:32" json:"workspace_id"`
 	Scope       *string     `gorm:"column:scope;index:memories_user_id_scope_idx;default:'workspace';not null" json:"scope"`
 	Content     string      `gorm:"column:content;not null" json:"content"`
 	LastUsedAt  *DateTime   `gorm:"column:last_used_at" json:"last_used_at"`
 	CreatedAt   DateTime    `gorm:"column:created_at;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt   DateTime    `gorm:"column:updated_at;autoUpdateTime:false;not null" json:"updated_at"`
-	User        *Users      `gorm:"foreignKey:UserID"`
-	Workspace   *Workspaces `gorm:"foreignKey:WorkspaceID"`
+	User        *Users      `gorm:"foreignKey:UserID;belongsTo"`
+	Workspace   *Workspaces `gorm:"foreignKey:WorkspaceID;belongsTo"`
 }
 
 func (Memories) TableName() string {
@@ -851,16 +851,16 @@ func (m *Memories) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ModelRouters struct {
-	ID               int                `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Name             string             `gorm:"column:name;uniqueIndex;not null" json:"name"`
+	ID               int                `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Name             string             `gorm:"column:name;uniqueIndex:model_routers_name_key;not null" json:"name"`
 	Description      *string            `gorm:"column:description" json:"description"`
 	FallbackProvider string             `gorm:"column:fallback_provider;not null" json:"fallback_provider"`
 	FallbackModel    string             `gorm:"column:fallback_model;not null" json:"fallback_model"`
-	CooldownSeconds  *int               `gorm:"column:cooldown_seconds;default:30;not null" json:"cooldown_seconds"`
-	CreatedBy        *int               `gorm:"column:created_by" json:"created_by"`
+	CooldownSeconds  *int               `gorm:"column:cooldown_seconds;size:32;default:30;not null" json:"cooldown_seconds"`
+	CreatedBy        *int               `gorm:"column:created_by;size:32" json:"created_by"`
 	CreatedAt        DateTime           `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt    DateTime           `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Rules            []ModelRouterRules `gorm:"foreignKey:RouterID;constraint:OnDelete:CASCADE"`
+	Rules            []ModelRouterRules `gorm:"foreignKey:RouterID;constraint:model_router_rules_router_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (ModelRouters) TableName() string {
@@ -879,10 +879,10 @@ func (m *ModelRouters) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ModelRouterRules struct {
-	ID             int           `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	RouterID       int           `gorm:"column:router_id;uniqueIndex:model_router_rules_router_id_title_key;index:model_router_rules_router_id_idx;index:model_router_rules_router_id_enabled_priority_idx;not null" json:"router_id"`
+	ID             int           `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	RouterID       int           `gorm:"column:router_id;uniqueIndex:model_router_rules_router_id_title_key;index:model_router_rules_router_id_idx;index:model_router_rules_router_id_enabled_priority_idx;size:32;not null" json:"router_id"`
 	Enabled        *bool         `gorm:"column:enabled;index:model_router_rules_router_id_enabled_priority_idx;default:true;not null" json:"enabled"`
-	Priority       int           `gorm:"column:priority;index:model_router_rules_router_id_enabled_priority_idx;not null" json:"priority"`
+	Priority       int           `gorm:"column:priority;index:model_router_rules_router_id_enabled_priority_idx;size:32;not null" json:"priority"`
 	Type           *string       `gorm:"column:type;default:'calculated';not null" json:"type"`
 	Title          string        `gorm:"column:title;uniqueIndex:model_router_rules_router_id_title_key;not null" json:"title"`
 	Description    *string       `gorm:"column:description" json:"description"`
@@ -890,10 +890,10 @@ type ModelRouterRules struct {
 	Conditions     *string       `gorm:"column:conditions" json:"conditions"`
 	RouteProvider  string        `gorm:"column:route_provider;not null" json:"route_provider"`
 	RouteModel     string        `gorm:"column:route_model;not null" json:"route_model"`
-	CreatedBy      *int          `gorm:"column:created_by" json:"created_by"`
+	CreatedBy      *int          `gorm:"column:created_by;size:32" json:"created_by"`
 	CreatedAt      DateTime      `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	LastUpdatedAt  DateTime      `gorm:"column:lastUpdatedAt;not null" json:"lastUpdatedAt"`
-	Router         *ModelRouters `gorm:"foreignKey:RouterID"`
+	Router         *ModelRouters `gorm:"foreignKey:RouterID;belongsTo"`
 }
 
 func (ModelRouterRules) TableName() string {

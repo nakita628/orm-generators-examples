@@ -37,7 +37,7 @@ defmodule LangWatch.AiToolEntry do
           icon_asset: String.t() | nil,
           order: integer(),
           enabled: boolean(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           archived_at: DateTime.t() | nil,
           created_by_id: String.t() | nil,
           updated_by_id: String.t() | nil,
@@ -84,7 +84,7 @@ defmodule LangWatch.AiToolEntry do
     field(:enabled, :boolean, default: true)
     # Per-type config JSON. Validated via zod discriminated union
     # at the service layer (see AiToolEntryService).
-    field(:config, :map, default: %{})
+    field(:config, LangWatch.PrismaJson, default: %{})
     field(:archived_at, LangWatch.PrismaDateTime, source: :archivedAt)
     field(:created_by_id, :string, source: :createdById)
     field(:updated_by_id, :string, source: :updatedById)

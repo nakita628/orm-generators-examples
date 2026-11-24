@@ -1,4 +1,6 @@
 class Avatar < ApplicationRecord
+  self.primary_key = "objectKey"
+
   attribute :teamId, default: 0
   attribute :userId, default: 0
   attribute :isBanner, default: false

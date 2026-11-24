@@ -45,6 +45,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -2419,8 +2439,8 @@ class ProjectAlertChannel(models.Model):
     type = models.TextField(choices=ProjectAlertChannelType.choices)
     name = models.TextField()
     properties = models.JSONField()
-    alert_types = ArrayField(models.TextField(choices=ProjectAlertType.choices), db_column="alertTypes")
-    environment_types = ArrayField(models.TextField(choices=RuntimeEnvironmentType.choices), db_column="environmentTypes", default=project_alert_channel_environment_types_default)
+    alert_types = EnumArrayField(models.TextField(choices=ProjectAlertType.choices), db_enum="\"ProjectAlertType\"", db_column="alertTypes")
+    environment_types = EnumArrayField(models.TextField(choices=RuntimeEnvironmentType.choices), db_enum="\"RuntimeEnvironmentType\"", db_column="environmentTypes", default=project_alert_channel_environment_types_default)
     error_alert_config = models.JSONField(null=True, db_column="errorAlertConfig")
     project = models.ForeignKey("Project", on_delete=models.CASCADE, related_name="alert_channels", db_column="projectId", db_index=False)
     created_at = UtcDateTimeField(db_column="createdAt", default=now_milliseconds)

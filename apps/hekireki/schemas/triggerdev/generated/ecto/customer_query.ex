@@ -8,7 +8,7 @@ defmodule Trigger.CustomerQuery do
           id: String.t(),
           query: String.t(),
           scope: atom(),
-          stats: map(),
+          stats: map() | list() | String.t() | number() | boolean(),
           title: String.t() | nil,
           source: atom(),
           filter_period: String.t() | nil,
@@ -28,7 +28,7 @@ defmodule Trigger.CustomerQuery do
     # The scope of the query (determines which tenant IDs were used)
     field(:scope, Ecto.Enum, values: [:ORGANIZATION, :PROJECT, :ENVIRONMENT])
     # Query execution statistics from ClickHouse
-    field(:stats, :map)
+    field(:stats, Trigger.PrismaJson)
     # AI-generated title summarizing the query
     field(:title, :string)
     # Where the query originated from

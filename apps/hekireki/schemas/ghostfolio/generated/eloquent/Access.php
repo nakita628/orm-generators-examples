@@ -39,6 +39,7 @@ class Access extends Model
     protected $casts = [
         'expiresAt' => 'datetime',
         'lastUsedAt' => 'datetime',
+        'scopes' => AsPrismaList::class,
         'settings' => 'array',
         'type' => AccessType::class,
     ];

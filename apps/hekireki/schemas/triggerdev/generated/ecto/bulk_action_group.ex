@@ -14,9 +14,9 @@ defmodule Trigger.BulkActionGroup do
           type: atom(),
           status: atom(),
           query_name: String.t() | nil,
-          params: map() | nil,
+          params: map() | list() | String.t() | number() | boolean() | nil,
           dedupe_key: String.t() | nil,
-          cursor: map() | nil,
+          cursor: map() | list() | String.t() | number() | boolean() | nil,
           success_count: integer(),
           failure_count: integer(),
           total_count: integer(),
@@ -39,11 +39,11 @@ defmodule Trigger.BulkActionGroup do
     # The query that will be executed to get the runs to process (if null, we are passing run ids directly)
     field(:query_name, :string, source: :queryName)
     # The params that will be passed to the query
-    field(:params, :map)
+    field(:params, Trigger.PrismaJson)
     # Billing-limit dedupe key (grace hitAt or resolve job key). Null for dashboard bulk actions.
     field(:dedupe_key, :string, source: :dedupeKey)
     # The cursor that will be passed to the query (null for the first page)
-    field(:cursor, :map)
+    field(:cursor, Trigger.PrismaJson)
     # The number of runs that have been processed successfully
     field(:success_count, :integer, default: 0, source: :successCount)
     # The number of runs that have been failed

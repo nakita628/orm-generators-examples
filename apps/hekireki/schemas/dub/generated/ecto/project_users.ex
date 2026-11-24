@@ -7,7 +7,7 @@ defmodule Dub.ProjectUsers do
   @type t :: %__MODULE__{
           id: String.t(),
           role: atom(),
-          workspace_preferences: map() | nil,
+          workspace_preferences: map() | list() | String.t() | number() | boolean() | nil,
           default_folder_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -19,7 +19,7 @@ defmodule Dub.ProjectUsers do
   schema "ProjectUsers" do
     field(:id, :string, primary_key: true)
     field(:role, Ecto.Enum, values: [:owner, :member, :viewer, :billing], default: :member)
-    field(:workspace_preferences, :map, source: :workspacePreferences)
+    field(:workspace_preferences, Dub.PrismaJson, source: :workspacePreferences)
     field(:default_folder_id, :string, source: :defaultFolderId)
     field(:user_id, :string, source: :userId)
     field(:project_id, :string, source: :projectId)

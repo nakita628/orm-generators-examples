@@ -416,7 +416,7 @@ class ScheduledEventInvite(models.Model):
 
 
 class InstanceSettings(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.IntegerField(primary_key=True, default=1)
     disable_user_registration = models.BooleanField(default=False)
     instance_id = models.UUIDField(unique=True, db_default=RawSQL("gen_random_uuid()", []))
     app_name = models.TextField(null=True)

@@ -30,6 +30,7 @@ class AccessCode extends Model
 
     protected $casts = [
         'expiresAt' => 'datetime',
+        'scopes' => AsPrismaList::class . ':' . AccessScope::class,
         'userId' => 'integer',
         'teamId' => 'integer',
     ];

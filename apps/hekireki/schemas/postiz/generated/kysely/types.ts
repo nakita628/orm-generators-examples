@@ -595,8 +595,8 @@ export interface mastra_traces {
   events: unknown
   links: unknown
   other: string | null
-  startTime: bigint
-  endTime: bigint
+  startTime: ColumnType<string, bigint | number | string, bigint | number | string>
+  endTime: ColumnType<string, bigint | number | string, bigint | number | string>
   createdAt: Timestamp
   createdAtZ: Generated<Timestamp | null>
 }
@@ -1043,8 +1043,8 @@ export interface mastra_schedule_triggers {
   id: string
   schedule_id: string
   run_id: string | null
-  scheduled_fire_at: bigint
-  actual_fire_at: bigint
+  scheduled_fire_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  actual_fire_at: ColumnType<string, bigint | number | string, bigint | number | string>
   outcome: string
   error: string | null
   trigger_kind: string
@@ -1058,11 +1058,11 @@ export interface mastra_schedules {
   cron: string
   timezone: string | null
   status: string
-  next_fire_at: bigint
-  last_fire_at: bigint | null
+  next_fire_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  last_fire_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
   last_run_id: string | null
-  created_at: bigint
-  updated_at: bigint
+  created_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  updated_at: ColumnType<string, bigint | number | string, bigint | number | string>
   metadata: unknown
   owner_type: string | null
   owner_id: string | null

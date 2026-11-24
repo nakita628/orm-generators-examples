@@ -39,6 +39,7 @@ class EvaluationRule extends \Illuminate\Database\Eloquent\Model
         'sampling' => AsDecimal::class,
         'delay' => 'integer',
         'idle_time' => 'integer',
+        'time_scope' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

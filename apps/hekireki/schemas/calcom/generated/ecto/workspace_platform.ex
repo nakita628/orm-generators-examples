@@ -9,7 +9,7 @@ defmodule Calcom.WorkspacePlatform do
           slug: String.t(),
           name: String.t(),
           description: String.t(),
-          default_service_account_key: map(),
+          default_service_account_key: map() | list() | String.t() | number() | boolean(),
           enabled: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -23,7 +23,7 @@ defmodule Calcom.WorkspacePlatform do
     field(:name, :string)
     field(:description, :string)
     # @zod.import(["import { serviceAccountKeySchema } from '../../zod-utils'"]).custom.use(serviceAccountKeySchema)
-    field(:default_service_account_key, :map, source: :defaultServiceAccountKey)
+    field(:default_service_account_key, Calcom.PrismaJson, source: :defaultServiceAccountKey)
     field(:enabled, :boolean, default: false)
     has_many(:delegation_credentials, Calcom.DelegationCredential, foreign_key: :workspace_platform_id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

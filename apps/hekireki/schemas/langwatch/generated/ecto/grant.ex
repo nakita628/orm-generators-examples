@@ -21,7 +21,7 @@ defmodule LangWatch.Grant do
           created_by_user_id: String.t() | nil,
           expires_at: DateTime.t() | nil,
           max_views: integer() | nil,
-          condition: map() | nil,
+          condition: map() | list() | String.t() | number() | boolean() | nil,
           replaces_grant_id: String.t() | nil,
           occurred_at: DateTime.t(),
           revoked_at: DateTime.t() | nil,
@@ -47,7 +47,7 @@ defmodule LangWatch.Grant do
     field(:created_by_user_id, :string, source: :createdByUserId)
     field(:expires_at, LangWatch.PrismaDateTime, source: :expiresAt)
     field(:max_views, :integer, source: :maxViews)
-    field(:condition, :map)
+    field(:condition, LangWatch.PrismaJson)
     field(:replaces_grant_id, :string, source: :replacesGrantId)
     field(:occurred_at, LangWatch.PrismaDateTime, source: :occurredAt)
     field(:revoked_at, LangWatch.PrismaDateTime, source: :revokedAt)

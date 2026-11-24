@@ -15,8 +15,8 @@ defmodule Formbricks.WorkflowRun do
           attempt: integer(),
           next_attempt_at: DateTime.t() | nil,
           last_error_at: DateTime.t() | nil,
-          trigger_payload: map(),
-          data: map(),
+          trigger_payload: map() | list() | String.t() | number() | boolean(),
+          data: map() | list() | String.t() | number() | boolean(),
           error: String.t() | nil,
           dispatched_at: DateTime.t() | nil,
           started_at: DateTime.t() | nil,
@@ -41,9 +41,9 @@ defmodule Formbricks.WorkflowRun do
     field(:next_attempt_at, Formbricks.PrismaDateTime, source: :nextAttemptAt)
     field(:last_error_at, Formbricks.PrismaDateTime, source: :lastErrorAt)
     # [WorkflowTriggerRunPayload]
-    field(:trigger_payload, :map, source: :triggerPayload)
+    field(:trigger_payload, Formbricks.PrismaJson, source: :triggerPayload)
     # [WorkflowRunData]
-    field(:data, :map, default: %{})
+    field(:data, Formbricks.PrismaJson, default: %{})
     field(:error, :string)
     field(:dispatched_at, Formbricks.PrismaDateTime, source: :dispatchedAt)
     field(:started_at, Formbricks.PrismaDateTime, source: :startedAt)

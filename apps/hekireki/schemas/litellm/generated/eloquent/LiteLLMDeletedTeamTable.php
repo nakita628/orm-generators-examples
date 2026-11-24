@@ -62,11 +62,14 @@ class LiteLLMDeletedTeamTable extends Model
     ];
 
     protected $casts = [
+        'admins' => AsPrismaList::class,
+        'members' => AsPrismaList::class,
         'members_with_roles' => 'array',
         'metadata' => 'array',
         'max_budget' => 'float',
         'soft_budget' => 'float',
         'spend' => 'float',
+        'models' => AsPrismaList::class,
         'max_parallel_requests' => 'integer',
         'tpm_limit' => 'integer',
         'rpm_limit' => 'integer',
@@ -76,6 +79,9 @@ class LiteLLMDeletedTeamTable extends Model
         'model_spend' => 'array',
         'model_max_budget' => 'array',
         'router_settings' => 'array',
+        'team_member_permissions' => AsPrismaList::class,
+        'access_group_ids' => AsPrismaList::class,
+        'policies' => AsPrismaList::class,
         'model_id' => 'integer',
         'allow_team_guardrail_config' => 'boolean',
         'deleted_at' => 'datetime',

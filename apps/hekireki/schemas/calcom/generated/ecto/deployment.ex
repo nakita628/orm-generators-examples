@@ -6,7 +6,7 @@ defmodule Calcom.Deployment do
   @type t :: %__MODULE__{
           id: integer(),
           logo: String.t() | nil,
-          theme: map() | nil,
+          theme: map() | list() | String.t() | number() | boolean() | nil,
           license_key: String.t() | nil,
           signature_token_encrypted: String.t() | nil,
           agreed_license_at: DateTime.t() | nil
@@ -17,7 +17,7 @@ defmodule Calcom.Deployment do
     field(:id, :integer, primary_key: true, default: 1)
     field(:logo, :string)
     # @zod.import(["import { DeploymentTheme } from '../../zod-utils'"]).custom.use(DeploymentTheme)
-    field(:theme, :map)
+    field(:theme, Calcom.PrismaJson)
     field(:license_key, :string, source: :licenseKey)
     field(:signature_token_encrypted, :string, source: :signatureTokenEncrypted)
     field(:agreed_license_at, Calcom.PrismaDateTime, source: :agreedLicenseAt)

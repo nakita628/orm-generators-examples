@@ -8,7 +8,7 @@ defmodule Langfuse.SessionView do
           is_pinned_by_default_for_project: boolean(),
           id: String.t(),
           name: String.t(),
-          filters: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
           view_mode: atom(),
           unmatched_traces: atom(),
           inserted_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule Langfuse.SessionView do
     field(:is_pinned_by_default_for_project, :boolean, default: false)
     field(:id, :string, primary_key: true)
     field(:name, :string)
-    field(:filters, :map)
+    field(:filters, Langfuse.PrismaJson)
     field(:view_mode, Ecto.Enum, values: [:conversational, :list])
     field(:unmatched_traces, Ecto.Enum, values: [:show, :hide])
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)

@@ -9,7 +9,7 @@ defmodule Langfuse.DatasetRuns do
           project_id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           dataset_id: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -20,7 +20,7 @@ defmodule Langfuse.DatasetRuns do
     field(:project_id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:metadata, :map)
+    field(:metadata, Langfuse.PrismaJson)
     field(:dataset_id, :string)
     timestamps(inserted_at_source: :created_at)
   end

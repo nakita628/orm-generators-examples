@@ -7,7 +7,7 @@ defmodule Rallly.PaymentMethod do
   @type t :: %__MODULE__{
           id: String.t(),
           type: String.t(),
-          data: map(),
+          data: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: Rallly.User.t() | nil
@@ -16,7 +16,7 @@ defmodule Rallly.PaymentMethod do
   schema "payment_methods" do
     field(:id, :string, primary_key: true)
     field(:type, :string)
-    field(:data, :map)
+    field(:data, Rallly.PrismaJson)
     belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end

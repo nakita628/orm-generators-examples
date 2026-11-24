@@ -85,6 +85,7 @@ class Booking extends Model
         'destinationCalendarId' => 'integer',
         'reassignById' => 'integer',
         'rescheduled' => 'boolean',
+        'scheduledJobs' => AsPrismaList::class,
         'metadata' => 'array',
         'isRecorded' => 'boolean',
         'iCalSequence' => 'integer',

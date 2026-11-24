@@ -9,7 +9,7 @@ defmodule Postiz.MastraKnowledgeSemanticOutbox do
           document_id: String.t(),
           document_type: String.t(),
           operation: String.t(),
-          scope: map(),
+          scope: map() | list() | String.t() | number() | boolean(),
           scope_key: String.t(),
           status: String.t(),
           attempts: integer(),
@@ -30,7 +30,7 @@ defmodule Postiz.MastraKnowledgeSemanticOutbox do
     field(:document_id, :string, source: :documentId)
     field(:document_type, :string, source: :documentType)
     field(:operation, :string)
-    field(:scope, :map)
+    field(:scope, Postiz.PrismaJson)
     field(:scope_key, :string, source: :scopeKey)
     field(:status, :string)
     field(:attempts, :integer)

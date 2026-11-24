@@ -15,8 +15,8 @@ defmodule TypeHero.Donation do
   schema "Donation" do
     field(:amount, :integer)
     field(:stripe_checkout_session_id, :string, source: :stripeCheckoutSessionId)
-    field(:user_id, :binary_id, source: :userId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:user_id, :string, source: :userId)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at: false)
   end
 end

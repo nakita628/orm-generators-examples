@@ -1,18 +1,18 @@
 defmodule LiteLLM.LiteLLMPromptTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           prompt_id: String.t(),
           version: integer(),
           environment: String.t(),
           created_by: String.t() | nil,
-          litellm_params: map(),
-          prompt_info: map() | nil,
+          litellm_params: map() | list() | String.t() | number() | boolean(),
+          prompt_info: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -22,8 +22,8 @@ defmodule LiteLLM.LiteLLMPromptTable do
     field(:version, :integer, default: 1)
     field(:environment, :string, default: "development")
     field(:created_by, :string)
-    field(:litellm_params, :map)
-    field(:prompt_info, :map)
+    field(:litellm_params, LiteLLM.PrismaJson)
+    field(:prompt_info, LiteLLM.PrismaJson)
     timestamps(inserted_at_source: :created_at)
   end
 end

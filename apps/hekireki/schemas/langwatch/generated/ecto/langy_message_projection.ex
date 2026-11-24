@@ -13,7 +13,7 @@ defmodule LangWatch.LangyMessageProjection do
           conversation_id: String.t(),
           message_id: String.t(),
           role: String.t(),
-          parts: map(),
+          parts: map() | list() | String.t() | number() | boolean(),
           source_event_id: String.t(),
           occurred_at: float(),
           accepted_at: float(),
@@ -27,7 +27,7 @@ defmodule LangWatch.LangyMessageProjection do
     field(:conversation_id, :string, source: :conversationId)
     field(:message_id, :string, source: :messageId)
     field(:role, :string)
-    field(:parts, :map)
+    field(:parts, LangWatch.PrismaJson)
     field(:source_event_id, :string, source: :sourceEventId)
     field(:occurred_at, :float, source: :occurredAt)
     field(:accepted_at, :float, source: :acceptedAt)

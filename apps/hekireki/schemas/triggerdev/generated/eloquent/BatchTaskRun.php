@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property mixed $runIds Friendly IDs
+ * @property list<string> $runIds Friendly IDs
  * @property bool $sealed sealed is set to true once no more items can be added to the batch
  * @property int $expectedCount this is the expected number of items in the batch
  * @property int $completedCount this is the completed number of items in the batch. once this reaches expectedCount, and the batch is sealed, the batch is considered completed
@@ -77,6 +77,7 @@ class BatchTaskRun extends Model
     protected $casts = [
         'idempotencyKeyExpiresAt' => 'datetime',
         'status' => BatchTaskRunStatus::class,
+        'runIds' => AsPrismaList::class,
         'runCount' => 'integer',
         'options' => 'array',
         'sealed' => 'boolean',

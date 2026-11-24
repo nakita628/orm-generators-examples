@@ -1,5 +1,7 @@
 # options:: [IPrismaWidgetOptions]
 class ShareWidget < ApplicationRecord
+  self.primary_key = "id"
+
   attribute :public, default: true
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

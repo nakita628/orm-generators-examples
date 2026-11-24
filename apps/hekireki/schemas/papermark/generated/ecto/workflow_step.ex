@@ -9,8 +9,8 @@ defmodule Papermark.WorkflowStep do
           name: String.t(),
           step_order: integer(),
           step_type: atom(),
-          conditions: map(),
-          actions: map(),
+          conditions: map() | list() | String.t() | number() | boolean(),
+          actions: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workflow: Papermark.Workflow.t() | nil,
@@ -22,8 +22,8 @@ defmodule Papermark.WorkflowStep do
     field(:name, :string)
     field(:step_order, :integer, source: :stepOrder)
     field(:step_type, Ecto.Enum, values: [:ROUTER], default: :ROUTER, source: :stepType)
-    field(:conditions, :map)
-    field(:actions, :map)
+    field(:conditions, Papermark.PrismaJson)
+    field(:actions, Papermark.PrismaJson)
     field(:workflow_id, :string, source: :workflowId)
     belongs_to(:workflow, Papermark.Workflow, foreign_key: :workflow_id, define_field: false, type: :string)
     has_many(:execution_logs, Papermark.WorkflowStepLog, foreign_key: :workflow_step_id, references: :id)

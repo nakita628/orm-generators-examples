@@ -10,7 +10,7 @@ defmodule InboxZero.ExecutedAction do
           execution_status: atom() | nil,
           execution_started_at: DateTime.t() | nil,
           executed_at: DateTime.t() | nil,
-          execution_error: map() | nil,
+          execution_error: map() | list() | String.t() | number() | boolean() | nil,
           sent_message_ids: [String.t()],
           messaging_message_id: String.t() | nil,
           messaging_message_sent_at: DateTime.t() | nil,
@@ -25,18 +25,18 @@ defmodule InboxZero.ExecutedAction do
           url: String.t() | nil,
           folder_name: String.t() | nil,
           folder_id: String.t() | nil,
-          static_attachments: map() | nil,
-          selected_attachments: map() | nil,
+          static_attachments: map() | list() | String.t() | number() | boolean() | nil,
+          selected_attachments: map() | list() | String.t() | number() | boolean() | nil,
           integration_name: String.t() | nil,
           integration_tool_name: String.t() | nil,
-          integration_args: map() | nil,
+          integration_args: map() | list() | String.t() | number() | boolean() | nil,
           draft_id: String.t() | nil,
           draft_status: atom() | nil,
           was_draft_sent: boolean() | nil,
           draft_model_provider: String.t() | nil,
           draft_model_name: String.t() | nil,
           draft_pipeline_version: integer() | nil,
-          draft_context_metadata: map() | nil,
+          draft_context_metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           executed_rule: InboxZero.ExecutedRule.t() | nil,
@@ -52,7 +52,7 @@ defmodule InboxZero.ExecutedAction do
     field(:execution_status, Ecto.Enum, values: [:SUCCEEDED, :FAILED, :SKIPPED], source: :executionStatus)
     field(:execution_started_at, InboxZero.PrismaDateTime, source: :executionStartedAt)
     field(:executed_at, InboxZero.PrismaDateTime, source: :executedAt)
-    field(:execution_error, :map, source: :executionError)
+    field(:execution_error, InboxZero.PrismaJson, source: :executionError)
     field(:sent_message_ids, {:array, :string}, source: :sentMessageIds)
     field(:messaging_message_id, :string, source: :messagingMessageId)
     field(:messaging_message_sent_at, InboxZero.PrismaDateTime, source: :messagingMessageSentAt)
@@ -67,18 +67,18 @@ defmodule InboxZero.ExecutedAction do
     field(:url, :string)
     field(:folder_name, :string, source: :folderName)
     field(:folder_id, :string, source: :folderId)
-    field(:static_attachments, :map, source: :staticAttachments)
-    field(:selected_attachments, :map, source: :selectedAttachments)
+    field(:static_attachments, InboxZero.PrismaJson, source: :staticAttachments)
+    field(:selected_attachments, InboxZero.PrismaJson, source: :selectedAttachments)
     field(:integration_name, :string, source: :integrationName)
     field(:integration_tool_name, :string, source: :integrationToolName)
-    field(:integration_args, :map, source: :integrationArgs)
+    field(:integration_args, InboxZero.PrismaJson, source: :integrationArgs)
     field(:draft_id, :string, source: :draftId)
     field(:draft_status, Ecto.Enum, values: [:PENDING, :LIKELY_SENT, :REPLIED_WITHOUT_DRAFT, :CLEANED_UP_UNUSED, :MISSING_FROM_PROVIDER, :USER_EDITED, :CLEANUP_SKIPPED], source: :draftStatus)
     field(:was_draft_sent, :boolean, source: :wasDraftSent)
     field(:draft_model_provider, :string, source: :draftModelProvider)
     field(:draft_model_name, :string, source: :draftModelName)
     field(:draft_pipeline_version, :integer, source: :draftPipelineVersion)
-    field(:draft_context_metadata, :map, source: :draftContextMetadata)
+    field(:draft_context_metadata, InboxZero.PrismaJson, source: :draftContextMetadata)
     field(:executed_rule_id, :string, source: :executedRuleId)
     field(:messaging_channel_id, :string, source: :messagingChannelId)
     belongs_to(:executed_rule, InboxZero.ExecutedRule, foreign_key: :executed_rule_id, define_field: false, type: :string)

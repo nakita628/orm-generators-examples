@@ -61,13 +61,13 @@ public partial class TaxonomyContext : DbContext
             entity.Property(e => e.SessionState).HasColumnName("session_state");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updated_at");
@@ -126,13 +126,13 @@ public partial class TaxonomyContext : DbContext
             entity.Property(e => e.Image).HasColumnName("image");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updated_at");
@@ -180,13 +180,13 @@ public partial class TaxonomyContext : DbContext
                 .HasColumnName("published");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("created_at");
             entity.Property(e => e.UpdatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("updated_at");

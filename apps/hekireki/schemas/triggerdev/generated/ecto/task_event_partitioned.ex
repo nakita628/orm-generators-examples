@@ -23,8 +23,8 @@ defmodule Trigger.TaskEventPartitioned do
           level: atom(),
           kind: atom(),
           status: atom(),
-          links: map() | nil,
-          events: map() | nil,
+          links: map() | list() | String.t() | number() | boolean() | nil,
+          events: map() | list() | String.t() | number() | boolean() | nil,
           start_time: integer(),
           duration: integer(),
           attempt_id: String.t() | nil,
@@ -45,12 +45,12 @@ defmodule Trigger.TaskEventPartitioned do
           queue_id: String.t() | nil,
           queue_name: String.t() | nil,
           batch_id: String.t() | nil,
-          properties: map(),
-          metadata: map() | nil,
-          style: map() | nil,
-          output: map() | nil,
+          properties: map() | list() | String.t() | number() | boolean(),
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
+          style: map() | list() | String.t() | number() | boolean() | nil,
+          output: map() | list() | String.t() | number() | boolean() | nil,
           output_type: String.t() | nil,
-          payload: map() | nil,
+          payload: map() | list() | String.t() | number() | boolean() | nil,
           payload_type: String.t() | nil,
           usage_duration_ms: integer(),
           usage_cost_in_cents: float(),
@@ -77,8 +77,8 @@ defmodule Trigger.TaskEventPartitioned do
     field(:level, Ecto.Enum, values: [:TRACE, :DEBUG, :LOG, :INFO, :WARN, :ERROR], default: :TRACE)
     field(:kind, Ecto.Enum, values: [:UNSPECIFIED, :INTERNAL, :SERVER, :CLIENT, :PRODUCER, :CONSUMER, :UNRECOGNIZED, :LOG], default: :INTERNAL)
     field(:status, Ecto.Enum, values: [:UNSET, :OK, :ERROR, :UNRECOGNIZED], default: :UNSET)
-    field(:links, :map)
-    field(:events, :map)
+    field(:links, Trigger.PrismaJson)
+    field(:events, Trigger.PrismaJson)
     # This is the time the event started in nanoseconds since the epoch
     field(:start_time, :integer, source: :startTime)
     # This is the duration of the event in nanoseconds
@@ -102,16 +102,16 @@ defmodule Trigger.TaskEventPartitioned do
     field(:queue_name, :string, source: :queueName)
     field(:batch_id, :string, source: :batchId)
     # This represents all the span attributes available, like http.status_code, and special attributes like $style.icon, $output, $metadata.payload.userId, as it's used for searching and filtering
-    field(:properties, :map)
+    field(:properties, Trigger.PrismaJson)
     # This represents all span attributes in the $metadata namespace, like $metadata.payload
-    field(:metadata, :map)
+    field(:metadata, Trigger.PrismaJson)
     # This represents all span attributes in the $style namespace, like $style
-    field(:style, :map)
+    field(:style, Trigger.PrismaJson)
     # This represents all span attributes in the $output namespace, like $output
-    field(:output, :map)
+    field(:output, Trigger.PrismaJson)
     # This represents the mimetype of the output, such as application/json or application/super+json
     field(:output_type, :string, source: :outputType)
-    field(:payload, :map)
+    field(:payload, Trigger.PrismaJson)
     field(:payload_type, :string, source: :payloadType)
     field(:usage_duration_ms, :integer, default: 0, source: :usageDurationMs)
     field(:usage_cost_in_cents, :float, default: 0.0, source: :usageCostInCents)

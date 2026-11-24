@@ -1,5 +1,6 @@
 class InvitedUsers < ApplicationRecord
   self.table_name = "InvitedUsers"
+  self.primary_key = "inviteeEmail"
 
   validates :adminEmail, presence: true
   validates :inviteeEmail, presence: true, uniqueness: true

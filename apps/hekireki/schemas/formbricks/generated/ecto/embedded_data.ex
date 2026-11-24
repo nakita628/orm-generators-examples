@@ -32,7 +32,7 @@ defmodule Formbricks.EmbeddedData do
           description: String.t() | nil,
           source: atom(),
           data_type: atom(),
-          default_value: map() | nil,
+          default_value: map() | list() | String.t() | number() | boolean() | nil,
           locked: boolean(),
           survey_id: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -48,7 +48,7 @@ defmodule Formbricks.EmbeddedData do
     field(:source, Ecto.Enum, values: [:computed, :ingested, :reserved])
     field(:data_type, Ecto.Enum, values: [:string, :number, :boolean, :date], default: :string, source: :dataType)
     # [EmbeddedDataDefaultValue]
-    field(:default_value, :map, source: :defaultValue)
+    field(:default_value, Formbricks.PrismaJson, source: :defaultValue)
     field(:locked, :boolean, default: false)
     field(:survey_id, :string, source: :surveyId)
     field(:workspace_id, :string, source: :workspaceId)

@@ -34,6 +34,7 @@ class Webhook extends Model
     ];
 
     protected $casts = [
+        'eventTriggers' => AsPrismaList::class . ':' . WebhookTriggerEvents::class,
         'enabled' => 'boolean',
         'userId' => 'integer',
         'teamId' => 'integer',

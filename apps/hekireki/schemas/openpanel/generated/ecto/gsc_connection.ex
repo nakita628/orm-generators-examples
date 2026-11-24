@@ -5,7 +5,7 @@ defmodule OpenPanel.GscConnection do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           site_url: String.t(),
           access_token: String.t(),
           refresh_token: String.t(),
@@ -20,7 +20,7 @@ defmodule OpenPanel.GscConnection do
         }
 
   schema "gsc_connections" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:site_url, :string, default: "", source: :siteUrl)
     field(:access_token, :string, source: :accessToken)
     field(:refresh_token, :string, source: :refreshToken)

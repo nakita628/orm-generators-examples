@@ -17,7 +17,7 @@ defmodule Umami.TwoFactorAuth do
     field(:id, :string, primary_key: true)
     field(:secret, :string)
     field(:is_enabled, :boolean, default: false)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -8,7 +8,7 @@ defmodule LangWatch.CustomRole do
           id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          permissions: map(),
+          permissions: map() | list() | String.t() | number() | boolean(),
           kind: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule LangWatch.CustomRole do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:permissions, :map)
+    field(:permissions, LangWatch.PrismaJson)
     field(:kind, :string, default: "custom")
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, LangWatch.Organization, foreign_key: :organization_id, define_field: false, type: :string)

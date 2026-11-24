@@ -13,27 +13,27 @@ import (
 
 type User struct {
 	ID                   string                `gorm:"column:user_id;primaryKey;type:char(36)" json:"user_id"`
-	Username             string                `gorm:"column:username;uniqueIndex;type:varchar(255);not null" json:"username"`
+	Username             string                `gorm:"column:username;uniqueIndex:user_username_key;type:varchar(255);not null" json:"username"`
 	Password             string                `gorm:"column:password;type:varchar(60);not null" json:"password"`
 	Role                 string                `gorm:"column:role;type:varchar(50);not null" json:"role"`
 	LogoURL              *string               `gorm:"column:logo_url;type:varchar(2183)" json:"logo_url"`
 	DisplayName          *string               `gorm:"column:display_name;type:varchar(255)" json:"display_name"`
 	TwoFactorRequired    bool                  `gorm:"column:two_factor_required;default:false;not null" json:"two_factor_required"`
-	CreatedAt            *DateTime             `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt            *DateTime             `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt            *DateTime             `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
 	DeletedAt            *DateTime             `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
-	Websites             []Website             `gorm:"foreignKey:UserID"`
-	CreatedBy            []Website             `gorm:"foreignKey:CreatedBy"`
-	Links                []Link                `gorm:"foreignKey:UserID"`
-	Pixels               []Pixel               `gorm:"foreignKey:UserID"`
-	Teams                []TeamUser            `gorm:"foreignKey:UserID"`
-	Reports              []Report              `gorm:"foreignKey:UserID"`
-	Boards               []Board               `gorm:"foreignKey:UserID"`
-	TwoFactorBackupCodes []TwoFactorBackupCode `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TwoFactorOtpUseds    []TwoFactorOtpUsed    `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	APIKeys              []APIKey              `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TwoFactorAuth        *TwoFactorAuth        `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
-	TwoFactorRateLimit   *TwoFactorRateLimit   `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	Websites             []Website             `gorm:"foreignKey:UserID;constraint:website_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	CreatedBy            []Website             `gorm:"foreignKey:CreatedBy;constraint:website_created_by_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Links                []Link                `gorm:"foreignKey:UserID;constraint:link_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Pixels               []Pixel               `gorm:"foreignKey:UserID;constraint:pixel_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Teams                []TeamUser            `gorm:"foreignKey:UserID;constraint:team_user_user_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Reports              []Report              `gorm:"foreignKey:UserID;constraint:report_user_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Boards               []Board               `gorm:"foreignKey:UserID;constraint:board_user_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	TwoFactorBackupCodes []TwoFactorBackupCode `gorm:"foreignKey:UserID;constraint:two_factor_backup_code_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TwoFactorOtpUseds    []TwoFactorOtpUsed    `gorm:"foreignKey:UserID;constraint:two_factor_otp_used_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	APIKeys              []APIKey              `gorm:"foreignKey:UserID;constraint:api_key_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TwoFactorAuth        *TwoFactorAuth        `gorm:"foreignKey:UserID;constraint:two_factor_auth_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	TwoFactorRateLimit   *TwoFactorRateLimit   `gorm:"foreignKey:UserID;constraint:two_factor_rate_limit_user_id_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (User) TableName() string {
@@ -63,11 +63,11 @@ type APIKey struct {
 	ID         string    `gorm:"column:api_key_id;primaryKey;type:char(36)" json:"api_key_id"`
 	UserID     string    `gorm:"column:user_id;index:api_key_user_id_idx;type:char(36);not null" json:"user_id"`
 	Name       string    `gorm:"column:name;type:varchar(255);not null" json:"name"`
-	KeyHash    string    `gorm:"column:key_hash;uniqueIndex;type:varchar(128);not null" json:"key_hash"`
+	KeyHash    string    `gorm:"column:key_hash;uniqueIndex:api_key_key_hash_key;type:varchar(128);not null" json:"key_hash"`
 	KeyPrefix  string    `gorm:"column:key_prefix;type:varchar(20);not null" json:"key_prefix"`
 	LastUsedAt *DateTime `gorm:"column:last_used_at;type:timestamptz(6)" json:"last_used_at"`
-	CreatedAt  *DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	User       *User
+	CreatedAt  *DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	User       *User     `gorm:"belongsTo"`
 }
 
 func (APIKey) TableName() string {
@@ -94,10 +94,10 @@ type Session struct {
 	Region        *string        `gorm:"column:region;index:session_website_id_created_at_region_idx;type:varchar(20)" json:"region"`
 	City          *string        `gorm:"column:city;index:session_website_id_created_at_city_idx;type:varchar(50)" json:"city"`
 	DistinctID    *string        `gorm:"column:distinct_id;type:varchar(50)" json:"distinct_id"`
-	CreatedAt     *DateTime      `gorm:"column:created_at;index:session_created_at_idx;index:session_website_id_created_at_idx;index:session_website_id_created_at_browser_idx;index:session_website_id_created_at_os_idx;index:session_website_id_created_at_device_idx;index:session_website_id_created_at_screen_idx;index:session_website_id_created_at_language_idx;index:session_website_id_created_at_country_idx;index:session_website_id_created_at_region_idx;index:session_website_id_created_at_city_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	WebsiteEvents []WebsiteEvent `gorm:"foreignKey:SessionID"`
-	SessionData   []SessionData  `gorm:"foreignKey:SessionID"`
-	Revenue       []Revenue      `gorm:"foreignKey:SessionID"`
+	CreatedAt     *DateTime      `gorm:"column:created_at;index:session_created_at_idx;index:session_website_id_created_at_idx;index:session_website_id_created_at_browser_idx;index:session_website_id_created_at_os_idx;index:session_website_id_created_at_device_idx;index:session_website_id_created_at_screen_idx;index:session_website_id_created_at_language_idx;index:session_website_id_created_at_country_idx;index:session_website_id_created_at_region_idx;index:session_website_id_created_at_city_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	WebsiteEvents []WebsiteEvent `gorm:"foreignKey:SessionID;constraint:website_event_session_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SessionData   []SessionData  `gorm:"foreignKey:SessionID;constraint:session_data_session_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Revenue       []Revenue      `gorm:"foreignKey:SessionID;constraint:revenue_session_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Session) TableName() string {
@@ -116,7 +116,7 @@ type SessionLink struct {
 	WebsiteID  string    `gorm:"column:website_id;primaryKey;index:session_link_website_id_session_id_idx;type:char(36)" json:"website_id"`
 	SessionID  string    `gorm:"column:session_id;primaryKey;index:session_link_website_id_session_id_idx;type:char(36)" json:"session_id"`
 	DistinctID string    `gorm:"column:distinct_id;primaryKey;type:varchar(50)" json:"distinct_id"`
-	CreatedAt  *DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt  *DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 }
 
 func (SessionLink) TableName() string {
@@ -132,30 +132,30 @@ func (m *SessionLink) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Website struct {
-	ID                  string         `gorm:"column:website_id;primaryKey;type:char(36)" json:"website_id"`
-	Name                string         `gorm:"column:name;type:varchar(100);not null" json:"name"`
-	Domain              *string        `gorm:"column:domain;type:varchar(500)" json:"domain"`
-	ResetAt             *DateTime      `gorm:"column:reset_at;type:timestamptz(6)" json:"reset_at"`
-	UserID              *string        `gorm:"column:user_id;index:website_user_id_idx;type:char(36)" json:"user_id"`
-	TeamID              *string        `gorm:"column:team_id;index:website_team_id_idx;type:char(36)" json:"team_id"`
-	CreatedBy           *string        `gorm:"column:created_by;index:website_created_by_idx;type:char(36)" json:"created_by"`
-	CreatedAt           *DateTime      `gorm:"column:created_at;index:website_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	UpdatedAt           *DateTime      `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	DeletedAt           *DateTime      `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
-	RecorderEnabled     bool           `gorm:"column:recorder_enabled;default:false;not null" json:"recorder_enabled"`
-	ReplayConfig        datatypes.JSON `gorm:"column:replay_config" json:"replay_config"`
-	User                *User          `gorm:"foreignKey:UserID"`
-	CreateUser          *User          `gorm:"foreignKey:CreatedBy"`
-	Team                *Team
-	Annotations         []Annotation         `gorm:"foreignKey:WebsiteID"`
-	EventData           []EventData          `gorm:"foreignKey:WebsiteID"`
-	Reports             []Report             `gorm:"foreignKey:WebsiteID"`
-	Revenue             []Revenue            `gorm:"foreignKey:WebsiteID"`
-	Segments            []Segment            `gorm:"foreignKey:WebsiteID"`
-	SessionData         []SessionData        `gorm:"foreignKey:WebsiteID"`
-	SessionReplays      []SessionReplay      `gorm:"foreignKey:WebsiteID"`
-	SessionReplaysSaved []SessionReplaySaved `gorm:"foreignKey:WebsiteID"`
-	HeatmapEvents       []HeatmapEvent       `gorm:"foreignKey:WebsiteID"`
+	ID                  string               `gorm:"column:website_id;primaryKey;type:char(36)" json:"website_id"`
+	Name                string               `gorm:"column:name;type:varchar(100);not null" json:"name"`
+	Domain              *string              `gorm:"column:domain;type:varchar(500)" json:"domain"`
+	ResetAt             *DateTime            `gorm:"column:reset_at;type:timestamptz(6)" json:"reset_at"`
+	UserID              *string              `gorm:"column:user_id;index:website_user_id_idx;type:char(36)" json:"user_id"`
+	TeamID              *string              `gorm:"column:team_id;index:website_team_id_idx;type:char(36)" json:"team_id"`
+	CreatedBy           *string              `gorm:"column:created_by;index:website_created_by_idx;type:char(36)" json:"created_by"`
+	CreatedAt           *DateTime            `gorm:"column:created_at;index:website_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	UpdatedAt           *DateTime            `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
+	DeletedAt           *DateTime            `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
+	RecorderEnabled     bool                 `gorm:"column:recorder_enabled;default:false;not null" json:"recorder_enabled"`
+	ReplayConfig        datatypes.JSON       `gorm:"column:replay_config" json:"replay_config"`
+	User                *User                `gorm:"foreignKey:UserID;belongsTo"`
+	CreateUser          *User                `gorm:"foreignKey:CreatedBy;belongsTo"`
+	Team                *Team                `gorm:"belongsTo"`
+	Annotations         []Annotation         `gorm:"foreignKey:WebsiteID;constraint:annotation_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	EventData           []EventData          `gorm:"foreignKey:WebsiteID;constraint:event_data_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Reports             []Report             `gorm:"foreignKey:WebsiteID;constraint:report_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Revenue             []Revenue            `gorm:"foreignKey:WebsiteID;constraint:revenue_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Segments            []Segment            `gorm:"foreignKey:WebsiteID;constraint:segment_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SessionData         []SessionData        `gorm:"foreignKey:WebsiteID;constraint:session_data_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SessionReplays      []SessionReplay      `gorm:"foreignKey:WebsiteID;constraint:session_replay_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SessionReplaysSaved []SessionReplaySaved `gorm:"foreignKey:WebsiteID;constraint:session_replay_saved_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	HeatmapEvents       []HeatmapEvent       `gorm:"foreignKey:WebsiteID;constraint:heatmap_event_website_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Website) TableName() string {
@@ -182,39 +182,39 @@ func (*Website) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type WebsiteEvent struct {
-	ID             string    `gorm:"column:event_id;primaryKey;type:char(36)" json:"event_id"`
-	WebsiteID      string    `gorm:"column:website_id;index:website_event_website_id_idx;index:website_event_website_id_created_at_idx;index:website_event_website_id_created_at_url_path_idx;index:website_event_website_id_created_at_url_query_idx;index:website_event_website_id_created_at_referrer_domain_idx;index:website_event_website_id_created_at_page_title_idx;index:website_event_website_id_created_at_event_name_idx;index:website_event_website_id_created_at_tag_idx;index:website_event_website_id_session_id_created_at_idx;index:website_event_website_id_visit_id_created_at_idx;index:website_event_website_id_created_at_hostname_idx;type:char(36);not null" json:"website_id"`
-	SessionID      string    `gorm:"column:session_id;index:website_event_session_id_idx;index:website_event_website_id_session_id_created_at_idx;type:char(36);not null" json:"session_id"`
-	VisitID        string    `gorm:"column:visit_id;index:website_event_visit_id_idx;index:website_event_website_id_visit_id_created_at_idx;type:char(36);not null" json:"visit_id"`
-	CreatedAt      *DateTime `gorm:"column:created_at;index:website_event_created_at_idx;index:website_event_website_id_created_at_idx;index:website_event_website_id_created_at_url_path_idx;index:website_event_website_id_created_at_url_query_idx;index:website_event_website_id_created_at_referrer_domain_idx;index:website_event_website_id_created_at_page_title_idx;index:website_event_website_id_created_at_event_name_idx;index:website_event_website_id_created_at_tag_idx;index:website_event_website_id_session_id_created_at_idx;index:website_event_website_id_visit_id_created_at_idx;index:website_event_website_id_created_at_hostname_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	URLPath        string    `gorm:"column:url_path;index:website_event_website_id_created_at_url_path_idx;type:varchar(500);not null" json:"url_path"`
-	URLQuery       *string   `gorm:"column:url_query;index:website_event_website_id_created_at_url_query_idx;type:varchar(500)" json:"url_query"`
-	UtmSource      *string   `gorm:"column:utm_source;type:varchar(255)" json:"utm_source"`
-	UtmMedium      *string   `gorm:"column:utm_medium;type:varchar(255)" json:"utm_medium"`
-	UtmCampaign    *string   `gorm:"column:utm_campaign;type:varchar(255)" json:"utm_campaign"`
-	UtmContent     *string   `gorm:"column:utm_content;type:varchar(255)" json:"utm_content"`
-	UtmTerm        *string   `gorm:"column:utm_term;type:varchar(255)" json:"utm_term"`
-	ReferrerPath   *string   `gorm:"column:referrer_path;type:varchar(500)" json:"referrer_path"`
-	ReferrerQuery  *string   `gorm:"column:referrer_query;type:varchar(500)" json:"referrer_query"`
-	ReferrerDomain *string   `gorm:"column:referrer_domain;index:website_event_website_id_created_at_referrer_domain_idx;type:varchar(500)" json:"referrer_domain"`
-	PageTitle      *string   `gorm:"column:page_title;index:website_event_website_id_created_at_page_title_idx;type:varchar(500)" json:"page_title"`
-	Gclid          *string   `gorm:"column:gclid;type:varchar(255)" json:"gclid"`
-	Fbclid         *string   `gorm:"column:fbclid;type:varchar(255)" json:"fbclid"`
-	Msclkid        *string   `gorm:"column:msclkid;type:varchar(255)" json:"msclkid"`
-	Ttclid         *string   `gorm:"column:ttclid;type:varchar(255)" json:"ttclid"`
-	Lifatid        *string   `gorm:"column:li_fat_id;type:varchar(255)" json:"li_fat_id"`
-	Twclid         *string   `gorm:"column:twclid;type:varchar(255)" json:"twclid"`
-	EventType      *int      `gorm:"column:event_type;default:1;not null" json:"event_type"`
-	EventName      *string   `gorm:"column:event_name;index:website_event_website_id_created_at_event_name_idx;type:varchar(50)" json:"event_name"`
-	Tag            *string   `gorm:"column:tag;index:website_event_website_id_created_at_tag_idx;type:varchar(50)" json:"tag"`
-	Hostname       *string   `gorm:"column:hostname;index:website_event_website_id_created_at_hostname_idx;type:varchar(100)" json:"hostname"`
-	Lcp            *float64  `gorm:"column:lcp;type:decimal(10,1)" json:"lcp"`
-	Inp            *float64  `gorm:"column:inp;type:decimal(10,1)" json:"inp"`
-	Cls            *float64  `gorm:"column:cls;type:decimal(10,4)" json:"cls"`
-	Fcp            *float64  `gorm:"column:fcp;type:decimal(10,1)" json:"fcp"`
-	Ttfb           *float64  `gorm:"column:ttfb;type:decimal(10,1)" json:"ttfb"`
-	Session        *Session
-	EventData      []EventData `gorm:"foreignKey:WebsiteEventID"`
+	ID             string      `gorm:"column:event_id;primaryKey;type:char(36)" json:"event_id"`
+	WebsiteID      string      `gorm:"column:website_id;index:website_event_website_id_idx;index:website_event_website_id_created_at_idx;index:website_event_website_id_created_at_url_path_idx;index:website_event_website_id_created_at_url_query_idx;index:website_event_website_id_created_at_referrer_domain_idx;index:website_event_website_id_created_at_page_title_idx;index:website_event_website_id_created_at_event_name_idx;index:website_event_website_id_created_at_tag_idx;index:website_event_website_id_session_id_created_at_idx;index:website_event_website_id_visit_id_created_at_idx;index:website_event_website_id_created_at_hostname_idx;type:char(36);not null" json:"website_id"`
+	SessionID      string      `gorm:"column:session_id;index:website_event_session_id_idx;index:website_event_website_id_session_id_created_at_idx;type:char(36);not null" json:"session_id"`
+	VisitID        string      `gorm:"column:visit_id;index:website_event_visit_id_idx;index:website_event_website_id_visit_id_created_at_idx;type:char(36);not null" json:"visit_id"`
+	CreatedAt      *DateTime   `gorm:"column:created_at;index:website_event_created_at_idx;index:website_event_website_id_created_at_idx;index:website_event_website_id_created_at_url_path_idx;index:website_event_website_id_created_at_url_query_idx;index:website_event_website_id_created_at_referrer_domain_idx;index:website_event_website_id_created_at_page_title_idx;index:website_event_website_id_created_at_event_name_idx;index:website_event_website_id_created_at_tag_idx;index:website_event_website_id_session_id_created_at_idx;index:website_event_website_id_visit_id_created_at_idx;index:website_event_website_id_created_at_hostname_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	URLPath        string      `gorm:"column:url_path;index:website_event_website_id_created_at_url_path_idx;type:varchar(500);not null" json:"url_path"`
+	URLQuery       *string     `gorm:"column:url_query;index:website_event_website_id_created_at_url_query_idx;type:varchar(500)" json:"url_query"`
+	UtmSource      *string     `gorm:"column:utm_source;type:varchar(255)" json:"utm_source"`
+	UtmMedium      *string     `gorm:"column:utm_medium;type:varchar(255)" json:"utm_medium"`
+	UtmCampaign    *string     `gorm:"column:utm_campaign;type:varchar(255)" json:"utm_campaign"`
+	UtmContent     *string     `gorm:"column:utm_content;type:varchar(255)" json:"utm_content"`
+	UtmTerm        *string     `gorm:"column:utm_term;type:varchar(255)" json:"utm_term"`
+	ReferrerPath   *string     `gorm:"column:referrer_path;type:varchar(500)" json:"referrer_path"`
+	ReferrerQuery  *string     `gorm:"column:referrer_query;type:varchar(500)" json:"referrer_query"`
+	ReferrerDomain *string     `gorm:"column:referrer_domain;index:website_event_website_id_created_at_referrer_domain_idx;type:varchar(500)" json:"referrer_domain"`
+	PageTitle      *string     `gorm:"column:page_title;index:website_event_website_id_created_at_page_title_idx;type:varchar(500)" json:"page_title"`
+	Gclid          *string     `gorm:"column:gclid;type:varchar(255)" json:"gclid"`
+	Fbclid         *string     `gorm:"column:fbclid;type:varchar(255)" json:"fbclid"`
+	Msclkid        *string     `gorm:"column:msclkid;type:varchar(255)" json:"msclkid"`
+	Ttclid         *string     `gorm:"column:ttclid;type:varchar(255)" json:"ttclid"`
+	Lifatid        *string     `gorm:"column:li_fat_id;type:varchar(255)" json:"li_fat_id"`
+	Twclid         *string     `gorm:"column:twclid;type:varchar(255)" json:"twclid"`
+	EventType      *int        `gorm:"column:event_type;default:1;not null" json:"event_type"`
+	EventName      *string     `gorm:"column:event_name;index:website_event_website_id_created_at_event_name_idx;type:varchar(50)" json:"event_name"`
+	Tag            *string     `gorm:"column:tag;index:website_event_website_id_created_at_tag_idx;type:varchar(50)" json:"tag"`
+	Hostname       *string     `gorm:"column:hostname;index:website_event_website_id_created_at_hostname_idx;type:varchar(100)" json:"hostname"`
+	Lcp            *float64    `gorm:"column:lcp;type:decimal(10,1)" json:"lcp"`
+	Inp            *float64    `gorm:"column:inp;type:decimal(10,1)" json:"inp"`
+	Cls            *float64    `gorm:"column:cls;type:decimal(10,4)" json:"cls"`
+	Fcp            *float64    `gorm:"column:fcp;type:decimal(10,1)" json:"fcp"`
+	Ttfb           *float64    `gorm:"column:ttfb;type:decimal(10,1)" json:"ttfb"`
+	Session        *Session    `gorm:"belongsTo"`
+	EventData      []EventData `gorm:"foreignKey:WebsiteEventID;constraint:event_data_website_event_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (WebsiteEvent) TableName() string {
@@ -230,17 +230,17 @@ func (m *WebsiteEvent) BeforeCreate(tx *gorm.DB) error {
 }
 
 type EventData struct {
-	ID             string    `gorm:"column:event_data_id;primaryKey;type:char(36)" json:"event_data_id"`
-	WebsiteID      string    `gorm:"column:website_id;index:event_data_website_id_idx;index:event_data_website_id_created_at_idx;index:event_data_website_id_created_at_data_key_idx;type:char(36);not null" json:"website_id"`
-	WebsiteEventID string    `gorm:"column:website_event_id;index:event_data_website_event_id_idx;type:char(36);not null" json:"website_event_id"`
-	DataKey        string    `gorm:"column:data_key;index:event_data_website_id_created_at_data_key_idx;type:varchar(500);not null" json:"data_key"`
-	StringValue    *string   `gorm:"column:string_value;type:varchar(500)" json:"string_value"`
-	NumberValue    *float64  `gorm:"column:number_value;type:decimal(19,4)" json:"number_value"`
-	DateValue      *DateTime `gorm:"column:date_value;type:timestamptz(6)" json:"date_value"`
-	DataType       int       `gorm:"column:data_type;not null" json:"data_type"`
-	CreatedAt      *DateTime `gorm:"column:created_at;index:event_data_created_at_idx;index:event_data_website_id_created_at_idx;index:event_data_website_id_created_at_data_key_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	Website        *Website
-	WebsiteEvent   *WebsiteEvent
+	ID             string        `gorm:"column:event_data_id;primaryKey;type:char(36)" json:"event_data_id"`
+	WebsiteID      string        `gorm:"column:website_id;index:event_data_website_id_idx;index:event_data_website_id_created_at_idx;index:event_data_website_id_created_at_data_key_idx;type:char(36);not null" json:"website_id"`
+	WebsiteEventID string        `gorm:"column:website_event_id;index:event_data_website_event_id_idx;type:char(36);not null" json:"website_event_id"`
+	DataKey        string        `gorm:"column:data_key;index:event_data_website_id_created_at_data_key_idx;type:varchar(500);not null" json:"data_key"`
+	StringValue    *string       `gorm:"column:string_value;type:varchar(500)" json:"string_value"`
+	NumberValue    *float64      `gorm:"column:number_value;type:decimal(19,4)" json:"number_value"`
+	DateValue      *DateTime     `gorm:"column:date_value;type:timestamptz(6)" json:"date_value"`
+	DataType       int           `gorm:"column:data_type;not null" json:"data_type"`
+	CreatedAt      *DateTime     `gorm:"column:created_at;index:event_data_created_at_idx;index:event_data_website_id_created_at_idx;index:event_data_website_id_created_at_data_key_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	Website        *Website      `gorm:"belongsTo"`
+	WebsiteEvent   *WebsiteEvent `gorm:"belongsTo"`
 }
 
 func (EventData) TableName() string {
@@ -265,9 +265,9 @@ type SessionData struct {
 	DateValue   *DateTime `gorm:"column:date_value;type:timestamptz(6)" json:"date_value"`
 	DataType    int       `gorm:"column:data_type;not null" json:"data_type"`
 	DistinctID  *string   `gorm:"column:distinct_id;type:varchar(50)" json:"distinct_id"`
-	CreatedAt   *DateTime `gorm:"column:created_at;index:session_data_created_at_idx;index:session_data_session_id_created_at_idx;index:session_data_website_id_created_at_data_key_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	Website     *Website
-	Session     *Session
+	CreatedAt   *DateTime `gorm:"column:created_at;index:session_data_created_at_idx;index:session_data_session_id_created_at_idx;index:session_data_website_id_created_at_data_key_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	Website     *Website  `gorm:"belongsTo"`
+	Session     *Session  `gorm:"belongsTo"`
 }
 
 func (SessionData) TableName() string {
@@ -285,17 +285,17 @@ func (m *SessionData) BeforeCreate(tx *gorm.DB) error {
 type Team struct {
 	ID                string     `gorm:"column:team_id;primaryKey;type:char(36)" json:"team_id"`
 	Name              string     `gorm:"column:name;type:varchar(50);not null" json:"name"`
-	AccessCode        *string    `gorm:"column:access_code;uniqueIndex;index:team_access_code_idx;type:varchar(50)" json:"access_code"`
+	AccessCode        *string    `gorm:"column:access_code;uniqueIndex:team_access_code_key;index:team_access_code_idx;type:varchar(50)" json:"access_code"`
 	LogoURL           *string    `gorm:"column:logo_url;type:varchar(2183)" json:"logo_url"`
 	TwoFactorRequired bool       `gorm:"column:two_factor_required;default:false;not null" json:"two_factor_required"`
-	CreatedAt         *DateTime  `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt         *DateTime  `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt         *DateTime  `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
 	DeletedAt         *DateTime  `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
-	Websites          []Website  `gorm:"foreignKey:TeamID"`
-	Members           []TeamUser `gorm:"foreignKey:TeamID"`
-	Links             []Link     `gorm:"foreignKey:TeamID"`
-	Pixels            []Pixel    `gorm:"foreignKey:TeamID"`
-	Boards            []Board    `gorm:"foreignKey:TeamID"`
+	Websites          []Website  `gorm:"foreignKey:TeamID;constraint:website_team_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Members           []TeamUser `gorm:"foreignKey:TeamID;constraint:team_user_team_id_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Links             []Link     `gorm:"foreignKey:TeamID;constraint:link_team_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Pixels            []Pixel    `gorm:"foreignKey:TeamID;constraint:pixel_team_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Boards            []Board    `gorm:"foreignKey:TeamID;constraint:board_team_id_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (Team) TableName() string {
@@ -326,10 +326,10 @@ type TeamUser struct {
 	TeamID    string    `gorm:"column:team_id;index:team_user_team_id_idx;type:char(36);not null" json:"team_id"`
 	UserID    string    `gorm:"column:user_id;index:team_user_user_id_idx;type:char(36);not null" json:"user_id"`
 	Role      string    `gorm:"column:role;type:varchar(50);not null" json:"role"`
-	CreatedAt *DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt *DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt *DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	Team      *Team
-	User      *User
+	Team      *Team     `gorm:"belongsTo"`
+	User      *User     `gorm:"belongsTo"`
 }
 
 func (TeamUser) TableName() string {
@@ -363,10 +363,10 @@ type Report struct {
 	Name        string         `gorm:"column:name;index:report_name_idx;type:varchar(200);not null" json:"name"`
 	Description string         `gorm:"column:description;type:varchar(500);not null" json:"description"`
 	Parameters  datatypes.JSON `gorm:"column:parameters;not null" json:"parameters"`
-	CreatedAt   *DateTime      `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt   *DateTime      `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt   *DateTime      `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	User        *User
-	Website     *Website
+	User        *User          `gorm:"belongsTo"`
+	Website     *Website       `gorm:"belongsTo"`
 }
 
 func (Report) TableName() string {
@@ -399,9 +399,9 @@ type Annotation struct {
 	Date      DateTime  `gorm:"column:date;index:annotation_website_id_date_idx;type:timestamptz(6);not null" json:"date"`
 	AllDay    *bool     `gorm:"column:all_day;default:true;not null" json:"all_day"`
 	Note      string    `gorm:"column:note;type:varchar(500);not null" json:"note"`
-	CreatedAt *DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt *DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt *DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	Website   *Website
+	Website   *Website  `gorm:"belongsTo"`
 }
 
 func (Annotation) TableName() string {
@@ -433,9 +433,9 @@ type Segment struct {
 	Type       string         `gorm:"column:type;type:varchar(50);not null" json:"type"`
 	Name       string         `gorm:"column:name;type:varchar(200);not null" json:"name"`
 	Parameters datatypes.JSON `gorm:"column:parameters;not null" json:"parameters"`
-	CreatedAt  *DateTime      `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt  *DateTime      `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt  *DateTime      `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	Website    *Website
+	Website    *Website       `gorm:"belongsTo"`
 }
 
 func (Segment) TableName() string {
@@ -469,9 +469,9 @@ type Revenue struct {
 	EventName string    `gorm:"column:event_name;type:varchar(50);not null" json:"event_name"`
 	Currency  string    `gorm:"column:currency;type:varchar(10);not null" json:"currency"`
 	Revenue   *float64  `gorm:"column:revenue;type:decimal(19,4)" json:"revenue"`
-	CreatedAt *DateTime `gorm:"column:created_at;index:revenue_website_id_created_at_idx;index:revenue_website_id_session_id_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	Website   *Website
-	Session   *Session
+	CreatedAt *DateTime `gorm:"column:created_at;index:revenue_website_id_created_at_idx;index:revenue_website_id_session_id_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	Website   *Website  `gorm:"belongsTo"`
+	Session   *Session  `gorm:"belongsTo"`
 }
 
 func (Revenue) TableName() string {
@@ -490,14 +490,14 @@ type Link struct {
 	ID        string    `gorm:"column:link_id;primaryKey;type:char(36)" json:"link_id"`
 	Name      string    `gorm:"column:name;type:varchar(100);not null" json:"name"`
 	URL       string    `gorm:"column:url;type:varchar(500);not null" json:"url"`
-	Slug      string    `gorm:"column:slug;uniqueIndex;index:link_slug_idx;type:varchar(100);not null" json:"slug"`
+	Slug      string    `gorm:"column:slug;uniqueIndex:link_slug_key;index:link_slug_idx;type:varchar(100);not null" json:"slug"`
 	UserID    *string   `gorm:"column:user_id;index:link_user_id_idx;type:char(36)" json:"user_id"`
 	TeamID    *string   `gorm:"column:team_id;index:link_team_id_idx;type:char(36)" json:"team_id"`
-	CreatedAt *DateTime `gorm:"column:created_at;index:link_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt *DateTime `gorm:"column:created_at;index:link_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt *DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
 	DeletedAt *DateTime `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
-	User      *User
-	Team      *Team
+	User      *User     `gorm:"belongsTo"`
+	Team      *Team     `gorm:"belongsTo"`
 }
 
 func (Link) TableName() string {
@@ -526,14 +526,14 @@ func (*Link) BeforeUpdate(tx *gorm.DB) error {
 type Pixel struct {
 	ID        string    `gorm:"column:pixel_id;primaryKey;type:char(36)" json:"pixel_id"`
 	Name      string    `gorm:"column:name;type:varchar(100);not null" json:"name"`
-	Slug      string    `gorm:"column:slug;uniqueIndex;index:pixel_slug_idx;type:varchar(100);not null" json:"slug"`
+	Slug      string    `gorm:"column:slug;uniqueIndex:pixel_slug_key;index:pixel_slug_idx;type:varchar(100);not null" json:"slug"`
 	UserID    *string   `gorm:"column:user_id;index:pixel_user_id_idx;type:char(36)" json:"user_id"`
 	TeamID    *string   `gorm:"column:team_id;index:pixel_team_id_idx;type:char(36)" json:"team_id"`
-	CreatedAt *DateTime `gorm:"column:created_at;index:pixel_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt *DateTime `gorm:"column:created_at;index:pixel_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt *DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
 	DeletedAt *DateTime `gorm:"column:deleted_at;type:timestamptz(6)" json:"deleted_at"`
-	User      *User
-	Team      *Team
+	User      *User     `gorm:"belongsTo"`
+	Team      *Team     `gorm:"belongsTo"`
 }
 
 func (Pixel) TableName() string {
@@ -567,10 +567,10 @@ type Board struct {
 	Parameters  datatypes.JSON `gorm:"column:parameters;not null" json:"parameters"`
 	UserID      *string        `gorm:"column:user_id;index:board_user_id_idx;type:char(36)" json:"user_id"`
 	TeamID      *string        `gorm:"column:team_id;index:board_team_id_idx;type:char(36)" json:"team_id"`
-	CreatedAt   *DateTime      `gorm:"column:created_at;index:board_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt   *DateTime      `gorm:"column:created_at;index:board_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt   *DateTime      `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	User        *User
-	Team        *Team
+	User        *User          `gorm:"belongsTo"`
+	Team        *Team          `gorm:"belongsTo"`
 }
 
 func (Board) TableName() string {
@@ -601,9 +601,9 @@ type Share struct {
 	EntityID   string         `gorm:"column:entity_id;index:share_entity_id_idx;type:char(36);not null" json:"entity_id"`
 	Name       string         `gorm:"column:name;type:varchar(200);not null" json:"name"`
 	ShareType  int            `gorm:"column:share_type;not null" json:"share_type"`
-	Slug       string         `gorm:"column:slug;uniqueIndex;type:varchar(100);not null" json:"slug"`
+	Slug       string         `gorm:"column:slug;uniqueIndex:share_slug_key;type:varchar(100);not null" json:"slug"`
 	Parameters datatypes.JSON `gorm:"column:parameters;not null" json:"parameters"`
-	CreatedAt  *DateTime      `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt  *DateTime      `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt  *DateTime      `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
 }
 
@@ -640,8 +640,8 @@ type SessionReplay struct {
 	EventCount int       `gorm:"column:event_count;not null" json:"event_count"`
 	StartedAt  DateTime  `gorm:"column:started_at;type:timestamptz(6);not null" json:"started_at"`
 	EndedAt    DateTime  `gorm:"column:ended_at;type:timestamptz(6);not null" json:"ended_at"`
-	CreatedAt  *DateTime `gorm:"column:created_at;index:session_replay_website_id_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
-	Website    *Website
+	CreatedAt  *DateTime `gorm:"column:created_at;index:session_replay_website_id_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
+	Website    *Website  `gorm:"belongsTo"`
 }
 
 func (SessionReplay) TableName() string {
@@ -661,9 +661,9 @@ type SessionReplaySaved struct {
 	Name      string    `gorm:"column:name;type:varchar(100);not null" json:"name"`
 	WebsiteID string    `gorm:"column:website_id;uniqueIndex:session_replay_saved_website_id_visit_id_key;index:session_replay_saved_website_id_idx;index:session_replay_saved_website_id_created_at_idx;type:char(36);not null" json:"website_id"`
 	VisitID   string    `gorm:"column:visit_id;uniqueIndex:session_replay_saved_website_id_visit_id_key;index:session_replay_saved_visit_id_idx;type:char(36);not null" json:"visit_id"`
-	CreatedAt *DateTime `gorm:"column:created_at;index:session_replay_saved_website_id_created_at_idx;type:timestamptz(6);autoCreateTime:false" json:"created_at"`
+	CreatedAt *DateTime `gorm:"column:created_at;index:session_replay_saved_website_id_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false" json:"created_at"`
 	UpdatedAt *DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false" json:"updated_at"`
-	Website   *Website
+	Website   *Website  `gorm:"belongsTo"`
 }
 
 func (SessionReplaySaved) TableName() string {
@@ -705,8 +705,8 @@ type HeatmapEvent struct {
 	ViewportH *int     `gorm:"column:viewport_h" json:"viewport_h"`
 	PageH     *int     `gorm:"column:page_h" json:"page_h"`
 	ScrollPct *int     `gorm:"column:scroll_pct" json:"scroll_pct"`
-	CreatedAt DateTime `gorm:"column:created_at;index:heatmap_event_website_id_created_at_idx;index:heatmap_event_website_id_url_path_event_type_created_at_idx;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
-	Website   *Website
+	CreatedAt DateTime `gorm:"column:created_at;index:heatmap_event_website_id_created_at_idx;index:heatmap_event_website_id_url_path_event_type_created_at_idx;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	Website   *Website `gorm:"belongsTo"`
 }
 
 func (HeatmapEvent) TableName() string {
@@ -723,12 +723,12 @@ func (m *HeatmapEvent) BeforeCreate(tx *gorm.DB) error {
 
 type TwoFactorAuth struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	UserID    string   `gorm:"column:user_id;uniqueIndex;type:char(36);not null" json:"user_id"`
+	UserID    string   `gorm:"column:user_id;uniqueIndex:two_factor_auth_user_id_key;type:char(36);not null" json:"user_id"`
 	Secret    string   `gorm:"column:secret;not null" json:"secret"`
 	IsEnabled bool     `gorm:"column:is_enabled;default:false;not null" json:"is_enabled"`
-	CreatedAt DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 	UpdatedAt DateTime `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false;not null" json:"updated_at"`
-	User      *User
+	User      *User    `gorm:"belongsTo"`
 }
 
 func (TwoFactorAuth) TableName() string {
@@ -762,8 +762,8 @@ type TwoFactorBackupCode struct {
 	UserID    string   `gorm:"column:user_id;index:two_factor_backup_code_user_id_idx;type:char(36);not null" json:"user_id"`
 	CodeHash  string   `gorm:"column:code_hash;not null" json:"code_hash"`
 	Used      bool     `gorm:"column:used;default:false;not null" json:"used"`
-	CreatedAt DateTime `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
-	User      *User
+	CreatedAt DateTime `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
+	User      *User    `gorm:"belongsTo"`
 }
 
 func (TwoFactorBackupCode) TableName() string {
@@ -786,7 +786,7 @@ type TwoFactorOtpUsed struct {
 	UserID    string   `gorm:"column:user_id;uniqueIndex:two_factor_otp_used_user_id_otp_key;type:char(36);not null" json:"user_id"`
 	Otp       string   `gorm:"column:otp;uniqueIndex:two_factor_otp_used_user_id_otp_key;not null" json:"otp"`
 	ExpiresAt DateTime `gorm:"column:expires_at;type:timestamptz(6);not null" json:"expires_at"`
-	User      *User
+	User      *User    `gorm:"belongsTo"`
 }
 
 func (TwoFactorOtpUsed) TableName() string {
@@ -802,11 +802,11 @@ func (m *TwoFactorOtpUsed) BeforeCreate(_ *gorm.DB) error {
 
 type TwoFactorRateLimit struct {
 	ID          string    `gorm:"column:id;primaryKey" json:"id"`
-	UserID      string    `gorm:"column:user_id;uniqueIndex;type:char(36);not null" json:"user_id"`
-	Attempts    int       `gorm:"column:attempts;default:0;not null" json:"attempts"`
+	UserID      string    `gorm:"column:user_id;uniqueIndex:two_factor_rate_limit_user_id_key;type:char(36);not null" json:"user_id"`
+	Attempts    int       `gorm:"column:attempts;size:32;default:0;not null" json:"attempts"`
 	LockedUntil *DateTime `gorm:"column:locked_until;type:timestamptz(6)" json:"locked_until"`
 	UpdatedAt   DateTime  `gorm:"column:updated_at;type:timestamptz(6);autoUpdateTime:false;not null" json:"updated_at"`
-	User        *User
+	User        *User     `gorm:"belongsTo"`
 }
 
 func (TwoFactorRateLimit) TableName() string {
@@ -845,11 +845,11 @@ type ErrorIssue struct {
 	ID              string    `gorm:"column:issue_id;primaryKey;type:char(36)" json:"issue_id"`
 	WebsiteID       string    `gorm:"column:website_id;uniqueIndex:error_issue_website_id_grouping_version_fingerprint_key;index:error_issue_website_id_status_idx;type:char(36);not null" json:"website_id"`
 	Fingerprint     string    `gorm:"column:fingerprint;uniqueIndex:error_issue_website_id_grouping_version_fingerprint_key;type:varchar(64);not null" json:"fingerprint"`
-	GroupingVersion *int      `gorm:"column:grouping_version;uniqueIndex:error_issue_website_id_grouping_version_fingerprint_key;default:1;not null" json:"grouping_version"`
+	GroupingVersion *int      `gorm:"column:grouping_version;uniqueIndex:error_issue_website_id_grouping_version_fingerprint_key;size:32;default:1;not null" json:"grouping_version"`
 	Title           string    `gorm:"column:title;type:varchar(2200);not null" json:"title"`
 	Status          *string   `gorm:"column:status;index:error_issue_website_id_status_idx;type:varchar(20);default:'unresolved';not null" json:"status"`
 	ResolvedAt      *DateTime `gorm:"column:resolved_at;type:timestamptz(6)" json:"resolved_at"`
-	CreatedAt       DateTime  `gorm:"column:created_at;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
+	CreatedAt       DateTime  `gorm:"column:created_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"created_at"`
 }
 
 func (ErrorIssue) TableName() string {
@@ -871,7 +871,7 @@ type ErrorEvent struct {
 	SessionID   string         `gorm:"column:session_id;type:char(36);not null" json:"session_id"`
 	VisitID     string         `gorm:"column:visit_id;type:char(36);not null" json:"visit_id"`
 	CreatedAt   DateTime       `gorm:"column:created_at;index:error_event_website_id_created_at_idx;index:error_event_website_id_issue_id_created_at_idx;type:timestamptz(6);autoCreateTime:false;not null" json:"created_at"`
-	ReceivedAt  DateTime       `gorm:"column:received_at;type:timestamptz(6);not null" json:"received_at"`
+	ReceivedAt  DateTime       `gorm:"column:received_at;type:timestamptz(6);default:CURRENT_TIMESTAMP;not null" json:"received_at"`
 	Name        string         `gorm:"column:name;type:varchar(200);not null" json:"name"`
 	Message     string         `gorm:"column:message;type:varchar(2000);not null" json:"message"`
 	Stack       string         `gorm:"column:stack;type:text;not null" json:"stack"`
@@ -901,7 +901,7 @@ func (m *ErrorEvent) BeforeCreate(tx *gorm.DB) error {
 type ErrorRateLimit struct {
 	WebsiteID string   `gorm:"column:website_id;primaryKey;type:char(36)" json:"website_id"`
 	Bucket    DateTime `gorm:"column:bucket;type:timestamptz(6);not null" json:"bucket"`
-	Count     int      `gorm:"column:count;not null" json:"count"`
+	Count     int      `gorm:"column:count;size:32;not null" json:"count"`
 }
 
 func (ErrorRateLimit) TableName() string {

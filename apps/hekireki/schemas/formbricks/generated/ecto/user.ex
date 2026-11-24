@@ -28,7 +28,7 @@ defmodule Formbricks.User do
           identity_provider: atom(),
           identity_provider_account_id: String.t() | nil,
           group_id: String.t() | nil,
-          notification_settings: map(),
+          notification_settings: map() | list() | String.t() | number() | boolean(),
           locale: String.t(),
           last_login_at: DateTime.t() | nil,
           is_active: boolean(),
@@ -77,7 +77,7 @@ defmodule Formbricks.User do
     field(:identity_provider_account_id, :string, source: :identityProviderAccountId)
     field(:group_id, :string, source: :groupId)
     # [UserNotificationSettings]
-    field(:notification_settings, :map, default: %{}, source: :notificationSettings)
+    field(:notification_settings, Formbricks.PrismaJson, default: %{}, source: :notificationSettings)
     # [Locale]
     field(:locale, :string, default: "en-US")
     field(:last_login_at, Formbricks.PrismaDateTime, source: :lastLoginAt)

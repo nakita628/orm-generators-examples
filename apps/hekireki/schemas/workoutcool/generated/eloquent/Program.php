@@ -68,6 +68,7 @@ class Program extends Model
         'durationWeeks' => 'integer',
         'sessionsPerWeek' => 'integer',
         'sessionDurationMin' => 'integer',
+        'equipment' => AsPrismaList::class . ':' . ExerciseAttributeValueEnum::class,
         'isPremium' => 'boolean',
         'isActive' => 'boolean',
         'visibility' => ProgramVisibility::class,

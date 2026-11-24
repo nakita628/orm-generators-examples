@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 /**
  * @property \Carbon\CarbonInterface|null $initializedAt Set the first time the CLI `init` command completes against this project. Drives the dev onboarding progress.
  * @property string|null $defaultRuntime Runtime used when a deployment config does not specify one. Null preserves the legacy Node 20 fallback.
- * @property mixed $allowedMasterQueues The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
+ * @property list<string> $allowedMasterQueues The master queues they are allowed to use (impacts what they can set as default and trigger runs with)
  */
 class Project extends Model
 {
@@ -53,6 +53,7 @@ class Project extends Model
         'initializedAt' => 'datetime',
         'version' => ProjectVersion::class,
         'engine' => RunEngineVersion::class,
+        'allowedMasterQueues' => AsPrismaList::class,
         'buildSettings' => 'array',
         'onboardingData' => 'array',
     ];

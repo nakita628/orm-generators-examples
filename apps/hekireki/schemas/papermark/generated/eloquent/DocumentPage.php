@@ -35,6 +35,7 @@ class DocumentPage extends Model
 
     protected $casts = [
         'pageNumber' => 'integer',
+        'embeddedLinks' => AsPrismaList::class,
         'pageLinks' => 'array',
         'metadata' => 'array',
         'storageType' => DocumentStorageType::class,

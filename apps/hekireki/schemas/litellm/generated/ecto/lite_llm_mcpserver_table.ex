@@ -1,12 +1,12 @@
 defmodule LiteLLM.LiteLLMMCPServerTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :server_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :server_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           server_name: String.t() | nil,
           alias: String.t() | nil,
           description: String.t() | nil,
@@ -15,24 +15,24 @@ defmodule LiteLLM.LiteLLMMCPServerTable do
           spec_path: String.t() | nil,
           transport: String.t(),
           auth_type: String.t() | nil,
-          credentials: map() | nil,
+          credentials: map() | list() | String.t() | number() | boolean() | nil,
           created_by: String.t() | nil,
           updated_by: String.t() | nil,
-          mcp_info: map() | nil,
+          mcp_info: map() | list() | String.t() | number() | boolean() | nil,
           mcp_access_groups: [String.t()],
           allowed_tools: [String.t()],
-          tool_name_to_display_name: map() | nil,
-          tool_name_to_description: map() | nil,
-          pinned_tools: map() | nil,
+          tool_name_to_display_name: map() | list() | String.t() | number() | boolean() | nil,
+          tool_name_to_description: map() | list() | String.t() | number() | boolean() | nil,
+          pinned_tools: map() | list() | String.t() | number() | boolean() | nil,
           extra_headers: [String.t()],
-          static_headers: map() | nil,
-          env_vars: map() | nil,
+          static_headers: map() | list() | String.t() | number() | boolean() | nil,
+          env_vars: map() | list() | String.t() | number() | boolean() | nil,
           status: String.t() | nil,
           last_health_check: DateTime.t() | nil,
           health_check_error: String.t() | nil,
           command: String.t() | nil,
           args: [String.t()],
-          env: map() | nil,
+          env: map() | list() | String.t() | number() | boolean() | nil,
           issuer: String.t() | nil,
           authorization_url: String.t() | nil,
           token_url: String.t() | nil,
@@ -73,24 +73,24 @@ defmodule LiteLLM.LiteLLMMCPServerTable do
     field(:spec_path, :string)
     field(:transport, :string, default: "sse")
     field(:auth_type, :string)
-    field(:credentials, :map, default: %{})
+    field(:credentials, LiteLLM.PrismaJson, default: %{})
     field(:created_by, :string)
     field(:updated_by, :string)
-    field(:mcp_info, :map, default: %{})
+    field(:mcp_info, LiteLLM.PrismaJson, default: %{})
     field(:mcp_access_groups, {:array, :string})
     field(:allowed_tools, {:array, :string})
-    field(:tool_name_to_display_name, :map, default: %{})
-    field(:tool_name_to_description, :map, default: %{})
-    field(:pinned_tools, :map, default: %{})
+    field(:tool_name_to_display_name, LiteLLM.PrismaJson, default: %{})
+    field(:tool_name_to_description, LiteLLM.PrismaJson, default: %{})
+    field(:pinned_tools, LiteLLM.PrismaJson, default: %{})
     field(:extra_headers, {:array, :string})
-    field(:static_headers, :map, default: %{})
-    field(:env_vars, :map)
+    field(:static_headers, LiteLLM.PrismaJson, default: %{})
+    field(:env_vars, LiteLLM.PrismaJson, default: [])
     field(:status, :string, default: "unknown")
     field(:last_health_check, LiteLLM.PrismaDateTime)
     field(:health_check_error, :string)
     field(:command, :string)
     field(:args, {:array, :string})
-    field(:env, :map, default: %{})
+    field(:env, LiteLLM.PrismaJson, default: %{})
     field(:issuer, :string)
     field(:authorization_url, :string)
     field(:token_url, :string)

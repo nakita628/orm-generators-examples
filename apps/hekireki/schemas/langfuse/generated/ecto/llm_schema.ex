@@ -8,7 +8,7 @@ defmodule Langfuse.LlmSchema do
           id: String.t(),
           name: String.t(),
           description: String.t(),
-          schema: map(),
+          schema: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil
@@ -18,7 +18,7 @@ defmodule Langfuse.LlmSchema do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:schema, :map)
+    field(:schema, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end

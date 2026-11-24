@@ -21,7 +21,7 @@ defmodule Documenso.Recipient do
           last_reminder_sent_at: DateTime.t() | nil,
           next_reminder_at: DateTime.t() | nil,
           reminder_count: integer(),
-          auth_options: map() | nil,
+          auth_options: map() | list() | String.t() | number() | boolean() | nil,
           signing_order: integer() | nil,
           rejection_reason: String.t() | nil,
           role: atom(),
@@ -49,7 +49,7 @@ defmodule Documenso.Recipient do
     field(:next_reminder_at, Documenso.PrismaDateTime, source: :nextReminderAt)
     field(:reminder_count, :integer, default: 0, source: :reminderCount)
     # [RecipientAuthOptions] @zod.custom.use(ZRecipientAuthOptionsSchema)
-    field(:auth_options, :map, source: :authOptions)
+    field(:auth_options, Documenso.PrismaJson, source: :authOptions)
     # @zod.number.describe("The order in which the recipient should sign the document. Only works if the document is set to sequential signing.")
     field(:signing_order, :integer, source: :signingOrder)
     field(:rejection_reason, :string, source: :rejectionReason)

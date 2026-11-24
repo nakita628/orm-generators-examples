@@ -1,11 +1,11 @@
 defmodule LiteLLM.LiteLLMRetiredAgentIdentity do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :binding_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :binding_id}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           provider: String.t(),
           issuer: String.t(),
           tenant_id: String.t(),

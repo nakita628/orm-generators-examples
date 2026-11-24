@@ -39,6 +39,7 @@ class User extends \Illuminate\Database\Eloquent\Model
         'admin' => 'boolean',
         'v4_beta_enabled' => 'boolean',
         'support_access' => 'array',
+        'feature_flags' => AsPrismaList::class,
     ];
 
     public function accounts(): HasMany

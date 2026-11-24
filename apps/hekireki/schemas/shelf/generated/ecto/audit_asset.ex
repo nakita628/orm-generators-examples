@@ -9,7 +9,7 @@ defmodule Shelf.AuditAsset do
           expected: boolean(),
           status: atom(),
           scanned_at: DateTime.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           expected_quantity: integer() | nil,
           found_quantity: integer() | nil,
           inserted_at: DateTime.t(),
@@ -27,7 +27,7 @@ defmodule Shelf.AuditAsset do
     field(:expected, :boolean, default: true)
     field(:status, Ecto.Enum, values: [:PENDING, :FOUND, :MISSING, :UNEXPECTED], default: :PENDING)
     field(:scanned_at, Shelf.PrismaDateTime, source: :scannedAt)
-    field(:metadata, :map)
+    field(:metadata, Shelf.PrismaJson)
     # Units the audit expects to find, snapshotted when the row is created: the
     # units in the audit's scope (placed at its locations, held in its kits, or
     # held by its person; at most `Asset.quantity`), or `Asset.quantity` when

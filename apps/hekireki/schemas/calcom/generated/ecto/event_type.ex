@@ -11,13 +11,13 @@ defmodule Calcom.EventType do
           description: String.t() | nil,
           interface_language: String.t() | nil,
           position: integer(),
-          locations: map() | nil,
+          locations: map() | list() | String.t() | number() | boolean() | nil,
           length: integer(),
           offset_start: integer(),
           hidden: boolean(),
           use_event_level_selected_calendars: boolean(),
           event_name: String.t() | nil,
-          booking_fields: map() | nil,
+          booking_fields: map() | list() | String.t() | number() | boolean() | nil,
           time_zone: String.t() | nil,
           period_type: atom(),
           period_start_date: DateTime.t() | nil,
@@ -33,7 +33,7 @@ defmodule Calcom.EventType do
           can_send_cal_video_transcription_emails: boolean(),
           auto_translate_description_enabled: boolean(),
           auto_translate_instant_meeting_title_enabled: boolean(),
-          recurring_event: map() | nil,
+          recurring_event: map() | list() | String.t() | number() | boolean() | nil,
           disable_guests: boolean(),
           hide_calendar_notes: boolean(),
           hide_calendar_event_details: boolean(),
@@ -53,17 +53,17 @@ defmodule Calcom.EventType do
           price: integer(),
           currency: String.t(),
           slot_interval: integer() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           success_redirect_url: String.t() | nil,
           forward_params_success_redirect: boolean() | nil,
-          booking_limits: map() | nil,
-          duration_limits: map() | nil,
+          booking_limits: map() | list() | String.t() | number() | boolean() | nil,
+          duration_limits: map() | list() | String.t() | number() | boolean() | nil,
           is_instant_event: boolean(),
           instant_meeting_expiry_time_offset_in_seconds: integer(),
           instant_meeting_parameters: [String.t()],
           assign_all_team_members: boolean(),
           assign_rrmembers_using_segment: boolean(),
-          rr_segment_query_value: map() | nil,
+          rr_segment_query_value: map() | list() | String.t() | number() | boolean() | nil,
           use_event_type_destination_calendar_email: boolean(),
           is_rrweights_enabled: boolean(),
           max_lead_threshold: integer() | nil,
@@ -73,7 +73,7 @@ defmodule Calcom.EventType do
           max_active_bookings_per_booker: integer() | nil,
           max_active_booking_per_booker_offer_reschedule: boolean(),
           custom_reply_to_email: String.t() | nil,
-          event_type_color: map() | nil,
+          event_type_color: map() | list() | String.t() | number() | boolean() | nil,
           reschedule_with_same_round_robin_host: boolean(),
           use_booker_timezone: boolean(),
           booking_requires_authentication: boolean(),
@@ -114,7 +114,7 @@ defmodule Calcom.EventType do
     field(:interface_language, :string, source: :interfaceLanguage)
     field(:position, :integer, default: 0)
     # @zod.import(["import { eventTypeLocations } from '../../zod-utils'"]).custom.use(eventTypeLocations)
-    field(:locations, :map)
+    field(:locations, Calcom.PrismaJson)
     # @zod.number.min(1)
     field(:length, :integer)
     field(:offset_start, :integer, default: 0, source: :offsetStart)
@@ -122,7 +122,7 @@ defmodule Calcom.EventType do
     field(:use_event_level_selected_calendars, :boolean, default: false, source: :useEventLevelSelectedCalendars)
     field(:event_name, :string, source: :eventName)
     # @zod.import(["import { eventTypeBookingFields } from '../../zod-utils'"]).custom.use(eventTypeBookingFields)
-    field(:booking_fields, :map, source: :bookingFields)
+    field(:booking_fields, Calcom.PrismaJson, source: :bookingFields)
     field(:time_zone, :string, source: :timeZone)
     field(:period_type, Ecto.Enum, values: [UNLIMITED: "unlimited", ROLLING: "rolling", ROLLING_WINDOW: "rolling_window", RANGE: "range"], default: :UNLIMITED, source: :periodType)
     # @zod.import(["import { coerceToDate } from '../../zod-utils'"]).custom.use(coerceToDate)
@@ -141,7 +141,7 @@ defmodule Calcom.EventType do
     field(:auto_translate_description_enabled, :boolean, default: false, source: :autoTranslateDescriptionEnabled)
     field(:auto_translate_instant_meeting_title_enabled, :boolean, default: true, source: :autoTranslateInstantMeetingTitleEnabled)
     # @zod.import(["import { recurringEventType } from '../../zod-utils'"]).custom.use(recurringEventType)
-    field(:recurring_event, :map, source: :recurringEvent)
+    field(:recurring_event, Calcom.PrismaJson, source: :recurringEvent)
     field(:disable_guests, :boolean, default: false, source: :disableGuests)
     field(:hide_calendar_notes, :boolean, default: false, source: :hideCalendarNotes)
     field(:hide_calendar_event_details, :boolean, default: false, source: :hideCalendarEventDetails)
@@ -164,21 +164,21 @@ defmodule Calcom.EventType do
     field(:currency, :string, default: "usd")
     field(:slot_interval, :integer, source: :slotInterval)
     # @zod.import(["import { EventTypeMetaDataSchema } from '../../zod-utils'"]).custom.use(EventTypeMetaDataSchema)
-    field(:metadata, :map)
+    field(:metadata, Calcom.PrismaJson)
     # @zod.import(["import { successRedirectUrl } from '../../zod-utils'"]).custom.use(successRedirectUrl)
     field(:success_redirect_url, :string, source: :successRedirectUrl)
     field(:forward_params_success_redirect, :boolean, default: true, source: :forwardParamsSuccessRedirect)
     # @zod.import(["import { intervalLimitsType } from '../../zod-utils'"]).custom.use(intervalLimitsType)
-    field(:booking_limits, :map, source: :bookingLimits)
+    field(:booking_limits, Calcom.PrismaJson, source: :bookingLimits)
     # @zod.import(["import { intervalLimitsType } from '../../zod-utils'"]).custom.use(intervalLimitsType)
-    field(:duration_limits, :map, source: :durationLimits)
+    field(:duration_limits, Calcom.PrismaJson, source: :durationLimits)
     field(:is_instant_event, :boolean, default: false, source: :isInstantEvent)
     field(:instant_meeting_expiry_time_offset_in_seconds, :integer, default: 90, source: :instantMeetingExpiryTimeOffsetInSeconds)
     field(:instant_meeting_parameters, {:array, :string}, source: :instantMeetingParameters)
     field(:assign_all_team_members, :boolean, default: false, source: :assignAllTeamMembers)
     field(:assign_rrmembers_using_segment, :boolean, default: false, source: :assignRRMembersUsingSegment)
     # @zod.import(["import { rrSegmentQueryValueSchema } from '../../zod-utils'"]).custom.use(rrSegmentQueryValueSchema)
-    field(:rr_segment_query_value, :map, source: :rrSegmentQueryValue)
+    field(:rr_segment_query_value, Calcom.PrismaJson, source: :rrSegmentQueryValue)
     field(:use_event_type_destination_calendar_email, :boolean, default: false, source: :useEventTypeDestinationCalendarEmail)
     field(:is_rrweights_enabled, :boolean, default: false, source: :isRRWeightsEnabled)
     field(:max_lead_threshold, :integer, source: :maxLeadThreshold)
@@ -190,7 +190,7 @@ defmodule Calcom.EventType do
     # @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
     field(:custom_reply_to_email, :string, source: :customReplyToEmail)
     # @zod.import(["import { eventTypeColor } from '../../zod-utils'"]).custom.use(eventTypeColor)
-    field(:event_type_color, :map, source: :eventTypeColor)
+    field(:event_type_color, Calcom.PrismaJson, source: :eventTypeColor)
     field(:reschedule_with_same_round_robin_host, :boolean, default: false, source: :rescheduleWithSameRoundRobinHost)
     field(:use_booker_timezone, :boolean, default: false, source: :useBookerTimezone)
     field(:booking_requires_authentication, :boolean, default: false, source: :bookingRequiresAuthentication)

@@ -11,7 +11,7 @@ defmodule Langfuse.BatchExport do
           expires_at: DateTime.t() | nil,
           name: String.t(),
           status: String.t(),
-          query: map(),
+          query: map() | list() | String.t() | number() | boolean(),
           format: String.t(),
           url: String.t() | nil,
           log: String.t() | nil,
@@ -27,7 +27,7 @@ defmodule Langfuse.BatchExport do
     field(:expires_at, Langfuse.PrismaDateTime)
     field(:name, :string)
     field(:status, :string)
-    field(:query, :map)
+    field(:query, Langfuse.PrismaJson)
     field(:format, :string)
     field(:url, :string)
     field(:log, :string)

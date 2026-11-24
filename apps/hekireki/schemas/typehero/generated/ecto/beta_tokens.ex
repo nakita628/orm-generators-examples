@@ -11,7 +11,7 @@ defmodule TypeHero.BetaTokens do
 
   schema "BetaTokens" do
     field(:token, :string)
-    field(:user_id, :binary_id, source: :userId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    field(:user_id, :string, source: :userId)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
   end
 end

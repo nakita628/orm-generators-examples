@@ -1,5 +1,6 @@
 class MemberInWorkspace < ApplicationRecord
   self.table_name = "MemberInWorkspace"
+  self.primary_key = %w[userId workspaceId]
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

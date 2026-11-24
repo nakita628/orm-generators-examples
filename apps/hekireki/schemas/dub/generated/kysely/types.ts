@@ -42,7 +42,7 @@ export interface Customer {
   clickedAt: Timestamp | null
   country: string | null
   sales: Generated<number>
-  saleAmount: Generated<bigint>
+  saleAmount: Generated<ColumnType<number, bigint | number | string, bigint | number | string>>
   firstSaleAt: Timestamp | null
   subscriptionCanceledAt: Timestamp | null
   projectId: string
@@ -57,9 +57,9 @@ export interface Dashboard {
   folderId: string | null
   projectId: string | null
   userId: string | null
-  doIndex: Generated<boolean>
+  doIndex: Generated<ColumnType<number, boolean | number, boolean | number>>
   password: string | null
-  showConversions: Generated<boolean>
+  showConversions: Generated<ColumnType<number, boolean | number, boolean | number>>
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
 }
@@ -67,12 +67,12 @@ export interface Dashboard {
 export interface Domain {
   id: string
   slug: string
-  verified: Generated<boolean>
+  verified: Generated<ColumnType<number, boolean | number, boolean | number>>
   placeholder: string | null
   expiredUrl: string | null
   notFoundUrl: string | null
-  primary: Generated<boolean>
-  archived: Generated<boolean>
+  primary: Generated<ColumnType<number, boolean | number, boolean | number>>
+  archived: Generated<ColumnType<number, boolean | number, boolean | number>>
   lastChecked: Generated<Timestamp>
   logo: string | null
   appleAppSiteAssociation: unknown
@@ -98,15 +98,15 @@ export interface RegisteredDomain {
 
 export interface DefaultDomains {
   id: string
-  dubsh: Generated<boolean>
-  chatgpt: Generated<boolean>
-  sptifi: Generated<boolean>
-  gitnew: Generated<boolean>
-  callink: Generated<boolean>
-  amznid: Generated<boolean>
-  ggllink: Generated<boolean>
-  figpage: Generated<boolean>
-  loooooooong: Generated<boolean>
+  dubsh: Generated<ColumnType<number, boolean | number, boolean | number>>
+  chatgpt: Generated<ColumnType<number, boolean | number, boolean | number>>
+  sptifi: Generated<ColumnType<number, boolean | number, boolean | number>>
+  gitnew: Generated<ColumnType<number, boolean | number, boolean | number>>
+  callink: Generated<ColumnType<number, boolean | number, boolean | number>>
+  amznid: Generated<ColumnType<number, boolean | number, boolean | number>>
+  ggllink: Generated<ColumnType<number, boolean | number, boolean | number>>
+  figpage: Generated<ColumnType<number, boolean | number, boolean | number>>
+  loooooooong: Generated<ColumnType<number, boolean | number, boolean | number>>
   projectId: string
 }
 
@@ -149,11 +149,11 @@ export interface Integration {
   website: string
   logo: string | null
   screenshots: unknown
-  verified: Generated<boolean>
+  verified: Generated<ColumnType<number, boolean | number, boolean | number>>
   installUrl: string | null
   guideUrl: string | null
   category: string | null
-  comingSoon: Generated<boolean>
+  comingSoon: Generated<ColumnType<number, boolean | number, boolean | number>>
   createdAt: Generated<Timestamp>
   updatedAt: Timestamp
 }
@@ -208,7 +208,7 @@ export interface jackson_store {
 
 export interface jackson_ttl {
   key: string
-  expiresAt: bigint
+  expiresAt: ColumnType<number, bigint | number | string, bigint | number | string>
 }
 
 export interface Job {
@@ -229,13 +229,13 @@ export interface Link {
   key: string
   url: string
   shortLink: string
-  archived: Generated<boolean>
+  archived: Generated<ColumnType<number, boolean | number, boolean | number>>
   expiresAt: Timestamp | null
   expiredUrl: string | null
   disabledAt: Timestamp | null
   password: string | null
-  trackConversion: Generated<boolean>
-  proxy: Generated<boolean>
+  trackConversion: Generated<ColumnType<number, boolean | number, boolean | number>>
+  proxy: Generated<ColumnType<number, boolean | number, boolean | number>>
   title: string | null
   description: string | null
   image: string | null
@@ -245,9 +245,9 @@ export interface Link {
   utm_campaign: string | null
   utm_term: string | null
   utm_content: string | null
-  rewrite: Generated<boolean>
+  rewrite: Generated<ColumnType<number, boolean | number, boolean | number>>
   linkRetentionCleanupDisabledAt: Timestamp | null
-  doIndex: Generated<boolean>
+  doIndex: Generated<ColumnType<number, boolean | number, boolean | number>>
   ios: string | null
   android: string | null
   geo: unknown
@@ -259,12 +259,12 @@ export interface Link {
   folderId: string | null
   externalId: string | null
   tenantId: string | null
-  publicStats: Generated<boolean>
+  publicStats: Generated<ColumnType<number, boolean | number, boolean | number>>
   clicks: Generated<number>
   leads: Generated<number>
   conversions: Generated<number>
   sales: Generated<number>
-  saleAmount: Generated<bigint>
+  saleAmount: Generated<ColumnType<number, bigint | number | string, bigint | number | string>>
   lastClicked: Timestamp | null
   lastLeadAt: Timestamp | null
   lastConversionAt: Timestamp | null
@@ -288,14 +288,14 @@ export interface YearInReview {
 export interface UserNotificationPreferences {
   id: string
   userId: string
-  dubLinks: Generated<boolean>
+  dubLinks: Generated<ColumnType<number, boolean | number, boolean | number>>
 }
 
 export interface NotificationPreference {
   id: string
   projectUserId: string
-  linkUsageSummary: Generated<boolean>
-  domainConfigurationUpdates: Generated<boolean>
+  linkUsageSummary: Generated<ColumnType<number, boolean | number, boolean | number>>
+  domainConfigurationUpdates: Generated<ColumnType<number, boolean | number, boolean | number>>
 }
 
 export interface OAuthApp {
@@ -305,7 +305,7 @@ export interface OAuthApp {
   hashedClientSecret: string
   partialClientSecret: string
   redirectUris: unknown
-  pkce: Generated<boolean>
+  pkce: Generated<ColumnType<number, boolean | number, boolean | number>>
 }
 
 export interface OAuthCode {
@@ -337,14 +337,14 @@ export interface User {
   email: string | null
   emailVerified: Timestamp | null
   image: string | null
-  isMachine: Generated<boolean>
+  isMachine: Generated<ColumnType<number, boolean | number, boolean | number>>
   createdAt: Generated<Timestamp>
   passwordHash: string | null
   invalidLoginAttempts: Generated<number>
   lockedAt: Timestamp | null
   defaultWorkspace: string | null
   source: string | null
-  sentMail: Generated<boolean>
+  sentMail: Generated<ColumnType<number, boolean | number, boolean | number>>
 }
 
 export interface Account {
@@ -514,9 +514,9 @@ export interface Project {
   siteVisitTrackingSettings: unknown
   allowedHostnames: unknown
   publishableKey: string | null
-  conversionEnabled: Generated<boolean>
-  webhookEnabled: Generated<boolean>
-  dotLinkClaimed: Generated<boolean>
+  conversionEnabled: Generated<ColumnType<number, boolean | number, boolean | number>>
+  webhookEnabled: Generated<ColumnType<number, boolean | number, boolean | number>>
+  dotLinkClaimed: Generated<ColumnType<number, boolean | number, boolean | number>>
   ssoEmailDomain: string | null
   ssoEnforcedAt: Timestamp | null
   createdAt: Generated<Timestamp>

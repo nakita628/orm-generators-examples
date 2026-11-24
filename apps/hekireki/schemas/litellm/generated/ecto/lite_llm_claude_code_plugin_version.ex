@@ -1,11 +1,11 @@
 defmodule LiteLLM.LiteLLMClaudeCodePluginVersion do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           version: String.t() | nil,
           description: String.t() | nil,
           manifest_json: String.t() | nil,

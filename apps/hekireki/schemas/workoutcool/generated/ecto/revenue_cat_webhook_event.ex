@@ -17,7 +17,7 @@ defmodule WorkoutCool.RevenueCatWebhookEvent do
           processed: boolean(),
           processing_error: String.t() | nil,
           retry_count: integer(),
-          raw_event_data: map(),
+          raw_event_data: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -35,7 +35,7 @@ defmodule WorkoutCool.RevenueCatWebhookEvent do
     field(:processed, :boolean, default: false)
     field(:processing_error, :string, source: :processingError)
     field(:retry_count, :integer, default: 0, source: :retryCount)
-    field(:raw_event_data, :map, source: :rawEventData)
+    field(:raw_event_data, WorkoutCool.PrismaJson, source: :rawEventData)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

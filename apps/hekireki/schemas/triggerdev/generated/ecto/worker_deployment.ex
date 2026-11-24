@@ -19,9 +19,9 @@ defmodule Trigger.WorkerDeployment do
           index_object_key: String.t() | nil,
           index_sha256: String.t() | nil,
           index_format_version: integer() | nil,
-          external_build_data: map() | nil,
-          build_server_metadata: map() | nil,
-          build_env_vars: map() | nil,
+          external_build_data: map() | list() | String.t() | number() | boolean() | nil,
+          build_server_metadata: map() | list() | String.t() | number() | boolean() | nil,
+          build_env_vars: map() | list() | String.t() | number() | boolean() | nil,
           status: atom(),
           type: atom(),
           triggered_via: String.t() | nil,
@@ -32,10 +32,10 @@ defmodule Trigger.WorkerDeployment do
           built_at: DateTime.t() | nil,
           deployed_at: DateTime.t() | nil,
           failed_at: DateTime.t() | nil,
-          error_data: map() | nil,
+          error_data: map() | list() | String.t() | number() | boolean() | nil,
           canceled_at: DateTime.t() | nil,
           canceled_reason: String.t() | nil,
-          git: map() | nil,
+          git: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Trigger.Project.t() | nil,
@@ -67,11 +67,11 @@ defmodule Trigger.WorkerDeployment do
     # sha256 hex of the snapshot's uncompressed JSON
     field(:index_sha256, :string, source: :indexSha256)
     field(:index_format_version, :integer, source: :indexFormatVersion)
-    field(:external_build_data, :map, source: :externalBuildData)
-    field(:build_server_metadata, :map, source: :buildServerMetadata)
+    field(:external_build_data, Trigger.PrismaJson, source: :externalBuildData)
+    field(:build_server_metadata, Trigger.PrismaJson, source: :buildServerMetadata)
     # Encrypted build-time env vars for pre-bundled (fromBundle) deploys, as an
     # EncryptedSecretValue envelope. Kept for the redeploy window, then cleared by a sweep.
-    field(:build_env_vars, :map, source: :buildEnvVars)
+    field(:build_env_vars, Trigger.PrismaJson, source: :buildEnvVars)
     field(:status, Ecto.Enum, values: [:PENDING, :INSTALLING, :BUILDING, :DEPLOYING, :DEPLOYED, :FAILED, :CANCELED, :TIMED_OUT], default: :PENDING)
     field(:type, Ecto.Enum, values: [:MANAGED, :UNMANAGED, :V1], default: :V1)
     field(:triggered_via, :string, source: :triggeredVia)
@@ -82,10 +82,10 @@ defmodule Trigger.WorkerDeployment do
     field(:built_at, Trigger.PrismaDateTime, source: :builtAt)
     field(:deployed_at, Trigger.PrismaDateTime, source: :deployedAt)
     field(:failed_at, Trigger.PrismaDateTime, source: :failedAt)
-    field(:error_data, :map, source: :errorData)
+    field(:error_data, Trigger.PrismaJson, source: :errorData)
     field(:canceled_at, Trigger.PrismaDateTime, source: :canceledAt)
     field(:canceled_reason, :string, source: :canceledReason)
-    field(:git, :map)
+    field(:git, Trigger.PrismaJson)
     field(:project_id, :string, source: :projectId)
     field(:environment_id, :string, source: :environmentId)
     field(:worker_id, :string, source: :workerId)

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property string|null $description Optional one-line note the creator adds to say what the key is for.
- * @property mixed $allowed_ip_ranges CIDR ranges this key may be used from. Empty means any IP.
+ * @property list<string> $allowed_ip_ranges CIDR ranges this key may be used from. Empty means any IP.
  */
 class ApiKey extends Model
 {
@@ -43,6 +43,8 @@ class ApiKey extends Model
 
     protected $casts = [
         'issued_by' => ApiKeyIssuer::class,
+        'scopes' => AsPrismaList::class,
+        'allowed_ip_ranges' => AsPrismaList::class,
         'last_used_at' => 'datetime',
         'revoked_at' => 'datetime',
         'expires_at' => 'datetime',

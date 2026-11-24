@@ -20,8 +20,8 @@ defmodule Teable.ComputedUpdateRunHistory do
           change_type: String.t(),
           run_id: String.t(),
           origin_run_ids: [String.t()],
-          steps: map() | nil,
-          edges: map() | nil,
+          steps: map() | list() | String.t() | number() | boolean() | nil,
+          edges: map() | list() | String.t() | number() | boolean() | nil,
           affected_table_ids: [String.t()],
           affected_field_ids: [String.t()],
           source_field_ids: [String.t()],
@@ -48,8 +48,8 @@ defmodule Teable.ComputedUpdateRunHistory do
     field(:change_type, :string)
     field(:run_id, :string)
     field(:origin_run_ids, {:array, :string})
-    field(:steps, :map)
-    field(:edges, :map)
+    field(:steps, Teable.PrismaJson)
+    field(:edges, Teable.PrismaJson)
     field(:affected_table_ids, {:array, :string})
     field(:affected_field_ids, {:array, :string})
     # Source (changed) field ids; populated for seed tasks, where

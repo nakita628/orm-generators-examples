@@ -32,6 +32,7 @@ class LiteLLMTagTable extends Model
     ];
 
     protected $casts = [
+        'models' => AsPrismaList::class,
         'model_info' => 'array',
         'spend' => 'float',
     ];

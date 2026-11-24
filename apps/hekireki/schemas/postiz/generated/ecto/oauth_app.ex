@@ -1,12 +1,12 @@
 defmodule Postiz.OAuthApp do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           description: String.t() | nil,
           redirect_url: String.t(),
@@ -34,8 +34,8 @@ defmodule Postiz.OAuthApp do
     field(:dynamic, :boolean, default: false)
     field(:token_endpoint_auth_method, :string, source: :tokenEndpointAuthMethod)
     field(:deleted_at, Postiz.PrismaDateTime, source: :deletedAt)
-    field(:organization_id, :binary_id, source: :organizationId)
-    field(:picture_id, :binary_id, source: :pictureId)
+    field(:organization_id, :string, source: :organizationId)
+    field(:picture_id, :string, source: :pictureId)
     belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false)
     belongs_to(:picture, Postiz.Media, foreign_key: :picture_id, define_field: false)
     has_many(:authorizations, Postiz.OAuthAuthorization, foreign_key: :oauth_app_id)

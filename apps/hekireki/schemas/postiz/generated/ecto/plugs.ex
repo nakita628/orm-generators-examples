@@ -1,11 +1,11 @@
 defmodule Postiz.Plugs do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           plug_function: String.t(),
           data: String.t(),
           activated: boolean(),
@@ -18,8 +18,8 @@ defmodule Postiz.Plugs do
     field(:data, :string)
     field(:activated, :boolean, default: true)
     field(:integration_id, :string, source: :integrationId)
-    field(:organization_id, :binary_id, source: :organizationId)
-    belongs_to(:integration, Postiz.Integration, foreign_key: :integration_id, define_field: false, type: :string)
+    field(:organization_id, :string, source: :organizationId)
+    belongs_to(:integration, Postiz.Integration, foreign_key: :integration_id, define_field: false)
     belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false)
   end
 end

@@ -36,8 +36,18 @@ class LiteLLMObjectPermissionTable extends Model
     ];
 
     protected $casts = [
+        'mcp_servers' => AsPrismaList::class,
+        'mcp_access_groups' => AsPrismaList::class,
         'mcp_tool_permissions' => 'array',
+        'vector_stores' => AsPrismaList::class,
+        'agents' => AsPrismaList::class,
+        'agent_access_groups' => AsPrismaList::class,
+        'models' => AsPrismaList::class,
+        'blocked_tools' => AsPrismaList::class,
+        'mcp_toolsets' => AsPrismaList::class,
+        'search_tools' => AsPrismaList::class,
         'mcp_tool_search_enabled' => 'boolean',
+        'skills' => AsPrismaList::class,
     ];
 
     public function teams(): HasMany

@@ -21,11 +21,11 @@ defmodule Documenso.DocumentMeta do
           draw_signature_enabled: boolean(),
           language: String.t(),
           distribution_method: atom(),
-          email_settings: map() | nil,
+          email_settings: map() | list() | String.t() | number() | boolean() | nil,
           email_reply_to: String.t() | nil,
           email_id: String.t() | nil,
-          envelope_expiration_period: map() | nil,
-          reminder_settings: map() | nil,
+          envelope_expiration_period: map() | list() | String.t() | number() | boolean() | nil,
+          reminder_settings: map() | list() | String.t() | number() | boolean() | nil,
           envelope: Documenso.Envelope.t() | nil
         }
 
@@ -44,13 +44,13 @@ defmodule Documenso.DocumentMeta do
     field(:language, :string, default: "en")
     field(:distribution_method, Ecto.Enum, values: [:EMAIL, :NONE], default: :EMAIL, source: :distributionMethod)
     # [DocumentEmailSettings] @zod.custom.use(ZDocumentEmailSettingsSchema)
-    field(:email_settings, :map, source: :emailSettings)
+    field(:email_settings, Documenso.PrismaJson, source: :emailSettings)
     field(:email_reply_to, :string, source: :emailReplyTo)
     field(:email_id, :string, source: :emailId)
     # [EnvelopeExpirationPeriod] @zod.custom.use(ZEnvelopeExpirationPeriodSchema)
-    field(:envelope_expiration_period, :map, source: :envelopeExpirationPeriod)
+    field(:envelope_expiration_period, Documenso.PrismaJson, source: :envelopeExpirationPeriod)
     # [EnvelopeReminderSettings] @zod.custom.use(ZEnvelopeReminderSettingsSchema)
-    field(:reminder_settings, :map, source: :reminderSettings)
+    field(:reminder_settings, Documenso.PrismaJson, source: :reminderSettings)
     has_one(:envelope, Documenso.Envelope, foreign_key: :document_meta_id, references: :id)
   end
 end

@@ -27,7 +27,7 @@ defmodule LangWatch.ConnectedBillingAccount do
           bank_transfer_type: String.t() | nil,
           bank_transfer_country: String.t() | nil,
           billing_email: String.t(),
-          pending_renewal: map() | nil,
+          pending_renewal: map() | list() | String.t() | number() | boolean() | nil,
           created_by_id: String.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -59,7 +59,7 @@ defmodule LangWatch.ConnectedBillingAccount do
     field(:billing_email, :string, source: :billingEmail)
     # A renewal whose credit is waiting for the last usage invoice of the old
     # term to be finalized: the new term's end and commit, and who asked.
-    field(:pending_renewal, :map, source: :pendingRenewal)
+    field(:pending_renewal, LangWatch.PrismaJson, source: :pendingRenewal)
     field(:created_by_id, :string, source: :createdById)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, LangWatch.Organization, foreign_key: :organization_id, define_field: false, type: :string)

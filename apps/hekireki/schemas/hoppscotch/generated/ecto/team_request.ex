@@ -7,8 +7,8 @@ defmodule Hoppscotch.TeamRequest do
   @type t :: %__MODULE__{
           id: String.t(),
           title: String.t(),
-          request: map(),
-          mock_examples: map() | nil,
+          request: map() | list() | String.t() | number() | boolean(),
+          mock_examples: map() | list() | String.t() | number() | boolean() | nil,
           order_index: integer(),
           created_on: DateTime.t(),
           updated_at: DateTime.t(),
@@ -19,8 +19,8 @@ defmodule Hoppscotch.TeamRequest do
   schema "TeamRequest" do
     field(:id, :string, primary_key: true)
     field(:title, :string)
-    field(:request, :map)
-    field(:mock_examples, :map, source: :mockExamples)
+    field(:request, Hoppscotch.PrismaJson)
+    field(:mock_examples, Hoppscotch.PrismaJson, source: :mockExamples)
     field(:order_index, :integer, source: :orderIndex)
     field(:created_on, Hoppscotch.PrismaDateTime, autogenerate: true, source: :createdOn)
     field(:collection_id, :string, source: :collectionID)

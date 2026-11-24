@@ -22,7 +22,7 @@ defmodule Formbricks.OauthRefreshToken do
           rotated_at: DateTime.t() | nil,
           rotation_replay_response: String.t() | nil,
           rotation_replay_expires_at: DateTime.t() | nil,
-          confirmation: map() | nil,
+          confirmation: map() | list() | String.t() | number() | boolean() | nil,
           client: Formbricks.OauthClient.t() | nil,
           session: Formbricks.Session.t() | nil,
           user: Formbricks.User.t() | nil,
@@ -46,7 +46,7 @@ defmodule Formbricks.OauthRefreshToken do
     field(:rotated_at, Formbricks.PrismaDateTime, source: :rotatedAt)
     field(:rotation_replay_response, :string, source: :rotationReplayResponse)
     field(:rotation_replay_expires_at, Formbricks.PrismaDateTime, source: :rotationReplayExpiresAt)
-    field(:confirmation, :map)
+    field(:confirmation, Formbricks.PrismaJson)
     field(:client_id, :string, source: :clientId)
     field(:session_id, :string, source: :sessionId)
     field(:user_id, :string, source: :userId)

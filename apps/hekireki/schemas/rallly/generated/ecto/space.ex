@@ -1,12 +1,12 @@
 defmodule Rallly.Space do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Rallly.PrismaDateTime, autogenerate: {Rallly.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           image: String.t() | nil,
           tier: atom(),
@@ -46,7 +46,7 @@ defmodule Rallly.Space do
     field(:shared, :boolean, default: false)
     field(:nonprofit_discount_granted_at, Rallly.PrismaDateTime)
     field(:api_poll_quota_override, :integer)
-    belongs_to(:owner, Rallly.User, foreign_key: :owner_id, type: :string)
+    belongs_to(:owner, Rallly.User, foreign_key: :owner_id)
     has_many(:polls, Rallly.Poll, foreign_key: :space_id)
     has_many(:scheduled_events, Rallly.ScheduledEvent, foreign_key: :space_id)
     has_many(:event_types, Rallly.EventType, foreign_key: :space_id)

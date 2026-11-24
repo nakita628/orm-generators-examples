@@ -11,8 +11,8 @@ defmodule Calcom.Booking do
           user_primary_email: String.t() | nil,
           title: String.t(),
           description: String.t() | nil,
-          custom_inputs: map() | nil,
-          responses: map() | nil,
+          custom_inputs: map() | list() | String.t() | number() | boolean() | nil,
+          responses: map() | list() | String.t() | number() | boolean() | nil,
           start_time: DateTime.t(),
           end_time: DateTime.t(),
           location: String.t() | nil,
@@ -28,7 +28,7 @@ defmodule Calcom.Booking do
           recurring_event_id: String.t() | nil,
           sms_reminder_number: String.t() | nil,
           scheduled_jobs: [String.t()],
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           is_recorded: boolean(),
           i_cal_uid: String.t() | nil,
           i_cal_sequence: integer(),
@@ -66,9 +66,9 @@ defmodule Calcom.Booking do
     field(:user_primary_email, :string, source: :userPrimaryEmail)
     field(:title, :string)
     field(:description, :string)
-    field(:custom_inputs, :map, source: :customInputs)
+    field(:custom_inputs, Calcom.PrismaJson, source: :customInputs)
     # @zod.import(["import { bookingResponses } from '../../zod-utils'"]).custom.use(bookingResponses)
-    field(:responses, :map)
+    field(:responses, Calcom.PrismaJson)
     field(:start_time, Calcom.PrismaDateTime, source: :startTime)
     field(:end_time, Calcom.PrismaDateTime, source: :endTime)
     field(:location, :string)
@@ -85,7 +85,7 @@ defmodule Calcom.Booking do
     field(:sms_reminder_number, :string, source: :smsReminderNumber)
     field(:scheduled_jobs, {:array, :string}, source: :scheduledJobs)
     # @zod.import(["import { bookingMetadataSchema } from '../../zod-utils'"]).custom.use(bookingMetadataSchema)
-    field(:metadata, :map)
+    field(:metadata, Calcom.PrismaJson)
     field(:is_recorded, :boolean, default: false, source: :isRecorded)
     field(:i_cal_uid, :string, default: "", source: :iCalUID)
     field(:i_cal_sequence, :integer, default: 0, source: :iCalSequence)

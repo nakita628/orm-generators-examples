@@ -10,16 +10,16 @@ defmodule LangWatch.AuditLog do
           project_id: String.t() | nil,
           organization_id: String.t() | nil,
           action: String.t(),
-          args: map() | nil,
+          args: map() | list() | String.t() | number() | boolean() | nil,
           error: String.t() | nil,
           ip_address: String.t() | nil,
           user_agent: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           actor_user_id: String.t() | nil,
           target_kind: String.t() | nil,
           target_id: String.t() | nil,
-          before: map() | nil,
-          after: map() | nil,
+          before: map() | list() | String.t() | number() | boolean() | nil,
+          after: map() | list() | String.t() | number() | boolean() | nil,
           idempotency_key: String.t() | nil,
           inserted_at: DateTime.t()
         }
@@ -30,11 +30,11 @@ defmodule LangWatch.AuditLog do
     field(:project_id, :string, source: :projectId)
     field(:organization_id, :string, source: :organizationId)
     field(:action, :string)
-    field(:args, :map)
+    field(:args, LangWatch.PrismaJson)
     field(:error, :string)
     field(:ip_address, :string, source: :ipAddress)
     field(:user_agent, :string, source: :userAgent)
-    field(:metadata, :map)
+    field(:metadata, LangWatch.PrismaJson)
     # WHO REALLY DID IT, when that is not `userId`.
     #
     # Under an impersonation the session's `user.id` is the SUBJECT — the
@@ -48,8 +48,8 @@ defmodule LangWatch.AuditLog do
     field(:actor_user_id, :string, source: :actorUserId)
     field(:target_kind, :string, source: :targetKind)
     field(:target_id, :string, source: :targetId)
-    field(:before, :map)
-    field(:after, :map)
+    field(:before, LangWatch.PrismaJson)
+    field(:after, LangWatch.PrismaJson)
     # A producer's outbox key: a redelivered audit intent finds its row here (Alex, audit R2).
     field(:idempotency_key, :string, source: :idempotencyKey)
     timestamps(inserted_at_source: :createdAt, updated_at: false)

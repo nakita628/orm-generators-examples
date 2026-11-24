@@ -11,29 +11,29 @@ import (
 )
 
 type Accounts struct {
-	ID               int                 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID               int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name             string              `gorm:"column:name;default:'';not null" json:"name"`
 	Nickname         string              `gorm:"column:nickname;default:'';not null" json:"nickname"`
 	Password         string              `gorm:"column:password;default:'';not null" json:"password"`
 	Image            string              `gorm:"column:image;default:'';not null" json:"image"`
 	APIToken         string              `gorm:"column:apiToken;default:'';not null" json:"apiToken"`
 	Description      string              `gorm:"column:description;type:text;default:'';not null" json:"description"`
-	Note             int                 `gorm:"column:note;default:0;not null" json:"note"`
+	Note             int                 `gorm:"column:note;size:32;default:0;not null" json:"note"`
 	Role             string              `gorm:"column:role;default:'';not null" json:"role"`
 	LoginType        string              `gorm:"column:loginType;default:'';not null" json:"loginType"`
-	LinkAccountID    *int                `gorm:"column:linkAccountId" json:"linkAccountId"`
-	CreatedAt        DateTime            `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	LinkAccountID    *int                `gorm:"column:linkAccountId;size:32" json:"linkAccountId"`
+	CreatedAt        DateTime            `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt        DateTime            `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Notes            []Notes             `gorm:"foreignKey:AccountID"`
-	Configs          []Config            `gorm:"foreignKey:UserID"`
-	Tags             []Tag               `gorm:"foreignKey:AccountID"`
-	Comments         []Comments          `gorm:"foreignKey:AccountID"`
-	Attachments      []Attachments       `gorm:"foreignKey:AccountID"`
-	Follows          []Follows           `gorm:"foreignKey:AccountID"`
-	Notifications    []Notifications     `gorm:"foreignKey:AccountID"`
-	Conversations    []Conversation      `gorm:"foreignKey:AccountID"`
-	SharedNotes      []NoteInternalShare `gorm:"foreignKey:AccountID"`
-	AiScheduledTasks []AiScheduledTask   `gorm:"foreignKey:AccountID"`
+	Notes            []Notes             `gorm:"foreignKey:AccountID;constraint:notes_accountId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Configs          []Config            `gorm:"foreignKey:UserID;constraint:config_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Tags             []Tag               `gorm:"foreignKey:AccountID;constraint:tag_accountId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Comments         []Comments          `gorm:"foreignKey:AccountID;constraint:comments_accountId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Attachments      []Attachments       `gorm:"foreignKey:AccountID;constraint:attachments_accountId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Follows          []Follows           `gorm:"foreignKey:AccountID;constraint:follows_accountId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Notifications    []Notifications     `gorm:"foreignKey:AccountID;constraint:notifications_accountId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Conversations    []Conversation      `gorm:"foreignKey:AccountID;constraint:conversation_accountId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	SharedNotes      []NoteInternalShare `gorm:"foreignKey:AccountID;constraint:noteInternalShare_accountId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	AiScheduledTasks []AiScheduledTask   `gorm:"foreignKey:AccountID;constraint:aiScheduledTask_accountId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Accounts) TableName() string {
@@ -60,23 +60,23 @@ func (*Accounts) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Attachments struct {
-	ID            int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID            int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	IsShare       bool           `gorm:"column:isShare;default:false;not null" json:"isShare"`
 	SharePassword string         `gorm:"column:sharePassword;default:'';not null" json:"sharePassword"`
 	Name          string         `gorm:"column:name;default:'';not null" json:"name"`
 	Path          string         `gorm:"column:path;default:'';not null" json:"path"`
 	Size          float64        `gorm:"column:size;type:decimal;default:0;not null" json:"size"`
 	Type          string         `gorm:"column:type;default:'';not null" json:"type"`
-	NoteID        *int           `gorm:"column:noteId" json:"noteId"`
-	AccountID     *int           `gorm:"column:accountId" json:"accountId"`
-	SortOrder     int            `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	NoteID        *int           `gorm:"column:noteId;size:32" json:"noteId"`
+	AccountID     *int           `gorm:"column:accountId;size:32" json:"accountId"`
+	SortOrder     int            `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	CreatedAt     DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt     DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	PerfixPath    *string        `gorm:"column:perfixPath;default:''" json:"perfixPath"`
-	Depth         *int           `gorm:"column:depth" json:"depth"`
+	Depth         *int           `gorm:"column:depth;size:32" json:"depth"`
 	Metadata      datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	Note          *Notes         `gorm:"foreignKey:NoteID"`
-	Account       *Accounts      `gorm:"foreignKey:AccountID"`
+	Note          *Notes         `gorm:"foreignKey:NoteID;belongsTo"`
+	Account       *Accounts      `gorm:"foreignKey:AccountID;belongsTo"`
 }
 
 func (Attachments) TableName() string {
@@ -103,11 +103,11 @@ func (*Attachments) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Config struct {
-	ID     int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID     int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Key    string         `gorm:"column:key;default:'';not null" json:"key"`
 	Config datatypes.JSON `gorm:"column:config" json:"config"`
-	UserID *int           `gorm:"column:userId" json:"userId"`
-	User   *Accounts      `gorm:"foreignKey:UserID"`
+	UserID *int           `gorm:"column:userId;size:32" json:"userId"`
+	User   *Accounts      `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (Config) TableName() string {
@@ -115,8 +115,8 @@ func (Config) TableName() string {
 }
 
 type Notes struct {
-	ID                int                 `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Type              int                 `gorm:"column:type;default:0;not null" json:"type"`
+	ID                int                 `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Type              int                 `gorm:"column:type;size:32;default:0;not null" json:"type"`
 	Content           string              `gorm:"column:content;default:'';not null" json:"content"`
 	IsArchived        bool                `gorm:"column:isArchived;default:false;not null" json:"isArchived"`
 	IsRecycle         bool                `gorm:"column:isRecycle;default:false;not null" json:"isRecycle"`
@@ -126,21 +126,21 @@ type Notes struct {
 	SharePassword     string              `gorm:"column:sharePassword;default:'';not null" json:"sharePassword"`
 	ShareEncryptedURL *string             `gorm:"column:shareEncryptedUrl" json:"shareEncryptedUrl"`
 	ShareExpiryDate   *DateTime           `gorm:"column:shareExpiryDate;type:timestamptz(6)" json:"shareExpiryDate"`
-	ShareMaxView      *int                `gorm:"column:shareMaxView;default:0" json:"shareMaxView"`
-	ShareViewCount    *int                `gorm:"column:shareViewCount;default:0" json:"shareViewCount"`
+	ShareMaxView      *int                `gorm:"column:shareMaxView;size:32;default:0" json:"shareMaxView"`
+	ShareViewCount    *int                `gorm:"column:shareViewCount;size:32;default:0" json:"shareViewCount"`
 	Metadata          datatypes.JSON      `gorm:"column:metadata" json:"metadata"`
-	AccountID         *int                `gorm:"column:accountId" json:"accountId"`
-	SortOrder         int                 `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	CreatedAt         DateTime            `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	AccountID         *int                `gorm:"column:accountId;size:32" json:"accountId"`
+	SortOrder         int                 `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	CreatedAt         DateTime            `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt         DateTime            `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Account           *Accounts           `gorm:"foreignKey:AccountID"`
-	Attachments       []Attachments       `gorm:"foreignKey:NoteID"`
-	Tags              []TagsToNote        `gorm:"foreignKey:NoteID"`
-	ReferencedBy      []NoteReference     `gorm:"foreignKey:ToNoteID"`
-	References        []NoteReference     `gorm:"foreignKey:FromNoteID"`
-	Comments          []Comments          `gorm:"foreignKey:NoteID"`
-	Histories         []NoteHistory       `gorm:"foreignKey:NoteID;constraint:OnDelete:CASCADE"`
-	InternalShares    []NoteInternalShare `gorm:"foreignKey:NoteID;constraint:OnDelete:CASCADE"`
+	Account           *Accounts           `gorm:"foreignKey:AccountID;belongsTo"`
+	Attachments       []Attachments       `gorm:"foreignKey:NoteID;constraint:attachments_noteId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Tags              []TagsToNote        `gorm:"foreignKey:NoteID;constraint:tagsToNote_noteId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	ReferencedBy      []NoteReference     `gorm:"foreignKey:ToNoteID;constraint:noteReference_toNoteId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	References        []NoteReference     `gorm:"foreignKey:FromNoteID;constraint:noteReference_fromNoteId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Comments          []Comments          `gorm:"foreignKey:NoteID;constraint:comments_noteId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
+	Histories         []NoteHistory       `gorm:"foreignKey:NoteID;constraint:noteHistory_noteId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
+	InternalShares    []NoteInternalShare `gorm:"foreignKey:NoteID;constraint:noteInternalShare_noteId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (Notes) TableName() string {
@@ -167,20 +167,20 @@ func (*Notes) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Comments struct {
-	ID        int        `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int        `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Content   string     `gorm:"column:content;type:text;not null" json:"content"`
-	AccountID *int       `gorm:"column:accountId" json:"accountId"`
+	AccountID *int       `gorm:"column:accountId;size:32" json:"accountId"`
 	GuestName *string    `gorm:"column:guestName" json:"guestName"`
 	GuestIP   *string    `gorm:"column:guestIP" json:"guestIP"`
 	GuestUA   *string    `gorm:"column:guestUA" json:"guestUA"`
-	NoteID    int        `gorm:"column:noteId;not null" json:"noteId"`
-	ParentID  *int       `gorm:"column:parentId" json:"parentId"`
-	CreatedAt DateTime   `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	NoteID    int        `gorm:"column:noteId;size:32;not null" json:"noteId"`
+	ParentID  *int       `gorm:"column:parentId;size:32" json:"parentId"`
+	CreatedAt DateTime   `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime   `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Note      *Notes     `gorm:"foreignKey:NoteID"`
-	Account   *Accounts  `gorm:"foreignKey:AccountID"`
-	Parent    *Comments  `gorm:"foreignKey:ParentID"`
-	Replies   []Comments `gorm:"foreignKey:ParentID"`
+	Note      *Notes     `gorm:"foreignKey:NoteID;belongsTo"`
+	Account   *Accounts  `gorm:"foreignKey:AccountID;belongsTo"`
+	Parent    *Comments  `gorm:"foreignKey:ParentID;belongsTo"`
+	Replies   []Comments `gorm:"foreignKey:ParentID;constraint:comments_parentId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 }
 
 func (Comments) TableName() string {
@@ -207,16 +207,16 @@ func (*Comments) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Tag struct {
-	ID         int          `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID         int          `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name       string       `gorm:"column:name;default:'';not null" json:"name"`
 	Icon       string       `gorm:"column:icon;default:'';not null" json:"icon"`
-	Parent     int          `gorm:"column:parent;default:0;not null" json:"parent"`
-	AccountID  *int         `gorm:"column:accountId" json:"accountId"`
-	CreatedAt  DateTime     `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	Parent     int          `gorm:"column:parent;size:32;default:0;not null" json:"parent"`
+	AccountID  *int         `gorm:"column:accountId;size:32" json:"accountId"`
+	CreatedAt  DateTime     `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime     `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	SortOrder  int          `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	Account    *Accounts    `gorm:"foreignKey:AccountID"`
-	TagsToNote []TagsToNote `gorm:"foreignKey:TagID"`
+	SortOrder  int          `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	Account    *Accounts    `gorm:"foreignKey:AccountID;belongsTo"`
+	TagsToNote []TagsToNote `gorm:"foreignKey:TagID;constraint:tagsToNote_tagId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Tag) TableName() string {
@@ -243,11 +243,11 @@ func (*Tag) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type TagsToNote struct {
-	ID     int    `gorm:"column:id;not null" json:"id"`
-	NoteID int    `gorm:"column:noteId;primaryKey;default:0" json:"noteId"`
-	TagID  int    `gorm:"column:tagId;primaryKey;default:0" json:"tagId"`
-	Note   *Notes `gorm:"foreignKey:NoteID"`
-	Tag    *Tag
+	ID     int    `gorm:"column:id;size:32;not null" json:"id"`
+	NoteID int    `gorm:"column:noteId;primaryKey;size:32;default:0" json:"noteId"`
+	TagID  int    `gorm:"column:tagId;primaryKey;size:32;default:0" json:"tagId"`
+	Note   *Notes `gorm:"foreignKey:NoteID;belongsTo"`
+	Tag    *Tag   `gorm:"belongsTo"`
 }
 
 func (TagsToNote) TableName() string {
@@ -255,12 +255,12 @@ func (TagsToNote) TableName() string {
 }
 
 type NoteReference struct {
-	ID         int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	FromNoteID int      `gorm:"column:fromNoteId;uniqueIndex:noteReference_fromNoteId_toNoteId_key;not null" json:"fromNoteId"`
-	ToNoteID   int      `gorm:"column:toNoteId;uniqueIndex:noteReference_fromNoteId_toNoteId_key;not null" json:"toNoteId"`
-	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
-	FromNote   *Notes   `gorm:"foreignKey:FromNoteID"`
-	ToNote     *Notes   `gorm:"foreignKey:ToNoteID"`
+	ID         int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	FromNoteID int      `gorm:"column:fromNoteId;uniqueIndex:noteReference_fromNoteId_toNoteId_key;size:32;not null" json:"fromNoteId"`
+	ToNoteID   int      `gorm:"column:toNoteId;uniqueIndex:noteReference_fromNoteId_toNoteId_key;size:32;not null" json:"toNoteId"`
+	CreatedAt  DateTime `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	FromNote   *Notes   `gorm:"foreignKey:FromNoteID;belongsTo"`
+	ToNote     *Notes   `gorm:"foreignKey:ToNoteID;belongsTo"`
 }
 
 func (NoteReference) TableName() string {
@@ -276,16 +276,16 @@ func (m *NoteReference) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Follows struct {
-	ID          int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID          int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	SiteName    *string   `gorm:"column:siteName" json:"siteName"`
 	SiteURL     string    `gorm:"column:siteUrl;not null" json:"siteUrl"`
 	SiteAvatar  *string   `gorm:"column:siteAvatar" json:"siteAvatar"`
 	Description *string   `gorm:"column:description;type:text" json:"description"`
-	CreatedAt   DateTime  `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt   DateTime  `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime  `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	FollowType  *string   `gorm:"column:followType;default:'following';not null" json:"followType"`
-	AccountID   int       `gorm:"column:accountId;not null" json:"accountId"`
-	Account     *Accounts `gorm:"foreignKey:AccountID"`
+	AccountID   int       `gorm:"column:accountId;size:32;not null" json:"accountId"`
+	Account     *Accounts `gorm:"foreignKey:AccountID;belongsTo"`
 }
 
 func (Follows) TableName() string {
@@ -312,16 +312,16 @@ func (*Follows) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Notifications struct {
-	ID        int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Type      string         `gorm:"column:type;not null" json:"type"`
 	Title     string         `gorm:"column:title;not null" json:"title"`
 	Content   string         `gorm:"column:content;type:text;not null" json:"content"`
 	Metadata  datatypes.JSON `gorm:"column:metadata" json:"metadata"`
 	IsRead    bool           `gorm:"column:isRead;default:false;not null" json:"isRead"`
-	AccountID int            `gorm:"column:accountId;not null" json:"accountId"`
-	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	AccountID int            `gorm:"column:accountId;size:32;not null" json:"accountId"`
+	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Account   *Accounts      `gorm:"foreignKey:AccountID"`
+	Account   *Accounts      `gorm:"foreignKey:AccountID;belongsTo"`
 }
 
 func (Notifications) TableName() string {
@@ -348,10 +348,10 @@ func (*Notifications) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Cache struct {
-	ID        int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Key       string         `gorm:"column:key;uniqueIndex;not null" json:"key"`
+	ID        int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Key       string         `gorm:"column:key;uniqueIndex:cache_key_key;not null" json:"key"`
 	Value     datatypes.JSON `gorm:"column:value;not null" json:"value"`
-	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -379,12 +379,12 @@ func (*Cache) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Plugin struct {
-	ID        int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Metadata  datatypes.JSON `gorm:"column:metadata;not null" json:"metadata"`
 	Path      string         `gorm:"column:path;not null" json:"path"`
 	IsUse     *bool          `gorm:"column:isUse;default:true;not null" json:"isUse"`
 	IsDev     bool           `gorm:"column:isDev;default:false;not null" json:"isDev"`
-	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -412,14 +412,14 @@ func (*Plugin) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Conversation struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Title     string    `gorm:"column:title;type:varchar(255);default:'';not null" json:"title"`
 	IsShare   bool      `gorm:"column:isShare;default:false;not null" json:"isShare"`
-	AccountID int       `gorm:"column:accountId;index:conversation_accountId_idx;not null" json:"accountId"`
-	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	AccountID int       `gorm:"column:accountId;index:conversation_accountId_idx;size:32;not null" json:"accountId"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Account   *Accounts `gorm:"foreignKey:AccountID"`
-	Messages  []Message `gorm:"foreignKey:ConversationID"`
+	Account   *Accounts `gorm:"foreignKey:AccountID;belongsTo"`
+	Messages  []Message `gorm:"foreignKey:ConversationID;constraint:message_conversationId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 }
 
 func (Conversation) TableName() string {
@@ -446,14 +446,14 @@ func (*Conversation) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Message struct {
-	ID             int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID             int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Content        string         `gorm:"column:content;type:text;not null" json:"content"`
 	Role           string         `gorm:"column:role;type:varchar(50);not null" json:"role"`
-	ConversationID int            `gorm:"column:conversationId;index:message_conversationId_idx;not null" json:"conversationId"`
-	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	ConversationID int            `gorm:"column:conversationId;index:message_conversationId_idx;size:32;not null" json:"conversationId"`
+	CreatedAt      DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt      DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 	Metadata       datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	Conversation   *Conversation
+	Conversation   *Conversation  `gorm:"belongsTo"`
 }
 
 func (Message) TableName() string {
@@ -480,14 +480,14 @@ func (*Message) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type NoteHistory struct {
-	ID        int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	NoteID    int            `gorm:"column:noteId;index:noteHistory_noteId_idx;not null" json:"noteId"`
+	ID        int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	NoteID    int            `gorm:"column:noteId;index:noteHistory_noteId_idx;size:32;not null" json:"noteId"`
 	Content   string         `gorm:"column:content;type:text;not null" json:"content"`
 	Metadata  datatypes.JSON `gorm:"column:metadata" json:"metadata"`
-	Version   int            `gorm:"column:version;not null" json:"version"`
-	AccountID *int           `gorm:"column:accountId;index:noteHistory_accountId_idx" json:"accountId"`
-	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
-	Note      *Notes         `gorm:"foreignKey:NoteID"`
+	Version   int            `gorm:"column:version;size:32;not null" json:"version"`
+	AccountID *int           `gorm:"column:accountId;index:noteHistory_accountId_idx;size:32" json:"accountId"`
+	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
+	Note      *Notes         `gorm:"foreignKey:NoteID;belongsTo"`
 }
 
 func (NoteHistory) TableName() string {
@@ -503,14 +503,14 @@ func (m *NoteHistory) BeforeCreate(tx *gorm.DB) error {
 }
 
 type NoteInternalShare struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	NoteID    int       `gorm:"column:noteId;uniqueIndex:noteInternalShare_noteId_accountId_key;index:noteInternalShare_noteId_idx;not null" json:"noteId"`
-	AccountID int       `gorm:"column:accountId;uniqueIndex:noteInternalShare_noteId_accountId_key;index:noteInternalShare_accountId_idx;not null" json:"accountId"`
+	ID        int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	NoteID    int       `gorm:"column:noteId;uniqueIndex:noteInternalShare_noteId_accountId_key;index:noteInternalShare_noteId_idx;size:32;not null" json:"noteId"`
+	AccountID int       `gorm:"column:accountId;uniqueIndex:noteInternalShare_noteId_accountId_key;index:noteInternalShare_accountId_idx;size:32;not null" json:"accountId"`
 	CanEdit   *bool     `gorm:"column:canEdit;default:true;not null" json:"canEdit"`
-	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt DateTime  `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime  `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Note      *Notes    `gorm:"foreignKey:NoteID"`
-	Account   *Accounts `gorm:"foreignKey:AccountID"`
+	Note      *Notes    `gorm:"foreignKey:NoteID;belongsTo"`
+	Account   *Accounts `gorm:"foreignKey:AccountID;belongsTo"`
 }
 
 func (NoteInternalShare) TableName() string {
@@ -538,10 +538,10 @@ func (*NoteInternalShare) BeforeUpdate(tx *gorm.DB) error {
 
 type Session struct {
 	ID        string   `gorm:"column:id;primaryKey" json:"id"`
-	Sid       string   `gorm:"column:sid;uniqueIndex;not null" json:"sid"`
+	Sid       string   `gorm:"column:sid;uniqueIndex:session_sid_key;not null" json:"sid"`
 	Data      string   `gorm:"column:data;type:text;not null" json:"data"`
-	ExpiresAt DateTime `gorm:"column:expiresAt;index:session_expiresAt_idx;not null" json:"expiresAt"`
-	CreatedAt DateTime `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	ExpiresAt DateTime `gorm:"column:expiresAt;index:session_expiresAt_idx;type:timestamp(3);not null" json:"expiresAt"`
+	CreatedAt DateTime `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -569,16 +569,16 @@ func (*Session) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AiProviders struct {
-	ID        int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Title     string         `gorm:"column:title;type:varchar(255);not null" json:"title"`
 	Provider  string         `gorm:"column:provider;type:varchar(50);not null" json:"provider"`
 	BaseURL   *string        `gorm:"column:baseURL;type:varchar(500)" json:"baseURL"`
 	APIKey    *string        `gorm:"column:apiKey;type:varchar(500)" json:"apiKey"`
 	Config    datatypes.JSON `gorm:"column:config" json:"config"`
-	SortOrder int            `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	SortOrder int            `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	CreatedAt DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Models    []AiModels     `gorm:"foreignKey:ProviderID;constraint:OnDelete:CASCADE"`
+	Models    []AiModels     `gorm:"foreignKey:ProviderID;constraint:aiModels_providerId_fkey,OnUpdate:CASCADE,OnDelete:CASCADE"`
 }
 
 func (AiProviders) TableName() string {
@@ -605,16 +605,16 @@ func (*AiProviders) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AiModels struct {
-	ID           int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	ProviderID   int            `gorm:"column:providerId;index:aiModels_providerId_idx;not null" json:"providerId"`
+	ID           int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	ProviderID   int            `gorm:"column:providerId;index:aiModels_providerId_idx;size:32;not null" json:"providerId"`
 	Title        string         `gorm:"column:title;type:varchar(255);not null" json:"title"`
 	ModelKey     string         `gorm:"column:modelKey;type:varchar(255);not null" json:"modelKey"`
 	Capabilities datatypes.JSON `gorm:"column:capabilities;not null" json:"capabilities"`
 	Config       datatypes.JSON `gorm:"column:config" json:"config"`
-	SortOrder    int            `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	SortOrder    int            `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	CreatedAt    DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt    DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Provider     *AiProviders   `gorm:"foreignKey:ProviderID"`
+	Provider     *AiProviders   `gorm:"foreignKey:ProviderID;belongsTo"`
 }
 
 func (AiModels) TableName() string {
@@ -641,17 +641,17 @@ func (*AiModels) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type AiScheduledTask struct {
-	ID         int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID         int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name       string         `gorm:"column:name;type:varchar(255);not null" json:"name"`
 	Prompt     string         `gorm:"column:prompt;type:text;not null" json:"prompt"`
 	Schedule   string         `gorm:"column:schedule;type:varchar(100);not null" json:"schedule"`
 	IsEnabled  *bool          `gorm:"column:isEnabled;default:true;not null" json:"isEnabled"`
 	LastRun    *DateTime      `gorm:"column:lastRun;type:timestamptz(6)" json:"lastRun"`
 	LastResult datatypes.JSON `gorm:"column:lastResult" json:"lastResult"`
-	AccountID  int            `gorm:"column:accountId;index:aiScheduledTask_accountId_idx;not null" json:"accountId"`
-	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	AccountID  int            `gorm:"column:accountId;index:aiScheduledTask_accountId_idx;size:32;not null" json:"accountId"`
+	CreatedAt  DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt  DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
-	Account    *Accounts      `gorm:"foreignKey:AccountID"`
+	Account    *Accounts      `gorm:"foreignKey:AccountID;belongsTo"`
 }
 
 func (AiScheduledTask) TableName() string {
@@ -678,7 +678,7 @@ func (*AiScheduledTask) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type McpServers struct {
-	ID          int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID          int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	Name        string         `gorm:"column:name;type:varchar(255);not null" json:"name"`
 	Description *string        `gorm:"column:description;type:text" json:"description"`
 	Type        string         `gorm:"column:type;type:varchar(50);not null" json:"type"`
@@ -688,7 +688,7 @@ type McpServers struct {
 	Env         datatypes.JSON `gorm:"column:env" json:"env"`
 	Headers     datatypes.JSON `gorm:"column:headers" json:"headers"`
 	IsEnabled   *bool          `gorm:"column:isEnabled;default:true;not null" json:"isEnabled"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 
@@ -716,8 +716,8 @@ func (*McpServers) BeforeUpdate(tx *gorm.DB) error {
 }
 
 type Fonts struct {
-	ID          int            `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Name        string         `gorm:"column:name;uniqueIndex;type:varchar(255);not null" json:"name"`
+	ID          int            `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Name        string         `gorm:"column:name;uniqueIndex:fonts_name_key;type:varchar(255);not null" json:"name"`
 	DisplayName string         `gorm:"column:displayName;type:varchar(255);not null" json:"displayName"`
 	URL         *string        `gorm:"column:url;type:text" json:"url"`
 	FileData    []byte         `gorm:"column:fileData" json:"fileData"`
@@ -725,8 +725,8 @@ type Fonts struct {
 	IsSystem    bool           `gorm:"column:isSystem;default:false;not null" json:"isSystem"`
 	Weights     datatypes.JSON `gorm:"column:weights;not null" json:"weights"`
 	Category    *string        `gorm:"column:category;type:varchar(50);default:'sans-serif';not null" json:"category"`
-	SortOrder   int            `gorm:"column:sortOrder;default:0;not null" json:"sortOrder"`
-	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamptz(6);autoCreateTime:false;not null" json:"createdAt"`
+	SortOrder   int            `gorm:"column:sortOrder;size:32;default:0;not null" json:"sortOrder"`
+	CreatedAt   DateTime       `gorm:"column:createdAt;type:timestamptz(6);default:CURRENT_TIMESTAMP;autoCreateTime:false;not null" json:"createdAt"`
 	UpdatedAt   DateTime       `gorm:"column:updatedAt;type:timestamptz(6);autoUpdateTime:false;not null" json:"updatedAt"`
 }
 

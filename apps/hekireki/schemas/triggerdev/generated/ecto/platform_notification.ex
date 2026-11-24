@@ -12,7 +12,7 @@ defmodule Trigger.PlatformNotification do
           id: String.t(),
           friendly_id: String.t(),
           title: String.t(),
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           surface: atom(),
           scope: atom(),
           starts_at: DateTime.t(),
@@ -37,7 +37,7 @@ defmodule Trigger.PlatformNotification do
     # Admin-facing title for identification in admin tools
     field(:title, :string)
     # Versioned JSON rendering content (see payload schema in spec)
-    field(:payload, :map)
+    field(:payload, Trigger.PrismaJson)
     field(:surface, Ecto.Enum, values: [:WEBAPP, :CLI])
     field(:scope, Ecto.Enum, values: [:USER, :PROJECT, :ORGANIZATION, :GLOBAL])
     # When notification becomes active

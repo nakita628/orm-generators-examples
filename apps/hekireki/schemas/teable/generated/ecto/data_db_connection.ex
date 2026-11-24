@@ -14,7 +14,7 @@ defmodule Teable.DataDbConnection do
           internal_schema: String.t(),
           status: atom(),
           schema_version: String.t() | nil,
-          capabilities: map() | nil,
+          capabilities: map() | list() | String.t() | number() | boolean() | nil,
           last_validated_at: DateTime.t() | nil,
           last_error: String.t() | nil,
           health_state: atom(),
@@ -40,7 +40,7 @@ defmodule Teable.DataDbConnection do
     field(:internal_schema, :string)
     field(:status, Ecto.Enum, values: [:pending, :validating, :ready, :error, :migrating, :disabled], default: :pending)
     field(:schema_version, :string)
-    field(:capabilities, :map)
+    field(:capabilities, Teable.PrismaJson)
     field(:last_validated_at, Teable.PrismaDateTime)
     field(:last_error, :string)
     field(:health_state, Ecto.Enum, values: [:healthy, :read_only, :unreachable, :degraded], default: :healthy)

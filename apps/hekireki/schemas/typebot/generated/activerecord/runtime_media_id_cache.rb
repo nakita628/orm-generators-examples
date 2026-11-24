@@ -1,5 +1,6 @@
 class RuntimeMediaIdCache < ApplicationRecord
   self.table_name = "RuntimeMediaIdCache"
+  self.primary_key = %w[publicTypebotId provider url]
 
   enum :provider, { whatsapp: "WHATSAPP", dialog360: "DIALOG360" }, validate: true
 

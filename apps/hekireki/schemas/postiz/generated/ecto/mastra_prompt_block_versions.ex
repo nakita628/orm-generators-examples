@@ -10,9 +10,9 @@ defmodule Postiz.MastraPromptBlockVersions do
           name: String.t(),
           description: String.t() | nil,
           content: String.t(),
-          rules: map() | nil,
-          request_context_schema: map() | nil,
-          changed_fields: map() | nil,
+          rules: map() | list() | String.t() | number() | boolean() | nil,
+          request_context_schema: map() | list() | String.t() | number() | boolean() | nil,
+          changed_fields: map() | list() | String.t() | number() | boolean() | nil,
           change_message: String.t() | nil,
           created_at: DateTime.t(),
           created_at_z: DateTime.t() | nil
@@ -25,9 +25,9 @@ defmodule Postiz.MastraPromptBlockVersions do
     field(:name, :string)
     field(:description, :string)
     field(:content, :string)
-    field(:rules, :map)
-    field(:request_context_schema, :map, source: :requestContextSchema)
-    field(:changed_fields, :map, source: :changedFields)
+    field(:rules, Postiz.PrismaJson)
+    field(:request_context_schema, Postiz.PrismaJson, source: :requestContextSchema)
+    field(:changed_fields, Postiz.PrismaJson, source: :changedFields)
     field(:change_message, :string, source: :changeMessage)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

@@ -7,7 +7,7 @@ defmodule Langfuse.Survey do
   @type t :: %__MODULE__{
           id: String.t(),
           survey_name: atom(),
-          response: map(),
+          response: map() | list() | String.t() | number() | boolean(),
           user_email: String.t() | nil,
           inserted_at: DateTime.t(),
           org: Langfuse.Organization.t() | nil,
@@ -17,7 +17,7 @@ defmodule Langfuse.Survey do
   schema "surveys" do
     field(:id, :string, primary_key: true)
     field(:survey_name, Ecto.Enum, values: [ORG_ONBOARDING: "org_onboarding", USER_ONBOARDING: "user_onboarding"])
-    field(:response, :map)
+    field(:response, Langfuse.PrismaJson)
     field(:user_email, :string)
     belongs_to(:org, Langfuse.Organization, foreign_key: :org_id, type: :string)
     belongs_to(:user, Langfuse.User, foreign_key: :user_id, type: :string)

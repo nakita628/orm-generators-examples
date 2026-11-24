@@ -1853,7 +1853,7 @@ class LiteLLMSearchToolsTable(models.Model):
 
 
 class LiteLLMSSOConfig(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="sso_config")
     sso_settings = models.JSONField()
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
@@ -1879,7 +1879,7 @@ class LiteLLMManagedVectorStoreIndexTable(models.Model):
 
 
 class LiteLLMCacheConfig(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="cache_config")
     cache_settings = models.JSONField()
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)
@@ -1890,7 +1890,7 @@ class LiteLLMCacheConfig(models.Model):
 
 
 class LiteLLMUISettings(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="ui_settings")
     ui_settings = models.JSONField()
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcAutoNowDateTimeField(auto_now=True)

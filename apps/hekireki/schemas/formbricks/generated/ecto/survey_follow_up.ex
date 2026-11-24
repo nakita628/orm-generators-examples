@@ -18,8 +18,8 @@ defmodule Formbricks.SurveyFollowUp do
   @type t :: %__MODULE__{
           id: String.t(),
           name: String.t(),
-          trigger: map(),
-          action: map(),
+          trigger: map() | list() | String.t() | number() | boolean(),
+          action: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           survey: Formbricks.Survey.t() | nil
@@ -29,9 +29,9 @@ defmodule Formbricks.SurveyFollowUp do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     # [SurveyFollowUpTrigger]
-    field(:trigger, :map)
+    field(:trigger, Formbricks.PrismaJson)
     # [SurveyFollowUpAction]
-    field(:action, :map)
+    field(:action, Formbricks.PrismaJson)
     field(:survey_id, :string, source: :surveyId)
     belongs_to(:survey, Formbricks.Survey, foreign_key: :survey_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :created_at)

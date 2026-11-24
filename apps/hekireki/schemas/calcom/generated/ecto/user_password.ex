@@ -4,7 +4,7 @@ defmodule Calcom.UserPassword do
   @primary_key false
 
   @type t :: %__MODULE__{
-          user_id: term(),
+          user_id: integer(),
           hash: String.t(),
           user: Calcom.User.t() | nil
         }

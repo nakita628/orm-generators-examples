@@ -25,7 +25,7 @@ defmodule LiteLLM.LiteLLMEndUserTable do
     field(:default_model, :string)
     field(:models, {:array, :string})
     field(:blocked, :boolean, default: false)
-    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :binary_id)
-    belongs_to(:object_permission, LiteLLM.LiteLLMObjectPermissionTable, foreign_key: :object_permission_id, type: :binary_id)
+    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :string)
+    belongs_to(:object_permission, LiteLLM.LiteLLMObjectPermissionTable, foreign_key: :object_permission_id, type: :string)
   end
 end

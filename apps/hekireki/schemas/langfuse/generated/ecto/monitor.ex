@@ -7,8 +7,8 @@ defmodule Langfuse.Monitor do
   @type t :: %__MODULE__{
           id: String.t(),
           view: atom(),
-          filters: map(),
-          metric: map(),
+          filters: map() | list() | String.t() | number() | boolean(),
+          metric: map() | list() | String.t() | number() | boolean(),
           window_ms: integer(),
           cadence_ms: integer(),
           threshold_operator: atom(),
@@ -16,8 +16,8 @@ defmodule Langfuse.Monitor do
           warning_threshold: Decimal.t() | nil,
           severity: atom(),
           severity_changed_at: DateTime.t() | nil,
-          no_data: map(),
-          renotify: map(),
+          no_data: map() | list() | String.t() | number() | boolean(),
+          renotify: map() | list() | String.t() | number() | boolean(),
           status: atom(),
           scheduler_batch_id: integer(),
           next_run_at: DateTime.t() | nil,
@@ -38,8 +38,8 @@ defmodule Langfuse.Monitor do
   schema "monitors" do
     field(:id, :string, primary_key: true)
     field(:view, Ecto.Enum, values: [:OBSERVATIONS, :SCORES_NUMERIC, :SCORES_CATEGORICAL, :SCORES_BOOLEAN])
-    field(:filters, :map)
-    field(:metric, :map)
+    field(:filters, Langfuse.PrismaJson)
+    field(:metric, Langfuse.PrismaJson)
     field(:window_ms, :integer)
     field(:cadence_ms, :integer)
     field(:threshold_operator, Ecto.Enum, values: [:GT, :GTE, :LT, :LTE, :EQ, :NEQ])
@@ -47,8 +47,8 @@ defmodule Langfuse.Monitor do
     field(:warning_threshold, :decimal)
     field(:severity, Ecto.Enum, values: [:PAUSED, :UNKNOWN, :NO_DATA, :OK, :WARNING, :ALERT], default: :UNKNOWN)
     field(:severity_changed_at, Langfuse.PrismaDateTime)
-    field(:no_data, :map)
-    field(:renotify, :map)
+    field(:no_data, Langfuse.PrismaJson)
+    field(:renotify, Langfuse.PrismaJson)
     field(:status, Ecto.Enum, values: [:PAUSED, :ACTIVE, :ERROR_BAD_QUERY], default: :ACTIVE)
     field(:scheduler_batch_id, :integer)
     field(:next_run_at, Langfuse.PrismaDateTime)

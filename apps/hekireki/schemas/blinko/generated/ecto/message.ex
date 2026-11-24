@@ -8,7 +8,7 @@ defmodule Blinko.Message do
           id: integer(),
           content: String.t(),
           role: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           conversation: Blinko.Conversation.t() | nil
@@ -17,7 +17,7 @@ defmodule Blinko.Message do
   schema "message" do
     field(:content, :string)
     field(:role, :string)
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:conversation_id, :id, source: :conversationId)
     belongs_to(:conversation, Blinko.Conversation, foreign_key: :conversation_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

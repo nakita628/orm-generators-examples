@@ -37,7 +37,7 @@ defmodule LangWatch.InsightProjection do
           replay_start: float() | nil,
           replay_end: float() | nil,
           replay_granularity_seconds: integer() | nil,
-          replay_context: map() | nil,
+          replay_context: map() | list() | String.t() | number() | boolean() | nil,
           owner_user_id: String.t() | nil,
           finding_key: String.t() | nil
         }
@@ -78,7 +78,7 @@ defmodule LangWatch.InsightProjection do
     field(:replay_end, :float, source: :replayEnd)
     field(:replay_granularity_seconds, :integer, source: :replayGranularitySeconds)
     # The values in force when it was filed: `{ period, parameters }`.
-    field(:replay_context, :map, source: :replayContext)
+    field(:replay_context, LangWatch.PrismaJson, source: :replayContext)
     # Whose insight it is: the one person who reads it. NULL on a row folded before the
     # column existed, which is owned by whoever filed it (`filedByUserId`).
     field(:owner_user_id, :string, source: :ownerUserId)

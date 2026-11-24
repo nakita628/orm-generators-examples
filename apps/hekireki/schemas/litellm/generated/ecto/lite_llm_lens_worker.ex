@@ -6,12 +6,12 @@ defmodule LiteLLM.LiteLLMLensWorker do
   @type t :: %__MODULE__{
           id: String.t(),
           token_hash: String.t(),
-          data: map()
+          data: map() | list() | String.t() | number() | boolean()
         }
 
   schema "LiteLLM_LensWorker" do
     field(:id, :string, primary_key: true)
     field(:token_hash, :string)
-    field(:data, :map)
+    field(:data, LiteLLM.PrismaJson)
   end
 end

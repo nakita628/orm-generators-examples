@@ -5,12 +5,12 @@ defmodule OpenPanel.Import do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           job_id: String.t() | nil,
           status: atom(),
           status_message: String.t() | nil,
           error_message: String.t() | nil,
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           total_events: integer(),
           processed_events: integer(),
           current_step: String.t() | nil,
@@ -22,13 +22,13 @@ defmodule OpenPanel.Import do
         }
 
   schema "imports" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:job_id, :string, source: :jobId)
     field(:status, Ecto.Enum, values: [:pending, :processing, :completed, :failed])
     field(:status_message, :string, source: :statusMessage)
     field(:error_message, :string, source: :errorMessage)
     # [IPrismaImportConfig]
-    field(:config, :map)
+    field(:config, OpenPanel.PrismaJson)
     field(:total_events, :integer, default: 0, source: :totalEvents)
     field(:processed_events, :integer, default: 0, source: :processedEvents)
     field(:current_step, :string, source: :currentStep)

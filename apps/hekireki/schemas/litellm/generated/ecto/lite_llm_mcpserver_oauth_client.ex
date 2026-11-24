@@ -6,14 +6,14 @@ defmodule LiteLLM.LiteLLMMCPServerOAuthClient do
 
   @type t :: %__MODULE__{
           server_id: String.t(),
-          credentials: map() | nil,
+          credentials: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
 
   schema "LiteLLM_MCPServerOAuthClient" do
     field(:server_id, :string, primary_key: true)
-    field(:credentials, :map)
+    field(:credentials, LiteLLM.PrismaJson)
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -14,6 +14,6 @@ defmodule Umami.TwoFactorOtpUsed do
     field(:id, :string, primary_key: true)
     field(:otp, :string)
     field(:expires_at, Umami.PrismaDateTime)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
   end
 end

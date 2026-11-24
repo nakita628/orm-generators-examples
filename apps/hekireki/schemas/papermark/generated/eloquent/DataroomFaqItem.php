@@ -54,6 +54,7 @@ class DataroomFaqItem extends Model
         'status' => FaqStatus::class,
         'isAnonymized' => 'boolean',
         'viewCount' => 'integer',
+        'tags' => AsPrismaList::class,
         'documentPageNumber' => 'integer',
         'documentVersionNumber' => 'integer',
     ];

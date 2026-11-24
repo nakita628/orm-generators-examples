@@ -76,6 +76,7 @@ class RuntimeEnvironment extends Model
         'type' => RuntimeEnvironmentType::class,
         'isBranchableEnvironment' => 'boolean',
         'previewAutoArchiveAfterDays' => 'integer',
+        'previewAutoArchiveExcludedBranches' => AsPrismaList::class,
         'previewAutoArchiveNextCheckAt' => 'datetime',
         'previewAutoArchiveCursorCreatedAt' => 'datetime',
         'git' => 'array',

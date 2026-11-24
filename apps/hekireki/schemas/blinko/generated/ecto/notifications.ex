@@ -9,7 +9,7 @@ defmodule Blinko.Notifications do
           type: String.t(),
           title: String.t(),
           content: String.t(),
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           is_read: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -20,7 +20,7 @@ defmodule Blinko.Notifications do
     field(:type, :string)
     field(:title, :string)
     field(:content, :string)
-    field(:metadata, :map)
+    field(:metadata, Blinko.PrismaJson)
     field(:is_read, :boolean, default: false, source: :isRead)
     field(:account_id, :id, source: :accountId)
     belongs_to(:account, Blinko.Accounts, foreign_key: :account_id, define_field: false)

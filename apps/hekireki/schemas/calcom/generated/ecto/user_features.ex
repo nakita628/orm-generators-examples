@@ -5,7 +5,7 @@ defmodule Calcom.UserFeatures do
   @timestamps_opts [type: Calcom.PrismaDateTime, autogenerate: {Calcom.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          user_id: term(),
+          user_id: integer(),
           feature_id: String.t(),
           enabled: boolean(),
           assigned_at: DateTime.t(),

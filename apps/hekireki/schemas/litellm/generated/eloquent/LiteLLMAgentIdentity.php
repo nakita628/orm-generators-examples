@@ -40,6 +40,8 @@ class LiteLLMAgentIdentity extends Model
 
     protected $casts = [
         'active' => 'boolean',
+        'required_roles' => AsPrismaList::class,
+        'required_scopes' => AsPrismaList::class,
         'last_authenticated_at' => 'datetime',
     ];
 

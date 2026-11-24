@@ -9,7 +9,7 @@ defmodule Langfuse.DefaultLlmModel do
           provider: String.t(),
           adapter: String.t(),
           model: String.t(),
-          model_params: map() | nil,
+          model_params: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -21,7 +21,7 @@ defmodule Langfuse.DefaultLlmModel do
     field(:provider, :string)
     field(:adapter, :string)
     field(:model, :string)
-    field(:model_params, :map)
+    field(:model_params, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     belongs_to(:llm_api_key, Langfuse.LlmApiKeys, foreign_key: :llm_api_key_id, type: :string)
     timestamps(inserted_at_source: :created_at)

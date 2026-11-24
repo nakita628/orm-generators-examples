@@ -1,5 +1,6 @@
 class ManagedOrganization < ApplicationRecord
   self.table_name = "ManagedOrganization"
+  self.primary_key = "managedOrganizationId"
 
   alias_attribute :created_at, :createdAt
 

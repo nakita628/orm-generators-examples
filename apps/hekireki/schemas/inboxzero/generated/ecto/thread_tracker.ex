@@ -15,7 +15,7 @@ defmodule InboxZero.ThreadTracker do
           follow_up_draft_id: String.t() | nil,
           follow_up_draft_content: String.t() | nil,
           follow_up_draft_created_at: DateTime.t() | nil,
-          follow_up_notifications: map() | nil,
+          follow_up_notifications: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           email_account: InboxZero.EmailAccount.t() | nil
@@ -32,7 +32,7 @@ defmodule InboxZero.ThreadTracker do
     field(:follow_up_draft_id, :string, source: :followUpDraftId)
     field(:follow_up_draft_content, :string, source: :followUpDraftContent)
     field(:follow_up_draft_created_at, InboxZero.PrismaDateTime, source: :followUpDraftCreatedAt)
-    field(:follow_up_notifications, :map, source: :followUpNotifications)
+    field(:follow_up_notifications, InboxZero.PrismaJson, source: :followUpNotifications)
     field(:email_account_id, :string, source: :emailAccountId)
     belongs_to(:email_account, InboxZero.EmailAccount, foreign_key: :email_account_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

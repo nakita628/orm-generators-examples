@@ -38,6 +38,11 @@ class DocumentRedactionJob extends Model
         'status' => 'PENDING',
     ];
 
+    protected $casts = [
+        'customTerms' => AsPrismaList::class,
+        'reasons' => AsPrismaList::class,
+    ];
+
     public function document(): BelongsTo
     {
         return $this->belongsTo(Document::class, 'documentId');

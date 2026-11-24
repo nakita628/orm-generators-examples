@@ -16,7 +16,7 @@ defmodule LangWatch.SelfHostedInstanceReport do
           version: String.t() | nil,
           report_schema_version: integer() | nil,
           unknown_fields: integer(),
-          payload: map()
+          payload: map() | list() | String.t() | number() | boolean()
         }
 
   schema "SelfHostedInstanceReport" do
@@ -30,6 +30,6 @@ defmodule LangWatch.SelfHostedInstanceReport do
     # Fields this release had no name for. Counted, never stored by name.
     field(:unknown_fields, :integer, default: 0, source: :unknownFields)
     # The validated report, with every unknown field already dropped.
-    field(:payload, :map)
+    field(:payload, LangWatch.PrismaJson)
   end
 end

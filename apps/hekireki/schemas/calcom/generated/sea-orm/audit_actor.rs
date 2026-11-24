@@ -8,12 +8,11 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "AuditActor")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     pub r#type: AuditActorType,
     #[sea_orm(unique)]
-    #[sea_orm(column_name = "userUuid", column_type = "Uuid")]
-    pub user_uuid: Option<String>,
+    #[sea_orm(column_name = "userUuid")]
+    pub user_uuid: Option<Uuid>,
     #[sea_orm(unique)]
     #[sea_orm(column_name = "attendeeId")]
     pub attendee_id: Option<i32>,
@@ -45,7 +44,7 @@ impl Related<super::booking_audit::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::now_v7().to_string()),
+            id: Set(uuid::Uuid::now_v7()),
             ..ActiveModelTrait::default()
         }
     }

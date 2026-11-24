@@ -5,7 +5,7 @@ defmodule OpenPanel.ProjectInsight do
   @timestamps_opts [type: OpenPanel.PrismaDateTime, autogenerate: {OpenPanel.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: String.t(),
+          id: Ecto.UUID.t(),
           project_id: String.t(),
           module_key: String.t(),
           dimension_key: String.t(),
@@ -14,7 +14,7 @@ defmodule OpenPanel.ProjectInsight do
           title: String.t(),
           summary: String.t() | nil,
           display_name: String.t(),
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           direction: String.t() | nil,
           impact_score: float(),
           severity_band: String.t() | nil,
@@ -26,7 +26,7 @@ defmodule OpenPanel.ProjectInsight do
           enriched_at: DateTime.t() | nil,
           enrich_version: integer() | nil,
           version: integer(),
-          thread_id: String.t(),
+          thread_id: Ecto.UUID.t(),
           window_start: DateTime.t() | nil,
           window_end: DateTime.t() | nil,
           first_detected_at: DateTime.t(),
@@ -36,7 +36,7 @@ defmodule OpenPanel.ProjectInsight do
         }
 
   schema "project_insights" do
-    field(:id, :string, primary_key: true, read_after_writes: true)
+    field(:id, Ecto.UUID, primary_key: true, read_after_writes: true)
     field(:project_id, :string, source: :projectId)
     field(:module_key, :string, source: :moduleKey)
     field(:dimension_key, :string, source: :dimensionKey)
@@ -46,7 +46,7 @@ defmodule OpenPanel.ProjectInsight do
     field(:summary, :string)
     field(:display_name, :string, default: "", source: :displayName)
     # [IPrismaProjectInsightPayload]
-    field(:payload, :map, default: %{})
+    field(:payload, OpenPanel.PrismaJson, default: %{})
     field(:direction, :string)
     field(:impact_score, :float, default: 0.0, source: :impactScore)
     field(:severity_band, :string, source: :severityBand)
@@ -58,7 +58,7 @@ defmodule OpenPanel.ProjectInsight do
     field(:enriched_at, OpenPanel.PrismaDateTime, source: :enrichedAt)
     field(:enrich_version, :integer, source: :enrichVersion)
     field(:version, :integer, default: 1)
-    field(:thread_id, :string, read_after_writes: true, source: :threadId)
+    field(:thread_id, Ecto.UUID, read_after_writes: true, source: :threadId)
     field(:window_start, OpenPanel.PrismaDateTime, source: :windowStart)
     field(:window_end, OpenPanel.PrismaDateTime, source: :windowEnd)
     field(:first_detected_at, OpenPanel.PrismaDateTime, autogenerate: true, source: :firstDetectedAt)

@@ -30,6 +30,9 @@ class Comment extends \Illuminate\Database\Eloquent\Model
 
     protected $casts = [
         'object_type' => CommentObjectType::class,
+        'path' => AsPrismaList::class,
+        'range_start' => AsPrismaList::class . ':int',
+        'range_end' => AsPrismaList::class . ':int',
     ];
 
     public function project(): BelongsTo

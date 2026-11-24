@@ -344,7 +344,7 @@ export interface Webhook {
   url: string
   source: Generated<WebhookSource>
   workspaceId: string
-  triggers: PipelineTriggers[]
+  triggers: ColumnType<string, PipelineTriggers[], PipelineTriggers[]>
   surveyIds: string[]
   secret: string | null
 }
@@ -1619,7 +1619,7 @@ export interface AttachmentExport {
   responseCount: number
   /** What the archive actually holds, once built. */
   includedFileCount: number | null
-  totalBytes: bigint | null
+  totalBytes: ColumnType<string, bigint | number | string, bigint | number | string> | null
   truncated: Generated<boolean>
   storageKey: string | null
   /** A short code (`stale`, `storage_upload_failed`, …), never a message or file name. */
@@ -1794,7 +1794,7 @@ export interface OnlineUpgradeState {
   phase: string
   completedPhases: Generated<string[]>
   surveyCursor: string | null
-  surveyCount: Generated<bigint>
+  surveyCount: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   baselineCompletedAt: Timestamp | null
   forwardOnlyAt: Timestamp | null
   queuePausedAt: Timestamp | null
@@ -1843,7 +1843,7 @@ export interface RetentionPolicy {
    */
   periodDays: number
   /** Surveys policy only. */
-  conditions: Generated<RetentionSurveyCondition[]>
+  conditions: Generated<ColumnType<string, RetentionSurveyCondition[], RetentionSurveyCondition[]>>
   /**
    * The last night the sweep's time ran out before it reached this policy's organisation, licensed.
    * The organisation was due and the sweep was running, so it counts as reached for the gap that

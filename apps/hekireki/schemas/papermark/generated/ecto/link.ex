@@ -28,7 +28,7 @@ defmodule Papermark.Link do
           enable_agreement: boolean() | nil,
           show_banner: boolean() | nil,
           enable_watermark: boolean() | nil,
-          watermark_config: map() | nil,
+          watermark_config: map() | list() | String.t() | number() | boolean() | nil,
           audience_type: atom(),
           meta_title: String.t() | nil,
           meta_description: String.t() | nil,
@@ -93,7 +93,7 @@ defmodule Papermark.Link do
     field(:enable_agreement, :boolean, default: false, source: :enableAgreement)
     field(:show_banner, :boolean, default: false, source: :showBanner)
     field(:enable_watermark, :boolean, default: false, source: :enableWatermark)
-    field(:watermark_config, :map, source: :watermarkConfig)
+    field(:watermark_config, Papermark.PrismaJson, source: :watermarkConfig)
     field(:audience_type, Ecto.Enum, values: [:GENERAL, :GROUP, :TEAM], default: :GENERAL, source: :audienceType)
     field(:meta_title, :string, source: :metaTitle)
     field(:meta_description, :string, source: :metaDescription)

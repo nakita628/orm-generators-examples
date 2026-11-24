@@ -7308,7 +7308,7 @@ class InstanceIdentity(models.Model):
     string.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="self")
     """Fixed, so this table holds one row. A second insert loses the race on the
     primary key and re-reads the winner's id.
     """
@@ -7545,7 +7545,7 @@ class WebPushVapidKey(models.Model):
     insert loses the race on the primary key and reads the winner's pair.
     """
 
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="self")
     public_key = models.TextField(db_column="publicKey")
     """The uncompressed P-256 public key, base64url. The browser subscribes with it."""
     private_key_encrypted = models.TextField(db_column="privateKeyEncrypted")
@@ -7557,7 +7557,7 @@ class WebPushVapidKey(models.Model):
 
 
 class SignInProviderMount(models.Model):
-    id = models.TextField(primary_key=True, default=None)
+    id = models.TextField(primary_key=True, default="self")
     """Fixed, so this table holds one row: licensing's copy of sso's sign-in
     provider fact (ADR-179).
     """

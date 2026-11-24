@@ -10,7 +10,7 @@ defmodule Blinko.AiProviders do
           provider: String.t(),
           base_url: String.t() | nil,
           api_key: String.t() | nil,
-          config: map() | nil,
+          config: map() | list() | String.t() | number() | boolean() | nil,
           sort_order: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -22,7 +22,7 @@ defmodule Blinko.AiProviders do
     field(:provider, :string)
     field(:base_url, :string, source: :baseURL)
     field(:api_key, :string, source: :apiKey)
-    field(:config, :map)
+    field(:config, Blinko.PrismaJson)
     field(:sort_order, :integer, default: 0, source: :sortOrder)
     has_many(:models, Blinko.AiModels, foreign_key: :provider_id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

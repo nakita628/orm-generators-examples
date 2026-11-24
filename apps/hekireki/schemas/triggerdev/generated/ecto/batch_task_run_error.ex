@@ -13,7 +13,7 @@ defmodule Trigger.BatchTaskRunError do
           index: integer(),
           task_identifier: String.t(),
           payload: String.t() | nil,
-          options: map() | nil,
+          options: map() | list() | String.t() | number() | boolean() | nil,
           error: String.t(),
           error_code: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -29,7 +29,7 @@ defmodule Trigger.BatchTaskRunError do
     # The payload that failed (JSON, may be truncated)
     field(:payload, :string)
     # The options that were used
-    field(:options, :map)
+    field(:options, Trigger.PrismaJson)
     # Error message
     field(:error, :string)
     # Error code if available

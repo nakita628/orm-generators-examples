@@ -1672,9 +1672,9 @@ class LiteLLMDailyRequestErrors(Base):
 
     date_: Mapped[str] = mapped_column("date", primary_key=True)
     api_key: Mapped[str] = mapped_column(primary_key=True)
-    team_id: Mapped[str] = mapped_column(primary_key=True)
-    user_id: Mapped[str] = mapped_column(primary_key=True)
-    model_group: Mapped[str] = mapped_column(primary_key=True)
+    team_id: Mapped[str] = mapped_column(primary_key=True, default="", server_default=text("''"))
+    user_id: Mapped[str] = mapped_column(primary_key=True, default="", server_default=text("''"))
+    model_group: Mapped[str] = mapped_column(primary_key=True, default="", server_default=text("''"))
     status_code: Mapped[int] = mapped_column(primary_key=True)
     failed_requests: Mapped[int] = mapped_column(BigInteger, default=0, server_default=text("0"))
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
@@ -1744,7 +1744,7 @@ class LiteLLMSearchToolsTable(Base):
 class LiteLLMSSOConfig(Base):
     __tablename__ = "LiteLLM_SSOConfig"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="sso_config", server_default=text("'sso_config'"))
     sso_settings: Mapped[dict[str, Any]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
@@ -1768,7 +1768,7 @@ class LiteLLMManagedVectorStoreIndexTable(Base):
 class LiteLLMCacheConfig(Base):
     __tablename__ = "LiteLLM_CacheConfig"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="cache_config", server_default=text("'cache_config'"))
     cache_settings: Mapped[dict[str, Any]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
@@ -1776,7 +1776,7 @@ class LiteLLMCacheConfig(Base):
 class LiteLLMUISettings(Base):
     __tablename__ = "LiteLLM_UISettings"
 
-    id: Mapped[str] = mapped_column(primary_key=True)
+    id: Mapped[str] = mapped_column(primary_key=True, default="ui_settings", server_default=text("'ui_settings'"))
     ui_settings: Mapped[dict[str, Any]] = mapped_column(JSONB)
     created_at: Mapped[datetime] = mapped_column(default=utc_now, server_default=text("CURRENT_TIMESTAMP"))
     updated_at: Mapped[datetime] = mapped_column(default=utc_now, onupdate=utc_now)
@@ -2413,7 +2413,7 @@ class LiteLLMLensTraceSignal(Base):
     __tablename__ = "LiteLLM_LensTraceSignal"
 
     trace_id: Mapped[str] = mapped_column(primary_key=True)
-    trace_ref: Mapped[str] = mapped_column(primary_key=True)
+    trace_ref: Mapped[str] = mapped_column(primary_key=True, default="", server_default=text("''"))
     config_key: Mapped[str]
     span_count: Mapped[int]
     claimed_until: Mapped[Optional[datetime]]

@@ -4,7 +4,10 @@ class Account < ApplicationRecord
   self.implicit_order_column = "createdAt"
 
   attribute :id, default: -> { Cuid.generate }
-  alias_attribute :created_at, :createdAt
+  def self.timestamp_attributes_for_create
+    super - %w[created_at] + %w[createdAt]
+  end
+  private_class_method :timestamp_attributes_for_create
 
   validates :type, presence: true
   validates :provider, presence: true, uniqueness: { scope: :providerAccountId }

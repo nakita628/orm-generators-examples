@@ -13,17 +13,17 @@ defmodule InboxZero.EmailAccount do
           about: String.t() | nil,
           writing_style: String.t() | nil,
           signature: String.t() | nil,
-          sent_signature_scan: map() | nil,
+          sent_signature_scan: map() | list() | String.t() | number() | boolean() | nil,
           sent_signature_scanned_at: DateTime.t() | nil,
           include_referral_signature: boolean(),
           include_sent_with_signature: boolean(),
           sent_message_open_tracking_enabled: boolean(),
           watch_emails_expiration_date: DateTime.t() | nil,
           watch_emails_subscription_id: String.t() | nil,
-          watch_emails_subscription_history: map() | nil,
+          watch_emails_subscription_history: map() | list() | String.t() | number() | boolean() | nil,
           last_synced_history_id: String.t() | nil,
-          behavior_profile: map() | nil,
-          persona_analysis: map() | nil,
+          behavior_profile: map() | list() | String.t() | number() | boolean() | nil,
+          persona_analysis: map() | list() | String.t() | number() | boolean() | nil,
           role: String.t() | nil,
           timezone: String.t() | nil,
           calendar_booking_link: String.t() | nil,
@@ -126,17 +126,17 @@ defmodule InboxZero.EmailAccount do
     field(:about, :string)
     field(:writing_style, :string, source: :writingStyle)
     field(:signature, :string)
-    field(:sent_signature_scan, :map, source: :sentSignatureScan)
+    field(:sent_signature_scan, InboxZero.PrismaJson, source: :sentSignatureScan)
     field(:sent_signature_scanned_at, InboxZero.PrismaDateTime, source: :sentSignatureScannedAt)
     field(:include_referral_signature, :boolean, default: false, source: :includeReferralSignature)
     field(:include_sent_with_signature, :boolean, default: true, source: :includeSentWithSignature)
     field(:sent_message_open_tracking_enabled, :boolean, default: true, source: :sentMessageOpenTrackingEnabled)
     field(:watch_emails_expiration_date, InboxZero.PrismaDateTime, source: :watchEmailsExpirationDate)
     field(:watch_emails_subscription_id, :string, source: :watchEmailsSubscriptionId)
-    field(:watch_emails_subscription_history, :map, source: :watchEmailsSubscriptionHistory)
+    field(:watch_emails_subscription_history, InboxZero.PrismaJson, source: :watchEmailsSubscriptionHistory)
     field(:last_synced_history_id, :string, source: :lastSyncedHistoryId)
-    field(:behavior_profile, :map, source: :behaviorProfile)
-    field(:persona_analysis, :map, source: :personaAnalysis)
+    field(:behavior_profile, InboxZero.PrismaJson, source: :behaviorProfile)
+    field(:persona_analysis, InboxZero.PrismaJson, source: :personaAnalysis)
     field(:role, :string)
     field(:timezone, :string)
     field(:calendar_booking_link, :string, source: :calendarBookingLink)

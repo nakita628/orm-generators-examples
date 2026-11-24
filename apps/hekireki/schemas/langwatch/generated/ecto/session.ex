@@ -13,7 +13,7 @@ defmodule LangWatch.Session do
           identifier_id: String.t() | nil,
           amr: [String.t()],
           started_by_sign_up: boolean(),
-          impersonating: map() | nil,
+          impersonating: map() | list() | String.t() | number() | boolean() | nil,
           actor_user_id: String.t() | nil,
           subject_user_id: String.t() | nil,
           impersonation_reason: String.t() | nil,
@@ -56,7 +56,7 @@ defmodule LangWatch.Session do
     # request and fail closed when the row does not come back. Dropping it in
     # the same release that stops reading it signs everybody out for the length
     # of the rollout. Expand now, contract next release.
-    field(:impersonating, :map)
+    field(:impersonating, LangWatch.PrismaJson)
     # The impersonation claims (D06), aligned with the authz Principal
     # {actor, subject}. The actor is the operator who really made the request
     # and the subject is the person whose access they are borrowing; both are

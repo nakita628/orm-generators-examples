@@ -11,15 +11,15 @@ defmodule Trigger.BackgroundWorkerTask do
           friendly_id: String.t(),
           file_path: String.t(),
           export_name: String.t() | nil,
-          queue_config: map() | nil,
-          retry_config: map() | nil,
-          machine_config: map() | nil,
-          gates: map() | nil,
+          queue_config: map() | list() | String.t() | number() | boolean() | nil,
+          retry_config: map() | list() | String.t() | number() | boolean() | nil,
+          machine_config: map() | list() | String.t() | number() | boolean() | nil,
+          gates: map() | list() | String.t() | number() | boolean() | nil,
           max_duration_in_seconds: integer() | nil,
           ttl: String.t() | nil,
           trigger_source: atom(),
-          config: map() | nil,
-          payload_schema: map() | nil,
+          config: map() | list() | String.t() | number() | boolean() | nil,
+          payload_schema: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           worker: Trigger.BackgroundWorker.t() | nil,
@@ -38,19 +38,19 @@ defmodule Trigger.BackgroundWorkerTask do
     field(:friendly_id, :string, source: :friendlyId)
     field(:file_path, :string, source: :filePath)
     field(:export_name, :string, source: :exportName)
-    field(:queue_config, :map, source: :queueConfig)
-    field(:retry_config, :map, source: :retryConfig)
-    field(:machine_config, :map, source: :machineConfig)
+    field(:queue_config, Trigger.PrismaJson, source: :queueConfig)
+    field(:retry_config, Trigger.PrismaJson, source: :retryConfig)
+    field(:machine_config, Trigger.PrismaJson, source: :machineConfig)
     # Gates declared on the task: other queues its runs must also hold a concurrency
     # slot in while executing. Shape: [{ queue: string, concurrencyKey?: string }]
-    field(:gates, :map)
+    field(:gates, Trigger.PrismaJson)
     field(:max_duration_in_seconds, :integer, source: :maxDurationInSeconds)
     field(:ttl, :string)
     field(:trigger_source, Ecto.Enum, values: [:STANDARD, :SCHEDULED, :AGENT, :WEBHOOK], default: :STANDARD, source: :triggerSource)
     # Extra task configuration JSON. Shape depends on triggerSource.
     # AGENT: { type: "ai-sdk-chat" }
-    field(:config, :map)
-    field(:payload_schema, :map, source: :payloadSchema)
+    field(:config, Trigger.PrismaJson)
+    field(:payload_schema, Trigger.PrismaJson, source: :payloadSchema)
     field(:worker_id, :string, source: :workerId)
     field(:project_id, :string, source: :projectId)
     field(:file_id, :string, source: :fileId)

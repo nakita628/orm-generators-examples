@@ -7,8 +7,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "task_log")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     pub level: String,
     pub logger: String,
     pub message: String,
@@ -26,7 +25,7 @@ pub enum Relation {}
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            id: Set(uuid::Uuid::new_v4().to_string()),
+            id: Set(uuid::Uuid::new_v4()),
             ..ActiveModelTrait::default()
         }
     }

@@ -1,5 +1,6 @@
 class Invitation < ApplicationRecord
   self.table_name = "Invitation"
+  self.primary_key = %w[email typebotId]
   self.inheritance_column = nil
 
   alias_attribute :created_at, :createdAt

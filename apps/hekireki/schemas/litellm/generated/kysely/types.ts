@@ -19,9 +19,9 @@ export interface LiteLLM_BudgetTable {
   max_budget: number | null
   soft_budget: number | null
   max_parallel_requests: number | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
-  tpd_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  tpd_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   model_max_budget: unknown
   model_tpm_limit: unknown
   model_rpm_limit: unknown
@@ -223,9 +223,9 @@ export interface LiteLLM_TeamTable {
   spend: Generated<number>
   models: string[]
   max_parallel_requests: number | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
-  tpd_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  tpd_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   budget_duration: string | null
   budget_reset_at: Timestamp | null
   blocked: Generated<boolean>
@@ -278,9 +278,9 @@ export interface LiteLLM_DeletedTeamTable {
   spend: Generated<number>
   models: string[]
   max_parallel_requests: number | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
-  tpd_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  tpd_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   budget_duration: string | null
   budget_reset_at: Timestamp | null
   blocked: Generated<boolean>
@@ -319,8 +319,8 @@ export interface LiteLLM_UserTable {
   models: string[]
   metadata: Generated<unknown>
   max_parallel_requests: number | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   budget_duration: string | null
   budget_reset_at: Timestamp | null
   allowed_cache_controls: Generated<string[]>
@@ -479,9 +479,9 @@ export interface LiteLLM_VerificationToken {
   max_parallel_requests: number | null
   metadata: Generated<unknown>
   blocked: boolean | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
-  tpd_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  tpd_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   max_budget: number | null
   budget_duration: string | null
   budget_reset_at: Timestamp | null
@@ -552,9 +552,9 @@ export interface LiteLLM_DeletedVerificationToken {
   max_parallel_requests: number | null
   metadata: Generated<unknown>
   blocked: boolean | null
-  tpm_limit: bigint | null
-  rpm_limit: bigint | null
-  tpd_limit: bigint | null
+  tpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  rpm_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  tpd_limit: ColumnType<string, bigint | number | string, bigint | number | string> | null
   max_budget: number | null
   budget_duration: string | null
   budget_reset_at: Timestamp | null
@@ -626,7 +626,7 @@ export interface LiteLLM_Config {
   param_name: string
   param_value: unknown
   last_run_at: Timestamp | null
-  reload_revision: Generated<bigint>
+  reload_revision: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
 }
 
 export interface LiteLLM_SpendLogs {
@@ -752,22 +752,34 @@ export interface LiteLLM_DailyUserSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -780,22 +792,34 @@ export interface LiteLLM_DailyGlobalSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -810,22 +834,34 @@ export interface LiteLLM_DailyOrganizationSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -843,21 +879,33 @@ export interface LiteLLM_DailyCustomerMemberSpend {
   endpoint: Generated<string>
   api_key: Generated<string>
   spend: Generated<number>
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -872,22 +920,34 @@ export interface LiteLLM_DailyEndUserSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -902,22 +962,34 @@ export interface LiteLLM_DailyAgentSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -932,22 +1004,34 @@ export interface LiteLLM_DailyTeamSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   ptu_flat_cost: Generated<number>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
@@ -964,22 +1048,34 @@ export interface LiteLLM_DailyTagSpend {
   custom_llm_provider: string | null
   mcp_namespaced_tool_name: string | null
   endpoint: string | null
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  cache_read_input_tokens: Generated<bigint>
-  cache_creation_input_tokens: Generated<bigint>
-  compression_saved_tokens: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_read_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  cache_creation_input_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  compression_saved_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   compression_savings_spend: Generated<number>
   prompt_caching_savings_spend: Generated<number>
   gateway_injected_caching_savings_spend: Generated<number>
   autorouter_savings_spend: Generated<number>
   guardrail_spend: Generated<number>
   spend: Generated<number>
-  api_requests: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  api_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1098,10 +1194,12 @@ export interface LiteLLM_GuardrailsTable {
 export interface LiteLLM_DailyGuardrailMetrics {
   guardrail_id: string
   date: string
-  requests_evaluated: Generated<bigint>
-  passed_count: Generated<bigint>
-  blocked_count: Generated<bigint>
-  flagged_count: Generated<bigint>
+  requests_evaluated: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  passed_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  blocked_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  flagged_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   avg_score: number | null
   avg_latency_ms: number | null
   created_at: Generated<Timestamp>
@@ -1114,9 +1212,9 @@ export interface LiteLLM_DailyGuardrailUsageUnits {
   team_id: string
   api_key: string
   usage_unit: string
-  units: Generated<bigint>
+  units: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   cost: number | null
-  untracked_units: Generated<bigint>
+  untracked_units: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1124,10 +1222,12 @@ export interface LiteLLM_DailyGuardrailUsageUnits {
 export interface LiteLLM_DailyPolicyMetrics {
   policy_id: string
   date: string
-  requests_evaluated: Generated<bigint>
-  passed_count: Generated<bigint>
-  blocked_count: Generated<bigint>
-  flagged_count: Generated<bigint>
+  requests_evaluated: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  passed_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  blocked_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  flagged_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   avg_score: number | null
   avg_latency_ms: number | null
   created_at: Generated<Timestamp>
@@ -1151,8 +1251,8 @@ export interface LiteLLM_DailyToolSpend {
   date: string
   tool_name: string
   spend: Generated<number>
-  total_tokens: Generated<bigint>
-  request_count: Generated<bigint>
+  total_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  request_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1164,13 +1264,19 @@ export interface LiteLLM_DailyModelUsage {
   custom_llm_provider: string
   task_type: string
   spend: Generated<number>
-  prompt_tokens: Generated<bigint>
-  completion_tokens: Generated<bigint>
-  request_count: Generated<bigint>
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
-  total_response_time_ms: Generated<bigint>
-  timed_requests: Generated<bigint>
+  prompt_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  completion_tokens: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  request_count: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  total_response_time_ms: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  timed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1179,8 +1285,10 @@ export interface LiteLLM_DailyGatewayRequests {
   date: string
   category: string
   route: string
-  successful_requests: Generated<bigint>
-  failed_requests: Generated<bigint>
+  successful_requests: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1190,7 +1298,7 @@ export interface LiteLLM_DailyGatewayFailedRequests {
   category: string
   route: string
   status_code: number
-  failed_requests: Generated<bigint>
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1202,7 +1310,7 @@ export interface LiteLLM_DailyRequestErrors {
   user_id: Generated<string>
   model_group: Generated<string>
   status_code: number
-  failed_requests: Generated<bigint>
+  failed_requests: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   created_at: Generated<Timestamp>
   updated_at: Timestamp
 }
@@ -1385,7 +1493,9 @@ export interface LiteLLM_ClaudeCodePluginTable {
   created_at: Generated<Timestamp | null>
   updated_at: Generated<ColumnType<Date | null, Date | string, Date | string | null>>
   created_by: string | null
-  anonymous_download_count: Generated<bigint>
+  anonymous_download_count: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
 }
 
 export interface LiteLLM_ClaudeCodePluginVersion {
@@ -1418,7 +1528,7 @@ export interface LiteLLM_SkillSubmission {
 }
 
 export interface LiteLLM_ClaudeCodePluginDownload {
-  id: Generated<bigint>
+  id: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   plugin_id: string
   downloaded_at: Generated<Timestamp>
   version: string | null
@@ -1488,8 +1598,10 @@ export interface LiteLLM_AutoRouterBaselineComparison {
   session_id: string
   router_name: string
   initial_equivalent: boolean
-  revision: Generated<bigint>
-  published_revision: Generated<bigint>
+  revision: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
+  published_revision: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   history: string | null
   attempted_at: Timestamp | null
   retired: Generated<boolean>
@@ -1500,7 +1612,7 @@ export interface LiteLLM_AutoRouterBaselineObservation {
   request_id: string
   scope: string
   started_at: number
-  revision: bigint
+  revision: ColumnType<string, bigint | number | string, bigint | number | string>
   data: string
   publication: string | null
   conflicted: Generated<boolean>
@@ -1529,7 +1641,7 @@ export interface LiteLLM_AutoRouterSession {
   return_within_ttl_misses: Generated<number>
   ttl_5m_turns: Generated<number>
   ttl_1h_turns: Generated<number>
-  total_tokens: Generated<bigint>
+  total_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   spend: Generated<number>
   saved_spend: Generated<number>
   savings_estimated_turns: Generated<number>
@@ -1566,7 +1678,7 @@ export interface LiteLLM_AutoRouterUserSession {
   return_within_ttl_misses: Generated<number>
   ttl_5m_turns: Generated<number>
   ttl_1h_turns: Generated<number>
-  total_tokens: Generated<bigint>
+  total_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   spend: Generated<number>
   saved_spend: Generated<number>
   savings_estimated_turns: Generated<number>
@@ -1586,7 +1698,7 @@ export interface LiteLLM_AutoRouterDailySpend {
   router_name: string
   router_type: string
   turns: Generated<number>
-  total_tokens: Generated<bigint>
+  total_tokens: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   token_recorded_turns: Generated<number>
   spend: Generated<number>
   saved_spend: Generated<number>
@@ -1785,7 +1897,7 @@ export interface LiteLLM_SubscriptionAccountTable {
 }
 
 export interface LiteLLM_Alert {
-  id: Generated<bigint>
+  id: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   detection_key: string
   type: string
   resource_type: string

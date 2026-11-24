@@ -7,7 +7,7 @@ defmodule LangWatch.TraceEditOverlay do
   @type t :: %__MODULE__{
           id: String.t(),
           trace_id: String.t(),
-          patch: map(),
+          patch: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: LangWatch.Project.t() | nil,
@@ -18,7 +18,7 @@ defmodule LangWatch.TraceEditOverlay do
   schema "TraceEditOverlay" do
     field(:id, :string, primary_key: true)
     field(:trace_id, :string, source: :traceId)
-    field(:patch, :map)
+    field(:patch, LangWatch.PrismaJson)
     field(:project_id, :string, source: :projectId)
     field(:created_by_id, :string, source: :createdById)
     field(:updated_by_id, :string, source: :updatedById)

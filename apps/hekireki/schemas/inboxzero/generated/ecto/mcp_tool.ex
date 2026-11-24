@@ -8,7 +8,7 @@ defmodule InboxZero.McpTool do
           id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          schema: map() | nil,
+          schema: map() | list() | String.t() | number() | boolean() | nil,
           is_enabled: boolean(),
           is_write: boolean(),
           inserted_at: DateTime.t(),
@@ -20,7 +20,7 @@ defmodule InboxZero.McpTool do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:schema, :map)
+    field(:schema, InboxZero.PrismaJson)
     field(:is_enabled, :boolean, default: true, source: :isEnabled)
     field(:is_write, :boolean, default: false, source: :isWrite)
     field(:connection_id, :string, source: :connectionId)

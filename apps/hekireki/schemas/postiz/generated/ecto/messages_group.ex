@@ -1,12 +1,12 @@
 defmodule Postiz.MessagesGroup do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           buyer: Postiz.User.t() | nil,
@@ -17,9 +17,9 @@ defmodule Postiz.MessagesGroup do
         }
 
   schema "MessagesGroup" do
-    field(:buyer_id, :binary_id, source: :buyerId)
-    field(:buyer_organization_id, :binary_id, source: :buyerOrganizationId)
-    field(:seller_id, :binary_id, source: :sellerId)
+    field(:buyer_id, :string, source: :buyerId)
+    field(:buyer_organization_id, :string, source: :buyerOrganizationId)
+    field(:seller_id, :string, source: :sellerId)
     belongs_to(:buyer, Postiz.User, foreign_key: :buyer_id, define_field: false)
     belongs_to(:buyer_organization, Postiz.Organization, foreign_key: :buyer_organization_id, define_field: false)
     belongs_to(:seller, Postiz.User, foreign_key: :seller_id, define_field: false)

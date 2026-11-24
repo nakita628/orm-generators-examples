@@ -8,7 +8,7 @@ defmodule LangWatch.SystemMigrationTenantState do
           migration_name: String.t(),
           tenant_id: String.t(),
           status: String.t(),
-          report: map() | nil,
+          report: map() | list() | String.t() | number() | boolean() | nil,
           occurred_at: DateTime.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -18,7 +18,7 @@ defmodule LangWatch.SystemMigrationTenantState do
     field(:migration_name, :string, primary_key: true, source: :migrationName)
     field(:tenant_id, :string, primary_key: true, source: :tenantId)
     field(:status, :string)
-    field(:report, :map)
+    field(:report, LangWatch.PrismaJson)
     field(:occurred_at, LangWatch.PrismaDateTime, autogenerate: true, source: :occurredAt)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

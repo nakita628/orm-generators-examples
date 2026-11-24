@@ -8,10 +8,10 @@ defmodule LangWatch.RoutingPolicy do
           id: String.t(),
           name: String.t(),
           description: String.t() | nil,
-          model_provider_ids: map(),
-          model_aliases: map(),
+          model_provider_ids: map() | list() | String.t() | number() | boolean(),
+          model_aliases: map() | list() | String.t() | number() | boolean(),
           default_model: String.t() | nil,
-          policy_rules: map(),
+          policy_rules: map() | list() | String.t() | number() | boolean(),
           is_default: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -26,10 +26,10 @@ defmodule LangWatch.RoutingPolicy do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:model_provider_ids, :map, source: :modelProviderIds)
-    field(:model_aliases, :map, default: %{}, source: :modelAliases)
+    field(:model_provider_ids, LangWatch.PrismaJson, default: [], source: :modelProviderIds)
+    field(:model_aliases, LangWatch.PrismaJson, default: %{}, source: :modelAliases)
     field(:default_model, :string, source: :defaultModel)
-    field(:policy_rules, :map, default: %{}, source: :policyRules)
+    field(:policy_rules, LangWatch.PrismaJson, default: %{}, source: :policyRules)
     field(:is_default, :boolean, default: false, source: :isDefault)
     field(:organization_id, :string, source: :organizationId)
     field(:created_by_id, :string, source: :createdById)

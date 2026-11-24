@@ -17,8 +17,8 @@ defmodule Dub.Invoice do
           receipt_url: String.t() | nil,
           refund_reason: String.t() | nil,
           failed_reason: String.t() | nil,
-          registered_domains: map() | nil,
-          stripe_charge_metadata: map() | nil,
+          registered_domains: map() | list() | String.t() | number() | boolean() | nil,
+          stripe_charge_metadata: map() | list() | String.t() | number() | boolean() | nil,
           failed_attempts: integer(),
           paid_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -38,8 +38,8 @@ defmodule Dub.Invoice do
     field(:receipt_url, :string, source: :receiptUrl)
     field(:refund_reason, :string, source: :refundReason)
     field(:failed_reason, :string, source: :failedReason)
-    field(:registered_domains, :map, source: :registeredDomains)
-    field(:stripe_charge_metadata, :map, source: :stripeChargeMetadata)
+    field(:registered_domains, Dub.PrismaJson, source: :registeredDomains)
+    field(:stripe_charge_metadata, Dub.PrismaJson, source: :stripeChargeMetadata)
     field(:failed_attempts, :integer, default: 0, source: :failedAttempts)
     field(:paid_at, Dub.PrismaDateTime, source: :paidAt)
     field(:workspace_id, :string, source: :workspaceId)

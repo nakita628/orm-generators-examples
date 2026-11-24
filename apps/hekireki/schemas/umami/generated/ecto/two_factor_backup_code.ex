@@ -16,7 +16,7 @@ defmodule Umami.TwoFactorBackupCode do
     field(:id, :string, primary_key: true)
     field(:code_hash, :string)
     field(:used, :boolean, default: false)
-    belongs_to(:user, Umami.User, foreign_key: :user_id, type: :string)
+    belongs_to(:user, Umami.User, foreign_key: :user_id, type: Ecto.UUID)
     timestamps(inserted_at_source: :created_at, updated_at: false)
   end
 end

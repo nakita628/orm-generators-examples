@@ -10,7 +10,7 @@ defmodule LiteLLM.LiteLLMLensTraceSignal do
           span_count: integer(),
           claimed_until: DateTime.t() | nil,
           classified_at: DateTime.t() | nil,
-          data: map()
+          data: map() | list() | String.t() | number() | boolean()
         }
 
   schema "LiteLLM_LensTraceSignal" do
@@ -20,6 +20,6 @@ defmodule LiteLLM.LiteLLMLensTraceSignal do
     field(:span_count, :integer)
     field(:claimed_until, LiteLLM.PrismaDateTime)
     field(:classified_at, LiteLLM.PrismaDateTime)
-    field(:data, :map)
+    field(:data, LiteLLM.PrismaJson)
   end
 end

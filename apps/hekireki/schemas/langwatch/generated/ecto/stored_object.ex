@@ -20,7 +20,7 @@ defmodule LangWatch.StoredObject do
           storage_destination_id: String.t() | nil,
           storage_provider_relative_id: String.t() | nil,
           generation: integer(),
-          audiences: map(),
+          audiences: map() | list() | String.t() | number() | boolean(),
           expires_at: DateTime.t() | nil,
           available_at: DateTime.t() | nil,
           deleted_at: DateTime.t() | nil,
@@ -46,7 +46,7 @@ defmodule LangWatch.StoredObject do
     field(:storage_destination_id, :string, source: :storageDestinationId)
     field(:storage_provider_relative_id, :string, source: :storageProviderRelativeId)
     field(:generation, :integer, default: 0)
-    field(:audiences, :map)
+    field(:audiences, LangWatch.PrismaJson)
     field(:expires_at, LangWatch.PrismaDateTime, source: :expiresAt)
     field(:available_at, LangWatch.PrismaDateTime, source: :availableAt)
     field(:deleted_at, LangWatch.PrismaDateTime, source: :deletedAt)

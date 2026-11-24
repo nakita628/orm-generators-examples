@@ -1,17 +1,17 @@
 defmodule LiteLLM.LiteLLMTeamTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :team_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :team_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           team_alias: String.t() | nil,
           admins: [String.t()],
           members: [String.t()],
-          members_with_roles: map(),
-          metadata: map(),
+          members_with_roles: map() | list() | String.t() | number() | boolean(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           max_budget: float() | nil,
           soft_budget: float() | nil,
           spend: float(),
@@ -23,14 +23,14 @@ defmodule LiteLLM.LiteLLMTeamTable do
           budget_duration: String.t() | nil,
           budget_reset_at: DateTime.t() | nil,
           blocked: boolean(),
-          model_spend: map(),
-          model_max_budget: map(),
-          router_settings: map() | nil,
+          model_spend: map() | list() | String.t() | number() | boolean(),
+          model_max_budget: map() | list() | String.t() | number() | boolean(),
+          router_settings: map() | list() | String.t() | number() | boolean() | nil,
           team_member_permissions: [String.t()],
           access_group_ids: [String.t()],
           policies: [String.t()],
           default_team_member_models: [String.t()],
-          budget_limits: map() | nil,
+          budget_limits: map() | list() | String.t() | number() | boolean() | nil,
           allow_team_guardrail_config: boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -44,8 +44,8 @@ defmodule LiteLLM.LiteLLMTeamTable do
     field(:team_alias, :string)
     field(:admins, {:array, :string})
     field(:members, {:array, :string})
-    field(:members_with_roles, :map, default: %{})
-    field(:metadata, :map, default: %{})
+    field(:members_with_roles, LiteLLM.PrismaJson, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:max_budget, :float)
     field(:soft_budget, :float)
     field(:spend, :float, default: 0.0)
@@ -57,14 +57,14 @@ defmodule LiteLLM.LiteLLMTeamTable do
     field(:budget_duration, :string)
     field(:budget_reset_at, LiteLLM.PrismaDateTime)
     field(:blocked, :boolean, default: false)
-    field(:model_spend, :map, default: %{})
-    field(:model_max_budget, :map, default: %{})
-    field(:router_settings, :map, default: %{})
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
+    field(:model_max_budget, LiteLLM.PrismaJson, default: %{})
+    field(:router_settings, LiteLLM.PrismaJson, default: %{})
     field(:team_member_permissions, {:array, :string})
     field(:access_group_ids, {:array, :string})
     field(:policies, {:array, :string})
     field(:default_team_member_models, {:array, :string})
-    field(:budget_limits, :map)
+    field(:budget_limits, LiteLLM.PrismaJson)
     field(:allow_team_guardrail_config, :boolean, default: false)
     belongs_to(:litellm_organization_table, LiteLLM.LiteLLMOrganizationTable, foreign_key: :organization_id)
     belongs_to(:litellm_model_table, LiteLLM.LiteLLMModelTable, foreign_key: :model_id, type: :id)

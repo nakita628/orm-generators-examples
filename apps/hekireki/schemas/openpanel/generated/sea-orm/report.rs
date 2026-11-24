@@ -10,8 +10,7 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "reports")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
+    pub id: Uuid,
     pub name: String,
     pub interval: Interval,
     #[sea_orm(default_value = "30d")]

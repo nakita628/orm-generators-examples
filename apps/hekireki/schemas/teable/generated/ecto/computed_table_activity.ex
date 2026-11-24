@@ -14,7 +14,7 @@ defmodule Teable.ComputedTableActivity do
           calculating_field_count: integer(),
           queued_field_count: integer(),
           estimated_complexity: integer(),
-          recent_completions: map(),
+          recent_completions: map() | list() | String.t() | number() | boolean(),
           generation: integer(),
           updated_at: DateTime.t()
         }
@@ -26,7 +26,7 @@ defmodule Teable.ComputedTableActivity do
     field(:calculating_field_count, :integer, default: 0)
     field(:queued_field_count, :integer, default: 0)
     field(:estimated_complexity, :integer, default: 0)
-    field(:recent_completions, :map)
+    field(:recent_completions, Teable.PrismaJson, default: [])
     field(:generation, :integer, default: 0)
     field(:updated_at, Teable.PrismaDateTime, autogenerate: true)
   end

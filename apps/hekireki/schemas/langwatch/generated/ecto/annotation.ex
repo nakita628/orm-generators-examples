@@ -10,7 +10,7 @@ defmodule LangWatch.Annotation do
           comment: String.t() | nil,
           is_thumbs_up: boolean() | nil,
           email: String.t() | nil,
-          score_options: map() | nil,
+          score_options: map() | list() | String.t() | number() | boolean() | nil,
           expected_output: String.t() | nil,
           anchor_kind: String.t() | nil,
           anchor_id: String.t() | nil,
@@ -27,7 +27,7 @@ defmodule LangWatch.Annotation do
     field(:comment, :string)
     field(:is_thumbs_up, :boolean, source: :isThumbsUp)
     field(:email, :string)
-    field(:score_options, :map, source: :scoreOptions)
+    field(:score_options, LangWatch.PrismaJson, source: :scoreOptions)
     field(:expected_output, :string, source: :expectedOutput)
     field(:anchor_kind, :string, source: :anchorKind)
     field(:anchor_id, :string, source: :anchorId)

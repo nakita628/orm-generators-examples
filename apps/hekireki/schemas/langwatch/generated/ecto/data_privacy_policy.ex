@@ -10,7 +10,7 @@ defmodule LangWatch.DataPrivacyPolicy do
           scope_type: atom(),
           scope_id: String.t(),
           personal_only: boolean(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -21,7 +21,7 @@ defmodule LangWatch.DataPrivacyPolicy do
     field(:scope_type, Ecto.Enum, values: [:ORGANIZATION, :DEPARTMENT, :TEAM, :PROJECT], source: :scopeType)
     field(:scope_id, :string, source: :scopeId)
     field(:personal_only, :boolean, default: false, source: :personalOnly)
-    field(:config, :map)
+    field(:config, LangWatch.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

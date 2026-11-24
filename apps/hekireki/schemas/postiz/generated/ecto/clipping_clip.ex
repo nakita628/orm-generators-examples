@@ -1,12 +1,12 @@
 defmodule Postiz.ClippingClip do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           title: String.t(),
           content: String.t(),
           start: float(),
@@ -35,7 +35,7 @@ defmodule Postiz.ClippingClip do
     field(:path, :string)
     field(:thumbnail, :string)
     field(:drafted_at, Postiz.PrismaDateTime, source: :draftedAt)
-    field(:clipping_id, :binary_id, source: :clippingId)
+    field(:clipping_id, :string, source: :clippingId)
     belongs_to(:clipping, Postiz.Clipping, foreign_key: :clipping_id, define_field: false)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

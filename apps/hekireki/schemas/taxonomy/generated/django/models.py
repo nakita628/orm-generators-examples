@@ -40,18 +40,18 @@ def now_milliseconds() -> datetime:
 
 
 class Account(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="accounts", db_column="userId", db_index=False)
-    type = models.TextField()
-    provider = models.TextField()
-    provider_account_id = models.TextField(db_column="providerAccountId")
+    type = models.CharField(max_length=191)
+    provider = models.CharField(max_length=191)
+    provider_account_id = models.CharField(max_length=191, db_column="providerAccountId")
     refresh_token = models.TextField(null=True)
     access_token = models.TextField(null=True)
     expires_at = models.IntegerField(null=True)
-    token_type = models.TextField(null=True)
-    scope = models.TextField(null=True)
+    token_type = models.CharField(max_length=191, null=True)
+    scope = models.CharField(max_length=191, null=True)
     id_token = models.TextField(null=True)
-    session_state = models.TextField(null=True)
+    session_state = models.CharField(max_length=191, null=True)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcDateTimeField(default=now_milliseconds)
 
@@ -63,8 +63,8 @@ class Account(models.Model):
 
 
 class Session(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    session_token = models.TextField(unique=True, db_column="sessionToken")
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    session_token = models.CharField(max_length=191, unique=True, db_column="sessionToken")
     user = models.ForeignKey("User", on_delete=models.CASCADE, related_name="sessions", db_column="userId", db_index=False)
     expires = UtcDateTimeField()
 
@@ -73,16 +73,16 @@ class Session(models.Model):
 
 
 class User(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    name = models.TextField(null=True)
-    email = models.TextField(null=True, unique=True)
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    name = models.CharField(max_length=191, null=True)
+    email = models.CharField(max_length=191, null=True, unique=True)
     email_verified = UtcDateTimeField(null=True, db_column="emailVerified")
-    image = models.TextField(null=True)
+    image = models.CharField(max_length=191, null=True)
     created_at = UtcDateTimeField(default=now_milliseconds)
     updated_at = UtcDateTimeField(default=now_milliseconds)
-    stripe_customer_id = models.TextField(null=True, unique=True)
-    stripe_subscription_id = models.TextField(null=True, unique=True)
-    stripe_price_id = models.TextField(null=True)
+    stripe_customer_id = models.CharField(max_length=191, null=True, unique=True)
+    stripe_subscription_id = models.CharField(max_length=191, null=True, unique=True)
+    stripe_price_id = models.CharField(max_length=191, null=True)
     stripe_current_period_end = UtcDateTimeField(null=True)
 
     class Meta:
@@ -90,8 +90,8 @@ class User(models.Model):
 
 
 class VerificationToken(models.Model):
-    identifier = models.TextField()
-    token = models.TextField(primary_key=True, default=None)
+    identifier = models.CharField(max_length=191)
+    token = models.CharField(max_length=191, primary_key=True, default=None)
     expires = UtcDateTimeField()
 
     class Meta:
@@ -102,8 +102,8 @@ class VerificationToken(models.Model):
 
 
 class Post(models.Model):
-    id = models.TextField(primary_key=True, default=cuid_str)
-    title = models.TextField()
+    id = models.CharField(max_length=191, primary_key=True, default=cuid_str)
+    title = models.CharField(max_length=191)
     content = models.JSONField(null=True)
     published = models.BooleanField(default=False)
     created_at = UtcDateTimeField(default=now_milliseconds)

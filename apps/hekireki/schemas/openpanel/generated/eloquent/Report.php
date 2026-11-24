@@ -68,6 +68,7 @@ class Report extends Model
         'funnelWindow' => 'float',
         'options' => 'array',
         'display' => 'array',
+        'visibleSeries' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

@@ -1,5 +1,6 @@
 class EmailVerificationCode < ApplicationRecord
   self.table_name = "EmailVerificationCode"
+  self.primary_key = "identifier"
 
   attribute :attempts, default: 0
   alias_attribute :created_at, :createdAt

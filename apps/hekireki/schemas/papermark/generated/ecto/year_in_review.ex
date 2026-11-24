@@ -11,7 +11,7 @@ defmodule Papermark.YearInReview do
           attempts: integer(),
           last_attempted: DateTime.t() | nil,
           error: String.t() | nil,
-          stats: map(),
+          stats: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -23,7 +23,7 @@ defmodule Papermark.YearInReview do
     field(:attempts, :integer, default: 0)
     field(:last_attempted, Papermark.PrismaDateTime, source: :lastAttempted)
     field(:error, :string)
-    field(:stats, :map)
+    field(:stats, Papermark.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

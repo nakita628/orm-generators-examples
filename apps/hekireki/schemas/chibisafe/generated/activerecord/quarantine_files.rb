@@ -1,5 +1,6 @@
 class QuarantineFiles < ApplicationRecord
   self.table_name = "quarantineFiles"
+  self.primary_key = "fileId"
 
   validates :fileId, uniqueness: true
   validates :name, presence: true

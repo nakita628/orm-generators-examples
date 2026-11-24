@@ -9,8 +9,8 @@ defmodule Postiz.MastraMcpClientVersions do
           version_number: integer(),
           name: String.t(),
           description: String.t() | nil,
-          servers: map(),
-          changed_fields: map() | nil,
+          servers: map() | list() | String.t() | number() | boolean(),
+          changed_fields: map() | list() | String.t() | number() | boolean() | nil,
           change_message: String.t() | nil,
           created_at: DateTime.t(),
           created_at_z: DateTime.t() | nil
@@ -22,8 +22,8 @@ defmodule Postiz.MastraMcpClientVersions do
     field(:version_number, :integer, source: :versionNumber)
     field(:name, :string)
     field(:description, :string)
-    field(:servers, :map)
-    field(:changed_fields, :map, source: :changedFields)
+    field(:servers, Postiz.PrismaJson)
+    field(:changed_fields, Postiz.PrismaJson, source: :changedFields)
     field(:change_message, :string, source: :changeMessage)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

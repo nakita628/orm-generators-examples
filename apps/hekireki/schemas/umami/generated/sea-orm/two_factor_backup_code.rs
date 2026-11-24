@@ -8,8 +8,7 @@ use serde::{Deserialize, Serialize};
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
     pub id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: String,
+    pub user_id: Uuid,
     pub code_hash: String,
     #[sea_orm(default_value = false)]
     pub used: bool,

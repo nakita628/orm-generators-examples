@@ -10,12 +10,12 @@ defmodule Postiz.MastraScorerDefinitionVersions do
           name: String.t(),
           description: String.t() | nil,
           type: String.t(),
-          model: map() | nil,
+          model: map() | list() | String.t() | number() | boolean() | nil,
           instructions: String.t() | nil,
-          score_range: map() | nil,
-          preset_config: map() | nil,
-          default_sampling: map() | nil,
-          changed_fields: map() | nil,
+          score_range: map() | list() | String.t() | number() | boolean() | nil,
+          preset_config: map() | list() | String.t() | number() | boolean() | nil,
+          default_sampling: map() | list() | String.t() | number() | boolean() | nil,
+          changed_fields: map() | list() | String.t() | number() | boolean() | nil,
           change_message: String.t() | nil,
           created_at: DateTime.t(),
           created_at_z: DateTime.t() | nil
@@ -28,12 +28,12 @@ defmodule Postiz.MastraScorerDefinitionVersions do
     field(:name, :string)
     field(:description, :string)
     field(:type, :string)
-    field(:model, :map)
+    field(:model, Postiz.PrismaJson)
     field(:instructions, :string)
-    field(:score_range, :map, source: :scoreRange)
-    field(:preset_config, :map, source: :presetConfig)
-    field(:default_sampling, :map, source: :defaultSampling)
-    field(:changed_fields, :map, source: :changedFields)
+    field(:score_range, Postiz.PrismaJson, source: :scoreRange)
+    field(:preset_config, Postiz.PrismaJson, source: :presetConfig)
+    field(:default_sampling, Postiz.PrismaJson, source: :defaultSampling)
+    field(:changed_fields, Postiz.PrismaJson, source: :changedFields)
     field(:change_message, :string, source: :changeMessage)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)

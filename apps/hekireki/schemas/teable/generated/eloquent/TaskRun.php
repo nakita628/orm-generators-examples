@@ -33,6 +33,7 @@ class TaskRun extends Model
     ];
 
     protected $casts = [
+        'depends_on_run_ids' => AsPrismaList::class,
         'spent' => 'integer',
         'started_time' => 'datetime',
         'created_time' => 'datetime',

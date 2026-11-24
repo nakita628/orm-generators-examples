@@ -221,6 +221,7 @@ class EventType extends Model
         'isInstantEvent' => 'boolean',
         'instantMeetingExpiryTimeOffsetInSeconds' => 'integer',
         'instantMeetingScheduleId' => 'integer',
+        'instantMeetingParameters' => AsPrismaList::class,
         'assignAllTeamMembers' => 'boolean',
         'assignRRMembersUsingSegment' => 'boolean',
         'rrSegmentQueryValue' => 'array',

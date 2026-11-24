@@ -6,13 +6,13 @@ defmodule Postiz.MastraWorkflowDefinitions do
   @type t :: %__MODULE__{
           id: String.t(),
           description: String.t() | nil,
-          metadata: map() | nil,
-          input_schema: map(),
-          output_schema: map(),
-          state_schema: map() | nil,
-          request_context_schema: map() | nil,
-          graph: map(),
-          schedule: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
+          input_schema: map() | list() | String.t() | number() | boolean(),
+          output_schema: map() | list() | String.t() | number() | boolean(),
+          state_schema: map() | list() | String.t() | number() | boolean() | nil,
+          request_context_schema: map() | list() | String.t() | number() | boolean() | nil,
+          graph: map() | list() | String.t() | number() | boolean(),
+          schedule: map() | list() | String.t() | number() | boolean() | nil,
           status: String.t(),
           source: String.t(),
           author_id: String.t() | nil,
@@ -25,13 +25,13 @@ defmodule Postiz.MastraWorkflowDefinitions do
   schema "mastra_workflow_definitions" do
     field(:id, :string, primary_key: true)
     field(:description, :string)
-    field(:metadata, :map)
-    field(:input_schema, :map, source: :inputSchema)
-    field(:output_schema, :map, source: :outputSchema)
-    field(:state_schema, :map, source: :stateSchema)
-    field(:request_context_schema, :map, source: :requestContextSchema)
-    field(:graph, :map)
-    field(:schedule, :map)
+    field(:metadata, Postiz.PrismaJson)
+    field(:input_schema, Postiz.PrismaJson, source: :inputSchema)
+    field(:output_schema, Postiz.PrismaJson, source: :outputSchema)
+    field(:state_schema, Postiz.PrismaJson, source: :stateSchema)
+    field(:request_context_schema, Postiz.PrismaJson, source: :requestContextSchema)
+    field(:graph, Postiz.PrismaJson)
+    field(:schedule, Postiz.PrismaJson)
     field(:status, :string)
     field(:source, :string)
     field(:author_id, :string, source: :authorId)

@@ -1,20 +1,20 @@
 defmodule LiteLLM.LiteLLMProjectTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true, source: :project_id}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}, source: :project_id}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           project_alias: String.t() | nil,
           description: String.t() | nil,
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           models: [String.t()],
           spend: float(),
-          model_spend: map(),
-          model_rpm_limit: map(),
-          model_tpm_limit: map(),
+          model_spend: map() | list() | String.t() | number() | boolean(),
+          model_rpm_limit: map() | list() | String.t() | number() | boolean(),
+          model_tpm_limit: map() | list() | String.t() | number() | boolean(),
           blocked: boolean(),
           created_by: String.t(),
           updated_by: String.t(),
@@ -29,12 +29,12 @@ defmodule LiteLLM.LiteLLMProjectTable do
   schema "LiteLLM_ProjectTable" do
     field(:project_alias, :string)
     field(:description, :string)
-    field(:metadata, :map, default: %{})
+    field(:metadata, LiteLLM.PrismaJson, default: %{})
     field(:models, {:array, :string})
     field(:spend, :float, default: 0.0)
-    field(:model_spend, :map, default: %{})
-    field(:model_rpm_limit, :map, default: %{})
-    field(:model_tpm_limit, :map, default: %{})
+    field(:model_spend, LiteLLM.PrismaJson, default: %{})
+    field(:model_rpm_limit, LiteLLM.PrismaJson, default: %{})
+    field(:model_tpm_limit, LiteLLM.PrismaJson, default: %{})
     field(:blocked, :boolean, default: false)
     field(:created_by, :string)
     field(:updated_by, :string)

@@ -22,8 +22,8 @@ defmodule Teable.ComputedFieldActivity do
           started_at: DateTime.t() | nil,
           last_completed_at: DateTime.t() | nil,
           last_duration_ms: integer() | nil,
-          last_error: map() | nil,
-          extensions: map() | nil,
+          last_error: map() | list() | String.t() | number() | boolean() | nil,
+          extensions: map() | list() | String.t() | number() | boolean() | nil,
           updated_at: DateTime.t()
         }
 
@@ -42,8 +42,8 @@ defmodule Teable.ComputedFieldActivity do
     field(:started_at, Teable.PrismaDateTime)
     field(:last_completed_at, Teable.PrismaDateTime)
     field(:last_duration_ms, :integer)
-    field(:last_error, :map)
-    field(:extensions, :map)
+    field(:last_error, Teable.PrismaJson)
+    field(:extensions, Teable.PrismaJson)
     field(:updated_at, Teable.PrismaDateTime, autogenerate: true)
   end
 end

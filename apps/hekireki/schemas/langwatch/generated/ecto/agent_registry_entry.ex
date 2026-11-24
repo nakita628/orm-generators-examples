@@ -18,7 +18,7 @@ defmodule LangWatch.AgentRegistryEntry do
           status: String.t(),
           version: integer(),
           fingerprint: String.t(),
-          entry: map(),
+          entry: map() | list() | String.t() | number() | boolean(),
           first_seen_at: DateTime.t(),
           last_seen_at: DateTime.t() | nil,
           removed_at: DateTime.t() | nil,
@@ -35,7 +35,7 @@ defmodule LangWatch.AgentRegistryEntry do
     field(:status, :string)
     field(:version, :integer)
     field(:fingerprint, :string)
-    field(:entry, :map)
+    field(:entry, LangWatch.PrismaJson)
     field(:first_seen_at, LangWatch.PrismaDateTime, source: :firstSeenAt)
     field(:last_seen_at, LangWatch.PrismaDateTime, source: :lastSeenAt)
     field(:removed_at, LangWatch.PrismaDateTime, source: :removedAt)

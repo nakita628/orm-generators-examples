@@ -7,10 +7,9 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "insight_events")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_name = "insightId", column_type = "Uuid")]
-    pub insight_id: String,
+    pub id: Uuid,
+    #[sea_orm(column_name = "insightId")]
+    pub insight_id: Uuid,
     #[sea_orm(column_name = "eventKind")]
     pub event_kind: String,
     #[sea_orm(column_name = "changeFrom")]

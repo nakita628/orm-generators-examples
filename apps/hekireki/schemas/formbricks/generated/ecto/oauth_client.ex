@@ -36,7 +36,7 @@ defmodule Formbricks.OauthClient do
           type: String.t() | nil,
           require_pkce: boolean() | nil,
           reference_id: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           client_discovery_id: String.t() | nil,
           client_credentials_scopes: [String.t()],
           backchannel_logout_uri: String.t() | nil,
@@ -84,7 +84,7 @@ defmodule Formbricks.OauthClient do
     field(:type, :string)
     field(:require_pkce, :boolean, source: :requirePKCE)
     field(:reference_id, :string, source: :referenceId)
-    field(:metadata, :map)
+    field(:metadata, Formbricks.PrismaJson)
     # Better Auth 1.7 (ENG-2343).
     field(:client_discovery_id, :string, source: :clientDiscoveryId)
     field(:client_credentials_scopes, {:array, :string}, source: :clientCredentialsScopes)

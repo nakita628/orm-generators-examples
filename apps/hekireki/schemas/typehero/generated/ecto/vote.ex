@@ -15,12 +15,12 @@ defmodule TypeHero.Vote do
 
   schema "Vote" do
     field(:root_type, Ecto.Enum, values: [:CHALLENGE, :COMMENT, :SUBMISSION, :SHAREDSOLUTION], source: :rootType)
-    field(:user_id, :binary_id, source: :userId)
+    field(:user_id, :string, source: :userId)
     field(:challenge_id, :id, source: :challengeId)
     field(:comment_id, :id, source: :commentId)
     field(:submission_id, :id, source: :submissionId)
     field(:shared_solution_id, :id, source: :sharedSolutionId)
-    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :binary_id)
+    belongs_to(:user, TypeHero.User, foreign_key: :user_id, define_field: false, type: :string)
     belongs_to(:challenge, TypeHero.Challenge, foreign_key: :challenge_id, define_field: false)
     belongs_to(:comment, TypeHero.Comment, foreign_key: :comment_id, define_field: false)
     belongs_to(:submission, TypeHero.Submission, foreign_key: :submission_id, define_field: false)

@@ -28,6 +28,12 @@ class FunctionsServer extends Model
         'profileBuilders',
     ];
 
+    protected $casts = [
+        'connections' => AsPrismaList::class,
+        'emptyConnections' => AsPrismaList::class,
+        'profileBuilders' => AsPrismaList::class,
+    ];
+
     public function getKey()
     {
         $key = [];

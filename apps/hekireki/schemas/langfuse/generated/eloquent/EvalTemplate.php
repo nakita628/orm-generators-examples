@@ -40,6 +40,7 @@ class EvalTemplate extends \Illuminate\Database\Eloquent\Model
         'version' => 'integer',
         'type' => EvalTemplateType::class,
         'model_params' => 'array',
+        'vars' => AsPrismaList::class,
         'output_schema' => 'array',
         'source_code_language' => EvalTemplateSourceCodeLanguage::class,
     ];

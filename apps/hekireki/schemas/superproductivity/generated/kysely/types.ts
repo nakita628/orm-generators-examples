@@ -13,28 +13,48 @@ export interface User {
   password_hash: string | null
   is_verified: Generated<number>
   verification_token: string | null
-  verification_token_expires_at: bigint | null
+  verification_token_expires_at: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
   verification_resend_count: Generated<number>
   reset_password_token: string | null
-  reset_password_token_expires_at: bigint | null
+  reset_password_token_expires_at: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
   passkey_recovery_token: string | null
-  passkey_recovery_token_expires_at: bigint | null
+  passkey_recovery_token_expires_at: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
   login_token: string | null
-  login_token_expires_at: bigint | null
+  login_token_expires_at: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
   failed_login_attempts: Generated<number>
-  locked_until: bigint | null
+  locked_until: ColumnType<string, bigint | number | string, bigint | number | string> | null
   token_version: Generated<number>
-  terms_accepted_at: bigint | null
+  terms_accepted_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
   created_at: Generated<Timestamp>
-  storage_quota_bytes: Generated<bigint>
-  storage_used_bytes: Generated<bigint>
+  storage_quota_bytes: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
+  storage_used_bytes: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
 }
 
 export interface Passkey {
   id: string
   credential_id: Buffer
   public_key: Buffer
-  counter: Generated<bigint>
+  counter: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   transports: string | null
   created_at: Generated<Timestamp>
   last_used_at: Timestamp | null
@@ -44,10 +64,14 @@ export interface Passkey {
 export interface PendingPasskeyRegistration {
   id: string
   verification_token: string
-  verification_token_expires_at: bigint
+  verification_token_expires_at: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  >
   credential_id: Buffer
   public_key: Buffer
-  counter: Generated<bigint>
+  counter: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   transports: string | null
   created_at: Generated<Timestamp>
   user_id: number
@@ -64,11 +88,11 @@ export interface Operation {
   entity_id: string | null
   entity_ids: Generated<string[]>
   payload: unknown
-  payload_bytes: Generated<bigint>
+  payload_bytes: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   vector_clock: unknown
   schema_version: number
-  client_timestamp: bigint
-  received_at: bigint
+  client_timestamp: ColumnType<string, bigint | number | string, bigint | number | string>
+  received_at: ColumnType<string, bigint | number | string, bigint | number | string>
   is_payload_encrypted: Generated<boolean>
   sync_import_reason: string | null
   repair_base_server_seq: number | null
@@ -79,7 +103,7 @@ export interface UserSyncState {
   last_seq: Generated<number>
   last_snapshot_seq: number | null
   snapshot_data: Buffer | null
-  snapshot_at: bigint | null
+  snapshot_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
   snapshot_schema_version: Generated<number | null>
   latest_full_state_seq: number | null
   latest_full_state_vector_clock: unknown
@@ -96,10 +120,10 @@ export interface SyncDevice {
    * it does. Read by the checkpoint gate (#9962); never shown to users.
    */
   app_version: string | null
-  last_seen_at: bigint
+  last_seen_at: ColumnType<string, bigint | number | string, bigint | number | string>
   /** Reserved: written once at device registration, never read or updated. */
   last_acked_seq: Generated<number>
-  created_at: bigint
+  created_at: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 /**
@@ -111,8 +135,8 @@ export interface CaptureKey {
   /** Base64 SPKI DER of an ECDH P-256 public key. */
   public_key: string
   fingerprint: string
-  created_at: bigint
-  disabled_at: bigint | null
+  created_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  disabled_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
 }
 
 /** Capture tokens and OAuth grants store only hashes of bearer credentials. */
@@ -122,16 +146,16 @@ export interface CaptureGrant {
   kind: string
   client_name: string
   secret_hash: string
-  created_at: bigint
-  expires_at: bigint
-  last_used_at: bigint | null
-  revoked_at: bigint | null
+  created_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  expires_at: ColumnType<string, bigint | number | string, bigint | number | string>
+  last_used_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  revoked_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
   client_id: string | null
   resource: string | null
   refresh_hash: string | null
   prev_refresh_hash: string | null
-  rotated_at: bigint | null
-  refresh_expires_at: bigint | null
+  rotated_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
+  refresh_expires_at: ColumnType<string, bigint | number | string, bigint | number | string> | null
 }
 
 /**
@@ -145,16 +169,16 @@ export interface CaptureItem {
   ciphertext: string
   /** Task id the claiming device must use; replaced when another device takes over. */
   task_id: string
-  created_at: bigint
+  created_at: ColumnType<string, bigint | number | string, bigint | number | string>
   lease_device_id: string | null
-  lease_until: bigint | null
+  lease_until: ColumnType<string, bigint | number | string, bigint | number | string> | null
 }
 
 export interface CaptureConnectCode {
   user_id: number
   code_hash: string
   token_version: number
-  expires_at: bigint
+  expires_at: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 export interface CaptureAuth {
@@ -169,7 +193,7 @@ export interface CaptureAuth {
   scope: string
   code_hash: string | null
   token_version: number | null
-  expires_at: bigint
+  expires_at: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 export interface ConnectRequest {
@@ -181,7 +205,7 @@ export interface ConnectRequest {
   status: Generated<string>
   user_id: number | null
   token_version: number | null
-  expires_at: bigint
+  expires_at: ColumnType<string, bigint | number | string, bigint | number | string>
 }
 
 export interface DB {

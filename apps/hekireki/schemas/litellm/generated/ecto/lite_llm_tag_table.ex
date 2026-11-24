@@ -8,7 +8,7 @@ defmodule LiteLLM.LiteLLMTagTable do
           tag_name: String.t(),
           description: String.t() | nil,
           models: [String.t()],
-          model_info: map() | nil,
+          model_info: map() | list() | String.t() | number() | boolean() | nil,
           spend: float(),
           created_by: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -20,10 +20,10 @@ defmodule LiteLLM.LiteLLMTagTable do
     field(:tag_name, :string, primary_key: true)
     field(:description, :string)
     field(:models, {:array, :string})
-    field(:model_info, :map)
+    field(:model_info, LiteLLM.PrismaJson)
     field(:spend, :float, default: 0.0)
     field(:created_by, :string)
-    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :binary_id)
+    belongs_to(:litellm_budget_table, LiteLLM.LiteLLMBudgetTable, foreign_key: :budget_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end
 end

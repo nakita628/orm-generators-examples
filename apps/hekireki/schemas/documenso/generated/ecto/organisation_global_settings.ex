@@ -20,17 +20,17 @@ defmodule Documenso.OrganisationGlobalSettings do
           typed_signature_enabled: boolean(),
           upload_signature_enabled: boolean(),
           draw_signature_enabled: boolean(),
-          default_recipients: map() | nil,
+          default_recipients: map() | list() | String.t() | number() | boolean() | nil,
           email_reply_to: String.t() | nil,
-          email_document_settings: map(),
+          email_document_settings: map() | list() | String.t() | number() | boolean(),
           branding_enabled: boolean(),
           branding_logo: String.t(),
           branding_url: String.t(),
           branding_company_details: String.t(),
-          branding_colors: map() | nil,
+          branding_colors: map() | list() | String.t() | number() | boolean() | nil,
           branding_css: String.t(),
-          envelope_expiration_period: map() | nil,
-          reminder_settings: map() | nil,
+          envelope_expiration_period: map() | list() | String.t() | number() | boolean() | nil,
+          reminder_settings: map() | list() | String.t() | number() | boolean() | nil,
           ai_features_enabled: boolean(),
           email: Documenso.OrganisationEmail.t() | nil,
           organisation: Documenso.Organisation.t() | nil
@@ -50,21 +50,21 @@ defmodule Documenso.OrganisationGlobalSettings do
     field(:upload_signature_enabled, :boolean, default: true, source: :uploadSignatureEnabled)
     field(:draw_signature_enabled, :boolean, default: true, source: :drawSignatureEnabled)
     # [DefaultRecipient[]] @zod.custom.use(ZDefaultRecipientsSchema)
-    field(:default_recipients, :map, source: :defaultRecipients)
+    field(:default_recipients, Documenso.PrismaJson, source: :defaultRecipients)
     field(:email_reply_to, :string, source: :emailReplyTo)
     # [DocumentEmailSettings] @zod.custom.use(ZDocumentEmailSettingsSchema)
-    field(:email_document_settings, :map, source: :emailDocumentSettings)
+    field(:email_document_settings, Documenso.PrismaJson, source: :emailDocumentSettings)
     field(:branding_enabled, :boolean, default: false, source: :brandingEnabled)
     field(:branding_logo, :string, default: "", source: :brandingLogo)
     field(:branding_url, :string, default: "", source: :brandingUrl)
     field(:branding_company_details, :string, default: "", source: :brandingCompanyDetails)
     # [TCssVarsSchema] @zod.custom.use(ZCssVarsSchema)
-    field(:branding_colors, :map, source: :brandingColors)
+    field(:branding_colors, Documenso.PrismaJson, source: :brandingColors)
     field(:branding_css, :string, default: "", source: :brandingCss)
     # [EnvelopeExpirationPeriod] @zod.custom.use(ZEnvelopeExpirationPeriodSchema)
-    field(:envelope_expiration_period, :map, source: :envelopeExpirationPeriod)
+    field(:envelope_expiration_period, Documenso.PrismaJson, source: :envelopeExpirationPeriod)
     # [EnvelopeReminderSettings] @zod.custom.use(ZEnvelopeReminderSettingsSchema)
-    field(:reminder_settings, :map, source: :reminderSettings)
+    field(:reminder_settings, Documenso.PrismaJson, source: :reminderSettings)
     field(:ai_features_enabled, :boolean, default: false, source: :aiFeaturesEnabled)
     field(:email_id, :string, source: :emailId)
     belongs_to(:email, Documenso.OrganisationEmail, foreign_key: :email_id, define_field: false, type: :string)

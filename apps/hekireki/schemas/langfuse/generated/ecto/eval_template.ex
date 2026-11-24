@@ -13,9 +13,9 @@ defmodule Langfuse.EvalTemplate do
           partner: String.t() | nil,
           model: String.t() | nil,
           provider: String.t() | nil,
-          model_params: map() | nil,
+          model_params: map() | list() | String.t() | number() | boolean() | nil,
           vars: [String.t()],
-          output_definition: map() | nil,
+          output_definition: map() | list() | String.t() | number() | boolean() | nil,
           source_code: String.t() | nil,
           source_code_language: atom() | nil,
           inserted_at: DateTime.t(),
@@ -33,9 +33,9 @@ defmodule Langfuse.EvalTemplate do
     field(:partner, :string)
     field(:model, :string)
     field(:provider, :string)
-    field(:model_params, :map)
+    field(:model_params, Langfuse.PrismaJson)
     field(:vars, {:array, :string})
-    field(:output_definition, :map, source: :output_schema)
+    field(:output_definition, Langfuse.PrismaJson, source: :output_schema)
     field(:source_code, :string)
     field(:source_code_language, Ecto.Enum, values: [:PYTHON, :TYPESCRIPT])
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)

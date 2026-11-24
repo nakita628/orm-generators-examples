@@ -27,6 +27,10 @@ class Deployment extends Model
         'agreedLicenseAt',
     ];
 
+    protected $attributes = [
+        'id' => 1,
+    ];
+
     protected $casts = [
         'theme' => 'array',
         'agreedLicenseAt' => 'datetime',

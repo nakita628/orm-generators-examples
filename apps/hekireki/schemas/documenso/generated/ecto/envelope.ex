@@ -22,8 +22,8 @@ defmodule Documenso.Envelope do
           signature_level: String.t(),
           internal_version: integer(),
           use_legacy_field_insertion: boolean(),
-          auth_options: map() | nil,
-          form_values: map() | nil,
+          auth_options: map() | list() | String.t() | number() | boolean() | nil,
+          form_values: map() | list() | String.t() | number() | boolean() | nil,
           visibility: atom(),
           template_type: atom(),
           public_title: String.t(),
@@ -63,9 +63,9 @@ defmodule Documenso.Envelope do
     field(:internal_version, :integer, source: :internalVersion)
     field(:use_legacy_field_insertion, :boolean, default: false, source: :useLegacyFieldInsertion)
     # [DocumentAuthOptions] @zod.custom.use(ZDocumentAuthOptionsSchema)
-    field(:auth_options, :map, source: :authOptions)
+    field(:auth_options, Documenso.PrismaJson, source: :authOptions)
     # [DocumentFormValues] @zod.custom.use(ZDocumentFormValuesSchema)
-    field(:form_values, :map, source: :formValues)
+    field(:form_values, Documenso.PrismaJson, source: :formValues)
     field(:visibility, Ecto.Enum, values: [:EVERYONE, :MANAGER_AND_ABOVE, :ADMIN], default: :EVERYONE)
     field(:template_type, Ecto.Enum, values: [:PUBLIC, :PRIVATE, :ORGANISATION], default: :PRIVATE, source: :templateType)
     field(:public_title, :string, default: "", source: :publicTitle)

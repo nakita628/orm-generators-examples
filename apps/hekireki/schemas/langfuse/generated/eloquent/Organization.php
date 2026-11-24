@@ -46,6 +46,7 @@ class Organization extends \Illuminate\Database\Eloquent\Model
         'ai_features_enabled' => 'boolean',
         'ai_telemetry_enabled' => 'boolean',
         'access_audit_log_enabled' => 'boolean',
+        'feature_flag_org_defaults' => AsPrismaList::class,
     ];
 
     public function save(array $options = [])

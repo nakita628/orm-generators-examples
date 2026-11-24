@@ -6,7 +6,7 @@ defmodule Shelf.AssetCustomFieldValue do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           asset: Shelf.Asset.t() | nil,
@@ -15,7 +15,7 @@ defmodule Shelf.AssetCustomFieldValue do
 
   schema "AssetCustomFieldValue" do
     field(:id, :string, primary_key: true)
-    field(:value, :map)
+    field(:value, Shelf.PrismaJson)
     field(:asset_id, :string, source: :assetId)
     field(:custom_field_id, :string, source: :customFieldId)
     belongs_to(:asset, Shelf.Asset, foreign_key: :asset_id, define_field: false, type: :string)

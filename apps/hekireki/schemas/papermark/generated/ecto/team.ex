@@ -21,21 +21,21 @@ defmodule Papermark.Team do
           trial_ends_at: DateTime.t() | nil,
           trial_reminder_run_id: String.t() | nil,
           trial_expired_run_id: String.t() | nil,
-          limits: map() | nil,
+          limits: map() | list() | String.t() | number() | boolean() | nil,
           enable_excel_advanced_mode: boolean(),
           replicate_dataroom_folders: boolean(),
           timezone: String.t(),
           sso_enabled: boolean(),
           sso_email_domain: String.t() | nil,
           sso_enforced_at: DateTime.t() | nil,
-          survey_data: map() | nil,
+          survey_data: map() | list() | String.t() | number() | boolean() | nil,
           agents_enabled: boolean(),
           vector_store_id: String.t() | nil,
           ignored_domains: [String.t()],
           global_block_list: [String.t()],
           referral_track: atom() | nil,
           referral_track_selected_at: DateTime.t() | nil,
-          referral_profile: map() | nil,
+          referral_profile: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           default_brand: Papermark.Brand.t() | nil,
@@ -92,21 +92,21 @@ defmodule Papermark.Team do
     field(:trial_ends_at, Papermark.PrismaDateTime, source: :trialEndsAt)
     field(:trial_reminder_run_id, :string, source: :trialReminderRunId)
     field(:trial_expired_run_id, :string, source: :trialExpiredRunId)
-    field(:limits, :map)
+    field(:limits, Papermark.PrismaJson)
     field(:enable_excel_advanced_mode, :boolean, default: false, source: :enableExcelAdvancedMode)
     field(:replicate_dataroom_folders, :boolean, default: true, source: :replicateDataroomFolders)
     field(:timezone, :string, default: "Etc/UTC")
     field(:sso_enabled, :boolean, default: false, source: :ssoEnabled)
     field(:sso_email_domain, :string, source: :ssoEmailDomain)
     field(:sso_enforced_at, Papermark.PrismaDateTime, source: :ssoEnforcedAt)
-    field(:survey_data, :map, source: :surveyData)
+    field(:survey_data, Papermark.PrismaJson, source: :surveyData)
     field(:agents_enabled, :boolean, default: false, source: :agentsEnabled)
     field(:vector_store_id, :string, source: :vectorStoreId)
     field(:ignored_domains, {:array, :string}, source: :ignoredDomains)
     field(:global_block_list, {:array, :string}, source: :globalBlockList)
     field(:referral_track, Ecto.Enum, values: [:AFFILIATE, :PARTNER_DISCOUNT], source: :referralTrack)
     field(:referral_track_selected_at, Papermark.PrismaDateTime, source: :referralTrackSelectedAt)
-    field(:referral_profile, :map, source: :referralProfile)
+    field(:referral_profile, Papermark.PrismaJson, source: :referralProfile)
     field(:default_brand_id, :string, source: :defaultBrandId)
     belongs_to(:default_brand, Papermark.Brand, foreign_key: :default_brand_id, define_field: false, type: :string)
     has_many(:users, Papermark.UserTeam, foreign_key: :team_id, references: :id)

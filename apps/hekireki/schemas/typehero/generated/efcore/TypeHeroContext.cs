@@ -177,7 +177,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Url).HasColumnName("url");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -217,7 +217,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.BanReason).HasColumnName("banReason");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -292,7 +292,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -408,7 +408,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -446,7 +446,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Code).HasColumnName("code");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -482,7 +482,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.ChallengeId).HasColumnName("challengeId");
             entity.Property(e => e.CreatedAt)
                 .ValueGeneratedNever()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -556,7 +556,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.ModeratorId).HasColumnName("moderatorId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -627,7 +627,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.RootSolutionId).HasColumnName("rootSolutionId");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -672,7 +672,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Url).HasColumnName("url");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -791,7 +791,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.StripeCheckoutSessionId).HasColumnName("stripeCheckoutSessionId");
             entity.Property(e => e.CreatedAt)
                 .ValueGeneratedNever()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -821,7 +821,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");
@@ -888,7 +888,7 @@ public partial class TypeHeroContext : DbContext
             entity.Property(e => e.ShortUrlSlug).HasColumnName("shortUrlSlug");
             entity.Property(e => e.CreatedAt)
                 .HasValueGenerator<UtcNowGenerator>()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasDefaultValueSql("CURRENT_TIMESTAMP(3)")
                 .HasConversion<UtcClockConverter>()
                 .HasColumnType("datetime(3)")
                 .HasColumnName("createdAt");

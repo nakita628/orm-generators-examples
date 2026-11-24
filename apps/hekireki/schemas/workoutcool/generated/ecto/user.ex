@@ -19,7 +19,7 @@ defmodule WorkoutCool.User do
           ban_reason: String.t() | nil,
           ban_expires: DateTime.t() | nil,
           is_premium: boolean() | nil,
-          onboarding_preferences: map() | nil,
+          onboarding_preferences: map() | list() | String.t() | number() | boolean() | nil,
           sessions: [WorkoutCool.Session.t()],
           accounts: [WorkoutCool.Account.t()],
           feedbacks: [WorkoutCool.Feedbacks.t()],
@@ -46,7 +46,7 @@ defmodule WorkoutCool.User do
     field(:ban_reason, :string, source: :banReason)
     field(:ban_expires, WorkoutCool.PrismaDateTime, source: :banExpires)
     field(:is_premium, :boolean, default: false, source: :isPremium)
-    field(:onboarding_preferences, :map, source: :onboardingPreferences)
+    field(:onboarding_preferences, WorkoutCool.PrismaJson, source: :onboardingPreferences)
     has_many(:sessions, WorkoutCool.Session, foreign_key: :user_id, references: :id)
     has_many(:accounts, WorkoutCool.Account, foreign_key: :user_id, references: :id)
     has_many(:feedbacks, WorkoutCool.Feedbacks, foreign_key: :user_id, references: :id)

@@ -6,7 +6,7 @@ defmodule Rallly.UserNotificationPreferences do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          prefs: map(),
+          prefs: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           user: Rallly.User.t() | nil
@@ -14,7 +14,7 @@ defmodule Rallly.UserNotificationPreferences do
 
   schema "user_notification_preferences" do
     field(:id, :string, primary_key: true)
-    field(:prefs, :map, default: %{})
+    field(:prefs, Rallly.PrismaJson, default: %{})
     belongs_to(:user, Rallly.User, foreign_key: :user_id, type: :string)
     timestamps(inserted_at_source: :created_at)
   end

@@ -22,14 +22,14 @@ defmodule Formbricks.Response do
           id: String.t(),
           finished: boolean(),
           ending_id: String.t() | nil,
-          data: map(),
-          variables: map(),
-          ttc: map(),
-          meta: map(),
-          ingest_flags: map() | nil,
+          data: map() | list() | String.t() | number() | boolean(),
+          variables: map() | list() | String.t() | number() | boolean(),
+          ttc: map() | list() | String.t() | number() | boolean(),
+          meta: map() | list() | String.t() | number() | boolean(),
+          ingest_flags: map() | list() | String.t() | number() | boolean() | nil,
           outcome: atom() | nil,
-          not_shown: map() | nil,
-          contact_attributes: map() | nil,
+          not_shown: map() | list() | String.t() | number() | boolean() | nil,
+          contact_attributes: map() | list() | String.t() | number() | boolean() | nil,
           single_use_id: String.t() | nil,
           language: String.t() | nil,
           inserted_at: DateTime.t(),
@@ -47,20 +47,20 @@ defmodule Formbricks.Response do
     field(:finished, :boolean, default: false)
     field(:ending_id, :string, source: :endingId)
     # [ResponseData]
-    field(:data, :map, default: %{})
+    field(:data, Formbricks.PrismaJson, default: %{})
     # [ResponseVariables]
-    field(:variables, :map, default: %{})
+    field(:variables, Formbricks.PrismaJson, default: %{})
     # [ResponseTtc]
-    field(:ttc, :map, default: %{})
+    field(:ttc, Formbricks.PrismaJson, default: %{})
     # [ResponseMeta]
-    field(:meta, :map, default: %{})
+    field(:meta, Formbricks.PrismaJson, default: %{})
     # Why a value in `data` will not read back as its declared Embedded Data type — a failed coercion
     # or a truncated oversize value (ENG-1845). Server-computed on every ingest and never accepted
     # from the client. Null means no ingest boundary has written it, which is not the same claim as
     # an empty list: without this column a wrong-typed value is indistinguishable from an absent one,
     # and surfacing that in the UI (v2) would have nothing to read.
     # [ResponseIngestFlags]
-    field(:ingest_flags, :map)
+    field(:ingest_flags, Formbricks.PrismaJson)
     # A reviewer's verdict on the response; null means none. `lowQuality` hides it from the Analysis
     # export by default and from Feedback Records, and nothing else: it is never deleted and every
     # count, list, webhook and integration still includes it (ENG-6780).
@@ -71,9 +71,9 @@ defmodule Formbricks.Response do
     # Omitted from reads without a `select` (PRISMA_GLOBAL_OMIT), so it never reaches a v1/v2 payload,
     # webhook or integration.
     # [ResponseNotShown]
-    field(:not_shown, :map)
+    field(:not_shown, Formbricks.PrismaJson)
     # [ResponseContactAttributes]
-    field(:contact_attributes, :map, source: :contactAttributes)
+    field(:contact_attributes, Formbricks.PrismaJson, source: :contactAttributes)
     field(:single_use_id, :string, source: :singleUseId)
     field(:language, :string)
     field(:survey_id, :string, source: :surveyId)

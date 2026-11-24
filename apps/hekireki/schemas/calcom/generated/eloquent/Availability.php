@@ -26,6 +26,7 @@ class Availability extends Model
     protected $casts = [
         'userId' => 'integer',
         'eventTypeId' => 'integer',
+        'days' => AsPrismaList::class . ':int',
         'startTime' => AsPrismaTime::class,
         'endTime' => AsPrismaTime::class,
         'date' => AsPrismaDate::class,

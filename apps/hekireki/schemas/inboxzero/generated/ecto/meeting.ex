@@ -10,12 +10,12 @@ defmodule InboxZero.Meeting do
           event_title: String.t(),
           start_time: DateTime.t(),
           end_time: DateTime.t(),
-          attendees: map(),
+          attendees: map() | list() | String.t() | number() | boolean(),
           organizer_email: String.t() | nil,
           join_override: boolean() | nil,
           processing_status: atom(),
           processing_attempts: integer(),
-          summary: map() | nil,
+          summary: map() | list() | String.t() | number() | boolean() | nil,
           follow_up_draft_started_at: DateTime.t() | nil,
           follow_up_draft_id: String.t() | nil,
           recap_sent_at: DateTime.t() | nil,
@@ -31,12 +31,12 @@ defmodule InboxZero.Meeting do
     field(:event_title, :string, source: :eventTitle)
     field(:start_time, InboxZero.PrismaDateTime, source: :startTime)
     field(:end_time, InboxZero.PrismaDateTime, source: :endTime)
-    field(:attendees, :map)
+    field(:attendees, InboxZero.PrismaJson)
     field(:organizer_email, :string, source: :organizerEmail)
     field(:join_override, :boolean, source: :joinOverride)
     field(:processing_status, Ecto.Enum, values: [:PENDING, :PROCESSING, :COMPLETED, :FAILED], default: :PENDING, source: :processingStatus)
     field(:processing_attempts, :integer, default: 0, source: :processingAttempts)
-    field(:summary, :map)
+    field(:summary, InboxZero.PrismaJson)
     field(:follow_up_draft_started_at, InboxZero.PrismaDateTime, source: :followUpDraftStartedAt)
     field(:follow_up_draft_id, :string, source: :followUpDraftId)
     field(:recap_sent_at, InboxZero.PrismaDateTime, source: :recapSentAt)

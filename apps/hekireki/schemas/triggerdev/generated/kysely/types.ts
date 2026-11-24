@@ -753,7 +753,9 @@ export interface Alert {
   stoppedBy: string | null
   lastOccurrenceAt: Timestamp | null
   occurrencesSinceRaise: Generated<number>
-  occurrencesTotal: Generated<bigint>
+  occurrencesTotal: Generated<
+    ColumnType<string, bigint | number | string, bigint | number | string>
+  >
   groupId: string | null
 }
 
@@ -1338,9 +1340,9 @@ export interface TaskEvent {
   links: unknown
   events: unknown
   /** This is the time the event started in nanoseconds since the epoch */
-  startTime: bigint
+  startTime: ColumnType<string, bigint | number | string, bigint | number | string>
   /** This is the duration of the event in nanoseconds */
-  duration: Generated<bigint>
+  duration: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   attemptId: string | null
   attemptNumber: number | null
   environmentId: string
@@ -1682,8 +1684,10 @@ export interface ProjectAlertChannel {
   type: ProjectAlertChannelType
   name: string
   properties: unknown
-  alertTypes: ProjectAlertType[]
-  environmentTypes: Generated<RuntimeEnvironmentType[]>
+  alertTypes: ColumnType<string, ProjectAlertType[], ProjectAlertType[]>
+  environmentTypes: Generated<
+    ColumnType<string, RuntimeEnvironmentType[], RuntimeEnvironmentType[]>
+  >
   errorAlertConfig: unknown
   projectId: string
   createdAt: Generated<Timestamp>
@@ -1822,9 +1826,9 @@ export interface TaskEventPartitioned {
   links: unknown
   events: unknown
   /** This is the time the event started in nanoseconds since the epoch */
-  startTime: bigint
+  startTime: ColumnType<string, bigint | number | string, bigint | number | string>
   /** This is the duration of the event in nanoseconds */
-  duration: Generated<bigint>
+  duration: Generated<ColumnType<string, bigint | number | string, bigint | number | string>>
   attemptId: string | null
   attemptNumber: number | null
   environmentId: string
@@ -1866,8 +1870,8 @@ export interface TaskEventPartitioned {
 
 export interface GithubAppInstallation {
   id: string
-  appInstallationId: bigint
-  targetId: bigint
+  appInstallationId: ColumnType<string, bigint | number | string, bigint | number | string>
+  targetId: ColumnType<string, bigint | number | string, bigint | number | string>
   targetType: string
   accountHandle: string
   permissions: unknown
@@ -1883,7 +1887,7 @@ export interface GithubAppInstallation {
 
 export interface GithubRepository {
   id: string
-  githubId: bigint
+  githubId: ColumnType<string, bigint | number | string, bigint | number | string>
   name: string
   fullName: string
   htmlUrl: string
@@ -2141,7 +2145,11 @@ export interface ErrorGroupState {
    * Total occurrence count at the time the error was ignored (from ClickHouse).
    * Used with ignoredUntilTotalOccurrences to compute occurrences since ignoring.
    */
-  ignoredAtOccurrenceCount: bigint | null
+  ignoredAtOccurrenceCount: ColumnType<
+    string,
+    bigint | number | string,
+    bigint | number | string
+  > | null
   /**
    * *
    * * Error was ignored at this date

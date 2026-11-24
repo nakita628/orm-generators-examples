@@ -8,8 +8,8 @@ defmodule Langfuse.AutomationExecution do
           id: String.t(),
           source_id: String.t(),
           status: atom(),
-          input: map(),
-          output: map() | nil,
+          input: map() | list() | String.t() | number() | boolean(),
+          output: map() | list() | String.t() | number() | boolean() | nil,
           started_at: DateTime.t() | nil,
           finished_at: DateTime.t() | nil,
           error: String.t() | nil,
@@ -25,8 +25,8 @@ defmodule Langfuse.AutomationExecution do
     field(:id, :string, primary_key: true)
     field(:source_id, :string)
     field(:status, Ecto.Enum, values: [:COMPLETED, :ERROR, :PENDING, :CANCELLED], default: :PENDING)
-    field(:input, :map)
-    field(:output, :map)
+    field(:input, Langfuse.PrismaJson)
+    field(:output, Langfuse.PrismaJson)
     field(:started_at, Langfuse.PrismaDateTime)
     field(:finished_at, Langfuse.PrismaDateTime)
     field(:error, :string)

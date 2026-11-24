@@ -42,6 +42,7 @@ class Passkey extends Model
         'credentialPublicKey' => AsBytes::class,
         'counter' => 'integer',
         'credentialBackedUp' => 'boolean',
+        'transports' => AsPrismaList::class,
     ];
 
     public function user(): BelongsTo

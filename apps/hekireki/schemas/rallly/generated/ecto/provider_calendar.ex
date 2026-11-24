@@ -13,7 +13,7 @@ defmodule Rallly.ProviderCalendar do
           is_selected: boolean(),
           is_deleted: boolean(),
           is_writable: boolean(),
-          provider_data: map() | nil,
+          provider_data: map() | list() | String.t() | number() | boolean() | nil,
           last_synced_at: DateTime.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -30,7 +30,7 @@ defmodule Rallly.ProviderCalendar do
     field(:is_selected, :boolean, default: false, source: :selected)
     field(:is_deleted, :boolean, default: false, source: :deleted)
     field(:is_writable, :boolean, default: false, source: :writable)
-    field(:provider_data, :map)
+    field(:provider_data, Rallly.PrismaJson)
     field(:last_synced_at, Rallly.PrismaDateTime, autogenerate: true)
     belongs_to(:calendar_connection, Rallly.CalendarConnection, foreign_key: :calendar_connection_id, type: :string)
     has_many(:user_default_destination, Rallly.User, foreign_key: :default_destination_calendar_id, references: :id)

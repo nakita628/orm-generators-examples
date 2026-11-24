@@ -1,17 +1,17 @@
 defmodule Plunk.Workflow do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Plunk.PrismaDateTime, autogenerate: {Plunk.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           description: String.t() | nil,
           enabled: boolean(),
           trigger_type: atom(),
-          trigger_config: map() | nil,
+          trigger_config: map() | list() | String.t() | number() | boolean() | nil,
           allow_reentry: boolean(),
           throttle_window_seconds: integer() | nil,
           throttle_key: String.t() | nil,
@@ -28,11 +28,11 @@ defmodule Plunk.Workflow do
     field(:description, :string)
     field(:enabled, :boolean, default: false)
     field(:trigger_type, Ecto.Enum, values: [:EVENT, :MANUAL, :SCHEDULE], source: :triggerType)
-    field(:trigger_config, :map, source: :triggerConfig)
+    field(:trigger_config, Plunk.PrismaJson, source: :triggerConfig)
     field(:allow_reentry, :boolean, default: false, source: :allowReentry)
     field(:throttle_window_seconds, :integer, source: :throttleWindowSeconds)
     field(:throttle_key, :string, source: :throttleKey)
-    field(:project_id, :binary_id, source: :projectId)
+    field(:project_id, :string, source: :projectId)
     belongs_to(:project, Plunk.Project, foreign_key: :project_id, define_field: false)
     has_many(:steps, Plunk.WorkflowStep, foreign_key: :workflow_id)
     has_many(:executions, Plunk.WorkflowExecution, foreign_key: :workflow_id)

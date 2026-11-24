@@ -49,6 +49,7 @@ class ProgramSession extends Model
 
     protected $casts = [
         'sessionNumber' => 'integer',
+        'equipment' => AsPrismaList::class . ':' . ExerciseAttributeValueEnum::class,
         'estimatedMinutes' => 'integer',
         'isPremium' => 'boolean',
     ];

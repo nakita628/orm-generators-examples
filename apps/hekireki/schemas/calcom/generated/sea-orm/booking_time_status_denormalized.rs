@@ -2,6 +2,8 @@ use super::booking_status::BookingStatus;
 use sea_orm::entity::prelude::*;
 use serde::{Deserialize, Serialize};
 
+/// A database view: read it, do not write to it, and do not pass it to
+/// `Schema::create_table_from_entity`, which would create a table of that name.
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
 #[sea_orm(table_name = "BookingTimeStatusDenormalized")]
 pub struct Model {

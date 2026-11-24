@@ -7,7 +7,7 @@ defmodule LangWatch.Analytics do
   @type t :: %__MODULE__{
           id: String.t(),
           key: String.t(),
-          value: map() | nil,
+          value: map() | list() | String.t() | number() | boolean() | nil,
           numeric_value: float() | nil,
           string_value: String.t() | nil,
           bool_value: boolean() | nil,
@@ -18,7 +18,7 @@ defmodule LangWatch.Analytics do
   schema "Analytics" do
     field(:id, :string, primary_key: true)
     field(:key, :string)
-    field(:value, :map)
+    field(:value, LangWatch.PrismaJson)
     field(:numeric_value, :float, source: :numericValue)
     field(:string_value, :string, source: :stringValue)
     field(:bool_value, :boolean, source: :boolValue)

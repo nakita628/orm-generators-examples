@@ -1,12 +1,12 @@
 defmodule Postiz.Media do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: Postiz.PrismaDateTime, autogenerate: {Postiz.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           name: String.t(),
           original_name: String.t() | nil,
           path: String.t(),
@@ -38,7 +38,7 @@ defmodule Postiz.Media do
     field(:thumbnail_timestamp, :integer, source: :thumbnailTimestamp)
     field(:status, :string, default: "ready")
     field(:processing_error, :string, source: :processingError)
-    field(:organization_id, :binary_id, source: :organizationId)
+    field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, Postiz.Organization, foreign_key: :organization_id, define_field: false)
     has_many(:agencies, Postiz.SocialMediaAgency, foreign_key: :logo_id)
     has_many(:user_picture, Postiz.User, foreign_key: :picture_id)

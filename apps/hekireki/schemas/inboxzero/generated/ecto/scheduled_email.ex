@@ -8,7 +8,7 @@ defmodule InboxZero.ScheduledEmail do
           id: String.t(),
           client_mutation_id: String.t(),
           payload_hash: String.t(),
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           thread_id: String.t() | nil,
           send_at: DateTime.t(),
           status: atom(),
@@ -30,7 +30,7 @@ defmodule InboxZero.ScheduledEmail do
     field(:id, :string, primary_key: true)
     field(:client_mutation_id, :string, source: :clientMutationId)
     field(:payload_hash, :string, source: :payloadHash)
-    field(:payload, :map)
+    field(:payload, InboxZero.PrismaJson)
     field(:thread_id, :string, source: :threadId)
     field(:send_at, InboxZero.PrismaDateTime, source: :sendAt)
     field(:status, Ecto.Enum, values: [:PENDING, :PROCESSING, :SENT, :BLOCKED_AUTH, :UNCERTAIN, :FAILED, :CANCELLED], default: :PENDING)

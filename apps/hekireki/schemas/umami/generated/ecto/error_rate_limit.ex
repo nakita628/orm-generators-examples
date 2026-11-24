@@ -4,13 +4,13 @@ defmodule Umami.ErrorRateLimit do
   @primary_key false
 
   @type t :: %__MODULE__{
-          website_id: String.t(),
+          website_id: Ecto.UUID.t(),
           bucket: DateTime.t(),
           count: integer()
         }
 
   schema "error_rate_limit" do
-    field(:website_id, :string, primary_key: true)
+    field(:website_id, Ecto.UUID, primary_key: true)
     field(:bucket, Umami.PrismaDateTime)
     field(:count, :integer)
   end

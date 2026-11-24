@@ -1,15 +1,15 @@
 defmodule LiteLLM.LiteLLMManagedFileTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           unified_file_id: String.t(),
-          file_object: map() | nil,
-          model_mappings: map(),
+          file_object: map() | list() | String.t() | number() | boolean() | nil,
+          model_mappings: map() | list() | String.t() | number() | boolean(),
           flat_model_file_ids: [String.t()],
           storage_backend: String.t() | nil,
           storage_url: String.t() | nil,
@@ -22,8 +22,8 @@ defmodule LiteLLM.LiteLLMManagedFileTable do
 
   schema "LiteLLM_ManagedFileTable" do
     field(:unified_file_id, :string)
-    field(:file_object, :map)
-    field(:model_mappings, :map)
+    field(:file_object, LiteLLM.PrismaJson)
+    field(:model_mappings, LiteLLM.PrismaJson)
     field(:flat_model_file_ids, {:array, :string})
     field(:storage_backend, :string)
     field(:storage_url, :string)

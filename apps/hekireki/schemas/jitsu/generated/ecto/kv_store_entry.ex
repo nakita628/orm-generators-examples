@@ -5,13 +5,13 @@ defmodule Jitsu.KvStoreEntry do
 
   @type t :: %__MODULE__{
           key: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           expires_at: DateTime.t() | nil
         }
 
   schema "kv" do
     field(:key, :string, primary_key: true)
-    field(:value, :map)
+    field(:value, Jitsu.PrismaJson)
     # @zod.custom(z.coerce.date())
     field(:expires_at, Jitsu.PrismaDateTime)
   end

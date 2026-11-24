@@ -12,9 +12,9 @@ defmodule Trigger.Prompt do
           type: String.t(),
           file_path: String.t() | nil,
           export_name: String.t() | nil,
-          variable_schema: map() | nil,
+          variable_schema: map() | list() | String.t() | number() | boolean() | nil,
           default_model: String.t() | nil,
-          default_config: map() | nil,
+          default_config: map() | list() | String.t() | number() | boolean() | nil,
           tags: [String.t()],
           archived_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -33,9 +33,9 @@ defmodule Trigger.Prompt do
     field(:type, :string, default: "text")
     field(:file_path, :string, source: :filePath)
     field(:export_name, :string, source: :exportName)
-    field(:variable_schema, :map, source: :variableSchema)
+    field(:variable_schema, Trigger.PrismaJson, source: :variableSchema)
     field(:default_model, :string, source: :defaultModel)
-    field(:default_config, :map, source: :defaultConfig)
+    field(:default_config, Trigger.PrismaJson, source: :defaultConfig)
     field(:tags, {:array, :string})
     field(:archived_at, Trigger.PrismaDateTime, source: :archivedAt)
     field(:organization_id, :string, source: :organizationId)

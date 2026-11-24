@@ -8,7 +8,7 @@ defmodule LiteLLM.LiteLLMSpendLogDelivery do
           delivery_id: String.t(),
           request_id: String.t(),
           state: atom(),
-          accounting_payload: map(),
+          accounting_payload: map() | list() | String.t() | number() | boolean(),
           is_batch: boolean(),
           attempts: integer(),
           next_attempt_at: DateTime.t(),
@@ -21,7 +21,7 @@ defmodule LiteLLM.LiteLLMSpendLogDelivery do
     field(:delivery_id, :string, primary_key: true, read_after_writes: true)
     field(:request_id, :string)
     field(:state, Ecto.Enum, values: [:pending, :applied, :parked], default: :pending)
-    field(:accounting_payload, :map)
+    field(:accounting_payload, LiteLLM.PrismaJson)
     field(:is_batch, :boolean)
     field(:attempts, :integer, default: 0)
     field(:next_attempt_at, LiteLLM.PrismaDateTime, autogenerate: true)

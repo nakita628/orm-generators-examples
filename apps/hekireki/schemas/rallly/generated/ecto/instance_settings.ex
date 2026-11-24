@@ -7,7 +7,7 @@ defmodule Rallly.InstanceSettings do
   @type t :: %__MODULE__{
           id: integer(),
           disable_user_registration: boolean(),
-          instance_id: String.t(),
+          instance_id: Ecto.UUID.t(),
           app_name: String.t() | nil,
           primary_color: String.t() | nil,
           primary_color_dark: String.t() | nil,
@@ -15,7 +15,7 @@ defmodule Rallly.InstanceSettings do
           logo_dark: String.t() | nil,
           logo_icon: String.t() | nil,
           hide_attribution: boolean() | nil,
-          footer_links: map(),
+          footer_links: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -23,7 +23,7 @@ defmodule Rallly.InstanceSettings do
   schema "instance_settings" do
     field(:id, :integer, primary_key: true, default: 1)
     field(:disable_user_registration, :boolean, default: false)
-    field(:instance_id, :string, read_after_writes: true)
+    field(:instance_id, Ecto.UUID, read_after_writes: true)
     field(:app_name, :string)
     field(:primary_color, :string)
     field(:primary_color_dark, :string)
@@ -31,7 +31,7 @@ defmodule Rallly.InstanceSettings do
     field(:logo_dark, :string)
     field(:logo_icon, :string)
     field(:hide_attribution, :boolean)
-    field(:footer_links, :map)
+    field(:footer_links, Rallly.PrismaJson, default: [])
     timestamps(inserted_at_source: :created_at)
   end
 end

@@ -54,6 +54,7 @@ class OidcProvider extends Model
     ];
 
     protected $casts = [
+        'scopes' => AsPrismaList::class,
         'enabled' => 'boolean',
         'autoDiscovery' => 'boolean',
     ];

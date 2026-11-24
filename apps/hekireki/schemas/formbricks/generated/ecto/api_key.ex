@@ -24,7 +24,7 @@ defmodule Formbricks.ApiKey do
           label: String.t(),
           hashed_key: String.t(),
           lookup_hash: String.t() | nil,
-          organization_access: map(),
+          organization_access: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           organization: Formbricks.Organization.t() | nil,
           api_key_workspaces: [Formbricks.ApiKeyWorkspace.t()]
@@ -38,7 +38,7 @@ defmodule Formbricks.ApiKey do
     field(:hashed_key, :string, source: :hashedKey)
     field(:lookup_hash, :string, source: :lookupHash)
     # [OrganizationAccess]
-    field(:organization_access, :map, default: %{}, source: :organizationAccess)
+    field(:organization_access, Formbricks.PrismaJson, default: %{}, source: :organizationAccess)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, Formbricks.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     has_many(:api_key_workspaces, Formbricks.ApiKeyWorkspace, foreign_key: :api_key_id, references: :id)

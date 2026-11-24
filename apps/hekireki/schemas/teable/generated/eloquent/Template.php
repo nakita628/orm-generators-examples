@@ -52,6 +52,7 @@ class Template extends Model
     ];
 
     protected $casts = [
+        'category_id' => AsPrismaList::class,
         'created_time' => 'datetime',
         'is_system' => 'boolean',
         'is_published' => 'boolean',

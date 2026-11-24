@@ -18,7 +18,7 @@ defmodule InboxZero.MeetingRecording do
           meeting_start_time: DateTime.t(),
           status: atom(),
           failure_reason: String.t() | nil,
-          transcript: map() | nil,
+          transcript: map() | list() | String.t() | number() | boolean() | nil,
           transcript_fetched_at: DateTime.t() | nil,
           media_deleted_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
@@ -41,7 +41,7 @@ defmodule InboxZero.MeetingRecording do
     field(:meeting_start_time, InboxZero.PrismaDateTime, source: :meetingStartTime)
     field(:status, Ecto.Enum, values: [:PENDING, :SCHEDULED, :CANCELLING, :JOINING, :IN_WAITING_ROOM, :IN_CALL, :RECORDING, :CALL_ENDED, :DONE, :FAILED, :CANCELLED], default: :PENDING)
     field(:failure_reason, :string, source: :failureReason)
-    field(:transcript, :map)
+    field(:transcript, InboxZero.PrismaJson)
     field(:transcript_fetched_at, InboxZero.PrismaDateTime, source: :transcriptFetchedAt)
     field(:media_deleted_at, InboxZero.PrismaDateTime, source: :mediaDeletedAt)
     field(:email_account_id, :string, source: :emailAccountId)

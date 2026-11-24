@@ -42,6 +42,7 @@ class GatewayAiConnection extends \Illuminate\Database\Eloquent\Model
         'allowed_models' => 'array',
         'custom_models' => 'array',
         'config' => 'array',
+        'extra_header_keys' => AsPrismaList::class,
     ];
 
     public function organization(): BelongsTo

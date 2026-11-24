@@ -45,6 +45,7 @@ class JobConfiguration extends \Illuminate\Database\Eloquent\Model
         'variable_mapping' => 'array',
         'sampling' => AsDecimal::class,
         'delay' => 'integer',
+        'time_scope' => AsPrismaList::class,
     ];
 
     public function project(): BelongsTo

@@ -17,12 +17,12 @@ defmodule Documenso.OrganisationClaim do
           recipient_count: integer(),
           envelope_content_count: integer(),
           envelope_content_image_count: integer(),
-          flags: map(),
-          document_rate_limits: map(),
+          flags: map() | list() | String.t() | number() | boolean(),
+          document_rate_limits: map() | list() | String.t() | number() | boolean(),
           document_quota: integer() | nil,
-          email_rate_limits: map(),
+          email_rate_limits: map() | list() | String.t() | number() | boolean(),
           email_quota: integer() | nil,
-          api_rate_limits: map(),
+          api_rate_limits: map() | list() | String.t() | number() | boolean(),
           api_quota: integer() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -40,15 +40,15 @@ defmodule Documenso.OrganisationClaim do
     field(:envelope_content_count, :integer, source: :envelopeContentCount)
     field(:envelope_content_image_count, :integer, source: :envelopeContentImageCount)
     # [ClaimFlags] @zod.custom.use(ZClaimFlagsSchema)
-    field(:flags, :map)
+    field(:flags, Documenso.PrismaJson)
     # [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    field(:document_rate_limits, :map, source: :documentRateLimits)
+    field(:document_rate_limits, Documenso.PrismaJson, source: :documentRateLimits)
     field(:document_quota, :integer, source: :documentQuota)
     # [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    field(:email_rate_limits, :map, source: :emailRateLimits)
+    field(:email_rate_limits, Documenso.PrismaJson, source: :emailRateLimits)
     field(:email_quota, :integer, source: :emailQuota)
     # [RateLimitArray] @zod.custom.use(ZRateLimitArraySchema)
-    field(:api_rate_limits, :map, source: :apiRateLimits)
+    field(:api_rate_limits, Documenso.PrismaJson, source: :apiRateLimits)
     field(:api_quota, :integer, source: :apiQuota)
     field(:email_transport_id, :string, source: :emailTransportId)
     belongs_to(:email_transport, Documenso.EmailTransport, foreign_key: :email_transport_id, define_field: false, type: :string)

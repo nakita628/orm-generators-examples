@@ -22,7 +22,7 @@ defmodule LangWatch.User do
           langy_code_access_preference: String.t() | nil,
           passkey_nudge_dismissed_at: DateTime.t() | nil,
           join_offer_dismissed_domains: [String.t()],
-          notification_preferences: map(),
+          notification_preferences: map() | list() | String.t() | number() | boolean(),
           password_reset_required_at: DateTime.t() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -111,7 +111,7 @@ defmodule LangWatch.User do
     # { "langy": "enabled" | "declined" }. A topic that is absent was never
     # answered. The browser's own permission is not stored here.
     # Spec: specs/langy/langy-notifications.feature
-    field(:notification_preferences, :map, default: %{}, source: :notificationPreferences)
+    field(:notification_preferences, LangWatch.PrismaJson, default: %{}, source: :notificationPreferences)
     # When an operator marked this person's password as no longer trusted. A
     # password sign-in opens no session while it is set; any write of a new
     # password hash clears it. Spec: modules/auth/specs/forced-password-reset.feature

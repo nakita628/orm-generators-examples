@@ -37,7 +37,7 @@ defmodule Rallly.SpaceWebhook do
     field(:last_failed_at, Rallly.PrismaDateTime)
     # Exhausted deliveries in a row; reset by any success. The dispatcher disables the endpoint once it reaches its cap
     field(:consecutive_failures, :integer, default: 0)
-    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :binary_id)
+    belongs_to(:space, Rallly.Space, foreign_key: :space_id, type: :string)
     has_many(:deliveries, Rallly.WebhookDelivery, foreign_key: :webhook_id, references: :id)
     timestamps(inserted_at_source: :created_at)
   end

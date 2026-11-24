@@ -44,6 +44,7 @@ class Prompt extends Model
     protected $casts = [
         'variableSchema' => 'array',
         'defaultConfig' => 'array',
+        'tags' => AsPrismaList::class,
         'archivedAt' => 'datetime',
     ];
 

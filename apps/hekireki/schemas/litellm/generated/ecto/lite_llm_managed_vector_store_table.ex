@@ -1,15 +1,15 @@
 defmodule LiteLLM.LiteLLMManagedVectorStoreTable do
   use Ecto.Schema
 
-  @primary_key {:id, :binary_id, autogenerate: true}
-  @foreign_key_type :binary_id
+  @primary_key {:id, :string, autogenerate: {Ecto.UUID, :generate, []}}
+  @foreign_key_type :string
   @timestamps_opts [type: LiteLLM.PrismaDateTime, autogenerate: {LiteLLM.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          id: Ecto.UUID.t(),
+          id: String.t(),
           unified_resource_id: String.t(),
-          resource_object: map() | nil,
-          model_mappings: map(),
+          resource_object: map() | list() | String.t() | number() | boolean() | nil,
+          model_mappings: map() | list() | String.t() | number() | boolean(),
           flat_model_resource_ids: [String.t()],
           storage_backend: String.t() | nil,
           storage_url: String.t() | nil,
@@ -22,8 +22,8 @@ defmodule LiteLLM.LiteLLMManagedVectorStoreTable do
 
   schema "LiteLLM_ManagedVectorStoreTable" do
     field(:unified_resource_id, :string)
-    field(:resource_object, :map)
-    field(:model_mappings, :map)
+    field(:resource_object, LiteLLM.PrismaJson)
+    field(:model_mappings, LiteLLM.PrismaJson)
     field(:flat_model_resource_ids, {:array, :string})
     field(:storage_backend, :string)
     field(:storage_url, :string)

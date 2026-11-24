@@ -9,11 +9,11 @@ defmodule Langfuse.DashboardWidget do
           name: String.t(),
           description: String.t(),
           view: atom(),
-          dimensions: map(),
-          metrics: map(),
-          filters: map(),
+          dimensions: map() | list() | String.t() | number() | boolean(),
+          metrics: map() | list() | String.t() | number() | boolean(),
+          filters: map() | list() | String.t() | number() | boolean(),
           chart_type: atom(),
-          chart_config: map(),
+          chart_config: map() | list() | String.t() | number() | boolean(),
           min_version: integer(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -27,11 +27,11 @@ defmodule Langfuse.DashboardWidget do
     field(:name, :string)
     field(:description, :string)
     field(:view, Ecto.Enum, values: [:TRACES, :OBSERVATIONS, :SCORES_NUMERIC, :SCORES_CATEGORICAL, :SCORES_BOOLEAN])
-    field(:dimensions, :map)
-    field(:metrics, :map)
-    field(:filters, :map)
+    field(:dimensions, Langfuse.PrismaJson)
+    field(:metrics, Langfuse.PrismaJson)
+    field(:filters, Langfuse.PrismaJson)
     field(:chart_type, Ecto.Enum, values: [:LINE_TIME_SERIES, :AREA_TIME_SERIES, :BAR_TIME_SERIES, :HORIZONTAL_BAR, :VERTICAL_BAR, :PIE, :NUMBER, :HISTOGRAM, :PIVOT_TABLE])
-    field(:chart_config, :map)
+    field(:chart_config, Langfuse.PrismaJson)
     field(:min_version, :integer, default: 1)
     belongs_to(:created_by_user, Langfuse.User, foreign_key: :created_by, type: :string)
     belongs_to(:updated_by_user, Langfuse.User, foreign_key: :updated_by, type: :string)

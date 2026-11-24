@@ -12,7 +12,7 @@ defmodule Trigger.BackgroundWorker do
           sdk_version: String.t(),
           cli_version: String.t(),
           version: String.t(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           runtime: String.t() | nil,
           runtime_version: String.t() | nil,
           supports_lazy_attempts: boolean(),
@@ -39,7 +39,7 @@ defmodule Trigger.BackgroundWorker do
     field(:sdk_version, :string, default: "unknown", source: :sdkVersion)
     field(:cli_version, :string, default: "unknown", source: :cliVersion)
     field(:version, :string)
-    field(:metadata, :map)
+    field(:metadata, Trigger.PrismaJson)
     field(:runtime, :string)
     field(:runtime_version, :string, source: :runtimeVersion)
     field(:supports_lazy_attempts, :boolean, default: false, source: :supportsLazyAttempts)

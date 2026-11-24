@@ -1,5 +1,6 @@
 class PasswordResetToken < ApplicationRecord
   self.table_name = "PasswordResetToken"
+  self.primary_key = "token"
 
   alias_attribute :created_at, :createdAt
   alias_attribute :updated_at, :updatedAt

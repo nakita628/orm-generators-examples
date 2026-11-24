@@ -7,7 +7,7 @@ defmodule Shelf.WorkingHours do
   @type t :: %__MODULE__{
           id: String.t(),
           enabled: boolean(),
-          weekly_schedule: map(),
+          weekly_schedule: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           organization: Shelf.Organization.t() | nil,
@@ -17,7 +17,7 @@ defmodule Shelf.WorkingHours do
   schema "WorkingHours" do
     field(:id, :string, primary_key: true)
     field(:enabled, :boolean, default: false)
-    field(:weekly_schedule, :map, default: %{"0" => %{"isOpen" => false}, "1" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "2" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "3" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "4" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "5" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "6" => %{"isOpen" => false}}, source: :weeklySchedule)
+    field(:weekly_schedule, Shelf.PrismaJson, default: %{"0" => %{"isOpen" => false}, "1" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "2" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "3" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "4" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "5" => %{"isOpen" => true, "openTime" => "09:00", "closeTime" => "17:00"}, "6" => %{"isOpen" => false}}, source: :weeklySchedule)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:organization, Shelf.Organization, foreign_key: :organization_id, define_field: false, type: :string)
     has_many(:overrides, Shelf.WorkingHoursOverride, foreign_key: :working_hours_id, references: :id)

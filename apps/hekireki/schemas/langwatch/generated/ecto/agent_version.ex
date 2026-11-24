@@ -15,7 +15,7 @@ defmodule LangWatch.AgentVersion do
           version: integer(),
           name: String.t(),
           type: String.t(),
-          config: map(),
+          config: map() | list() | String.t() | number() | boolean(),
           workflow_id: String.t() | nil,
           commit_message: String.t() | nil,
           author_id: String.t() | nil,
@@ -30,7 +30,7 @@ defmodule LangWatch.AgentVersion do
     field(:version, :integer)
     field(:name, :string)
     field(:type, :string)
-    field(:config, :map)
+    field(:config, LangWatch.PrismaJson)
     field(:workflow_id, :string, source: :workflowId)
     field(:commit_message, :string, source: :commitMessage)
     field(:author_id, :string, source: :authorId)

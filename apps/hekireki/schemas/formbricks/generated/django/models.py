@@ -45,6 +45,26 @@ class UtcAutoNowDateTimeField(UtcDateTimeField):
         return value
 
 
+class EnumArrayField(ArrayField):  # type: ignore[type-arg]
+    def __init__(self, base_field: Any, db_enum: str, **kwargs: Any) -> None:
+        self.db_enum = db_enum
+        super().__init__(base_field, **kwargs)
+
+    def deconstruct(self) -> Any:
+        name, path, args, kwargs = super().deconstruct()
+        kwargs["db_enum"] = self.db_enum
+        return name, path, args, kwargs
+
+    def db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return f"{self.db_enum}[]"
+
+    def cast_db_type(self, connection: BaseDatabaseWrapper) -> str:
+        return self.db_type(connection)
+
+    def select_format(self, compiler: Any, sql: str, params: Any) -> Any:
+        return f"{sql}::text[]", params
+
+
 _M = TypeVar("_M", bound=models.Model)
 
 
@@ -698,7 +718,7 @@ class Webhook(models.Model):
     url = models.TextField()
     source = models.TextField(choices=WebhookSource.choices, default=WebhookSource.user)
     workspace = models.ForeignKey("Workspace", on_delete=models.CASCADE, related_name="webhooks", db_column="workspaceId", db_index=False)
-    triggers = ArrayField(models.TextField(choices=PipelineTriggers.choices))
+    triggers = EnumArrayField(models.TextField(choices=PipelineTriggers.choices), db_enum="\"PipelineTriggers\"")
     survey_ids = ArrayField(models.TextField(), db_column="surveyIds")
     secret = models.TextField(null=True)
     objects = AutoNowQuerySet.as_manager()
@@ -2635,7 +2655,7 @@ class RetentionPolicy(models.Model):
     """The period, counted from the target's clock, after which the policy acts: responses are
     deleted, surveys archived (the archive purge deletes them 30 days later), members deactivated.
     """
-    conditions = ArrayField(models.TextField(choices=RetentionSurveyCondition.choices), default=list)
+    conditions = EnumArrayField(models.TextField(choices=RetentionSurveyCondition.choices), db_enum="\"RetentionSurveyCondition\"", default=list)
     """Surveys policy only."""
     deferred_at = UtcDateTimeField(null=True, db_column="deferredAt")
     """The last night the sweep's time ran out before it reached this policy's organisation, licensed.

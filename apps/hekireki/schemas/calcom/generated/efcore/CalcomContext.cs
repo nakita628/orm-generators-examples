@@ -5253,7 +5253,7 @@ public partial class CalcomContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("BookingTimeStatus_id_key");
 
-            entity.ToTable("BookingTimeStatus");
+            entity.ToView("BookingTimeStatus");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()
@@ -5295,7 +5295,7 @@ public partial class CalcomContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("BookingTimeStatusDenormalized_id_key");
 
-            entity.ToTable("BookingTimeStatusDenormalized");
+            entity.ToView("BookingTimeStatusDenormalized");
 
             entity.Property(e => e.Id)
                 .ValueGeneratedNever()

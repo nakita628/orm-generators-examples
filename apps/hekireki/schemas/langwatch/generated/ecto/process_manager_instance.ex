@@ -14,7 +14,7 @@ defmodule LangWatch.ProcessManagerInstance do
           process_key: String.t(),
           tenant_id: String.t(),
           user_id: String.t() | nil,
-          state: map(),
+          state: map() | list() | String.t() | number() | boolean(),
           revision: integer(),
           next_wake_at: DateTime.t() | nil,
           updated_at: DateTime.t()
@@ -27,7 +27,7 @@ defmodule LangWatch.ProcessManagerInstance do
     field(:process_key, :string, source: :processKey)
     field(:tenant_id, :string, source: :tenantId)
     field(:user_id, :string, source: :userId)
-    field(:state, :map)
+    field(:state, LangWatch.PrismaJson)
     field(:revision, :integer)
     field(:next_wake_at, LangWatch.PrismaDateTime, source: :nextWakeAt)
     field(:updated_at, LangWatch.PrismaDateTime, source: :updatedAt)

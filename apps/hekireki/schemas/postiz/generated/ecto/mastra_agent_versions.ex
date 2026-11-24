@@ -10,28 +10,28 @@ defmodule Postiz.MastraAgentVersions do
           name: String.t(),
           description: String.t() | nil,
           instructions: String.t(),
-          model: map(),
-          tools: map() | nil,
-          default_options: map() | nil,
-          workflows: map() | nil,
-          agents: map() | nil,
-          integration_tools: map() | nil,
-          input_processors: map() | nil,
-          output_processors: map() | nil,
-          memory: map() | nil,
-          scorers: map() | nil,
-          mcp_clients: map() | nil,
-          request_context_schema: map() | nil,
-          workspace: map() | nil,
-          skills: map() | nil,
+          model: map() | list() | String.t() | number() | boolean(),
+          tools: map() | list() | String.t() | number() | boolean() | nil,
+          default_options: map() | list() | String.t() | number() | boolean() | nil,
+          workflows: map() | list() | String.t() | number() | boolean() | nil,
+          agents: map() | list() | String.t() | number() | boolean() | nil,
+          integration_tools: map() | list() | String.t() | number() | boolean() | nil,
+          input_processors: map() | list() | String.t() | number() | boolean() | nil,
+          output_processors: map() | list() | String.t() | number() | boolean() | nil,
+          memory: map() | list() | String.t() | number() | boolean() | nil,
+          scorers: map() | list() | String.t() | number() | boolean() | nil,
+          mcp_clients: map() | list() | String.t() | number() | boolean() | nil,
+          request_context_schema: map() | list() | String.t() | number() | boolean() | nil,
+          workspace: map() | list() | String.t() | number() | boolean() | nil,
+          skills: map() | list() | String.t() | number() | boolean() | nil,
           skills_format: String.t() | nil,
-          changed_fields: map() | nil,
+          changed_fields: map() | list() | String.t() | number() | boolean() | nil,
           change_message: String.t() | nil,
           created_at: DateTime.t(),
           created_at_z: DateTime.t() | nil,
-          durable: map() | nil,
-          browser: map() | nil,
-          tool_providers: map() | nil
+          durable: map() | list() | String.t() | number() | boolean() | nil,
+          browser: map() | list() | String.t() | number() | boolean() | nil,
+          tool_providers: map() | list() | String.t() | number() | boolean() | nil
         }
 
   schema "mastra_agent_versions" do
@@ -41,27 +41,27 @@ defmodule Postiz.MastraAgentVersions do
     field(:name, :string)
     field(:description, :string)
     field(:instructions, :string)
-    field(:model, :map)
-    field(:tools, :map)
-    field(:default_options, :map, source: :defaultOptions)
-    field(:workflows, :map)
-    field(:agents, :map)
-    field(:integration_tools, :map, source: :integrationTools)
-    field(:input_processors, :map, source: :inputProcessors)
-    field(:output_processors, :map, source: :outputProcessors)
-    field(:memory, :map)
-    field(:scorers, :map)
-    field(:mcp_clients, :map, source: :mcpClients)
-    field(:request_context_schema, :map, source: :requestContextSchema)
-    field(:workspace, :map)
-    field(:skills, :map)
+    field(:model, Postiz.PrismaJson)
+    field(:tools, Postiz.PrismaJson)
+    field(:default_options, Postiz.PrismaJson, source: :defaultOptions)
+    field(:workflows, Postiz.PrismaJson)
+    field(:agents, Postiz.PrismaJson)
+    field(:integration_tools, Postiz.PrismaJson, source: :integrationTools)
+    field(:input_processors, Postiz.PrismaJson, source: :inputProcessors)
+    field(:output_processors, Postiz.PrismaJson, source: :outputProcessors)
+    field(:memory, Postiz.PrismaJson)
+    field(:scorers, Postiz.PrismaJson)
+    field(:mcp_clients, Postiz.PrismaJson, source: :mcpClients)
+    field(:request_context_schema, Postiz.PrismaJson, source: :requestContextSchema)
+    field(:workspace, Postiz.PrismaJson)
+    field(:skills, Postiz.PrismaJson)
     field(:skills_format, :string, source: :skillsFormat)
-    field(:changed_fields, :map, source: :changedFields)
+    field(:changed_fields, Postiz.PrismaJson, source: :changedFields)
     field(:change_message, :string, source: :changeMessage)
     field(:created_at, Postiz.PrismaDateTime, source: :createdAt)
     field(:created_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :createdAtZ)
-    field(:durable, :map)
-    field(:browser, :map)
-    field(:tool_providers, :map, source: :toolProviders)
+    field(:durable, Postiz.PrismaJson)
+    field(:browser, Postiz.PrismaJson)
+    field(:tool_providers, Postiz.PrismaJson, source: :toolProviders)
   end
 end

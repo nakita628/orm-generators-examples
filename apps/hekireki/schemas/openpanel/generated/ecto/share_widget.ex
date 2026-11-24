@@ -7,7 +7,7 @@ defmodule OpenPanel.ShareWidget do
   @type t :: %__MODULE__{
           id: String.t(),
           public: boolean(),
-          options: map(),
+          options: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: OpenPanel.Project.t() | nil,
@@ -18,7 +18,7 @@ defmodule OpenPanel.ShareWidget do
     field(:id, :string, primary_key: true)
     field(:public, :boolean, default: true)
     # [IPrismaWidgetOptions]
-    field(:options, :map)
+    field(:options, OpenPanel.PrismaJson)
     field(:project_id, :string, source: :projectId)
     field(:organization_id, :string, source: :organizationId)
     belongs_to(:project, OpenPanel.Project, foreign_key: :project_id, define_field: false, type: :string)

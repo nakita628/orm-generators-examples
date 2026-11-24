@@ -36,6 +36,7 @@ class Workspace extends Model
 
     protected $casts = [
         'deleted' => 'boolean',
+        'featuresEnabled' => AsPrismaList::class,
     ];
 
     public function workspaceAccess(): HasMany

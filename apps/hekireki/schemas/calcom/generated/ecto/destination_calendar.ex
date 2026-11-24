@@ -28,11 +28,11 @@ defmodule Calcom.DestinationCalendar do
     field(:user_id, :id, source: :userId)
     field(:event_type_id, :id, source: :eventTypeId)
     field(:credential_id, :id, source: :credentialId)
-    field(:delegation_credential_id, :binary_id, source: :delegationCredentialId)
+    field(:delegation_credential_id, :string, source: :delegationCredentialId)
     belongs_to(:user, Calcom.User, foreign_key: :user_id, define_field: false)
     belongs_to(:event_type, Calcom.EventType, foreign_key: :event_type_id, define_field: false)
     belongs_to(:credential, Calcom.Credential, foreign_key: :credential_id, define_field: false)
-    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :binary_id)
+    belongs_to(:delegation_credential, Calcom.DelegationCredential, foreign_key: :delegation_credential_id, define_field: false, type: :string)
     has_many(:booking, Calcom.Booking, foreign_key: :destination_calendar_id)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

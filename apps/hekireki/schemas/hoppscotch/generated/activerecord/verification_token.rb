@@ -1,5 +1,6 @@
 class VerificationToken < ApplicationRecord
   self.table_name = "VerificationToken"
+  self.primary_key = "token"
 
   attribute :token, default: -> { Cuid.generate }
 

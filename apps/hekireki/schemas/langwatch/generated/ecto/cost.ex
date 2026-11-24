@@ -12,7 +12,7 @@ defmodule LangWatch.Cost do
           reference_id: String.t(),
           amount: float(),
           currency: String.t(),
-          extra_info: map() | nil,
+          extra_info: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: LangWatch.Project.t() | nil
@@ -26,7 +26,7 @@ defmodule LangWatch.Cost do
     field(:reference_id, :string, source: :referenceId)
     field(:amount, :float)
     field(:currency, :string)
-    field(:extra_info, :map, source: :extraInfo)
+    field(:extra_info, LangWatch.PrismaJson, source: :extraInfo)
     field(:project_id, :string, source: :projectId)
     belongs_to(:project, LangWatch.Project, foreign_key: :project_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

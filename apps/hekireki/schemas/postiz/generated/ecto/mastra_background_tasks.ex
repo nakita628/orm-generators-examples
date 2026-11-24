@@ -12,10 +12,10 @@ defmodule Postiz.MastraBackgroundTasks do
           thread_id: String.t() | nil,
           resource_id: String.t() | nil,
           status: String.t(),
-          args: map(),
-          result: map() | nil,
-          error: map() | nil,
-          suspend_payload: map() | nil,
+          args: map() | list() | String.t() | number() | boolean(),
+          result: map() | list() | String.t() | number() | boolean() | nil,
+          error: map() | list() | String.t() | number() | boolean() | nil,
+          suspend_payload: map() | list() | String.t() | number() | boolean() | nil,
           retry_count: integer(),
           max_retries: integer(),
           timeout_ms: integer(),
@@ -38,10 +38,10 @@ defmodule Postiz.MastraBackgroundTasks do
     field(:thread_id, :string)
     field(:resource_id, :string)
     field(:status, :string)
-    field(:args, :map)
-    field(:result, :map)
-    field(:error, :map)
-    field(:suspend_payload, :map)
+    field(:args, Postiz.PrismaJson)
+    field(:result, Postiz.PrismaJson)
+    field(:error, Postiz.PrismaJson)
+    field(:suspend_payload, Postiz.PrismaJson)
     field(:retry_count, :integer)
     field(:max_retries, :integer)
     field(:timeout_ms, :integer)

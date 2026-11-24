@@ -7,7 +7,7 @@ defmodule Trigger.FeatureFlag do
   @type t :: %__MODULE__{
           id: String.t(),
           key: String.t(),
-          value: map() | nil,
+          value: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
         }
@@ -15,7 +15,7 @@ defmodule Trigger.FeatureFlag do
   schema "FeatureFlag" do
     field(:id, :string, primary_key: true)
     field(:key, :string)
-    field(:value, :map)
+    field(:value, Trigger.PrismaJson)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end
 end

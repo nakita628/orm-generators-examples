@@ -13,19 +13,19 @@ import (
 var NamingStrategy = schema.NamingStrategy{SingularTable: true, NoLowerCase: true}
 
 type Users struct {
-	ID               int              `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID             string           `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	Username         string           `gorm:"column:username;uniqueIndex;not null" json:"username"`
+	ID               int              `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID             string           `gorm:"column:uuid;uniqueIndex:users_uuid_key;not null" json:"uuid"`
+	Username         string           `gorm:"column:username;uniqueIndex:users_username_key;not null" json:"username"`
 	Password         string           `gorm:"column:password;not null" json:"password"`
 	Enabled          *bool            `gorm:"column:enabled;default:true;not null" json:"enabled"`
 	StorageQuota     *string          `gorm:"column:storageQuota;default:'0';not null" json:"storageQuota"`
-	APIKey           *string          `gorm:"column:apiKey;uniqueIndex" json:"apiKey"`
+	APIKey           *string          `gorm:"column:apiKey;uniqueIndex:users_apiKey_key" json:"apiKey"`
 	PasswordEditedAt *DateTime        `gorm:"column:passwordEditedAt" json:"passwordEditedAt"`
 	APIKeyEditedAt   *DateTime        `gorm:"column:apiKeyEditedAt" json:"apiKeyEditedAt"`
 	CreatedAt        DateTime         `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	EditedAt         *DateTime        `gorm:"column:editedAt" json:"editedAt"`
-	Files            []Files          `gorm:"foreignKey:UserID"`
-	Links            []ShortenedLinks `gorm:"foreignKey:UserID"`
+	Files            []Files          `gorm:"foreignKey:UserID;constraint:files_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
+	Links            []ShortenedLinks `gorm:"foreignKey:UserID;constraint:shortenedLinks_userId_fkey,OnUpdate:CASCADE,OnDelete:SET NULL"`
 	Roles            []Roles          `gorm:"many2many:_rolesTousers;joinForeignKey:B;joinReferences:A"`
 }
 
@@ -42,8 +42,8 @@ func (m *Users) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Roles struct {
-	ID    int     `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	Name  string  `gorm:"column:name;uniqueIndex;not null" json:"name"`
+	ID    int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	Name  string  `gorm:"column:name;uniqueIndex:roles_name_key;not null" json:"name"`
 	Users []Users `gorm:"many2many:_rolesTousers;joinForeignKey:A;joinReferences:B"`
 }
 
@@ -52,9 +52,9 @@ func (Roles) TableName() string {
 }
 
 type Files struct {
-	ID             int              `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID           string           `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID         *int             `gorm:"column:userId" json:"userId"`
+	ID             int              `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID           string           `gorm:"column:uuid;uniqueIndex:files_uuid_key;not null" json:"uuid"`
+	UserID         *int             `gorm:"column:userId;size:32" json:"userId"`
 	Name           string           `gorm:"column:name;not null" json:"name"`
 	Original       string           `gorm:"column:original;not null" json:"original"`
 	Type           string           `gorm:"column:type;not null" json:"type"`
@@ -67,8 +67,8 @@ type Files struct {
 	CreatedAt      DateTime         `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	EditedAt       *DateTime        `gorm:"column:editedAt" json:"editedAt"`
 	Quarantine     bool             `gorm:"column:quarantine;default:false;not null" json:"quarantine"`
-	User           *Users           `gorm:"foreignKey:UserID"`
-	QuarantineFile *QuarantineFiles `gorm:"foreignKey:FileID;references:UUID"`
+	User           *Users           `gorm:"foreignKey:UserID;belongsTo"`
+	QuarantineFile *QuarantineFiles `gorm:"foreignKey:FileID;references:UUID;constraint:quarantineFiles_fileId_fkey,OnUpdate:CASCADE,OnDelete:RESTRICT"`
 	Albums         []Albums         `gorm:"many2many:_albumsTofiles;joinForeignKey:B;joinReferences:A"`
 	Tags           []Tags           `gorm:"many2many:_filesTotags;joinForeignKey:A;joinReferences:B"`
 }
@@ -86,10 +86,10 @@ func (m *Files) BeforeCreate(tx *gorm.DB) error {
 }
 
 type QuarantineFiles struct {
-	FileID string  `gorm:"column:fileId;primaryKey;uniqueIndex" json:"fileId"`
+	FileID string  `gorm:"column:fileId;primaryKey;uniqueIndex:quarantineFiles_fileId_key" json:"fileId"`
 	Name   string  `gorm:"column:name;not null" json:"name"`
 	Reason *string `gorm:"column:reason" json:"reason"`
-	File   *Files  `gorm:"foreignKey:FileID;references:UUID"`
+	File   *Files  `gorm:"foreignKey:FileID;references:UUID;belongsTo"`
 }
 
 func (QuarantineFiles) TableName() string {
@@ -97,10 +97,10 @@ func (QuarantineFiles) TableName() string {
 }
 
 type Snippets struct {
-	ID          int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID        string    `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID      *int      `gorm:"column:userId" json:"userId"`
-	Identifier  string    `gorm:"column:identifier;uniqueIndex;not null" json:"identifier"`
+	ID          int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID        string    `gorm:"column:uuid;uniqueIndex:snippets_uuid_key;not null" json:"uuid"`
+	UserID      *int      `gorm:"column:userId;size:32" json:"userId"`
+	Identifier  string    `gorm:"column:identifier;uniqueIndex:snippets_identifier_key;not null" json:"identifier"`
 	Name        string    `gorm:"column:name;not null" json:"name"`
 	Description *string   `gorm:"column:description" json:"description"`
 	Content     string    `gorm:"column:content;not null" json:"content"`
@@ -123,14 +123,14 @@ func (m *Snippets) BeforeCreate(tx *gorm.DB) error {
 }
 
 type ShortenedLinks struct {
-	ID          int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID        string   `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID      *int     `gorm:"column:userId" json:"userId"`
-	Identifier  string   `gorm:"column:identifier;uniqueIndex;not null" json:"identifier"`
+	ID          int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID        string   `gorm:"column:uuid;uniqueIndex:shortenedLinks_uuid_key;not null" json:"uuid"`
+	UserID      *int     `gorm:"column:userId;size:32" json:"userId"`
+	Identifier  string   `gorm:"column:identifier;uniqueIndex:shortenedLinks_identifier_key;not null" json:"identifier"`
 	Destination string   `gorm:"column:destination;not null" json:"destination"`
-	Views       int      `gorm:"column:views;default:0;not null" json:"views"`
+	Views       int      `gorm:"column:views;size:32;default:0;not null" json:"views"`
 	CreatedAt   DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
-	User        *Users   `gorm:"foreignKey:UserID"`
+	User        *Users   `gorm:"foreignKey:UserID;belongsTo"`
 }
 
 func (ShortenedLinks) TableName() string {
@@ -146,9 +146,9 @@ func (m *ShortenedLinks) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Albums struct {
-	ID          int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID        string    `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID      int       `gorm:"column:userId;not null" json:"userId"`
+	ID          int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID        string    `gorm:"column:uuid;uniqueIndex:albums_uuid_key;not null" json:"uuid"`
+	UserID      int       `gorm:"column:userId;size:32;not null" json:"userId"`
 	Name        string    `gorm:"column:name;not null" json:"name"`
 	Description *string   `gorm:"column:description" json:"description"`
 	ZippedAt    *DateTime `gorm:"column:zippedAt" json:"zippedAt"`
@@ -172,7 +172,7 @@ func (m *Albums) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Bans struct {
-	ID        int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	IP        string   `gorm:"column:ip;not null" json:"ip"`
 	Reason    *string  `gorm:"column:reason" json:"reason"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
@@ -191,12 +191,12 @@ func (m *Bans) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Links struct {
-	ID             int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID           string    `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID         int       `gorm:"column:userId;not null" json:"userId"`
-	AlbumID        int       `gorm:"column:albumId;not null" json:"albumId"`
-	Identifier     string    `gorm:"column:identifier;uniqueIndex;not null" json:"identifier"`
-	Views          int       `gorm:"column:views;default:0;not null" json:"views"`
+	ID             int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID           string    `gorm:"column:uuid;uniqueIndex:links_uuid_key;not null" json:"uuid"`
+	UserID         int       `gorm:"column:userId;size:32;not null" json:"userId"`
+	AlbumID        int       `gorm:"column:albumId;size:32;not null" json:"albumId"`
+	Identifier     string    `gorm:"column:identifier;uniqueIndex:links_identifier_key;not null" json:"identifier"`
+	Views          int       `gorm:"column:views;size:32;default:0;not null" json:"views"`
 	Enabled        *bool     `gorm:"column:enabled;default:true;not null" json:"enabled"`
 	EnableDownload bool      `gorm:"column:enableDownload;default:false;not null" json:"enableDownload"`
 	ExpiresAt      *DateTime `gorm:"column:expiresAt" json:"expiresAt"`
@@ -217,19 +217,19 @@ func (m *Links) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Settings struct {
-	ID                                     int     `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	RateLimitWindow                        int     `gorm:"column:rateLimitWindow;not null" json:"rateLimitWindow"`
-	RateLimitMax                           int     `gorm:"column:rateLimitMax;not null" json:"rateLimitMax"`
+	ID                                     int     `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	RateLimitWindow                        int     `gorm:"column:rateLimitWindow;size:32;not null" json:"rateLimitWindow"`
+	RateLimitMax                           int     `gorm:"column:rateLimitMax;size:32;not null" json:"rateLimitMax"`
 	Secret                                 string  `gorm:"column:secret;not null" json:"secret"`
 	ServiceName                            string  `gorm:"column:serviceName;not null" json:"serviceName"`
 	ChunkSize                              string  `gorm:"column:chunkSize;not null" json:"chunkSize"`
-	ChunkedUploadsTimeout                  int     `gorm:"column:chunkedUploadsTimeout;not null" json:"chunkedUploadsTimeout"`
+	ChunkedUploadsTimeout                  int     `gorm:"column:chunkedUploadsTimeout;size:32;not null" json:"chunkedUploadsTimeout"`
 	MaxSize                                string  `gorm:"column:maxSize;not null" json:"maxSize"`
 	GenerateZips                           bool    `gorm:"column:generateZips;not null" json:"generateZips"`
 	GenerateOriginalFileNameWithIdentifier bool    `gorm:"column:generateOriginalFileNameWithIdentifier;default:false;not null" json:"generateOriginalFileNameWithIdentifier"`
-	GeneratedFilenameLength                int     `gorm:"column:generatedFilenameLength;not null" json:"generatedFilenameLength"`
-	GeneratedAlbumLength                   int     `gorm:"column:generatedAlbumLength;not null" json:"generatedAlbumLength"`
-	GeneratedLinksLength                   *int    `gorm:"column:generatedLinksLength;default:8;not null" json:"generatedLinksLength"`
+	GeneratedFilenameLength                int     `gorm:"column:generatedFilenameLength;size:32;not null" json:"generatedFilenameLength"`
+	GeneratedAlbumLength                   int     `gorm:"column:generatedAlbumLength;size:32;not null" json:"generatedAlbumLength"`
+	GeneratedLinksLength                   *int    `gorm:"column:generatedLinksLength;size:32;default:8;not null" json:"generatedLinksLength"`
 	SaveDuplicatesToAlbum                  bool    `gorm:"column:saveDuplicatesToAlbum;default:false;not null" json:"saveDuplicatesToAlbum"`
 	BlockedExtensions                      string  `gorm:"column:blockedExtensions;not null" json:"blockedExtensions"`
 	BlockNoExtension                       bool    `gorm:"column:blockNoExtension;not null" json:"blockNoExtension"`
@@ -268,8 +268,8 @@ func (Settings) TableName() string {
 }
 
 type Statistics struct {
-	ID        int      `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	BatchID   *int     `gorm:"column:batchId" json:"batchId"`
+	ID        int      `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	BatchID   *int     `gorm:"column:batchId;size:32" json:"batchId"`
 	Type      *string  `gorm:"column:type" json:"type"`
 	Data      *string  `gorm:"column:data" json:"data"`
 	CreatedAt DateTime `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
@@ -288,9 +288,9 @@ func (m *Statistics) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Tags struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
-	UUID      string    `gorm:"column:uuid;uniqueIndex;not null" json:"uuid"`
-	UserID    int       `gorm:"column:userId;not null" json:"userId"`
+	ID        int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
+	UUID      string    `gorm:"column:uuid;uniqueIndex:tags_uuid_key;not null" json:"uuid"`
+	UserID    int       `gorm:"column:userId;size:32;not null" json:"userId"`
 	Name      string    `gorm:"column:name;not null" json:"name"`
 	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	EditedAt  *DateTime `gorm:"column:editedAt" json:"editedAt"`
@@ -310,10 +310,10 @@ func (m *Tags) BeforeCreate(tx *gorm.DB) error {
 }
 
 type Invites struct {
-	ID        int       `gorm:"column:id;primaryKey;autoIncrement" json:"id"`
+	ID        int       `gorm:"column:id;primaryKey;autoIncrement;size:32" json:"id"`
 	CreatedBy string    `gorm:"column:createdBy;not null" json:"createdBy"`
 	UsedBy    *string   `gorm:"column:usedBy" json:"usedBy"`
-	Code      string    `gorm:"column:code;uniqueIndex;not null" json:"code"`
+	Code      string    `gorm:"column:code;uniqueIndex:invites_code_key;not null" json:"code"`
 	Used      bool      `gorm:"column:used;default:false;not null" json:"used"`
 	CreatedAt DateTime  `gorm:"column:createdAt;autoCreateTime:false;not null" json:"createdAt"`
 	EditedAt  *DateTime `gorm:"column:editedAt" json:"editedAt"`

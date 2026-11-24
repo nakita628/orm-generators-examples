@@ -22,10 +22,10 @@ defmodule Trigger.Session do
           environment_type: atom(),
           organization_id: String.t(),
           task_identifier: String.t(),
-          trigger_config: map(),
+          trigger_config: map() | list() | String.t() | number() | boolean(),
           is_test: boolean(),
           tags: [String.t()],
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           current_run_id: String.t() | nil,
           current_run_version: integer(),
           closed_at: DateTime.t() | nil,
@@ -62,12 +62,12 @@ defmodule Trigger.Session do
     # idleTimeoutInSeconds?: number }
     # `basePayload` carries the customer's client-data; runtime fields
     # (chatId, messages, trigger) are merged at trigger time.
-    field(:trigger_config, :map, source: :triggerConfig)
+    field(:trigger_config, Trigger.PrismaJson, source: :triggerConfig)
     # Whether this session was created from the Test/playground UI rather
     # than by a real chat.agent() trigger. Mirrors TaskRun.isTest.
     field(:is_test, :boolean, default: false, source: :isTest)
     field(:tags, {:array, :string})
-    field(:metadata, :map)
+    field(:metadata, Trigger.PrismaJson)
     # Live run pointer — non-FK so run deletion never cascades. Can lag
     # reality; the `.in/append` handler re-checks the snapshot status
     # before reusing it.

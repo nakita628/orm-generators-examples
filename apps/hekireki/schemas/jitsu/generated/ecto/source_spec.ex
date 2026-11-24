@@ -6,7 +6,7 @@ defmodule Jitsu.SourceSpec do
   @type t :: %__MODULE__{
           package: String.t(),
           version: String.t(),
-          specs: map() | nil,
+          specs: map() | list() | String.t() | number() | boolean() | nil,
           timestamp: DateTime.t(),
           error: String.t() | nil
         }
@@ -14,7 +14,7 @@ defmodule Jitsu.SourceSpec do
   schema "source_spec" do
     field(:package, :string, primary_key: true)
     field(:version, :string, primary_key: true)
-    field(:specs, :map)
+    field(:specs, Jitsu.PrismaJson)
     # @zod.custom(z.coerce.date())
     field(:timestamp, Jitsu.PrismaDateTime, autogenerate: true)
     field(:error, :string)

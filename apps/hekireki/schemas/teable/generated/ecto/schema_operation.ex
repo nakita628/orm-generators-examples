@@ -14,8 +14,8 @@ defmodule Teable.SchemaOperation do
           base_id: String.t() | nil,
           table_id: String.t() | nil,
           idempotency_key: String.t(),
-          payload: map() | nil,
-          result: map() | nil,
+          payload: map() | list() | String.t() | number() | boolean() | nil,
+          result: map() | list() | String.t() | number() | boolean() | nil,
           attempts: integer(),
           max_attempts: integer(),
           next_run_at: DateTime.t(),
@@ -38,8 +38,8 @@ defmodule Teable.SchemaOperation do
     field(:base_id, :string)
     field(:table_id, :string)
     field(:idempotency_key, :string)
-    field(:payload, :map)
-    field(:result, :map)
+    field(:payload, Teable.PrismaJson)
+    field(:result, Teable.PrismaJson)
     field(:attempts, :integer, default: 0)
     field(:max_attempts, :integer, default: 8)
     field(:next_run_at, Teable.PrismaDateTime, autogenerate: true)

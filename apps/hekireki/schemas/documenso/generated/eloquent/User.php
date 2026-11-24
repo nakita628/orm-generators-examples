@@ -41,6 +41,7 @@ class User extends Model
     protected $casts = [
         'emailVerified' => 'datetime',
         'lastSignedIn' => 'datetime',
+        'roles' => AsPrismaList::class . ':' . Role::class,
         'identityProvider' => IdentityProvider::class,
         'disabled' => 'boolean',
         'twoFactorEnabled' => 'boolean',

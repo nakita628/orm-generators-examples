@@ -5,8 +5,8 @@ defmodule Linkwarden.UsersAndCollections do
   @timestamps_opts [type: Linkwarden.PrismaDateTime, autogenerate: {Linkwarden.PrismaDateTime, :autogenerate, []}]
 
   @type t :: %__MODULE__{
-          user_id: term(),
-          collection_id: term(),
+          user_id: integer(),
+          collection_id: integer(),
           can_create: boolean(),
           can_update: boolean(),
           can_delete: boolean(),

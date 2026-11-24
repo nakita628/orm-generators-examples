@@ -7,7 +7,7 @@ defmodule Postiz.MastraExperiments do
           id: String.t(),
           name: String.t() | nil,
           description: String.t() | nil,
-          metadata: map() | nil,
+          metadata: map() | list() | String.t() | number() | boolean() | nil,
           dataset_id: String.t() | nil,
           dataset_version: integer() | nil,
           target_type: String.t(),
@@ -28,20 +28,20 @@ defmodule Postiz.MastraExperiments do
           updated_at_z: DateTime.t() | nil,
           organization_id: String.t() | nil,
           project_id: String.t() | nil,
-          provenance: map() | nil,
-          runner_attestation: map() | nil,
+          provenance: map() | list() | String.t() | number() | boolean() | nil,
+          runner_attestation: map() | list() | String.t() | number() | boolean() | nil,
           experiment_set_id: String.t() | nil,
           comparison_id: String.t() | nil,
           variant_id: String.t() | nil,
           trial_index: integer() | nil,
-          scorer_ids: map() | nil
+          scorer_ids: map() | list() | String.t() | number() | boolean() | nil
         }
 
   schema "mastra_experiments" do
     field(:id, :string, primary_key: true)
     field(:name, :string)
     field(:description, :string)
-    field(:metadata, :map)
+    field(:metadata, Postiz.PrismaJson)
     field(:dataset_id, :string, source: :datasetId)
     field(:dataset_version, :integer, source: :datasetVersion)
     field(:target_type, :string, source: :targetType)
@@ -62,12 +62,12 @@ defmodule Postiz.MastraExperiments do
     field(:updated_at_z, Postiz.PrismaDateTime, autogenerate: true, source: :updatedAtZ)
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)
-    field(:provenance, :map)
-    field(:runner_attestation, :map, source: :runnerAttestation)
+    field(:provenance, Postiz.PrismaJson)
+    field(:runner_attestation, Postiz.PrismaJson, source: :runnerAttestation)
     field(:experiment_set_id, :string, source: :experimentSetId)
     field(:comparison_id, :string, source: :comparisonId)
     field(:variant_id, :string, source: :variantId)
     field(:trial_index, :integer, source: :trialIndex)
-    field(:scorer_ids, :map, source: :scorerIds)
+    field(:scorer_ids, Postiz.PrismaJson, source: :scorerIds)
   end
 end

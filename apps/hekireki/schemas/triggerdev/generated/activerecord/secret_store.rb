@@ -1,5 +1,6 @@
 class SecretStore < ApplicationRecord
   self.table_name = "SecretStore"
+  self.primary_key = "key"
 
   attribute :version, default: "1"
   alias_attribute :created_at, :createdAt

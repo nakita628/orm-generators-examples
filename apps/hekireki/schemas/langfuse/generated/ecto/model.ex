@@ -14,7 +14,7 @@ defmodule Langfuse.Model do
           total_price: Decimal.t() | nil,
           unit: String.t() | nil,
           tokenizer_id: String.t() | nil,
-          tokenizer_config: map() | nil,
+          tokenizer_config: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           project: Langfuse.Project.t() | nil,
@@ -32,7 +32,7 @@ defmodule Langfuse.Model do
     field(:total_price, :decimal)
     field(:unit, :string)
     field(:tokenizer_id, :string)
-    field(:tokenizer_config, :map)
+    field(:tokenizer_config, Langfuse.PrismaJson)
     belongs_to(:project, Langfuse.Project, foreign_key: :project_id, type: :string)
     has_many(:price, Langfuse.Price, foreign_key: :model_id, references: :id)
     has_many(:pricing_tiers, Langfuse.PricingTier, foreign_key: :model_id, references: :id)

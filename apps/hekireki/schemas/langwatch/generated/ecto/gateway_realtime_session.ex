@@ -20,7 +20,7 @@ defmodule LangWatch.GatewayRealtimeSession do
           closed_at: DateTime.t() | nil,
           close_reason: String.t() | nil,
           trace_id: String.t() | nil,
-          vendor_cost_raw: map() | nil,
+          vendor_cost_raw: map() | list() | String.t() | number() | boolean() | nil,
           kind: String.t() | nil,
           metering: String.t() | nil,
           credential_expires_at: DateTime.t() | nil,
@@ -49,7 +49,7 @@ defmodule LangWatch.GatewayRealtimeSession do
     field(:closed_at, LangWatch.PrismaDateTime, source: :closedAt)
     field(:close_reason, :string, source: :closeReason)
     field(:trace_id, :string, source: :traceId)
-    field(:vendor_cost_raw, :map, source: :vendorCostRaw)
+    field(:vendor_cost_raw, LangWatch.PrismaJson, source: :vendorCostRaw)
     field(:kind, :string)
     field(:metering, :string)
     field(:credential_expires_at, LangWatch.PrismaDateTime, source: :credentialExpiresAt)

@@ -7,12 +7,10 @@ use serde::{Deserialize, Serialize};
 #[sea_orm(table_name = "team_user")]
 pub struct Model {
     #[sea_orm(primary_key, auto_increment = false)]
-    #[sea_orm(column_name = "team_user_id", column_type = "Uuid")]
-    pub id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub team_id: String,
-    #[sea_orm(column_type = "Uuid")]
-    pub user_id: String,
+    #[sea_orm(column_name = "team_user_id")]
+    pub id: Uuid,
+    pub team_id: Uuid,
+    pub user_id: Uuid,
     #[sea_orm(column_type = "String(StringLen::N(50))")]
     pub role: String,
     #[sea_orm(column_type = "TimestampWithTimeZone")]

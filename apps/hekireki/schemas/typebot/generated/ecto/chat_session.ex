@@ -6,7 +6,7 @@ defmodule Typebot.ChatSession do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          state: map(),
+          state: map() | list() | String.t() | number() | boolean(),
           is_replying: boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t()
@@ -14,7 +14,7 @@ defmodule Typebot.ChatSession do
 
   schema "ChatSession" do
     field(:id, :string, primary_key: true)
-    field(:state, :map)
+    field(:state, Typebot.PrismaJson)
     field(:is_replying, :boolean, source: :isReplying)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)
   end

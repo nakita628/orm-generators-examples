@@ -6,7 +6,7 @@ defmodule Trigger.EnvironmentEncryptionKey do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          wrapped_key: map(),
+          wrapped_key: map() | list() | String.t() | number() | boolean(),
           wrapping_provider: atom(),
           wrapping_key_reference: String.t(),
           revision: integer(),
@@ -16,7 +16,7 @@ defmodule Trigger.EnvironmentEncryptionKey do
 
   schema "EnvironmentEncryptionKey" do
     field(:id, :string, primary_key: true)
-    field(:wrapped_key, :map, source: :wrappedKey)
+    field(:wrapped_key, Trigger.PrismaJson, source: :wrappedKey)
     field(:wrapping_provider, Ecto.Enum, values: [:PLATFORM_KEYRING, :AWS_KMS], source: :wrappingProvider)
     field(:wrapping_key_reference, :string, source: :wrappingKeyReference)
     field(:revision, :integer, default: 0)

@@ -7,7 +7,7 @@ defmodule Jitsu.WorkspaceOptions do
   @type t :: %__MODULE__{
           id: String.t(),
           namespace: String.t(),
-          value: map(),
+          value: map() | list() | String.t() | number() | boolean(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           workspace: Jitsu.Workspace.t() | nil
@@ -16,7 +16,7 @@ defmodule Jitsu.WorkspaceOptions do
   schema "WorkspaceOptions" do
     field(:id, :string, primary_key: true)
     field(:namespace, :string)
-    field(:value, :map)
+    field(:value, Jitsu.PrismaJson)
     field(:workspace_id, :string, source: :workspaceId)
     belongs_to(:workspace, Jitsu.Workspace, foreign_key: :workspace_id, define_field: false, type: :string)
     timestamps(inserted_at_source: :createdAt, updated_at_source: :updatedAt)

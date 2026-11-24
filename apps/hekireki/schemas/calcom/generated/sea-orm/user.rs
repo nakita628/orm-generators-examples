@@ -13,8 +13,7 @@ pub struct Model {
     #[sea_orm(primary_key)]
     pub id: i32,
     #[sea_orm(unique)]
-    #[sea_orm(column_type = "Uuid")]
-    pub uuid: String,
+    pub uuid: Uuid,
     pub username: Option<String>,
     pub name: Option<String>,
     /// @zod.import(["import { emailSchema } from '../../zod-utils'"]).custom.use(emailSchema)
@@ -523,7 +522,7 @@ impl Related<super::platform_oauth_client::Entity> for Entity {
 impl ActiveModelBehavior for ActiveModel {
     fn new() -> Self {
         Self {
-            uuid: Set(uuid::Uuid::new_v4().to_string()),
+            uuid: Set(uuid::Uuid::new_v4()),
             ..ActiveModelTrait::default()
         }
     }

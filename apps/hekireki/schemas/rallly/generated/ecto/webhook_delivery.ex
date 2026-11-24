@@ -8,7 +8,7 @@ defmodule Rallly.WebhookDelivery do
           id: String.t(),
           activity_id: String.t(),
           event_type: String.t(),
-          payload: map(),
+          payload: map() | list() | String.t() | number() | boolean(),
           status: atom(),
           attempts: integer(),
           next_attempt_at: DateTime.t(),
@@ -25,7 +25,7 @@ defmodule Rallly.WebhookDelivery do
     field(:activity_id, :string)
     field(:event_type, :string)
     # Frozen at fan-out: retries resend exactly what the first attempt sent
-    field(:payload, :map)
+    field(:payload, Rallly.PrismaJson)
     field(:status, Ecto.Enum, values: [:pending, :in_flight, :succeeded, :failed, :exhausted], default: :pending)
     field(:attempts, :integer, default: 0)
     field(:next_attempt_at, Rallly.PrismaDateTime, autogenerate: true)

@@ -8,7 +8,7 @@ defmodule Trigger.EnvironmentVariableValue do
           id: String.t(),
           is_secret: boolean(),
           version: integer(),
-          last_updated_by: map() | nil,
+          last_updated_by: map() | list() | String.t() | number() | boolean() | nil,
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
           value_reference: Trigger.SecretReference.t() | nil,
@@ -21,7 +21,7 @@ defmodule Trigger.EnvironmentVariableValue do
     # If true, the value is secret and cannot be revealed
     field(:is_secret, :boolean, default: false, source: :isSecret)
     field(:version, :integer, default: 1)
-    field(:last_updated_by, :map, source: :lastUpdatedBy)
+    field(:last_updated_by, Trigger.PrismaJson, source: :lastUpdatedBy)
     field(:value_reference_id, :string, source: :valueReferenceId)
     field(:variable_id, :string, source: :variableId)
     field(:environment_id, :string, source: :environmentId)

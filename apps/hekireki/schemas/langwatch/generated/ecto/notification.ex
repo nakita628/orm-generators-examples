@@ -6,7 +6,7 @@ defmodule LangWatch.Notification do
 
   @type t :: %__MODULE__{
           id: String.t(),
-          metadata: map(),
+          metadata: map() | list() | String.t() | number() | boolean(),
           sent_at: DateTime.t(),
           inserted_at: DateTime.t(),
           updated_at: DateTime.t(),
@@ -16,7 +16,7 @@ defmodule LangWatch.Notification do
 
   schema "Notification" do
     field(:id, :string, primary_key: true)
-    field(:metadata, :map)
+    field(:metadata, LangWatch.PrismaJson)
     field(:sent_at, LangWatch.PrismaDateTime, source: :sentAt)
     field(:organization_id, :string, source: :organizationId)
     field(:project_id, :string, source: :projectId)

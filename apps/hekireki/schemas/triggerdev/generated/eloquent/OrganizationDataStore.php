@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
  * Multiple organizations can share a single data store row via organizationIds.
  *
  * @property string $key Human-readable unique key (e.g. "hipaa-clickhouse-us-east")
- * @property mixed $organizationIds Organization IDs that use this data store
+ * @property list<string> $organizationIds Organization IDs that use this data store
  * @property mixed $config Versioned config JSON. Structure is discriminated by the top-level `version` field.
  */
 class OrganizationDataStore extends Model
@@ -34,6 +34,7 @@ class OrganizationDataStore extends Model
     ];
 
     protected $casts = [
+        'organizationIds' => AsPrismaList::class,
         'kind' => DataStoreKind::class,
         'config' => 'array',
     ];
