@@ -454,6 +454,13 @@ CREATE TABLE `media_processing_budgets` (
 	`expires_at` datetime(3) NOT NULL
 );
 
+CREATE TABLE `meeting_audio_usage` (
+	`userId` varchar(15) NOT NULL,
+	`day` date NOT NULL,
+	`units` int NOT NULL DEFAULT 0,
+	CONSTRAINT PRIMARY KEY(`userId`,`day`)
+);
+
 CREATE TABLE `meeting_notes_trial_uses` (
 	`userId` varchar(15) NOT NULL,
 	`meetingId` varchar(64) NOT NULL,
@@ -1184,70 +1191,71 @@ ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integra
 
 ## Contents
 
-| Table                                                                   | Name in the database                | Description                                                                                     |
-| ----------------------------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------------- |
-| [users](#table-users)                                                   | `users`                             |                                                                                                 |
-| [loopsSyncJobs](#table-loopsSyncJobs)                                   | `loops_sync_jobs`                   |                                                                                                 |
-| [accounts](#table-accounts)                                             | `accounts`                          |                                                                                                 |
-| [sessions](#table-sessions)                                             | `sessions`                          |                                                                                                 |
-| [verificationTokens](#table-verificationTokens)                         | `verification_tokens`               |                                                                                                 |
-| [organizations](#table-organizations)                                   | `organizations`                     |                                                                                                 |
-| [organizationSso](#table-organizationSso)                               | `organization_sso`                  |                                                                                                 |
-| [organizationDirectorySync](#table-organizationDirectorySync)           | `organization_directory_sync`       |                                                                                                 |
-| [directoryUsers](#table-directoryUsers)                                 | `directory_users`                   |                                                                                                 |
-| [organizationMembers](#table-organizationMembers)                       | `organization_members`              |                                                                                                 |
-| [integrationInstallations](#table-integrationInstallations)             | `integration_installations`         |                                                                                                 |
-| [organizationInvites](#table-organizationInvites)                       | `organization_invites`              |                                                                                                 |
-| [folders](#table-folders)                                               | `folders`                           |                                                                                                 |
-| [videos](#table-videos)                                                 | `videos`                            |                                                                                                 |
-| [videoEdits](#table-videoEdits)                                         | `video_edits`                       |                                                                                                 |
-| [sharedVideos](#table-sharedVideos)                                     | `shared_videos`                     |                                                                                                 |
-| [videoViewerGrants](#table-videoViewerGrants)                           | `video_viewer_grants`               |                                                                                                 |
-| [comments](#table-comments)                                             | `comments`                          |                                                                                                 |
-| [notifications](#table-notifications)                                   | `notifications`                     |                                                                                                 |
-| [messengerConversations](#table-messengerConversations)                 | `messenger_conversations`           |                                                                                                 |
-| [messengerMessages](#table-messengerMessages)                           | `messenger_messages`                |                                                                                                 |
-| [messengerSupportEmails](#table-messengerSupportEmails)                 | `messenger_support_emails`          |                                                                                                 |
-| [signedBaas](#table-signedBaas)                                         | `signed_baas`                       |                                                                                                 |
-| [s3Buckets](#table-s3Buckets)                                           | `s3_buckets`                        |                                                                                                 |
-| [storageIntegrations](#table-storageIntegrations)                       | `storage_integrations`              |                                                                                                 |
-| [storageObjects](#table-storageObjects)                                 | `storage_objects`                   |                                                                                                 |
-| [authApiKeys](#table-authApiKeys)                                       | `auth_api_keys`                     |                                                                                                 |
-| [userPasskeys](#table-userPasskeys)                                     | `user_passkeys`                     |                                                                                                 |
-| [authChallenges](#table-authChallenges)                                 | `auth_challenges`                   |                                                                                                 |
-| [emailChangeRequests](#table-emailChangeRequests)                       | `email_change_requests`             |                                                                                                 |
-| [mobilePushTokens](#table-mobilePushTokens)                             | `mobile_push_tokens`                |                                                                                                 |
-| [mobilePushClaims](#table-mobilePushClaims)                             | `mobile_push_claims`                | One row per push that must send at most once, such as a Cap's view push for a 10-minute window. |
-| [agentApiKeys](#table-agentApiKeys)                                     | `agent_api_keys`                    |                                                                                                 |
-| [agentApiIdempotency](#table-agentApiIdempotency)                       | `agent_api_idempotency`             |                                                                                                 |
-| [agentApiAuthorizationCodes](#table-agentApiAuthorizationCodes)         | `agent_api_authorization_codes`     |                                                                                                 |
-| [mcpOAuthClients](#table-mcpOAuthClients)                               | `mcp_oauth_clients`                 |                                                                                                 |
-| [mcpOAuthRegistrationQuotas](#table-mcpOAuthRegistrationQuotas)         | `mcp_oauth_registration_quotas`     |                                                                                                 |
-| [mcpOAuthCodes](#table-mcpOAuthCodes)                                   | `mcp_oauth_codes`                   |                                                                                                 |
-| [mcpOAuthTokens](#table-mcpOAuthTokens)                                 | `mcp_oauth_tokens`                  |                                                                                                 |
-| [agentApiOperations](#table-agentApiOperations)                         | `agent_api_operations`              |                                                                                                 |
-| [spaces](#table-spaces)                                                 | `spaces`                            |                                                                                                 |
-| [spaceMembers](#table-spaceMembers)                                     | `space_members`                     |                                                                                                 |
-| [spaceVideos](#table-spaceVideos)                                       | `space_videos`                      |                                                                                                 |
-| [videoUploads](#table-videoUploads)                                     | `video_uploads`                     |                                                                                                 |
-| [videoProcessingJobs](#table-videoProcessingJobs)                       | `video_processing_jobs`             |                                                                                                 |
-| [mediaProcessingBudgets](#table-mediaProcessingBudgets)                 | `media_processing_budgets`          |                                                                                                 |
-| [importedVideos](#table-importedVideos)                                 | `imported_videos`                   |                                                                                                 |
-| [loomMigrationRequests](#table-loomMigrationRequests)                   | `loom_migration_requests`           |                                                                                                 |
-| [loomMigrationImports](#table-loomMigrationImports)                     | `loom_migration_imports`            |                                                                                                 |
-| [developerApps](#table-developerApps)                                   | `developer_apps`                    |                                                                                                 |
-| [developerAppDomains](#table-developerAppDomains)                       | `developer_app_domains`             |                                                                                                 |
-| [developerApiKeys](#table-developerApiKeys)                             | `developer_api_keys`                |                                                                                                 |
-| [developerVideos](#table-developerVideos)                               | `developer_videos`                  |                                                                                                 |
-| [developerTranscripts](#table-developerTranscripts)                     | `developer_transcripts`             |                                                                                                 |
-| [developerCreditAccounts](#table-developerCreditAccounts)               | `developer_credit_accounts`         |                                                                                                 |
-| [developerCreditTransactions](#table-developerCreditTransactions)       | `developer_credit_transactions`     |                                                                                                 |
-| [developerDailyStorageSnapshots](#table-developerDailyStorageSnapshots) | `developer_daily_storage_snapshots` |                                                                                                 |
-| [developerDeliveryDaily](#table-developerDeliveryDaily)                 | `developer_delivery_daily`          |                                                                                                 |
-| [developerDeliveryLogFiles](#table-developerDeliveryLogFiles)           | `developer_delivery_log_files`      |                                                                                                 |
-| [developerWebhookEndpoints](#table-developerWebhookEndpoints)           | `developer_webhook_endpoints`       |                                                                                                 |
-| [developerVideoImports](#table-developerVideoImports)                   | `developer_video_imports`           |                                                                                                 |
-| [meetingNotesTrialUses](#table-meetingNotesTrialUses)                   | `meeting_notes_trial_uses`          |                                                                                                 |
+| Table                                                                   | Name in the database                | Description                                                                                                                       |
+| ----------------------------------------------------------------------- | ----------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| [users](#table-users)                                                   | `users`                             |                                                                                                                                   |
+| [loopsSyncJobs](#table-loopsSyncJobs)                                   | `loops_sync_jobs`                   |                                                                                                                                   |
+| [accounts](#table-accounts)                                             | `accounts`                          |                                                                                                                                   |
+| [sessions](#table-sessions)                                             | `sessions`                          |                                                                                                                                   |
+| [verificationTokens](#table-verificationTokens)                         | `verification_tokens`               |                                                                                                                                   |
+| [organizations](#table-organizations)                                   | `organizations`                     |                                                                                                                                   |
+| [organizationSso](#table-organizationSso)                               | `organization_sso`                  |                                                                                                                                   |
+| [organizationDirectorySync](#table-organizationDirectorySync)           | `organization_directory_sync`       |                                                                                                                                   |
+| [directoryUsers](#table-directoryUsers)                                 | `directory_users`                   |                                                                                                                                   |
+| [organizationMembers](#table-organizationMembers)                       | `organization_members`              |                                                                                                                                   |
+| [integrationInstallations](#table-integrationInstallations)             | `integration_installations`         |                                                                                                                                   |
+| [organizationInvites](#table-organizationInvites)                       | `organization_invites`              |                                                                                                                                   |
+| [folders](#table-folders)                                               | `folders`                           |                                                                                                                                   |
+| [videos](#table-videos)                                                 | `videos`                            |                                                                                                                                   |
+| [videoEdits](#table-videoEdits)                                         | `video_edits`                       |                                                                                                                                   |
+| [sharedVideos](#table-sharedVideos)                                     | `shared_videos`                     |                                                                                                                                   |
+| [videoViewerGrants](#table-videoViewerGrants)                           | `video_viewer_grants`               |                                                                                                                                   |
+| [comments](#table-comments)                                             | `comments`                          |                                                                                                                                   |
+| [notifications](#table-notifications)                                   | `notifications`                     |                                                                                                                                   |
+| [messengerConversations](#table-messengerConversations)                 | `messenger_conversations`           |                                                                                                                                   |
+| [messengerMessages](#table-messengerMessages)                           | `messenger_messages`                |                                                                                                                                   |
+| [messengerSupportEmails](#table-messengerSupportEmails)                 | `messenger_support_emails`          |                                                                                                                                   |
+| [signedBaas](#table-signedBaas)                                         | `signed_baas`                       |                                                                                                                                   |
+| [s3Buckets](#table-s3Buckets)                                           | `s3_buckets`                        |                                                                                                                                   |
+| [storageIntegrations](#table-storageIntegrations)                       | `storage_integrations`              |                                                                                                                                   |
+| [storageObjects](#table-storageObjects)                                 | `storage_objects`                   |                                                                                                                                   |
+| [authApiKeys](#table-authApiKeys)                                       | `auth_api_keys`                     |                                                                                                                                   |
+| [userPasskeys](#table-userPasskeys)                                     | `user_passkeys`                     |                                                                                                                                   |
+| [authChallenges](#table-authChallenges)                                 | `auth_challenges`                   |                                                                                                                                   |
+| [emailChangeRequests](#table-emailChangeRequests)                       | `email_change_requests`             |                                                                                                                                   |
+| [mobilePushTokens](#table-mobilePushTokens)                             | `mobile_push_tokens`                |                                                                                                                                   |
+| [mobilePushClaims](#table-mobilePushClaims)                             | `mobile_push_claims`                | One row per push that must send at most once, such as a Cap's view push for a 10-minute window.                                   |
+| [agentApiKeys](#table-agentApiKeys)                                     | `agent_api_keys`                    |                                                                                                                                   |
+| [agentApiIdempotency](#table-agentApiIdempotency)                       | `agent_api_idempotency`             |                                                                                                                                   |
+| [agentApiAuthorizationCodes](#table-agentApiAuthorizationCodes)         | `agent_api_authorization_codes`     |                                                                                                                                   |
+| [mcpOAuthClients](#table-mcpOAuthClients)                               | `mcp_oauth_clients`                 |                                                                                                                                   |
+| [mcpOAuthRegistrationQuotas](#table-mcpOAuthRegistrationQuotas)         | `mcp_oauth_registration_quotas`     |                                                                                                                                   |
+| [mcpOAuthCodes](#table-mcpOAuthCodes)                                   | `mcp_oauth_codes`                   |                                                                                                                                   |
+| [mcpOAuthTokens](#table-mcpOAuthTokens)                                 | `mcp_oauth_tokens`                  |                                                                                                                                   |
+| [agentApiOperations](#table-agentApiOperations)                         | `agent_api_operations`              |                                                                                                                                   |
+| [spaces](#table-spaces)                                                 | `spaces`                            |                                                                                                                                   |
+| [spaceMembers](#table-spaceMembers)                                     | `space_members`                     |                                                                                                                                   |
+| [spaceVideos](#table-spaceVideos)                                       | `space_videos`                      |                                                                                                                                   |
+| [videoUploads](#table-videoUploads)                                     | `video_uploads`                     |                                                                                                                                   |
+| [videoProcessingJobs](#table-videoProcessingJobs)                       | `video_processing_jobs`             |                                                                                                                                   |
+| [mediaProcessingBudgets](#table-mediaProcessingBudgets)                 | `media_processing_budgets`          |                                                                                                                                   |
+| [importedVideos](#table-importedVideos)                                 | `imported_videos`                   |                                                                                                                                   |
+| [loomMigrationRequests](#table-loomMigrationRequests)                   | `loom_migration_requests`           |                                                                                                                                   |
+| [loomMigrationImports](#table-loomMigrationImports)                     | `loom_migration_imports`            |                                                                                                                                   |
+| [developerApps](#table-developerApps)                                   | `developer_apps`                    |                                                                                                                                   |
+| [developerAppDomains](#table-developerAppDomains)                       | `developer_app_domains`             |                                                                                                                                   |
+| [developerApiKeys](#table-developerApiKeys)                             | `developer_api_keys`                |                                                                                                                                   |
+| [developerVideos](#table-developerVideos)                               | `developer_videos`                  |                                                                                                                                   |
+| [developerTranscripts](#table-developerTranscripts)                     | `developer_transcripts`             |                                                                                                                                   |
+| [developerCreditAccounts](#table-developerCreditAccounts)               | `developer_credit_accounts`         |                                                                                                                                   |
+| [developerCreditTransactions](#table-developerCreditTransactions)       | `developer_credit_transactions`     |                                                                                                                                   |
+| [developerDailyStorageSnapshots](#table-developerDailyStorageSnapshots) | `developer_daily_storage_snapshots` |                                                                                                                                   |
+| [developerDeliveryDaily](#table-developerDeliveryDaily)                 | `developer_delivery_daily`          |                                                                                                                                   |
+| [developerDeliveryLogFiles](#table-developerDeliveryLogFiles)           | `developer_delivery_log_files`      |                                                                                                                                   |
+| [developerWebhookEndpoints](#table-developerWebhookEndpoints)           | `developer_webhook_endpoints`       |                                                                                                                                   |
+| [developerVideoImports](#table-developerVideoImports)                   | `developer_video_imports`           |                                                                                                                                   |
+| [meetingNotesTrialUses](#table-meetingNotesTrialUses)                   | `meeting_notes_trial_uses`          |                                                                                                                                   |
+| [meetingAudioUsage](#table-meetingAudioUsage)                           | `meeting_audio_usage`               | Seconds of meeting audio transcribed per user and UTC day, in units of 10 s, so the daily cap holds across every server instance. |
 
 ## Tables
 
@@ -10447,6 +10455,141 @@ db.delete(meetingNotesTrialUses).where(
 delete from `meeting_notes_trial_uses`
 where ((`meeting_notes_trial_uses`.`userId` = ?) and (`meeting_notes_trial_uses`.`meetingId` = ?))
 -- params: ["userId","meetingId"]
+```
+
+</details>
+
+<a id="table-meetingAudioUsage"></a>
+
+### meetingAudioUsage
+
+Table `meeting_audio_usage`. Seconds of meeting audio transcribed per user and UTC day, in units of 10 s, so the daily cap holds across every server instance.
+
+![meetingAudioUsage](tables/meetingAudioUsage.svg)
+
+| Column   | Type      | Constraints | Default       | Description |
+| -------- | --------- | ----------- | ------------- | ----------- |
+| `userId` | `varchar` | PK NOT NULL |               |             |
+| `day`    | `date`    | PK NOT NULL |               |             |
+| `units`  | `int`     | NOT NULL    | `.default(0)` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `meeting_audio_usage` (
+	`userId` varchar(15) NOT NULL,
+	`day` date NOT NULL,
+	`units` int NOT NULL DEFAULT 0,
+	CONSTRAINT PRIMARY KEY(`userId`,`day`)
+);
+```
+
+#### Indexes
+
+- PRIMARY KEY `userId`, `day`
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of meetingAudioUsage.
+
+```ts
+db.select().from(meetingAudioUsage);
+```
+
+```sql
+select `userId`, `day`, `units`
+from `meeting_audio_usage`
+```
+
+**Count**: How many rows meetingAudioUsage has.
+
+```ts
+db.select({ count: count() }).from(meetingAudioUsage);
+```
+
+```sql
+select count(*)
+from `meeting_audio_usage`
+```
+
+**Find many**: The rows of meetingAudioUsage, through the relational query API.
+
+```ts
+db.query.meetingAudioUsage.findMany();
+```
+
+```sql
+select `d0`.`userId` as `userId`, `d0`.`day` as `day`, `d0`.`units` as `units`
+from `meeting_audio_usage` as `d0`
+```
+
+**Find by primary key**: One row of meetingAudioUsage, through the relational query API.
+
+```ts
+db.query.meetingAudioUsage.findFirst({
+  where: { userId: "userId", day: new Date("2026-01-01T00:00:00.000Z") },
+});
+```
+
+```sql
+select `d0`.`userId` as `userId`, `d0`.`day` as `day`, `d0`.`units` as `units`
+from `meeting_audio_usage` as `d0`
+where `d0`.`userId` = ?
+limit ?
+-- params: ["userId",1]
+```
+
+**Insert**: Adds a row to meetingAudioUsage, giving the columns that have no default.
+
+```ts
+db.insert(meetingAudioUsage).values({
+  userId: "userId",
+  day: new Date("2026-01-01T00:00:00.000Z"),
+});
+```
+
+```sql
+insert into `meeting_audio_usage` (`userId`, `day`, `units`)
+values (?, ?, default)
+-- params: ["userId","2026-01-01T00:00:00.000Z"]
+```
+
+**Update**: Changes a row of meetingAudioUsage, found by its primary key.
+
+```ts
+db.update(meetingAudioUsage)
+  .set({ units: 1 })
+  .where(
+    and(
+      eq(meetingAudioUsage.userId, "userId"),
+      eq(meetingAudioUsage.day, new Date("2026-01-01T00:00:00.000Z")),
+    ),
+  );
+```
+
+```sql
+update `meeting_audio_usage`
+set `units` = ?
+where ((`meeting_audio_usage`.`userId` = ?) and (`meeting_audio_usage`.`day` = ?))
+-- params: [1,"userId","2026-01-01T00:00:00.000Z"]
+```
+
+**Delete**: Deletes a row of meetingAudioUsage, found by its primary key.
+
+```ts
+db.delete(meetingAudioUsage).where(
+  and(
+    eq(meetingAudioUsage.userId, "userId"),
+    eq(meetingAudioUsage.day, new Date("2026-01-01T00:00:00.000Z")),
+  ),
+);
+```
+
+```sql
+delete from `meeting_audio_usage`
+where ((`meeting_audio_usage`.`userId` = ?) and (`meeting_audio_usage`.`day` = ?))
+-- params: ["userId","2026-01-01T00:00:00.000Z"]
 ```
 
 </details>

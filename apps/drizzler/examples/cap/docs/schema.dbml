@@ -1116,6 +1116,16 @@ Table meeting_notes_trial_uses {
   }
 }
 
+Table meeting_audio_usage {
+  userId varchar [not null]
+  day date [not null]
+  units integer [not null]
+  indexes {
+    (userId, day) [pk]
+  }
+  Note: 'Seconds of meeting audio transcribed per user and UTC day, in units of 10 s, so the daily cap holds across every server instance.'
+}
+
 Ref videos_storageIntegrationId_storage_integrations_id_fk: videos.storageIntegrationId > storage_integrations.id [delete: restrict]
 
 Ref video_edits_videoId_videos_id_fk: video_edits.videoId - videos.id [delete: cascade]

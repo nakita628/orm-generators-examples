@@ -825,4 +825,9 @@ erDiagram
         datetime completedAt
         datetime createdAt
     }
+    meeting_audio_usage {
+        varchar userId PK
+        date day PK
+        integer units
+    }
 ```
