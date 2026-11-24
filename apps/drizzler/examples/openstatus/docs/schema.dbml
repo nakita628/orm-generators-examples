@@ -375,6 +375,9 @@ Table monitor_incident {
   incident_screenshot_url text
   recovery_screenshot_url text
   auto_resolved integer [note: 'If the incident was auto resolved']
+  excused_at integer [note: 'An excused outage counts as up and is hidden from public surfaces']
+  excused_by integer
+  excused_reason text
   created_at integer
   updated_at integer
   indexes {
@@ -888,6 +891,8 @@ Table incident {
   resolved_at integer
   resolved_by integer
   closed_at integer
+  acknowledged_at integer
+  acknowledged_by integer
   status_report_id integer
   slack_team_id text
   slack_channel_id text
@@ -948,10 +953,38 @@ Table slack_user {
 Table monitor_heartbeat_state {
   monitor_id integer [pk, not null]
   last_ping_at integer
+  first_ping_at integer [note: 'uptime is measured from here; NULL on rows that pinged before the column existed']
   last_ping_kind text [not null, note: 'what the last ping reported: a `/fail` keeps the heartbeat down until a success ping']
   next_due_at integer [note: 'NULL until the first ping, so a new heartbeat never alerts']
   indexes {
     (next_due_at) [name: 'monitor_heartbeat_state_next_due_at_idx']
+  }
+}
+
+Table monitor_maintenance_window {
+  id integer [pk, not null]
+  workspace_id integer [not null]
+  title text [not null]
+  mode text [not null]
+  from integer [not null]
+  to integer [not null]
+  created_by integer
+  updated_by integer
+  created_at integer [not null]
+  updated_at integer [not null]
+  indexes {
+    (workspace_id) [name: 'monitor_maintenance_window_workspace_id_idx']
+    (to) [name: 'monitor_maintenance_window_to_idx']
+  }
+  Note: '[from, to) in which the window\'s monitors pause, or keep checking without status changes or alerts.'
+}
+
+Table monitor_maintenance_window_to_monitor {
+  monitor_maintenance_window_id integer [not null]
+  monitor_id integer [not null]
+  indexes {
+    (monitor_maintenance_window_id, monitor_id) [pk]
+    (monitor_id) [name: 'monitor_maintenance_window_to_monitor_monitor_id_idx']
   }
 }
 
@@ -1022,6 +1055,8 @@ Ref monitor_incident_workspace_id_workspace_id_fk: monitor_incident.workspace_id
 Ref monitor_incident_acknowledged_by_user_id_fk: monitor_incident.acknowledged_by > user.id
 
 Ref monitor_incident_resolved_by_user_id_fk: monitor_incident.resolved_by > user.id
+
+Ref monitor_incident_excused_by_user_id_fk: monitor_incident.excused_by > user.id [delete: set null]
 
 Ref monitor_tag_workspace_id_workspace_id_fk: monitor_tag.workspace_id > workspace.id [delete: cascade]
 
@@ -1143,6 +1178,8 @@ Ref incident_declared_by_user_id_fk: incident.declared_by > user.id
 
 Ref incident_resolved_by_user_id_fk: incident.resolved_by > user.id
 
+Ref incident_acknowledged_by_user_id_fk: incident.acknowledged_by > user.id
+
 Ref incident_status_report_id_status_report_id_fk: incident.status_report_id - status_report.id [delete: set null]
 
 Ref incident_event_incident_id_incident_id_fk: incident_event.incident_id > incident.id [delete: cascade]
@@ -1162,5 +1199,15 @@ Ref slack_user_workspace_id_workspace_id_fk: slack_user.workspace_id > workspace
 Ref slack_user_user_id_user_id_fk: slack_user.user_id > user.id
 
 Ref monitor_heartbeat_state_monitor_id_monitor_id_fk: monitor_heartbeat_state.monitor_id - monitor.id [delete: cascade]
+
+Ref monitor_maintenance_window_workspace_id_workspace_id_fk: monitor_maintenance_window.workspace_id > workspace.id [delete: cascade]
+
+Ref monitor_maintenance_window_created_by_user_id_fk: monitor_maintenance_window.created_by > user.id [delete: set null]
+
+Ref monitor_maintenance_window_updated_by_user_id_fk: monitor_maintenance_window.updated_by > user.id [delete: set null]
+
+Ref monitor_maintenance_window_to_monitor_monitor_maintenance_window_id_monitor_maintenance_window_id_fk: monitor_maintenance_window_to_monitor.monitor_maintenance_window_id > monitor_maintenance_window.id [delete: cascade]
+
+Ref monitor_maintenance_window_to_monitor_monitor_id_monitor_id_fk: monitor_maintenance_window_to_monitor.monitor_id > monitor.id [delete: cascade]
 
 Ref invitation_workspace_id_workspace_id: invitation.workspace_id > workspace.id

@@ -194,6 +194,8 @@ CREATE TABLE `incident` (
 	`resolved_at` integer,
 	`resolved_by` integer,
 	`closed_at` integer,
+	`acknowledged_at` integer,
+	`acknowledged_by` integer,
 	`status_report_id` integer,
 	`slack_team_id` text,
 	`slack_channel_id` text,
@@ -203,6 +205,7 @@ CREATE TABLE `incident` (
 	CONSTRAINT `fk_incident_commander_id_user_id_fk` FOREIGN KEY (`commander_id`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_declared_by_user_id_fk` FOREIGN KEY (`declared_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_resolved_by_user_id_fk` FOREIGN KEY (`resolved_by`) REFERENCES `user`(`id`),
+	CONSTRAINT `fk_incident_acknowledged_by_user_id_fk` FOREIGN KEY (`acknowledged_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_status_report_id_status_report_id_fk` FOREIGN KEY (`status_report_id`) REFERENCES `status_report`(`id`) ON DELETE SET NULL
 );
 
@@ -353,6 +356,7 @@ CREATE TABLE `monitor_group` (
 CREATE TABLE `monitor_heartbeat_state` (
 	`monitor_id` integer PRIMARY KEY,
 	`last_ping_at` integer,
+	`first_ping_at` integer,
 	`last_ping_kind` text DEFAULT 'success' NOT NULL,
 	`next_due_at` integer,
 	CONSTRAINT `fk_monitor_heartbeat_state_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE CASCADE
@@ -373,13 +377,41 @@ CREATE TABLE `monitor_incident` (
 	`incident_screenshot_url` text,
 	`recovery_screenshot_url` text,
 	`auto_resolved` integer DEFAULT false,
+	`excused_at` integer,
+	`excused_by` integer,
+	`excused_reason` text,
 	`created_at` integer DEFAULT (strftime('%s', 'now')),
 	`updated_at` integer DEFAULT (strftime('%s', 'now')),
 	CONSTRAINT `fk_monitor_incident_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE SET DEFAULT,
 	CONSTRAINT `fk_monitor_incident_workspace_id_workspace_id_fk` FOREIGN KEY (`workspace_id`) REFERENCES `workspace`(`id`),
 	CONSTRAINT `fk_monitor_incident_acknowledged_by_user_id_fk` FOREIGN KEY (`acknowledged_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_monitor_incident_resolved_by_user_id_fk` FOREIGN KEY (`resolved_by`) REFERENCES `user`(`id`),
+	CONSTRAINT `fk_monitor_incident_excused_by_user_id_fk` FOREIGN KEY (`excused_by`) REFERENCES `user`(`id`) ON DELETE SET NULL,
 	CONSTRAINT `monitor_incident_monitor_id_started_at_unique` UNIQUE(`monitor_id`,`started_at`)
+);
+
+CREATE TABLE `monitor_maintenance_window` (
+	`id` integer PRIMARY KEY,
+	`workspace_id` integer NOT NULL,
+	`title` text(256) NOT NULL,
+	`mode` text DEFAULT 'pause' NOT NULL,
+	`from` integer NOT NULL,
+	`to` integer NOT NULL,
+	`created_by` integer,
+	`updated_by` integer,
+	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
+	CONSTRAINT `fk_monitor_maintenance_window_workspace_id_workspace_id_fk` FOREIGN KEY (`workspace_id`) REFERENCES `workspace`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_monitor_maintenance_window_created_by_user_id_fk` FOREIGN KEY (`created_by`) REFERENCES `user`(`id`) ON DELETE SET NULL,
+	CONSTRAINT `fk_monitor_maintenance_window_updated_by_user_id_fk` FOREIGN KEY (`updated_by`) REFERENCES `user`(`id`) ON DELETE SET NULL
+);
+
+CREATE TABLE `monitor_maintenance_window_to_monitor` (
+	`monitor_maintenance_window_id` integer NOT NULL,
+	`monitor_id` integer NOT NULL,
+	CONSTRAINT `monitor_maintenance_window_to_monitor_pk` PRIMARY KEY(`monitor_maintenance_window_id`, `monitor_id`),
+	CONSTRAINT `fk_monitor_maintenance_window_to_monitor_monitor_maintenance_window_id_monitor_maintenance_window_id_fk` FOREIGN KEY (`monitor_maintenance_window_id`) REFERENCES `monitor_maintenance_window`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_monitor_maintenance_window_to_monitor_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE CASCADE
 );
 
 CREATE TABLE `monitor_run` (
@@ -937,6 +969,12 @@ CREATE INDEX `monitor_incident_workspace_id_started_at_idx` ON `monitor_incident
 
 CREATE UNIQUE INDEX `monitor_incident_open_idx` ON `monitor_incident` (`monitor_id`) WHERE "monitor_incident"."resolved_at" IS NULL;
 
+CREATE INDEX `monitor_maintenance_window_workspace_id_idx` ON `monitor_maintenance_window` (`workspace_id`);
+
+CREATE INDEX `monitor_maintenance_window_to_idx` ON `monitor_maintenance_window` (`to`);
+
+CREATE INDEX `monitor_maintenance_window_to_monitor_monitor_id_idx` ON `monitor_maintenance_window_to_monitor` (`monitor_id`);
+
 CREATE INDEX `monitor_run_workspace_id_created_at_idx` ON `monitor_run` (`workspace_id`,`created_at`);
 
 CREATE INDEX `monitor_run_monitor_id_idx` ON `monitor_run` (`monitor_id`);
@@ -1102,6 +1140,8 @@ CREATE INDEX `workspace_sso_domain_workspace_id_idx` ON `workspace_sso_domain` (
 | [incidentPostmortem](#table-incidentPostmortem)                                 | `incident_postmortem`                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | [slackUser](#table-slackUser)                                                   | `slack_user`                             |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | [monitorHeartbeatState](#table-monitorHeartbeatState)                           | `monitor_heartbeat_state`                |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| [monitorMaintenanceWindow](#table-monitorMaintenanceWindow)                     | `monitor_maintenance_window`             | [from, to) in which the window's monitors pause, or keep checking without status changes or alerts.                                                                                                                                                                                                                                                                                                                                                                                        |
+| [monitorMaintenanceWindowToMonitor](#table-monitorMaintenanceWindowToMonitor)   | `monitor_maintenance_window_to_monitor`  |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 
 ## Tables
 
@@ -1319,6 +1359,7 @@ CREATE TABLE `workspace` (
 - `id` → [oauthGrant.workspaceId](#table-oauthGrant) (one to many, on delete cascade)
 - `id` → [incident.workspaceId](#table-incident) (one to many)
 - `id` → [slackUser.workspaceId](#table-slackUser) (one to many, on delete cascade)
+- `id` → [monitorMaintenanceWindow.workspaceId](#table-monitorMaintenanceWindow) (one to many, on delete cascade)
 - `id` → [invitation.workspaceId](#table-invitation) (one to many, defineRelations)
 
 <details>
@@ -1593,6 +1634,7 @@ CREATE INDEX `user_email_idx` ON `user` (`email`);
 - `id` → [statusReportUpdate.updatedBy](#table-statusReportUpdate) (one to many)
 - `id` → [monitorIncidentTable.acknowledgedBy](#table-monitorIncidentTable) (one to many)
 - `id` → [monitorIncidentTable.resolvedBy](#table-monitorIncidentTable) (one to many)
+- `id` → [monitorIncidentTable.excusedBy](#table-monitorIncidentTable) (one to many, on delete set null)
 - `id` → [maintenance.createdBy](#table-maintenance) (one to many)
 - `id` → [maintenance.updatedBy](#table-maintenance) (one to many)
 - `id` → [maintenanceUpdate.createdBy](#table-maintenanceUpdate) (one to many)
@@ -1605,11 +1647,14 @@ CREATE INDEX `user_email_idx` ON `user` (`email`);
 - `id` → [incident.commanderId](#table-incident) (one to many)
 - `id` → [incident.declaredBy](#table-incident) (one to many)
 - `id` → [incident.resolvedBy](#table-incident) (one to many)
+- `id` → [incident.acknowledgedBy](#table-incident) (one to many)
 - `id` → [incidentEvent.createdBy](#table-incidentEvent) (one to many)
 - `id` → [incidentPostmortem.createdBy](#table-incidentPostmortem) (one to many)
 - `id` → [incidentPostmortem.updatedBy](#table-incidentPostmortem) (one to many)
 - `id` → [incidentPostmortem.approvedBy](#table-incidentPostmortem) (one to many)
 - `id` → [slackUser.userId](#table-slackUser) (one to many)
+- `id` → [monitorMaintenanceWindow.createdBy](#table-monitorMaintenanceWindow) (one to many, on delete set null)
+- `id` → [monitorMaintenanceWindow.updatedBy](#table-monitorMaintenanceWindow) (one to many, on delete set null)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -2830,6 +2875,7 @@ CREATE UNIQUE INDEX `monitor_heartbeat_token_idx` ON `monitor` (`heartbeat_token
 - `id` → [frozenMonitorUptime.monitorId](#table-frozenMonitorUptime) (one to many, on delete cascade)
 - `id` → [monitorTransition.monitorId](#table-monitorTransition) (one to many, on delete cascade)
 - `id` → [monitorHeartbeatState.monitorId](#table-monitorHeartbeatState) (one to one, on delete cascade)
+- `id` → [monitorMaintenanceWindowToMonitor.monitorId](#table-monitorMaintenanceWindowToMonitor) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -4260,24 +4306,27 @@ Table `monitor_incident`.
 
 ![monitorIncidentTable and the tables it relates to](tables/monitorIncidentTable.svg)
 
-| Column                                              | Type      | Constraints                             | Default                                    | Description                           |
-| --------------------------------------------------- | --------- | --------------------------------------- | ------------------------------------------ | ------------------------------------- |
-| `id`                                                | `integer` | PK NOT NULL                             |                                            |                                       |
-| `title`                                             | `text`    | NOT NULL                                | `.default("")`                             |                                       |
-| `summary`                                           | `text`    | NOT NULL                                | `.default("")`                             |                                       |
-| `status`                                            | `text`    | NOT NULL                                | `.default("triage")`                       |                                       |
-| `monitorId` (`monitor_id`)                          | `integer` | NULL → [monitor.id](#table-monitor)     |                                            | Service affected by incident          |
-| `workspaceId` (`workspace_id`)                      | `integer` | NULL → [workspace.id](#table-workspace) |                                            | Workspace where the incident happened |
-| `startedAt` (`started_at`)                          | `integer` | NOT NULL                                | ``.default(sql`(strftime('%s', 'now'))`)`` | Data related to incident timeline     |
-| `acknowledgedAt` (`acknowledged_at`)                | `integer` | NULL                                    |                                            | Who has acknowledged the incident     |
-| `acknowledgedBy` (`acknowledged_by`)                | `integer` | NULL → [user.id](#table-user)           |                                            |                                       |
-| `resolvedAt` (`resolved_at`)                        | `integer` | NULL                                    |                                            | Who has resolved it                   |
-| `resolvedBy` (`resolved_by`)                        | `integer` | NULL → [user.id](#table-user)           |                                            |                                       |
-| `incidentScreenshotUrl` (`incident_screenshot_url`) | `text`    | NULL                                    |                                            |                                       |
-| `recoveryScreenshotUrl` (`recovery_screenshot_url`) | `text`    | NULL                                    |                                            |                                       |
-| `autoResolved` (`auto_resolved`)                    | `integer` | NULL                                    | `.default(false)`                          | If the incident was auto resolved     |
-| `createdAt` (`created_at`)                          | `integer` | NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |                                       |
-| `updatedAt` (`updated_at`)                          | `integer` | NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |                                       |
+| Column                                              | Type      | Constraints                             | Default                                    | Description                                                       |
+| --------------------------------------------------- | --------- | --------------------------------------- | ------------------------------------------ | ----------------------------------------------------------------- |
+| `id`                                                | `integer` | PK NOT NULL                             |                                            |                                                                   |
+| `title`                                             | `text`    | NOT NULL                                | `.default("")`                             |                                                                   |
+| `summary`                                           | `text`    | NOT NULL                                | `.default("")`                             |                                                                   |
+| `status`                                            | `text`    | NOT NULL                                | `.default("triage")`                       |                                                                   |
+| `monitorId` (`monitor_id`)                          | `integer` | NULL → [monitor.id](#table-monitor)     |                                            | Service affected by incident                                      |
+| `workspaceId` (`workspace_id`)                      | `integer` | NULL → [workspace.id](#table-workspace) |                                            | Workspace where the incident happened                             |
+| `startedAt` (`started_at`)                          | `integer` | NOT NULL                                | ``.default(sql`(strftime('%s', 'now'))`)`` | Data related to incident timeline                                 |
+| `acknowledgedAt` (`acknowledged_at`)                | `integer` | NULL                                    |                                            | Who has acknowledged the incident                                 |
+| `acknowledgedBy` (`acknowledged_by`)                | `integer` | NULL → [user.id](#table-user)           |                                            |                                                                   |
+| `resolvedAt` (`resolved_at`)                        | `integer` | NULL                                    |                                            | Who has resolved it                                               |
+| `resolvedBy` (`resolved_by`)                        | `integer` | NULL → [user.id](#table-user)           |                                            |                                                                   |
+| `incidentScreenshotUrl` (`incident_screenshot_url`) | `text`    | NULL                                    |                                            |                                                                   |
+| `recoveryScreenshotUrl` (`recovery_screenshot_url`) | `text`    | NULL                                    |                                            |                                                                   |
+| `autoResolved` (`auto_resolved`)                    | `integer` | NULL                                    | `.default(false)`                          | If the incident was auto resolved                                 |
+| `excusedAt` (`excused_at`)                          | `integer` | NULL                                    |                                            | An excused outage counts as up and is hidden from public surfaces |
+| `excusedBy` (`excused_by`)                          | `integer` | NULL → [user.id](#table-user)           |                                            |                                                                   |
+| `excusedReason` (`excused_reason`)                  | `text`    | NULL                                    |                                            |                                                                   |
+| `createdAt` (`created_at`)                          | `integer` | NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |                                                                   |
+| `updatedAt` (`updated_at`)                          | `integer` | NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |                                                                   |
 
 #### Definition
 
@@ -4297,12 +4346,16 @@ CREATE TABLE `monitor_incident` (
 	`incident_screenshot_url` text,
 	`recovery_screenshot_url` text,
 	`auto_resolved` integer DEFAULT false,
+	`excused_at` integer,
+	`excused_by` integer,
+	`excused_reason` text,
 	`created_at` integer DEFAULT (strftime('%s', 'now')),
 	`updated_at` integer DEFAULT (strftime('%s', 'now')),
 	CONSTRAINT `fk_monitor_incident_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE SET DEFAULT,
 	CONSTRAINT `fk_monitor_incident_workspace_id_workspace_id_fk` FOREIGN KEY (`workspace_id`) REFERENCES `workspace`(`id`),
 	CONSTRAINT `fk_monitor_incident_acknowledged_by_user_id_fk` FOREIGN KEY (`acknowledged_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_monitor_incident_resolved_by_user_id_fk` FOREIGN KEY (`resolved_by`) REFERENCES `user`(`id`),
+	CONSTRAINT `fk_monitor_incident_excused_by_user_id_fk` FOREIGN KEY (`excused_by`) REFERENCES `user`(`id`) ON DELETE SET NULL,
 	CONSTRAINT `monitor_incident_monitor_id_started_at_unique` UNIQUE(`monitor_id`,`started_at`)
 );
 
@@ -4323,6 +4376,7 @@ CREATE UNIQUE INDEX `monitor_incident_open_idx` ON `monitor_incident` (`monitor_
 - `workspaceId` → [workspace.id](#table-workspace) (many to one)
 - `acknowledgedBy` → [user.id](#table-user) (many to one)
 - `resolvedBy` → [user.id](#table-user) (many to one)
+- `excusedBy` → [user.id](#table-user) (many to one, on delete set null)
 
 #### Referenced by
 
@@ -4338,7 +4392,7 @@ db.select().from(monitorIncidentTable);
 ```
 
 ```sql
-select "id", "title", "summary", "status", "monitor_id", "workspace_id", "started_at", "acknowledged_at", "acknowledged_by", "resolved_at", "resolved_by", "incident_screenshot_url", "recovery_screenshot_url", "auto_resolved", "created_at", "updated_at"
+select "id", "title", "summary", "status", "monitor_id", "workspace_id", "started_at", "acknowledged_at", "acknowledged_by", "resolved_at", "resolved_by", "incident_screenshot_url", "recovery_screenshot_url", "auto_resolved", "excused_at", "excused_by", "excused_reason", "created_at", "updated_at"
 from "monitor_incident"
 ```
 
@@ -4360,7 +4414,7 @@ db.query.monitorIncidentTable.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."title" as "title", "d0"."summary" as "summary", "d0"."status" as "status", "d0"."monitor_id" as "monitorId", "d0"."workspace_id" as "workspaceId", "d0"."started_at" as "startedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."incident_screenshot_url" as "incidentScreenshotUrl", "d0"."recovery_screenshot_url" as "recoveryScreenshotUrl", "d0"."auto_resolved" as "autoResolved", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."title" as "title", "d0"."summary" as "summary", "d0"."status" as "status", "d0"."monitor_id" as "monitorId", "d0"."workspace_id" as "workspaceId", "d0"."started_at" as "startedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."incident_screenshot_url" as "incidentScreenshotUrl", "d0"."recovery_screenshot_url" as "recoveryScreenshotUrl", "d0"."auto_resolved" as "autoResolved", "d0"."excused_at" as "excusedAt", "d0"."excused_by" as "excusedBy", "d0"."excused_reason" as "excusedReason", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "monitor_incident" as "d0"
 ```
 
@@ -4371,7 +4425,7 @@ db.query.monitorIncidentTable.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."title" as "title", "d0"."summary" as "summary", "d0"."status" as "status", "d0"."monitor_id" as "monitorId", "d0"."workspace_id" as "workspaceId", "d0"."started_at" as "startedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."incident_screenshot_url" as "incidentScreenshotUrl", "d0"."recovery_screenshot_url" as "recoveryScreenshotUrl", "d0"."auto_resolved" as "autoResolved", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."title" as "title", "d0"."summary" as "summary", "d0"."status" as "status", "d0"."monitor_id" as "monitorId", "d0"."workspace_id" as "workspaceId", "d0"."started_at" as "startedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."incident_screenshot_url" as "incidentScreenshotUrl", "d0"."recovery_screenshot_url" as "recoveryScreenshotUrl", "d0"."auto_resolved" as "autoResolved", "d0"."excused_at" as "excusedAt", "d0"."excused_by" as "excusedBy", "d0"."excused_reason" as "excusedReason", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "monitor_incident" as "d0"
 where "d0"."id" = ?
 limit ?
@@ -4385,8 +4439,8 @@ db.insert(monitorIncidentTable).values({ id: 1 });
 ```
 
 ```sql
-insert into "monitor_incident" ("id", "title", "summary", "status", "monitor_id", "workspace_id", "started_at", "acknowledged_at", "acknowledged_by", "resolved_at", "resolved_by", "incident_screenshot_url", "recovery_screenshot_url", "auto_resolved", "created_at", "updated_at")
-values (?, ?, ?, ?, null, null, (strftime('%s', 'now')), null, null, null, null, null, null, ?, (strftime('%s', 'now')), (strftime('%s', 'now')))
+insert into "monitor_incident" ("id", "title", "summary", "status", "monitor_id", "workspace_id", "started_at", "acknowledged_at", "acknowledged_by", "resolved_at", "resolved_by", "incident_screenshot_url", "recovery_screenshot_url", "auto_resolved", "excused_at", "excused_by", "excused_reason", "created_at", "updated_at")
+values (?, ?, ?, ?, null, null, (strftime('%s', 'now')), null, null, null, null, null, null, ?, null, null, null, (strftime('%s', 'now')), (strftime('%s', 'now')))
 -- params: [1,"","","triage",0]
 ```
 
@@ -9147,6 +9201,8 @@ Autoincrement: audit rows outlive a deleted incident, so its id must never be re
 | `resolvedAt` (`resolved_at`)          | `integer` | NULL                                          |                                            |             |
 | `resolvedBy` (`resolved_by`)          | `integer` | NULL → [user.id](#table-user)                 |                                            |             |
 | `closedAt` (`closed_at`)              | `integer` | NULL                                          |                                            |             |
+| `acknowledgedAt` (`acknowledged_at`)  | `integer` | NULL                                          |                                            |             |
+| `acknowledgedBy` (`acknowledged_by`)  | `integer` | NULL → [user.id](#table-user)                 |                                            |             |
 | `statusReportId` (`status_report_id`) | `integer` | NULL → [statusReport.id](#table-statusReport) |                                            |             |
 | `slackTeamId` (`slack_team_id`)       | `text`    | NULL                                          |                                            |             |
 | `slackChannelId` (`slack_channel_id`) | `text`    | NULL                                          |                                            |             |
@@ -9171,6 +9227,8 @@ CREATE TABLE `incident` (
 	`resolved_at` integer,
 	`resolved_by` integer,
 	`closed_at` integer,
+	`acknowledged_at` integer,
+	`acknowledged_by` integer,
 	`status_report_id` integer,
 	`slack_team_id` text,
 	`slack_channel_id` text,
@@ -9180,6 +9238,7 @@ CREATE TABLE `incident` (
 	CONSTRAINT `fk_incident_commander_id_user_id_fk` FOREIGN KEY (`commander_id`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_declared_by_user_id_fk` FOREIGN KEY (`declared_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_resolved_by_user_id_fk` FOREIGN KEY (`resolved_by`) REFERENCES `user`(`id`),
+	CONSTRAINT `fk_incident_acknowledged_by_user_id_fk` FOREIGN KEY (`acknowledged_by`) REFERENCES `user`(`id`),
 	CONSTRAINT `fk_incident_status_report_id_status_report_id_fk` FOREIGN KEY (`status_report_id`) REFERENCES `status_report`(`id`) ON DELETE SET NULL
 );
 
@@ -9205,6 +9264,7 @@ CREATE UNIQUE INDEX `incident_status_report_id_idx` ON `incident` (`status_repor
 - `commanderId` → [user.id](#table-user) (many to one)
 - `declaredBy` → [user.id](#table-user) (many to one)
 - `resolvedBy` → [user.id](#table-user) (many to one)
+- `acknowledgedBy` → [user.id](#table-user) (many to one)
 - `statusReportId` → [statusReport.id](#table-statusReport) (one to one, on delete set null)
 
 #### Referenced by
@@ -9222,7 +9282,7 @@ db.select().from(incident);
 ```
 
 ```sql
-select "id", "workspace_id", "title", "severity", "status", "summary", "commander_id", "declared_by", "declared_at", "started_at", "mitigated_at", "resolved_at", "resolved_by", "closed_at", "status_report_id", "slack_team_id", "slack_channel_id", "created_at", "updated_at"
+select "id", "workspace_id", "title", "severity", "status", "summary", "commander_id", "declared_by", "declared_at", "started_at", "mitigated_at", "resolved_at", "resolved_by", "closed_at", "acknowledged_at", "acknowledged_by", "status_report_id", "slack_team_id", "slack_channel_id", "created_at", "updated_at"
 from "incident"
 ```
 
@@ -9244,7 +9304,7 @@ db.query.incident.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."severity" as "severity", "d0"."status" as "status", "d0"."summary" as "summary", "d0"."commander_id" as "commanderId", "d0"."declared_by" as "declaredBy", "d0"."declared_at" as "declaredAt", "d0"."started_at" as "startedAt", "d0"."mitigated_at" as "mitigatedAt", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."closed_at" as "closedAt", "d0"."status_report_id" as "statusReportId", "d0"."slack_team_id" as "slackTeamId", "d0"."slack_channel_id" as "slackChannelId", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."severity" as "severity", "d0"."status" as "status", "d0"."summary" as "summary", "d0"."commander_id" as "commanderId", "d0"."declared_by" as "declaredBy", "d0"."declared_at" as "declaredAt", "d0"."started_at" as "startedAt", "d0"."mitigated_at" as "mitigatedAt", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."closed_at" as "closedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."status_report_id" as "statusReportId", "d0"."slack_team_id" as "slackTeamId", "d0"."slack_channel_id" as "slackChannelId", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "incident" as "d0"
 ```
 
@@ -9255,7 +9315,7 @@ db.query.incident.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."severity" as "severity", "d0"."status" as "status", "d0"."summary" as "summary", "d0"."commander_id" as "commanderId", "d0"."declared_by" as "declaredBy", "d0"."declared_at" as "declaredAt", "d0"."started_at" as "startedAt", "d0"."mitigated_at" as "mitigatedAt", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."closed_at" as "closedAt", "d0"."status_report_id" as "statusReportId", "d0"."slack_team_id" as "slackTeamId", "d0"."slack_channel_id" as "slackChannelId", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."severity" as "severity", "d0"."status" as "status", "d0"."summary" as "summary", "d0"."commander_id" as "commanderId", "d0"."declared_by" as "declaredBy", "d0"."declared_at" as "declaredAt", "d0"."started_at" as "startedAt", "d0"."mitigated_at" as "mitigatedAt", "d0"."resolved_at" as "resolvedAt", "d0"."resolved_by" as "resolvedBy", "d0"."closed_at" as "closedAt", "d0"."acknowledged_at" as "acknowledgedAt", "d0"."acknowledged_by" as "acknowledgedBy", "d0"."status_report_id" as "statusReportId", "d0"."slack_team_id" as "slackTeamId", "d0"."slack_channel_id" as "slackChannelId", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
 from "incident" as "d0"
 where "d0"."id" = ?
 limit ?
@@ -9276,8 +9336,8 @@ db.insert(incident).values({
 ```
 
 ```sql
-insert into "incident" ("id", "workspace_id", "title", "severity", "status", "summary", "commander_id", "declared_by", "declared_at", "started_at", "mitigated_at", "resolved_at", "resolved_by", "closed_at", "status_report_id", "slack_team_id", "slack_channel_id", "created_at", "updated_at")
-values (?, ?, ?, ?, ?, null, null, null, ?, ?, null, null, null, null, null, null, null, (strftime('%s', 'now')), (strftime('%s', 'now')))
+insert into "incident" ("id", "workspace_id", "title", "severity", "status", "summary", "commander_id", "declared_by", "declared_at", "started_at", "mitigated_at", "resolved_at", "resolved_by", "closed_at", "acknowledged_at", "acknowledged_by", "status_report_id", "slack_team_id", "slack_channel_id", "created_at", "updated_at")
+values (?, ?, ?, ?, ?, null, null, null, ?, ?, null, null, null, null, null, null, null, null, null, (strftime('%s', 'now')), (strftime('%s', 'now')))
 -- params: [1,1,"title","severity","open",1,1]
 ```
 
@@ -9745,6 +9805,7 @@ Table `monitor_heartbeat_state`.
 | --------------------------------- | --------- | ------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------ |
 | `monitorId` (`monitor_id`)        | `integer` | PK NOT NULL → [monitor.id](#table-monitor) |                       |                                                                                      |
 | `lastPingAt` (`last_ping_at`)     | `integer` | NULL                                       |                       |                                                                                      |
+| `firstPingAt` (`first_ping_at`)   | `integer` | NULL                                       |                       | uptime is measured from here; NULL on rows that pinged before the column existed     |
 | `lastPingKind` (`last_ping_kind`) | `text`    | NOT NULL                                   | `.default("success")` | what the last ping reported: a `/fail` keeps the heartbeat down until a success ping |
 | `nextDueAt` (`next_due_at`)       | `integer` | NULL                                       |                       | NULL until the first ping, so a new heartbeat never alerts                           |
 
@@ -9754,6 +9815,7 @@ Table `monitor_heartbeat_state`.
 CREATE TABLE `monitor_heartbeat_state` (
 	`monitor_id` integer PRIMARY KEY,
 	`last_ping_at` integer,
+	`first_ping_at` integer,
 	`last_ping_kind` text DEFAULT 'success' NOT NULL,
 	`next_due_at` integer,
 	CONSTRAINT `fk_monitor_heartbeat_state_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE CASCADE
@@ -9780,7 +9842,7 @@ db.select().from(monitorHeartbeatState);
 ```
 
 ```sql
-select "monitor_id", "last_ping_at", "last_ping_kind", "next_due_at"
+select "monitor_id", "last_ping_at", "first_ping_at", "last_ping_kind", "next_due_at"
 from "monitor_heartbeat_state"
 ```
 
@@ -9802,7 +9864,7 @@ db.query.monitorHeartbeatState.findMany();
 ```
 
 ```sql
-select "d0"."monitor_id" as "monitorId", "d0"."last_ping_at" as "lastPingAt", "d0"."last_ping_kind" as "lastPingKind", "d0"."next_due_at" as "nextDueAt"
+select "d0"."monitor_id" as "monitorId", "d0"."last_ping_at" as "lastPingAt", "d0"."first_ping_at" as "firstPingAt", "d0"."last_ping_kind" as "lastPingKind", "d0"."next_due_at" as "nextDueAt"
 from "monitor_heartbeat_state" as "d0"
 ```
 
@@ -9813,7 +9875,7 @@ db.query.monitorHeartbeatState.findFirst({ where: { monitorId: 1 } });
 ```
 
 ```sql
-select "d0"."monitor_id" as "monitorId", "d0"."last_ping_at" as "lastPingAt", "d0"."last_ping_kind" as "lastPingKind", "d0"."next_due_at" as "nextDueAt"
+select "d0"."monitor_id" as "monitorId", "d0"."last_ping_at" as "lastPingAt", "d0"."first_ping_at" as "firstPingAt", "d0"."last_ping_kind" as "lastPingKind", "d0"."next_due_at" as "nextDueAt"
 from "monitor_heartbeat_state" as "d0"
 where "d0"."monitor_id" = ?
 limit ?
@@ -9827,8 +9889,8 @@ db.insert(monitorHeartbeatState).values({ monitorId: 1 });
 ```
 
 ```sql
-insert into "monitor_heartbeat_state" ("monitor_id", "last_ping_at", "last_ping_kind", "next_due_at")
-values (?, null, ?, null)
+insert into "monitor_heartbeat_state" ("monitor_id", "last_ping_at", "first_ping_at", "last_ping_kind", "next_due_at")
+values (?, null, null, ?, null)
 -- params: [1,"success"]
 ```
 
@@ -9857,6 +9919,286 @@ db.delete(monitorHeartbeatState).where(eq(monitorHeartbeatState.monitorId, 1));
 delete from "monitor_heartbeat_state"
 where "monitor_heartbeat_state"."monitor_id" = ?
 -- params: [1]
+```
+
+</details>
+
+<a id="table-monitorMaintenanceWindow"></a>
+
+### monitorMaintenanceWindow
+
+Table `monitor_maintenance_window`. [from, to) in which the window's monitors pause, or keep checking without status changes or alerts.
+
+![monitorMaintenanceWindow and the tables it relates to](tables/monitorMaintenanceWindow.svg)
+
+| Column                         | Type      | Constraints                                 | Default                                    | Description |
+| ------------------------------ | --------- | ------------------------------------------- | ------------------------------------------ | ----------- |
+| `id`                           | `integer` | PK NOT NULL                                 |                                            |             |
+| `workspaceId` (`workspace_id`) | `integer` | NOT NULL → [workspace.id](#table-workspace) |                                            |             |
+| `title`                        | `text`    | NOT NULL                                    |                                            |             |
+| `mode`                         | `text`    | NOT NULL                                    | `.default("pause")`                        |             |
+| `from`                         | `integer` | NOT NULL                                    |                                            |             |
+| `to`                           | `integer` | NOT NULL                                    |                                            |             |
+| `createdBy` (`created_by`)     | `integer` | NULL → [user.id](#table-user)               |                                            |             |
+| `updatedBy` (`updated_by`)     | `integer` | NULL → [user.id](#table-user)               |                                            |             |
+| `createdAt` (`created_at`)     | `integer` | NOT NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |             |
+| `updatedAt` (`updated_at`)     | `integer` | NOT NULL                                    | ``.default(sql`(strftime('%s', 'now'))`)`` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `monitor_maintenance_window` (
+	`id` integer PRIMARY KEY,
+	`workspace_id` integer NOT NULL,
+	`title` text(256) NOT NULL,
+	`mode` text DEFAULT 'pause' NOT NULL,
+	`from` integer NOT NULL,
+	`to` integer NOT NULL,
+	`created_by` integer,
+	`updated_by` integer,
+	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
+	`updated_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL,
+	CONSTRAINT `fk_monitor_maintenance_window_workspace_id_workspace_id_fk` FOREIGN KEY (`workspace_id`) REFERENCES `workspace`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_monitor_maintenance_window_created_by_user_id_fk` FOREIGN KEY (`created_by`) REFERENCES `user`(`id`) ON DELETE SET NULL,
+	CONSTRAINT `fk_monitor_maintenance_window_updated_by_user_id_fk` FOREIGN KEY (`updated_by`) REFERENCES `user`(`id`) ON DELETE SET NULL
+);
+
+CREATE INDEX `monitor_maintenance_window_workspace_id_idx` ON `monitor_maintenance_window` (`workspace_id`);
+
+CREATE INDEX `monitor_maintenance_window_to_idx` ON `monitor_maintenance_window` (`to`);
+```
+
+#### Indexes
+
+- INDEX `workspaceId`
+- INDEX `to`
+
+#### References
+
+- `workspaceId` → [workspace.id](#table-workspace) (many to one, on delete cascade)
+- `createdBy` → [user.id](#table-user) (many to one, on delete set null)
+- `updatedBy` → [user.id](#table-user) (many to one, on delete set null)
+
+#### Referenced by
+
+- `id` → [monitorMaintenanceWindowToMonitor.monitorMaintenanceWindowId](#table-monitorMaintenanceWindowToMonitor) (one to many, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of monitorMaintenanceWindow.
+
+```ts
+db.select().from(monitorMaintenanceWindow);
+```
+
+```sql
+select "id", "workspace_id", "title", "mode", "from", "to", "created_by", "updated_by", "created_at", "updated_at"
+from "monitor_maintenance_window"
+```
+
+**Count**: How many rows monitorMaintenanceWindow has.
+
+```ts
+db.select({ count: count() }).from(monitorMaintenanceWindow);
+```
+
+```sql
+select count(*)
+from "monitor_maintenance_window"
+```
+
+**Find many**: The rows of monitorMaintenanceWindow, through the relational query API.
+
+```ts
+db.query.monitorMaintenanceWindow.findMany();
+```
+
+```sql
+select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."mode" as "mode", "d0"."from" as "from", "d0"."to" as "to", "d0"."created_by" as "createdBy", "d0"."updated_by" as "updatedBy", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+from "monitor_maintenance_window" as "d0"
+```
+
+**Find by primary key**: One row of monitorMaintenanceWindow, through the relational query API.
+
+```ts
+db.query.monitorMaintenanceWindow.findFirst({ where: { id: 1 } });
+```
+
+```sql
+select "d0"."id" as "id", "d0"."workspace_id" as "workspaceId", "d0"."title" as "title", "d0"."mode" as "mode", "d0"."from" as "from", "d0"."to" as "to", "d0"."created_by" as "createdBy", "d0"."updated_by" as "updatedBy", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt"
+from "monitor_maintenance_window" as "d0"
+where "d0"."id" = ?
+limit ?
+-- params: [1,1]
+```
+
+**Insert**: Adds a row to monitorMaintenanceWindow, giving the columns that have no default.
+
+```ts
+db.insert(monitorMaintenanceWindow).values({
+  id: 1,
+  workspaceId: 1,
+  title: "title",
+  from: 1,
+  to: 1,
+});
+```
+
+```sql
+insert into "monitor_maintenance_window" ("id", "workspace_id", "title", "mode", "from", "to", "created_by", "updated_by", "created_at", "updated_at")
+values (?, ?, ?, ?, ?, ?, null, null, (strftime('%s', 'now')), (strftime('%s', 'now')))
+-- params: [1,1,"title","pause",1,1]
+```
+
+**Update**: Changes a row of monitorMaintenanceWindow, found by its primary key.
+
+```ts
+db.update(monitorMaintenanceWindow)
+  .set({ workspaceId: 1 })
+  .where(eq(monitorMaintenanceWindow.id, 1));
+```
+
+```sql
+update "monitor_maintenance_window"
+set "workspace_id" = ?
+where "monitor_maintenance_window"."id" = ?
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of monitorMaintenanceWindow, found by its primary key.
+
+```ts
+db.delete(monitorMaintenanceWindow).where(eq(monitorMaintenanceWindow.id, 1));
+```
+
+```sql
+delete from "monitor_maintenance_window"
+where "monitor_maintenance_window"."id" = ?
+-- params: [1]
+```
+
+</details>
+
+<a id="table-monitorMaintenanceWindowToMonitor"></a>
+
+### monitorMaintenanceWindowToMonitor
+
+Table `monitor_maintenance_window_to_monitor`.
+
+![monitorMaintenanceWindowToMonitor and the tables it relates to](tables/monitorMaintenanceWindowToMonitor.svg)
+
+| Column                                                         | Type      | Constraints                                                                  | Default | Description |
+| -------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------- | ------- | ----------- |
+| `monitorMaintenanceWindowId` (`monitor_maintenance_window_id`) | `integer` | PK NOT NULL → [monitorMaintenanceWindow.id](#table-monitorMaintenanceWindow) |         |             |
+| `monitorId` (`monitor_id`)                                     | `integer` | PK NOT NULL → [monitor.id](#table-monitor)                                   |         |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `monitor_maintenance_window_to_monitor` (
+	`monitor_maintenance_window_id` integer NOT NULL,
+	`monitor_id` integer NOT NULL,
+	CONSTRAINT `monitor_maintenance_window_to_monitor_pk` PRIMARY KEY(`monitor_maintenance_window_id`, `monitor_id`),
+	CONSTRAINT `fk_monitor_maintenance_window_to_monitor_monitor_maintenance_window_id_monitor_maintenance_window_id_fk` FOREIGN KEY (`monitor_maintenance_window_id`) REFERENCES `monitor_maintenance_window`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_monitor_maintenance_window_to_monitor_monitor_id_monitor_id_fk` FOREIGN KEY (`monitor_id`) REFERENCES `monitor`(`id`) ON DELETE CASCADE
+);
+
+CREATE INDEX `monitor_maintenance_window_to_monitor_monitor_id_idx` ON `monitor_maintenance_window_to_monitor` (`monitor_id`);
+```
+
+#### Indexes
+
+- PRIMARY KEY `monitorMaintenanceWindowId`, `monitorId`
+- INDEX `monitorId`
+
+#### References
+
+- `monitorMaintenanceWindowId` → [monitorMaintenanceWindow.id](#table-monitorMaintenanceWindow) (many to one, on delete cascade)
+- `monitorId` → [monitor.id](#table-monitor) (many to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of monitorMaintenanceWindowToMonitor.
+
+```ts
+db.select().from(monitorMaintenanceWindowToMonitor);
+```
+
+```sql
+select "monitor_maintenance_window_id", "monitor_id"
+from "monitor_maintenance_window_to_monitor"
+```
+
+**Count**: How many rows monitorMaintenanceWindowToMonitor has.
+
+```ts
+db.select({ count: count() }).from(monitorMaintenanceWindowToMonitor);
+```
+
+```sql
+select count(*)
+from "monitor_maintenance_window_to_monitor"
+```
+
+**Find many**: The rows of monitorMaintenanceWindowToMonitor, through the relational query API.
+
+```ts
+db.query.monitorMaintenanceWindowToMonitor.findMany();
+```
+
+```sql
+select "d0"."monitor_maintenance_window_id" as "monitorMaintenanceWindowId", "d0"."monitor_id" as "monitorId"
+from "monitor_maintenance_window_to_monitor" as "d0"
+```
+
+**Find by primary key**: One row of monitorMaintenanceWindowToMonitor, through the relational query API.
+
+```ts
+db.query.monitorMaintenanceWindowToMonitor.findFirst({
+  where: { monitorMaintenanceWindowId: 1, monitorId: 1 },
+});
+```
+
+```sql
+select "d0"."monitor_maintenance_window_id" as "monitorMaintenanceWindowId", "d0"."monitor_id" as "monitorId"
+from "monitor_maintenance_window_to_monitor" as "d0"
+where (("d0"."monitor_maintenance_window_id" = ?) and ("d0"."monitor_id" = ?))
+limit ?
+-- params: [1,1,1]
+```
+
+**Insert**: Adds a row to monitorMaintenanceWindowToMonitor, giving the columns that have no default.
+
+```ts
+db.insert(monitorMaintenanceWindowToMonitor).values({
+  monitorMaintenanceWindowId: 1,
+  monitorId: 1,
+});
+```
+
+```sql
+insert into "monitor_maintenance_window_to_monitor" ("monitor_maintenance_window_id", "monitor_id")
+values (?, ?)
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of monitorMaintenanceWindowToMonitor, found by its primary key.
+
+```ts
+db.delete(monitorMaintenanceWindowToMonitor).where(
+  and(
+    eq(monitorMaintenanceWindowToMonitor.monitorMaintenanceWindowId, 1),
+    eq(monitorMaintenanceWindowToMonitor.monitorId, 1),
+  ),
+);
+```
+
+```sql
+delete from "monitor_maintenance_window_to_monitor"
+where (("monitor_maintenance_window_to_monitor"."monitor_maintenance_window_id" = ?) and ("monitor_maintenance_window_to_monitor"."monitor_id" = ?))
+-- params: [1,1]
 ```
 
 </details>

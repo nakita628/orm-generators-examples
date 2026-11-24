@@ -34,6 +34,7 @@ erDiagram
     workspace |o--o{ monitor_incident : "(id) - (workspace_id)"
     user |o--o{ monitor_incident : "(id) - (acknowledged_by)"
     user |o--o{ monitor_incident : "(id) - (resolved_by)"
+    user |o--o{ monitor_incident : "(id) - (excused_by)"
     workspace ||--o{ monitor_tag : "(id) - (workspace_id)"
     monitor ||--o{ monitor_tag_to_monitor : "(id) - (monitor_id)"
     monitor_tag ||--o{ monitor_tag_to_monitor : "(id) - (monitor_tag_id)"
@@ -94,6 +95,7 @@ erDiagram
     user |o--o{ incident : "(id) - (commander_id)"
     user |o--o{ incident : "(id) - (declared_by)"
     user |o--o{ incident : "(id) - (resolved_by)"
+    user |o--o{ incident : "(id) - (acknowledged_by)"
     status_report |o--o| incident : "(id) - (status_report_id)"
     incident ||--o{ incident_event : "(id) - (incident_id)"
     user |o--o{ incident_event : "(id) - (created_by)"
@@ -104,6 +106,11 @@ erDiagram
     workspace ||--o{ slack_user : "(id) - (workspace_id)"
     user ||--o{ slack_user : "(id) - (user_id)"
     monitor ||--o| monitor_heartbeat_state : "(id) - (monitor_id)"
+    workspace ||--o{ monitor_maintenance_window : "(id) - (workspace_id)"
+    user |o--o{ monitor_maintenance_window : "(id) - (created_by)"
+    user |o--o{ monitor_maintenance_window : "(id) - (updated_by)"
+    monitor_maintenance_window ||--o{ monitor_maintenance_window_to_monitor : "(id) - (monitor_maintenance_window_id)"
+    monitor ||--o{ monitor_maintenance_window_to_monitor : "(id) - (monitor_id)"
     workspace ||..o{ invitation : "(id) - (workspace_id)"
     integration {
         integer id PK
@@ -383,6 +390,9 @@ erDiagram
         text incident_screenshot_url
         text recovery_screenshot_url
         integer auto_resolved "If the incident was auto resolved"
+        integer excused_at "An excused outage counts as up and is hidden from public surfaces"
+        integer excused_by FK
+        text excused_reason
         integer created_at
         integer updated_at
     }
@@ -736,6 +746,8 @@ erDiagram
         integer resolved_at
         integer resolved_by FK
         integer closed_at
+        integer acknowledged_at
+        integer acknowledged_by FK
         integer status_report_id FK
         text slack_team_id
         text slack_channel_id
@@ -778,7 +790,24 @@ erDiagram
     monitor_heartbeat_state {
         integer monitor_id PK, FK
         integer last_ping_at
+        integer first_ping_at "uptime is measured from here; NULL on rows that pinged before the column existed"
         text last_ping_kind "what the last ping reported: a `/fail` keeps the heartbeat down until a success ping"
         integer next_due_at "NULL until the first ping, so a new heartbeat never alerts"
+    }
+    monitor_maintenance_window {
+        integer id PK
+        integer workspace_id FK
+        text title
+        text mode
+        integer from
+        integer to
+        integer created_by FK
+        integer updated_by FK
+        integer created_at
+        integer updated_at
+    }
+    monitor_maintenance_window_to_monitor {
+        integer monitor_maintenance_window_id PK, FK
+        integer monitor_id PK, FK
     }
 ```
