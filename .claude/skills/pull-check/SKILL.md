@@ -76,10 +76,21 @@ Read the generated code and the table (`source.sql`) before deciding.
   `DEFERRABLE INITIALLY DEFERRED` and keeps `on_delete` in Python, and adds a `_like` index to
   every indexed string column, whatever the model says; that is Django's, not hekireki's.
 
+**The ORM's**: not filed on hekireki. Known so far:
+- a SeaORM entity holds no composite unique and no index, so `sea-orm.sql` lacks them;
+- GORM's `AutoMigrate` and SeaORM's `create_table_from_entity` create each table with its foreign
+  keys, so tables whose keys form a cycle fail with `relation "…" does not exist` (Wagtail's
+  workflow and task states, Maybe's users and chats);
+- drizzle-kit's `export` cuts a `CASE … ELSE 'b'::text END` default to `… ELSE 'b',`, a syntax
+  error;
+- GORM's SQLite dialect writes a string default in double quotes (`DEFAULT "mentions"`).
+
 **Prisma's**: not filed. What `sql/prisma.sql` already lacks against `source.sql` (the write-up
 does not say it: check constraints, triggers, views), anything listed in the write-up's header
 under "Changed from what `prisma db pull` wrote", a column Prisma writes up as `Unsupported(...)`,
-and a pull that does not validate.
+and a pull that does not validate. A generated column that `prisma db pull` writes up as
+`@default(dbgenerated("<expression>"))` makes `prisma db push` and every ORM's tables fail with
+"cannot use column reference in DEFAULT expression" (Maybe): Prisma's too.
 
 **The pipeline's**: fix it here, not upstream. That includes `pull/lib/sql.mjs` when two dumps
 that say the same thing come out as different (run `node pull/pull.mjs --compare-only <...>`
