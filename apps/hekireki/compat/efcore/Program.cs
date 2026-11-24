@@ -214,8 +214,13 @@ public static class Harness
                     res["skipped"] = "no row on the other side";
                     continue;
                 }
+                // A member cannot have its class's name (CS0542): a relation named as its own model
+                // (categories_category on categories_category) is CategoriesCategory1, as EF Core's
+                // scaffolding names it.
+                var relName = Squash(rel.GetProperty("name").GetString());
+                if (relName == Squash(k.et.ClrType.Name)) relName += "1";
                 var nav = k.et.GetNavigations().Cast<INavigationBase>().Concat(k.et.GetSkipNavigations())
-                    .FirstOrDefault(n => Squash(n.Name) == Squash(rel.GetProperty("name").GetString()));
+                    .FirstOrDefault(n => Squash(n.Name) == relName);
                 if (nav == null)
                 {
                     res["found"] = false;

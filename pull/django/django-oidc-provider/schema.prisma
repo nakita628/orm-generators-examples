@@ -1,0 +1,239 @@
+// django/django-oidc-provider: the tables that Django creates from the models of apps/djangoer/examples/django-oidc-provider,
+// written up by `prisma db pull`. Written by pull/pull.mjs; do not edit.
+
+datasource db {
+  provider = "postgresql"
+}
+
+model auth_group {
+  id                     Int                      @id @default(autoincrement())
+  name                   String                   @unique @db.VarChar(150)
+  auth_group_permissions auth_group_permissions[]
+  auth_user_groups       auth_user_groups[]
+
+  @@index([name], map: "auth_group_name_a6ea08ec_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_group_permissions {
+  id              Int             @id @default(autoincrement())
+  group_id        Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissio_permission_id_84c5c92e_fk_auth_perm")
+  auth_group      auth_group      @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_group_permissions_group_id_b120cbf9_fk_auth_group_id")
+
+  @@unique([group_id, permission_id], map: "auth_group_permissions_group_id_permission_id_0cd325b0_uniq")
+  @@index([group_id], map: "auth_group_permissions_group_id_b120cbf9")
+  @@index([permission_id], map: "auth_group_permissions_permission_id_84c5c92e")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_permission {
+  id                         Int                          @id @default(autoincrement())
+  name                       String                       @db.VarChar(255)
+  content_type_id            Int
+  codename                   String                       @db.VarChar(100)
+  auth_group_permissions     auth_group_permissions[]
+  django_content_type        django_content_type          @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_permission_content_type_id_2f476e4b_fk_django_co")
+  auth_user_user_permissions auth_user_user_permissions[]
+
+  @@unique([content_type_id, codename], map: "auth_permission_content_type_id_codename_01ab375a_uniq")
+  @@index([content_type_id], map: "auth_permission_content_type_id_2f476e4b")
+}
+
+model auth_user {
+  id                         Int                          @id @default(autoincrement())
+  password                   String                       @db.VarChar(128)
+  last_login                 DateTime?                    @db.Timestamptz(6)
+  is_superuser               Boolean
+  username                   String                       @unique @db.VarChar(150)
+  first_name                 String                       @db.VarChar(150)
+  last_name                  String                       @db.VarChar(150)
+  email                      String                       @db.VarChar(254)
+  is_staff                   Boolean
+  is_active                  Boolean
+  date_joined                DateTime                     @db.Timestamptz(6)
+  auth_user_groups           auth_user_groups[]
+  auth_user_user_permissions auth_user_user_permissions[]
+  django_admin_log           django_admin_log[]
+  oidc_provider_client       oidc_provider_client[]
+  oidc_provider_code         oidc_provider_code[]
+  oidc_provider_token        oidc_provider_token[]
+  oidc_provider_userconsent  oidc_provider_userconsent[]
+
+  @@index([username], map: "auth_user_username_6821ab7c_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_user_groups {
+  id         Int        @id @default(autoincrement())
+  user_id    Int
+  group_id   Int
+  auth_group auth_group @relation(fields: [group_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_group_id_97559544_fk_auth_group_id")
+  auth_user  auth_user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_groups_user_id_6a12ed8b_fk_auth_user_id")
+
+  @@unique([user_id, group_id], map: "auth_user_groups_user_id_group_id_94350c0c_uniq")
+  @@index([group_id], map: "auth_user_groups_group_id_97559544")
+  @@index([user_id], map: "auth_user_groups_user_id_6a12ed8b")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model auth_user_user_permissions {
+  id              Int             @id @default(autoincrement())
+  user_id         Int
+  permission_id   Int
+  auth_permission auth_permission @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permi_permission_id_1fbb5f2c_fk_auth_perm")
+  auth_user       auth_user       @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "auth_user_user_permissions_user_id_a95ead1b_fk_auth_user_id")
+
+  @@unique([user_id, permission_id], map: "auth_user_user_permissions_user_id_permission_id_14a6b632_uniq")
+  @@index([permission_id], map: "auth_user_user_permissions_permission_id_1fbb5f2c")
+  @@index([user_id], map: "auth_user_user_permissions_user_id_a95ead1b")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model django_admin_log {
+  id                  Int                  @id @default(autoincrement())
+  action_time         DateTime             @db.Timestamptz(6)
+  user_id             Int
+  content_type_id     Int?
+  object_id           String?
+  object_repr         String               @db.VarChar(200)
+  action_flag         Int                  @db.SmallInt
+  change_message      String
+  django_content_type django_content_type? @relation(fields: [content_type_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_content_type_id_c4bce8eb_fk_django_co")
+  auth_user           auth_user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "django_admin_log_user_id_c564eba6_fk_auth_user_id")
+
+  @@index([content_type_id], map: "django_admin_log_content_type_id_c4bce8eb")
+  @@index([user_id], map: "django_admin_log_user_id_c564eba6")
+}
+
+model django_content_type {
+  id               Int                @id @default(autoincrement())
+  app_label        String             @db.VarChar(100)
+  model            String             @db.VarChar(100)
+  auth_permission  auth_permission[]
+  django_admin_log django_admin_log[]
+
+  @@unique([app_label, model], map: "django_content_type_app_label_model_76bd3d3b_uniq")
+}
+
+model django_session {
+  session_key  String   @id @db.VarChar(40)
+  session_data String
+  expire_date  DateTime @db.Timestamptz(6)
+
+  @@index([expire_date], map: "django_session_expire_date_a5c62663")
+  @@index([session_key], map: "django_session_session_key_c0390e0f_like")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model oidc_provider_client {
+  id                                  BigInt                                @id @default(autoincrement())
+  name                                String                                @db.VarChar(100)
+  owner_id                            Int?
+  client_type                         String                                @db.VarChar(30)
+  client_id                           String                                @unique @db.VarChar(255)
+  client_secret                       String                                @db.VarChar(255)
+  jwt_alg                             String                                @db.VarChar(10)
+  date_created                        DateTime                              @db.Date
+  website_url                         String                                @db.VarChar(255)
+  terms_url                           String                                @db.VarChar(255)
+  contact_email                       String                                @db.VarChar(255)
+  logo                                String                                @db.VarChar(100)
+  reuse_consent                       Boolean
+  require_consent                     Boolean
+  redirect_uris                       String                                @map("_redirect_uris")
+  post_logout_redirect_uris           String                                @map("_post_logout_redirect_uris")
+  scope                               String                                @map("_scope")
+  auth_user                           auth_user?                            @relation(fields: [owner_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_client_owner_id_735e6178_fk_auth_user_id")
+  oidc_provider_client_response_types oidc_provider_client_response_types[]
+  oidc_provider_code                  oidc_provider_code[]
+  oidc_provider_token                 oidc_provider_token[]
+  oidc_provider_userconsent           oidc_provider_userconsent[]
+
+  @@index([client_id], map: "oidc_provider_client_client_id_47991f0f_like")
+  @@index([owner_id], map: "oidc_provider_client_owner_id_735e6178")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model oidc_provider_client_response_types {
+  id                         BigInt                     @id @default(autoincrement())
+  client_id                  BigInt
+  responsetype_id            BigInt
+  oidc_provider_client       oidc_provider_client       @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_client_client_id_576aac8c_fk_oidc_prov")
+  oidc_provider_responsetype oidc_provider_responsetype @relation(fields: [responsetype_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_client_responsetype_id_c90751ad_fk_oidc_prov")
+
+  @@unique([client_id, responsetype_id], map: "oidc_provider_client_res_client_id_responsetype_i_0d116294_uniq")
+  @@index([client_id], map: "oidc_provider_client_response_types_client_id_576aac8c")
+  @@index([responsetype_id], map: "oidc_provider_client_response_types_responsetype_id_c90751ad")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model oidc_provider_code {
+  id                    BigInt               @id @default(autoincrement())
+  client_id             BigInt
+  expires_at            DateTime             @db.Timestamptz(6)
+  scope                 String               @map("_scope")
+  user_id               Int
+  code                  String               @unique @db.VarChar(255)
+  nonce                 String               @db.VarChar(255)
+  is_authentication     Boolean
+  code_challenge        String?              @db.VarChar(255)
+  code_challenge_method String?              @db.VarChar(255)
+  oidc_provider_client  oidc_provider_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_code_client_id_2449f20c_fk_oidc_prov")
+  auth_user             auth_user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_code_user_id_14775b3f_fk_auth_user_id")
+
+  @@index([client_id], map: "oidc_provider_code_client_id_2449f20c")
+  @@index([code], map: "oidc_provider_code_code_74b41245_like")
+  @@index([user_id], map: "oidc_provider_code_user_id_14775b3f")
+}
+
+model oidc_provider_responsetype {
+  id                                  BigInt                                @id @default(autoincrement())
+  value                               String                                @unique @db.VarChar(30)
+  description                         String                                @db.VarChar(50)
+  oidc_provider_client_response_types oidc_provider_client_response_types[]
+
+  @@index([value], map: "oidc_provider_responsetype_value_3a4af356_like")
+}
+
+model oidc_provider_rsakey {
+  id  BigInt @id @default(autoincrement())
+  key String
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model oidc_provider_token {
+  id                   BigInt               @id @default(autoincrement())
+  client_id            BigInt
+  expires_at           DateTime             @db.Timestamptz(6)
+  scope                String               @map("_scope")
+  user_id              Int?
+  access_token         String               @unique @db.VarChar(255)
+  refresh_token        String               @unique @db.VarChar(255)
+  id_token             String               @map("_id_token")
+  oidc_provider_client oidc_provider_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_token_client_id_86a72d16_fk_oidc_prov")
+  auth_user            auth_user?           @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_token_user_id_c61045ea_fk_auth_user_id")
+
+  @@index([access_token], map: "oidc_provider_token_access_token_6cfc5a80_like")
+  @@index([client_id], map: "oidc_provider_token_client_id_86a72d16")
+  @@index([refresh_token], map: "oidc_provider_token_refresh_token_41436ea1_like")
+  @@index([user_id], map: "oidc_provider_token_user_id_c61045ea")
+}
+
+/// This model has constraints using non-default deferring rules and requires additional setup for migrations. Visit https://pris.ly/d/constraint-deferring for more info.
+model oidc_provider_userconsent {
+  id                   BigInt               @id @default(autoincrement())
+  client_id            BigInt
+  expires_at           DateTime             @db.Timestamptz(6)
+  scope                String               @map("_scope")
+  user_id              Int
+  date_given           DateTime             @db.Timestamptz(6)
+  oidc_provider_client oidc_provider_client @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_userco_client_id_7837dc61_fk_oidc_prov")
+  auth_user            auth_user            @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "oidc_provider_userconsent_user_id_ebaddfd3_fk_auth_user_id")
+
+  @@unique([user_id, client_id], map: "oidc_provider_userconsent_user_id_client_id_1c2032f6_uniq")
+  @@index([client_id], map: "oidc_provider_userconsent_client_id_7837dc61")
+  @@index([user_id], map: "oidc_provider_userconsent_user_id_ebaddfd3")
+}
