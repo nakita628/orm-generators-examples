@@ -1,6 +1,6 @@
 ---
 name: pull-check
-description: The daily pull of orm-generators-examples. Three well-known projects' own ORMs (Django, Drizzle, Active Record, SQLAlchemy) create their tables, the SQL is written up in Prisma by `prisma db pull` under pull/<orm>/<project>/, hekireki generates every ORM from that write-up, the SQL each ORM creates from it is held to the project's own SQL, and the generated code runs against those tables; what is hekireki's fault becomes an issue on nakita628/hekireki. Use when the scheduled pull task fires, or when asked to "pull", "ORM の SQL を Prisma に書き起こす", or to check hekireki against another ORM's schema.
+description: The daily pull of orm-generators-examples. Three well-known projects' own ORMs (Django, Drizzle, Active Record, SQLAlchemy) create their tables, the SQL is written up in Prisma by `prisma db pull` under pull/<orm>/<project>/, hekireki generates every ORM from that write-up, the SQL each ORM creates from it is held to the project's own SQL, and the generated code runs against those tables; what is hekireki's fault becomes an issue on nakita628/hekireki. Use when the daily scheduled task reaches the pull (after the upstream sync), or when asked to "pull", "ORM の SQL を Prisma に書き起こす", or to check hekireki against another ORM's schema.
 ---
 
 # Daily pull
@@ -11,11 +11,15 @@ Goal: every day, three projects whose schemas were not written for Prisma go thr
 project's own tables. What hekireki gets wrong becomes an issue on nakita628/hekireki; the
 write-ups and results go to `main`.
 
-Work from the root of the repository.
+Work from the root of the repository. The daily scheduled task runs this after the upstream sync
+(`.claude/skills/upstream-sync`), in the same session.
 
 ## 0. Set up
 
-1. `git checkout main && git pull --ff-only`, then `pnpm install`.
+1. `git checkout main && git pull --ff-only`, then `pnpm install`. If the upstream sync ran in this
+   session, make sure its djangoer environments are gone
+   (`rm -rf ~/.cache/orm-generators-examples/djangoer/venvs`, about 24 GB): the compat images take
+   about 19 GB, and the session's disk is limited.
 2. `pkg-config --exists mysqlclient || apt-get install -y libmysqlclient-dev pkg-config` (the
    compat Django harness builds mysqlclient).
 3. Docker. On a machine of your own, use it as it is. In a cloud session:
@@ -56,7 +60,9 @@ node pull/pull.mjs --hekireki latest <orm>/<project> ...
 ```
 
 It writes to the cache (the path is printed) and leaves pull/ as it is. A finding that is gone
-there is already fixed: do not file it (the daily upstream sync brings the new release in).
+there is already fixed: do not file it (the daily upstream sync brings the new release in). When
+the upstream sync has just brought apps/hekireki to the latest release, the run in step 1 already
+used it: skip this step.
 
 ## 4. Whose is each finding?
 

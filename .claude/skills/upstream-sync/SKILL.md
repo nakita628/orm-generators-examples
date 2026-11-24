@@ -10,6 +10,8 @@ release. What passes goes straight to `main`. What a generator gets wrong become
 generator's repository, and the example stays at its last good pin until the issue is closed.
 
 Work from the root of the repository. Read `tools/upstream/README.md` once for the files involved.
+The daily scheduled task runs this sync first and the pull (`.claude/skills/pull-check`) after it,
+in the same session, whether the sync followed anything or not.
 
 ## 0. Set up
 
@@ -36,7 +38,8 @@ node tools/upstream/check.mjs --json /tmp/upstream.json
 `behind` = to follow today. `moved` = the upstream file is gone at HEAD. `blocked` = waiting on an
 issue. `error` = the check itself failed (network…): retry once, then report it.
 
-Nothing behind and nothing moved: report "nothing to follow" and stop.
+Nothing behind and nothing moved: the sync ends here; report "nothing to follow" (the daily task
+then goes on with the pull).
 
 ## 3. Generators first
 
