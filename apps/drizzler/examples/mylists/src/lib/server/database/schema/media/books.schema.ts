@@ -1,8 +1,6 @@
+import {sql} from "drizzle-orm";
 import {MediaType} from "@/lib/utils/enums";
-import {relations} from "drizzle-orm/_relations";
-import {user} from "@/lib/server/database/schema/auth.schema";
-import {integer, snakeCase, text} from "drizzle-orm/sqlite-core";
-import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
+import {check, integer, snakeCase, text} from "drizzle-orm/sqlite-core";
 import {
     commonGenericCols,
     commonGenericIndexes,
@@ -15,9 +13,9 @@ import {
 
 
 export const books = snakeCase.table("books", {
-    pages: integer().notNull(),
     language: text(),
     publishers: text(),
+    pages: integer().notNull(),
     apiId: text().unique().notNull(),
     ...commonMediaCols(MediaType.BOOKS),
 });
@@ -27,8 +25,16 @@ export const booksList = snakeCase.table("books_list", {
     actualPage: integer(),
     redo: integer().default(0).notNull(),
     total: integer("total").default(0).notNull(),
+    customLanguage: text(),
+    customPublisher: text(),
+    customReleaseDate: text(),
+    customTitle: text().notNull(),
+    customPages: integer().notNull(),
     ...commonMediaListCols(books.id, MediaType.BOOKS),
-}, (table) => commonMediaListIndexes(table, MediaType.BOOKS));
+}, (table) => [
+    ...commonMediaListIndexes(table, MediaType.BOOKS),
+    check("books_list_custom_pages_check", sql`${table.customPages} >= 0`),
+]);
 
 
 export const booksGenre = snakeCase.table("books_genre", {
@@ -42,57 +48,5 @@ export const booksAuthors = snakeCase.table("books_authors", {
 
 
 export const booksTags = snakeCase.table("books_tags", {
-    ...commonMediaTagsCols(books.id),
+    ...commonMediaTagsCols(booksList.id),
 }, (table) => commonMediaTagsIndexes(table, MediaType.BOOKS));
-
-
-export const booksRelations = relations(books, ({ many }) => ({
-    booksAuthors: many(booksAuthors),
-    booksGenres: many(booksGenre),
-    booksTags: many(booksTags),
-    booksLists: many(booksList),
-}));
-
-
-export const booksListRelations = relations(booksList, ({ one }) => ({
-    user: one(user, {
-        fields: [booksList.userId],
-        references: [user.id]
-    }),
-    book: one(books, {
-        fields: [booksList.mediaId],
-        references: [books.id]
-    }),
-}));
-
-
-export const booksAuthorsRelations = relations(booksAuthors, ({ one }) => ({
-    book: one(books, {
-        fields: [booksAuthors.mediaId],
-        references: [books.id]
-    }),
-}));
-
-
-export const booksGenreRelations = relations(booksGenre, ({ one }) => ({
-    book: one(books, {
-        fields: [booksGenre.mediaId],
-        references: [books.id]
-    }),
-}));
-
-
-export const booksTagsRelations = relations(booksTags, ({ one }) => ({
-    tag: one(mediaTags, {
-        fields: [booksTags.tagId],
-        references: [mediaTags.id],
-    }),
-    user: one(user, {
-        fields: [booksTags.userId],
-        references: [user.id]
-    }),
-    book: one(books, {
-        fields: [booksTags.mediaId],
-        references: [books.id]
-    }),
-}));

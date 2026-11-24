@@ -1,31 +1,9 @@
 import {sql} from "drizzle-orm";
-import {relations} from "drizzle-orm/_relations";
 import {customJson} from "@/lib/server/database/custom-types";
 import {ProfileCustomKey} from "@/lib/types/profile-custom.types";
-import {taskHistory} from "@/lib/server/database/schema/admin.schema";
 import {check, index, integer, real, snakeCase, text, uniqueIndex} from "drizzle-orm/sqlite-core";
 import {MediaType, SocialState, Status, UpdateType} from "@/lib/utils/enums";
-import {
-    animeList,
-    animeTags,
-    booksList,
-    booksTags,
-    collectionLikes,
-    collections,
-    gamesList,
-    gamesTags,
-    mangaList,
-    mangaTags,
-    mediadleStats,
-    moviesList,
-    moviesTags,
-    seriesList,
-    seriesTags,
-    socialNotifications,
-    user,
-    userAchievement,
-    userMediadleProgress
-} from "@/lib/server/database/schema";
+import {user} from "./auth.schema";
 
 
 export const followers = snakeCase.table("followers", {
@@ -143,77 +121,3 @@ export const profileCustom = snakeCase.table("profile_custom", {
     uniqueIndex("ux_profile_custom_user_id_key").on(table.userId, table.key),
     check("profile_custom_value_json_check", sql`json_valid(${table.value})`),
 ]);
-
-
-export const userRelations = relations(user, ({ many }) => ({
-    mangaLists: many(mangaList),
-    gamesLists: many(gamesList),
-    animeLists: many(animeList),
-    booksLists: many(booksList),
-    taskHistory: many(taskHistory),
-    seriesLists: many(seriesList),
-    moviesLists: many(moviesList),
-    notifications: many(socialNotifications),
-    animeTags: many(animeTags),
-    gamesTags: many(gamesTags),
-    booksTags: many(booksTags),
-    mangaTags: many(mangaTags),
-    moviesTags: many(moviesTags),
-    seriesTags: many(seriesTags),
-    mediadleStats: many(mediadleStats),
-    userMediaUpdates: many(userMediaUpdate),
-    userMediaMonthlyActivities: many(userMediaMonthlyActivity),
-    userAchievements: many(userAchievement),
-    userMediaSettings: many(userMediaSettings),
-    profileCustom: many(profileCustom),
-    userMediadleProgresses: many(userMediadleProgress),
-    collections: many(collections),
-    collectionLikes: many(collectionLikes),
-    followers_followedId: many(followers, {
-        relationName: "followers_followedId_user_id"
-    }),
-    followers_followerId: many(followers, {
-        relationName: "followers_followerId_user_id"
-    }),
-}));
-
-export const followersRelations = relations(followers, ({ one }) => ({
-    user_followedId: one(user, {
-        fields: [followers.followedId],
-        references: [user.id],
-        relationName: "followers_followedId_user_id"
-    }),
-    user_followerId: one(user, {
-        fields: [followers.followerId],
-        references: [user.id],
-        relationName: "followers_followerId_user_id"
-    }),
-}));
-
-export const userMediaUpdateRelations = relations(userMediaUpdate, ({ one }) => ({
-    user: one(user, {
-        fields: [userMediaUpdate.userId],
-        references: [user.id]
-    }),
-}));
-
-export const userMediaMonthlyActivityRelations = relations(userMediaMonthlyActivity, ({ one }) => ({
-    user: one(user, {
-        fields: [userMediaMonthlyActivity.userId],
-        references: [user.id]
-    }),
-}));
-
-export const userMediaSettingsRelations = relations(userMediaSettings, ({ one }) => ({
-    user: one(user, {
-        fields: [userMediaSettings.userId],
-        references: [user.id]
-    }),
-}));
-
-export const profileCustomRelations = relations(profileCustom, ({ one }) => ({
-    user: one(user, {
-        fields: [profileCustom.userId],
-        references: [user.id]
-    }),
-}));

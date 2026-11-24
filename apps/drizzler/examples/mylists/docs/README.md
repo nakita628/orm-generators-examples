@@ -136,12 +136,10 @@ CREATE TABLE `anime_network` (
 );
 
 CREATE TABLE `anime_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_anime_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_anime_tags_media_id_anime_id_fk` FOREIGN KEY (`media_id`) REFERENCES `anime`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `anime_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_anime_tags_list_id_anime_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `anime_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_anime_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -170,10 +168,38 @@ CREATE TABLE `api_tokens` (
 	`expires_at` integer NOT NULL
 );
 
+CREATE TABLE `book_merge_review` (
+	`book_id` integer PRIMARY KEY,
+	`reviewed_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
+	CONSTRAINT `fk_book_merge_review_book_id_books_id_fk` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE
+);
+
+CREATE TABLE `book_merge_suggestion` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`target_book_id` integer NOT NULL,
+	`reviewed_at` text,
+	`reason` text NOT NULL,
+	`group_key` text NOT NULL,
+	`created_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
+	`confidence` text NOT NULL,
+	`status` text DEFAULT 'pending' NOT NULL,
+	CONSTRAINT `fk_book_merge_suggestion_target_book_id_books_id_fk` FOREIGN KEY (`target_book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT "book_merge_suggestion_status_check" CHECK("status" IN ('pending', 'dismissed')),
+	CONSTRAINT "book_merge_suggestion_confidence_check" CHECK("confidence" IN ('high', 'medium', 'low'))
+);
+
+CREATE TABLE `book_merge_suggestion_book` (
+	`book_id` integer NOT NULL,
+	`suggestion_id` integer NOT NULL,
+	CONSTRAINT `book_merge_suggestion_book_pk` PRIMARY KEY(`suggestion_id`, `book_id`),
+	CONSTRAINT `fk_book_merge_suggestion_book_book_id_books_id_fk` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_book_merge_suggestion_book_suggestion_id_book_merge_suggestion_id_fk` FOREIGN KEY (`suggestion_id`) REFERENCES `book_merge_suggestion`(`id`) ON DELETE CASCADE
+);
+
 CREATE TABLE `books` (
-	`pages` integer NOT NULL,
 	`language` text,
 	`publishers` text,
+	`pages` integer NOT NULL,
 	`api_id` text NOT NULL UNIQUE,
 	`id` integer PRIMARY KEY,
 	`name` text NOT NULL,
@@ -203,6 +229,11 @@ CREATE TABLE `books_list` (
 	`actual_page` integer,
 	`redo` integer DEFAULT 0 NOT NULL,
 	`total` integer DEFAULT 0 NOT NULL,
+	`custom_language` text,
+	`custom_publisher` text,
+	`custom_release_date` text,
+	`custom_title` text NOT NULL,
+	`custom_pages` integer NOT NULL,
 	`id` integer PRIMARY KEY,
 	`user_id` integer NOT NULL,
 	`media_id` integer NOT NULL,
@@ -217,16 +248,15 @@ CREATE TABLE `books_list` (
 	CONSTRAINT `fk_books_list_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_books_list_media_id_books_id_fk` FOREIGN KEY (`media_id`) REFERENCES `books`(`id`),
 	CONSTRAINT "books_list_rating_check" CHECK("rating" IS NULL OR ("rating" >= 0 AND "rating" <= 10)),
-	CONSTRAINT "books_list_favorite_check" CHECK("favorite" IN (0, 1))
+	CONSTRAINT "books_list_favorite_check" CHECK("favorite" IN (0, 1)),
+	CONSTRAINT "books_list_custom_pages_check" CHECK("custom_pages" >= 0)
 );
 
 CREATE TABLE `books_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_books_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_books_tags_media_id_books_id_fk` FOREIGN KEY (`media_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `books_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_books_tags_list_id_books_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `books_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_books_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -389,12 +419,10 @@ CREATE TABLE `games_platforms` (
 );
 
 CREATE TABLE `games_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_games_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_games_tags_media_id_games_id_fk` FOREIGN KEY (`media_id`) REFERENCES `games`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `games_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_games_tags_list_id_games_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `games_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_games_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -528,12 +556,10 @@ CREATE TABLE `manga_list` (
 );
 
 CREATE TABLE `manga_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_manga_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_manga_tags_media_id_manga_id_fk` FOREIGN KEY (`media_id`) REFERENCES `manga`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `manga_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_manga_tags_list_id_manga_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `manga_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_manga_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -662,12 +688,10 @@ CREATE TABLE `movies_list` (
 );
 
 CREATE TABLE `movies_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_movies_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_movies_tags_media_id_movies_id_fk` FOREIGN KEY (`media_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `movies_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_movies_tags_list_id_movies_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `movies_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_movies_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -908,12 +932,10 @@ CREATE TABLE `series_network` (
 );
 
 CREATE TABLE `series_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_series_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_series_tags_media_id_series_id_fk` FOREIGN KEY (`media_id`) REFERENCES `series`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `series_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_series_tags_list_id_series_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `series_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_series_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
@@ -1169,9 +1191,7 @@ CREATE UNIQUE INDEX `ux_anime_network_media_name` ON `anime_network` (`media_id`
 
 CREATE INDEX `ix_anime_network_name_media` ON `anime_network` (`name`,`media_id`);
 
-CREATE UNIQUE INDEX `ux_anime_tags_user_media_tag` ON `anime_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_anime_tags_user_tag_media` ON `anime_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_anime_tags_tag_list` ON `anime_tags` (`tag_id`,`list_id`);
 
 CREATE INDEX `ix_api_call_rollup_provider` ON `api_call_rollup` (`provider`);
 
@@ -1180,6 +1200,12 @@ CREATE INDEX `ix_api_call_rollup_bucket_start` ON `api_call_rollup` (`bucket_sta
 CREATE UNIQUE INDEX `ux_api_call_rollup_bucket_provider` ON `api_call_rollup` (`bucket_start_ms`,`provider`);
 
 CREATE UNIQUE INDEX `api_tokens_provider_unique` ON `api_tokens` (`provider`);
+
+CREATE UNIQUE INDEX `ux_book_merge_suggestion_group_key` ON `book_merge_suggestion` (`group_key`);
+
+CREATE INDEX `ix_book_merge_suggestion_status_created_at` ON `book_merge_suggestion` (`status`,`created_at`);
+
+CREATE INDEX `ix_book_merge_suggestion_book_book_id` ON `book_merge_suggestion_book` (`book_id`);
 
 CREATE UNIQUE INDEX `ux_books_authors_media_name` ON `books_authors` (`media_id`,`name`);
 
@@ -1197,9 +1223,7 @@ CREATE INDEX `ix_books_list_user_media_rated` ON `books_list` (`user_id`,`media_
 
 CREATE INDEX `ix_books_list_media_user_rated` ON `books_list` (`media_id`,`user_id`) WHERE "books_list"."rating" IS NOT NULL;
 
-CREATE UNIQUE INDEX `ux_books_tags_user_media_tag` ON `books_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_books_tags_user_tag_media` ON `books_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_books_tags_tag_list` ON `books_tags` (`tag_id`,`list_id`);
 
 CREATE UNIQUE INDEX `ux_collection_items_collection_order` ON `collection_items` (`collection_id`,`order_index`);
 
@@ -1255,9 +1279,7 @@ CREATE UNIQUE INDEX `ux_games_platforms_media_name` ON `games_platforms` (`media
 
 CREATE INDEX `ix_games_platforms_name_media` ON `games_platforms` (`name`,`media_id`);
 
-CREATE UNIQUE INDEX `ux_games_tags_user_media_tag` ON `games_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_games_tags_user_tag_media` ON `games_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_games_tags_tag_list` ON `games_tags` (`tag_id`,`list_id`);
 
 CREATE INDEX `ix_import_items_job_status_media_type` ON `import_items` (`job_id`,`status`,`media_type`);
 
@@ -1295,9 +1317,7 @@ CREATE INDEX `ix_manga_list_user_media_rated` ON `manga_list` (`user_id`,`media_
 
 CREATE INDEX `ix_manga_list_media_user_rated` ON `manga_list` (`media_id`,`user_id`) WHERE "manga_list"."rating" IS NOT NULL;
 
-CREATE UNIQUE INDEX `ux_manga_tags_user_media_tag` ON `manga_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_manga_tags_user_tag_media` ON `manga_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_manga_tags_tag_list` ON `manga_tags` (`tag_id`,`list_id`);
 
 CREATE INDEX `ix_media_notifications_user_created_at` ON `media_notifications` (`user_id`,`created_at`);
 
@@ -1331,9 +1351,7 @@ CREATE INDEX `ix_movies_list_user_media_rated` ON `movies_list` (`user_id`,`medi
 
 CREATE INDEX `ix_movies_list_media_user_rated` ON `movies_list` (`media_id`,`user_id`) WHERE "movies_list"."rating" IS NOT NULL;
 
-CREATE UNIQUE INDEX `ux_movies_tags_user_media_tag` ON `movies_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_movies_tags_user_tag_media` ON `movies_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_movies_tags_tag_list` ON `movies_tags` (`tag_id`,`list_id`);
 
 CREATE INDEX `oauthAccessToken_userId_idx` ON `oauth_access_token` (`user_id`);
 
@@ -1389,9 +1407,7 @@ CREATE UNIQUE INDEX `ux_series_network_media_name` ON `series_network` (`media_i
 
 CREATE INDEX `ix_series_network_name_media` ON `series_network` (`name`,`media_id`);
 
-CREATE UNIQUE INDEX `ux_series_tags_user_media_tag` ON `series_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_series_tags_user_tag_media` ON `series_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_series_tags_tag_list` ON `series_tags` (`tag_id`,`list_id`);
 
 CREATE INDEX `session_user_id_idx` ON `session` (`user_id`);
 
@@ -1547,6 +1563,9 @@ CREATE UNIQUE INDEX `ux_wcf_runs_user_active` ON `which_came_first_runs` (`user_
 | [inactiveAccountDeletion](#table-inactiveAccountDeletion)   | `inactive_account_deletion`   |                                                                                              |
 | [mediaRefreshLog](#table-mediaRefreshLog)                   | `media_refresh_log`           |                                                                                              |
 | [apiCallRollup](#table-apiCallRollup)                       | `api_call_rollup`             |                                                                                              |
+| [bookMergeSuggestion](#table-bookMergeSuggestion)           | `book_merge_suggestion`       |                                                                                              |
+| [bookMergeSuggestionBook](#table-bookMergeSuggestionBook)   | `book_merge_suggestion_book`  |                                                                                              |
+| [bookMergeReview](#table-bookMergeReview)                   | `book_merge_review`           |                                                                                              |
 | [featureRequests](#table-featureRequests)                   | `feature_requests`            |                                                                                              |
 | [featureVotes](#table-featureVotes)                         | `feature_votes`               |                                                                                              |
 | [collections](#table-collections)                           | `collections`                 |                                                                                              |
@@ -1634,17 +1653,11 @@ CREATE UNIQUE INDEX `user_name_unique` ON `user` (`name`);
 - `id` → [userMediaStatsHistory.userId](#table-userMediaStatsHistory) (one to many, on delete cascade)
 - `id` → [profileCustom.userId](#table-profileCustom) (one to many, on delete cascade)
 - `id` → [seriesList.userId](#table-seriesList) (one to many, on delete cascade)
-- `id` → [seriesTags.userId](#table-seriesTags) (one to many, on delete cascade)
 - `id` → [animeList.userId](#table-animeList) (one to many, on delete cascade)
-- `id` → [animeTags.userId](#table-animeTags) (one to many, on delete cascade)
 - `id` → [moviesList.userId](#table-moviesList) (one to many, on delete cascade)
-- `id` → [moviesTags.userId](#table-moviesTags) (one to many, on delete cascade)
 - `id` → [gamesList.userId](#table-gamesList) (one to many, on delete cascade)
-- `id` → [gamesTags.userId](#table-gamesTags) (one to many, on delete cascade)
 - `id` → [booksList.userId](#table-booksList) (one to many, on delete cascade)
-- `id` → [booksTags.userId](#table-booksTags) (one to many, on delete cascade)
 - `id` → [mangaList.userId](#table-mangaList) (one to many, on delete cascade)
-- `id` → [mangaTags.userId](#table-mangaTags) (one to many, on delete cascade)
 - `id` → [mediadleStats.userId](#table-mediadleStats) (one to many, on delete cascade)
 - `id` → [userMediadleProgress.userId](#table-userMediadleProgress) (one to many, on delete cascade)
 - `id` → [whichCameFirstRuns.userId](#table-whichCameFirstRuns) (one to one, on delete cascade)
@@ -4559,7 +4572,6 @@ CREATE TABLE `series` (
 - `id` → [seriesActors.mediaId](#table-seriesActors) (one to many, on delete cascade)
 - `id` → [seriesNetwork.mediaId](#table-seriesNetwork) (one to many, on delete cascade)
 - `id` → [seriesEpisodesPerSeason.mediaId](#table-seriesEpisodesPerSeason) (one to many, on delete cascade)
-- `id` → [seriesTags.mediaId](#table-seriesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -4734,6 +4746,7 @@ CREATE INDEX `ix_series_list_media_user_rated` ON `series_list` (`media_id`,`use
 #### Referenced by
 
 - `id` → [seriesListSeasons.listId](#table-seriesListSeasons) (one to many, on delete cascade)
+- `id` → [seriesTags.listId](#table-seriesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5478,40 +5491,33 @@ Table `series_tags`.
 
 ![seriesTags and the tables it relates to](tables/seriesTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [series.id](#table-series)       |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                      | Default | Description |
+| -------------------- | --------- | ------------------------------------------------ | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [seriesList.id](#table-seriesList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags)   |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `series_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_series_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_series_tags_media_id_series_id_fk` FOREIGN KEY (`media_id`) REFERENCES `series`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `series_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_series_tags_list_id_series_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `series_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_series_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_series_tags_user_media_tag` ON `series_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_series_tags_user_tag_media` ON `series_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_series_tags_tag_list` ON `series_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [series.id](#table-series) (many to one, on delete cascade)
+- `listId` → [seriesList.id](#table-seriesList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -5524,7 +5530,7 @@ db.select().from(seriesTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "series_tags"
 ```
 
@@ -5546,59 +5552,46 @@ db.query.seriesTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "series_tags" as "d0"
 ```
 
 **Find by primary key**: One row of seriesTags, through the relational query API.
 
 ```ts
-db.query.seriesTags.findFirst({ where: { id: 1 } });
+db.query.seriesTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "series_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to seriesTags, giving the columns that have no default.
 
 ```ts
-db.insert(seriesTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(seriesTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "series_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of seriesTags, found by its primary key.
-
-```ts
-db.update(seriesTags).set({ userId: 1 }).where(eq(seriesTags.id, 1));
-```
-
-```sql
-update "series_tags"
-set "user_id" = ?
-where "series_tags"."id" = ?
+insert into "series_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of seriesTags, found by its primary key.
 
 ```ts
-db.delete(seriesTags).where(eq(seriesTags.id, 1));
+db.delete(seriesTags).where(and(eq(seriesTags.listId, 1), eq(seriesTags.tagId, 1)));
 ```
 
 ```sql
 delete from "series_tags"
-where "series_tags"."id" = ?
--- params: [1]
+where (("series_tags"."list_id" = ?) and ("series_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -5676,7 +5669,6 @@ CREATE TABLE `anime` (
 - `id` → [animeActors.mediaId](#table-animeActors) (one to many, on delete cascade)
 - `id` → [animeNetwork.mediaId](#table-animeNetwork) (one to many, on delete cascade)
 - `id` → [animeEpisodesPerSeason.mediaId](#table-animeEpisodesPerSeason) (one to many, on delete cascade)
-- `id` → [animeTags.mediaId](#table-animeTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5851,6 +5843,7 @@ CREATE INDEX `ix_anime_list_media_user_rated` ON `anime_list` (`media_id`,`user_
 #### Referenced by
 
 - `id` → [animeListSeasons.listId](#table-animeListSeasons) (one to many, on delete cascade)
+- `id` → [animeTags.listId](#table-animeTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -6595,40 +6588,33 @@ Table `anime_tags`.
 
 ![animeTags and the tables it relates to](tables/animeTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [anime.id](#table-anime)         |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                    | Default | Description |
+| -------------------- | --------- | ---------------------------------------------- | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [animeList.id](#table-animeList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `anime_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_anime_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_anime_tags_media_id_anime_id_fk` FOREIGN KEY (`media_id`) REFERENCES `anime`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `anime_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_anime_tags_list_id_anime_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `anime_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_anime_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_anime_tags_user_media_tag` ON `anime_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_anime_tags_user_tag_media` ON `anime_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_anime_tags_tag_list` ON `anime_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [anime.id](#table-anime) (many to one, on delete cascade)
+- `listId` → [animeList.id](#table-animeList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -6641,7 +6627,7 @@ db.select().from(animeTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "anime_tags"
 ```
 
@@ -6663,59 +6649,46 @@ db.query.animeTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "anime_tags" as "d0"
 ```
 
 **Find by primary key**: One row of animeTags, through the relational query API.
 
 ```ts
-db.query.animeTags.findFirst({ where: { id: 1 } });
+db.query.animeTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "anime_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to animeTags, giving the columns that have no default.
 
 ```ts
-db.insert(animeTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(animeTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "anime_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of animeTags, found by its primary key.
-
-```ts
-db.update(animeTags).set({ userId: 1 }).where(eq(animeTags.id, 1));
-```
-
-```sql
-update "anime_tags"
-set "user_id" = ?
-where "anime_tags"."id" = ?
+insert into "anime_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of animeTags, found by its primary key.
 
 ```ts
-db.delete(animeTags).where(eq(animeTags.id, 1));
+db.delete(animeTags).where(and(eq(animeTags.listId, 1), eq(animeTags.tagId, 1)));
 ```
 
 ```sql
 delete from "anime_tags"
-where "anime_tags"."id" = ?
--- params: [1]
+where (("anime_tags"."list_id" = ?) and ("anime_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -6787,7 +6760,6 @@ CREATE TABLE `movies` (
 - `id` → [moviesList.mediaId](#table-moviesList) (one to many)
 - `id` → [moviesGenre.mediaId](#table-moviesGenre) (one to many, on delete cascade)
 - `id` → [moviesActors.mediaId](#table-moviesActors) (one to many, on delete cascade)
-- `id` → [moviesTags.mediaId](#table-moviesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -6945,6 +6917,10 @@ CREATE INDEX `ix_movies_list_media_user_rated` ON `movies_list` (`media_id`,`use
 
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 - `mediaId` → [movies.id](#table-movies) (many to one)
+
+#### Referenced by
+
+- `id` → [moviesTags.listId](#table-moviesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -7297,40 +7273,33 @@ Table `movies_tags`.
 
 ![moviesTags and the tables it relates to](tables/moviesTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [movies.id](#table-movies)       |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                      | Default | Description |
+| -------------------- | --------- | ------------------------------------------------ | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [moviesList.id](#table-moviesList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags)   |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `movies_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_movies_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_movies_tags_media_id_movies_id_fk` FOREIGN KEY (`media_id`) REFERENCES `movies`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `movies_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_movies_tags_list_id_movies_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `movies_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_movies_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_movies_tags_user_media_tag` ON `movies_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_movies_tags_user_tag_media` ON `movies_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_movies_tags_tag_list` ON `movies_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [movies.id](#table-movies) (many to one, on delete cascade)
+- `listId` → [moviesList.id](#table-moviesList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -7343,7 +7312,7 @@ db.select().from(moviesTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "movies_tags"
 ```
 
@@ -7365,59 +7334,46 @@ db.query.moviesTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "movies_tags" as "d0"
 ```
 
 **Find by primary key**: One row of moviesTags, through the relational query API.
 
 ```ts
-db.query.moviesTags.findFirst({ where: { id: 1 } });
+db.query.moviesTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "movies_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to moviesTags, giving the columns that have no default.
 
 ```ts
-db.insert(moviesTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(moviesTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "movies_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of moviesTags, found by its primary key.
-
-```ts
-db.update(moviesTags).set({ userId: 1 }).where(eq(moviesTags.id, 1));
-```
-
-```sql
-update "movies_tags"
-set "user_id" = ?
-where "movies_tags"."id" = ?
+insert into "movies_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of moviesTags, found by its primary key.
 
 ```ts
-db.delete(moviesTags).where(eq(moviesTags.id, 1));
+db.delete(moviesTags).where(and(eq(moviesTags.listId, 1), eq(moviesTags.tagId, 1)));
 ```
 
 ```sql
 delete from "movies_tags"
-where "movies_tags"."id" = ?
--- params: [1]
+where (("movies_tags"."list_id" = ?) and ("movies_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -7488,7 +7444,6 @@ CREATE TABLE `games` (
 - `id` → [gamesGenre.mediaId](#table-gamesGenre) (one to many, on delete cascade)
 - `id` → [gamesPlatforms.mediaId](#table-gamesPlatforms) (one to many, on delete cascade)
 - `id` → [gamesCompanies.mediaId](#table-gamesCompanies) (one to many, on delete cascade)
-- `id` → [gamesTags.mediaId](#table-gamesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -7646,6 +7601,10 @@ CREATE INDEX `ix_games_list_media_user_rated` ON `games_list` (`media_id`,`user_
 
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 - `mediaId` → [games.id](#table-games) (many to one)
+
+#### Referenced by
+
+- `id` → [gamesTags.listId](#table-gamesTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -8129,40 +8088,33 @@ Table `games_tags`.
 
 ![gamesTags and the tables it relates to](tables/gamesTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [games.id](#table-games)         |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                    | Default | Description |
+| -------------------- | --------- | ---------------------------------------------- | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [gamesList.id](#table-gamesList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `games_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_games_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_games_tags_media_id_games_id_fk` FOREIGN KEY (`media_id`) REFERENCES `games`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `games_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_games_tags_list_id_games_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `games_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_games_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_games_tags_user_media_tag` ON `games_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_games_tags_user_tag_media` ON `games_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_games_tags_tag_list` ON `games_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [games.id](#table-games) (many to one, on delete cascade)
+- `listId` → [gamesList.id](#table-gamesList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -8175,7 +8127,7 @@ db.select().from(gamesTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "games_tags"
 ```
 
@@ -8197,59 +8149,46 @@ db.query.gamesTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "games_tags" as "d0"
 ```
 
 **Find by primary key**: One row of gamesTags, through the relational query API.
 
 ```ts
-db.query.gamesTags.findFirst({ where: { id: 1 } });
+db.query.gamesTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "games_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to gamesTags, giving the columns that have no default.
 
 ```ts
-db.insert(gamesTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(gamesTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "games_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of gamesTags, found by its primary key.
-
-```ts
-db.update(gamesTags).set({ userId: 1 }).where(eq(gamesTags.id, 1));
-```
-
-```sql
-update "games_tags"
-set "user_id" = ?
-where "games_tags"."id" = ?
+insert into "games_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of gamesTags, found by its primary key.
 
 ```ts
-db.delete(gamesTags).where(eq(gamesTags.id, 1));
+db.delete(gamesTags).where(and(eq(gamesTags.listId, 1), eq(gamesTags.tagId, 1)));
 ```
 
 ```sql
 delete from "games_tags"
-where "games_tags"."id" = ?
--- params: [1]
+where (("games_tags"."list_id" = ?) and ("games_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -8262,9 +8201,9 @@ where "games_tags"."id" = ?
 
 | Column                              | Type      | Constraints     | Default                                | Description |
 | ----------------------------------- | --------- | --------------- | -------------------------------------- | ----------- |
-| `pages`                             | `integer` | NOT NULL        |                                        |             |
 | `language`                          | `text`    | NULL            |                                        |             |
 | `publishers`                        | `text`    | NULL            |                                        |             |
+| `pages`                             | `integer` | NOT NULL        |                                        |             |
 | `apiId` (`api_id`)                  | `text`    | UNIQUE NOT NULL |                                        |             |
 | `id`                                | `integer` | PK NOT NULL     |                                        |             |
 | `name`                              | `text`    | NOT NULL        |                                        |             |
@@ -8279,9 +8218,9 @@ where "games_tags"."id" = ?
 
 ```sql
 CREATE TABLE `books` (
-	`pages` integer NOT NULL,
 	`language` text,
 	`publishers` text,
+	`pages` integer NOT NULL,
 	`api_id` text NOT NULL UNIQUE,
 	`id` integer PRIMARY KEY,
 	`name` text NOT NULL,
@@ -8299,7 +8238,9 @@ CREATE TABLE `books` (
 - `id` → [booksList.mediaId](#table-booksList) (one to many)
 - `id` → [booksGenre.mediaId](#table-booksGenre) (one to many, on delete cascade)
 - `id` → [booksAuthors.mediaId](#table-booksAuthors) (one to many, on delete cascade)
-- `id` → [booksTags.mediaId](#table-booksTags) (one to many, on delete cascade)
+- `id` → [bookMergeSuggestion.targetBookId](#table-bookMergeSuggestion) (one to many, on delete cascade)
+- `id` → [bookMergeSuggestionBook.bookId](#table-bookMergeSuggestionBook) (one to many, on delete cascade)
+- `id` → [bookMergeReview.bookId](#table-bookMergeReview) (one to one, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -8311,7 +8252,7 @@ db.select().from(books);
 ```
 
 ```sql
-select "pages", "language", "publishers", "api_id", "id", "name", "release_date", "synopsis", "image_cover", "lock_status", "added_at", "last_api_update"
+select "language", "publishers", "pages", "api_id", "id", "name", "release_date", "synopsis", "image_cover", "lock_status", "added_at", "last_api_update"
 from "books"
 ```
 
@@ -8333,7 +8274,7 @@ db.query.books.findMany();
 ```
 
 ```sql
-select "d0"."pages" as "pages", "d0"."language" as "language", "d0"."publishers" as "publishers", "d0"."api_id" as "apiId", "d0"."id" as "id", "d0"."name" as "name", "d0"."release_date" as "releaseDate", "d0"."synopsis" as "synopsis", "d0"."image_cover" as "imageCover", "d0"."lock_status" as "lockStatus", "d0"."added_at" as "addedAt", "d0"."last_api_update" as "lastApiUpdate"
+select "d0"."language" as "language", "d0"."publishers" as "publishers", "d0"."pages" as "pages", "d0"."api_id" as "apiId", "d0"."id" as "id", "d0"."name" as "name", "d0"."release_date" as "releaseDate", "d0"."synopsis" as "synopsis", "d0"."image_cover" as "imageCover", "d0"."lock_status" as "lockStatus", "d0"."added_at" as "addedAt", "d0"."last_api_update" as "lastApiUpdate"
 from "books" as "d0"
 ```
 
@@ -8344,7 +8285,7 @@ db.query.books.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."pages" as "pages", "d0"."language" as "language", "d0"."publishers" as "publishers", "d0"."api_id" as "apiId", "d0"."id" as "id", "d0"."name" as "name", "d0"."release_date" as "releaseDate", "d0"."synopsis" as "synopsis", "d0"."image_cover" as "imageCover", "d0"."lock_status" as "lockStatus", "d0"."added_at" as "addedAt", "d0"."last_api_update" as "lastApiUpdate"
+select "d0"."language" as "language", "d0"."publishers" as "publishers", "d0"."pages" as "pages", "d0"."api_id" as "apiId", "d0"."id" as "id", "d0"."name" as "name", "d0"."release_date" as "releaseDate", "d0"."synopsis" as "synopsis", "d0"."image_cover" as "imageCover", "d0"."lock_status" as "lockStatus", "d0"."added_at" as "addedAt", "d0"."last_api_update" as "lastApiUpdate"
 from "books" as "d0"
 where "d0"."id" = ?
 limit ?
@@ -8364,22 +8305,22 @@ db.insert(books).values({
 ```
 
 ```sql
-insert into "books" ("pages", "language", "publishers", "api_id", "id", "name", "release_date", "synopsis", "image_cover", "lock_status", "added_at", "last_api_update")
-values (?, null, null, ?, ?, ?, null, null, ?, ?, (CURRENT_TIMESTAMP), null)
+insert into "books" ("language", "publishers", "pages", "api_id", "id", "name", "release_date", "synopsis", "image_cover", "lock_status", "added_at", "last_api_update")
+values (null, null, ?, ?, ?, ?, null, null, ?, ?, (CURRENT_TIMESTAMP), null)
 -- params: [1,"apiId",1,"name","imageCover",0]
 ```
 
 **Update**: Changes a row of books, found by its primary key.
 
 ```ts
-db.update(books).set({ pages: 1 }).where(eq(books.id, 1));
+db.update(books).set({ language: "language" }).where(eq(books.id, 1));
 ```
 
 ```sql
 update "books"
-set "pages" = ?
+set "language" = ?
 where "books"."id" = ?
--- params: [1,1]
+-- params: ["language",1]
 ```
 
 **Delete**: Deletes a row of books, found by its primary key.
@@ -8409,6 +8350,11 @@ Table `books_list`.
 | `actualPage` (`actual_page`)                                    | `integer` | NULL                                |                                        |             |
 | `redo`                                                          | `integer` | NOT NULL                            | `.default(0)`                          |             |
 | `total`                                                         | `integer` | NOT NULL                            | `.default(0)`                          |             |
+| `customLanguage` (`custom_language`)                            | `text`    | NULL                                |                                        |             |
+| `customPublisher` (`custom_publisher`)                          | `text`    | NULL                                |                                        |             |
+| `customReleaseDate` (`custom_release_date`)                     | `text`    | NULL                                |                                        |             |
+| `customTitle` (`custom_title`)                                  | `text`    | NOT NULL                            |                                        |             |
+| `customPages` (`custom_pages`)                                  | `integer` | NOT NULL                            |                                        |             |
 | `id`                                                            | `integer` | PK NOT NULL                         |                                        |             |
 | `userId` (`user_id`)                                            | `integer` | NOT NULL → [user.id](#table-user)   |                                        |             |
 | `mediaId` (`media_id`)                                          | `integer` | NOT NULL → [books.id](#table-books) |                                        |             |
@@ -8428,6 +8374,11 @@ CREATE TABLE `books_list` (
 	`actual_page` integer,
 	`redo` integer DEFAULT 0 NOT NULL,
 	`total` integer DEFAULT 0 NOT NULL,
+	`custom_language` text,
+	`custom_publisher` text,
+	`custom_release_date` text,
+	`custom_title` text NOT NULL,
+	`custom_pages` integer NOT NULL,
 	`id` integer PRIMARY KEY,
 	`user_id` integer NOT NULL,
 	`media_id` integer NOT NULL,
@@ -8442,7 +8393,8 @@ CREATE TABLE `books_list` (
 	CONSTRAINT `fk_books_list_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_books_list_media_id_books_id_fk` FOREIGN KEY (`media_id`) REFERENCES `books`(`id`),
 	CONSTRAINT "books_list_rating_check" CHECK("rating" IS NULL OR ("rating" >= 0 AND "rating" <= 10)),
-	CONSTRAINT "books_list_favorite_check" CHECK("favorite" IN (0, 1))
+	CONSTRAINT "books_list_favorite_check" CHECK("favorite" IN (0, 1)),
+	CONSTRAINT "books_list_custom_pages_check" CHECK("custom_pages" >= 0)
 );
 
 CREATE UNIQUE INDEX `ux_books_list_user_media` ON `books_list` (`user_id`,`media_id`);
@@ -8466,6 +8418,10 @@ CREATE INDEX `ix_books_list_media_user_rated` ON `books_list` (`media_id`,`user_
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 - `mediaId` → [books.id](#table-books) (many to one)
 
+#### Referenced by
+
+- `id` → [booksTags.listId](#table-booksTags) (one to many, on delete cascade)
+
 <details>
 <summary>Queries and their SQL</summary>
 
@@ -8476,7 +8432,7 @@ db.select().from(booksList);
 ```
 
 ```sql
-select "actual_page", "redo", "total", "id", "user_id", "media_id", "status", "release_notifications_enabled", "favorite", "comment", "rating", "custom_cover", "added_at", "last_updated"
+select "actual_page", "redo", "total", "custom_language", "custom_publisher", "custom_release_date", "custom_title", "custom_pages", "id", "user_id", "media_id", "status", "release_notifications_enabled", "favorite", "comment", "rating", "custom_cover", "added_at", "last_updated"
 from "books_list"
 ```
 
@@ -8498,7 +8454,7 @@ db.query.booksList.findMany();
 ```
 
 ```sql
-select "d0"."actual_page" as "actualPage", "d0"."redo" as "redo", "d0"."total" as "total", "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."status" as "status", "d0"."release_notifications_enabled" as "releaseNotificationsEnabled", "d0"."favorite" as "favorite", "d0"."comment" as "comment", "d0"."rating" as "rating", "d0"."custom_cover" as "customCover", "d0"."added_at" as "addedAt", "d0"."last_updated" as "lastUpdated"
+select "d0"."actual_page" as "actualPage", "d0"."redo" as "redo", "d0"."total" as "total", "d0"."custom_language" as "customLanguage", "d0"."custom_publisher" as "customPublisher", "d0"."custom_release_date" as "customReleaseDate", "d0"."custom_title" as "customTitle", "d0"."custom_pages" as "customPages", "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."status" as "status", "d0"."release_notifications_enabled" as "releaseNotificationsEnabled", "d0"."favorite" as "favorite", "d0"."comment" as "comment", "d0"."rating" as "rating", "d0"."custom_cover" as "customCover", "d0"."added_at" as "addedAt", "d0"."last_updated" as "lastUpdated"
 from "books_list" as "d0"
 ```
 
@@ -8509,7 +8465,7 @@ db.query.booksList.findFirst({ where: { id: 1 } });
 ```
 
 ```sql
-select "d0"."actual_page" as "actualPage", "d0"."redo" as "redo", "d0"."total" as "total", "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."status" as "status", "d0"."release_notifications_enabled" as "releaseNotificationsEnabled", "d0"."favorite" as "favorite", "d0"."comment" as "comment", "d0"."rating" as "rating", "d0"."custom_cover" as "customCover", "d0"."added_at" as "addedAt", "d0"."last_updated" as "lastUpdated"
+select "d0"."actual_page" as "actualPage", "d0"."redo" as "redo", "d0"."total" as "total", "d0"."custom_language" as "customLanguage", "d0"."custom_publisher" as "customPublisher", "d0"."custom_release_date" as "customReleaseDate", "d0"."custom_title" as "customTitle", "d0"."custom_pages" as "customPages", "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."status" as "status", "d0"."release_notifications_enabled" as "releaseNotificationsEnabled", "d0"."favorite" as "favorite", "d0"."comment" as "comment", "d0"."rating" as "rating", "d0"."custom_cover" as "customCover", "d0"."added_at" as "addedAt", "d0"."last_updated" as "lastUpdated"
 from "books_list" as "d0"
 where "d0"."id" = ?
 limit ?
@@ -8519,13 +8475,20 @@ limit ?
 **Insert**: Adds a row to booksList, giving the columns that have no default.
 
 ```ts
-db.insert(booksList).values({ id: 1, userId: 1, mediaId: 1, status: "status" });
+db.insert(booksList).values({
+  customTitle: "customTitle",
+  customPages: 1,
+  id: 1,
+  userId: 1,
+  mediaId: 1,
+  status: "status",
+});
 ```
 
 ```sql
-insert into "books_list" ("actual_page", "redo", "total", "id", "user_id", "media_id", "status", "release_notifications_enabled", "favorite", "comment", "rating", "custom_cover", "added_at", "last_updated")
-values (null, ?, ?, ?, ?, ?, ?, ?, ?, null, null, null, (CURRENT_TIMESTAMP), null)
--- params: [0,0,1,1,1,"status",1,0]
+insert into "books_list" ("actual_page", "redo", "total", "custom_language", "custom_publisher", "custom_release_date", "custom_title", "custom_pages", "id", "user_id", "media_id", "status", "release_notifications_enabled", "favorite", "comment", "rating", "custom_cover", "added_at", "last_updated")
+values (null, ?, ?, null, null, null, ?, ?, ?, ?, ?, ?, ?, ?, null, null, null, (CURRENT_TIMESTAMP), null)
+-- params: [0,0,"customTitle",1,1,1,1,"status",1,0]
 ```
 
 **Update**: Changes a row of booksList, found by its primary key.
@@ -8817,40 +8780,33 @@ Table `books_tags`.
 
 ![booksTags and the tables it relates to](tables/booksTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [books.id](#table-books)         |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                    | Default | Description |
+| -------------------- | --------- | ---------------------------------------------- | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [booksList.id](#table-booksList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `books_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_books_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_books_tags_media_id_books_id_fk` FOREIGN KEY (`media_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `books_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_books_tags_list_id_books_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `books_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_books_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_books_tags_user_media_tag` ON `books_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_books_tags_user_tag_media` ON `books_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_books_tags_tag_list` ON `books_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [books.id](#table-books) (many to one, on delete cascade)
+- `listId` → [booksList.id](#table-booksList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -8863,7 +8819,7 @@ db.select().from(booksTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "books_tags"
 ```
 
@@ -8885,59 +8841,46 @@ db.query.booksTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "books_tags" as "d0"
 ```
 
 **Find by primary key**: One row of booksTags, through the relational query API.
 
 ```ts
-db.query.booksTags.findFirst({ where: { id: 1 } });
+db.query.booksTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "books_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to booksTags, giving the columns that have no default.
 
 ```ts
-db.insert(booksTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(booksTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "books_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of booksTags, found by its primary key.
-
-```ts
-db.update(booksTags).set({ userId: 1 }).where(eq(booksTags.id, 1));
-```
-
-```sql
-update "books_tags"
-set "user_id" = ?
-where "books_tags"."id" = ?
+insert into "books_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of booksTags, found by its primary key.
 
 ```ts
-db.delete(booksTags).where(eq(booksTags.id, 1));
+db.delete(booksTags).where(and(eq(booksTags.listId, 1), eq(booksTags.tagId, 1)));
 ```
 
 ```sql
 delete from "books_tags"
-where "books_tags"."id" = ?
--- params: [1]
+where (("books_tags"."list_id" = ?) and ("books_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -9001,7 +8944,6 @@ CREATE TABLE `manga` (
 - `id` → [mangaList.mediaId](#table-mangaList) (one to many)
 - `id` → [mangaGenre.mediaId](#table-mangaGenre) (one to many, on delete cascade)
 - `id` → [mangaAuthors.mediaId](#table-mangaAuthors) (one to many, on delete cascade)
-- `id` → [mangaTags.mediaId](#table-mangaTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -9161,6 +9103,10 @@ CREATE INDEX `ix_manga_list_media_user_rated` ON `manga_list` (`media_id`,`user_
 
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 - `mediaId` → [manga.id](#table-manga) (many to one)
+
+#### Referenced by
+
+- `id` → [mangaTags.listId](#table-mangaTags) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -9513,40 +9459,33 @@ Table `manga_tags`.
 
 ![mangaTags and the tables it relates to](tables/mangaTags.svg)
 
-| Column                 | Type      | Constraints                                 | Default | Description |
-| ---------------------- | --------- | ------------------------------------------- | ------- | ----------- |
-| `id`                   | `integer` | PK NOT NULL                                 |         |             |
-| `userId` (`user_id`)   | `integer` | NOT NULL → [user.id](#table-user)           |         |             |
-| `mediaId` (`media_id`) | `integer` | NOT NULL → [manga.id](#table-manga)         |         |             |
-| `tagId` (`tag_id`)     | `integer` | NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
+| Column               | Type      | Constraints                                    | Default | Description |
+| -------------------- | --------- | ---------------------------------------------- | ------- | ----------- |
+| `listId` (`list_id`) | `integer` | PK NOT NULL → [mangaList.id](#table-mangaList) |         |             |
+| `tagId` (`tag_id`)   | `integer` | PK NOT NULL → [mediaTags.id](#table-mediaTags) |         |             |
 
 #### Definition
 
 ```sql
 CREATE TABLE `manga_tags` (
-	`id` integer PRIMARY KEY,
-	`user_id` integer NOT NULL,
-	`media_id` integer NOT NULL,
+	`list_id` integer NOT NULL,
 	`tag_id` integer NOT NULL,
-	CONSTRAINT `fk_manga_tags_user_id_user_id_fk` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE,
-	CONSTRAINT `fk_manga_tags_media_id_manga_id_fk` FOREIGN KEY (`media_id`) REFERENCES `manga`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `manga_tags_pk` PRIMARY KEY(`list_id`, `tag_id`),
+	CONSTRAINT `fk_manga_tags_list_id_manga_list_id_fk` FOREIGN KEY (`list_id`) REFERENCES `manga_list`(`id`) ON DELETE CASCADE,
 	CONSTRAINT `fk_manga_tags_tag_id_media_tags_id_fk` FOREIGN KEY (`tag_id`) REFERENCES `media_tags`(`id`) ON DELETE CASCADE
 );
 
-CREATE UNIQUE INDEX `ux_manga_tags_user_media_tag` ON `manga_tags` (`user_id`,`media_id`,`tag_id`);
-
-CREATE INDEX `ix_manga_tags_user_tag_media` ON `manga_tags` (`user_id`,`tag_id`,`media_id`);
+CREATE INDEX `ix_manga_tags_tag_list` ON `manga_tags` (`tag_id`,`list_id`);
 ```
 
 #### Indexes
 
-- UNIQUE `userId`, `mediaId`, `tagId`
-- INDEX `userId`, `tagId`, `mediaId`
+- PRIMARY KEY `listId`, `tagId`
+- INDEX `tagId`, `listId`
 
 #### References
 
-- `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `mediaId` → [manga.id](#table-manga) (many to one, on delete cascade)
+- `listId` → [mangaList.id](#table-mangaList) (many to one, on delete cascade)
 - `tagId` → [mediaTags.id](#table-mediaTags) (many to one, on delete cascade)
 
 <details>
@@ -9559,7 +9498,7 @@ db.select().from(mangaTags);
 ```
 
 ```sql
-select "id", "user_id", "media_id", "tag_id"
+select "list_id", "tag_id"
 from "manga_tags"
 ```
 
@@ -9581,59 +9520,46 @@ db.query.mangaTags.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "manga_tags" as "d0"
 ```
 
 **Find by primary key**: One row of mangaTags, through the relational query API.
 
 ```ts
-db.query.mangaTags.findFirst({ where: { id: 1 } });
+db.query.mangaTags.findFirst({ where: { listId: 1, tagId: 1 } });
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."user_id" as "userId", "d0"."media_id" as "mediaId", "d0"."tag_id" as "tagId"
+select "d0"."list_id" as "listId", "d0"."tag_id" as "tagId"
 from "manga_tags" as "d0"
-where "d0"."id" = ?
+where (("d0"."list_id" = ?) and ("d0"."tag_id" = ?))
 limit ?
--- params: [1,1]
+-- params: [1,1,1]
 ```
 
 **Insert**: Adds a row to mangaTags, giving the columns that have no default.
 
 ```ts
-db.insert(mangaTags).values({ id: 1, userId: 1, mediaId: 1, tagId: 1 });
+db.insert(mangaTags).values({ listId: 1, tagId: 1 });
 ```
 
 ```sql
-insert into "manga_tags" ("id", "user_id", "media_id", "tag_id")
-values (?, ?, ?, ?)
--- params: [1,1,1,1]
-```
-
-**Update**: Changes a row of mangaTags, found by its primary key.
-
-```ts
-db.update(mangaTags).set({ userId: 1 }).where(eq(mangaTags.id, 1));
-```
-
-```sql
-update "manga_tags"
-set "user_id" = ?
-where "manga_tags"."id" = ?
+insert into "manga_tags" ("list_id", "tag_id")
+values (?, ?)
 -- params: [1,1]
 ```
 
 **Delete**: Deletes a row of mangaTags, found by its primary key.
 
 ```ts
-db.delete(mangaTags).where(eq(mangaTags.id, 1));
+db.delete(mangaTags).where(and(eq(mangaTags.listId, 1), eq(mangaTags.tagId, 1)));
 ```
 
 ```sql
 delete from "manga_tags"
-where "manga_tags"."id" = ?
--- params: [1]
+where (("manga_tags"."list_id" = ?) and ("manga_tags"."tag_id" = ?))
+-- params: [1,1]
 ```
 
 </details>
@@ -11914,6 +11840,386 @@ db.delete(apiCallRollup).where(eq(apiCallRollup.id, 1));
 ```sql
 delete from "api_call_rollup"
 where "api_call_rollup"."id" = ?
+-- params: [1]
+```
+
+</details>
+
+<a id="table-bookMergeSuggestion"></a>
+
+### bookMergeSuggestion
+
+Table `book_merge_suggestion`.
+
+![bookMergeSuggestion and the tables it relates to](tables/bookMergeSuggestion.svg)
+
+| Column                            | Type      | Constraints                         | Default                                | Description |
+| --------------------------------- | --------- | ----------------------------------- | -------------------------------------- | ----------- |
+| `id`                              | `integer` | PK NOT NULL                         |                                        |             |
+| `targetBookId` (`target_book_id`) | `integer` | NOT NULL → [books.id](#table-books) |                                        |             |
+| `reviewedAt` (`reviewed_at`)      | `text`    | NULL                                |                                        |             |
+| `reason`                          | `text`    | NOT NULL                            |                                        |             |
+| `groupKey` (`group_key`)          | `text`    | NOT NULL                            |                                        |             |
+| `createdAt` (`created_at`)        | `text`    | NOT NULL                            | ``.default(sql`(CURRENT_TIMESTAMP)`)`` |             |
+| `confidence`                      | `text`    | NOT NULL                            |                                        |             |
+| `status`                          | `text`    | NOT NULL                            | `.default("pending")`                  |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `book_merge_suggestion` (
+	`id` integer PRIMARY KEY AUTOINCREMENT,
+	`target_book_id` integer NOT NULL,
+	`reviewed_at` text,
+	`reason` text NOT NULL,
+	`group_key` text NOT NULL,
+	`created_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
+	`confidence` text NOT NULL,
+	`status` text DEFAULT 'pending' NOT NULL,
+	CONSTRAINT `fk_book_merge_suggestion_target_book_id_books_id_fk` FOREIGN KEY (`target_book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT "book_merge_suggestion_status_check" CHECK("status" IN ('pending', 'dismissed')),
+	CONSTRAINT "book_merge_suggestion_confidence_check" CHECK("confidence" IN ('high', 'medium', 'low'))
+);
+
+CREATE UNIQUE INDEX `ux_book_merge_suggestion_group_key` ON `book_merge_suggestion` (`group_key`);
+
+CREATE INDEX `ix_book_merge_suggestion_status_created_at` ON `book_merge_suggestion` (`status`,`created_at`);
+```
+
+#### Indexes
+
+- UNIQUE `groupKey`
+- INDEX `status`, `createdAt`
+
+#### References
+
+- `targetBookId` → [books.id](#table-books) (many to one, on delete cascade)
+
+#### Referenced by
+
+- `id` → [bookMergeSuggestionBook.suggestionId](#table-bookMergeSuggestionBook) (one to many, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of bookMergeSuggestion.
+
+```ts
+db.select().from(bookMergeSuggestion);
+```
+
+```sql
+select "id", "target_book_id", "reviewed_at", "reason", "group_key", "created_at", "confidence", "status"
+from "book_merge_suggestion"
+```
+
+**Count**: How many rows bookMergeSuggestion has.
+
+```ts
+db.select({ count: count() }).from(bookMergeSuggestion);
+```
+
+```sql
+select count(*)
+from "book_merge_suggestion"
+```
+
+**Find many**: The rows of bookMergeSuggestion, through the relational query API.
+
+```ts
+db.query.bookMergeSuggestion.findMany();
+```
+
+```sql
+select "d0"."id" as "id", "d0"."target_book_id" as "targetBookId", "d0"."reviewed_at" as "reviewedAt", "d0"."reason" as "reason", "d0"."group_key" as "groupKey", "d0"."created_at" as "createdAt", "d0"."confidence" as "confidence", "d0"."status" as "status"
+from "book_merge_suggestion" as "d0"
+```
+
+**Find by primary key**: One row of bookMergeSuggestion, through the relational query API.
+
+```ts
+db.query.bookMergeSuggestion.findFirst({ where: { id: 1 } });
+```
+
+```sql
+select "d0"."id" as "id", "d0"."target_book_id" as "targetBookId", "d0"."reviewed_at" as "reviewedAt", "d0"."reason" as "reason", "d0"."group_key" as "groupKey", "d0"."created_at" as "createdAt", "d0"."confidence" as "confidence", "d0"."status" as "status"
+from "book_merge_suggestion" as "d0"
+where "d0"."id" = ?
+limit ?
+-- params: [1,1]
+```
+
+**Insert**: Adds a row to bookMergeSuggestion, giving the columns that have no default.
+
+```ts
+db.insert(bookMergeSuggestion).values({
+  id: 1,
+  targetBookId: 1,
+  reason: "reason",
+  groupKey: "groupKey",
+  confidence: "confidence",
+});
+```
+
+```sql
+insert into "book_merge_suggestion" ("id", "target_book_id", "reviewed_at", "reason", "group_key", "created_at", "confidence", "status")
+values (?, ?, null, ?, ?, (CURRENT_TIMESTAMP), ?, ?)
+-- params: [1,1,"reason","groupKey","confidence","pending"]
+```
+
+**Update**: Changes a row of bookMergeSuggestion, found by its primary key.
+
+```ts
+db.update(bookMergeSuggestion).set({ targetBookId: 1 }).where(eq(bookMergeSuggestion.id, 1));
+```
+
+```sql
+update "book_merge_suggestion"
+set "target_book_id" = ?
+where "book_merge_suggestion"."id" = ?
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of bookMergeSuggestion, found by its primary key.
+
+```ts
+db.delete(bookMergeSuggestion).where(eq(bookMergeSuggestion.id, 1));
+```
+
+```sql
+delete from "book_merge_suggestion"
+where "book_merge_suggestion"."id" = ?
+-- params: [1]
+```
+
+</details>
+
+<a id="table-bookMergeSuggestionBook"></a>
+
+### bookMergeSuggestionBook
+
+Table `book_merge_suggestion_book`.
+
+![bookMergeSuggestionBook and the tables it relates to](tables/bookMergeSuggestionBook.svg)
+
+| Column                           | Type      | Constraints                                                        | Default | Description |
+| -------------------------------- | --------- | ------------------------------------------------------------------ | ------- | ----------- |
+| `bookId` (`book_id`)             | `integer` | PK NOT NULL → [books.id](#table-books)                             |         |             |
+| `suggestionId` (`suggestion_id`) | `integer` | PK NOT NULL → [bookMergeSuggestion.id](#table-bookMergeSuggestion) |         |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `book_merge_suggestion_book` (
+	`book_id` integer NOT NULL,
+	`suggestion_id` integer NOT NULL,
+	CONSTRAINT `book_merge_suggestion_book_pk` PRIMARY KEY(`suggestion_id`, `book_id`),
+	CONSTRAINT `fk_book_merge_suggestion_book_book_id_books_id_fk` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE,
+	CONSTRAINT `fk_book_merge_suggestion_book_suggestion_id_book_merge_suggestion_id_fk` FOREIGN KEY (`suggestion_id`) REFERENCES `book_merge_suggestion`(`id`) ON DELETE CASCADE
+);
+
+CREATE INDEX `ix_book_merge_suggestion_book_book_id` ON `book_merge_suggestion_book` (`book_id`);
+```
+
+#### Indexes
+
+- PRIMARY KEY `suggestionId`, `bookId`
+- INDEX `bookId`
+
+#### References
+
+- `bookId` → [books.id](#table-books) (many to one, on delete cascade)
+- `suggestionId` → [bookMergeSuggestion.id](#table-bookMergeSuggestion) (many to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of bookMergeSuggestionBook.
+
+```ts
+db.select().from(bookMergeSuggestionBook);
+```
+
+```sql
+select "book_id", "suggestion_id"
+from "book_merge_suggestion_book"
+```
+
+**Count**: How many rows bookMergeSuggestionBook has.
+
+```ts
+db.select({ count: count() }).from(bookMergeSuggestionBook);
+```
+
+```sql
+select count(*)
+from "book_merge_suggestion_book"
+```
+
+**Find many**: The rows of bookMergeSuggestionBook, through the relational query API.
+
+```ts
+db.query.bookMergeSuggestionBook.findMany();
+```
+
+```sql
+select "d0"."book_id" as "bookId", "d0"."suggestion_id" as "suggestionId"
+from "book_merge_suggestion_book" as "d0"
+```
+
+**Find by primary key**: One row of bookMergeSuggestionBook, through the relational query API.
+
+```ts
+db.query.bookMergeSuggestionBook.findFirst({ where: { bookId: 1, suggestionId: 1 } });
+```
+
+```sql
+select "d0"."book_id" as "bookId", "d0"."suggestion_id" as "suggestionId"
+from "book_merge_suggestion_book" as "d0"
+where (("d0"."book_id" = ?) and ("d0"."suggestion_id" = ?))
+limit ?
+-- params: [1,1,1]
+```
+
+**Insert**: Adds a row to bookMergeSuggestionBook, giving the columns that have no default.
+
+```ts
+db.insert(bookMergeSuggestionBook).values({ bookId: 1, suggestionId: 1 });
+```
+
+```sql
+insert into "book_merge_suggestion_book" ("book_id", "suggestion_id")
+values (?, ?)
+-- params: [1,1]
+```
+
+**Delete**: Deletes a row of bookMergeSuggestionBook, found by its primary key.
+
+```ts
+db.delete(bookMergeSuggestionBook).where(
+  and(eq(bookMergeSuggestionBook.bookId, 1), eq(bookMergeSuggestionBook.suggestionId, 1)),
+);
+```
+
+```sql
+delete from "book_merge_suggestion_book"
+where (("book_merge_suggestion_book"."book_id" = ?) and ("book_merge_suggestion_book"."suggestion_id" = ?))
+-- params: [1,1]
+```
+
+</details>
+
+<a id="table-bookMergeReview"></a>
+
+### bookMergeReview
+
+Table `book_merge_review`.
+
+![bookMergeReview and the tables it relates to](tables/bookMergeReview.svg)
+
+| Column                       | Type      | Constraints                            | Default                                | Description |
+| ---------------------------- | --------- | -------------------------------------- | -------------------------------------- | ----------- |
+| `bookId` (`book_id`)         | `integer` | PK NOT NULL → [books.id](#table-books) |                                        |             |
+| `reviewedAt` (`reviewed_at`) | `text`    | NOT NULL                               | ``.default(sql`(CURRENT_TIMESTAMP)`)`` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `book_merge_review` (
+	`book_id` integer PRIMARY KEY,
+	`reviewed_at` text DEFAULT (CURRENT_TIMESTAMP) NOT NULL,
+	CONSTRAINT `fk_book_merge_review_book_id_books_id_fk` FOREIGN KEY (`book_id`) REFERENCES `books`(`id`) ON DELETE CASCADE
+);
+```
+
+#### References
+
+- `bookId` → [books.id](#table-books) (one to one, on delete cascade)
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of bookMergeReview.
+
+```ts
+db.select().from(bookMergeReview);
+```
+
+```sql
+select "book_id", "reviewed_at"
+from "book_merge_review"
+```
+
+**Count**: How many rows bookMergeReview has.
+
+```ts
+db.select({ count: count() }).from(bookMergeReview);
+```
+
+```sql
+select count(*)
+from "book_merge_review"
+```
+
+**Find many**: The rows of bookMergeReview, through the relational query API.
+
+```ts
+db.query.bookMergeReview.findMany();
+```
+
+```sql
+select "d0"."book_id" as "bookId", "d0"."reviewed_at" as "reviewedAt"
+from "book_merge_review" as "d0"
+```
+
+**Find by primary key**: One row of bookMergeReview, through the relational query API.
+
+```ts
+db.query.bookMergeReview.findFirst({ where: { bookId: 1 } });
+```
+
+```sql
+select "d0"."book_id" as "bookId", "d0"."reviewed_at" as "reviewedAt"
+from "book_merge_review" as "d0"
+where "d0"."book_id" = ?
+limit ?
+-- params: [1,1]
+```
+
+**Insert**: Adds a row to bookMergeReview, giving the columns that have no default.
+
+```ts
+db.insert(bookMergeReview).values({ bookId: 1 });
+```
+
+```sql
+insert into "book_merge_review" ("book_id", "reviewed_at")
+values (?, (CURRENT_TIMESTAMP))
+-- params: [1]
+```
+
+**Update**: Changes a row of bookMergeReview, found by its primary key.
+
+```ts
+db.update(bookMergeReview).set({ reviewedAt: "reviewedAt" }).where(eq(bookMergeReview.bookId, 1));
+```
+
+```sql
+update "book_merge_review"
+set "reviewed_at" = ?
+where "book_merge_review"."book_id" = ?
+-- params: ["reviewedAt",1]
+```
+
+**Delete**: Deletes a row of bookMergeReview, found by its primary key.
+
+```ts
+db.delete(bookMergeReview).where(eq(bookMergeReview.bookId, 1));
+```
+
+```sql
+delete from "book_merge_review"
+where "book_merge_review"."book_id" = ?
 -- params: [1]
 ```
 

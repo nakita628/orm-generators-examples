@@ -1,8 +1,5 @@
 import {sql} from "drizzle-orm";
 import {MediaType} from "@/lib/utils/enums";
-import {relations} from "drizzle-orm/_relations";
-import {user} from "@/lib/server/database/schema/auth.schema";
-import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
 import {check, integer, real, snakeCase, text} from "drizzle-orm/sqlite-core";
 import {
     commMediaEpsCols,
@@ -79,66 +76,5 @@ export const animeEpisodesPerSeason = snakeCase.table("anime_episodes_per_season
 
 
 export const animeTags = snakeCase.table("anime_tags", {
-    ...commonMediaTagsCols(anime.id),
+    ...commonMediaTagsCols(animeList.id),
 }, (table) => commonMediaTagsIndexes(table, MediaType.ANIME));
-
-
-export const animeEpisodesPerSeasonRelations = relations(animeEpisodesPerSeason, ({ one }) => ({
-    anime: one(anime, {
-        fields: [animeEpisodesPerSeason.mediaId],
-        references: [anime.id]
-    }),
-}));
-
-
-export const animeRelations = relations(anime, ({ many }) => ({
-    animeEpisodesPerSeasons: many(animeEpisodesPerSeason),
-    animeGenres: many(animeGenre),
-    animeTags: many(animeTags),
-    animeNetworks: many(animeNetwork),
-    animeLists: many(animeList),
-}));
-
-
-export const animeListRelations = relations(animeList, ({ one }) => ({
-    anime: one(anime, {
-        fields: [animeList.mediaId],
-        references: [anime.id]
-    }),
-    user: one(user, {
-        fields: [animeList.userId],
-        references: [user.id]
-    }),
-}));
-
-
-export const animeGenreRelations = relations(animeGenre, ({ one }) => ({
-    anime: one(anime, {
-        fields: [animeGenre.mediaId],
-        references: [anime.id]
-    }),
-}));
-
-
-export const animeNetworkRelations = relations(animeNetwork, ({ one }) => ({
-    anime: one(anime, {
-        fields: [animeNetwork.mediaId],
-        references: [anime.id]
-    }),
-}));
-
-
-export const animeTagsRelations = relations(animeTags, ({ one }) => ({
-    tag: one(mediaTags, {
-        fields: [animeTags.tagId],
-        references: [mediaTags.id],
-    }),
-    user: one(user, {
-        fields: [animeTags.userId],
-        references: [user.id]
-    }),
-    anime: one(anime, {
-        fields: [animeTags.mediaId],
-        references: [anime.id]
-    }),
-}));

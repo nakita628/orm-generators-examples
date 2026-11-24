@@ -1,7 +1,4 @@
-import {relations} from "drizzle-orm/_relations";
-import {user} from "@/lib/server/database/schema/auth.schema";
 import {GamesPlatformsEnum, MediaType} from "@/lib/utils/enums";
-import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
 import {index, integer, real, snakeCase, text, uniqueIndex} from "drizzle-orm/sqlite-core";
 import {
     commonGenericCols,
@@ -61,66 +58,5 @@ export const gamesCompanies = snakeCase.table("games_companies", {
 
 
 export const gamesTags = snakeCase.table("games_tags", {
-    ...commonMediaTagsCols(games.id),
+    ...commonMediaTagsCols(gamesList.id),
 }, (table) => commonMediaTagsIndexes(table, MediaType.GAMES));
-
-
-export const gamesRelations = relations(games, ({ many }) => ({
-    gamesPlatforms: many(gamesPlatforms),
-    gamesCompanies: many(gamesCompanies),
-    gamesGenres: many(gamesGenre),
-    gamesTags: many(gamesTags),
-    gamesLists: many(gamesList),
-}));
-
-
-export const gamesListRelations = relations(gamesList, ({ one }) => ({
-    user: one(user, {
-        fields: [gamesList.userId],
-        references: [user.id]
-    }),
-    game: one(games, {
-        fields: [gamesList.mediaId],
-        references: [games.id]
-    }),
-}));
-
-
-export const gamesPlatformsRelations = relations(gamesPlatforms, ({ one }) => ({
-    game: one(games, {
-        fields: [gamesPlatforms.mediaId],
-        references: [games.id]
-    }),
-}));
-
-
-export const gamesCompaniesRelations = relations(gamesCompanies, ({ one }) => ({
-    game: one(games, {
-        fields: [gamesCompanies.mediaId],
-        references: [games.id]
-    }),
-}));
-
-
-export const gamesGenreRelations = relations(gamesGenre, ({ one }) => ({
-    game: one(games, {
-        fields: [gamesGenre.mediaId],
-        references: [games.id]
-    }),
-}));
-
-
-export const gamesTagsRelations = relations(gamesTags, ({ one }) => ({
-    game: one(games, {
-        fields: [gamesTags.mediaId],
-        references: [games.id]
-    }),
-    tag: one(mediaTags, {
-        fields: [gamesTags.tagId],
-        references: [mediaTags.id],
-    }),
-    user: one(user, {
-        fields: [gamesTags.userId],
-        references: [user.id]
-    }),
-}));

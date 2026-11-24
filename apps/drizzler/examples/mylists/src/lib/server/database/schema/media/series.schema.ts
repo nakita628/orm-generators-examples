@@ -1,8 +1,5 @@
 import {sql} from "drizzle-orm";
 import {MediaType} from "@/lib/utils/enums";
-import {relations} from "drizzle-orm/_relations";
-import {user} from "@/lib/server/database/schema/auth.schema";
-import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
 import {check, integer, real, snakeCase, text} from "drizzle-orm/sqlite-core";
 import {
     commMediaEpsCols,
@@ -79,75 +76,5 @@ export const seriesEpisodesPerSeason = snakeCase.table("series_episodes_per_seas
 
 
 export const seriesTags = snakeCase.table("series_tags", {
-    ...commonMediaTagsCols(series.id),
+    ...commonMediaTagsCols(seriesList.id),
 }, (table) => commonMediaTagsIndexes(table, MediaType.SERIES));
-
-
-export const seriesRelations = relations(series, ({ many }) => ({
-    seriesEpisodesPerSeasons: many(seriesEpisodesPerSeason),
-    seriesGenres: many(seriesGenre),
-    seriesTags: many(seriesTags),
-    seriesNetworks: many(seriesNetwork),
-    seriesLists: many(seriesList),
-    seriesActors: many(seriesActors),
-}));
-
-
-export const seriesListRelations = relations(seriesList, ({ one }) => ({
-    user: one(user, {
-        fields: [seriesList.userId],
-        references: [user.id]
-    }),
-    series: one(series, {
-        fields: [seriesList.mediaId],
-        references: [series.id]
-    }),
-}));
-
-
-export const seriesGenreRelations = relations(seriesGenre, ({ one }) => ({
-    series: one(series, {
-        fields: [seriesGenre.mediaId],
-        references: [series.id]
-    }),
-}));
-
-
-export const seriesEpisodesPerSeasonRelations = relations(seriesEpisodesPerSeason, ({ one }) => ({
-    series: one(series, {
-        fields: [seriesEpisodesPerSeason.mediaId],
-        references: [series.id]
-    }),
-}));
-
-
-export const seriesActorsRelations = relations(seriesActors, ({ one }) => ({
-    series: one(series, {
-        fields: [seriesActors.mediaId],
-        references: [series.id]
-    }),
-}));
-
-
-export const seriesNetworkRelations = relations(seriesNetwork, ({ one }) => ({
-    series: one(series, {
-        fields: [seriesNetwork.mediaId],
-        references: [series.id]
-    }),
-}));
-
-
-export const seriesTagsRelations = relations(seriesTags, ({ one }) => ({
-    series: one(series, {
-        fields: [seriesTags.mediaId],
-        references: [series.id]
-    }),
-    tag: one(mediaTags, {
-        fields: [seriesTags.tagId],
-        references: [mediaTags.id],
-    }),
-    user: one(user, {
-        fields: [seriesTags.userId],
-        references: [user.id]
-    }),
-}));

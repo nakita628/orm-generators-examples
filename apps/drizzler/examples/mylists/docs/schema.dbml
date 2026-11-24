@@ -451,13 +451,11 @@ Table series_episodes_per_season {
 }
 
 Table series_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_series_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_series_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_series_tags_tag_list']
   }
 }
 
@@ -564,13 +562,11 @@ Table anime_episodes_per_season {
 }
 
 Table anime_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_anime_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_anime_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_anime_tags_tag_list']
   }
 }
 
@@ -643,13 +639,11 @@ Table movies_actors {
 }
 
 Table movies_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_movies_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_movies_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_movies_tags_tag_list']
   }
 }
 
@@ -733,20 +727,18 @@ Table games_companies {
 }
 
 Table games_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_games_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_games_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_games_tags_tag_list']
   }
 }
 
 Table books {
-  pages integer [not null]
   language text
   publishers text
+  pages integer [not null]
   api_id text [not null, unique]
   id integer [pk, not null]
   name text [not null]
@@ -762,6 +754,11 @@ Table books_list {
   actual_page integer
   redo integer [not null]
   total integer [not null]
+  custom_language text
+  custom_publisher text
+  custom_release_date text
+  custom_title text [not null]
+  custom_pages integer [not null]
   id integer [pk, not null]
   user_id integer [not null]
   media_id integer [not null]
@@ -802,13 +799,11 @@ Table books_authors {
 }
 
 Table books_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_books_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_books_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_books_tags_tag_list']
   }
 }
 
@@ -878,13 +873,11 @@ Table manga_authors {
 }
 
 Table manga_tags {
-  id integer [pk, not null]
-  user_id integer [not null]
-  media_id integer [not null]
+  list_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique, name: 'ux_manga_tags_user_media_tag']
-    (user_id, tag_id, media_id) [name: 'ix_manga_tags_user_tag_media']
+    (list_id, tag_id) [pk]
+    (tag_id, list_id) [name: 'ix_manga_tags_tag_list']
   }
 }
 
@@ -1122,6 +1115,35 @@ Table api_call_rollup {
   }
 }
 
+Table book_merge_suggestion {
+  id integer [pk, increment, not null]
+  target_book_id integer [not null]
+  reviewed_at text
+  reason text [not null]
+  group_key text [not null]
+  created_at text [not null]
+  confidence text [not null]
+  status text [not null]
+  indexes {
+    (group_key) [unique, name: 'ux_book_merge_suggestion_group_key']
+    (status, created_at) [name: 'ix_book_merge_suggestion_status_created_at']
+  }
+}
+
+Table book_merge_suggestion_book {
+  book_id integer [not null]
+  suggestion_id integer [not null]
+  indexes {
+    (suggestion_id, book_id) [pk]
+    (book_id) [name: 'ix_book_merge_suggestion_book_book_id']
+  }
+}
+
+Table book_merge_review {
+  book_id integer [pk, not null]
+  reviewed_at text [not null]
+}
+
 Table feature_requests {
   id integer [pk, increment, not null]
   title text [not null]
@@ -1322,9 +1344,7 @@ Ref series_network_media_id_series_id_fk: series_network.media_id > series.id [d
 
 Ref series_episodes_per_season_media_id_series_id_fk: series_episodes_per_season.media_id > series.id [delete: cascade]
 
-Ref series_tags_user_id_user_id_fk: series_tags.user_id > user.id [delete: cascade]
-
-Ref series_tags_media_id_series_id_fk: series_tags.media_id > series.id [delete: cascade]
+Ref series_tags_list_id_series_list_id_fk: series_tags.list_id > series_list.id [delete: cascade]
 
 Ref series_tags_tag_id_media_tags_id_fk: series_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1342,9 +1362,7 @@ Ref anime_network_media_id_anime_id_fk: anime_network.media_id > anime.id [delet
 
 Ref anime_episodes_per_season_media_id_anime_id_fk: anime_episodes_per_season.media_id > anime.id [delete: cascade]
 
-Ref anime_tags_user_id_user_id_fk: anime_tags.user_id > user.id [delete: cascade]
-
-Ref anime_tags_media_id_anime_id_fk: anime_tags.media_id > anime.id [delete: cascade]
+Ref anime_tags_list_id_anime_list_id_fk: anime_tags.list_id > anime_list.id [delete: cascade]
 
 Ref anime_tags_tag_id_media_tags_id_fk: anime_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1356,9 +1374,7 @@ Ref movies_genre_media_id_movies_id_fk: movies_genre.media_id > movies.id [delet
 
 Ref movies_actors_media_id_movies_id_fk: movies_actors.media_id > movies.id [delete: cascade]
 
-Ref movies_tags_user_id_user_id_fk: movies_tags.user_id > user.id [delete: cascade]
-
-Ref movies_tags_media_id_movies_id_fk: movies_tags.media_id > movies.id [delete: cascade]
+Ref movies_tags_list_id_movies_list_id_fk: movies_tags.list_id > movies_list.id [delete: cascade]
 
 Ref movies_tags_tag_id_media_tags_id_fk: movies_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1372,9 +1388,7 @@ Ref games_platforms_media_id_games_id_fk: games_platforms.media_id > games.id [d
 
 Ref games_companies_media_id_games_id_fk: games_companies.media_id > games.id [delete: cascade]
 
-Ref games_tags_user_id_user_id_fk: games_tags.user_id > user.id [delete: cascade]
-
-Ref games_tags_media_id_games_id_fk: games_tags.media_id > games.id [delete: cascade]
+Ref games_tags_list_id_games_list_id_fk: games_tags.list_id > games_list.id [delete: cascade]
 
 Ref games_tags_tag_id_media_tags_id_fk: games_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1386,9 +1400,7 @@ Ref books_genre_media_id_books_id_fk: books_genre.media_id > books.id [delete: c
 
 Ref books_authors_media_id_books_id_fk: books_authors.media_id > books.id [delete: cascade]
 
-Ref books_tags_user_id_user_id_fk: books_tags.user_id > user.id [delete: cascade]
-
-Ref books_tags_media_id_books_id_fk: books_tags.media_id > books.id [delete: cascade]
+Ref books_tags_list_id_books_list_id_fk: books_tags.list_id > books_list.id [delete: cascade]
 
 Ref books_tags_tag_id_media_tags_id_fk: books_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1400,9 +1412,7 @@ Ref manga_genre_media_id_manga_id_fk: manga_genre.media_id > manga.id [delete: c
 
 Ref manga_authors_media_id_manga_id_fk: manga_authors.media_id > manga.id [delete: cascade]
 
-Ref manga_tags_user_id_user_id_fk: manga_tags.user_id > user.id [delete: cascade]
-
-Ref manga_tags_media_id_manga_id_fk: manga_tags.media_id > manga.id [delete: cascade]
+Ref manga_tags_list_id_manga_list_id_fk: manga_tags.list_id > manga_list.id [delete: cascade]
 
 Ref manga_tags_tag_id_media_tags_id_fk: manga_tags.tag_id > media_tags.id [delete: cascade]
 
@@ -1433,6 +1443,14 @@ Ref media_notifications_user_id_user_id_fk: media_notifications.user_id > user.i
 Ref task_history_user_id_user_id_fk: task_history.user_id > user.id [delete: cascade]
 
 Ref media_refresh_log_user_id_user_id_fk: media_refresh_log.user_id > user.id [delete: cascade]
+
+Ref book_merge_suggestion_target_book_id_books_id_fk: book_merge_suggestion.target_book_id > books.id [delete: cascade]
+
+Ref book_merge_suggestion_book_book_id_books_id_fk: book_merge_suggestion_book.book_id > books.id [delete: cascade]
+
+Ref book_merge_suggestion_book_suggestion_id_book_merge_suggestion_id_fk: book_merge_suggestion_book.suggestion_id > book_merge_suggestion.id [delete: cascade]
+
+Ref book_merge_review_book_id_books_id_fk: book_merge_review.book_id - books.id [delete: cascade]
 
 Ref feature_requests_created_by_user_id_fk: feature_requests.created_by > user.id [delete: set null]
 

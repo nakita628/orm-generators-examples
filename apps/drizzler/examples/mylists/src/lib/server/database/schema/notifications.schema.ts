@@ -1,6 +1,5 @@
 import {sql} from "drizzle-orm";
 import {user} from "./auth.schema";
-import {relations} from "drizzle-orm/_relations";
 import {MediaType, SocialNotifType} from "@/lib/utils/enums";
 import {check, index, integer, snakeCase, text, uniqueIndex} from "drizzle-orm/sqlite-core";
 import {featureRequests} from "@/lib/server/database/schema/feature-votes.schema";
@@ -44,19 +43,3 @@ export const mediaNotifications = snakeCase.table("media_notifications", {
     index("ix_media_notifications_user_unread").on(table.userId).where(sql`${table.read} = 0`),
     check("media_notifications_season_finale_check", sql`${table.isSeasonFinale} IS NULL OR ${table.isSeasonFinale} IN (0, 1)`),
 ]);
-
-
-export const socialNotificationsRelations = relations(socialNotifications, ({ one }) => ({
-    actor: one(user, {
-        fields: [socialNotifications.actorId],
-        references: [user.id],
-    }),
-    recipient: one(user, {
-        fields: [socialNotifications.userId],
-        references: [user.id],
-    }),
-    featureRequest: one(featureRequests, {
-        fields: [socialNotifications.featureRequestId],
-        references: [featureRequests.id],
-    }),
-}));

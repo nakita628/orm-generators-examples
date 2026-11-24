@@ -1,7 +1,4 @@
 import {MediaType} from "@/lib/utils/enums";
-import {relations} from "drizzle-orm/_relations";
-import {user} from "@/lib/server/database/schema/auth.schema";
-import {mediaTags} from "@/lib/server/database/schema/media-tags.schema";
 import {integer, real, snakeCase, text} from "drizzle-orm/sqlite-core";
 import {
     commonGenericCols,
@@ -49,57 +46,5 @@ export const mangaAuthors = snakeCase.table("manga_authors", {
 
 
 export const mangaTags = snakeCase.table("manga_tags", {
-    ...commonMediaTagsCols(manga.id),
+    ...commonMediaTagsCols(mangaList.id),
 }, (table) => commonMediaTagsIndexes(table, MediaType.MANGA));
-
-
-export const mangaRelations = relations(manga, ({ many }) => ({
-    mangaLists: many(mangaList),
-    mangaAuthors: many(mangaAuthors),
-    mangaGenres: many(mangaGenre),
-    mangaTags: many(mangaTags),
-}));
-
-
-export const mangaListRelations = relations(mangaList, ({ one }) => ({
-    user: one(user, {
-        fields: [mangaList.userId],
-        references: [user.id]
-    }),
-    manga: one(manga, {
-        fields: [mangaList.mediaId],
-        references: [manga.id]
-    }),
-}));
-
-
-export const mangaAuthorsRelations = relations(mangaAuthors, ({ one }) => ({
-    manga: one(manga, {
-        fields: [mangaAuthors.mediaId],
-        references: [manga.id]
-    }),
-}));
-
-
-export const mangaGenreRelations = relations(mangaGenre, ({ one }) => ({
-    manga: one(manga, {
-        fields: [mangaGenre.mediaId],
-        references: [manga.id]
-    }),
-}));
-
-
-export const mangaTagsRelations = relations(mangaTags, ({ one }) => ({
-    tag: one(mediaTags, {
-        fields: [mangaTags.tagId],
-        references: [mediaTags.id],
-    }),
-    user: one(user, {
-        fields: [mangaTags.userId],
-        references: [user.id]
-    }),
-    manga: one(manga, {
-        fields: [mangaTags.mediaId],
-        references: [manga.id]
-    }),
-}));

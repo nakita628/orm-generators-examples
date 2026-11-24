@@ -1,5 +1,4 @@
 import {sql} from "drizzle-orm";
-import {relations} from "drizzle-orm/_relations";
 import {customJson} from "@/lib/server/database/custom-types";
 import {user} from "@/lib/server/database/schema/auth.schema";
 import {check, index, integer, snakeCase, text, uniqueIndex} from "drizzle-orm/sqlite-core";
@@ -55,20 +54,3 @@ export const importItems = snakeCase.table("import_items", {
     check("import_items_row_positive_check", sql`${table.rowNumber} >= 1`),
     check("import_items_payload_json_check", sql`json_valid(${table.payload})`),
 ]);
-
-
-export const importJobsRelations = relations(importJobs, ({ many, one }) => ({
-    user: one(user, {
-        fields: [importJobs.userId],
-        references: [user.id],
-    }),
-    items: many(importItems),
-}));
-
-
-export const importItemsRelations = relations(importItems, ({ one }) => ({
-    job: one(importJobs, {
-        fields: [importItems.jobId],
-        references: [importJobs.id],
-    }),
-}));

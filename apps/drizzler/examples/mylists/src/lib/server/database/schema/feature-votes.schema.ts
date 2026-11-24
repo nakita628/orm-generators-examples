@@ -1,5 +1,4 @@
 import {sql} from "drizzle-orm";
-import {relations} from "drizzle-orm/_relations";
 import {FeatureStatus} from "@/lib/utils/enums";
 import {user} from "@/lib/server/database/schema/auth.schema";
 import {index, integer, snakeCase, text, uniqueIndex} from "drizzle-orm/sqlite-core";
@@ -28,24 +27,3 @@ export const featureVotes = snakeCase.table("feature_votes", {
     index("ix_feature_votes_user_id").on(table.userId),
     uniqueIndex("ux_feature_votes_feature_user").on(table.featureId, table.userId),
 ]);
-
-
-export const featureRequestsRelations = relations(featureRequests, ({ one, many }) => ({
-    votes: many(featureVotes),
-    author: one(user, {
-        references: [user.id],
-        fields: [featureRequests.createdBy],
-    }),
-}));
-
-
-export const featureVotesRelations = relations(featureVotes, ({ one }) => ({
-    user: one(user, {
-        references: [user.id],
-        fields: [featureVotes.userId],
-    }),
-    feature: one(featureRequests, {
-        fields: [featureVotes.featureId],
-        references: [featureRequests.id],
-    }),
-}));

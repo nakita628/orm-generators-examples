@@ -30,8 +30,7 @@ erDiagram
     series ||--o{ series_actors : "(id) - (media_id)"
     series ||--o{ series_network : "(id) - (media_id)"
     series ||--o{ series_episodes_per_season : "(id) - (media_id)"
-    user ||--o{ series_tags : "(id) - (user_id)"
-    series ||--o{ series_tags : "(id) - (media_id)"
+    series_list ||--o{ series_tags : "(id) - (list_id)"
     media_tags ||--o{ series_tags : "(id) - (tag_id)"
     user ||--o{ anime_list : "(id) - (user_id)"
     anime ||--o{ anime_list : "(id) - (media_id)"
@@ -40,37 +39,32 @@ erDiagram
     anime ||--o{ anime_actors : "(id) - (media_id)"
     anime ||--o{ anime_network : "(id) - (media_id)"
     anime ||--o{ anime_episodes_per_season : "(id) - (media_id)"
-    user ||--o{ anime_tags : "(id) - (user_id)"
-    anime ||--o{ anime_tags : "(id) - (media_id)"
+    anime_list ||--o{ anime_tags : "(id) - (list_id)"
     media_tags ||--o{ anime_tags : "(id) - (tag_id)"
     user ||--o{ movies_list : "(id) - (user_id)"
     movies ||--o{ movies_list : "(id) - (media_id)"
     movies ||--o{ movies_genre : "(id) - (media_id)"
     movies ||--o{ movies_actors : "(id) - (media_id)"
-    user ||--o{ movies_tags : "(id) - (user_id)"
-    movies ||--o{ movies_tags : "(id) - (media_id)"
+    movies_list ||--o{ movies_tags : "(id) - (list_id)"
     media_tags ||--o{ movies_tags : "(id) - (tag_id)"
     user ||--o{ games_list : "(id) - (user_id)"
     games ||--o{ games_list : "(id) - (media_id)"
     games ||--o{ games_genre : "(id) - (media_id)"
     games ||--o{ games_platforms : "(id) - (media_id)"
     games ||--o{ games_companies : "(id) - (media_id)"
-    user ||--o{ games_tags : "(id) - (user_id)"
-    games ||--o{ games_tags : "(id) - (media_id)"
+    games_list ||--o{ games_tags : "(id) - (list_id)"
     media_tags ||--o{ games_tags : "(id) - (tag_id)"
     user ||--o{ books_list : "(id) - (user_id)"
     books ||--o{ books_list : "(id) - (media_id)"
     books ||--o{ books_genre : "(id) - (media_id)"
     books ||--o{ books_authors : "(id) - (media_id)"
-    user ||--o{ books_tags : "(id) - (user_id)"
-    books ||--o{ books_tags : "(id) - (media_id)"
+    books_list ||--o{ books_tags : "(id) - (list_id)"
     media_tags ||--o{ books_tags : "(id) - (tag_id)"
     user ||--o{ manga_list : "(id) - (user_id)"
     manga ||--o{ manga_list : "(id) - (media_id)"
     manga ||--o{ manga_genre : "(id) - (media_id)"
     manga ||--o{ manga_authors : "(id) - (media_id)"
-    user ||--o{ manga_tags : "(id) - (user_id)"
-    manga ||--o{ manga_tags : "(id) - (media_id)"
+    manga_list ||--o{ manga_tags : "(id) - (list_id)"
     media_tags ||--o{ manga_tags : "(id) - (tag_id)"
     user ||--o{ mediadle_stats : "(id) - (user_id)"
     user ||--o{ user_mediadle_progress : "(id) - (user_id)"
@@ -86,6 +80,10 @@ erDiagram
     user ||--o{ media_notifications : "(id) - (user_id)"
     user |o--o{ task_history : "(id) - (user_id)"
     user ||--o{ media_refresh_log : "(id) - (user_id)"
+    books ||--o{ book_merge_suggestion : "(id) - (target_book_id)"
+    books ||--o{ book_merge_suggestion_book : "(id) - (book_id)"
+    book_merge_suggestion ||--o{ book_merge_suggestion_book : "(id) - (suggestion_id)"
+    books ||--o| book_merge_review : "(id) - (book_id)"
     user |o--o{ feature_requests : "(id) - (created_by)"
     user ||--o{ feature_votes : "(id) - (user_id)"
     feature_requests ||--o{ feature_votes : "(id) - (feature_id)"
@@ -426,10 +424,8 @@ erDiagram
         integer episodes
     }
     series_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     anime {
         text backdrop_path
@@ -503,10 +499,8 @@ erDiagram
         integer episodes
     }
     anime_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     movies {
         text backdrop_path
@@ -559,10 +553,8 @@ erDiagram
         text name
     }
     movies_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     games {
         text backdrop_image_id
@@ -621,15 +613,13 @@ erDiagram
         integer developer
     }
     games_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     books {
-        integer pages
         text language
         text publishers
+        integer pages
         text api_id
         integer id PK
         text name
@@ -644,6 +634,11 @@ erDiagram
         integer actual_page
         integer redo
         integer total
+        text custom_language
+        text custom_publisher
+        text custom_release_date
+        text custom_title
+        integer custom_pages
         integer id PK
         integer user_id FK
         integer media_id FK
@@ -667,10 +662,8 @@ erDiagram
         text name
     }
     books_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     manga {
         text original_name
@@ -720,10 +713,8 @@ erDiagram
         text name
     }
     manga_tags {
-        integer id PK
-        integer user_id FK
-        integer media_id FK
-        integer tag_id FK
+        integer list_id PK, FK
+        integer tag_id PK, FK
     }
     daily_mediadle {
         integer id PK
@@ -878,6 +869,24 @@ erDiagram
         integer duration_ms_total
         integer max_second_burst
         text status_counts
+    }
+    book_merge_suggestion {
+        integer id PK
+        integer target_book_id FK
+        text reviewed_at
+        text reason
+        text group_key
+        text created_at
+        text confidence
+        text status
+    }
+    book_merge_suggestion_book {
+        integer book_id PK, FK
+        integer suggestion_id PK, FK
+    }
+    book_merge_review {
+        integer book_id PK, FK
+        text reviewed_at
     }
     feature_requests {
         integer id PK

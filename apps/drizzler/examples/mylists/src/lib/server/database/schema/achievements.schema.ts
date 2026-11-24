@@ -1,5 +1,4 @@
 import {sql} from "drizzle-orm";
-import {relations} from "drizzle-orm/_relations";
 import {user} from "@/lib/server/database/schema/auth.schema";
 import {customJson} from "@/lib/server/database/custom-types";
 import {AchievementDifficulty, MediaType} from "@/lib/utils/enums";
@@ -48,29 +47,3 @@ export const userAchievement = snakeCase.table("user_achievement", {
     check("user_achievement_completed_check", sql`${table.completed} IS NULL OR ${table.completed} IN (0, 1)`),
     check("user_achievement_completed_at_check", sql`${table.completed} IS NULL OR ${table.completed} = 0 OR ${table.completedAt} IS NOT NULL`),
 ]);
-
-
-export const achievementRelations = relations(achievement, ({ many }) => ({
-    tiers: many(achievementTier),
-}));
-
-
-export const achievementTierRelations = relations(achievementTier, ({ one, many }) => ({
-    achievement: one(achievement, {
-        fields: [achievementTier.achievementId],
-        references: [achievement.id]
-    }),
-    userAchievements: many(userAchievement),
-}));
-
-
-export const userAchievementRelations = relations(userAchievement, ({ one }) => ({
-    achievementTier: one(achievementTier, {
-        fields: [userAchievement.tierId],
-        references: [achievementTier.id]
-    }),
-    user: one(user, {
-        fields: [userAchievement.userId],
-        references: [user.id]
-    }),
-}));
