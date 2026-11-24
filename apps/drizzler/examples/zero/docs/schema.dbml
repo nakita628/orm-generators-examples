@@ -234,6 +234,10 @@ Table mail0_writing_style_matrix {
   numMessages integer [not null]
   style jsonb [not null, note: 'TODO: way too much pain to get this type to work, revisit later']
   updatedAt timestamp [not null]
+  indexes {
+    (connectionId) [pk]
+    (style) [name: 'writing_style_matrix_style_idx']
+  }
 }
 
 Table mail0_jwks {
@@ -341,6 +345,6 @@ Ref mail0_note_user_id_mail0_user_id_fk: mail0_note.user_id > mail0_user.id [del
 
 Ref mail0_user_settings_user_id_mail0_user_id_fk: mail0_user_settings.user_id - mail0_user.id [delete: cascade]
 
-Ref mail0_writing_style_matrix_connectionId_mail0_connection_id_fk: mail0_writing_style_matrix.connectionId > mail0_connection.id [delete: cascade]
+Ref mail0_writing_style_matrix_connectionId_mail0_connection_id_fk: mail0_writing_style_matrix.connectionId - mail0_connection.id [delete: cascade]
 
 Ref mail0_email_template_user_id_mail0_user_id_fk: mail0_email_template.user_id > mail0_user.id [delete: cascade]

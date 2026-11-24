@@ -14,6 +14,10 @@ Table user {
   ban_expires timestamp
   suspended_at timestamp [note: 'When set, the account is suspended: sign-in is refused and API keys stop authenticating, while every resource the user owns is left untouched. Deliberately not `banned`. A ban is a platform-admin action whose `user.update.after` hook runs `disableUserResources`, archiving every workspace the user owns and deleting their API keys, and Sim has no server-side unban to reverse it. SCIM `active: false` is a reversible organization-level suspension that must preserve ownership for a later reactivation, so it needs a state of its own.']
   suspension_source text [note: 'Who suspended the account. Only `scim` exists today; a source only ever lifts its own suspension, so a later source cannot have its suspensions undone by a directory sync.']
+  indexes {
+    `lower(btrim(email))` [name: 'user_email_lower_idx']
+    `(CASE WHEN split_part(lower(btrim(email)), '@', 2) IN ('gmail.com', 'googlemail.com') THEN replace(split_part(split_part(lower(btrim(email)), '@', 1), '+', 1), '.', '') || '@gmail.com' END)` [name: 'user_gmail_mailbox_idx']
+  }
 }
 
 Table session {
@@ -86,13 +90,13 @@ Table folder {
     (id, workspace_id, resource_type) [unique, name: 'folder_workspace_owner_type_unique']
     (id, project_id, resource_type) [unique, name: 'folder_project_owner_type_unique']
     (project_id, id) [name: 'folder_project_id_idx']
-    (project_id, resource_type, name) [unique, name: 'folder_project_resource_parent_name_active_unique']
+    `project_id, resource_type, coalesce(parent_id, ''), name` [unique, name: 'folder_project_resource_parent_name_active_unique']
     (user_id) [name: 'folder_user_idx']
     (workspace_id, resource_type, parent_id) [name: 'folder_workspace_resource_parent_idx']
     (parent_id, sort_order) [name: 'folder_parent_sort_idx']
     (deleted_at) [name: 'folder_deleted_at_idx']
     (workspace_id, deleted_at) [name: 'folder_workspace_deleted_partial_idx']
-    (workspace_id, resource_type, name) [unique, name: 'folder_workspace_resource_parent_name_active_unique']
+    `workspace_id, resource_type, coalesce(parent_id, ''), name` [unique, name: 'folder_workspace_resource_parent_name_active_unique']
   }
   Note: 'Generic folder hierarchy shared by workflows, files, knowledge bases, and tables. Supersedes the resource-specific `workflow_folder` and `workspace_file_folders` tables, dropped in migration 0276 once the cutover was verified against production. `resourceType` is a real `pgEnum` here — unlike `pinnedItem.resourceType` — because the set of folder-bearing resources is small and fixed. A folder may only parent a folder of the same `resourceType` in the same workspace; that invariant is enforced both in the application layer and by the `folder_parent_resource_type_match` trigger, since a plain FK cannot express it. `locked` carries over the existing workflow-folder lock feature verbatim. It is NOT extended to the other resource types — file/knowledge_base/table folders leave it at `false` and no lock cascade reads it for them. Dropping the column would regress shipped workflow-folder locking. `color` and `isExpanded` from the old `workflow_folder` table are intentionally not carried over: `color` has no UI consumer, and `isExpanded`\'s real state lives client-side in the folders Zustand store and is never read back from the DB.'
 }
@@ -146,7 +150,7 @@ Table workflow {
   indexes {
     (workspace_id) [name: 'workflow_workspace_id_idx']
     (user_id, workspace_id) [name: 'workflow_user_workspace_idx']
-    (workspace_id, name) [unique, name: 'workflow_workspace_folder_name_active_unique']
+    `workspace_id, coalesce(folder_id, ''), name` [unique, name: 'workflow_workspace_folder_name_active_unique']
     (folder_id, sort_order) [name: 'workflow_folder_sort_idx']
     (workspace_id, sort_order, created_at, id) [name: 'workflow_active_workspace_sort_idx']
     (archived_at) [name: 'workflow_archived_at_idx']
@@ -256,10 +260,10 @@ Table workflow_execution_logs {
     (execution_id) [unique, name: 'workflow_execution_logs_execution_id_unique']
     (workflow_id, started_at) [name: 'workflow_execution_logs_workflow_started_at_idx']
     (workspace_id, started_at, status, total_duration_ms, workflow_id, trigger, level) [name: 'workflow_execution_logs_workspace_activity_level_idx']
-    (workspace_id) [name: 'workflow_execution_logs_workspace_started_at_id_desc_idx']
+    `workspace_id, started_at DESC NULLS LAST, id DESC` [name: 'workflow_execution_logs_workspace_started_at_id_desc_idx']
     (workspace_id, cost_total) [name: 'workflow_execution_logs_workspace_cost_total_idx']
     (models_used) [type: gin, name: 'workflow_execution_logs_models_used_idx']
-    (workspace_id, id) [name: 'workflow_execution_logs_workspace_ended_at_id_idx']
+    `workspace_id, date_trunc('milliseconds', ended_at), id` [name: 'workflow_execution_logs_workspace_ended_at_id_idx']
     (started_at) [name: 'workflow_execution_logs_running_started_at_idx']
     (execution_deadline_at) [name: 'workflow_execution_logs_running_deadline_idx']
     (started_at) [name: 'workflow_execution_logs_redacting_started_at_idx']
@@ -574,7 +578,7 @@ Table job_execution_logs {
     (billing_request_id) [unique, name: 'job_execution_logs_billing_request_unique']
     (started_at) [name: 'job_execution_logs_open_idx']
     (workspace_id, started_at) [name: 'job_execution_logs_workspace_started_at_idx']
-    (workspace_id, id) [name: 'job_execution_logs_workspace_ended_at_id_idx']
+    `workspace_id, date_trunc('milliseconds', ended_at), id` [name: 'job_execution_logs_workspace_ended_at_id_idx']
     (execution_id) [unique, name: 'job_execution_logs_execution_id_unique']
     (trigger) [name: 'job_execution_logs_trigger_idx']
   }
@@ -1085,7 +1089,7 @@ Table workspace {
   owner_id text [not null, note: 'checks. The owner→admin derivation is redundant: every workspace owner already has an explicit `admin` row in `permissions` (verified across all production workspaces) and all creation paths add one. Retained only as the lifecycle anchor — `onDelete: \'cascade\'` cleans up a user\'s workspaces on account deletion — and the ownership-transfer target when an owner is removed. For admin checks use explicit `permissions` rows; for the workspace\'s principal billing identity use `billedAccountUserId`. DO NOT DELETE.']
   organization_id text
   organization_scope_key text [note: 'Encodes nullable organization identity for the composite membership foreign key.']
-  projectId workspaceProjectIdColumn
+  project_id text [not null]
   workspace_mode workspace_mode [not null]
   billed_account_user_id text [not null]
   storage_used_bytes bigint [not null, note: 'Durable workspace-first storage ledger. Invariant: this non-negative total and the currently routed payer aggregate change atomically while the workspace row is locked. A payer identity change moves this entire total old payer -> new payer in the same transaction.']
@@ -1102,11 +1106,11 @@ Table workspace {
   created_at timestamp [not null]
   updated_at timestamp [not null]
   indexes {
-    (id, projectId) [unique, name: 'workspace_id_project_unique']
+    (id, project_id) [unique, name: 'workspace_id_project_unique']
     (owner_id) [name: 'workspace_owner_id_idx']
     (organization_id) [name: 'workspace_organization_id_idx']
     (billed_account_user_id) [name: 'workspace_billed_account_user_id_idx']
-    (projectId, id) [name: 'workspace_project_id_id_idx']
+    (project_id, id) [name: 'workspace_project_id_id_idx']
     (workspace_mode) [name: 'workspace_mode_idx']
     (forked_from_workspace_id) [name: 'workspace_forked_from_workspace_id_idx']
     (inbox_provider_id) [unique, name: 'workspace_inbox_provider_id_idx']
@@ -1229,6 +1233,8 @@ Table background_work_status {
   indexes {
     (workspace_id, status) [name: 'background_work_status_workspace_status_idx']
     (workflow_id, status) [name: 'background_work_status_workflow_status_idx']
+    `(metadata ->> 'childWorkspaceId')` [name: 'background_work_status_meta_child_ws_idx']
+    `(metadata ->> 'otherWorkspaceId')` [name: 'background_work_status_meta_other_ws_idx']
   }
   Note: 'Durable status for asynchronous background work (post-sync/rollback deployment side-effects and fork content copy), so the canvas can show a "work in progress" banner that survives a reload. A row scoped to a single workflow sets `workflowId`; workspace-spanning work (fork content copy) leaves it null.'
 }
@@ -1387,16 +1393,16 @@ Table workspace_files {
   secret_provenance_version integer [note: 'Durable cutover marker for content secret provenance. NULL is reserved for legacy rows and writes from app versions that predate tracking. Provenance-aware writers set version 1 in the same transaction as the matching sidecar. A tracked version without a matching sidecar fails closed.']
   indexes {
     (project_id, id) [name: 'workspace_files_project_id_idx']
-    (project_id, original_name) [unique, name: 'workspace_files_project_folder_name_active_unique']
+    `project_id, coalesce(folder_id, ''), original_name` [unique, name: 'workspace_files_project_folder_name_active_unique']
     (key) [unique, name: 'workspace_files_key_active_unique']
-    (workspace_id, original_name) [unique, name: 'workspace_files_workspace_folder_name_active_unique']
-    (id) [name: 'workspace_files_search_owner_keyset_idx']
+    `workspace_id, coalesce(folder_id, ''), original_name` [unique, name: 'workspace_files_workspace_folder_name_active_unique']
+    `(CASE WHEN project_id IS NOT NULL THEN 'project' ELSE 'workspace' END), coalesce(project_id, workspace_id), id` [name: 'workspace_files_search_owner_keyset_idx']
     (workspace_id, id) [name: 'workspace_files_workspace_active_keyset_idx']
     (workspace_id, uploaded_at, id) [name: 'workspace_files_workspace_active_uploaded_idx']
     (workspace_id, updated_at, id) [name: 'workspace_files_workspace_active_updated_idx']
-    (workspace_id, uploaded_at, id) [name: 'workspace_files_workspace_folder_uploaded_idx']
+    `workspace_id, coalesce(folder_id, ''), uploaded_at, id` [name: 'workspace_files_workspace_folder_uploaded_idx']
     (workspace_id, original_name) [type: gin, name: 'workspace_files_workspace_name_trgm_idx']
-    (workspace_id) [name: 'workspace_files_workspace_display_name_idx']
+    `workspace_id, regexp_replace(regexp_replace(regexp_replace(normalize(original_name, NFC), '^sql.raw(WHITESPACE_CHARACTER_CLASS)+|sql.raw(WHITESPACE_CHARACTER_CLASS)+$', '', 'g'), '[\x01-\x1f\x7f]', '', 'g'), 'sql.raw(WHITESPACE_CHARACTER_CLASS)+', ' ', 'g')` [name: 'workspace_files_workspace_display_name_idx']
     (chat_id, display_name) [unique, name: 'workspace_files_chat_display_name_unique']
     (organization_id) [name: 'workspace_files_organization_id_idx']
     (key) [name: 'workspace_files_key_idx']
@@ -1516,8 +1522,8 @@ Table workspace_file_search_revision {
   handoff_expires_at timestamp [note: 'Deadline for a claim\'s run to be handed off, in PostgreSQL time. Set with the claim and cleared once a run is known to exist: Trigger.dev accepted it, in-process indexing took it, or it began its build. A claim still carrying an expired deadline has no run known to exist and is released, and its token fences out any run it did get. NULL otherwise, including claims made before this column existed, which fall back to the stale-dispatch window.']
   updated_at timestamp [not null]
   indexes {
-    (updated_at, file_id, source_content_updated_at) [name: 'file_search_revision_owner_pending_idx']
-    (status, dispatched_at) [name: 'file_search_revision_owner_status_idx']
+    `coalesce(entity_type, 'workspace'), coalesce(entity_id, workspace_id), updated_at, file_id, source_content_updated_at` [name: 'file_search_revision_owner_pending_idx']
+    `coalesce(entity_type, 'workspace'), coalesce(entity_id, workspace_id), status, dispatched_at` [name: 'file_search_revision_owner_status_idx']
     (workspace_id, status) [name: 'workspace_file_search_revision_workspace_status_idx']
     (build_id) [name: 'workspace_file_search_revision_build_idx']
     (workspace_id, updated_at, file_id, source_content_updated_at) [name: 'workspace_file_search_revision_pending_idx']
@@ -1905,13 +1911,13 @@ Table document {
     (deleted_at) [name: 'doc_deleted_at_partial_idx']
     (connector_id) [name: 'doc_connector_tombstone_idx']
     (connector_id) [name: 'doc_connector_live_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag1_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag2_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag3_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag4_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag5_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag6_lower_idx']
-    (knowledge_base_id) [name: 'doc_kb_tag7_lower_idx']
+    `knowledge_base_id, lower(tag1)` [name: 'doc_kb_tag1_lower_idx']
+    `knowledge_base_id, lower(tag2)` [name: 'doc_kb_tag2_lower_idx']
+    `knowledge_base_id, lower(tag3)` [name: 'doc_kb_tag3_lower_idx']
+    `knowledge_base_id, lower(tag4)` [name: 'doc_kb_tag4_lower_idx']
+    `knowledge_base_id, lower(tag5)` [name: 'doc_kb_tag5_lower_idx']
+    `knowledge_base_id, lower(tag6)` [name: 'doc_kb_tag6_lower_idx']
+    `knowledge_base_id, lower(tag7)` [name: 'doc_kb_tag7_lower_idx']
     (number1) [name: 'doc_number1_idx']
     (number2) [name: 'doc_number2_idx']
     (number3) [name: 'doc_number3_idx']
@@ -1992,13 +1998,13 @@ Table embedding {
     (knowledge_base_id, embedding_model) [name: 'emb_kb_model_idx']
     (knowledge_base_id, enabled) [name: 'emb_kb_enabled_idx']
     (document_id, enabled) [name: 'emb_doc_enabled_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag1_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag2_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag3_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag4_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag5_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag6_lower_idx']
-    (knowledge_base_id) [name: 'emb_kb_tag7_lower_idx']
+    `knowledge_base_id, lower(tag1)` [name: 'emb_kb_tag1_lower_idx']
+    `knowledge_base_id, lower(tag2)` [name: 'emb_kb_tag2_lower_idx']
+    `knowledge_base_id, lower(tag3)` [name: 'emb_kb_tag3_lower_idx']
+    `knowledge_base_id, lower(tag4)` [name: 'emb_kb_tag4_lower_idx']
+    `knowledge_base_id, lower(tag5)` [name: 'emb_kb_tag5_lower_idx']
+    `knowledge_base_id, lower(tag6)` [name: 'emb_kb_tag6_lower_idx']
+    `knowledge_base_id, lower(tag7)` [name: 'emb_kb_tag7_lower_idx']
     (number1) [name: 'emb_number1_idx']
     (number2) [name: 'emb_number2_idx']
     (number3) [name: 'emb_number3_idx']
@@ -2185,7 +2191,7 @@ Table copilot_chats {
     (user_id, workspace_id) [name: 'copilot_chats_user_workspace_idx']
     (created_at) [name: 'copilot_chats_created_at_idx']
     (updated_at) [name: 'copilot_chats_updated_at_idx']
-    (workspace_id, id) [name: 'copilot_chats_workspace_created_at_id_idx']
+    `workspace_id, date_trunc('milliseconds', created_at), id` [name: 'copilot_chats_workspace_created_at_id_idx']
     (user_id, workspace_id) [name: 'copilot_chats_user_workspace_deleted_partial_idx']
   }
   Note: 'contract-pending(after the release that stops declaring plan_artifact is deployed): drop copilot_chats.plan_artifact — the plan artifact moved into the message transcript; safe once no deployed release declares the column.'
@@ -2315,7 +2321,7 @@ Table copilot_runs {
     (status) [name: 'copilot_runs_status_idx']
     (chat_id, execution_id) [name: 'copilot_runs_chat_execution_idx']
     (execution_id, started_at) [name: 'copilot_runs_execution_started_at_idx']
-    (workspace_id, id) [name: 'copilot_runs_workspace_completed_at_id_idx']
+    `workspace_id, date_trunc('milliseconds', completed_at), id` [name: 'copilot_runs_workspace_completed_at_id_idx']
     (stream_id) [unique, name: 'copilot_runs_stream_id_unique']
     (desktop_device_id, started_at) [name: 'copilot_runs_desktop_device_started_at_idx']
   }
@@ -2773,9 +2779,9 @@ Table audit_log {
   created_at timestamp [not null]
   indexes {
     (workspace_id, created_at) [name: 'audit_log_workspace_created_idx']
-    (workspace_id, id) [name: 'audit_log_workspace_created_at_id_idx']
+    `workspace_id, date_trunc('milliseconds', created_at), id` [name: 'audit_log_workspace_created_at_id_idx']
     (actor_id, created_at) [name: 'audit_log_actor_created_idx']
-    (id) [name: 'audit_log_org_level_created_at_id_idx']
+    `(metadata->>'organizationId'), date_trunc('milliseconds', created_at), id` [name: 'audit_log_org_level_created_at_id_idx']
     (resource_type, resource_id) [name: 'audit_log_resource_idx']
     (action) [name: 'audit_log_action_idx']
   }
@@ -2876,8 +2882,8 @@ Table credential {
     (env_owner_user_id) [name: 'credential_env_owner_user_id_idx']
     (credential_group_enrollment_id) [name: 'credential_group_enrollment_idx']
     (mcp_server_id) [name: 'credential_mcp_server_idx']
-    (credential_group_enrollment_id, credential_group_option_id, provider_subject_id) [unique, name: 'credential_group_option_identity_unique']
-    (credential_group_enrollment_id, mcp_server_id) [unique, name: 'credential_managed_mcp_enrollment_server_identity_unique']
+    `credential_group_enrollment_id, credential_group_option_id, provider_subject_id, coalesce(provider_tenant_id, '')` [unique, name: 'credential_group_option_identity_unique']
+    `credential_group_enrollment_id, mcp_server_id, coalesce(provider_subject_id, ''), coalesce(provider_tenant_id, '')` [unique, name: 'credential_managed_mcp_enrollment_server_identity_unique']
     (workspace_id, account_id) [unique, name: 'credential_workspace_account_unique']
     (workspace_id, type, env_key) [unique, name: 'credential_workspace_env_unique']
     (workspace_id, type, env_key, env_owner_user_id) [unique, name: 'credential_workspace_personal_env_unique']
@@ -3368,7 +3374,7 @@ Table knowledge_connector_member_sync_log {
   error_message text
   database_failure_class text [note: 'The transient database failure class (`capacity`, `conflict`, or `connection`) that failed the run; null on every other outcome and on runs logged before it was recorded. Only these runs count toward the database retry streak.']
   indexes {
-    (connector_id) [name: 'kcmsl_connector_started_at_idx']
+    `connector_id, started_at DESC` [name: 'kcmsl_connector_started_at_idx']
     (started_at) [name: 'kcmsl_started_at_partial_idx']
   }
   Note: 'Audit trail for members-mode runs; the content sync log is untouched. The row id doubles as the run\'s lease token so the scheduler can tell an orphaned `started` row from one a live run still holds.'
@@ -3390,7 +3396,7 @@ Table knowledge_connector_sync_log {
   error_message text
   database_failure_class text [note: 'The transient database failure class (`capacity`, `conflict`, or `connection`) that failed the run; null on every other outcome and on runs logged before it was recorded. Only these runs count toward the database retry streak.']
   indexes {
-    (connector_id) [name: 'kcsl_connector_started_at_idx']
+    `connector_id, started_at DESC` [name: 'kcsl_connector_started_at_idx']
     (started_at) [name: 'kcsl_started_at_partial_idx']
     (started_at) [name: 'kcsl_terminal_started_at_idx']
   }
@@ -3440,7 +3446,7 @@ Table user_table_rows {
   created_by text
   indexes {
     (created_by) [name: 'user_table_rows_created_by_idx']
-    `data jsonb_path_ops` [type: gin, name: 'user_table_rows_tenant_data_gin_idx']
+    `table_id, data jsonb_path_ops` [type: gin, name: 'user_table_rows_tenant_data_gin_idx']
     (workspace_id, table_id) [name: 'user_table_rows_workspace_table_idx']
     (table_id, position) [name: 'user_table_rows_table_position_idx']
     (table_id, order_key, id) [name: 'user_table_rows_table_order_key_idx']
@@ -3808,7 +3814,7 @@ Table scim_group_mapping {
   indexes {
     (permission_group_id) [name: 'scim_group_mapping_permission_group_idx']
     (workspace_id) [name: 'scim_group_mapping_workspace_idx']
-    (group_id, target_kind) [unique, name: 'scim_group_mapping_group_target_unique']
+    `group_id, target_kind, coalesce(permission_group_id, workspace_id, role)` [unique, name: 'scim_group_mapping_group_target_unique']
   }
   Note: 'What a directory group means inside Sim, as an administrator configured it. A group may carry several mappings — a permission group, one or more workspaces, and the organization admin role are independent targets.'
 }
@@ -3881,9 +3887,9 @@ Ref folder_workspace_id_workspace_id_fk: folder.workspace_id > workspace.id [del
 
 Ref folder_parent_id_folder_id_fk: folder.parent_id > folder.id [delete: set null]
 
-Ref folder_parent_id_workspace_id_resource_type_folder_id_workspace_id_resource_type_fk: folder.(parent_id, workspace_id, resource_type) > folder.(id, workspace_id, resource_type) [delete: set null]
+Ref folder_workspace_parent_owner_fk: folder.(parent_id, workspace_id, resource_type) > folder.(id, workspace_id, resource_type)
 
-Ref folder_parent_id_project_id_resource_type_folder_id_project_id_resource_type_fk: folder.(parent_id, project_id, resource_type) > folder.(id, project_id, resource_type) [delete: set null]
+Ref folder_project_parent_owner_fk: folder.(parent_id, project_id, resource_type) > folder.(id, project_id, resource_type)
 
 Ref pinned_item_user_id_user_id_fk: pinned_item.user_id > user.id [delete: cascade]
 
@@ -4067,13 +4073,15 @@ Ref workspace_owner_id_user_id_fk: workspace.owner_id > user.id [delete: cascade
 
 Ref workspace_organization_id_organization_id_fk: workspace.organization_id > organization.id [delete: set null]
 
+Ref workspace_project_id_project_id_fk: workspace.project_id > project.id [delete: restrict]
+
 Ref workspace_billed_account_user_id_user_id_fk: workspace.billed_account_user_id > user.id [delete: no action]
 
 Ref workspace_forked_from_workspace_id_workspace_id_fk: workspace.forked_from_workspace_id > workspace.id [delete: set null]
 
-Ref workspace_projectId_organization_scope_key_project_id_organization_scope_key_fk: workspace.(projectId, organization_scope_key) > project.(id, organization_scope_key)
+Ref workspace_project_organization_fk: workspace.(project_id, organization_scope_key) > project.(id, organization_scope_key)
 
-Ref workspace_forked_from_workspace_id_projectId_workspace_id_projectId_fk: workspace.(forked_from_workspace_id, projectId) > workspace.(id, projectId) [delete: set null]
+Ref workspace_fork_project_fk: workspace.(forked_from_workspace_id, project_id) > workspace.(id, project_id)
 
 Ref project_organization_id_organization_id_fk: project.organization_id > organization.id [delete: restrict]
 
@@ -4153,15 +4161,15 @@ Ref workspace_files_folder_id_folder_id_fk: workspace_files.folder_id > folder.i
 
 Ref workspace_files_chat_id_copilot_chats_id_fk: workspace_files.chat_id > copilot_chats.id [delete: cascade]
 
-Ref workspace_file_search_index_file_id_workspace_files_id_fk: workspace_file_search_index.file_id > workspace_files.id [delete: cascade]
+Ref workspace_file_search_index_file_fk: workspace_file_search_index.file_id > workspace_files.id [delete: cascade]
 
-Ref workspace_file_search_index_workspace_id_workspace_id_fk: workspace_file_search_index.workspace_id > workspace.id [delete: cascade]
+Ref workspace_file_search_index_workspace_fk: workspace_file_search_index.workspace_id > workspace.id [delete: cascade]
 
-Ref workspace_file_search_dispatch_queue_workspace_id_workspace_id_fk: workspace_file_search_dispatch_queue.workspace_id - workspace.id [delete: cascade]
+Ref workspace_file_search_queue_workspace_fk: workspace_file_search_dispatch_queue.workspace_id - workspace.id [delete: cascade]
 
-Ref workspace_file_search_segment_file_id_workspace_files_id_fk: workspace_file_search_segment.file_id > workspace_files.id [delete: cascade]
+Ref workspace_file_search_segment_file_fk: workspace_file_search_segment.file_id > workspace_files.id [delete: cascade]
 
-Ref workspace_file_search_segment_workspace_id_workspace_id_fk: workspace_file_search_segment.workspace_id > workspace.id [delete: cascade]
+Ref workspace_file_search_segment_workspace_fk: workspace_file_search_segment.workspace_id > workspace.id [delete: cascade]
 
 Ref workspace_file_search_revision_file_id_workspace_files_id_fk: workspace_file_search_revision.file_id - workspace_files.id [delete: cascade]
 
@@ -4389,9 +4397,9 @@ Ref audit_log_workspace_id_workspace_id_fk: audit_log.workspace_id > workspace.i
 
 Ref audit_log_actor_id_user_id_fk: audit_log.actor_id > user.id [delete: set null]
 
-Ref organization_search_mcp_invocation_organization_id_organization_id_fk: organization_search_mcp_invocation.organization_id > organization.id [delete: cascade]
+Ref org_search_mcp_invocation_org_fk: organization_search_mcp_invocation.organization_id > organization.id [delete: cascade]
 
-Ref organization_search_mcp_invocation_user_id_user_id_fk: organization_search_mcp_invocation.user_id > user.id [delete: set null]
+Ref org_search_mcp_invocation_user_fk: organization_search_mcp_invocation.user_id > user.id [delete: set null]
 
 Ref usage_log_user_id_user_id_fk: usage_log.user_id > user.id [delete: cascade]
 
@@ -4493,9 +4501,9 @@ Ref knowledge_connector_credential_group_id_credential_group_id_fk: knowledge_co
 
 Ref knowledge_connector_partition_connector_id_knowledge_connector_id_fk: knowledge_connector_partition.connector_id > knowledge_connector.id [delete: cascade]
 
-Ref knowledge_connector_permission_snapshot_connector_id_knowledge_connector_id_fk: knowledge_connector_permission_snapshot.connector_id - knowledge_connector.id [delete: cascade]
+Ref kcps_connector_fk: knowledge_connector_permission_snapshot.connector_id - knowledge_connector.id [delete: cascade]
 
-Ref knowledge_connector_permission_grant_connector_id_knowledge_connector_permission_snapshot_connector_id_fk: knowledge_connector_permission_grant.connector_id > knowledge_connector_permission_snapshot.connector_id [delete: cascade]
+Ref kcpg_snapshot_fk: knowledge_connector_permission_grant.connector_id > knowledge_connector_permission_snapshot.connector_id [delete: cascade]
 
 Ref knowledge_connector_member_workspace_id_workspace_id_fk: knowledge_connector_member.workspace_id > workspace.id [delete: cascade]
 
@@ -4515,9 +4523,9 @@ Ref knowledge_external_directory_organization_id_organization_id_fk: knowledge_e
 
 Ref knowledge_external_group_organization_id_organization_id_fk: knowledge_external_group.organization_id > organization.id [delete: cascade]
 
-Ref knowledge_external_group_workspace_id_workspace_id_fk: knowledge_external_group.workspace_id > workspace.id [delete: cascade]
+Ref keg_workspace_fk: knowledge_external_group.workspace_id > workspace.id [delete: cascade]
 
-Ref knowledge_external_group_member_group_id_knowledge_external_group_id_fk: knowledge_external_group_member.group_id > knowledge_external_group.id [delete: cascade]
+Ref kegm_group_fk: knowledge_external_group_member.group_id > knowledge_external_group.id [delete: cascade]
 
 Ref knowledge_connector_member_sync_log_connector_id_knowledge_connector_id_fk: knowledge_connector_member_sync_log.connector_id > knowledge_connector.id [delete: cascade]
 

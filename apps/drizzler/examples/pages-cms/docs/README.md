@@ -976,6 +976,7 @@ ALTER TABLE "collaborator" ADD CONSTRAINT "collaborator_invited_by_user_id_fkey"
 
 - INDEX `owner`, `repo`, `email`
 - INDEX `userId`
+- UNIQUE `owner`, `repo`, `email`
 
 #### References
 
@@ -1122,6 +1123,7 @@ CREATE UNIQUE INDEX "uq_collaborator_invite_owner_repo_email_ci" ON "collaborato
 
 - UNIQUE `token`
 - INDEX `owner`, `repo`, `email`
+- UNIQUE `owner`, `repo`, `email`
 
 <details>
 <summary>Queries and their SQL</summary>

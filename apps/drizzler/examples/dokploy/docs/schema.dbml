@@ -1500,15 +1500,3 @@ Ref volume_backup_composeId_compose_composeId_fk: volume_backup.composeId > comp
 Ref volume_backup_destinationId_destination_destinationId_fk: volume_backup.destinationId > destination.destinationId [delete: cascade]
 
 Ref webServerSettings_vectorAgentOrganizationId_organization_id_fk: webServerSettings.vectorAgentOrganizationId > organization.id [delete: set null]
-
-Ref deployment_deploymentId_rollback_deploymentId: deployment.deploymentId - rollback.deploymentId
-
-Ref git_provider_gitProviderId_github_gitProviderId: git_provider.gitProviderId - github.gitProviderId
-
-Ref git_provider_gitProviderId_gitlab_gitProviderId: git_provider.gitProviderId - gitlab.gitProviderId
-
-Ref git_provider_gitProviderId_bitbucket_gitProviderId: git_provider.gitProviderId - bitbucket.gitProviderId
-
-Ref git_provider_gitProviderId_gitea_gitProviderId: git_provider.gitProviderId - gitea.gitProviderId
-
-Ref user_id_account_user_id: user.id - account.user_id

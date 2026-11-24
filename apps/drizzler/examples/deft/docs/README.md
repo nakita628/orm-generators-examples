@@ -8662,7 +8662,7 @@ ALTER TABLE "messages" ADD CONSTRAINT "messages_user_id_users_id_fkey" FOREIGN K
 - INDEX `parent_id`
 - INDEX `created_at`
 - UNIQUE `org_id`, `id`
-- UNIQUE `org_id`, `space_id`
+- UNIQUE `org_id`, `space_id`, `metadata`
 
 #### References
 
@@ -8840,7 +8840,7 @@ ALTER TABLE "app_private_defty_seals" ADD CONSTRAINT "app_private_defty_seals_ag
 
 #### Referenced by
 
-- `org_id` → [appPrivateDeftyGrants.org_id](#table-appPrivateDeftyGrants) (one to one, on delete cascade)
+- `org_id` → [appPrivateDeftyGrants.org_id](#table-appPrivateDeftyGrants) (one to one, on delete restrict)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -9005,12 +9005,12 @@ ALTER TABLE "app_private_defty_grants" ADD CONSTRAINT "app_private_defty_grants_
 - UNIQUE `org_id`, `seal_id`
 - UNIQUE `org_id`, `id`
 - INDEX `org_id`, `resource_binding_id`
-- INDEX `org_id`, `owner_user_id`, `expires_at`
+- INDEX `org_id`, `owner_user_id`, `snapshot`, `expires_at`
 
 #### References
 
-- `org_id` → [appPrivateDeftySeals.org_id](#table-appPrivateDeftySeals) (one to one, on delete cascade)
-- `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete cascade)
+- `org_id` → [appPrivateDeftySeals.org_id](#table-appPrivateDeftySeals) (one to one, on delete restrict)
+- `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete restrict)
 - `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (many to one, on delete cascade)
 - `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (many to one, on delete cascade)
 
@@ -11495,7 +11495,7 @@ ALTER TABLE "notifications" ADD CONSTRAINT "notifications_user_id_users_id_fkey"
 #### Indexes
 
 - INDEX `user_id`
-- UNIQUE `org_id`
+- UNIQUE `org_id`, `metadata`
 
 #### References
 
@@ -11927,7 +11927,7 @@ ALTER TABLE "capability_provider_snapshots" ADD CONSTRAINT "capability_provider_
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete no action)
 - `org_id` → [appActionBindings.org_id](#table-appActionBindings) (one to many, on delete restrict)
 - `org_id` → [appRuntimeBindings.org_id](#table-appRuntimeBindings) (one to many, on delete restrict)
 - `org_id` → [appNativeBindings.org_id](#table-appNativeBindings) (one to many, on delete restrict)
@@ -12425,25 +12425,25 @@ ALTER TABLE "app_runs" ADD CONSTRAINT "app_runs_automation_fire_fk" FOREIGN KEY 
 #### References
 
 - `org_id` → [orgs.id](#table-orgs) (many to one, on delete cascade)
-- `org_id` → [capabilityProviderSnapshots.org_id](#table-capabilityProviderSnapshots) (many to one, on delete cascade)
-- `org_id` → [appRuns.org_id](#table-appRuns) (many to one, on delete cascade)
-- `org_id` → [appRuns.org_id](#table-appRuns) (many to one, on delete cascade)
-- `org_id` → [appInstallations.org_id](#table-appInstallations) (many to one, on delete cascade)
-- `org_id` → [appVersions.org_id](#table-appVersions) (many to one, on delete cascade)
-- `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (many to one, on delete cascade)
-- `org_id` → [appActionBindings.org_id](#table-appActionBindings) (many to one, on delete cascade)
-- `org_id` → [appRuntimeBindings.org_id](#table-appRuntimeBindings) (many to one, on delete cascade)
-- `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete cascade)
-- `org_id` → [appNativeBindings.org_id](#table-appNativeBindings) (many to one, on delete cascade)
-- `org_id` → [appAutomationDefinitions.org_id](#table-appAutomationDefinitions) (many to one, on delete cascade)
-- `org_id` → [appPublicIngress.org_id](#table-appPublicIngress) (one to one, on delete cascade)
-- `org_id` → [appAutomationFires.org_id](#table-appAutomationFires) (one to one, on delete cascade)
+- `org_id` → [capabilityProviderSnapshots.org_id](#table-capabilityProviderSnapshots) (many to one, on delete no action)
+- `org_id` → [appRuns.org_id](#table-appRuns) (many to one, on delete no action)
+- `org_id` → [appRuns.org_id](#table-appRuns) (many to one, on delete no action)
+- `org_id` → [appInstallations.org_id](#table-appInstallations) (many to one, on delete restrict)
+- `org_id` → [appVersions.org_id](#table-appVersions) (many to one, on delete restrict)
+- `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (many to one, on delete restrict)
+- `org_id` → [appActionBindings.org_id](#table-appActionBindings) (many to one, on delete restrict)
+- `org_id` → [appRuntimeBindings.org_id](#table-appRuntimeBindings) (many to one, on delete restrict)
+- `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete restrict)
+- `org_id` → [appNativeBindings.org_id](#table-appNativeBindings) (many to one, on delete restrict)
+- `org_id` → [appAutomationDefinitions.org_id](#table-appAutomationDefinitions) (many to one, on delete restrict)
+- `org_id` → [appPublicIngress.org_id](#table-appPublicIngress) (one to one, on delete restrict)
+- `org_id` → [appAutomationFires.org_id](#table-appAutomationFires) (one to one, on delete restrict)
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
-- `org_id` → [appRunAttempts.org_id](#table-appRunAttempts) (one to one, on delete restrict)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete no action)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete no action)
+- `org_id` → [appRunAttempts.org_id](#table-appRunAttempts) (one to one, on delete cascade)
 - `org_id` → [appRunAttempts.org_id](#table-appRunAttempts) (one to many, on delete restrict)
 - `org_id` → [appRunSecretPayloads.org_id](#table-appRunSecretPayloads) (one to many, on delete cascade)
 - `org_id` → [appRunEvents.org_id](#table-appRunEvents) (one to many, on delete cascade)
@@ -12705,7 +12705,7 @@ ALTER TABLE "app_run_attempts" ADD CONSTRAINT "app_run_attempts_resource_run_fk"
 
 #### References
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete restrict)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete cascade)
 - `org_id` → [appRuntimeSessions.org_id](#table-appRuntimeSessions) (many to one, on delete restrict)
 - `org_id` → [appRuntimeSessions.org_id](#table-appRuntimeSessions) (many to one, on delete restrict)
 - `org_id` → [appRuns.org_id](#table-appRuns) (many to one, on delete restrict)
@@ -15141,7 +15141,7 @@ ALTER TABLE "module_installations" ADD CONSTRAINT "module_installations_installe
 - `org_id` → [appModuleBindings.org_id](#table-appModuleBindings) (one to many, on delete restrict)
 - `org_id` → [moduleRecords.org_id](#table-moduleRecords) (one to many, on delete restrict)
 - `org_id` → [moduleRecordRelations.org_id](#table-moduleRecordRelations) (one to many, on delete restrict)
-- `org_id` → [moduleSavedViews.org_id](#table-moduleSavedViews) (one to many, on delete cascade)
+- `org_id` → [moduleSavedViews.org_id](#table-moduleSavedViews) (one to many, on delete restrict)
 - `org_id` → [moduleMutationReceipts.org_id](#table-moduleMutationReceipts) (one to many, on delete restrict)
 - `org_id` → [appPublicEndpoints.org_id](#table-appPublicEndpoints) (one to many, on delete restrict)
 
@@ -15511,7 +15511,7 @@ ALTER TABLE "app_installations" ADD CONSTRAINT "app_installations_installed_by_u
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appVersions.org_id](#table-appVersions) (one to one, on delete restrict)
 - `org_id` → [appModuleBindings.org_id](#table-appModuleBindings) (one to many, on delete restrict)
 - `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (one to many, on delete restrict)
@@ -15716,7 +15716,7 @@ ALTER TABLE "app_versions" ADD CONSTRAINT "app_versions_org_installation_fk" FOR
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appModuleBindings.org_id](#table-appModuleBindings) (one to many, on delete restrict)
 - `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (one to many, on delete restrict)
 - `org_id` → [appDependencyLocks.org_id](#table-appDependencyLocks) (one to many, on delete restrict)
@@ -16121,7 +16121,7 @@ ALTER TABLE "app_grant_snapshots" ADD CONSTRAINT "app_grant_snapshots_supersedes
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (one to many, on delete restrict)
 - `org_id` → [appGrantSnapshots.org_id](#table-appGrantSnapshots) (one to one, on delete restrict)
 - `org_id` → [appDependencyLocks.org_id](#table-appDependencyLocks) (one to many, on delete restrict)
@@ -16584,7 +16584,7 @@ ALTER TABLE "app_action_bindings" ADD CONSTRAINT "app_action_bindings_provider_s
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appAutomationDefinitions.org_id](#table-appAutomationDefinitions) (one to many, on delete restrict)
 
 <details>
@@ -17166,7 +17166,7 @@ ALTER TABLE "app_runtime_bindings" ADD CONSTRAINT "app_runtime_bindings_provider
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appRuntimeSessions.org_id](#table-appRuntimeSessions) (one to many, on delete restrict)
 - `org_id` → [appRuntimeAgentPolicies.org_id](#table-appRuntimeAgentPolicies) (one to many, on delete restrict)
 - `org_id` → [appActionBatches.org_id](#table-appActionBatches) (one to many, on delete restrict)
@@ -17406,7 +17406,7 @@ ALTER TABLE "app_native_bindings" ADD CONSTRAINT "app_native_bindings_manager_fk
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appPublicEndpoints.org_id](#table-appPublicEndpoints) (one to many, on delete restrict)
 - `org_id` → [appPublicEndpoints.org_id](#table-appPublicEndpoints) (one to many, on delete restrict)
 - `org_id` → [appPublicCancellationSelections.org_id](#table-appPublicCancellationSelections) (one to many, on delete restrict)
@@ -17740,8 +17740,8 @@ ALTER TABLE "app_resource_bindings" ADD CONSTRAINT "app_resource_bindings_review
 
 #### Referenced by
 
-- `org_id` → [appPrivateDeftyGrants.org_id](#table-appPrivateDeftyGrants) (one to many, on delete cascade)
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appPrivateDeftyGrants.org_id](#table-appPrivateDeftyGrants) (one to many, on delete restrict)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appRuntimeSessions.org_id](#table-appRuntimeSessions) (one to many, on delete restrict)
 - `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (one to one, on delete restrict)
 - `org_id` → [appSyncIntents.org_id](#table-appSyncIntents) (one to many, on delete restrict)
@@ -18179,8 +18179,8 @@ ALTER TABLE "app_sync_checkpoints" ADD CONSTRAINT "app_sync_checkpoints_binding_
 - `org_id` → [appSyncIntents.org_id](#table-appSyncIntents) (one to many, on delete restrict)
 - `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (one to many, on delete restrict)
 - `org_id` → [appAttachmentStages.org_id](#table-appAttachmentStages) (one to many, on delete restrict)
-- `org_id` → [appResourceAccessGrants.org_id](#table-appResourceAccessGrants) (one to many, on delete restrict)
-- `org_id` → [appPrivateMcpGrants.org_id](#table-appPrivateMcpGrants) (one to many, on delete restrict)
+- `org_id` → [appResourceAccessGrants.org_id](#table-appResourceAccessGrants) (one to many, on delete cascade)
+- `org_id` → [appPrivateMcpGrants.org_id](#table-appPrivateMcpGrants) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -18597,8 +18597,8 @@ ALTER TABLE "app_resource_projections" ADD CONSTRAINT "app_resource_projections_
 
 - `org_id` → [appPrivateDeftyGrants.org_id](#table-appPrivateDeftyGrants) (one to many, on delete cascade)
 - `org_id` → [appAttachmentStages.org_id](#table-appAttachmentStages) (one to many, on delete restrict)
-- `org_id` → [appResourceAccessGrants.org_id](#table-appResourceAccessGrants) (one to many, on delete restrict)
-- `org_id` → [appPrivateMcpGrants.org_id](#table-appPrivateMcpGrants) (one to many, on delete restrict)
+- `org_id` → [appResourceAccessGrants.org_id](#table-appResourceAccessGrants) (one to many, on delete cascade)
+- `org_id` → [appPrivateMcpGrants.org_id](#table-appPrivateMcpGrants) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -19208,7 +19208,7 @@ ALTER TABLE "app_automation_definitions" ADD CONSTRAINT "app_automation_definiti
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to many, on delete restrict)
 - `org_id` → [appAutomationFires.org_id](#table-appAutomationFires) (one to one, on delete restrict)
 
 <details>
@@ -19504,7 +19504,7 @@ ALTER TABLE "app_automation_fires" ADD CONSTRAINT "app_automation_fires_definiti
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete restrict)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -20399,7 +20399,7 @@ ALTER TABLE "module_saved_views" ADD CONSTRAINT "module_saved_views_owner_member
 #### References
 
 - `owner_user_id` → [users.id](#table-users) (many to one, on delete cascade)
-- `org_id` → [moduleInstallations.org_id](#table-moduleInstallations) (many to one, on delete cascade)
+- `org_id` → [moduleInstallations.org_id](#table-moduleInstallations) (many to one, on delete restrict)
 - `org_id` → [orgMembers.org_id](#table-orgMembers) (many to one, on delete cascade)
 
 <details>
@@ -25332,7 +25332,7 @@ CREATE UNIQUE INDEX "job_queue_active_cron_unique" ON "job_queue" ("cron_key") W
 - INDEX `status`, `queue`, `run_at`
 - INDEX `org_id`
 - INDEX `status`, `lock_expires_at`
-- UNIQUE `dedupe_key`
+- UNIQUE `org_id`, `dedupe_key`
 - UNIQUE `cron_key`
 
 <details>
@@ -34500,7 +34500,7 @@ ALTER TABLE "app_experience_resource_exposures" ADD CONSTRAINT "app_experience_r
 #### Referenced by
 
 - `org_id` → [appRunHumanAuthorizations.org_id](#table-appRunHumanAuthorizations) (one to many, on delete restrict)
-- `org_id` → [appExperienceResourceExposureResources.org_id](#table-appExperienceResourceExposureResources) (one to many, on delete restrict)
+- `org_id` → [appExperienceResourceExposureResources.org_id](#table-appExperienceResourceExposureResources) (one to many, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -35746,7 +35746,7 @@ ALTER TABLE "app_experience_resource_exposure_resources" ADD CONSTRAINT "app_exp
 
 #### References
 
-- `org_id` → [appExperienceResourceExposures.org_id](#table-appExperienceResourceExposures) (many to one, on delete restrict)
+- `org_id` → [appExperienceResourceExposures.org_id](#table-appExperienceResourceExposures) (many to one, on delete cascade)
 - `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete restrict)
 
 <details>
@@ -36450,7 +36450,7 @@ ALTER TABLE "app_public_ingress" ADD CONSTRAINT "app_public_ingress_endpoint_fk"
 
 #### Referenced by
 
-- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete cascade)
+- `org_id` → [appRuns.org_id](#table-appRuns) (one to one, on delete restrict)
 - `org_id` → [appCanonicalClaims.org_id](#table-appCanonicalClaims) (one to many, on delete restrict)
 
 <details>
@@ -37429,8 +37429,8 @@ ALTER TABLE "app_resource_access_grants" ADD CONSTRAINT "app_resource_access_gra
 #### References
 
 - `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete restrict)
-- `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (many to one, on delete restrict)
-- `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (many to one, on delete restrict)
+- `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (many to one, on delete cascade)
+- `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (many to one, on delete cascade)
 - `org_id` → [orgMembers.org_id](#table-orgMembers) (many to one, on delete restrict)
 
 <details>
@@ -37617,8 +37617,8 @@ ALTER TABLE "app_private_mcp_grants" ADD CONSTRAINT "app_private_mcp_grants_toke
 #### References
 
 - `org_id` → [appResourceBindings.org_id](#table-appResourceBindings) (many to one, on delete restrict)
-- `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (many to one, on delete restrict)
-- `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (many to one, on delete restrict)
+- `org_id` → [appSyncCheckpoints.org_id](#table-appSyncCheckpoints) (many to one, on delete cascade)
+- `org_id` → [appResourceProjections.org_id](#table-appResourceProjections) (many to one, on delete cascade)
 - `org_id` → [orgMembers.org_id](#table-orgMembers) (many to one, on delete restrict)
 - `org_id` → [mcpTokens.org_id](#table-mcpTokens) (many to one, on delete restrict)
 

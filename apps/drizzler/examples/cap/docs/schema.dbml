@@ -486,7 +486,7 @@ Table storage_objects {
   indexes {
     (integrationId, objectKeyHash) [unique, name: 'integration_key_hash_idx']
     (integrationId, uploadStatus) [name: 'integration_status_idx']
-    (integrationId) [name: 'integration_object_key_prefix_idx']
+    `integrationId, objectKey(191)` [name: 'integration_object_key_prefix_idx']
     (videoId) [name: 'video_id_idx']
     (ownerId) [name: 'owner_id_idx']
   }
@@ -1054,7 +1054,7 @@ Ref video_viewer_grants_videoId_videos_id_fk: video_viewer_grants.videoId > vide
 
 Ref messenger_messages_conversationId_messenger_conversations_id_fk: messenger_messages.conversationId > messenger_conversations.id [delete: cascade]
 
-Ref messenger_support_emails_conversationId_messenger_conversations_id_fk: messenger_support_emails.conversationId > messenger_conversations.id [delete: cascade]
+Ref support_email_conversation_fk: messenger_support_emails.conversationId > messenger_conversations.id [delete: cascade]
 
 Ref storage_objects_integrationId_storage_integrations_id_fk: storage_objects.integrationId > storage_integrations.id [delete: restrict]
 
@@ -1068,7 +1068,7 @@ Ref developer_transcripts_appId_developer_apps_id_fk: developer_transcripts.appI
 
 Ref developer_credit_accounts_appId_developer_apps_id_fk: developer_credit_accounts.appId - developer_apps.id
 
-Ref developer_credit_transactions_accountId_developer_credit_accounts_id_fk: developer_credit_transactions.accountId > developer_credit_accounts.id
+Ref dev_credit_txn_account_fk: developer_credit_transactions.accountId > developer_credit_accounts.id
 
 Ref developer_daily_storage_snapshots_appId_developer_apps_id_fk: developer_daily_storage_snapshots.appId > developer_apps.id
 
@@ -1124,8 +1124,6 @@ Ref organization_invites_invitedByUserId_users_id: organization_invites.invitedB
 
 Ref videos_ownerId_users_id: videos.ownerId > users.id
 
-Ref videos_id_video_edits_videoId: videos.id - video_edits.videoId
-
 Ref videos_folderId_folders_id: videos.folderId > folders.id
 
 Ref shared_videos_videoId_videos_id: shared_videos.videoId > videos.id
@@ -1155,7 +1153,5 @@ Ref folders_createdById_users_id: folders.createdById > users.id
 Ref folders_parentId_folders_id: folders.parentId > folders.id
 
 Ref developer_apps_ownerId_users_id: developer_apps.ownerId > users.id
-
-Ref developer_apps_id_developer_credit_accounts_appId: developer_apps.id - developer_credit_accounts.appId
 
 Ref developer_credit_accounts_ownerId_users_id: developer_credit_accounts.ownerId > users.id

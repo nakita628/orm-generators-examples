@@ -75,5 +75,3 @@ Ref session_userId_user_id_fk: session.userId > user.id [delete: cascade]
 Ref userLink_userId_user_id_fk: userLink.userId - user.id [delete: cascade]
 
 Ref link_userLinkId_userLink_id_fk: link.userLinkId > userLink.id [delete: cascade]
-
-Ref user_id_userLink_userId: user.id - userLink.userId

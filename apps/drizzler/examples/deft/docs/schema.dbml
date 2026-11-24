@@ -178,7 +178,7 @@ Table messages {
     (parent_id) [name: 'message_parent_idx']
     (created_at) [name: 'message_created_idx']
     (org_id, id) [unique, name: 'messages_org_id_id_unique']
-    (org_id, space_id) [unique, name: 'app_private_defty_messages_request_unique']
+    `org_id, space_id, (metadata->>'request_id'), (metadata->>'role')` [unique, name: 'app_private_defty_messages_request_unique']
   }
   Note: '═══ MESSAGES ═══'
 }
@@ -218,7 +218,7 @@ Table app_private_defty_grants {
     (org_id, seal_id) [unique, name: 'app_private_defty_grants_seal_unique']
     (org_id, id) [unique, name: 'app_private_defty_grants_identity_unique']
     (org_id, resource_binding_id) [name: 'app_private_defty_grants_parent_idx']
-    (org_id, owner_user_id, expires_at) [name: 'app_private_defty_grants_owner_app_idx']
+    `org_id, owner_user_id, (snapshot->>'app_installation_id'), expires_at` [name: 'app_private_defty_grants_owner_app_idx']
   }
 }
 
@@ -488,7 +488,7 @@ Table notifications {
   updated_at timestamp [not null]
   indexes {
     (user_id) [name: 'notification_user_idx']
-    (org_id) [unique, name: 'notification_reminder_unique']
+    `org_id, (metadata->>'reminder_id')` [unique, name: 'notification_reminder_unique']
   }
   Note: '═══ NOTIFICATIONS ═══'
 }
@@ -2319,7 +2319,7 @@ Table job_queue {
     (status, queue, run_at) [name: 'job_queue_poll_idx']
     (org_id) [name: 'job_queue_org_idx']
     (status, lock_expires_at) [name: 'job_queue_lease_idx']
-    (dedupe_key) [unique, name: 'job_queue_dedupe_unique']
+    `COALESCE(org_id, ''), dedupe_key` [unique, name: 'job_queue_dedupe_unique']
     (cron_key) [unique, name: 'job_queue_active_cron_unique']
   }
   Note: '═══ JOB QUEUE (Postgres-based background jobs) ═══'
@@ -4931,7 +4931,7 @@ Ref native_mention_deliveries_recipient_user_id_users_id_fk: native_mention_deli
 
 Ref native_mention_deliveries_actor_user_id_users_id_fk: native_mention_deliveries.actor_user_id > users.id [delete: cascade]
 
-Ref native_mention_deliveries_org_id_source_state_id_native_reference_states_org_id_id_fk: native_mention_deliveries.(org_id, source_state_id) > native_reference_states.(org_id, id) [delete: cascade]
+Ref native_mention_source_org_fk: native_mention_deliveries.(org_id, source_state_id) > native_reference_states.(org_id, id) [delete: cascade]
 
 Ref native_create_requests_org_id_orgs_id_fk: native_create_requests.org_id > orgs.id [delete: cascade]
 
@@ -4953,19 +4953,19 @@ Ref messages_space_id_spaces_id_fk: messages.space_id > spaces.id
 
 Ref messages_user_id_users_id_fk: messages.user_id > users.id
 
-Ref app_private_defty_seals_org_id_space_id_spaces_org_id_id_fk: app_private_defty_seals.(org_id, space_id) - spaces.(org_id, id) [delete: restrict]
+Ref app_private_defty_seals_space_fk: app_private_defty_seals.(org_id, space_id) - spaces.(org_id, id) [delete: restrict]
 
-Ref app_private_defty_seals_owner_user_id_users_id_fk: app_private_defty_seals.owner_user_id > users.id [delete: restrict]
+Ref app_private_defty_seals_owner_fk: app_private_defty_seals.owner_user_id > users.id [delete: restrict]
 
-Ref app_private_defty_seals_defty_user_id_users_id_fk: app_private_defty_seals.defty_user_id > users.id [delete: restrict]
+Ref app_private_defty_seals_agent_fk: app_private_defty_seals.defty_user_id > users.id [delete: restrict]
 
-Ref app_private_defty_grants_org_id_seal_id_app_private_defty_seals_org_id_id_fk: app_private_defty_grants.(org_id, seal_id) - app_private_defty_seals.(org_id, id) [delete: cascade]
+Ref app_private_defty_grants_seal_fk: app_private_defty_grants.(org_id, seal_id) - app_private_defty_seals.(org_id, id) [delete: restrict]
 
-Ref app_private_defty_grants_org_id_resource_binding_id_owner_user_id_app_resource_bindings_org_id_id_owner_user_id_fk: app_private_defty_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: cascade]
+Ref app_private_defty_grants_owner_fk: app_private_defty_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_private_defty_grants_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_private_defty_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: cascade]
+Ref app_private_defty_grants_checkpoint_fk: app_private_defty_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: cascade]
 
-Ref app_private_defty_grants_org_id_projection_id_app_resource_projections_org_id_id_fk: app_private_defty_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: cascade]
+Ref app_private_defty_grants_projection_fk: app_private_defty_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: cascade]
 
 Ref reactions_message_id_messages_id_fk: reactions.message_id > messages.id
 
@@ -4975,7 +4975,7 @@ Ref files_uploaded_by_users_id_fk: files.uploaded_by > users.id
 
 Ref files_message_id_messages_id_fk: files.message_id > messages.id
 
-Ref attachment_derivatives_org_id_file_id_files_org_id_id_fk: attachment_derivatives.(org_id, file_id) > files.(org_id, id) [delete: cascade]
+Ref attachment_derivatives_org_file_fk: attachment_derivatives.(org_id, file_id) > files.(org_id, id) [delete: cascade]
 
 Ref projects_lead_id_users_id_fk: projects.lead_id > users.id
 
@@ -4993,13 +4993,13 @@ Ref tasks_source_message_id_messages_id_fk: tasks.source_message_id > messages.i
 
 Ref tasks_parent_task_id_tasks_id_fk: tasks.parent_task_id > tasks.id [delete: set null]
 
-Ref message_attachments_org_id_message_id_messages_org_id_id_fk: message_attachments.(org_id, message_id) > messages.(org_id, id) [delete: cascade]
+Ref message_attachments_org_message_fk: message_attachments.(org_id, message_id) > messages.(org_id, id) [delete: cascade]
 
-Ref message_attachments_org_id_file_id_files_org_id_id_fk: message_attachments.(org_id, file_id) > files.(org_id, id) [delete: cascade]
+Ref message_attachments_org_file_fk: message_attachments.(org_id, file_id) > files.(org_id, id) [delete: cascade]
 
-Ref task_attachments_org_id_task_id_tasks_org_id_id_fk: task_attachments.(org_id, task_id) > tasks.(org_id, id) [delete: cascade]
+Ref task_attachments_org_task_fk: task_attachments.(org_id, task_id) > tasks.(org_id, id) [delete: cascade]
 
-Ref task_attachments_org_id_file_id_files_org_id_id_fk: task_attachments.(org_id, file_id) > files.(org_id, id) [delete: cascade]
+Ref task_attachments_org_file_fk: task_attachments.(org_id, file_id) > files.(org_id, id) [delete: cascade]
 
 Ref task_labels_task_id_tasks_id_fk: task_labels.task_id > tasks.id
 
@@ -5047,55 +5047,55 @@ Ref capability_provider_snapshots_org_id_orgs_id_fk: capability_provider_snapsho
 
 Ref app_runs_org_id_orgs_id_fk: app_runs.org_id > orgs.id [delete: cascade]
 
-Ref app_runs_org_id_provider_snapshot_id_capability_provider_snapshots_org_id_id_fk: app_runs.(org_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, id) [delete: cascade]
+Ref app_runs_org_provider_snapshot_fk: app_runs.(org_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, id) [delete: no action]
 
-Ref app_runs_org_id_root_run_id_app_runs_org_id_id_fk: app_runs.(org_id, root_run_id) > app_runs.(org_id, id) [delete: cascade]
+Ref app_runs_org_root_run_fk: app_runs.(org_id, root_run_id) > app_runs.(org_id, id) [delete: no action]
 
-Ref app_runs_org_id_parent_run_id_app_runs_org_id_id_fk: app_runs.(org_id, parent_run_id) > app_runs.(org_id, id) [delete: cascade]
+Ref app_runs_org_parent_run_fk: app_runs.(org_id, parent_run_id) > app_runs.(org_id, id) [delete: no action]
 
-Ref app_runs_org_id_origin_app_installation_id_app_installations_org_id_id_fk: app_runs.(org_id, origin_app_installation_id) > app_installations.(org_id, id) [delete: cascade]
+Ref app_runs_app_installation_fk: app_runs.(org_id, origin_app_installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_app_versions_org_id_installation_id_id_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id) > app_versions.(org_id, installation_id, id) [delete: cascade]
+Ref app_runs_app_version_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: cascade]
+Ref app_runs_app_grant_snapshot_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_origin_app_binding_key_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_app_action_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_action_key_provider_kind_mcp_connection_id_operation_name_provider_snapshot_id_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_app_binding_key, provider_kind, provider_instance_id, operation_name, provider_snapshot_id) > app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, provider_kind, mcp_connection_id, operation_name, provider_snapshot_id) [delete: cascade]
+Ref app_runs_app_action_binding_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_app_binding_key, provider_kind, provider_instance_id, operation_name, provider_snapshot_id) > app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, provider_kind, mcp_connection_id, operation_name, provider_snapshot_id) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_origin_runtime_binding_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_risk_class_review_requirement_retry_class_retention_class_app_runtime_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_risk_class_review_requirement_retry_class_retention_class_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_runtime_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, retry_class, retention_class) > app_runtime_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, retry_class, retention_class) [delete: cascade]
+Ref app_runs_runtime_binding_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_runtime_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, retry_class, retention_class) > app_runtime_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, retry_class, retention_class) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_origin_resource_binding_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_risk_class_review_requirement_review_scope_retry_class_retention_class_app_resource_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_risk_class_review_requirement_review_scope_retry_class_retention_class_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_resource_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, review_scope, retry_class, retention_class) > app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, review_scope, retry_class, retention_class) [delete: cascade]
+Ref app_runs_resource_binding_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_resource_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, review_scope, retry_class, retention_class) > app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, risk_class, review_requirement, review_scope, retry_class, retention_class) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_origin_native_binding_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_execution_actor_id_risk_class_review_requirement_review_scope_retry_class_retention_class_app_native_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_provider_kind_provider_instance_id_operation_name_provider_snapshot_id_owner_user_id_risk_class_review_requirement_review_scope_retry_class_retention_class_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_native_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, execution_actor_id, risk_class, review_requirement, review_scope, retry_class, retention_class) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, owner_user_id, risk_class, review_requirement, review_scope, retry_class, retention_class) [delete: cascade]
+Ref app_runs_native_binding_fk: app_runs.(org_id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_native_binding_id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, execution_actor_id, risk_class, review_requirement, review_scope, retry_class, retention_class) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, provider_kind, provider_instance_id, operation_name, provider_snapshot_id, owner_user_id, risk_class, review_requirement, review_scope, retry_class, retention_class) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_automation_definition_id_app_automation_definitions_org_id_id_fk: app_runs.(org_id, origin_app_automation_definition_id) > app_automation_definitions.(org_id, id) [delete: cascade]
+Ref app_runs_automation_definition_fk: app_runs.(org_id, origin_app_automation_definition_id) > app_automation_definitions.(org_id, id) [delete: restrict]
 
-Ref app_runs_org_id_origin_public_endpoint_id_origin_public_ingress_id_app_public_ingress_org_id_endpoint_id_id_fk: app_runs.(org_id, origin_public_endpoint_id, origin_public_ingress_id) - app_public_ingress.(org_id, endpoint_id, id) [delete: cascade]
+Ref app_runs_public_ingress_fk: app_runs.(org_id, origin_public_endpoint_id, origin_public_ingress_id) - app_public_ingress.(org_id, endpoint_id, id) [delete: restrict]
 
-Ref app_runs_org_id_origin_app_automation_definition_id_origin_app_automation_fire_id_app_automation_fires_org_id_definition_id_id_fk: app_runs.(org_id, origin_app_automation_definition_id, origin_app_automation_fire_id) - app_automation_fires.(org_id, definition_id, id) [delete: cascade]
+Ref app_runs_automation_fire_fk: app_runs.(org_id, origin_app_automation_definition_id, origin_app_automation_fire_id) - app_automation_fires.(org_id, definition_id, id) [delete: restrict]
 
-Ref app_run_attempts_org_id_run_id_app_runs_org_id_id_fk: app_run_attempts.(org_id, run_id) - app_runs.(org_id, id) [delete: restrict]
+Ref app_run_attempts_org_run_fk: app_run_attempts.(org_id, run_id) - app_runs.(org_id, id) [delete: cascade]
 
-Ref app_run_attempts_org_id_runtime_binding_id_runtime_session_id_runtime_session_epoch_runtime_epoch_app_runtime_sessions_org_id_runtime_binding_id_id_session_epoch_runtime_epoch_fk: app_run_attempts.(org_id, runtime_binding_id, runtime_session_id, runtime_session_epoch, runtime_epoch) > app_runtime_sessions.(org_id, runtime_binding_id, id, session_epoch, runtime_epoch) [delete: restrict]
+Ref app_run_attempts_runtime_session_fk: app_run_attempts.(org_id, runtime_binding_id, runtime_session_id, runtime_session_epoch, runtime_epoch) > app_runtime_sessions.(org_id, runtime_binding_id, id, session_epoch, runtime_epoch) [delete: restrict]
 
-Ref app_run_attempts_org_id_resource_binding_id_runtime_session_id_runtime_session_epoch_runtime_epoch_app_runtime_sessions_org_id_resource_binding_id_id_session_epoch_runtime_epoch_fk: app_run_attempts.(org_id, resource_binding_id, runtime_session_id, runtime_session_epoch, runtime_epoch) > app_runtime_sessions.(org_id, resource_binding_id, id, session_epoch, runtime_epoch) [delete: restrict]
+Ref app_run_attempts_resource_session_fk: app_run_attempts.(org_id, resource_binding_id, runtime_session_id, runtime_session_epoch, runtime_epoch) > app_runtime_sessions.(org_id, resource_binding_id, id, session_epoch, runtime_epoch) [delete: restrict]
 
-Ref app_run_attempts_org_id_run_id_resource_binding_id_app_runs_org_id_id_origin_resource_binding_id_fk: app_run_attempts.(org_id, run_id, resource_binding_id) > app_runs.(org_id, id, origin_resource_binding_id) [delete: restrict]
+Ref app_run_attempts_resource_run_fk: app_run_attempts.(org_id, run_id, resource_binding_id) > app_runs.(org_id, id, origin_resource_binding_id) [delete: restrict]
 
-Ref app_run_secret_payloads_org_id_run_id_app_runs_org_id_id_fk: app_run_secret_payloads.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
+Ref app_run_secret_payloads_org_run_fk: app_run_secret_payloads.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
 
-Ref app_run_secret_payloads_org_id_run_id_attempt_id_app_run_attempts_org_id_run_id_id_fk: app_run_secret_payloads.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: cascade]
+Ref app_run_secret_payloads_org_attempt_fk: app_run_secret_payloads.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: cascade]
 
-Ref app_run_events_org_id_run_id_app_runs_org_id_id_fk: app_run_events.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
+Ref app_run_events_org_run_fk: app_run_events.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
 
-Ref app_run_receipts_org_id_run_id_app_runs_org_id_id_fk: app_run_receipts.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
+Ref app_run_receipts_org_run_fk: app_run_receipts.(org_id, run_id) > app_runs.(org_id, id) [delete: cascade]
 
-Ref app_run_receipts_org_id_run_id_attempt_id_app_run_attempts_org_id_run_id_id_fk: app_run_receipts.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: cascade]
+Ref app_run_receipts_org_attempt_fk: app_run_receipts.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: cascade]
 
 Ref agent_actions_user_id_users_id_fk: agent_actions.user_id > users.id
 
 Ref agent_actions_approved_by_user_id_users_id_fk: agent_actions.approved_by_user_id > users.id [delete: set null]
 
-Ref agent_actions_org_id_app_run_id_app_runs_org_id_id_fk: agent_actions.(org_id, app_run_id) - app_runs.(org_id, id) [delete: restrict]
+Ref agent_actions_org_app_run_fk: agent_actions.(org_id, app_run_id) - app_runs.(org_id, id) [delete: restrict]
 
 Ref attention_items_user_id_users_id_fk: attention_items.user_id > users.id [delete: cascade]
 
@@ -5147,151 +5147,151 @@ Ref module_installations_org_id_orgs_id_fk: module_installations.org_id > orgs.i
 
 Ref module_installations_installed_by_user_id_users_id_fk: module_installations.installed_by_user_id > users.id [delete: set null]
 
-Ref module_versions_org_id_installation_id_module_installations_org_id_id_fk: module_versions.(org_id, installation_id) - module_installations.(org_id, id) [delete: restrict]
+Ref module_versions_org_installation_fk: module_versions.(org_id, installation_id) - module_installations.(org_id, id) [delete: restrict]
 
 Ref app_installations_org_id_orgs_id_fk: app_installations.org_id > orgs.id [delete: cascade]
 
 Ref app_installations_installed_by_user_id_users_id_fk: app_installations.installed_by_user_id > users.id [delete: set null]
 
-Ref app_versions_org_id_installation_id_app_installations_org_id_id_fk: app_versions.(org_id, installation_id) - app_installations.(org_id, id) [delete: restrict]
+Ref app_versions_org_installation_fk: app_versions.(org_id, installation_id) - app_installations.(org_id, id) [delete: restrict]
 
-Ref app_module_bindings_org_id_app_installation_id_app_installations_org_id_id_fk: app_module_bindings.(org_id, app_installation_id) > app_installations.(org_id, id) [delete: restrict]
+Ref app_module_bindings_app_installation_fk: app_module_bindings.(org_id, app_installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_module_bindings_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_module_bindings.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_module_bindings_app_version_fk: app_module_bindings.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_module_bindings_org_id_module_installation_id_module_installations_org_id_id_fk: app_module_bindings.(org_id, module_installation_id) > module_installations.(org_id, id) [delete: restrict]
+Ref app_module_bindings_module_installation_fk: app_module_bindings.(org_id, module_installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref app_module_bindings_org_id_module_installation_id_module_version_id_module_versions_org_id_installation_id_id_fk: app_module_bindings.(org_id, module_installation_id, module_version_id) > module_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_module_bindings_module_version_fk: app_module_bindings.(org_id, module_installation_id, module_version_id) > module_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_grant_snapshots_org_id_app_installation_id_app_id_app_installations_org_id_id_app_id_fk: app_grant_snapshots.(org_id, app_installation_id, app_id) > app_installations.(org_id, id, app_id) [delete: restrict]
+Ref app_grant_snapshots_app_installation_fk: app_grant_snapshots.(org_id, app_installation_id, app_id) > app_installations.(org_id, id, app_id) [delete: restrict]
 
-Ref app_grant_snapshots_org_id_app_installation_id_app_version_id_app_version_manifest_digest_package_digest_app_versions_org_id_installation_id_id_version_manifest_digest_package_digest_fk: app_grant_snapshots.(org_id, app_installation_id, app_version_id, app_version, manifest_digest, package_digest) > app_versions.(org_id, installation_id, id, version, manifest_digest, package_digest) [delete: restrict]
+Ref app_grant_snapshots_app_version_fk: app_grant_snapshots.(org_id, app_installation_id, app_version_id, app_version, manifest_digest, package_digest) > app_versions.(org_id, installation_id, id, version, manifest_digest, package_digest) [delete: restrict]
 
-Ref app_grant_snapshots_org_id_app_installation_id_app_version_id_requested_snapshot_id_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_fk: app_grant_snapshots.(org_id, app_installation_id, app_version_id, requested_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
+Ref app_grant_snapshots_requested_snapshot_fk: app_grant_snapshots.(org_id, app_installation_id, app_version_id, requested_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
 
-Ref app_grant_snapshots_org_id_app_installation_id_supersedes_snapshot_id_app_grant_snapshots_org_id_app_installation_id_id_fk: app_grant_snapshots.(org_id, app_installation_id, supersedes_snapshot_id) - app_grant_snapshots.(org_id, app_installation_id, id) [delete: restrict]
+Ref app_grant_snapshots_supersedes_snapshot_fk: app_grant_snapshots.(org_id, app_installation_id, supersedes_snapshot_id) - app_grant_snapshots.(org_id, app_installation_id, id) [delete: restrict]
 
-Ref app_dependency_locks_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_dependency_locks.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_dependency_locks_app_version_fk: app_dependency_locks.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_dependency_locks_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_dependency_locks.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_dependency_locks_grant_snapshot_fk: app_dependency_locks.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_dependency_locks_org_id_dependency_installation_id_required_app_id_app_installations_org_id_id_app_id_fk: app_dependency_locks.(org_id, dependency_installation_id, required_app_id) > app_installations.(org_id, id, app_id) [delete: restrict]
+Ref app_dependency_locks_dependency_app_fk: app_dependency_locks.(org_id, dependency_installation_id, required_app_id) > app_installations.(org_id, id, app_id) [delete: restrict]
 
-Ref app_dependency_locks_org_id_dependency_installation_id_dependency_version_id_required_version_dependency_manifest_digest_dependency_package_digest_app_versions_org_id_installation_id_id_version_manifest_digest_package_digest_fk: app_dependency_locks.(org_id, dependency_installation_id, dependency_version_id, required_version, dependency_manifest_digest, dependency_package_digest) > app_versions.(org_id, installation_id, id, version, manifest_digest, package_digest) [delete: restrict]
+Ref app_dependency_locks_dependency_version_fk: app_dependency_locks.(org_id, dependency_installation_id, dependency_version_id, required_version, dependency_manifest_digest, dependency_package_digest) > app_versions.(org_id, installation_id, id, version, manifest_digest, package_digest) [delete: restrict]
 
-Ref app_action_bindings_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_action_bindings.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_action_bindings_app_version_fk: app_action_bindings.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_action_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_action_bindings_grant_snapshot_fk: app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_action_bindings_org_id_mcp_connection_id_mcp_connections_org_id_id_fk: app_action_bindings.(org_id, mcp_connection_id) > mcp_connections.(org_id, id) [delete: restrict]
+Ref app_action_bindings_mcp_connection_fk: app_action_bindings.(org_id, mcp_connection_id) > mcp_connections.(org_id, id) [delete: restrict]
 
-Ref app_action_bindings_org_id_provider_kind_mcp_connection_id_provider_snapshot_id_capability_provider_snapshots_org_id_provider_kind_provider_instance_id_id_fk: app_action_bindings.(org_id, provider_kind, mcp_connection_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
+Ref app_action_bindings_provider_snapshot_fk: app_action_bindings.(org_id, provider_kind, mcp_connection_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
 
-Ref app_owner_connection_admissions_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_owner_connection_admissions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_owner_connection_admissions_version_fk: app_owner_connection_admissions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_owner_connection_admissions_org_id_operator_user_id_org_members_org_id_user_id_fk: app_owner_connection_admissions.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_owner_connection_admissions_operator_fk: app_owner_connection_admissions.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_owner_connection_admissions_org_id_app_installation_id_app_version_id_grant_snapshot_id_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_fk: app_owner_connection_admissions.(org_id, app_installation_id, app_version_id, grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
+Ref app_owner_connection_admissions_grant_fk: app_owner_connection_admissions.(org_id, app_installation_id, app_version_id, grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
 
-Ref app_owner_connection_admissions_org_id_reviewed_by_user_id_org_members_org_id_user_id_fk: app_owner_connection_admissions.(org_id, reviewed_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_owner_connection_admissions_reviewer_fk: app_owner_connection_admissions.(org_id, reviewed_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_runtime_registrations_org_id_app_installation_id_app_version_id_grant_snapshot_id_operator_user_id_owner_connection_admission_id_owner_connection_admission_digest_app_owner_connection_admissions_org_id_app_installation_id_app_version_id_grant_snapshot_id_operator_user_id_id_review_digest_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, operator_user_id, owner_connection_admission_id, owner_connection_admission_digest) > app_owner_connection_admissions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, operator_user_id, id, review_digest) [delete: restrict]
+Ref app_runtime_registrations_owner_admission_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, operator_user_id, owner_connection_admission_id, owner_connection_admission_digest) > app_owner_connection_admissions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, operator_user_id, id, review_digest) [delete: restrict]
 
-Ref app_runtime_registrations_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_runtime_registrations_version_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_runtime_registrations_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_runtime_registrations_grant_fk: app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_runtime_registrations_org_id_operator_user_id_org_members_org_id_user_id_fk: app_runtime_registrations.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_runtime_registrations_operator_fk: app_runtime_registrations.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_runtime_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_runtime_registration_id_registration_contract_version_app_runtime_registrations_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_contract_version_fk: app_runtime_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, runtime_registration_id, registration_contract_version) > app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, contract_version) [delete: restrict]
+Ref app_runtime_bindings_registration_fk: app_runtime_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, runtime_registration_id, registration_contract_version) > app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, contract_version) [delete: restrict]
 
-Ref app_runtime_bindings_org_id_provider_kind_provider_instance_id_provider_snapshot_id_capability_provider_snapshots_org_id_provider_kind_provider_instance_id_id_fk: app_runtime_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
+Ref app_runtime_bindings_provider_fk: app_runtime_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
 
-Ref app_native_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_native_bindings_grant_fk: app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_native_bindings_org_id_provider_kind_provider_instance_id_provider_snapshot_id_capability_provider_snapshots_org_id_provider_kind_provider_instance_id_id_fk: app_native_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
+Ref app_native_bindings_provider_fk: app_native_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
 
-Ref app_native_bindings_org_id_owner_user_id_org_members_org_id_user_id_fk: app_native_bindings.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_native_bindings_owner_fk: app_native_bindings.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_native_bindings_org_id_stage_manager_user_id_org_members_org_id_user_id_fk: app_native_bindings.(org_id, stage_manager_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_native_bindings_manager_fk: app_native_bindings.(org_id, stage_manager_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_resource_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_resource_bindings_grant_fk: app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_resource_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_runtime_registration_id_registration_contract_version_app_runtime_registrations_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_contract_version_fk: app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, runtime_registration_id, registration_contract_version) > app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, contract_version) [delete: restrict]
+Ref app_resource_bindings_registration_fk: app_resource_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, runtime_registration_id, registration_contract_version) > app_runtime_registrations.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, contract_version) [delete: restrict]
 
-Ref app_resource_bindings_org_id_provider_kind_provider_instance_id_provider_snapshot_id_capability_provider_snapshots_org_id_provider_kind_provider_instance_id_id_fk: app_resource_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
+Ref app_resource_bindings_provider_fk: app_resource_bindings.(org_id, provider_kind, provider_instance_id, provider_snapshot_id) > capability_provider_snapshots.(org_id, provider_kind, provider_instance_id, id) [delete: restrict]
 
-Ref app_resource_bindings_org_id_owner_user_id_org_members_org_id_user_id_fk: app_resource_bindings.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_resource_bindings_owner_fk: app_resource_bindings.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_resource_bindings_org_id_reviewed_by_user_id_org_members_org_id_user_id_fk: app_resource_bindings.(org_id, reviewed_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_resource_bindings_reviewer_fk: app_resource_bindings.(org_id, reviewed_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_runtime_sessions_org_id_runtime_registration_id_runtime_binding_id_app_runtime_bindings_org_id_runtime_registration_id_id_fk: app_runtime_sessions.(org_id, runtime_registration_id, runtime_binding_id) > app_runtime_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
+Ref app_runtime_sessions_binding_fk: app_runtime_sessions.(org_id, runtime_registration_id, runtime_binding_id) > app_runtime_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
 
-Ref app_runtime_sessions_org_id_runtime_registration_id_resource_binding_id_app_resource_bindings_org_id_runtime_registration_id_id_fk: app_runtime_sessions.(org_id, runtime_registration_id, resource_binding_id) > app_resource_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
+Ref app_runtime_sessions_resource_binding_fk: app_runtime_sessions.(org_id, runtime_registration_id, resource_binding_id) > app_resource_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
 
-Ref app_runtime_sessions_org_id_operator_user_id_org_members_org_id_user_id_fk: app_runtime_sessions.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_runtime_sessions_operator_fk: app_runtime_sessions.(org_id, operator_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_sync_checkpoints_org_id_resource_binding_id_app_resource_bindings_org_id_id_fk: app_sync_checkpoints.(org_id, resource_binding_id) - app_resource_bindings.(org_id, id) [delete: restrict]
+Ref app_sync_checkpoints_binding_fk: app_sync_checkpoints.(org_id, resource_binding_id) - app_resource_bindings.(org_id, id) [delete: restrict]
 
-Ref app_sync_intents_org_id_run_id_app_installation_id_app_version_id_grant_snapshot_id_resource_binding_id_provider_snapshot_id_app_runs_org_id_id_origin_app_installation_id_origin_app_version_id_origin_app_grant_snapshot_id_origin_resource_binding_id_provider_snapshot_id_fk: app_sync_intents.(org_id, run_id, app_installation_id, app_version_id, grant_snapshot_id, resource_binding_id, provider_snapshot_id) > app_runs.(org_id, id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_resource_binding_id, provider_snapshot_id) [delete: restrict]
+Ref app_sync_intents_run_fk: app_sync_intents.(org_id, run_id, app_installation_id, app_version_id, grant_snapshot_id, resource_binding_id, provider_snapshot_id) > app_runs.(org_id, id, origin_app_installation_id, origin_app_version_id, origin_app_grant_snapshot_id, origin_resource_binding_id, provider_snapshot_id) [delete: restrict]
 
-Ref app_sync_intents_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_sync_intents.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
+Ref app_sync_intents_checkpoint_fk: app_sync_intents.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
 
-Ref app_sync_intents_org_id_resource_binding_id_owner_user_id_app_resource_bindings_org_id_id_owner_user_id_fk: app_sync_intents.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_sync_intents_owner_fk: app_sync_intents.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_sync_intents_org_id_resource_binding_id_owner_user_id_descriptor_digest_app_resource_bindings_org_id_id_owner_user_id_descriptor_digest_fk: app_sync_intents.(org_id, resource_binding_id, owner_user_id, descriptor_digest) > app_resource_bindings.(org_id, id, owner_user_id, descriptor_digest) [delete: restrict]
+Ref app_sync_intents_descriptor_fk: app_sync_intents.(org_id, resource_binding_id, owner_user_id, descriptor_digest) > app_resource_bindings.(org_id, id, owner_user_id, descriptor_digest) [delete: restrict]
 
-Ref app_resource_projections_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_resource_projections.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
+Ref app_resource_projections_checkpoint_fk: app_resource_projections.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
 
-Ref app_attachment_stages_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_attachment_stages.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
+Ref app_attachment_stages_checkpoint_fk: app_attachment_stages.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
 
-Ref app_attachment_stages_org_id_run_id_attempt_id_app_run_attempts_org_id_run_id_id_fk: app_attachment_stages.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: restrict]
+Ref app_attachment_stages_attempt_fk: app_attachment_stages.(org_id, run_id, attempt_id) > app_run_attempts.(org_id, run_id, id) [delete: restrict]
 
-Ref app_attachment_stages_org_id_projection_id_checkpoint_id_resource_binding_id_app_resource_projections_org_id_id_checkpoint_id_resource_binding_id_fk: app_attachment_stages.(org_id, projection_id, checkpoint_id, resource_binding_id) > app_resource_projections.(org_id, id, checkpoint_id, resource_binding_id) [delete: restrict]
+Ref app_attachment_stages_projection_fk: app_attachment_stages.(org_id, projection_id, checkpoint_id, resource_binding_id) > app_resource_projections.(org_id, id, checkpoint_id, resource_binding_id) [delete: restrict]
 
-Ref app_automation_definitions_org_id_app_installation_id_app_installations_org_id_id_fk: app_automation_definitions.(org_id, app_installation_id) > app_installations.(org_id, id) [delete: restrict]
+Ref app_automation_definitions_app_installation_fk: app_automation_definitions.(org_id, app_installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_automation_definitions_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_automation_definitions_app_version_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_automation_definitions_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_automation_definitions_grant_snapshot_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_automation_definitions_org_id_app_installation_id_app_version_id_grant_snapshot_id_action_key_action_binding_id_app_action_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_action_key_id_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, action_binding_id) > app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, id) [delete: restrict]
+Ref app_automation_definitions_action_binding_fk: app_automation_definitions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, action_binding_id) > app_action_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, action_key, id) [delete: restrict]
 
-Ref app_automation_fires_org_id_definition_id_app_automation_definitions_org_id_id_fk: app_automation_fires.(org_id, definition_id) - app_automation_definitions.(org_id, id) [delete: restrict]
+Ref app_automation_fires_definition_fk: app_automation_fires.(org_id, definition_id) - app_automation_definitions.(org_id, id) [delete: restrict]
 
-Ref app_developer_pairings_org_id_created_by_user_id_org_members_org_id_user_id_fk: app_developer_pairings.(org_id, created_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_developer_pairings_creator_member_fk: app_developer_pairings.(org_id, created_by_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref module_records_org_id_installation_id_module_installations_org_id_id_fk: module_records.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
+Ref module_records_org_installation_fk: module_records.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref module_records_org_id_installation_id_validated_version_id_module_versions_org_id_installation_id_id_fk: module_records.(org_id, installation_id, validated_version_id) > module_versions.(org_id, installation_id, id) [delete: restrict]
+Ref module_records_validated_version_fk: module_records.(org_id, installation_id, validated_version_id) > module_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref module_record_relations_org_id_installation_id_module_installations_org_id_id_fk: module_record_relations.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
+Ref module_record_relations_org_installation_fk: module_record_relations.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref module_record_relations_org_id_installation_id_source_record_id_module_records_org_id_installation_id_id_fk: module_record_relations.(org_id, installation_id, source_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref module_record_relations_source_record_fk: module_record_relations.(org_id, installation_id, source_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
-Ref module_record_relations_org_id_installation_id_target_record_id_module_records_org_id_installation_id_id_fk: module_record_relations.(org_id, installation_id, target_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref module_record_relations_target_record_fk: module_record_relations.(org_id, installation_id, target_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
-Ref module_record_merges_org_id_installation_id_source_record_id_module_records_org_id_installation_id_id_fk: module_record_merges.(org_id, installation_id, source_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref module_record_merges_source_fk: module_record_merges.(org_id, installation_id, source_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
-Ref module_record_merges_org_id_installation_id_target_record_id_module_records_org_id_installation_id_id_fk: module_record_merges.(org_id, installation_id, target_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref module_record_merges_target_fk: module_record_merges.(org_id, installation_id, target_record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
 Ref module_saved_views_owner_user_id_users_id_fk: module_saved_views.owner_user_id > users.id [delete: cascade]
 
-Ref module_saved_views_org_id_installation_id_module_installations_org_id_id_fk: module_saved_views.(org_id, installation_id) > module_installations.(org_id, id) [delete: cascade]
+Ref module_saved_views_org_installation_fk: module_saved_views.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref module_saved_views_org_id_owner_user_id_org_members_org_id_user_id_fk: module_saved_views.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: cascade]
+Ref module_saved_views_owner_member_fk: module_saved_views.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: cascade]
 
 Ref module_mutation_receipts_agent_action_id_agent_actions_id_fk: module_mutation_receipts.agent_action_id > agent_actions.id [delete: restrict]
 
-Ref module_mutation_receipts_org_id_installation_id_module_installations_org_id_id_fk: module_mutation_receipts.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
+Ref module_mutation_receipts_org_installation_fk: module_mutation_receipts.(org_id, installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref module_mutation_receipts_org_id_installation_id_record_id_module_records_org_id_installation_id_id_fk: module_mutation_receipts.(org_id, installation_id, record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref module_mutation_receipts_record_fk: module_mutation_receipts.(org_id, installation_id, record_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
 Ref resource_relation_sets_org_id_orgs_id_fk: resource_relation_sets.org_id > orgs.id [delete: cascade]
 
-Ref resource_relation_edges_org_id_relation_set_id_resource_relation_sets_org_id_id_fk: resource_relation_edges.(org_id, relation_set_id) > resource_relation_sets.(org_id, id) [delete: restrict]
+Ref resource_relation_edges_org_set_fk: resource_relation_edges.(org_id, relation_set_id) > resource_relation_sets.(org_id, id) [delete: restrict]
 
-Ref resource_relation_receipts_org_id_relation_set_id_resource_relation_sets_org_id_id_fk: resource_relation_receipts.(org_id, relation_set_id) > resource_relation_sets.(org_id, id) [delete: restrict]
+Ref resource_relation_receipts_org_set_fk: resource_relation_receipts.(org_id, relation_set_id) > resource_relation_sets.(org_id, id) [delete: restrict]
 
 Ref agent_webhooks_org_id_orgs_id_fk: agent_webhooks.org_id > orgs.id [delete: cascade]
 
@@ -5473,7 +5473,7 @@ Ref mcp_connections_created_by_users_id_fk: mcp_connections.created_by > users.i
 
 Ref mcp_tool_overrides_mcp_connection_id_mcp_connections_id_fk: mcp_tool_overrides.mcp_connection_id > mcp_connections.id [delete: cascade]
 
-Ref mcp_tool_overrides_org_id_mcp_connection_id_mcp_connections_org_id_id_fk: mcp_tool_overrides.(org_id, mcp_connection_id) > mcp_connections.(org_id, id) [delete: cascade]
+Ref mcp_tool_overrides_org_connection_fk: mcp_tool_overrides.(org_id, mcp_connection_id) > mcp_connections.(org_id, id) [delete: cascade]
 
 Ref agent_employees_user_id_users_id_fk: agent_employees.user_id > users.id
 
@@ -5561,25 +5561,25 @@ Ref web_sessions_user_id_users_id_fk: web_sessions.user_id > users.id [delete: c
 
 Ref web_sessions_org_id_orgs_id_fk: web_sessions.org_id > orgs.id [delete: cascade]
 
-Ref app_experience_consent_grants_org_id_owner_user_id_org_members_org_id_user_id_fk: app_experience_consent_grants.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_experience_consent_grants_owner_fk: app_experience_consent_grants.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_experience_consent_grants_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_experience_consent_grants.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_experience_consent_grants_version_fk: app_experience_consent_grants.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_runtime_agent_policies_org_id_owner_user_id_org_members_org_id_user_id_fk: app_runtime_agent_policies.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_runtime_agent_policies_owner_fk: app_runtime_agent_policies.(org_id, owner_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_runtime_agent_policies_org_id_runtime_binding_id_app_runtime_bindings_org_id_id_fk: app_runtime_agent_policies.(org_id, runtime_binding_id) > app_runtime_bindings.(org_id, id) [delete: restrict]
+Ref app_runtime_agent_policies_binding_fk: app_runtime_agent_policies.(org_id, runtime_binding_id) > app_runtime_bindings.(org_id, id) [delete: restrict]
 
-Ref app_experience_sessions_org_id_user_id_org_members_org_id_user_id_fk: app_experience_sessions.(org_id, user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_experience_sessions_member_fk: app_experience_sessions.(org_id, user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_experience_sessions_web_session_id_web_sessions_id_fk: app_experience_sessions.web_session_id > web_sessions.id [delete: restrict]
+Ref app_experience_sessions_web_session_fk: app_experience_sessions.web_session_id > web_sessions.id [delete: restrict]
 
-Ref app_experience_sessions_org_id_consent_grant_id_user_id_app_experience_consent_grants_org_id_id_owner_user_id_fk: app_experience_sessions.(org_id, consent_grant_id, user_id) > app_experience_consent_grants.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_experience_sessions_consent_fk: app_experience_sessions.(org_id, consent_grant_id, user_id) > app_experience_consent_grants.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_experience_sessions_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_experience_sessions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_experience_sessions_version_fk: app_experience_sessions.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_experience_sessions_org_id_app_installation_id_app_version_id_grant_snapshot_id_grant_snapshot_kind_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_snapshot_kind_fk: app_experience_sessions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
+Ref app_experience_sessions_grant_fk: app_experience_sessions.(org_id, app_installation_id, app_version_id, grant_snapshot_id, grant_snapshot_kind) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id, snapshot_kind) [delete: restrict]
 
-Ref app_experience_resource_exposures_org_id_experience_session_id_owner_user_id_web_session_id_app_experience_sessions_org_id_id_user_id_web_session_id_fk: app_experience_resource_exposures.(org_id, experience_session_id, owner_user_id, web_session_id) > app_experience_sessions.(org_id, id, user_id, web_session_id) [delete: cascade]
+Ref app_experience_resource_exposures_session_fk: app_experience_resource_exposures.(org_id, experience_session_id, owner_user_id, web_session_id) > app_experience_sessions.(org_id, id, user_id, web_session_id) [delete: cascade]
 
 Ref app_action_batches_owner_user_id_users_id_fk: app_action_batches.owner_user_id > users.id
 
@@ -5591,163 +5591,163 @@ Ref app_action_batch_items_org_id_batch_id_app_action_batches_org_id_id_fk: app_
 
 Ref app_action_batch_items_org_id_run_id_app_runs_org_id_id_fk: app_action_batch_items.(org_id, run_id) - app_runs.(org_id, id) [delete: restrict]
 
-Ref app_private_files_org_id_installation_id_app_installations_org_id_id_fk: app_private_files.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
+Ref app_private_files_installation_fk: app_private_files.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_private_files_owner_user_id_users_id_fk: app_private_files.owner_user_id > users.id [delete: restrict]
+Ref app_private_files_owner_user_id_fkey: app_private_files.owner_user_id > users.id [delete: restrict]
 
-Ref app_action_payloads_org_id_installation_id_app_installations_org_id_id_fk: app_action_payloads.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
+Ref app_action_payloads_installation_fk: app_action_payloads.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_action_payloads_owner_user_id_users_id_fk: app_action_payloads.owner_user_id > users.id [delete: restrict]
+Ref app_action_payloads_owner_user_id_fkey: app_action_payloads.owner_user_id > users.id [delete: restrict]
 
-Ref app_action_payload_files_org_id_owner_user_id_snapshot_id_app_action_payloads_org_id_owner_user_id_id_fk: app_action_payload_files.(org_id, owner_user_id, snapshot_id) > app_action_payloads.(org_id, owner_user_id, id) [delete: restrict]
+Ref app_action_payload_files_payload_fk: app_action_payload_files.(org_id, owner_user_id, snapshot_id) > app_action_payloads.(org_id, owner_user_id, id) [delete: restrict]
 
-Ref app_action_payload_files_org_id_owner_user_id_file_id_app_private_files_org_id_owner_user_id_id_fk: app_action_payload_files.(org_id, owner_user_id, file_id) > app_private_files.(org_id, owner_user_id, id) [delete: restrict]
+Ref app_action_payload_files_file_fk: app_action_payload_files.(org_id, owner_user_id, file_id) > app_private_files.(org_id, owner_user_id, id) [delete: restrict]
 
-Ref app_run_human_authorizations_org_id_owner_user_id_snapshot_id_snapshot_digest_app_action_payloads_org_id_owner_user_id_id_snapshot_digest_fk: app_run_human_authorizations.(org_id, owner_user_id, snapshot_id, snapshot_digest) > app_action_payloads.(org_id, owner_user_id, id, snapshot_digest) [delete: restrict]
+Ref app_run_human_authorizations_payload_fk: app_run_human_authorizations.(org_id, owner_user_id, snapshot_id, snapshot_digest) > app_action_payloads.(org_id, owner_user_id, id, snapshot_digest) [delete: restrict]
 
-Ref app_run_human_authorizations_org_id_run_id_app_runs_org_id_id_fk: app_run_human_authorizations.(org_id, run_id) - app_runs.(org_id, id) [delete: restrict]
+Ref app_run_human_authorizations_run_fk: app_run_human_authorizations.(org_id, run_id) - app_runs.(org_id, id) [delete: restrict]
 
-Ref app_run_human_authorizations_org_id_consent_grant_id_owner_user_id_app_experience_consent_grants_org_id_id_owner_user_id_fk: app_run_human_authorizations.(org_id, consent_grant_id, owner_user_id) > app_experience_consent_grants.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_run_human_authorizations_consent_fk: app_run_human_authorizations.(org_id, consent_grant_id, owner_user_id) > app_experience_consent_grants.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_run_human_authorizations_org_id_exposure_id_owner_user_id_app_experience_resource_exposures_org_id_id_owner_user_id_fk: app_run_human_authorizations.(org_id, exposure_id, owner_user_id) > app_experience_resource_exposures.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_run_human_authorizations_exposure_fk: app_run_human_authorizations.(org_id, exposure_id, owner_user_id) > app_experience_resource_exposures.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_experience_resource_exposure_resources_org_id_exposure_id_app_experience_resource_exposures_org_id_id_fk: app_experience_resource_exposure_resources.(org_id, exposure_id) > app_experience_resource_exposures.(org_id, id) [delete: restrict]
+Ref app_experience_resource_exposure_resources_parent_fk: app_experience_resource_exposure_resources.(org_id, exposure_id) > app_experience_resource_exposures.(org_id, id) [delete: cascade]
 
-Ref app_experience_resource_exposure_resources_org_id_runtime_registration_id_resource_binding_id_app_resource_bindings_org_id_runtime_registration_id_id_fk: app_experience_resource_exposure_resources.(org_id, runtime_registration_id, resource_binding_id) > app_resource_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
+Ref app_experience_resource_exposure_resources_binding_fk: app_experience_resource_exposure_resources.(org_id, runtime_registration_id, resource_binding_id) > app_resource_bindings.(org_id, runtime_registration_id, id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_app_installation_id_app_version_id_app_versions_org_id_installation_id_id_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
+Ref app_public_endpoints_version_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id) > app_versions.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_app_installation_id_app_version_id_grant_snapshot_id_app_grant_snapshots_org_id_app_installation_id_app_version_id_id_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
+Ref app_public_endpoints_grant_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id) > app_grant_snapshots.(org_id, app_installation_id, app_version_id, id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_module_installation_id_module_installations_org_id_id_fk: app_public_endpoints.(org_id, module_installation_id) > module_installations.(org_id, id) [delete: restrict]
+Ref app_public_endpoints_module_fk: app_public_endpoints.(org_id, module_installation_id) > module_installations.(org_id, id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_runtime_binding_id_app_runtime_bindings_org_id_id_fk: app_public_endpoints.(org_id, runtime_binding_id) > app_runtime_bindings.(org_id, id) [delete: restrict]
+Ref app_public_endpoints_runtime_binding_fk: app_public_endpoints.(org_id, runtime_binding_id) > app_runtime_bindings.(org_id, id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_app_installation_id_app_version_id_grant_snapshot_id_native_binding_id_approver_user_id_app_native_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_owner_user_id_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id, native_binding_id, approver_user_id) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, owner_user_id) [delete: restrict]
+Ref app_public_endpoints_native_binding_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id, native_binding_id, approver_user_id) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, owner_user_id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_app_installation_id_app_version_id_grant_snapshot_id_cancel_native_binding_id_approver_user_id_app_native_bindings_org_id_app_installation_id_app_version_id_grant_snapshot_id_id_owner_user_id_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id, cancel_native_binding_id, approver_user_id) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, owner_user_id) [delete: restrict]
+Ref app_public_endpoints_cancel_binding_fk: app_public_endpoints.(org_id, app_installation_id, app_version_id, grant_snapshot_id, cancel_native_binding_id, approver_user_id) > app_native_bindings.(org_id, app_installation_id, app_version_id, grant_snapshot_id, id, owner_user_id) [delete: restrict]
 
-Ref app_public_endpoints_org_id_approver_user_id_org_members_org_id_user_id_fk: app_public_endpoints.(org_id, approver_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_public_endpoints_approver_fk: app_public_endpoints.(org_id, approver_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_public_ingress_org_id_endpoint_id_app_public_endpoints_org_id_id_fk: app_public_ingress.(org_id, endpoint_id) > app_public_endpoints.(org_id, id) [delete: restrict]
+Ref app_public_ingress_endpoint_fk: app_public_ingress.(org_id, endpoint_id) > app_public_endpoints.(org_id, id) [delete: restrict]
 
-Ref app_public_hmac_keys_org_id_endpoint_id_app_public_endpoints_org_id_id_fk: app_public_hmac_keys.(org_id, endpoint_id) > app_public_endpoints.(org_id, id) [delete: restrict]
+Ref app_public_hmac_keys_endpoint_fk: app_public_hmac_keys.(org_id, endpoint_id) > app_public_endpoints.(org_id, id) [delete: restrict]
 
-Ref app_public_hmac_nonces_org_id_endpoint_id_key_id_app_public_hmac_keys_org_id_endpoint_id_id_fk: app_public_hmac_nonces.(org_id, endpoint_id, key_id) > app_public_hmac_keys.(org_id, endpoint_id, id) [delete: restrict]
+Ref app_public_hmac_nonces_key_fk: app_public_hmac_nonces.(org_id, endpoint_id, key_id) > app_public_hmac_keys.(org_id, endpoint_id, id) [delete: restrict]
 
-Ref app_canonical_claims_org_id_endpoint_id_ingress_id_app_public_ingress_org_id_endpoint_id_id_fk: app_canonical_claims.(org_id, endpoint_id, ingress_id) > app_public_ingress.(org_id, endpoint_id, id) [delete: restrict]
+Ref app_canonical_claims_ingress_fk: app_canonical_claims.(org_id, endpoint_id, ingress_id) > app_public_ingress.(org_id, endpoint_id, id) [delete: restrict]
 
-Ref app_canonical_claims_org_id_provider_instance_id_resource_id_module_records_org_id_installation_id_id_fk: app_canonical_claims.(org_id, provider_instance_id, resource_id) > module_records.(org_id, installation_id, id) [delete: restrict]
+Ref app_canonical_claims_module_record_fk: app_canonical_claims.(org_id, provider_instance_id, resource_id) > module_records.(org_id, installation_id, id) [delete: restrict]
 
-Ref app_public_cancellations_org_id_endpoint_id_claim_id_app_canonical_claims_org_id_endpoint_id_id_fk: app_public_cancellations.(org_id, endpoint_id, claim_id) > app_canonical_claims.(org_id, endpoint_id, id) [delete: restrict]
+Ref app_public_cancellations_claim_fk: app_public_cancellations.(org_id, endpoint_id, claim_id) > app_canonical_claims.(org_id, endpoint_id, id) [delete: restrict]
 
-Ref app_public_cancellations_org_id_app_installation_id_endpoint_id_app_public_endpoints_org_id_app_installation_id_id_fk: app_public_cancellations.(org_id, app_installation_id, endpoint_id) > app_public_endpoints.(org_id, app_installation_id, id) [delete: restrict]
+Ref app_public_cancellations_endpoint_fk: app_public_cancellations.(org_id, app_installation_id, endpoint_id) > app_public_endpoints.(org_id, app_installation_id, id) [delete: restrict]
 
-Ref app_public_cancellations_org_id_original_run_id_app_runs_org_id_id_fk: app_public_cancellations.(org_id, original_run_id) > app_runs.(org_id, id) [delete: restrict]
+Ref app_public_cancellations_run_fk: app_public_cancellations.(org_id, original_run_id) > app_runs.(org_id, id) [delete: restrict]
 
-Ref app_public_cancellation_selections_org_id_app_installation_id_cancellation_id_original_run_id_app_public_cancellations_org_id_app_installation_id_id_original_run_id_fk: app_public_cancellation_selections.(org_id, app_installation_id, cancellation_id, original_run_id) > app_public_cancellations.(org_id, app_installation_id, id, original_run_id) [delete: restrict]
+Ref app_public_cancellation_selections_request_fk: app_public_cancellation_selections.(org_id, app_installation_id, cancellation_id, original_run_id) > app_public_cancellations.(org_id, app_installation_id, id, original_run_id) [delete: restrict]
 
-Ref app_public_cancellation_selections_org_id_app_installation_id_native_binding_id_owner_user_id_app_native_bindings_org_id_app_installation_id_id_owner_user_id_fk: app_public_cancellation_selections.(org_id, app_installation_id, native_binding_id, owner_user_id) > app_native_bindings.(org_id, app_installation_id, id, owner_user_id) [delete: restrict]
+Ref app_public_cancellation_selections_binding_fk: app_public_cancellation_selections.(org_id, app_installation_id, native_binding_id, owner_user_id) > app_native_bindings.(org_id, app_installation_id, id, owner_user_id) [delete: restrict]
 
-Ref app_public_cancellation_selections_org_id_cancel_run_id_app_runs_org_id_id_fk: app_public_cancellation_selections.(org_id, cancel_run_id) - app_runs.(org_id, id) [delete: restrict]
+Ref app_public_cancellation_selections_run_fk: app_public_cancellation_selections.(org_id, cancel_run_id) - app_runs.(org_id, id) [delete: restrict]
 
-Ref app_resource_access_grants_org_id_resource_binding_id_owner_user_id_app_resource_bindings_org_id_id_owner_user_id_fk: app_resource_access_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_resource_access_grants_owner_fk: app_resource_access_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_resource_access_grants_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_resource_access_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
+Ref app_resource_access_grants_checkpoint_fk: app_resource_access_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: cascade]
 
-Ref app_resource_access_grants_org_id_projection_id_app_resource_projections_org_id_id_fk: app_resource_access_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: restrict]
+Ref app_resource_access_grants_projection_fk: app_resource_access_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: cascade]
 
-Ref app_resource_access_grants_org_id_recipient_user_id_org_members_org_id_user_id_fk: app_resource_access_grants.(org_id, recipient_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_resource_access_grants_recipient_fk: app_resource_access_grants.(org_id, recipient_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_private_mcp_grants_org_id_resource_binding_id_owner_user_id_app_resource_bindings_org_id_id_owner_user_id_fk: app_private_mcp_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
+Ref app_private_mcp_grants_owner_fk: app_private_mcp_grants.(org_id, resource_binding_id, owner_user_id) > app_resource_bindings.(org_id, id, owner_user_id) [delete: restrict]
 
-Ref app_private_mcp_grants_org_id_checkpoint_id_resource_binding_id_app_sync_checkpoints_org_id_id_resource_binding_id_fk: app_private_mcp_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: restrict]
+Ref app_private_mcp_grants_checkpoint_fk: app_private_mcp_grants.(org_id, checkpoint_id, resource_binding_id) > app_sync_checkpoints.(org_id, id, resource_binding_id) [delete: cascade]
 
-Ref app_private_mcp_grants_org_id_projection_id_app_resource_projections_org_id_id_fk: app_private_mcp_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: restrict]
+Ref app_private_mcp_grants_projection_fk: app_private_mcp_grants.(org_id, projection_id) > app_resource_projections.(org_id, id) [delete: cascade]
 
-Ref app_private_mcp_grants_org_id_subject_user_id_org_members_org_id_user_id_fk: app_private_mcp_grants.(org_id, subject_user_id) > org_members.(org_id, user_id) [delete: restrict]
+Ref app_private_mcp_grants_subject_fk: app_private_mcp_grants.(org_id, subject_user_id) > org_members.(org_id, user_id) [delete: restrict]
 
-Ref app_private_mcp_grants_org_id_mcp_token_id_mcp_tokens_org_id_id_fk: app_private_mcp_grants.(org_id, mcp_token_id) > mcp_tokens.(org_id, id) [delete: restrict]
+Ref app_private_mcp_grants_token_fk: app_private_mcp_grants.(org_id, mcp_token_id) > mcp_tokens.(org_id, id) [delete: restrict]
 
-Ref app_private_state_records_org_id_installation_id_app_installations_org_id_id_fk: app_private_state_records.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
+Ref app_private_state_records_installation_fk: app_private_state_records.(org_id, installation_id) > app_installations.(org_id, id) [delete: restrict]
 
-Ref app_private_state_records_owner_user_id_users_id_fk: app_private_state_records.owner_user_id > users.id [delete: restrict]
+Ref app_private_state_records_owner_fk: app_private_state_records.owner_user_id > users.id [delete: restrict]
 
-Ref email_checkpoints_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_checkpoints.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_checkpoints_account_fk: email_checkpoints.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_messages_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_messages.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_messages_account_fk: email_messages.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_memberships_org_id_owner_user_id_account_id_logical_message_id_email_messages_org_id_owner_user_id_account_id_logical_message_id_fk: email_memberships.(org_id, owner_user_id, account_id, logical_message_id) > email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
+Ref email_memberships_message_fk: email_memberships.(org_id, owner_user_id, account_id, logical_message_id) > email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
 
-Ref email_sync_receipts_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_sync_receipts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_sync_receipts_account_fk: email_sync_receipts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_provider_states_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_provider_states.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_provider_states_account_fk: email_provider_states.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_reading_preferences_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_reading_preferences.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_reading_preferences_account_fk: email_reading_preferences.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_imap_credentials_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_imap_credentials.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_imap_credentials_account_fk: email_imap_credentials.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_drafts_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_drafts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_drafts_account_fk: email_drafts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_send_operations_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_send_operations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_send_operations_account_fk: email_send_operations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_send_operations_org_id_owner_user_id_account_id_draft_id_email_drafts_org_id_owner_user_id_account_id_draft_id_fk: email_send_operations.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
+Ref email_send_operations_draft_fk: email_send_operations.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
 
-Ref email_provider_draft_mirrors_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_provider_draft_mirrors.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_provider_draft_mirrors_account_fk: email_provider_draft_mirrors.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_provider_draft_mirrors_org_id_owner_user_id_account_id_draft_id_email_drafts_org_id_owner_user_id_account_id_draft_id_fk: email_provider_draft_mirrors.(org_id, owner_user_id, account_id, draft_id) - email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
+Ref email_provider_draft_mirrors_draft_fk: email_provider_draft_mirrors.(org_id, owner_user_id, account_id, draft_id) - email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
 
-Ref email_account_consents_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_account_consents.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_account_consents_account_fk: email_account_consents.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_native_connection_requests_org_id_owner_user_id_email_native_connection_owners_org_id_owner_user_id_fk: email_native_connection_requests.(org_id, owner_user_id) > email_native_connection_owners.(org_id, owner_user_id) [delete: restrict]
+Ref email_native_connection_requests_owner_fk: email_native_connection_requests.(org_id, owner_user_id) > email_native_connection_owners.(org_id, owner_user_id) [delete: restrict]
 
-Ref email_native_account_connections_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_native_account_connections.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_native_account_connections_account_fk: email_native_account_connections.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_operations_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_operations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_operations_account_fk: email_operations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_attachments_org_id_owner_user_id_account_id_draft_id_email_drafts_org_id_owner_user_id_account_id_draft_id_fk: email_attachments.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
+Ref email_attachments_draft_fk: email_attachments.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
 
-Ref email_outbox_org_id_owner_user_id_account_id_draft_id_email_drafts_org_id_owner_user_id_account_id_draft_id_fk: email_outbox.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
+Ref email_outbox_draft_fk: email_outbox.(org_id, owner_user_id, account_id, draft_id) > email_drafts.(org_id, owner_user_id, account_id, draft_id) [delete: restrict]
 
-Ref email_outbox_events_org_id_owner_user_id_account_id_outbox_id_email_outbox_org_id_owner_user_id_account_id_outbox_id_fk: email_outbox_events.(org_id, owner_user_id, account_id, outbox_id) > email_outbox.(org_id, owner_user_id, account_id, outbox_id) [delete: restrict]
+Ref email_outbox_events_outbox_fk: email_outbox_events.(org_id, owner_user_id, account_id, outbox_id) > email_outbox.(org_id, owner_user_id, account_id, outbox_id) [delete: restrict]
 
-Ref email_templates_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_templates.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_templates_account_fk: email_templates.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_signatures_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_signatures.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_signatures_account_fk: email_signatures.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_imap_aliases_org_id_owner_user_id_account_id_logical_message_id_email_messages_org_id_owner_user_id_account_id_logical_message_id_fk: email_imap_aliases.(org_id, owner_user_id, account_id, logical_message_id) > email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
+Ref email_imap_aliases_message_fk: email_imap_aliases.(org_id, owner_user_id, account_id, logical_message_id) > email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
 
-Ref email_imap_move_reservations_org_id_owner_user_id_account_id_logical_message_id_email_messages_org_id_owner_user_id_account_id_logical_message_id_fk: email_imap_move_reservations.(org_id, owner_user_id, account_id, logical_message_id) - email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
+Ref email_imap_move_reservations_message_fk: email_imap_move_reservations.(org_id, owner_user_id, account_id, logical_message_id) - email_messages.(org_id, owner_user_id, account_id, logical_message_id) [delete: restrict]
 
-Ref email_imap_move_reservations_org_id_owner_user_id_account_id_operation_id_email_operations_org_id_owner_user_id_account_id_operation_id_fk: email_imap_move_reservations.(org_id, owner_user_id, account_id, operation_id) > email_operations.(org_id, owner_user_id, account_id, operation_id) [delete: restrict]
+Ref email_imap_move_reservations_operation_fk: email_imap_move_reservations.(org_id, owner_user_id, account_id, operation_id) > email_operations.(org_id, owner_user_id, account_id, operation_id) [delete: restrict]
 
-Ref email_timers_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_timers.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_timers_account_fk: email_timers.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_presentation_cache_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_presentation_cache.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_presentation_cache_account_fk: email_presentation_cache.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_notification_events_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_notification_events.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_notification_events_account_fk: email_notification_events.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_notification_states_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_notification_states.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_notification_states_account_fk: email_notification_states.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_calendar_invitations_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_calendar_invitations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_calendar_invitations_account_fk: email_calendar_invitations.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_calendar_invitations_event_id_events_id_fk: email_calendar_invitations.event_id > events.id [delete: set null]
+Ref email_calendar_invitations_event_fk: email_calendar_invitations.event_id > events.id [delete: set null]
 
-Ref email_calendar_invitation_actions_org_id_owner_user_id_account_id_invitation_id_email_calendar_invitations_org_id_owner_user_id_account_id_invitation_id_fk: email_calendar_invitation_actions.(org_id, owner_user_id, account_id, invitation_id) > email_calendar_invitations.(org_id, owner_user_id, account_id, invitation_id) [delete: restrict]
+Ref email_calendar_invitation_actions_invitation_fk: email_calendar_invitation_actions.(org_id, owner_user_id, account_id, invitation_id) > email_calendar_invitations.(org_id, owner_user_id, account_id, invitation_id) [delete: restrict]
 
-Ref email_calendar_invitation_actions_org_id_owner_user_id_account_id_outbox_id_email_outbox_org_id_owner_user_id_account_id_outbox_id_fk: email_calendar_invitation_actions.(org_id, owner_user_id, account_id, outbox_id) > email_outbox.(org_id, owner_user_id, account_id, outbox_id) [delete: restrict]
+Ref email_calendar_invitation_actions_outbox_fk: email_calendar_invitation_actions.(org_id, owner_user_id, account_id, outbox_id) > email_outbox.(org_id, owner_user_id, account_id, outbox_id) [delete: restrict]
 
 Ref email_context_transfers_org_id_orgs_id_fk: email_context_transfers.org_id > orgs.id [delete: cascade]
 
 Ref email_context_transfers_owner_user_id_users_id_fk: email_context_transfers.owner_user_id > users.id [delete: cascade]
 
-Ref email_context_transfers_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_context_transfers.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: cascade]
+Ref email_context_transfer_account_fk: email_context_transfers.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: cascade]
 
-Ref email_rules_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_rules.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_rules_account_fk: email_rules.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_rule_receipts_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_rule_receipts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref email_rule_receipts_account_fk: email_rule_receipts.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref email_rule_receipts_org_id_owner_user_id_account_id_rule_id_email_rules_org_id_owner_user_id_account_id_rule_id_fk: email_rule_receipts.(org_id, owner_user_id, account_id, rule_id) > email_rules.(org_id, owner_user_id, account_id, rule_id) [delete: restrict]
+Ref email_rule_receipts_rule_fk: email_rule_receipts.(org_id, owner_user_id, account_id, rule_id) > email_rules.(org_id, owner_user_id, account_id, rule_id) [delete: restrict]
 
 Ref email_agent_grants_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: email_agent_grants.(org_id, owner_user_id, account_id) > email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
@@ -5785,6 +5785,6 @@ Ref app_restore_access_reviews_org_id_orgs_id_fk: app_restore_access_reviews.org
 
 Ref app_restore_access_reviews_owner_user_id_users_id_fk: app_restore_access_reviews.owner_user_id > users.id
 
-Ref native_email_adoptions_org_id_owner_user_id_account_id_email_accounts_org_id_owner_user_id_account_id_fk: native_email_adoptions.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref native_email_adoptions_account_fk: native_email_adoptions.(org_id, owner_user_id, account_id) - email_accounts.(org_id, owner_user_id, account_id) [delete: restrict]
 
-Ref native_email_adoption_destinations_org_id_owner_user_id_account_id_native_email_adoptions_org_id_owner_user_id_account_id_fk: native_email_adoption_destinations.(org_id, owner_user_id, account_id) - native_email_adoptions.(org_id, owner_user_id, account_id) [delete: restrict]
+Ref native_email_adoption_destinations_account_fk: native_email_adoption_destinations.(org_id, owner_user_id, account_id) - native_email_adoptions.(org_id, owner_user_id, account_id) [delete: restrict]

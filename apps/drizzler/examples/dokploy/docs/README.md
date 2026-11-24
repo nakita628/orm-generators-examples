@@ -1728,10 +1728,6 @@ ALTER TABLE "account" ADD CONSTRAINT "account_user_id_user_id_fkey" FOREIGN KEY 
 
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 
-#### Referenced by
-
-- `userId` → [user.id](#table-user) (one to one, defineRelations)
-
 <details>
 <summary>Queries and their SQL</summary>
 
@@ -3455,7 +3451,7 @@ db.insert(applications).values({ name: "name", environmentId: "environmentId" })
 ```sql
 insert into "application" ("applicationId", "name", "appName", "description", "env", "previewEnv", "watchPaths", "previewBuildArgs", "previewBuildSecrets", "previewLabels", "previewWildcard", "previewPort", "previewHttps", "previewPath", "certificateType", "previewCustomCertResolver", "previewLimit", "previewForwardAuthEnabled", "isPreviewDeploymentsActive", "previewRequireCollaboratorPermissions", "rollbackActive", "buildArgs", "buildSecrets", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "title", "enabled", "subtitle", "command", "args", "icon", "refreshToken", "sourceType", "cleanCache", "repository", "owner", "branch", "buildPath", "triggerType", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabBuildPath", "gitlabPathNamespace", "giteaRepository", "giteaOwner", "giteaBranch", "giteaBuildPath", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "bitbucketBuildPath", "username", "password", "dockerImage", "registryUrl", "customGitUrl", "customGitBranch", "customGitBuildPath", "customGitSSHKeyId", "enableSubmodules", "dockerfile", "dockerContextPath", "dockerBuildStage", "dropBuildPath", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "applicationStatus", "buildType", "railpackVersion", "herokuVersion", "publishDirectory", "isStaticSpa", "createEnvFile", "createdAt", "registryId", "rollbackRegistryId", "environmentId", "githubId", "gitlabId", "giteaId", "bitbucketId", "serverId", "buildServerId", "buildRegistryId", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $4, default, default, default, default, default, default, default, $5, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $6, default, default, $7, default, default, default, default, default, default, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","app-input-cross-platform-microchip-aaaaaa","uuuuuuuuuuuuuuuuuuuuu",true,"2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","app-input-optical-microchip-aaaaaa","uuuuuuuuuuuuuuuuuuuuu",true,"2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of applications, found by its primary key.
@@ -3798,7 +3794,7 @@ db.insert(backups).values({
 ```sql
 insert into "backup" ("backupId", "appName", "schedule", "enabled", "database", "prefix", "customName", "serviceName", "destinationId", "keepLatestCount", "includeEncryptionKey", "backupType", "databaseType", "composeId", "postgresId", "mariadbId", "mysqlId", "mongoId", "libsqlId", "userId", "metadata")
 values ($1, $2, $3, default, $4, $5, default, default, $6, default, default, default, $7, default, default, default, default, default, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","backup-reboot-auxiliary-port-aaaaaa","schedule","database","prefix","destinationId","postgres"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","backup-input-mobile-monitor-aaaaaa","schedule","database","prefix","destinationId","postgres"]
 ```
 
 **Update**: Changes a row of backups, found by its primary key.
@@ -3868,7 +3864,6 @@ ALTER TABLE "bitbucket" ADD CONSTRAINT "bitbucket_gitProviderId_git_provider_git
 
 - `bitbucketId` → [applications.bitbucketId](#table-applications) (one to many, on delete set null)
 - `bitbucketId` → [compose.bitbucketId](#table-compose) (one to many, on delete set null)
-- `gitProviderId` → [gitProvider.gitProviderId](#table-gitProvider) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -4068,7 +4063,7 @@ db.insert(certificates).values({
 ```sql
 insert into "certificate" ("certificateId", "name", "certificateData", "privateKey", "certificatePath", "autoRenew", "organizationId", "serverId")
 values ($1, $2, $3, $4, $5, default, $6, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","certificateData","privateKey","certificate-navigate-primary-protocol-aaaaaa","organizationId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","certificateData","privateKey","certificate-hack-virtual-transmitter-aaaaaa","organizationId"]
 ```
 
 **Update**: Changes a row of certificates, found by its primary key.
@@ -4307,7 +4302,7 @@ db.insert(compose).values({ name: "name", environmentId: "environmentId" });
 ```sql
 insert into "compose" ("composeId", "name", "appName", "description", "env", "composeFile", "refreshToken", "sourceType", "composeType", "repository", "owner", "branch", "autoDeploy", "gitlabProjectId", "gitlabRepository", "gitlabOwner", "gitlabBranch", "gitlabPathNamespace", "bitbucketRepository", "bitbucketRepositorySlug", "bitbucketOwner", "bitbucketBranch", "giteaRepository", "giteaOwner", "giteaBranch", "customGitUrl", "customGitBranch", "customGitSSHKeyId", "command", "createEnvFile", "enableSubmodules", "composePath", "suffix", "randomize", "isolatedDeployment", "isolatedDeploymentsVolume", "pullImages", "triggerType", "composeStatus", "icon", "environmentId", "createdAt", "watchPaths", "githubId", "gitlabId", "bitbucketId", "giteaId", "serverId", "serviceNetworks")
 values ($1, $2, $3, default, default, default, $4, default, default, default, default, default, $5, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $6, $7, default, default, default, default, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","compose-copy-back-end-port-aaaaaa","uuuuuuuuuuuuuuuuuuuuu",true,"environmentId","2026-01-01T00:00:00.000Z"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","compose-generate-redundant-interface-aaaaaa","uuuuuuuuuuuuuuuuuuuuu",true,"environmentId","2026-01-01T00:00:00.000Z"]
 ```
 
 **Update**: Changes a row of compose, found by its primary key.
@@ -4347,7 +4342,7 @@ Table `deployment`.
 
 | Column                | Type                                         | Constraints                                                                | Default               | Description |
 | --------------------- | -------------------------------------------- | -------------------------------------------------------------------------- | --------------------- | ----------- |
-| `deploymentId`        | `text`                                       | PK NOT NULL → [rollbacks.deploymentId](#table-rollbacks)                   | `.$defaultFn()`       |             |
+| `deploymentId`        | `text`                                       | PK NOT NULL                                                                | `.$defaultFn()`       |             |
 | `title`               | `text`                                       | NOT NULL                                                                   |                       |             |
 | `description`         | `text`                                       | NULL                                                                       |                       |             |
 | `status`              | [`deploymentStatus`](#enum-deploymentStatus) | NULL                                                                       | `.default("running")` |             |
@@ -4424,7 +4419,6 @@ ALTER TABLE "deployment" ADD CONSTRAINT "deployment_buildServerId_server_serverI
 - `rollbackId` → [rollbacks.rollbackId](#table-rollbacks) (many to one, on delete cascade)
 - `volumeBackupId` → [volumeBackups.volumeBackupId](#table-volumeBackups) (many to one, on delete cascade)
 - `buildServerId` → [server.serverId](#table-server) (many to one, on delete cascade)
-- `deploymentId` → [rollbacks.deploymentId](#table-rollbacks) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -5256,15 +5250,15 @@ Table `git_provider`.
 
 ![gitProvider and the tables it relates to](tables/gitProvider.svg)
 
-| Column                   | Type                                       | Constraints                                         | Default              | Description |
-| ------------------------ | ------------------------------------------ | --------------------------------------------------- | -------------------- | ----------- |
-| `gitProviderId`          | `text`                                     | PK NOT NULL → [github.gitProviderId](#table-github) | `.$defaultFn()`      |             |
-| `name`                   | `text`                                     | NOT NULL                                            |                      |             |
-| `providerType`           | [`gitProviderType`](#enum-gitProviderType) | NOT NULL                                            | `.default("github")` |             |
-| `createdAt`              | `text`                                     | NOT NULL                                            | `.$defaultFn()`      |             |
-| `organizationId`         | `text`                                     | NOT NULL → [organization.id](#table-organization)   |                      |             |
-| `userId`                 | `text`                                     | NOT NULL → [user.id](#table-user)                   |                      |             |
-| `sharedWithOrganization` | `boolean`                                  | NOT NULL                                            | `.default(false)`    |             |
+| Column                   | Type                                       | Constraints                                       | Default              | Description |
+| ------------------------ | ------------------------------------------ | ------------------------------------------------- | -------------------- | ----------- |
+| `gitProviderId`          | `text`                                     | PK NOT NULL                                       | `.$defaultFn()`      |             |
+| `name`                   | `text`                                     | NOT NULL                                          |                      |             |
+| `providerType`           | [`gitProviderType`](#enum-gitProviderType) | NOT NULL                                          | `.default("github")` |             |
+| `createdAt`              | `text`                                     | NOT NULL                                          | `.$defaultFn()`      |             |
+| `organizationId`         | `text`                                     | NOT NULL → [organization.id](#table-organization) |                      |             |
+| `userId`                 | `text`                                     | NOT NULL → [user.id](#table-user)                 |                      |             |
+| `sharedWithOrganization` | `boolean`                                  | NOT NULL                                          | `.default(false)`    |             |
 
 #### Definition
 
@@ -5288,10 +5282,6 @@ ALTER TABLE "git_provider" ADD CONSTRAINT "git_provider_userId_user_id_fkey" FOR
 
 - `organizationId` → [organization.id](#table-organization) (many to one, on delete cascade)
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
-- `gitProviderId` → [github.gitProviderId](#table-github) (one to one, defineRelations, no foreign key)
-- `gitProviderId` → [gitlab.gitProviderId](#table-gitlab) (one to one, defineRelations, no foreign key)
-- `gitProviderId` → [bitbucket.gitProviderId](#table-bitbucket) (one to one, defineRelations, no foreign key)
-- `gitProviderId` → [gitea.gitProviderId](#table-gitea) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -5439,7 +5429,6 @@ ALTER TABLE "gitea" ADD CONSTRAINT "gitea_gitProviderId_git_provider_gitProvider
 
 - `giteaId` → [applications.giteaId](#table-applications) (one to many, on delete set null)
 - `giteaId` → [compose.giteaId](#table-compose) (one to many, on delete set null)
-- `gitProviderId` → [gitProvider.gitProviderId](#table-gitProvider) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5576,7 +5565,6 @@ ALTER TABLE "github" ADD CONSTRAINT "github_gitProviderId_git_provider_gitProvid
 
 - `githubId` → [applications.githubId](#table-applications) (one to many, on delete set null)
 - `githubId` → [compose.githubId](#table-compose) (one to many, on delete set null)
-- `gitProviderId` → [gitProvider.gitProviderId](#table-gitProvider) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5715,7 +5703,6 @@ ALTER TABLE "gitlab" ADD CONSTRAINT "gitlab_gitProviderId_git_provider_gitProvid
 
 - `gitlabId` → [applications.gitlabId](#table-applications) (one to many, on delete set null)
 - `gitlabId` → [compose.gitlabId](#table-compose) (one to many, on delete set null)
-- `gitProviderId` → [gitProvider.gitProviderId](#table-gitProvider) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5974,7 +5961,7 @@ db.insert(libsql).values({
 ```sql
 insert into "libsql" ("libsqlId", "name", "appName", "description", "databaseUser", "databasePassword", "sqldNode", "sqldPrimaryUrl", "enableNamespaces", "dockerImage", "command", "env", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "externalPort", "externalGRPCPort", "externalAdminPort", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "replicas", "networkIds", "detachDokployNetwork", "createdAt", "environmentId", "serverId")
 values ($1, $2, $3, default, $4, $5, default, default, default, $6, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $7, $8, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","libsql-input-bluetooth-pixel-aaaaaa","databaseUser","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","libsql-navigate-virtual-application-aaaaaa","databaseUser","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of libsql, found by its primary key.
@@ -6172,7 +6159,7 @@ db.insert(mariadb).values({
 ```sql
 insert into "mariadb" ("mariadbId", "name", "appName", "description", "databaseName", "databaseUser", "databasePassword", "rootPassword", "dockerImage", "command", "args", "env", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "externalPort", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "createdAt", "environmentId", "serverId", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, default, $4, $5, $6, $7, $8, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $9, $10, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mariadb-bypass-mobile-capacitor-aaaaaa","databaseName","databaseUser","databasePassword","databaseRootPassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mariadb-bypass-1080p-program-aaaaaa","databaseName","databaseUser","databasePassword","databaseRootPassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of mariadb, found by its primary key.
@@ -6365,7 +6352,7 @@ db.insert(mongo).values({
 ```sql
 insert into "mongo" ("mongoId", "name", "appName", "description", "databaseUser", "databasePassword", "dockerImage", "command", "args", "env", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "externalPort", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "createdAt", "environmentId", "serverId", "replicaSets", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, default, $4, $5, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $6, $7, default, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mongo-override-solid-state-interface-aaaaaa","databaseUser","databasePassword","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mongo-quantify-solid-state-transmitter-aaaaaa","databaseUser","databasePassword","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of mongo, found by its primary key.
@@ -6729,7 +6716,7 @@ db.insert(mysql).values({
 ```sql
 insert into "mysql" ("mysqlId", "name", "appName", "description", "databaseName", "databaseUser", "databasePassword", "rootPassword", "dockerImage", "command", "args", "env", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "externalPort", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "createdAt", "environmentId", "serverId", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, default, $4, $5, $6, $7, $8, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $9, $10, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mysql-reboot-multi-byte-feed-aaaaaa","databaseName","databaseUser","databasePassword","databaseRootPassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","mysql-quantify-multi-byte-port-aaaaaa","databaseName","databaseUser","databasePassword","databaseRootPassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of mysql, found by its primary key.
@@ -8955,7 +8942,7 @@ db.insert(postgres).values({
 ```sql
 insert into "postgres" ("postgresId", "name", "appName", "databaseName", "databaseUser", "databasePassword", "description", "dockerImage", "command", "args", "env", "memoryReservation", "externalPort", "memoryLimit", "cpuReservation", "cpuLimit", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "createdAt", "environmentId", "serverId", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, $4, $5, $6, default, $7, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, $8, $9, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","postgres-calculate-bluetooth-transmitter-aaaaaa","databaseName","databaseUser","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","postgres-calculate-open-source-bandwidth-aaaaaa","databaseName","databaseUser","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of postgres, found by its primary key.
@@ -9110,7 +9097,7 @@ db.insert(previewDeployments).values({
 ```sql
 insert into "preview_deployments" ("previewDeploymentId", "branch", "pullRequestId", "pullRequestNumber", "pullRequestURL", "pullRequestTitle", "pullRequestCommentId", "previewStatus", "appName", "applicationId", "domainId", "createdAt", "expiresAt")
 values ($1, $2, $3, $4, $5, $6, $7, default, $8, $9, default, $10, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","branch","pullRequestId","pullRequestNumber","pullRequestURL","pullRequestTitle","pullRequestCommentId","preview-quantify-mobile-matrix-aaaaaa","applicationId","2026-01-01T00:00:00.000Z"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","branch","pullRequestId","pullRequestNumber","pullRequestURL","pullRequestTitle","pullRequestCommentId","preview-transmit-neural-feed-aaaaaa","applicationId","2026-01-01T00:00:00.000Z"]
 ```
 
 **Update**: Changes a row of previewDeployments, found by its primary key.
@@ -9563,7 +9550,7 @@ db.insert(redis).values({
 ```sql
 insert into "redis" ("redisId", "name", "appName", "description", "password", "dockerImage", "command", "args", "env", "memoryReservation", "memoryLimit", "cpuReservation", "cpuLimit", "externalPort", "createdAt", "applicationStatus", "healthCheckSwarm", "restartPolicySwarm", "placementSwarm", "updateConfigSwarm", "rollbackConfigSwarm", "modeSwarm", "labelsSwarm", "networkSwarm", "stopGracePeriodSwarm", "endpointSpecSwarm", "ulimitsSwarm", "replicas", "environmentId", "serverId", "networkIds", "detachDokployNetwork")
 values ($1, $2, $3, default, $4, $5, default, default, default, default, default, default, default, default, $6, default, default, default, default, default, default, default, default, default, default, default, default, default, $7, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","redis-override-neural-circuit-aaaaaa","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","redis-connect-primary-firewall-aaaaaa","databasePassword","dockerImage","2026-01-01T00:00:00.000Z","environmentId"]
 ```
 
 **Update**: Changes a row of redis, found by its primary key.
@@ -9774,7 +9761,6 @@ ALTER TABLE "rollback" ADD CONSTRAINT "rollback_deploymentId_deployment_deployme
 #### Referenced by
 
 - `rollbackId` → [deployments.rollbackId](#table-deployments) (one to many, on delete cascade)
-- `deploymentId` → [deployments.deploymentId](#table-deployments) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -10162,7 +10148,7 @@ db.insert(schedules).values({ name: "name", cronExpression: "cronExpression", co
 ```sql
 insert into "schedule" ("scheduleId", "name", "description", "cronExpression", "appName", "serviceName", "shellType", "scheduleType", "command", "script", "applicationId", "composeId", "serverId", "organizationId", "enabled", "timezone", "createdAt")
 values ($1, $2, default, $3, $4, default, default, default, $5, default, default, default, default, default, default, default, $6)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","cronExpression","schedule-synthesize-primary-card-aaaaaa","command","2026-01-01T00:00:00.000Z"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","cronExpression","schedule-navigate-1080p-microchip-aaaaaa","command","2026-01-01T00:00:00.000Z"]
 ```
 
 **Update**: Changes a row of schedules, found by its primary key.
@@ -10586,7 +10572,7 @@ db.insert(server).values({
 ```sql
 insert into "server" ("serverId", "name", "description", "ipAddress", "port", "username", "appName", "enableDockerCleanup", "telemetryProviderIds", "buildsConcurrency", "createdAt", "organizationId", "serverStatus", "serverType", "command", "sshKeyId", "metricsConfig")
 values ($1, $2, default, $3, $4, default, $5, default, default, default, $6, $7, default, default, default, default, default)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","ipAddress",1,"server-parse-online-interface-aaaaaa","createdAt","organizationId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","ipAddress",1,"server-override-open-source-system-aaaaaa","createdAt","organizationId"]
 ```
 
 **Update**: Changes a row of server, found by its primary key.
@@ -11451,42 +11437,42 @@ TEMP
 
 ![user and the tables it relates to](tables/user.svg)
 
-| Column                                    | Type        | Constraints                                    | Default                            | Description                       |
-| ----------------------------------------- | ----------- | ---------------------------------------------- | ---------------------------------- | --------------------------------- |
-| `id`                                      | `text`      | PK NOT NULL → [account.userId](#table-account) | `.$defaultFn()`                    |                                   |
-| `firstName`                               | `text`      | NOT NULL                                       | `.default("")`                     |                                   |
-| `lastName`                                | `text`      | NOT NULL                                       | `.default("")`                     |                                   |
-| `isRegistered`                            | `boolean`   | NOT NULL                                       | `.default(false)`                  |                                   |
-| `expirationDate`                          | `text`      | NOT NULL                                       | `.$defaultFn()`                    |                                   |
-| `createdAt2` (`createdAt`)                | `text`      | NOT NULL                                       | `.$defaultFn()`                    |                                   |
-| `createdAt` (`created_at`)                | `timestamp` | NULL                                           | `.defaultNow()`                    |                                   |
-| `twoFactorEnabled` (`two_factor_enabled`) | `boolean`   | NULL                                           |                                    | Auth                              |
-| `email`                                   | `text`      | UNIQUE NOT NULL                                |                                    |                                   |
-| `emailVerified` (`email_verified`)        | `boolean`   | NOT NULL                                       |                                    |                                   |
-| `image`                                   | `text`      | NULL                                           |                                    |                                   |
-| `banned`                                  | `boolean`   | NULL                                           |                                    |                                   |
-| `banReason` (`ban_reason`)                | `text`      | NULL                                           |                                    |                                   |
-| `banExpires` (`ban_expires`)              | `timestamp` | NULL                                           |                                    |                                   |
-| `updatedAt` (`updated_at`)                | `timestamp` | NOT NULL                                       |                                    |                                   |
-| `role`                                    | `text`      | NOT NULL                                       | `.default("user")`                 | Admin                             |
-| `enablePaidFeatures`                      | `boolean`   | NOT NULL                                       | `.default(false)`                  | Metrics                           |
-| `allowImpersonation`                      | `boolean`   | NOT NULL                                       | `.default(false)`                  |                                   |
-| `enableEnterpriseFeatures`                | `boolean`   | NOT NULL                                       | `.default(false)`                  | Enterprise / proprietary features |
-| `licenseKey`                              | `text`      | NULL                                           |                                    |                                   |
-| `isValidEnterpriseLicense`                | `boolean`   | NOT NULL                                       | `.default(false)`                  |                                   |
-| `stripeCustomerId`                        | `text`      | NULL                                           |                                    |                                   |
-| `stripeSubscriptionId`                    | `text`      | NULL                                           |                                    |                                   |
-| `serversQuantity`                         | `integer`   | NOT NULL                                       | `.default(0)`                      |                                   |
-| `sendInvoiceNotifications`                | `boolean`   | NOT NULL                                       | `.default(false)`                  |                                   |
-| `isEnterpriseCloud`                       | `boolean`   | NOT NULL                                       | `.default(false)`                  |                                   |
-| `trustedOrigins`                          | `text[]`    | NULL                                           |                                    |                                   |
-| `bookmarkedTemplates`                     | `text[]`    | NULL                                           | ``.default(sql`ARRAY[]::text[]`)`` |                                   |
-| `onboardingCompletedAt`                   | `timestamp` | NULL                                           |                                    |                                   |
-| `onboardingStep`                          | `text`      | NULL                                           |                                    |                                   |
-| `onboardingReturnEmails`                  | `integer`   | NOT NULL                                       | `.default(0)`                      |                                   |
-| `trialPlanPromptSubscriptionId`           | `text`      | NULL                                           |                                    |                                   |
-| `serverSetupFailedEmailAt`                | `timestamp` | NULL                                           |                                    |                                   |
-| `serverConnectFailure`                    | `text`      | NULL                                           |                                    |                                   |
+| Column                                    | Type        | Constraints     | Default                            | Description                       |
+| ----------------------------------------- | ----------- | --------------- | ---------------------------------- | --------------------------------- |
+| `id`                                      | `text`      | PK NOT NULL     | `.$defaultFn()`                    |                                   |
+| `firstName`                               | `text`      | NOT NULL        | `.default("")`                     |                                   |
+| `lastName`                                | `text`      | NOT NULL        | `.default("")`                     |                                   |
+| `isRegistered`                            | `boolean`   | NOT NULL        | `.default(false)`                  |                                   |
+| `expirationDate`                          | `text`      | NOT NULL        | `.$defaultFn()`                    |                                   |
+| `createdAt2` (`createdAt`)                | `text`      | NOT NULL        | `.$defaultFn()`                    |                                   |
+| `createdAt` (`created_at`)                | `timestamp` | NULL            | `.defaultNow()`                    |                                   |
+| `twoFactorEnabled` (`two_factor_enabled`) | `boolean`   | NULL            |                                    | Auth                              |
+| `email`                                   | `text`      | UNIQUE NOT NULL |                                    |                                   |
+| `emailVerified` (`email_verified`)        | `boolean`   | NOT NULL        |                                    |                                   |
+| `image`                                   | `text`      | NULL            |                                    |                                   |
+| `banned`                                  | `boolean`   | NULL            |                                    |                                   |
+| `banReason` (`ban_reason`)                | `text`      | NULL            |                                    |                                   |
+| `banExpires` (`ban_expires`)              | `timestamp` | NULL            |                                    |                                   |
+| `updatedAt` (`updated_at`)                | `timestamp` | NOT NULL        |                                    |                                   |
+| `role`                                    | `text`      | NOT NULL        | `.default("user")`                 | Admin                             |
+| `enablePaidFeatures`                      | `boolean`   | NOT NULL        | `.default(false)`                  | Metrics                           |
+| `allowImpersonation`                      | `boolean`   | NOT NULL        | `.default(false)`                  |                                   |
+| `enableEnterpriseFeatures`                | `boolean`   | NOT NULL        | `.default(false)`                  | Enterprise / proprietary features |
+| `licenseKey`                              | `text`      | NULL            |                                    |                                   |
+| `isValidEnterpriseLicense`                | `boolean`   | NOT NULL        | `.default(false)`                  |                                   |
+| `stripeCustomerId`                        | `text`      | NULL            |                                    |                                   |
+| `stripeSubscriptionId`                    | `text`      | NULL            |                                    |                                   |
+| `serversQuantity`                         | `integer`   | NOT NULL        | `.default(0)`                      |                                   |
+| `sendInvoiceNotifications`                | `boolean`   | NOT NULL        | `.default(false)`                  |                                   |
+| `isEnterpriseCloud`                       | `boolean`   | NOT NULL        | `.default(false)`                  |                                   |
+| `trustedOrigins`                          | `text[]`    | NULL            |                                    |                                   |
+| `bookmarkedTemplates`                     | `text[]`    | NULL            | ``.default(sql`ARRAY[]::text[]`)`` |                                   |
+| `onboardingCompletedAt`                   | `timestamp` | NULL            |                                    |                                   |
+| `onboardingStep`                          | `text`      | NULL            |                                    |                                   |
+| `onboardingReturnEmails`                  | `integer`   | NOT NULL        | `.default(0)`                      |                                   |
+| `trialPlanPromptSubscriptionId`           | `text`      | NULL            |                                    |                                   |
+| `serverSetupFailedEmailAt`                | `timestamp` | NULL            |                                    |                                   |
+| `serverConnectFailure`                    | `text`      | NULL            |                                    |                                   |
 
 #### Definition
 
@@ -11528,10 +11514,6 @@ CREATE TABLE "user" (
 	"serverConnectFailure" text
 );
 ```
-
-#### References
-
-- `id` → [account.userId](#table-account) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -11940,7 +11922,7 @@ db.insert(volumeBackups).values({
 ```sql
 insert into "volume_backup" ("volumeBackupId", "name", "volumeName", "prefix", "serviceType", "appName", "serviceName", "turnOff", "cronExpression", "keepLatestCount", "enabled", "applicationId", "postgresId", "mariadbId", "mongoId", "mysqlId", "redisId", "libsqlId", "composeId", "createdAt", "destinationId")
 values ($1, $2, $3, $4, default, $5, default, default, $6, default, default, default, default, default, default, default, default, default, default, $7, $8)
--- params: ["uuuuuuuuuuuuuuuuuuuuu","name","volumeName","prefix","volumeBackup-copy-wireless-bus-aaaaaa","cronExpression","2026-01-01T00:00:00.000Z","destinationId"]
+-- params: ["uuuuuuuuuuuuuuuuuuuuu","name","volumeName","prefix","volumeBackup-parse-haptic-firewall-aaaaaa","cronExpression","2026-01-01T00:00:00.000Z","destinationId"]
 ```
 
 **Update**: Changes a row of volumeBackups, found by its primary key.

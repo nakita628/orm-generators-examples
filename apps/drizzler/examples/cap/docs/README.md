@@ -3103,7 +3103,7 @@ where `folders`.`id` = ?
 
 | Column                 | Type        | Constraints                                                 | Default                              | Description |
 | ---------------------- | ----------- | ----------------------------------------------------------- | ------------------------------------ | ----------- |
-| `id`                   | `varchar`   | PK NOT NULL → [videoEdits.videoId](#table-videoEdits)       |                                      |             |
+| `id`                   | `varchar`   | PK NOT NULL                                                 |                                      |             |
 | `ownerId`              | `varchar`   | NOT NULL → [users.id](#table-users)                         |                                      |             |
 | `orgId`                | `varchar`   | NOT NULL                                                    |                                      |             |
 | `name`                 | `varchar`   | NOT NULL                                                    | `.default("My Video")`               |             |
@@ -3211,7 +3211,6 @@ ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integra
 
 - `storageIntegrationId` → [storageIntegrations.id](#table-storageIntegrations) (many to one, on delete restrict)
 - `ownerId` → [users.id](#table-users) (many to one, defineRelations, no foreign key)
-- `id` → [videoEdits.videoId](#table-videoEdits) (one to one, defineRelations, no foreign key)
 - `folderId` → [folders.id](#table-folders) (many to one, defineRelations, no foreign key)
 
 #### Referenced by
@@ -3345,10 +3344,6 @@ ALTER TABLE `video_edits` ADD CONSTRAINT `video_edits_videoId_videos_id_fkey` FO
 #### References
 
 - `videoId` → [videos.id](#table-videos) (one to one, on delete cascade)
-
-#### Referenced by
-
-- `videoId` → [videos.id](#table-videos) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -5030,7 +5025,7 @@ ALTER TABLE `storage_objects` ADD CONSTRAINT `storage_objects_integrationId_stor
 
 - UNIQUE `integrationId`, `objectKeyHash`
 - INDEX `integrationId`, `uploadStatus`
-- INDEX `integrationId`
+- INDEX `integrationId`, `objectKey`
 - INDEX `videoId`
 - INDEX `ownerId`
 
@@ -7954,16 +7949,16 @@ Table `developer_apps`.
 
 ![developerApps and the tables it relates to](tables/developerApps.svg)
 
-| Column        | Type        | Constraints                                                                   | Default         | Description |
-| ------------- | ----------- | ----------------------------------------------------------------------------- | --------------- | ----------- |
-| `id`          | `varchar`   | PK NOT NULL → [developerCreditAccounts.appId](#table-developerCreditAccounts) |                 |             |
-| `ownerId`     | `varchar`   | NOT NULL → [users.id](#table-users)                                           |                 |             |
-| `name`        | `varchar`   | NOT NULL                                                                      |                 |             |
-| `environment` | `varchar`   | NOT NULL                                                                      |                 |             |
-| `logoUrl`     | `varchar`   | NULL                                                                          |                 |             |
-| `deletedAt`   | `timestamp` | NULL                                                                          |                 |             |
-| `createdAt`   | `timestamp` | NOT NULL                                                                      | `.defaultNow()` |             |
-| `updatedAt`   | `timestamp` | NOT NULL                                                                      | `.defaultNow()` |             |
+| Column        | Type        | Constraints                         | Default         | Description |
+| ------------- | ----------- | ----------------------------------- | --------------- | ----------- |
+| `id`          | `varchar`   | PK NOT NULL                         |                 |             |
+| `ownerId`     | `varchar`   | NOT NULL → [users.id](#table-users) |                 |             |
+| `name`        | `varchar`   | NOT NULL                            |                 |             |
+| `environment` | `varchar`   | NOT NULL                            |                 |             |
+| `logoUrl`     | `varchar`   | NULL                                |                 |             |
+| `deletedAt`   | `timestamp` | NULL                                |                 |             |
+| `createdAt`   | `timestamp` | NOT NULL                            | `.defaultNow()` |             |
+| `updatedAt`   | `timestamp` | NOT NULL                            | `.defaultNow()` |             |
 
 #### Definition
 
@@ -7989,7 +7984,6 @@ CREATE INDEX `owner_deleted_idx` ON `developer_apps` (`ownerId`,`deletedAt`);
 #### References
 
 - `ownerId` → [users.id](#table-users) (many to one, defineRelations, no foreign key)
-- `id` → [developerCreditAccounts.appId](#table-developerCreditAccounts) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -8812,7 +8806,6 @@ ALTER TABLE `developer_credit_accounts` ADD CONSTRAINT `developer_credit_account
 #### Referenced by
 
 - `id` → [developerCreditTransactions.accountId](#table-developerCreditTransactions) (one to many)
-- `appId` → [developerApps.id](#table-developerApps) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>

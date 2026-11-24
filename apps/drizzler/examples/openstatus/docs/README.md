@@ -2607,6 +2607,8 @@ CREATE INDEX `page_workspace_id_idx` ON `page` (`workspace_id`);
 
 #### Indexes
 
+- INDEX `slug`
+- INDEX `customDomain`
 - INDEX `workspaceId`
 
 #### References
@@ -2979,8 +2981,8 @@ CREATE UNIQUE INDEX `idx_page_subscriber_slack_channel_page_active` ON `page_sub
 #### Indexes
 
 - INDEX `pageId`
-- UNIQUE `pageId`
-- UNIQUE `pageId`
+- UNIQUE `email`, `pageId`
+- UNIQUE `webhookUrl`, `pageId`
 - UNIQUE `slackChannelId`, `pageId`
 
 #### References

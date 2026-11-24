@@ -938,7 +938,7 @@ Table "auth.users" {
     (reauthentication_token) [unique, name: 'reauthentication_token_idx']
     (recovery_token) [unique, name: 'recovery_token_idx']
     (email) [unique, name: 'users_email_partial_key']
-    (instance_id) [name: 'users_instance_id_email_idx']
+    `instance_id, lower((email)::text)` [name: 'users_instance_id_email_idx']
     (instance_id) [name: 'users_instance_id_idx']
     (is_anonymous) [name: 'users_is_anonymous_idx']
   }
@@ -1162,197 +1162,197 @@ Table insight_user_status {
   Note: 'Per-user insight interaction tracking (read/dismiss state)'
 }
 
-Ref transactions_assigned_id_users_id_fk: transactions.assigned_id > users.id [delete: set null]
+Ref public_transactions_assigned_id_fkey: transactions.assigned_id > users.id [delete: set null]
 
-Ref transactions_team_id_teams_id_fk: transactions.team_id > teams.id
+Ref public_transactions_team_id_fkey: transactions.team_id > teams.id [delete: cascade]
 
-Ref transactions_bank_account_id_bank_accounts_id_fk: transactions.bank_account_id > bank_accounts.id [delete: cascade]
+Ref transactions_bank_account_id_fkey: transactions.bank_account_id > bank_accounts.id [delete: cascade]
 
-Ref transactions_team_id_category_slug_transaction_categories_team_id_slug_fk: transactions.(team_id, category_slug) > transaction_categories.(team_id, slug)
+Ref transactions_category_slug_team_id_fkey: transactions.(team_id, category_slug) > transaction_categories.(team_id, slug)
 
-Ref tracker_entries_assigned_id_users_id_fk: tracker_entries.assigned_id > users.id [delete: set null]
+Ref tracker_entries_assigned_id_fkey: tracker_entries.assigned_id > users.id [delete: set null]
 
-Ref tracker_entries_project_id_tracker_projects_id_fk: tracker_entries.project_id > tracker_projects.id [delete: cascade]
+Ref tracker_entries_project_id_fkey: tracker_entries.project_id > tracker_projects.id [delete: cascade]
 
-Ref tracker_entries_team_id_teams_id_fk: tracker_entries.team_id > teams.id [delete: cascade]
+Ref tracker_entries_team_id_fkey: tracker_entries.team_id > teams.id [delete: cascade]
 
-Ref customer_tags_customer_id_customers_id_fk: customer_tags.customer_id > customers.id [delete: cascade]
+Ref customer_tags_customer_id_fkey: customer_tags.customer_id > customers.id [delete: cascade]
 
-Ref customer_tags_tag_id_tags_id_fk: customer_tags.tag_id > tags.id [delete: cascade]
+Ref customer_tags_tag_id_fkey: customer_tags.tag_id > tags.id [delete: cascade]
 
-Ref customer_tags_team_id_teams_id_fk: customer_tags.team_id > teams.id [delete: cascade]
+Ref customer_tags_team_id_fkey: customer_tags.team_id > teams.id [delete: cascade]
 
-Ref inbox_accounts_team_id_teams_id_fk: inbox_accounts.team_id > teams.id [delete: cascade]
+Ref inbox_accounts_team_id_fkey: inbox_accounts.team_id > teams.id [delete: cascade]
 
-Ref bank_accounts_bank_connection_id_bank_connections_id_fk: bank_accounts.bank_connection_id > bank_connections.id [delete: cascade]
+Ref bank_accounts_bank_connection_id_fkey: bank_accounts.bank_connection_id > bank_connections.id [delete: cascade]
 
-Ref bank_accounts_created_by_users_id_fk: bank_accounts.created_by > users.id [delete: cascade]
+Ref bank_accounts_created_by_fkey: bank_accounts.created_by > users.id [delete: cascade]
 
-Ref bank_accounts_team_id_teams_id_fk: bank_accounts.team_id > teams.id [delete: cascade]
+Ref public_bank_accounts_team_id_fkey: bank_accounts.team_id > teams.id [delete: cascade]
 
-Ref invoice_recurring_team_id_teams_id_fk: invoice_recurring.team_id > teams.id [delete: cascade]
+Ref invoice_recurring_team_id_fkey: invoice_recurring.team_id > teams.id [delete: cascade]
 
-Ref invoice_recurring_user_id_users_id_fk: invoice_recurring.user_id > users.id [delete: cascade]
+Ref invoice_recurring_user_id_fkey: invoice_recurring.user_id > users.id [delete: cascade]
 
-Ref invoice_recurring_customer_id_customers_id_fk: invoice_recurring.customer_id > customers.id [delete: set null]
+Ref invoice_recurring_customer_id_fkey: invoice_recurring.customer_id > customers.id [delete: set null]
 
-Ref invoice_recurring_template_id_invoice_templates_id_fk: invoice_recurring.template_id > invoice_templates.id [delete: set null]
+Ref invoice_recurring_template_id_fkey: invoice_recurring.template_id > invoice_templates.id [delete: set null]
 
-Ref invoices_user_id_users_id_fk: invoices.user_id > users.id [delete: cascade]
+Ref invoices_created_by_fkey: invoices.user_id > users.id [delete: cascade]
 
-Ref invoices_customer_id_customers_id_fk: invoices.customer_id > customers.id [delete: set null]
+Ref invoices_customer_id_fkey: invoices.customer_id > customers.id [delete: set null]
 
-Ref invoices_team_id_teams_id_fk: invoices.team_id > teams.id [delete: cascade]
+Ref invoices_team_id_fkey: invoices.team_id > teams.id [delete: cascade]
 
-Ref invoices_template_id_invoice_templates_id_fk: invoices.template_id > invoice_templates.id [delete: set null]
+Ref invoices_template_id_fkey: invoices.template_id > invoice_templates.id [delete: set null]
 
-Ref invoices_invoice_recurring_id_invoice_recurring_id_fk: invoices.invoice_recurring_id > invoice_recurring.id [delete: set null]
+Ref invoices_invoice_recurring_id_fkey: invoices.invoice_recurring_id > invoice_recurring.id [delete: set null]
 
-Ref customers_team_id_teams_id_fk: customers.team_id > teams.id [delete: cascade]
+Ref customers_team_id_fkey: customers.team_id > teams.id [delete: cascade]
 
-Ref tags_team_id_teams_id_fk: tags.team_id > teams.id [delete: cascade]
+Ref tags_team_id_fkey: tags.team_id > teams.id [delete: cascade]
 
-Ref tracker_reports_created_by_users_id_fk: tracker_reports.created_by > users.id [delete: cascade]
+Ref public_tracker_reports_created_by_fkey: tracker_reports.created_by > users.id [delete: cascade]
 
-Ref tracker_reports_project_id_tracker_projects_id_fk: tracker_reports.project_id > tracker_projects.id [delete: cascade, update: cascade]
+Ref public_tracker_reports_project_id_fkey: tracker_reports.project_id > tracker_projects.id [delete: cascade, update: cascade]
 
-Ref tracker_reports_team_id_teams_id_fk: tracker_reports.team_id > teams.id [delete: cascade, update: cascade]
+Ref tracker_reports_team_id_fkey: tracker_reports.team_id > teams.id [delete: cascade, update: cascade]
 
-Ref tracker_project_tags_tag_id_tags_id_fk: tracker_project_tags.tag_id > tags.id [delete: cascade]
+Ref project_tags_tag_id_fkey: tracker_project_tags.tag_id > tags.id [delete: cascade]
 
-Ref tracker_project_tags_tracker_project_id_tracker_projects_id_fk: tracker_project_tags.tracker_project_id > tracker_projects.id [delete: cascade]
+Ref project_tags_tracker_project_id_fkey: tracker_project_tags.tracker_project_id > tracker_projects.id [delete: cascade]
 
-Ref tracker_project_tags_team_id_teams_id_fk: tracker_project_tags.team_id > teams.id [delete: cascade]
+Ref tracker_project_tags_team_id_fkey: tracker_project_tags.team_id > teams.id [delete: cascade]
 
-Ref reports_created_by_users_id_fk: reports.created_by > users.id [delete: cascade]
+Ref public_reports_created_by_fkey: reports.created_by > users.id [delete: cascade]
 
-Ref reports_team_id_teams_id_fk: reports.team_id > teams.id [delete: cascade]
+Ref reports_team_id_fkey: reports.team_id > teams.id [delete: cascade]
 
-Ref bank_connections_team_id_teams_id_fk: bank_connections.team_id > teams.id [delete: cascade]
+Ref bank_connections_team_id_fkey: bank_connections.team_id > teams.id [delete: cascade]
 
-Ref user_invites_team_id_teams_id_fk: user_invites.team_id > teams.id [delete: cascade]
+Ref public_user_invites_team_id_fkey: user_invites.team_id > teams.id [delete: cascade]
 
-Ref user_invites_invited_by_users_id_fk: user_invites.invited_by > users.id [delete: cascade]
+Ref user_invites_invited_by_fkey: user_invites.invited_by > users.id [delete: cascade]
 
-Ref document_tags_team_id_teams_id_fk: document_tags.team_id > teams.id [delete: cascade]
+Ref document_tags_team_id_fkey: document_tags.team_id > teams.id [delete: cascade]
 
-Ref transaction_tags_tag_id_tags_id_fk: transaction_tags.tag_id > tags.id [delete: cascade]
+Ref transaction_tags_tag_id_fkey: transaction_tags.tag_id > tags.id [delete: cascade]
 
-Ref transaction_tags_team_id_teams_id_fk: transaction_tags.team_id > teams.id [delete: cascade]
+Ref transaction_tags_team_id_fkey: transaction_tags.team_id > teams.id [delete: cascade]
 
-Ref transaction_tags_transaction_id_transactions_id_fk: transaction_tags.transaction_id > transactions.id [delete: cascade]
+Ref transaction_tags_transaction_id_fkey: transaction_tags.transaction_id > transactions.id [delete: cascade]
 
-Ref transaction_attachments_team_id_teams_id_fk: transaction_attachments.team_id > teams.id [delete: cascade]
+Ref public_transaction_attachments_team_id_fkey: transaction_attachments.team_id > teams.id [delete: cascade]
 
-Ref transaction_attachments_transaction_id_transactions_id_fk: transaction_attachments.transaction_id > transactions.id [delete: set null]
+Ref public_transaction_attachments_transaction_id_fkey: transaction_attachments.transaction_id > transactions.id [delete: set null]
 
-Ref documents_owner_id_users_id_fk: documents.owner_id > users.id [delete: set null]
+Ref documents_created_by_fkey: documents.owner_id > users.id [delete: set null]
 
-Ref documents_team_id_teams_id_fk: documents.team_id > teams.id [delete: cascade]
+Ref storage_team_id_fkey: documents.team_id > teams.id [delete: cascade]
 
-Ref apps_created_by_users_id_fk: apps.created_by > users.id [delete: cascade]
+Ref apps_created_by_fkey: apps.created_by > users.id [delete: cascade]
 
-Ref apps_team_id_teams_id_fk: apps.team_id > teams.id [delete: cascade]
+Ref integrations_team_id_fkey: apps.team_id > teams.id [delete: cascade]
 
-Ref platform_identities_team_id_teams_id_fk: platform_identities.team_id > teams.id [delete: cascade]
+Ref platform_identities_team_id_fkey: platform_identities.team_id > teams.id [delete: cascade]
 
-Ref platform_identities_user_id_users_id_fk: platform_identities.user_id > users.id [delete: cascade]
+Ref platform_identities_user_id_fkey: platform_identities.user_id > users.id [delete: cascade]
 
-Ref platform_link_tokens_team_id_teams_id_fk: platform_link_tokens.team_id > teams.id [delete: cascade]
+Ref platform_link_tokens_team_id_fkey: platform_link_tokens.team_id > teams.id [delete: cascade]
 
-Ref platform_link_tokens_user_id_users_id_fk: platform_link_tokens.user_id > users.id [delete: cascade]
+Ref platform_link_tokens_user_id_fkey: platform_link_tokens.user_id > users.id [delete: cascade]
 
-Ref provider_notification_batches_platform_identity_id_platform_identities_id_fk: provider_notification_batches.platform_identity_id > platform_identities.id [delete: cascade]
+Ref provider_notification_batches_identity_id_fkey: provider_notification_batches.platform_identity_id > platform_identities.id [delete: cascade]
 
-Ref provider_notification_batches_team_id_teams_id_fk: provider_notification_batches.team_id > teams.id [delete: cascade]
+Ref provider_notification_batches_team_id_fkey: provider_notification_batches.team_id > teams.id [delete: cascade]
 
-Ref provider_notification_batches_user_id_users_id_fk: provider_notification_batches.user_id > users.id [delete: cascade]
+Ref provider_notification_batches_user_id_fkey: provider_notification_batches.user_id > users.id [delete: cascade]
 
-Ref invoice_templates_team_id_teams_id_fk: invoice_templates.team_id > teams.id [delete: cascade]
+Ref invoice_settings_team_id_fkey: invoice_templates.team_id > teams.id [delete: cascade]
 
-Ref invoice_products_team_id_teams_id_fk: invoice_products.team_id > teams.id [delete: cascade]
+Ref invoice_products_team_id_fkey: invoice_products.team_id > teams.id [delete: cascade]
 
-Ref invoice_products_created_by_users_id_fk: invoice_products.created_by > users.id [delete: set null]
+Ref invoice_products_created_by_fkey: invoice_products.created_by > users.id [delete: set null]
 
-Ref transaction_enrichments_team_id_category_slug_transaction_categories_team_id_slug_fk: transaction_enrichments.(team_id, category_slug) > transaction_categories.(team_id, slug) [delete: cascade]
+Ref transaction_enrichments_category_slug_team_id_fkey: transaction_enrichments.(team_id, category_slug) > transaction_categories.(team_id, slug) [delete: cascade]
 
-Ref transaction_enrichments_team_id_teams_id_fk: transaction_enrichments.team_id > teams.id [delete: cascade]
+Ref transaction_enrichments_team_id_fkey: transaction_enrichments.team_id > teams.id [delete: cascade]
 
-// Ref users_id_users_id_fk: users.id - users.id [delete: cascade] (a key from a column to itself, which DBML cannot express)
+// Ref users_id_fkey: users.id - users.id [delete: cascade] (a key from a column to itself, which DBML cannot express)
 
-Ref users_team_id_teams_id_fk: users.team_id > teams.id [delete: set null]
+Ref users_team_id_fkey: users.team_id > teams.id [delete: set null]
 
-Ref tracker_projects_customer_id_customers_id_fk: tracker_projects.customer_id > customers.id [delete: cascade]
+Ref tracker_projects_customer_id_fkey: tracker_projects.customer_id > customers.id [delete: cascade]
 
-Ref tracker_projects_team_id_teams_id_fk: tracker_projects.team_id > teams.id [delete: cascade]
+Ref tracker_projects_team_id_fkey: tracker_projects.team_id > teams.id [delete: cascade]
 
-Ref inbox_attachment_id_transaction_attachments_id_fk: inbox.attachment_id > transaction_attachments.id [delete: set null]
+Ref inbox_attachment_id_fkey: inbox.attachment_id > transaction_attachments.id [delete: set null]
 
-Ref inbox_team_id_teams_id_fk: inbox.team_id > teams.id [delete: cascade]
+Ref public_inbox_team_id_fkey: inbox.team_id > teams.id [delete: cascade]
 
-Ref inbox_transaction_id_transactions_id_fk: inbox.transaction_id > transactions.id [delete: set null]
+Ref public_inbox_transaction_id_fkey: inbox.transaction_id > transactions.id [delete: set null]
 
-Ref inbox_inbox_account_id_inbox_accounts_id_fk: inbox.inbox_account_id > inbox_accounts.id [delete: set null]
+Ref inbox_inbox_account_id_fkey: inbox.inbox_account_id > inbox_accounts.id [delete: set null]
 
-Ref inbox_blocklist_team_id_teams_id_fk: inbox_blocklist.team_id > teams.id [delete: cascade]
+Ref inbox_blocklist_team_id_fkey: inbox_blocklist.team_id > teams.id [delete: cascade]
 
-Ref transaction_match_suggestions_inbox_id_inbox_id_fk: transaction_match_suggestions.inbox_id > inbox.id [delete: cascade]
+Ref transaction_match_suggestions_inbox_id_fkey: transaction_match_suggestions.inbox_id > inbox.id [delete: cascade]
 
-Ref transaction_match_suggestions_transaction_id_transactions_id_fk: transaction_match_suggestions.transaction_id > transactions.id [delete: cascade]
+Ref transaction_match_suggestions_transaction_id_fkey: transaction_match_suggestions.transaction_id > transactions.id [delete: cascade]
 
-Ref transaction_match_suggestions_team_id_teams_id_fk: transaction_match_suggestions.team_id > teams.id [delete: cascade]
+Ref transaction_match_suggestions_team_id_fkey: transaction_match_suggestions.team_id > teams.id [delete: cascade]
 
-Ref transaction_match_suggestions_user_id_users_id_fk: transaction_match_suggestions.user_id > users.id [delete: set null]
+Ref transaction_match_suggestions_user_id_fkey: transaction_match_suggestions.user_id > users.id [delete: set null]
 
-Ref document_tag_assignments_document_id_documents_id_fk: document_tag_assignments.document_id > documents.id [delete: cascade]
+Ref document_tag_assignments_document_id_fkey: document_tag_assignments.document_id > documents.id [delete: cascade]
 
-Ref document_tag_assignments_tag_id_document_tags_id_fk: document_tag_assignments.tag_id > document_tags.id [delete: cascade]
+Ref document_tag_assignments_tag_id_fkey: document_tag_assignments.tag_id > document_tags.id [delete: cascade]
 
-Ref document_tag_assignments_team_id_teams_id_fk: document_tag_assignments.team_id > teams.id [delete: cascade]
+Ref document_tag_assignments_team_id_fkey: document_tag_assignments.team_id > teams.id [delete: cascade]
 
-Ref users_on_team_team_id_teams_id_fk: users_on_team.team_id > teams.id [delete: cascade, update: cascade]
+Ref users_on_team_team_id_fkey: users_on_team.team_id > teams.id [delete: cascade, update: cascade]
 
-Ref users_on_team_user_id_users_id_fk: users_on_team.user_id > users.id [delete: cascade]
+Ref users_on_team_user_id_fkey: users_on_team.user_id > users.id [delete: cascade]
 
-Ref transaction_categories_team_id_teams_id_fk: transaction_categories.team_id > teams.id [delete: cascade]
+Ref transaction_categories_team_id_fkey: transaction_categories.team_id > teams.id [delete: cascade]
 
-Ref transaction_categories_parent_id_transaction_categories_id_fk: transaction_categories.parent_id > transaction_categories.id [delete: set null]
+Ref transaction_categories_parent_id_fkey: transaction_categories.parent_id > transaction_categories.id [delete: set null]
 
-Ref short_links_user_id_users_id_fk: short_links.user_id > users.id [delete: cascade]
+Ref short_links_user_id_fkey: short_links.user_id > users.id [delete: cascade]
 
-Ref short_links_team_id_teams_id_fk: short_links.team_id > teams.id [delete: cascade]
+Ref short_links_team_id_fkey: short_links.team_id > teams.id [delete: cascade]
 
-Ref api_keys_user_id_users_id_fk: api_keys.user_id > users.id [delete: cascade]
+Ref api_keys_user_id_fkey: api_keys.user_id > users.id [delete: cascade]
 
-Ref api_keys_team_id_teams_id_fk: api_keys.team_id > teams.id [delete: cascade]
+Ref api_keys_team_id_fkey: api_keys.team_id > teams.id [delete: cascade]
 
-Ref oauth_applications_team_id_teams_id_fk: oauth_applications.team_id > teams.id [delete: cascade]
+Ref oauth_applications_team_id_fkey: oauth_applications.team_id > teams.id [delete: cascade]
 
-Ref oauth_applications_created_by_users_id_fk: oauth_applications.created_by > users.id [delete: cascade]
+Ref oauth_applications_created_by_fkey: oauth_applications.created_by > users.id [delete: cascade]
 
-Ref oauth_authorization_codes_application_id_oauth_applications_id_fk: oauth_authorization_codes.application_id > oauth_applications.id [delete: cascade]
+Ref oauth_authorization_codes_application_id_fkey: oauth_authorization_codes.application_id > oauth_applications.id [delete: cascade]
 
-Ref oauth_authorization_codes_user_id_users_id_fk: oauth_authorization_codes.user_id > users.id [delete: cascade]
+Ref oauth_authorization_codes_user_id_fkey: oauth_authorization_codes.user_id > users.id [delete: cascade]
 
-Ref oauth_authorization_codes_team_id_teams_id_fk: oauth_authorization_codes.team_id > teams.id [delete: cascade]
+Ref oauth_authorization_codes_team_id_fkey: oauth_authorization_codes.team_id > teams.id [delete: cascade]
 
-Ref oauth_access_tokens_application_id_oauth_applications_id_fk: oauth_access_tokens.application_id > oauth_applications.id [delete: cascade]
+Ref oauth_access_tokens_application_id_fkey: oauth_access_tokens.application_id > oauth_applications.id [delete: cascade]
 
-Ref oauth_access_tokens_user_id_users_id_fk: oauth_access_tokens.user_id > users.id [delete: cascade]
+Ref oauth_access_tokens_user_id_fkey: oauth_access_tokens.user_id > users.id [delete: cascade]
 
-Ref oauth_access_tokens_team_id_teams_id_fk: oauth_access_tokens.team_id > teams.id [delete: cascade]
+Ref oauth_access_tokens_team_id_fkey: oauth_access_tokens.team_id > teams.id [delete: cascade]
 
-Ref activities_team_id_teams_id_fk: activities.team_id > teams.id [delete: cascade]
+Ref activities_team_id_fkey: activities.team_id > teams.id [delete: cascade]
 
-Ref activities_user_id_users_id_fk: activities.user_id > users.id [delete: set null]
+Ref activities_user_id_fkey: activities.user_id > users.id [delete: set null]
 
-Ref notification_settings_user_id_users_id_fk: notification_settings.user_id > users.id [delete: cascade]
+Ref notification_settings_user_id_fkey: notification_settings.user_id > users.id [delete: cascade]
 
-Ref notification_settings_team_id_teams_id_fk: notification_settings.team_id > teams.id [delete: cascade]
+Ref notification_settings_team_id_fkey: notification_settings.team_id > teams.id [delete: cascade]
 
-Ref accounting_sync_records_transaction_id_transactions_id_fk: accounting_sync_records.transaction_id > transactions.id [delete: cascade]
+Ref accounting_sync_records_transaction_id_fkey: accounting_sync_records.transaction_id > transactions.id [delete: cascade]
 
-Ref accounting_sync_records_team_id_teams_id_fk: accounting_sync_records.team_id > teams.id [delete: cascade]
+Ref accounting_sync_records_team_id_fkey: accounting_sync_records.team_id > teams.id [delete: cascade]
 
 Ref insights_team_id_teams_id_fk: insights.team_id > teams.id [delete: cascade]
 
@@ -1362,6 +1362,6 @@ Ref insight_user_status_user_id_users_id_fk: insight_user_status.user_id > users
 
 Ref transactions_team_id_transaction_categories_team_id: transactions.team_id > transaction_categories.team_id
 
-Ref "users_id_auth.users_id": users.id - "auth.users".id [delete: cascade]
+Ref "users_id_auth.users_id": users.id - "auth.users".id
 
-Ref transaction_enrichments_team_id_transaction_categories_team_id: transaction_enrichments.team_id > transaction_categories.team_id [delete: cascade]
+Ref transaction_enrichments_team_id_transaction_categories_team_id: transaction_enrichments.team_id > transaction_categories.team_id

@@ -98,14 +98,14 @@ Table `user`.
 
 ![users and the tables it relates to](tables/users.svg)
 
-| Column                     | Type      | Constraints                                        | Default                                    | Description |
-| -------------------------- | --------- | -------------------------------------------------- | ------------------------------------------ | ----------- |
-| `id`                       | `text`    | PK NOT NULL → [userLinks.userId](#table-userLinks) |                                            |             |
-| `name`                     | `text`    | NULL                                               |                                            |             |
-| `email`                    | `text`    | NOT NULL                                           |                                            |             |
-| `emailVerified`            | `integer` | NULL                                               |                                            |             |
-| `image`                    | `text`    | NULL                                               |                                            |             |
-| `createdAt` (`created_at`) | `integer` | NOT NULL                                           | ``.default(sql`(strftime('%s', 'now'))`)`` |             |
+| Column                     | Type      | Constraints | Default                                    | Description |
+| -------------------------- | --------- | ----------- | ------------------------------------------ | ----------- |
+| `id`                       | `text`    | PK NOT NULL |                                            |             |
+| `name`                     | `text`    | NULL        |                                            |             |
+| `email`                    | `text`    | NOT NULL    |                                            |             |
+| `emailVerified`            | `integer` | NULL        |                                            |             |
+| `image`                    | `text`    | NULL        |                                            |             |
+| `createdAt` (`created_at`) | `integer` | NOT NULL    | ``.default(sql`(strftime('%s', 'now'))`)`` |             |
 
 #### Definition
 
@@ -119,10 +119,6 @@ CREATE TABLE `user` (
 	`created_at` integer DEFAULT (strftime('%s', 'now')) NOT NULL
 );
 ```
-
-#### References
-
-- `id` → [userLinks.userId](#table-userLinks) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -668,7 +664,6 @@ CREATE UNIQUE INDEX `userLinks_userId_idx` ON `userLink` (`userId`);
 #### Referenced by
 
 - `id` → [links.userLinkId](#table-links) (one to many, on delete cascade)
-- `userId` → [users.id](#table-users) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -729,7 +724,7 @@ db.insert(userLinks).values({});
 ```sql
 insert into "userLink" ("id", "userId", "total_links", "created_at")
 values (?, null, ?, (strftime('%s', 'now')))
--- params: ["n6dv3qvgc1zckfeijvb9tv6p",0]
+-- params: ["njp6z9meub2mh3bue1aynkim",0]
 ```
 
 **Update**: Changes a row of userLinks, found by its primary key.

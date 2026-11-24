@@ -13,7 +13,7 @@ erDiagram
     mail0_connection ||--o{ mail0_summary : "(id) - (connection_id)"
     mail0_user ||--o{ mail0_note : "(id) - (user_id)"
     mail0_user ||--o| mail0_user_settings : "(id) - (user_id)"
-    mail0_connection ||--o{ mail0_writing_style_matrix : "(id) - (connectionId)"
+    mail0_connection ||--o| mail0_writing_style_matrix : "(id) - (connectionId)"
     mail0_user ||--o{ mail0_email_template : "(id) - (user_id)"
     mail0_user {
         text id PK
@@ -177,7 +177,7 @@ erDiagram
         timestamp updated_at
     }
     mail0_writing_style_matrix {
-        text connectionId FK
+        text connectionId PK, FK
         integer numMessages
         jsonb style "TODO: way too much pain to get this type to work, revisit later"
         timestamp updatedAt

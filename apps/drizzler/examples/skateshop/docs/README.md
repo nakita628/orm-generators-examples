@@ -1406,7 +1406,7 @@ ALTER TABLE "stocks" ADD CONSTRAINT "stocks_product_variant_id_product_variants_
 #### References
 
 - `productVariantId` → [productVariants.id](#table-productVariants) (many to one, on delete cascade)
-- `productVariantId` → [productVariantValues.productVariantId](#table-productVariantValues) (many to one, on delete cascade, defineRelations, no foreign key)
+- `productVariantId` → [productVariantValues.productVariantId](#table-productVariantValues) (many to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -2382,7 +2382,7 @@ ALTER TABLE "product_variant_values" ADD CONSTRAINT "product_variant_values_stoc
 
 #### Referenced by
 
-- `productVariantId` → [stocks.productVariantId](#table-stocks) (one to many, on delete cascade, defineRelations)
+- `productVariantId` → [stocks.productVariantId](#table-stocks) (one to many, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>

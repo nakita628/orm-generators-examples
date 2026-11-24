@@ -2300,7 +2300,7 @@ ALTER TABLE "transactions" ADD CONSTRAINT "transactions_category_slug_team_id_fk
 #### References
 
 - `assignedId` → [users.id](#table-users) (many to one, on delete set null)
-- `teamId` → [teams.id](#table-teams) (many to one)
+- `teamId` → [teams.id](#table-teams) (many to one, on delete cascade)
 - `bankAccountId` → [bankAccounts.id](#table-bankAccounts) (many to one, on delete cascade)
 - `teamId` → [transactionCategories.teamId](#table-transactionCategories) (many to one)
 - `teamId` → [transactionCategories.teamId](#table-transactionCategories) (many to one, defineRelations, no foreign key)
@@ -5595,7 +5595,7 @@ ALTER TABLE "teams" ENABLE ROW LEVEL SECURITY;
 
 #### Referenced by
 
-- `id` → [transactions.teamId](#table-transactions) (one to many)
+- `id` → [transactions.teamId](#table-transactions) (one to many, on delete cascade)
 - `id` → [trackerEntries.teamId](#table-trackerEntries) (one to many, on delete cascade)
 - `id` → [customerTags.teamId](#table-customerTags) (one to many, on delete cascade)
 - `id` → [inboxAccounts.teamId](#table-inboxAccounts) (one to many, on delete cascade)
@@ -7018,7 +7018,7 @@ ALTER TABLE "transaction_enrichments" ADD CONSTRAINT "transaction_enrichments_te
 
 - `teamId` → [transactionCategories.teamId](#table-transactionCategories) (many to one, on delete cascade)
 - `teamId` → [teams.id](#table-teams) (many to one, on delete cascade)
-- `teamId` → [transactionCategories.teamId](#table-transactionCategories) (many to one, on delete cascade, defineRelations, no foreign key)
+- `teamId` → [transactionCategories.teamId](#table-transactionCategories) (many to one, defineRelations, no foreign key)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -7170,7 +7170,7 @@ ALTER TABLE "users" ADD CONSTRAINT "users_team_id_fkey" FOREIGN KEY ("team_id") 
 
 - `id` → [users.id](#table-users) (one to one, on delete cascade)
 - `teamId` → [teams.id](#table-teams) (many to one, on delete set null)
-- `id` → [usersInAuth.id](#table-usersInAuth) (one to one, on delete cascade, defineRelations, no foreign key)
+- `id` → [usersInAuth.id](#table-usersInAuth) (one to one, defineRelations, no foreign key)
 
 #### Referenced by
 
@@ -8400,7 +8400,7 @@ ALTER TABLE "transaction_categories" ADD CONSTRAINT "transaction_categories_pare
 - `teamId` → [transactionEnrichments.teamId](#table-transactionEnrichments) (one to many, on delete cascade)
 - `id` → [transactionCategories.parentId](#table-transactionCategories) (one to many, on delete set null)
 - `teamId` → [transactions.teamId](#table-transactions) (one to many, defineRelations)
-- `teamId` → [transactionEnrichments.teamId](#table-transactionEnrichments) (one to many, on delete cascade, defineRelations)
+- `teamId` → [transactionEnrichments.teamId](#table-transactionEnrichments) (one to many, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -8619,7 +8619,7 @@ CREATE INDEX "users_is_anonymous_idx" ON "auth.users" ("is_anonymous");
 
 #### Referenced by
 
-- `id` → [users.id](#table-users) (one to one, on delete cascade, defineRelations)
+- `id` → [users.id](#table-users) (one to one, defineRelations)
 
 <details>
 <summary>Queries and their SQL</summary>

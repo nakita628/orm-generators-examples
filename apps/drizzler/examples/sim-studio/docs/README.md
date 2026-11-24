@@ -5323,6 +5323,11 @@ CREATE INDEX "user_email_lower_idx" ON "user" (lower(btrim("email")));
 CREATE INDEX "user_gmail_mailbox_idx" ON "user" ((CASE WHEN split_part(lower(btrim("email")), '@', 2) IN ('gmail.com', 'googlemail.com') THEN replace(split_part(split_part(lower(btrim("email")), '@', 1), '+', 1), '.', '') || '@gmail.com' END)) WHERE (CASE WHEN split_part(lower(btrim("email")), '@', 2) IN ('gmail.com', 'googlemail.com') THEN replace(split_part(split_part(lower(btrim("email")), '@', 1), '+', 1), '.', '') || '@gmail.com' END) IS NOT NULL;
 ```
 
+#### Indexes
+
+- INDEX `email`
+- INDEX `email`
+
 #### Referenced by
 
 - `id` → [session.userId](#table-session) (one to many, on delete cascade)
@@ -6056,13 +6061,13 @@ ALTER TABLE "folder" ADD CONSTRAINT "folder_project_parent_owner_fk" FOREIGN KEY
 - UNIQUE `id`, `workspaceId`, `resourceType`
 - UNIQUE `id`, `projectId`, `resourceType`
 - INDEX `projectId`, `id`
-- UNIQUE `projectId`, `resourceType`, `name`
+- UNIQUE `projectId`, `resourceType`, `parentId`, `name`
 - INDEX `userId`
 - INDEX `workspaceId`, `resourceType`, `parentId`
 - INDEX `parentId`, `sortOrder`
 - INDEX `deletedAt`
 - INDEX `workspaceId`, `deletedAt`
-- UNIQUE `workspaceId`, `resourceType`, `name`
+- UNIQUE `workspaceId`, `resourceType`, `parentId`, `name`
 
 #### References
 
@@ -6070,14 +6075,14 @@ ALTER TABLE "folder" ADD CONSTRAINT "folder_project_parent_owner_fk" FOREIGN KEY
 - `userId` → [user.id](#table-user) (many to one, on delete cascade)
 - `workspaceId` → [workspace.id](#table-workspace) (many to one, on delete cascade)
 - `parentId` → [folder.id](#table-folder) (many to one, on delete set null)
-- `parentId` → [folder.id](#table-folder) (many to one, on delete set null)
-- `parentId` → [folder.id](#table-folder) (many to one, on delete set null)
+- `parentId` → [folder.id](#table-folder) (many to one)
+- `parentId` → [folder.id](#table-folder) (many to one)
 
 #### Referenced by
 
 - `id` → [folder.parentId](#table-folder) (one to many, on delete set null)
-- `id` → [folder.parentId](#table-folder) (one to many, on delete set null)
-- `id` → [folder.parentId](#table-folder) (one to many, on delete set null)
+- `id` → [folder.parentId](#table-folder) (one to many)
+- `id` → [folder.parentId](#table-folder) (one to many)
 - `id` → [workflow.folderId](#table-workflow) (one to many, on delete set null)
 - `id` → [workspaceFiles.folderId](#table-workspaceFiles) (one to many, on delete set null)
 - `id` → [knowledgeBase.folderId](#table-knowledgeBase) (one to many, on delete set null)
@@ -6530,7 +6535,7 @@ ALTER TABLE "workflow" ADD CONSTRAINT "workflow_folder_id_folder_id_fkey" FOREIG
 
 - INDEX `workspaceId`
 - INDEX `userId`, `workspaceId`
-- UNIQUE `workspaceId`, `name`
+- UNIQUE `workspaceId`, `folderId`, `name`
 - INDEX `folderId`, `sortOrder`
 - INDEX `workspaceId`, `sortOrder`, `createdAt`, `id`
 - INDEX `archivedAt`
@@ -7481,10 +7486,10 @@ ALTER TABLE "workflow_execution_logs" ADD CONSTRAINT "workflow_execution_logs_wT
 - UNIQUE `executionId`
 - INDEX `workflowId`, `startedAt`
 - INDEX `workspaceId`, `startedAt`, `status`, `totalDurationMs`, `workflowId`, `trigger`, `level`
-- INDEX `workspaceId`
+- INDEX `workspaceId`, `startedAt`, `id`
 - INDEX `workspaceId`, `costTotal`
 - INDEX `modelsUsed`
-- INDEX `workspaceId`, `id`
+- INDEX `workspaceId`, `endedAt`, `id`
 - INDEX `startedAt`
 - INDEX `executionDeadlineAt`
 - INDEX `startedAt`
@@ -10106,7 +10111,7 @@ ALTER TABLE "job_execution_logs" ADD CONSTRAINT "job_execution_logs_workspace_id
 - UNIQUE `billingRequestId`
 - INDEX `startedAt`
 - INDEX `workspaceId`, `startedAt`
-- INDEX `workspaceId`, `id`
+- INDEX `workspaceId`, `endedAt`, `id`
 - UNIQUE `executionId`
 - INDEX `trigger`
 
@@ -14487,7 +14492,7 @@ where "invitation"."id" = $1
 | `ownerId` (`owner_id`)                                              | `text`                                         | NOT NULL → [user.id](#table-user)             |                                    | checks. The owner→admin derivation is redundant: every workspace owner already has an explicit `admin` row in `permissions` (verified across all production workspaces) and all creation paths add one. Retained only as the lifecycle anchor — `onDelete: 'cascade'` cleans up a user's workspaces on account deletion — and the ownership-transfer target when an owner is removed. For admin checks use explicit `permissions` rows; for the workspace's principal billing identity use `billedAccountUserId`. DO NOT DELETE. |
 | `organizationId` (`organization_id`)                                | `text`                                         | NULL → [organization.id](#table-organization) |                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `organizationScopeKey` (`organization_scope_key`)                   | `text`                                         | NULL                                          | `.generatedAlwaysAs()`             | Encodes nullable organization identity for the composite membership foreign key.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
-| `projectId`                                                         | `workspaceProjectIdColumn`                     | NULL → [project.id](#table-project)           |                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `projectId` (`project_id`)                                          | `text`                                         | NOT NULL → [project.id](#table-project)       |                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `workspaceMode` (`workspace_mode`)                                  | [`workspaceModeEnum`](#enum-workspaceModeEnum) | NOT NULL                                      | `.default('grandfathered_shared')` |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `billedAccountUserId` (`billed_account_user_id`)                    | `text`                                         | NOT NULL → [user.id](#table-user)             |                                    |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
 | `storageUsedBytes` (`storage_used_bytes`)                           | `bigint`                                       | NOT NULL                                      | `.default(0)`                      | Durable workspace-first storage ledger. Invariant: this non-negative total and the currently routed payer aggregate change atomically while the workspace row is locked. A payer identity change moves this entire total old payer -> new payer in the same transaction.                                                                                                                                                                                                                                                         |
@@ -14579,10 +14584,11 @@ ALTER TABLE "workspace" ADD CONSTRAINT "workspace_fork_project_fk" FOREIGN KEY (
 
 - `ownerId` → [user.id](#table-user) (many to one, on delete cascade)
 - `organizationId` → [organization.id](#table-organization) (many to one, on delete set null)
+- `projectId` → [project.id](#table-project) (many to one, on delete restrict)
 - `billedAccountUserId` → [user.id](#table-user) (many to one, on delete no action)
 - `forkedFromWorkspaceId` → [workspace.id](#table-workspace) (many to one, on delete set null)
 - `projectId` → [project.id](#table-project) (many to one)
-- `forkedFromWorkspaceId` → [workspace.id](#table-workspace) (many to one, on delete set null)
+- `forkedFromWorkspaceId` → [workspace.id](#table-workspace) (many to one)
 
 #### Referenced by
 
@@ -14603,7 +14609,7 @@ ALTER TABLE "workspace" ADD CONSTRAINT "workspace_fork_project_fk" FOREIGN KEY (
 - `id` → [customTools.workspaceId](#table-customTools) (one to many, on delete cascade)
 - `id` → [skill.workspaceId](#table-skill) (one to many, on delete cascade)
 - `id` → [workspace.forkedFromWorkspaceId](#table-workspace) (one to many, on delete set null)
-- `id` → [workspace.forkedFromWorkspaceId](#table-workspace) (one to many, on delete set null)
+- `id` → [workspace.forkedFromWorkspaceId](#table-workspace) (one to many)
 - `id` → [workspaceForkResourceMap.childWorkspaceId](#table-workspaceForkResourceMap) (one to many, on delete cascade)
 - `id` → [workspaceForkBlockMap.childWorkspaceId](#table-workspaceForkBlockMap) (one to many, on delete cascade)
 - `id` → [workspaceForkDependentValue.childWorkspaceId](#table-workspaceForkDependentValue) (one to many, on delete cascade)
@@ -14712,14 +14718,15 @@ db.insert(workspace).values({
   id: "id",
   name: "name",
   ownerId: "ownerId",
+  projectId: "projectId",
   billedAccountUserId: "billedAccountUserId",
 });
 ```
 
 ```sql
 insert into "workspace" ("id", "name", "color", "logo_url", "owner_id", "organization_id", "project_id", "workspace_mode", "billed_account_user_id", "storage_used_bytes", "allow_personal_api_keys", "inbox_enabled", "inbox_address", "inbox_provider_id", "inbox_secret_scope", "inbox_mounted_secrets", "archived_at", "organization_assigned_at", "forked_from_workspace_id", "fork_sync_new_workflows_excluded", "created_at", "updated_at")
-values ($1, $2, default, default, $3, default, default, default, $4, default, default, default, default, default, default, default, default, default, default, default, default, default)
--- params: ["id","name","ownerId","billedAccountUserId"]
+values ($1, $2, default, default, $3, default, $4, default, $5, default, default, default, default, default, default, default, default, default, default, default, default, default)
+-- params: ["id","name","ownerId","projectId","billedAccountUserId"]
 ```
 
 **Update**: Changes a row of workspace, found by its primary key.
@@ -14807,6 +14814,7 @@ ALTER TABLE "project" ADD CONSTRAINT "project_owner_id_user_id_fkey" FOREIGN KEY
 #### Referenced by
 
 - `id` → [folder.projectId](#table-folder) (one to many, on delete restrict)
+- `id` → [workspace.projectId](#table-workspace) (one to many, on delete restrict)
 - `id` → [workspace.projectId](#table-workspace) (one to many)
 - `id` → [workspaceFiles.projectId](#table-workspaceFiles) (one to many, on delete restrict)
 
@@ -15720,6 +15728,8 @@ ALTER TABLE "background_work_status" ADD CONSTRAINT "background_work_status_work
 
 - INDEX `workspaceId`, `status`
 - INDEX `workflowId`, `status`
+- INDEX `metadata`
+- INDEX `metadata`
 
 #### References
 
@@ -17039,16 +17049,16 @@ ALTER TABLE "workspace_files" ADD CONSTRAINT "workspace_files_chat_id_copilot_ch
 #### Indexes
 
 - INDEX `projectId`, `id`
-- UNIQUE `projectId`, `originalName`
+- UNIQUE `projectId`, `folderId`, `originalName`
 - UNIQUE `key`
-- UNIQUE `workspaceId`, `originalName`
-- INDEX `id`
+- UNIQUE `workspaceId`, `folderId`, `originalName`
+- INDEX `projectId`, `workspaceId`, `id`
 - INDEX `workspaceId`, `id`
 - INDEX `workspaceId`, `uploadedAt`, `id`
 - INDEX `workspaceId`, `updatedAt`, `id`
-- INDEX `workspaceId`, `uploadedAt`, `id`
+- INDEX `workspaceId`, `folderId`, `uploadedAt`, `id`
 - INDEX `workspaceId`, `originalName`
-- INDEX `workspaceId`
+- INDEX `workspaceId`, `originalName`
 - UNIQUE `chatId`, `displayName`
 - INDEX `organizationId`
 - INDEX `key`
@@ -18127,8 +18137,8 @@ ALTER TABLE "workspace_file_search_revision" ADD CONSTRAINT "workspace_file_sear
 
 #### Indexes
 
-- INDEX `updatedAt`, `fileId`, `sourceContentUpdatedAt`
-- INDEX `status`, `dispatchedAt`
+- INDEX `entityType`, `entityId`, `workspaceId`, `updatedAt`, `fileId`, `sourceContentUpdatedAt`
+- INDEX `entityType`, `entityId`, `workspaceId`, `status`, `dispatchedAt`
 - INDEX `workspaceId`, `status`
 - INDEX `buildId`
 - INDEX `workspaceId`, `updatedAt`, `fileId`, `sourceContentUpdatedAt`
@@ -21042,13 +21052,13 @@ ALTER TABLE "document" ADD CONSTRAINT "document_uploaded_by_user_id_fkey" FOREIG
 - INDEX `deletedAt`
 - INDEX `connectorId`
 - INDEX `connectorId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
+- INDEX `knowledgeBaseId`, `tag1`
+- INDEX `knowledgeBaseId`, `tag2`
+- INDEX `knowledgeBaseId`, `tag3`
+- INDEX `knowledgeBaseId`, `tag4`
+- INDEX `knowledgeBaseId`, `tag5`
+- INDEX `knowledgeBaseId`, `tag6`
+- INDEX `knowledgeBaseId`, `tag7`
 - INDEX `number1`
 - INDEX `number2`
 - INDEX `number3`
@@ -21589,13 +21599,13 @@ ALTER TABLE "embedding" ADD CONSTRAINT "embedding_document_id_document_id_fkey" 
 - INDEX `knowledgeBaseId`, `embeddingModel`
 - INDEX `knowledgeBaseId`, `enabled`
 - INDEX `documentId`, `enabled`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
-- INDEX `knowledgeBaseId`
+- INDEX `knowledgeBaseId`, `tag1`
+- INDEX `knowledgeBaseId`, `tag2`
+- INDEX `knowledgeBaseId`, `tag3`
+- INDEX `knowledgeBaseId`, `tag4`
+- INDEX `knowledgeBaseId`, `tag5`
+- INDEX `knowledgeBaseId`, `tag6`
+- INDEX `knowledgeBaseId`, `tag7`
 - INDEX `number1`
 - INDEX `number2`
 - INDEX `number3`
@@ -23059,7 +23069,7 @@ ALTER TABLE "copilot_chats" ADD CONSTRAINT "copilot_chats_organization_id_organi
 - INDEX `userId`, `workspaceId`
 - INDEX `createdAt`
 - INDEX `updatedAt`
-- INDEX `workspaceId`, `id`
+- INDEX `workspaceId`, `createdAt`, `id`
 - INDEX `userId`, `workspaceId`
 
 #### References
@@ -24198,7 +24208,7 @@ ALTER TABLE "copilot_runs" ADD CONSTRAINT "copilot_runs_desktop_device_id_deskto
 - INDEX `status`
 - INDEX `chatId`, `executionId`
 - INDEX `executionId`, `startedAt`
-- INDEX `workspaceId`, `id`
+- INDEX `workspaceId`, `completedAt`, `id`
 - UNIQUE `streamId`
 - INDEX `desktopDeviceId`, `startedAt`
 
@@ -27528,9 +27538,9 @@ ALTER TABLE "audit_log" ADD CONSTRAINT "audit_log_actor_id_user_id_fkey" FOREIGN
 #### Indexes
 
 - INDEX `workspaceId`, `createdAt`
-- INDEX `workspaceId`, `id`
+- INDEX `workspaceId`, `createdAt`, `id`
 - INDEX `actorId`, `createdAt`
-- INDEX `id`
+- INDEX `metadata`, `createdAt`, `id`
 - INDEX `resourceType`, `resourceId`
 - INDEX `action`
 
@@ -28190,8 +28200,8 @@ ALTER TABLE "credential" ADD CONSTRAINT "credential_created_by_user_id_fkey" FOR
 - INDEX `envOwnerUserId`
 - INDEX `credentialGroupEnrollmentId`
 - INDEX `mcpServerId`
-- UNIQUE `credentialGroupEnrollmentId`, `credentialGroupOptionId`, `providerSubjectId`
-- UNIQUE `credentialGroupEnrollmentId`, `mcpServerId`
+- UNIQUE `credentialGroupEnrollmentId`, `credentialGroupOptionId`, `providerSubjectId`, `providerTenantId`
+- UNIQUE `credentialGroupEnrollmentId`, `mcpServerId`, `providerSubjectId`, `providerTenantId`
 - UNIQUE `workspaceId`, `accountId`
 - UNIQUE `workspaceId`, `type`, `envKey`
 - UNIQUE `workspaceId`, `type`, `envKey`, `envOwnerUserId`
@@ -32048,7 +32058,7 @@ ALTER TABLE "knowledge_connector_member_sync_log" ADD CONSTRAINT "knowledge_conn
 
 #### Indexes
 
-- INDEX `connectorId`
+- INDEX `connectorId`, `startedAt`
 - INDEX `startedAt`
 
 #### References
@@ -32207,7 +32217,7 @@ ALTER TABLE "knowledge_connector_sync_log" ADD CONSTRAINT "knowledge_connector_s
 
 #### Indexes
 
-- INDEX `connectorId`
+- INDEX `connectorId`, `startedAt`
 - INDEX `startedAt`
 - INDEX `startedAt`
 
@@ -35632,7 +35642,7 @@ ALTER TABLE "scim_group_mapping" ADD CONSTRAINT "scim_group_mapping_created_by_u
 
 - INDEX `permissionGroupId`
 - INDEX `workspaceId`
-- UNIQUE `groupId`, `targetKind`
+- UNIQUE `groupId`, `targetKind`, `permissionGroupId`, `workspaceId`, `role`
 
 #### References
 

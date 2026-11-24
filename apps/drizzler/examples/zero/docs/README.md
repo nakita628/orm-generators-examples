@@ -1857,7 +1857,7 @@ ALTER TABLE "mail0_connection" ADD CONSTRAINT "mail0_connection_user_id_mail0_us
 - `id` → [assistantAction.connectionId](#table-assistantAction) (one to many, on delete cascade)
 - `id` → [connectionImap.connectionId](#table-connectionImap) (one to one, on delete cascade)
 - `id` → [summary.connectionId](#table-summary) (one to many, on delete cascade)
-- `id` → [writingStyleMatrix.connectionId](#table-writingStyleMatrix) (one to many, on delete cascade)
+- `id` → [writingStyleMatrix.connectionId](#table-writingStyleMatrix) (one to one, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -2563,12 +2563,12 @@ Table `mail0_writing_style_matrix`.
 
 ![writingStyleMatrix and the tables it relates to](tables/writingStyleMatrix.svg)
 
-| Column         | Type        | Constraints                                   | Default                        | Description                                                     |
-| -------------- | ----------- | --------------------------------------------- | ------------------------------ | --------------------------------------------------------------- |
-| `connectionId` | `text`      | NOT NULL → [connection.id](#table-connection) |                                |                                                                 |
-| `numMessages`  | `integer`   | NOT NULL                                      |                                |                                                                 |
-| `style`        | `jsonb`     | NOT NULL                                      |                                | TODO: way too much pain to get this type to work, revisit later |
-| `updatedAt`    | `timestamp` | NOT NULL                                      | `.defaultNow()` `.$onUpdate()` |                                                                 |
+| Column         | Type        | Constraints                                      | Default                        | Description                                                     |
+| -------------- | ----------- | ------------------------------------------------ | ------------------------------ | --------------------------------------------------------------- |
+| `connectionId` | `text`      | PK NOT NULL → [connection.id](#table-connection) |                                |                                                                 |
+| `numMessages`  | `integer`   | NOT NULL                                         |                                |                                                                 |
+| `style`        | `jsonb`     | NOT NULL                                         |                                | TODO: way too much pain to get this type to work, revisit later |
+| `updatedAt`    | `timestamp` | NOT NULL                                         | `.defaultNow()` `.$onUpdate()` |                                                                 |
 
 #### Definition
 
@@ -2585,9 +2585,13 @@ CREATE INDEX "writing_style_matrix_style_idx" ON "mail0_writing_style_matrix" ("
 ALTER TABLE "mail0_writing_style_matrix" ADD CONSTRAINT "mail0_writing_style_matrix_F7RY1viGZi69_fkey" FOREIGN KEY ("connectionId") REFERENCES "mail0_connection"("id") ON DELETE CASCADE;
 ```
 
+#### Indexes
+
+- INDEX `style`
+
 #### References
 
-- `connectionId` → [connection.id](#table-connection) (many to one, on delete cascade)
+- `connectionId` → [connection.id](#table-connection) (one to one, on delete cascade)
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -2625,6 +2629,20 @@ select "d0"."connectionId" as "connectionId", "d0"."numMessages" as "numMessages
 from "mail0_writing_style_matrix" as "d0"
 ```
 
+**Find by primary key**: One row of writingStyleMatrix, through the relational query API.
+
+```ts
+db.query.writingStyleMatrix.findFirst({ where: { connectionId: "connectionId" } });
+```
+
+```sql
+select "d0"."connectionId" as "connectionId", "d0"."numMessages" as "numMessages", "d0"."style" as "style", "d0"."updatedAt" as "updatedAt"
+from "mail0_writing_style_matrix" as "d0"
+where "d0"."connectionId" = $1
+limit $2
+-- params: ["connectionId",1]
+```
+
 **Insert**: Adds a row to writingStyleMatrix, giving the columns that have no default.
 
 ```ts
@@ -2635,6 +2653,33 @@ db.insert(writingStyleMatrix).values({ connectionId: "connectionId", numMessages
 insert into "mail0_writing_style_matrix" ("connectionId", "numMessages", "style", "updatedAt")
 values ($1, $2, $3, default)
 -- params: ["connectionId",1,{}]
+```
+
+**Update**: Changes a row of writingStyleMatrix, found by its primary key.
+
+```ts
+db.update(writingStyleMatrix)
+  .set({ numMessages: 1 })
+  .where(eq(writingStyleMatrix.connectionId, "connectionId"));
+```
+
+```sql
+update "mail0_writing_style_matrix"
+set "numMessages" = $1, "updatedAt" = $2
+where "mail0_writing_style_matrix"."connectionId" = $3
+-- params: [1,"2026-01-01T00:00:00.000Z","connectionId"]
+```
+
+**Delete**: Deletes a row of writingStyleMatrix, found by its primary key.
+
+```ts
+db.delete(writingStyleMatrix).where(eq(writingStyleMatrix.connectionId, "connectionId"));
+```
+
+```sql
+delete from "mail0_writing_style_matrix"
+where "mail0_writing_style_matrix"."connectionId" = $1
+-- params: ["connectionId"]
 ```
 
 </details>

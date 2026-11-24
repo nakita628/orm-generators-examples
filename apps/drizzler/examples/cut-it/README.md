@@ -24,7 +24,3 @@ The output is written to [`docs/`](docs/):
 - [`er.svg`](docs/er.svg), [`er.png`](docs/er.png), [`er-dark.png`](docs/er-dark.png) and `tables/*.svg`: ER diagrams
 - [`schema.dbml`](docs/schema.dbml): DBML
 - [`er.md`](docs/er.md): Mermaid `erDiagram`
-
-## Known issues
-
-- [nakita628/drizzler#60](https://github.com/nakita628/drizzler/issues/60): `users.userLink`, a v1 `one()` declared from the referenced side, is written as a second ref next to the `userLink.userId` foreign key, so `@dbml/core` refuses the DBML with `References with same endpoints exist` (`//apps/drizzler/examples/cut-it:dbml` expects that failure).

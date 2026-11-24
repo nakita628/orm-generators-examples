@@ -39,7 +39,6 @@ erDiagram
     organizations ||..o{ organization_invites : "(id) - (organizationId)"
     users ||..o{ organization_invites : "(id) - (invitedByUserId)"
     users ||..o{ videos : "(id) - (ownerId)"
-    video_edits ||..o| videos : "(videoId) - (id)"
     folders |o..o{ videos : "(id) - (folderId)"
     videos ||..o{ shared_videos : "(id) - (videoId)"
     organizations ||..o{ shared_videos : "(id) - (organizationId)"
@@ -55,7 +54,6 @@ erDiagram
     users ||..o{ folders : "(id) - (createdById)"
     folders |o..o{ folders : "(id) - (parentId)"
     users ||..o{ developer_apps : "(id) - (ownerId)"
-    developer_credit_accounts ||..o| developer_apps : "(appId) - (id)"
     users ||..o{ developer_credit_accounts : "(id) - (ownerId)"
     users {
         varchar id PK
@@ -229,7 +227,7 @@ erDiagram
         timestamp updatedAt
     }
     videos {
-        varchar id PK, FK
+        varchar id PK
         varchar ownerId FK
         varchar orgId
         varchar name
@@ -615,7 +613,7 @@ erDiagram
         datetime createdAt
     }
     developer_apps {
-        varchar id PK, FK
+        varchar id PK
         varchar ownerId FK
         varchar name
         varchar environment

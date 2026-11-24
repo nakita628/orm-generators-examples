@@ -81,6 +81,7 @@ Table collaborator {
   indexes {
     (owner, repo, email) [name: 'idx_collaborator_owner_repo_email']
     (user_id) [name: 'idx_collaborator_userId']
+    `lower(owner), lower(repo), lower(email)` [unique, name: 'uq_collaborator_owner_repo_email_ci']
   }
 }
 
@@ -96,6 +97,7 @@ Table collaborator_invite {
   indexes {
     (token) [unique, name: 'uq_collaborator_invite_token']
     (owner, repo, email) [name: 'idx_collaborator_invite_owner_repo_email']
+    `lower(owner), lower(repo), lower(email)` [unique, name: 'uq_collaborator_invite_owner_repo_email_ci']
   }
 }
 

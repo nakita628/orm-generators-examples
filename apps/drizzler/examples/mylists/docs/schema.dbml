@@ -393,10 +393,10 @@ Table series_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_series_list_user_media']
+    (media_id) [name: 'ix_series_list_media_id']
+    (user_id, media_id) [name: 'ix_series_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_series_list_media_user_rated']
   }
 }
 
@@ -456,8 +456,8 @@ Table series_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_series_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_series_tags_user_tag_media']
   }
 }
 
@@ -506,10 +506,10 @@ Table anime_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_anime_list_user_media']
+    (media_id) [name: 'ix_anime_list_media_id']
+    (user_id, media_id) [name: 'ix_anime_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_anime_list_media_user_rated']
   }
 }
 
@@ -569,8 +569,8 @@ Table anime_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_anime_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_anime_tags_user_tag_media']
   }
 }
 
@@ -615,10 +615,10 @@ Table movies_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_movies_list_user_media']
+    (media_id) [name: 'ix_movies_list_media_id']
+    (user_id, media_id) [name: 'ix_movies_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_movies_list_media_user_rated']
   }
 }
 
@@ -648,8 +648,8 @@ Table movies_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_movies_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_movies_tags_user_tag_media']
   }
 }
 
@@ -693,10 +693,10 @@ Table games_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_games_list_user_media']
+    (media_id) [name: 'ix_games_list_media_id']
+    (user_id, media_id) [name: 'ix_games_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_games_list_media_user_rated']
   }
 }
 
@@ -738,8 +738,8 @@ Table games_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_games_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_games_tags_user_tag_media']
   }
 }
 
@@ -774,10 +774,10 @@ Table books_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_books_list_user_media']
+    (media_id) [name: 'ix_books_list_media_id']
+    (user_id, media_id) [name: 'ix_books_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_books_list_media_user_rated']
   }
 }
 
@@ -807,8 +807,8 @@ Table books_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_books_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_books_tags_user_tag_media']
   }
 }
 
@@ -850,10 +850,10 @@ Table manga_list {
   added_at text
   last_updated text
   indexes {
-    (user_id, media_id) [unique]
-    (media_id)
-    (user_id, media_id)
-    (media_id, user_id)
+    (user_id, media_id) [unique, name: 'ux_manga_list_user_media']
+    (media_id) [name: 'ix_manga_list_media_id']
+    (user_id, media_id) [name: 'ix_manga_list_user_media_rated']
+    (media_id, user_id) [name: 'ix_manga_list_media_user_rated']
   }
 }
 
@@ -883,8 +883,8 @@ Table manga_tags {
   media_id integer [not null]
   tag_id integer [not null]
   indexes {
-    (user_id, media_id, tag_id) [unique]
-    (user_id, tag_id, media_id)
+    (user_id, media_id, tag_id) [unique, name: 'ux_manga_tags_user_media_tag']
+    (user_id, tag_id, media_id) [name: 'ix_manga_tags_user_tag_media']
   }
 }
 

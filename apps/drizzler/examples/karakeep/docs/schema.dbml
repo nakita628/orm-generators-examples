@@ -594,15 +594,15 @@ Ref backups_assetId_assets_id_fk: backups.assetId > assets.id [delete: cascade]
 
 Ref ruleEngineRules_userId_user_id_fk: ruleEngineRules.userId > user.id [delete: cascade]
 
-Ref ruleEngineRules_userId_tagId_bookmarkTags_userId_id_fk: ruleEngineRules.(userId, tagId) > bookmarkTags.(userId, id) [delete: cascade]
+Ref ruleEngineRules_userId_tagId_fk: ruleEngineRules.(userId, tagId) > bookmarkTags.(userId, id) [delete: cascade]
 
 Ref ruleEngineActions_userId_user_id_fk: ruleEngineActions.userId > user.id [delete: cascade]
 
 Ref ruleEngineActions_ruleId_ruleEngineRules_id_fk: ruleEngineActions.ruleId > ruleEngineRules.id [delete: cascade]
 
-Ref ruleEngineActions_userId_tagId_bookmarkTags_userId_id_fk: ruleEngineActions.(userId, tagId) > bookmarkTags.(userId, id) [delete: cascade]
+Ref ruleEngineActions_userId_tagId_fk: ruleEngineActions.(userId, tagId) > bookmarkTags.(userId, id) [delete: cascade]
 
-Ref ruleEngineActions_userId_listId_bookmarkLists_userId_id_fk: ruleEngineActions.(userId, listId) > bookmarkLists.(userId, id) [delete: cascade]
+Ref ruleEngineActions_userId_listId_fk: ruleEngineActions.(userId, listId) > bookmarkLists.(userId, id) [delete: cascade]
 
 Ref invites_invitedBy_user_id_fk: invites.invitedBy > user.id [delete: cascade]
 
@@ -621,9 +621,3 @@ Ref importSessionBookmarks_bookmarkId_bookmarks_id_fk: importSessionBookmarks.bo
 Ref importStagingBookmarks_importSessionId_importSessions_id_fk: importStagingBookmarks.importSessionId > importSessions.id [delete: cascade]
 
 Ref importStagingBookmarks_resultBookmarkId_bookmarks_id_fk: importStagingBookmarks.resultBookmarkId > bookmarks.id [delete: set null]
-
-Ref bookmarks_id_bookmarkLinks_id: bookmarks.id - bookmarkLinks.id
-
-Ref bookmarks_id_bookmarkTexts_id: bookmarks.id - bookmarkTexts.id
-
-Ref bookmarks_id_bookmarkAssets_id: bookmarks.id - bookmarkAssets.id

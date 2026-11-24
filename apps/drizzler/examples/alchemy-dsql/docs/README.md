@@ -39,6 +39,17 @@ Table `app.todos`.
 | `done`                     | `boolean`   | NOT NULL    | `.default(false)` |             |
 | `createdAt` (`created_at`) | `timestamp` | NOT NULL    | `.defaultNow()`   |             |
 
+#### Definition
+
+```sql
+CREATE TABLE "app"."todos" (
+	"id" uuid PRIMARY KEY,
+	"text" text NOT NULL,
+	"done" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+```
+
 <details>
 <summary>Queries and their SQL</summary>
 

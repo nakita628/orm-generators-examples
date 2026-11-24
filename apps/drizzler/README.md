@@ -24,16 +24,16 @@ Each app holds one upstream schema with as few changes as possible, plus the doc
 | [saas-starter](examples/saas-starter) | nextjs/saas-starter | PostgreSQL | — |
 | [midday](examples/midday) | midday-ai/midday | PostgreSQL | — |
 | [kan](examples/kan) | kanbn/kan | PostgreSQL | — |
-| [karakeep](examples/karakeep) | karakeep-app/karakeep | SQLite | [#60](https://github.com/nakita628/drizzler/issues/60) |
+| [karakeep](examples/karakeep) | karakeep-app/karakeep | SQLite | — |
 | [dyad](examples/dyad) | dyad-sh/dyad | SQLite | — |
 | [zero](examples/zero) | Mail-0/Zero | PostgreSQL | — |
-| [dokploy](examples/dokploy) | Dokploy/dokploy | PostgreSQL | [#60](https://github.com/nakita628/drizzler/issues/60), [#62](https://github.com/nakita628/drizzler/issues/62) |
+| [dokploy](examples/dokploy) | Dokploy/dokploy | PostgreSQL | [#62](https://github.com/nakita628/drizzler/issues/62) |
 | [sim-studio](examples/sim-studio) | simstudioai/sim | PostgreSQL | — |
 | [morphic](examples/morphic) | miurla/morphic | PostgreSQL | — |
 | [scira](examples/scira) | zaidmukaddam/scira | PostgreSQL | — |
 | [papra](examples/papra) | papra-hq/papra | SQLite | — |
-| [onlook](examples/onlook) | onlook-dev/onlook | PostgreSQL | [#60](https://github.com/nakita628/drizzler/issues/60) |
-| [cap](examples/cap) | CapSoftware/Cap | MySQL | [#60](https://github.com/nakita628/drizzler/issues/60) |
+| [onlook](examples/onlook) | onlook-dev/onlook | PostgreSQL | — |
+| [cap](examples/cap) | CapSoftware/Cap | MySQL | — |
 | [pages-cms](examples/pages-cms) | pages-cms/pages-cms | PostgreSQL | — |
 | [turborepo-elysia](examples/turborepo-elysia) | vercel/turborepo (with-nextjs-elysia) | PostgreSQL | — |
 | [sigle](examples/sigle) | sigle/sigle | PostgreSQL | — |
@@ -67,7 +67,7 @@ Each app holds one upstream schema with as few changes as possible, plus the doc
 | [zws](examples/zws) | zws-im/zws | PostgreSQL | — |
 | [ai-fullstack-saas](examples/ai-fullstack-saas) | alan345/AI-Fullstack-SaaS-Boilerplate | PostgreSQL | — |
 | [deft](examples/deft) | Maneek21/Deft | PostgreSQL | — |
-| [cut-it](examples/cut-it) | mehrabmp/cut-it | SQLite | [#60](https://github.com/nakita628/drizzler/issues/60) |
+| [cut-it](examples/cut-it) | mehrabmp/cut-it | SQLite | — |
 | [flarestarter](examples/flarestarter) | FlareStarter/flarestarter | SQLite | — |
 | [better-auth-cloudflare](examples/better-auth-cloudflare) | zpg6/better-auth-cloudflare (Hono example) | SQLite | — |
 

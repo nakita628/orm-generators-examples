@@ -4,9 +4,8 @@ erDiagram
     user ||--o{ session : "(id) - (userId)"
     user |o--o| userLink : "(id) - (userId)"
     userLink ||--o{ link : "(id) - (userLinkId)"
-    userLink ||..o| user : "(userId) - (id)"
     user {
-        text id PK, FK
+        text id PK
         text name
         text email
         integer emailVerified

@@ -168,6 +168,8 @@ Table page {
   created_at integer
   updated_at integer
   indexes {
+    `LOWER(slug)` [name: 'page_lower_slug_idx']
+    `LOWER(custom_domain)` [name: 'page_lower_custom_domain_idx']
     (workspace_id) [name: 'page_workspace_id_idx']
   }
 }
@@ -229,8 +231,8 @@ Table page_subscriber {
   updated_at integer
   indexes {
     (page_id) [name: 'page_subscriber_page_id_idx']
-    (page_id) [unique, name: 'idx_page_subscriber_email_page_active']
-    (page_id) [unique, name: 'idx_page_subscriber_webhook_page_active']
+    `LOWER(email), page_id` [unique, name: 'idx_page_subscriber_email_page_active']
+    `LOWER(webhook_url), page_id` [unique, name: 'idx_page_subscriber_webhook_page_active']
     (slack_channel_id, page_id) [unique, name: 'idx_page_subscriber_slack_channel_page_active']
   }
 }

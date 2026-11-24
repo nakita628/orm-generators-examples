@@ -365,7 +365,3 @@ Ref user_projects_user_id_users_id_fk: user_projects.user_id > users.id [delete:
 Ref user_projects_project_id_projects_id_fk: user_projects.project_id > projects.id [delete: cascade, update: cascade]
 
 Ref users_id_users_id_fk: users.id - auth.users.id [delete: cascade, update: cascade]
-
-Ref projects_id_canvas_project_id: projects.id - canvas.project_id
-
-Ref projects_id_project_settings_project_id: projects.id - project_settings.project_id

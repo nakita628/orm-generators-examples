@@ -100,10 +100,11 @@ erDiagram
     organization |o--o{ invitation : "(id) - (organization_id)"
     user ||--o{ workspace : "(id) - (owner_id)"
     organization |o--o{ workspace : "(id) - (organization_id)"
+    project ||--o{ workspace : "(id) - (project_id)"
     user ||--o{ workspace : "(id) - (billed_account_user_id)"
     workspace |o--o{ workspace : "(id) - (forked_from_workspace_id)"
-    project |o--o{ workspace : "(id, organization_scope_key) - (projectId, organization_scope_key)"
-    workspace |o--o{ workspace : "(id, projectId) - (forked_from_workspace_id, projectId)"
+    project |o--o{ workspace : "(id, organization_scope_key) - (project_id, organization_scope_key)"
+    workspace |o--o{ workspace : "(id, project_id) - (forked_from_workspace_id, project_id)"
     organization |o--o{ project : "(id) - (organization_id)"
     user ||--o{ project : "(id) - (owner_id)"
     workspace ||--o{ workspace_fork_resource_map : "(id) - (child_workspace_id)"
@@ -1121,7 +1122,7 @@ erDiagram
         text owner_id FK "checks. The owner→admin derivation is redundant: every workspace owner already has an explicit `admin` row in `permissions` (verified across all production workspaces) and all creation paths add one. Retained only as the lifecycle anchor — `onDelete: 'cascade'` cleans up a user's workspaces on account deletion — and the ownership-transfer target when an owner is removed. For admin checks use explicit `permissions` rows; for the workspace's principal billing identity use `billedAccountUserId`. DO NOT DELETE."
         text organization_id FK
         text organization_scope_key FK "Encodes nullable organization identity for the composite membership foreign key."
-        workspaceProjectIdColumn projectId FK
+        text project_id FK
         workspace_mode workspace_mode
         text billed_account_user_id FK
         bigint storage_used_bytes "Durable workspace-first storage ledger. Invariant: this non-negative total and the currently routed payer aggregate change atomically while the workspace row is locked. A payer identity change moves this entire total old payer -> new payer in the same transaction."

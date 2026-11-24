@@ -28,5 +28,4 @@ The output is written to [`docs/`](docs/):
 
 ## Known issues
 
-- [nakita628/drizzler#60](https://github.com/nakita628/drizzler/issues/60): the v1 `one()` relations declared from the referenced side are written as a second ref next to their foreign key, so `@dbml/core` refuses the DBML with `References with same endpoints exist` (`//apps/drizzler/examples/dokploy:dbml` expects that failure).
 - [nakita628/drizzler#62](https://github.com/nakita628/drizzler/issues/62): the `appName` defaults, built with Faker, change the insert examples in `docs/README.md` on every run.
