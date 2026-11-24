@@ -4,7 +4,7 @@ Each project's tables as drizzle-kit created them (`<project>/source.sql`), writ
 
 | Schema | Models | hekireki | drizzle | kysely | sqlalchemy | django | gorm | sea-orm | ecto | activerecord | eloquent | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [alchemy-d1](alchemy-d1.md) | 2 | 0.52.20 | ✅ 12/12 · tables ❌ | ✅ 10/10 · no tables | ✅ 12/12 · tables ❌ | ✅ 12/12 · tables ≠ | ✅ 12/12 · tables ❌ | ✅ 12/12 · tables ≠ | ✅ 12/12 · no tables | ✅ 12/12 · no tables | ✅ 12/12 · no tables | ✅ 12/12 · tables ❌ | not generated |
+| [alchemy-d1](alchemy-d1.md) | 2 | 0.52.20 | ✅ 12/12 · tables ≠ | ✅ 10/10 · no tables | ✅ 12/12 · tables ≠ | ✅ 12/12 · tables ≠ | ✅ 12/12 · tables ≠ | ✅ 12/12 · tables ≠ | ✅ 12/12 · no tables | ✅ 12/12 · no tables | ✅ 12/12 · no tables | ✅ 12/12 · tables ✅ | not generated |
 | [northwind](northwind.md) | 6 | 0.52.2 | ✅ 33/33 · tables ≠ | ✅ 25/25 · no tables | ✅ 33/33 · tables ≠ | ✅ 33/33 · tables ≠ | ✅ 33/33 · tables ≠ | ✅ 31/31 · tables ≠ | ✅ 33/33 · no tables | ✅ 33/33 · no tables | ✅ 33/33 · no tables | ⚠️ 32/33 · tables ≠ | ⚠️ 31/33 · tables ≠ |
 
 ## The SQL each ORM creates from the write-up
@@ -15,7 +15,7 @@ Each project's tables as drizzle-kit created them (`<project>/source.sql`), writ
 
 | Project | prisma | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| [alchemy-d1](../alchemy-d1/README.md) | ❌ | ❌ | ❌ | ≠ 2 | ❌ | ≠ 2 | ❌ | not generated |
+| [alchemy-d1](../alchemy-d1/README.md) | ≈ | ≈ | ≈ | ≠ 2 | ≈ | ≠ 2 | ≠ 2 | not generated |
 | [northwind](../northwind/README.md) | = | ≠ 1 | ≠ 1 | ≠ 6 | ≠ 6 | ≠ 2 | ≠ 1 | ≠ 1 |
 
 ### Against prisma.sql, what Prisma itself creates from the same write-up
@@ -24,5 +24,5 @@ What the write-up cannot say (Django's identity columns become serial ones, chec
 
 | Project | drizzle | sqlalchemy | django | gorm | sea-orm | efcore | exposed |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| [alchemy-d1](../alchemy-d1/README.md) | ❌ | ❌ | ≠ 2 | ❌ | ≠ 2 | ❌ | not generated |
+| [alchemy-d1](../alchemy-d1/README.md) | ≈ | ≈ | ≠ 2 | ≈ | ≠ 2 | ≠ 2 | not generated |
 | [northwind](../northwind/README.md) | ≠ 1 | ≠ 1 | ≠ 6 | ≠ 6 | ≠ 2 | ≠ 1 | ≠ 1 |

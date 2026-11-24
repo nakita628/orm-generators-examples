@@ -46,8 +46,11 @@ pull/
   own schema), without pg_dump's comment lines and what changes from run to run, so that one reads
   against the other line for line.
 - `schema.prisma` is what `prisma db pull` wrote. Where Prisma writes a schema it refuses itself
-  (an integer foreign key on a bigint id, a default on an `Unsupported` field), pull.mjs makes the
-  smallest change that validates and lists it in the header and in `source.json`'s `fixes`.
+  (an integer foreign key on a bigint id, a default on an `Unsupported` field, a Gin index over
+  column types Prisma does not take together, an SQLite expression default without the
+  parentheses `prisma db push` needs, an index called `sqlite_autoindex_*`, a name SQLite
+  reserves), pull.mjs makes the smallest change that validates and lists it in the header and in
+  `source.json`'s `fixes`.
 
 ## The SQL
 

@@ -32,7 +32,7 @@
         }
       },
       "findings": 0,
-      "ddl": "error"
+      "ddl": "differs"
     },
     {
       "orm": "kysely",
@@ -100,7 +100,7 @@
         }
       },
       "findings": 0,
-      "ddl": "error"
+      "ddl": "differs"
     },
     {
       "orm": "django",
@@ -168,7 +168,7 @@
         }
       },
       "findings": 0,
-      "ddl": "error"
+      "ddl": "differs"
     },
     {
       "orm": "sea-orm",
@@ -338,7 +338,7 @@
         }
       },
       "findings": 0,
-      "ddl": "error"
+      "ddl": "same"
     },
     {
       "orm": "exposed",
@@ -383,7 +383,7 @@
         "findings": []
       },
       "ddl": {
-        "error": "Loaded Prisma config from prisma.config.mjs.\n\nError: SQLite database error\nnear \"(\": syntax error in CREATE TABLE `posts` (\n\t`id` integer PRIMARY KEY AUTOINCREMENT,\n\t`user_id` integer NOT NULL,\n\t`title` text NOT NULL,\n\t`body` text NOT NULL,\n\t`created_at` integer DEFAULT unixepoch() NOT NULL,\n\tCONSTRAINT `posts_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE\n);\n\nCREATE TABLE `users` (\n\t`id` integer PRIMARY KEY AUTOINCREMENT,\n\t`email` text NOT NULL,\n\t`name` text NOT NULL,\n\t`created_at` integer DEFAULT unixepoch() NOT NULL\n);\n\nCREATE UNIQUE INDEX `sqlite_autoindex_users_1` ON `users` (`email`);"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch()),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_email_key\" ON \"users\"(\"email\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {
@@ -453,7 +453,7 @@
         "findings": []
       },
       "ddl": {
-        "error": "Traceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 1969, in _exec_single_context\n    self.dialect.do_execute(\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py\", line 952, in do_execute\n    cursor.execute(statement, parameters)\nsqlite3.OperationalError: object name reserved for internal use: sqlite_autoindex_users_1\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 242, in <module>\n    main(*sys.argv[1:])\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/harness.py\", line 41, in main\n    base.metadata.create_all(engine)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/schema.py\", line 5930, in create_all\n    bind._run_ddl_visitor(\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 3270, in _run_ddl_visitor\n    conn._run_ddl_visitor(visitorcallable, element, **kwargs)\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py\", line 2469, in _run_ddl_visitor\n    ).traverse_single(element)\n      ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/visitors.py\", line 661, in traverse_single\n    return meth(obj, **kw)\n           ^^^^^^^^^^^^^^^\n  File \"/home/user/orm-generators-examples/apps/hekireki/compat/sqlalchemy/.venv/lib/python3.12/site-packages/sqlalchemy/sql/ddl.py\", line 985, in visit_metadata\n    self.traverse_single(\n  File \"/home/user/orm-"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch()),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_email_key\" ON \"users\"(\"email\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {
@@ -488,7 +488,7 @@
         "findings": []
       },
       "ddl": {
-        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT unixepoch(),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nPragma writable_schema=1;\nCREATE UNIQUE INDEX \"sqlite_autoindex_users_1\" ON \"users\"(\"email\");\nPragma writable_schema=0;\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch()),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_email_key\" ON \"users\"(\"email\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {
@@ -523,7 +523,7 @@
         "findings": []
       },
       "ddl": {
-        "error": "near \"(\": syntax error"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch()),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_email_key\" ON \"users\"(\"email\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {
@@ -558,7 +558,7 @@
         "findings": []
       },
       "ddl": {
-        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT unixepoch(),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nPragma writable_schema=1;\nCREATE UNIQUE INDEX \"sqlite_autoindex_users_1\" ON \"users\"(\"email\");\nPragma writable_schema=0;\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
+        "diff": "-- RedefineTables\nPRAGMA defer_foreign_keys=ON;\nPRAGMA foreign_keys=OFF;\nCREATE TABLE \"new_posts\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"user_id\" INTEGER NOT NULL,\n    \"title\" TEXT NOT NULL,\n    \"body\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch()),\n    CONSTRAINT \"posts_user_id_fkey\" FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON DELETE CASCADE ON UPDATE NO ACTION\n);\nINSERT INTO \"new_posts\" (\"body\", \"created_at\", \"id\", \"title\", \"user_id\") SELECT \"body\", \"created_at\", \"id\", \"title\", \"user_id\" FROM \"posts\";\nDROP TABLE \"posts\";\nALTER TABLE \"new_posts\" RENAME TO \"posts\";\nCREATE TABLE \"new_users\" (\n    \"id\" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,\n    \"email\" TEXT NOT NULL,\n    \"name\" TEXT NOT NULL,\n    \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())\n);\nINSERT INTO \"new_users\" (\"created_at\", \"email\", \"id\", \"name\") SELECT \"created_at\", \"email\", \"id\", \"name\" FROM \"users\";\nDROP TABLE \"users\";\nALTER TABLE \"new_users\" RENAME TO \"users\";\nCREATE UNIQUE INDEX \"users_email_key\" ON \"users\"(\"email\");\nPRAGMA foreign_keys=ON;\nPRAGMA defer_foreign_keys=OFF;"
       }
     },
     {
@@ -698,7 +698,7 @@
         "findings": []
       },
       "ddl": {
-        "error": "SQLite Error 1: 'object name reserved for internal use: sqlite_autoindex_users_1'."
+        "diff": ""
       }
     },
     {

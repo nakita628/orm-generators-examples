@@ -370,7 +370,7 @@ function writeUp(source, models, features, fixes = []) {
     fixes.length
       ? `
 //
-// Changed from what \`prisma db pull\` wrote, which \`prisma validate\` refuses:
+// Changed from what \`prisma db pull\` wrote, which \`prisma validate\` or \`prisma db push\` refuses:
 ${fixes.map((f) => `// - ${f}`).join('\n')}`
       : ''
   }`
@@ -385,13 +385,37 @@ ${fixes.map((f) => `// - ${f}`).join('\n')}`
 // - a preview feature the schema needs (partialIndexes, ...) goes on a generator block;
 // - a foreign key whose type is not its referenced key's (an integer column pointing at a bigint
 //   id, common in Rails apps) takes the referenced key's type;
-// - a default on an Unsupported(...) field, which only dbgenerated() may be, is dropped.
+// - a default on an Unsupported(...) field, which only dbgenerated() may be, is dropped;
+// - a Gin index over column types Prisma does not take together is dropped;
+// - on SQLite, the parentheses around an expression default (dbgenerated("(unixepoch())")) are put back,
+//   and the sqlite_autoindex_* name of a unique index, which SQLite reserves, is dropped.
 // Each change is listed in the schema's header and in source.json. Anything else is a schema
 // Prisma cannot read, and the pull stops there.
 function validate(source, pulledModels, work, url) {
   const lines = pulledModels.split('\n')
   const features = []
   const fixes = []
+  // SQLite takes an expression as a default only in parentheses (`DEFAULT (unixepoch())`).
+  // `prisma db pull` writes the expression without them, dbgenerated("unixepoch()"), and
+  // `prisma db push` then writes `DEFAULT unixepoch()`, a syntax error: the parentheses go back.
+  if (source.dialect === 'sqlite') {
+    for (let i = 0; i < lines.length; i++) {
+      const m = /@default\(dbgenerated\("((?:[^"\\]|\\.)*)"\)\)/.exec(lines[i])
+      if (!m || m[1].startsWith('(') || /^(-?\d+(\.\d+)?|'[^']*'|NULL|TRUE|FALSE|CURRENT_(TIME|DATE|TIMESTAMP))$/i.test(m[1])) continue
+      lines[i] = lines[i].replace(m[0], `@default(dbgenerated("(${m[1]})"))`)
+      fixes.push(`${modelOf(lines, i)}.${lines[i].trim().split(/\s+/)[0]}: dbgenerated("${m[1]}") -> dbgenerated("(${m[1]})") (an SQLite expression default has to be in parentheses, which \`prisma db push\` leaves out)`)
+    }
+    // The index SQLite makes for a UNIQUE column is named sqlite_autoindex_<table>_<n>, and
+    // `prisma db pull` writes that name as the map: of the @unique. SQLite reserves the prefix, so
+    // no ORM can create an index of that name: the name goes, and the unique stays.
+    for (let i = 0; i < lines.length; i++) {
+      const name = /map:\s*"(sqlite_autoindex_[^"]*)"/.exec(lines[i])?.[1]
+      if (!name) continue
+      const before = lines[i]
+      lines[i] = lines[i].replace(/\(map:\s*"sqlite_autoindex_[^"]*"\)/, '').replace(/,\s*map:\s*"sqlite_autoindex_[^"]*"/, '')
+      if (lines[i] !== before) fixes.push(`${modelOf(lines, i)}: the name "${name}" of ${/@@/.test(before) ? 'an @@index / @@unique' : `the unique of ${before.trim().split(/\s+/)[0]}`} dropped (SQLite reserves the sqlite_autoindex_ prefix, so no ORM can create an index called that)`)
+    }
+  }
   for (let round = 0; round < 10; round++) {
     const header = writeUp(source, '', features).trimEnd()
     const offset = header.split('\n').length + 1

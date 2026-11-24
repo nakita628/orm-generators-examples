@@ -4,23 +4,27 @@
   "dialect": "sqlite",
   "tables": 2,
   "models": 2,
+  "fixes": [
+    "posts.created_at: dbgenerated(\"unixepoch()\") -> dbgenerated(\"(unixepoch())\") (an SQLite expression default has to be in parentheses, which `prisma db push` leaves out)",
+    "users.created_at: dbgenerated(\"unixepoch()\") -> dbgenerated(\"(unixepoch())\") (an SQLite expression default has to be in parentheses, which `prisma db push` leaves out)",
+    "users: the name \"sqlite_autoindex_users_1\" of the unique of email dropped (SQLite reserves the sqlite_autoindex_ prefix, so no ORM can create an index called that)"
+  ],
   "prisma": "8.1.0-dev.9",
-  "pulled_at": "2026-11-24T19:46:05.426Z",
+  "pulled_at": "2026-11-24T20:14:50.500Z",
   "sql": {
     "prisma": {
-      "status": "error",
-      "error": "Error: SQLite database error"
+      "status": "names"
     },
     "drizzle": {
-      "status": "error",
-      "error": "Error: SQLite database error"
+      "status": "names",
+      "prisma": "names"
     },
     "kysely": {
       "status": "none"
     },
     "sqlalchemy": {
-      "status": "error",
-      "error": "sqlite3.OperationalError: object name reserved for internal use: sqlite_autoindex_users_1"
+      "status": "names",
+      "prisma": "names"
     },
     "django": {
       "status": "differs",
@@ -29,7 +33,7 @@
           "name": "\"posts\"",
           "lines": [
             "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
-            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())",
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT ((unixepoch()))",
             "- FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON UPDATE NO ACTION ON DELETE CASCADE",
             "+ FOREIGN KEY (\"user_id\") REFERENCES \"users\" (\"id\") ON UPDATE NO ACTION ON DELETE NO ACTION"
           ]
@@ -38,16 +42,17 @@
           "name": "\"users\"",
           "lines": [
             "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
-            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())"
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT ((unixepoch()))"
           ]
         }
       ],
       "onlySource": [],
-      "onlyHere": []
+      "onlyHere": [],
+      "prisma": "differs:2"
     },
     "gorm": {
-      "status": "error",
-      "error": "near \"(\": syntax error"
+      "status": "names",
+      "prisma": "names"
     },
     "sea-orm": {
       "status": "differs",
@@ -76,7 +81,8 @@
         }
       ],
       "onlySource": [],
-      "onlyHere": []
+      "onlyHere": [],
+      "prisma": "differs:2"
     },
     "ecto": {
       "status": "none"
@@ -88,13 +94,31 @@
       "status": "none"
     },
     "efcore": {
-      "status": "error",
-      "error": "SQLite Error 1: 'object name reserved for internal use: sqlite_autoindex_users_1'."
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"posts\"",
+          "lines": [
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"created_at\" INTEGER NOT NULL DEFAULT unixepoch()",
+            "+ \"created_at\" INTEGER NOT NULL DEFAULT (unixepoch())"
+          ]
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:2"
     },
     "exposed": {
       "status": "not-generated"
     }
   },
   "hekireki": "0.52.20",
-  "checked_at": "2026-11-24T19:49:14.964Z"
+  "checked_at": "2026-11-24T20:15:27.549Z"
 }

@@ -1,0 +1,17 @@
+CREATE TABLE users (
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	email TEXT NOT NULL, 
+	name TEXT NOT NULL, 
+	created_at INTEGER DEFAULT (unixepoch()) NOT NULL
+);
+
+CREATE UNIQUE INDEX users_email_key ON users (email);
+
+CREATE TABLE posts (
+	id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, 
+	user_id INTEGER NOT NULL, 
+	title TEXT NOT NULL, 
+	body TEXT NOT NULL, 
+	created_at INTEGER DEFAULT (unixepoch()) NOT NULL, 
+	CONSTRAINT posts_user_id_fkey FOREIGN KEY(user_id) REFERENCES users (id) ON DELETE CASCADE ON UPDATE NO ACTION
+);
