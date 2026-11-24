@@ -5,7 +5,366 @@
   "tables": 6,
   "models": 6,
   "prisma": "8.1.0-dev.9",
-  "pulled_at": "2026-11-23T14:44:55.667Z",
+  "pulled_at": "2026-11-24T02:49:13.935Z",
+  "sql": {
+    "prisma": {
+      "status": "identical"
+    },
+    "drizzle": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.order_details",
+          "only": "source"
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:1"
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.order_details",
+          "only": "source"
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:1"
+    },
+    "django": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.customers",
+          "lines": [
+            "- company_name character varying NOT NULL",
+            "+ company_name text NOT NULL",
+            "- contact_name character varying NOT NULL",
+            "+ contact_name text NOT NULL",
+            "- contact_title character varying NOT NULL",
+            "+ contact_title text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- postal_code character varying",
+            "+ postal_code text",
+            "- region character varying",
+            "+ region text",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- phone character varying NOT NULL",
+            "+ phone text NOT NULL",
+            "- fax character varying",
+            "+ fax text",
+            "+ INDEX USING btree (id varchar_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.employees",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- last_name character varying NOT NULL",
+            "+ last_name text NOT NULL",
+            "- first_name character varying",
+            "+ first_name text",
+            "- title character varying NOT NULL",
+            "+ title text NOT NULL",
+            "- title_of_courtesy character varying NOT NULL",
+            "+ title_of_courtesy text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- postal_code character varying NOT NULL",
+            "+ postal_code text NOT NULL",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- home_phone character varying NOT NULL",
+            "+ home_phone text NOT NULL",
+            "- recipient_id character varying",
+            "+ recipient_id text",
+            "- FOREIGN KEY (recipient_id) REFERENCES public.employees(id)",
+            "+ FOREIGN KEY (recipient_id) REFERENCES public.employees(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (id text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.order_details",
+          "only": "source"
+        },
+        {
+          "name": "public.orders",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- ship_name character varying NOT NULL",
+            "+ ship_name text NOT NULL",
+            "- ship_city character varying NOT NULL",
+            "+ ship_city text NOT NULL",
+            "- ship_region character varying",
+            "+ ship_region text",
+            "- ship_postal_code character varying",
+            "+ ship_postal_code text",
+            "- ship_country character varying NOT NULL",
+            "+ ship_country text NOT NULL",
+            "- customer_id character varying NOT NULL",
+            "+ customer_id character varying(5) NOT NULL",
+            "- employee_id character varying NOT NULL",
+            "+ employee_id text NOT NULL",
+            "- FOREIGN KEY (customer_id) REFERENCES public.customers(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (customer_id) REFERENCES public.customers(id) DEFERRABLE INITIALLY DEFERRED",
+            "- FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (employee_id) REFERENCES public.employees(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (id text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.products",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- name character varying NOT NULL",
+            "+ name text NOT NULL",
+            "- qt_per_unit character varying NOT NULL",
+            "+ qt_per_unit text NOT NULL",
+            "- supplier_id character varying NOT NULL",
+            "+ supplier_id text NOT NULL",
+            "- FOREIGN KEY (supplier_id) REFERENCES public.suppliers(id) ON DELETE CASCADE",
+            "+ FOREIGN KEY (supplier_id) REFERENCES public.suppliers(id) DEFERRABLE INITIALLY DEFERRED",
+            "+ INDEX USING btree (id text_pattern_ops)"
+          ]
+        },
+        {
+          "name": "public.suppliers",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- company_name character varying NOT NULL",
+            "+ company_name text NOT NULL",
+            "- contact_name character varying NOT NULL",
+            "+ contact_name text NOT NULL",
+            "- contact_title character varying NOT NULL",
+            "+ contact_title text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- region character varying",
+            "+ region text",
+            "- postal_code character varying NOT NULL",
+            "+ postal_code text NOT NULL",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- phone character varying NOT NULL",
+            "+ phone text NOT NULL",
+            "+ INDEX USING btree (id text_pattern_ops)"
+          ]
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:6"
+    },
+    "gorm": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.customers",
+          "lines": [
+            "- company_name character varying NOT NULL",
+            "+ company_name text NOT NULL",
+            "- contact_name character varying NOT NULL",
+            "+ contact_name text NOT NULL",
+            "- contact_title character varying NOT NULL",
+            "+ contact_title text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- postal_code character varying",
+            "+ postal_code text",
+            "- region character varying",
+            "+ region text",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- phone character varying NOT NULL",
+            "+ phone text NOT NULL",
+            "- fax character varying",
+            "+ fax text"
+          ]
+        },
+        {
+          "name": "public.employees",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- last_name character varying NOT NULL",
+            "+ last_name text NOT NULL",
+            "- first_name character varying",
+            "+ first_name text",
+            "- title character varying NOT NULL",
+            "+ title text NOT NULL",
+            "- title_of_courtesy character varying NOT NULL",
+            "+ title_of_courtesy text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- postal_code character varying NOT NULL",
+            "+ postal_code text NOT NULL",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- home_phone character varying NOT NULL",
+            "+ home_phone text NOT NULL",
+            "- extension integer NOT NULL",
+            "+ extension bigint NOT NULL",
+            "- recipient_id character varying",
+            "+ recipient_id text"
+          ]
+        },
+        {
+          "name": "public.order_details",
+          "only": "source"
+        },
+        {
+          "name": "public.orders",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- ship_via integer NOT NULL",
+            "+ ship_via bigint NOT NULL",
+            "- freight double precision NOT NULL",
+            "+ freight numeric NOT NULL",
+            "- ship_name character varying NOT NULL",
+            "+ ship_name text NOT NULL",
+            "- ship_city character varying NOT NULL",
+            "+ ship_city text NOT NULL",
+            "- ship_region character varying",
+            "+ ship_region text",
+            "- ship_postal_code character varying",
+            "+ ship_postal_code text",
+            "- ship_country character varying NOT NULL",
+            "+ ship_country text NOT NULL",
+            "- customer_id character varying NOT NULL",
+            "+ customer_id character varying(5) NOT NULL",
+            "- employee_id character varying NOT NULL",
+            "+ employee_id text NOT NULL"
+          ]
+        },
+        {
+          "name": "public.products",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- name character varying NOT NULL",
+            "+ name text NOT NULL",
+            "- qt_per_unit character varying NOT NULL",
+            "+ qt_per_unit text NOT NULL",
+            "- unit_price double precision NOT NULL",
+            "+ unit_price numeric NOT NULL",
+            "- units_in_stock integer NOT NULL",
+            "+ units_in_stock bigint NOT NULL",
+            "- units_on_order integer NOT NULL",
+            "+ units_on_order bigint NOT NULL",
+            "- reorder_level integer NOT NULL",
+            "+ reorder_level bigint NOT NULL",
+            "- discontinued integer NOT NULL",
+            "+ discontinued bigint NOT NULL",
+            "- supplier_id character varying NOT NULL",
+            "+ supplier_id text NOT NULL"
+          ]
+        },
+        {
+          "name": "public.suppliers",
+          "lines": [
+            "- id character varying NOT NULL",
+            "+ id text NOT NULL",
+            "- company_name character varying NOT NULL",
+            "+ company_name text NOT NULL",
+            "- contact_name character varying NOT NULL",
+            "+ contact_name text NOT NULL",
+            "- contact_title character varying NOT NULL",
+            "+ contact_title text NOT NULL",
+            "- address character varying NOT NULL",
+            "+ address text NOT NULL",
+            "- city character varying NOT NULL",
+            "+ city text NOT NULL",
+            "- region character varying",
+            "+ region text",
+            "- postal_code character varying NOT NULL",
+            "+ postal_code text NOT NULL",
+            "- country character varying NOT NULL",
+            "+ country text NOT NULL",
+            "- phone character varying NOT NULL",
+            "+ phone text NOT NULL"
+          ]
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:6"
+    },
+    "sea-orm": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.employees",
+          "lines": [
+            "- notes text NOT NULL",
+            "+ notes character varying NOT NULL"
+          ]
+        },
+        {
+          "name": "public.order_details",
+          "only": "source"
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:2"
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.order_details",
+          "only": "source"
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:1"
+    },
+    "exposed": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "public.order_details",
+          "only": "source"
+        }
+      ],
+      "onlySource": [],
+      "onlyHere": [],
+      "prisma": "differs:1"
+    }
+  },
   "hekireki": "0.52.2",
-  "checked_at": "2026-11-23T14:46:17.231Z"
+  "checked_at": "2026-11-24T02:51:06.191Z"
 }

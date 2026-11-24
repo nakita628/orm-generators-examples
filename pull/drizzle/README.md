@@ -11,3 +11,6 @@ empty database, dumps the tables to `<example>/source.sql`, and `prisma db pull`
 
 The examples are listed in apps/drizzler; one that cannot be pulled goes in `skip` of a
 `sources.json` here, with the reason.
+
+Each project's own `README.md` holds the SQL every ORM creates from the write-up (`sql/`) against
+`source.sql`; [results/](results/README.md) has the layer's matrices.

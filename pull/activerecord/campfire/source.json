@@ -13,7 +13,1485 @@
     "active_storage_variant_records.blob_id: BigInt -> Int, the type of active_storage_blobs.id it references"
   ],
   "prisma": "8.1.0-dev.9",
-  "pulled_at": "2026-11-23T14:48:29.326Z",
+  "pulled_at": "2026-11-24T02:53:53.938Z",
+  "sql": {
+    "prisma": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT DEFAULT 'mentions'"
+          ]
+        },
+        {
+          "name": "\"message_search_index\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_config\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_idx\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": []
+    },
+    "drizzle": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"settings\" JSON",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT DEFAULT 'mentions'",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:20"
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"settings\" JSON",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT DEFAULT 'mentions'",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:19"
+    },
+    "django": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"settings\" JSON",
+            "- \"singleton_guard\" INTEGER NOT NULL DEFAULT 0",
+            "+ \"singleton_guard\" INTEGER NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"connections\" INTEGER NOT NULL DEFAULT 0",
+            "+ \"connections\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"messages_count\" INTEGER NOT NULL DEFAULT 0",
+            "+ \"messages_count\" INTEGER NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT",
+            "- \"role\" INTEGER NOT NULL DEFAULT 0",
+            "+ \"role\" INTEGER NOT NULL",
+            "- \"status\" INTEGER NOT NULL DEFAULT 0",
+            "+ \"status\" INTEGER NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:19"
+    },
+    "gorm": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"settings\" JSON",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_id\" BIGINT NOT NULL",
+            "+ \"record_id\" INTEGER NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- UNIQUE (\"record_type\", \"record_id\", \"name\")",
+            "+ UNIQUE (\"name\", \"record_id\", \"record_type\")"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_id\" BIGINT NOT NULL",
+            "+ \"record_id\" INTEGER NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- UNIQUE (\"record_type\", \"record_id\", \"name\", \"blob_id\")",
+            "+ UNIQUE (\"blob_id\", \"name\", \"record_id\", \"record_type\")"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"byte_size\" BIGINT NOT NULL",
+            "+ \"byte_size\" INTEGER NOT NULL",
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT DEFAULT \"mentions\"",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT",
+            "- INDEX (\"endpoint\", \"p256dh_key\", \"auth_key\")",
+            "+ INDEX (\"auth_key\", \"endpoint\", \"p256dh_key\")"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"creator_id\" BIGINT NOT NULL",
+            "+ \"creator_id\" INTEGER NOT NULL",
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:20"
+    },
+    "sea-orm": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"custom_styles\" TEXT",
+            "+ \"custom_styles\" VARCHAR",
+            "- \"settings\" JSON",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"body\" TEXT",
+            "+ \"body\" VARCHAR",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- UNIQUE (\"record_type\", \"record_id\", \"name\")"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- UNIQUE (\"record_type\", \"record_id\", \"name\", \"blob_id\")",
+            "- INDEX (\"blob_id\")"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"metadata\" TEXT",
+            "+ \"metadata\" VARCHAR"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- UNIQUE (\"blob_id\", \"variation_digest\")"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"ip_address\")",
+            "- INDEX (\"user_id\")"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" VARCHAR NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"booster_id\")",
+            "- INDEX (\"message_id\")"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- UNIQUE (\"room_id\", \"user_id\")",
+            "- INDEX (\"room_id\")",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"user_id\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"creator_id\")",
+            "- INDEX (\"room_id\")",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"endpoint\", \"p256dh_key\", \"auth_key\")",
+            "- INDEX (\"user_id\")"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"user_id\")"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"user_id\")"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bio\" TEXT",
+            "+ \"bio\" VARCHAR",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"user_id\")"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:23"
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "differs",
+      "tables": [
+        {
+          "name": "\"accounts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"join_code\" VARCHAR NOT NULL",
+            "+ \"join_code\" TEXT NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"settings\" JSON",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"action_text_rich_texts\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_id\" BIGINT NOT NULL",
+            "+ \"record_id\" INTEGER NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_attachments\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"record_id\" BIGINT NOT NULL",
+            "+ \"record_id\" INTEGER NOT NULL",
+            "- \"record_type\" VARCHAR NOT NULL",
+            "+ \"record_type\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_blobs\"",
+          "lines": [
+            "- \"byte_size\" BIGINT NOT NULL",
+            "+ \"byte_size\" INTEGER NOT NULL",
+            "- \"checksum\" VARCHAR",
+            "+ \"checksum\" TEXT",
+            "- \"content_type\" VARCHAR",
+            "+ \"content_type\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"filename\" VARCHAR NOT NULL",
+            "+ \"filename\" TEXT NOT NULL",
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"service_name\" VARCHAR NOT NULL",
+            "+ \"service_name\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"active_storage_variant_records\"",
+          "lines": [
+            "- \"blob_id\" BIGINT NOT NULL",
+            "+ \"blob_id\" INTEGER NOT NULL",
+            "- \"variation_digest\" VARCHAR NOT NULL",
+            "+ \"variation_digest\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"ar_internal_metadata\"",
+          "lines": [
+            "- \"key\" VARCHAR NOT NULL",
+            "+ \"key\" TEXT NOT NULL",
+            "- \"value\" VARCHAR",
+            "+ \"value\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"bans\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR NOT NULL",
+            "+ \"ip_address\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"boosts\"",
+          "lines": [
+            "- \"content\" VARCHAR(16) NOT NULL",
+            "+ \"content\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"memberships\"",
+          "lines": [
+            "- \"connected_at\" DATETIME(6)",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"involvement\" VARCHAR DEFAULT 'mentions'",
+            "+ \"involvement\" TEXT DEFAULT 'mentions'",
+            "- \"unread_at\" DATETIME(6)",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")"
+          ]
+        },
+        {
+          "name": "\"message_search_index_content\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_data\"",
+          "only": "here"
+        },
+        {
+          "name": "\"message_search_index_docsize\"",
+          "only": "here"
+        },
+        {
+          "name": "\"messages\"",
+          "lines": [
+            "- \"client_message_id\" VARCHAR NOT NULL",
+            "+ \"client_message_id\" TEXT NOT NULL",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- INDEX (\"room_id\", \"created_at\")",
+            "- INDEX (\"room_id\", \"updated_at\")"
+          ]
+        },
+        {
+          "name": "\"push_subscriptions\"",
+          "lines": [
+            "- \"auth_key\" VARCHAR",
+            "+ \"auth_key\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"endpoint\" VARCHAR",
+            "+ \"endpoint\" TEXT",
+            "- \"p256dh_key\" VARCHAR",
+            "+ \"p256dh_key\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"rooms\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"creator_id\" BIGINT NOT NULL",
+            "+ \"creator_id\" INTEGER NOT NULL",
+            "- \"name\" VARCHAR",
+            "+ \"name\" TEXT",
+            "- \"type\" VARCHAR NOT NULL",
+            "+ \"type\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"schema_migrations\"",
+          "lines": [
+            "- \"version\" VARCHAR NOT NULL",
+            "+ \"version\" TEXT NOT NULL"
+          ]
+        },
+        {
+          "name": "\"searches\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"query\" VARCHAR NOT NULL",
+            "+ \"query\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"sessions\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"ip_address\" VARCHAR",
+            "+ \"ip_address\" TEXT",
+            "- \"last_active_at\" DATETIME(6) NOT NULL",
+            "- \"token\" VARCHAR NOT NULL",
+            "+ \"token\" TEXT NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"user_agent\" VARCHAR",
+            "+ \"user_agent\" TEXT"
+          ]
+        },
+        {
+          "name": "\"users\"",
+          "lines": [
+            "- \"bot_token\" VARCHAR",
+            "+ \"bot_token\" TEXT",
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"email_address\" VARCHAR",
+            "+ \"email_address\" TEXT",
+            "- \"name\" VARCHAR NOT NULL",
+            "+ \"name\" TEXT NOT NULL",
+            "- \"password_digest\" VARCHAR",
+            "+ \"password_digest\" TEXT",
+            "- \"updated_at\" DATETIME(6) NOT NULL"
+          ]
+        },
+        {
+          "name": "\"webhooks\"",
+          "lines": [
+            "- \"created_at\" DATETIME(6) NOT NULL",
+            "- \"updated_at\" DATETIME(6) NOT NULL",
+            "- \"url\" VARCHAR",
+            "+ \"url\" TEXT"
+          ]
+        }
+      ],
+      "onlySource": [
+        "CREATE VIRTUAL TABLE message_search_index USING fts5 (body, tokenize=porter)"
+      ],
+      "onlyHere": [],
+      "prisma": "differs:19"
+    },
+    "exposed": {
+      "status": "not-generated"
+    }
+  },
   "hekireki": "0.52.2",
-  "checked_at": "2026-11-23T14:49:19.143Z"
+  "checked_at": "2026-11-24T02:55:02.860Z"
 }

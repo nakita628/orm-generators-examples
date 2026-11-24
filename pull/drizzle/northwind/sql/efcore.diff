@@ -1,0 +1,41 @@
+--- source.sql
++++ sql/efcore.sql
+@@ -30,14 +30,6 @@
+     recipient_id character varying
+ );
+ 
+-CREATE TABLE public.order_details (
+-    unit_price double precision NOT NULL,
+-    quantity integer NOT NULL,
+-    discount double precision NOT NULL,
+-    order_id character varying NOT NULL,
+-    product_id character varying NOT NULL
+-);
+-
+ CREATE TABLE public.orders (
+     id character varying NOT NULL,
+     order_date date NOT NULL,
+@@ -95,19 +87,13 @@
+     ADD CONSTRAINT suppliers_pkey PRIMARY KEY (id);
+ 
+ ALTER TABLE ONLY public.employees
+-    ADD CONSTRAINT employees_recipient_id_employees_id_fkey FOREIGN KEY (recipient_id) REFERENCES public.employees(id);
+-
+-ALTER TABLE ONLY public.order_details
+-    ADD CONSTRAINT order_details_order_id_orders_id_fkey FOREIGN KEY (order_id) REFERENCES public.orders(id) ON DELETE CASCADE;
+-
+-ALTER TABLE ONLY public.order_details
+-    ADD CONSTRAINT order_details_product_id_products_id_fkey FOREIGN KEY (product_id) REFERENCES public.products(id) ON DELETE CASCADE;
++    ADD CONSTRAINT employees_recipient_id_fkey FOREIGN KEY (recipient_id) REFERENCES public.employees(id);
+ 
+ ALTER TABLE ONLY public.orders
+-    ADD CONSTRAINT orders_customer_id_customers_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id) ON DELETE CASCADE;
++    ADD CONSTRAINT orders_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(id) ON DELETE CASCADE;
+ 
+ ALTER TABLE ONLY public.orders
+-    ADD CONSTRAINT orders_employee_id_employees_id_fkey FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE;
++    ADD CONSTRAINT orders_employee_id_fkey FOREIGN KEY (employee_id) REFERENCES public.employees(id) ON DELETE CASCADE;
+ 
+ ALTER TABLE ONLY public.products
+-    ADD CONSTRAINT products_supplier_id_suppliers_id_fkey FOREIGN KEY (supplier_id) REFERENCES public.suppliers(id) ON DELETE CASCADE;
++    ADD CONSTRAINT products_supplier_id_fkey FOREIGN KEY (supplier_id) REFERENCES public.suppliers(id) ON DELETE CASCADE;

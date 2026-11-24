@@ -13,3 +13,6 @@ as they are, whatever the project's migrations say. The tables are dumped to
 
 The examples are listed in apps/djangoer; an example that cannot be pulled (a GIS project needs
 PostGIS, for instance) goes in `skip` of a `sources.json` here, with the reason.
+
+Each project's own `README.md` holds the SQL every ORM creates from the write-up (`sql/`) against
+`source.sql`; [results/](results/README.md) has the layer's matrices.

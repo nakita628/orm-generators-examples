@@ -1,6 +1,6 @@
 ---
 name: pull-check
-description: The daily pull of orm-generators-examples. Three well-known projects' own ORMs (Django, Drizzle, Active Record, SQLAlchemy) create their tables, the SQL is written up in Prisma by `prisma db pull` under pull/<orm>/<project>/, hekireki generates every ORM from that write-up, and the generated code runs against those tables; what is hekireki's fault becomes an issue on nakita628/hekireki. Use when the scheduled pull task fires, or when asked to "pull", "ORM の SQL を Prisma に書き起こす", or to check hekireki against another ORM's schema.
+description: The daily pull of orm-generators-examples. Three well-known projects' own ORMs (Django, Drizzle, Active Record, SQLAlchemy) create their tables, the SQL is written up in Prisma by `prisma db pull` under pull/<orm>/<project>/, hekireki generates every ORM from that write-up, the SQL each ORM creates from it is held to the project's own SQL, and the generated code runs against those tables; what is hekireki's fault becomes an issue on nakita628/hekireki. Use when the scheduled pull task fires, or when asked to "pull", "ORM の SQL を Prisma に書き起こす", or to check hekireki against another ORM's schema.
 ---
 
 # Daily pull
@@ -39,10 +39,12 @@ under "Not pulled" in its layer's results.
 
 ## 2. Read the results
 
-`pull/<orm>/results/README.md` (the layer's matrix) and `pull/<orm>/results/<project>.md` (each
-ORM's findings, and the diff of the tables it creates itself). Beside each write-up in
-`pull/<orm>/<project>/`: `source.sql`, `schema.prisma` (its header lists the changes pull.mjs made
-so that Prisma accepts it), `prisma-diff.sql`, `source.json`, and `generated/` (not committed).
+- `pull/<orm>/results/README.md`: the layer's two matrices, the runtime checks and the SQL.
+- `pull/<orm>/<project>/README.md`: every ORM's SQL (`sql/<orm>.sql`) against the project's own
+  (`source.sql`) and against Prisma's (`sql/prisma.sql`), with what differs, table by table.
+- `pull/<orm>/results/<project>.md`: each ORM's runtime findings.
+- Beside them: `schema.prisma` (its header lists the changes pull.mjs made so that Prisma accepts
+  it), `sql/<orm>.diff`, `source.json`, and `generated/` (not committed).
 
 ## 3. Is it still there in hekireki's latest release?
 
@@ -67,15 +69,21 @@ Read the generated code and the table (`source.sql`) before deciding.
 - the generated code disagrees with the table it is meant for: a wrong column name or type, a
   nullability, a default the ORM does not fill (or fills where the database does), a relation
   that does not load, a key it cannot use;
-- the tables the ORM creates on its own differ from the write-up in something the write-up
-  states (a lost index or unique, a wrong type or nullability, a dropped `map:` name, a wrong
-  `onDelete`).
+- the SQL the ORM creates differs from `sql/prisma.sql` (what Prisma itself creates from the
+  same write-up) in something the write-up states: a lost table, column, index or unique, a wrong
+  type, length or nullability, a lost default, a dropped `map:` name, a wrong `onDelete`. Check
+  that the ORM could have written it: Django, for one, makes every foreign key
+  `DEFERRABLE INITIALLY DEFERRED` and keeps `on_delete` in Python, and adds a `_like` index to
+  every indexed string column, whatever the model says; that is Django's, not hekireki's.
 
-**Prisma's**: not filed. Anything in `prisma-diff.sql`, anything listed in the write-up's header
+**Prisma's**: not filed. What `sql/prisma.sql` already lacks against `source.sql` (the write-up
+does not say it: check constraints, triggers, views), anything listed in the write-up's header
 under "Changed from what `prisma db pull` wrote", a column Prisma writes up as `Unsupported(...)`,
 and a pull that does not validate.
 
-**The pipeline's**: fix it here, not upstream.
+**The pipeline's**: fix it here, not upstream. That includes `pull/lib/sql.mjs` when two dumps
+that say the same thing come out as different (run `node pull/pull.mjs --compare-only <...>`
+after a change to it).
 - The project's ORM could not create its tables (a missing extension, a function the app creates
   outside its schema, a gem's DSL): give the source a `before_sql` / `after_sql` in the layer's
   `sources.json`, or teach the loader (`pull/activerecord/load_schema.rb`), and pull it again. If

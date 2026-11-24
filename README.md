@@ -29,7 +29,7 @@ tools/cloud/           Docker in a Claude Code cloud session, for hekireki's com
 apps/hekireki/         schemas/<name>/ (schema.prisma, generated/), checks/<lang>/, compat/, tools/
 apps/drizzler/         examples/<name>/ (src/, drizzle.config.ts, docs/), packages/tsconfig, tools/
 apps/djangoer/         examples/<name>/ (pyproject.toml, uv.lock, settings.py, outputs), scripts/, tools/
-pull/                  <orm>/<project>/: the SQL other ORMs generate (source.sql), written up in Prisma (schema.prisma)
+pull/                  <orm>/<project>/: an ORM's SQL (source.sql), its Prisma write-up, every ORM's SQL from it (sql/)
 ```
 
 ## Usage
@@ -98,9 +98,12 @@ an issue on hekireki, drizzler or Djangoer, and the example waits at its last go
 [pull/](pull) goes the other way: well-known projects written for other ORMs (every djangoer and
 drizzler example, Rails apps such as Mastodon and Forem, MLflow) have their own ORM create their
 tables, the tables are kept as SQL, and `prisma db pull` writes them up in Prisma, one layer per
-ORM (`pull/django/`, `pull/drizzle/`, `pull/activerecord/`, `pull/sqlalchemy/`). Every ORM
-hekireki generates from a write-up then runs against the project's own tables. A scheduled task
-does three projects a day and files what is hekireki's on hekireki. It runs on your own Docker:
+ORM (`pull/django/`, `pull/drizzle/`, `pull/activerecord/`, `pull/sqlalchemy/`). From a
+write-up, Prisma and every ORM hekireki generates create tables of their own, and their SQL is held
+to the project's own (`pull/<orm>/<project>/README.md`: does Django's SQL from hekireki's Django
+models come out as Django's SQL from the project's models?); the generated code also runs against
+the project's own tables. A scheduled task does three projects a day and files what is hekireki's
+on hekireki. It runs on your own Docker:
 
 ```sh
 pnpm install

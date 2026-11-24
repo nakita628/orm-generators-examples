@@ -13,3 +13,6 @@ models (`modules`) and runs their declarative base's `metadata.create_all()` (`b
 
 MLflow's models alone do not make a schema PostgreSQL accepts (a foreign key to a column without
 a unique constraint), so its own command is used, as its users do.
+
+Each project's own `README.md` holds the SQL every ORM creates from the write-up (`sql/`) against
+`source.sql`; [results/](results/README.md) has the layer's matrices.

@@ -2,7 +2,7 @@
 // Holds what hekireki generated to the database Prisma creates from the same schema.
 //
 //   node run.mjs [--orm drizzle,sqlalchemy,gorm] [schema ...]
-//   node run.mjs --schemas <dir> --results <dir> [--orm ...] [schema ...]
+//   node run.mjs --schemas <dir> --results <dir> [--ddl-sql <dir>] [--orm ...] [schema ...]
 //
 // --schemas: where <schema>/schema.prisma and <schema>/generated/<orm> are (default ../schemas).
 // --results: where the findings go (default results/). pull/pull.mjs, at the root of the
@@ -10,6 +10,8 @@
 // <schema>/source.sql beside the schema is that SQL, and the crud database is made from it instead
 // of from `prisma db push`, so the generated code runs against the tables the other ORM created.
 // A generated/<orm>.error in place of generated/<orm> is a generator that failed on the schema.
+// --ddl-sql: also keep the tables each ORM creates on its own, as SQL (pg_dump, mysqldump, or
+// SQLite's own schema) in <dir>/<schema>/<orm>.sql.
 //
 // For every schema and ORM:
 //
@@ -42,6 +44,7 @@ let schemasDir = resolve(here, '../schemas')
 // so the copied drizzle schema resolves drizzle-orm from this package.
 const workRoot = process.env.COMPAT_WORK ?? join(homedir(), '.cache', 'hekireki-compat')
 let resultsDir = join(here, 'results')
+let ddlSqlDir = null
 
 const ORMS = ['drizzle', 'kysely', 'sqlalchemy', 'django', 'gorm', 'sea-orm', 'ecto', 'activerecord', 'eloquent', 'efcore', 'exposed']
 // pgvector's image is PostgreSQL 17 with the vector extension, which formbricks asks for.
@@ -58,6 +61,7 @@ for (let i = 0; i < args.length; i++) {
   if (args[i] === '--orm') orms = args[++i].split(',')
   else if (args[i] === '--schemas') schemasDir = resolve(args[++i])
   else if (args[i] === '--results') resultsDir = resolve(args[++i])
+  else if (args[i] === '--ddl-sql') ddlSqlDir = resolve(args[++i])
   else schemas.push(args[i])
 }
 if (schemas.length === 0) throw new Error('usage: node run.mjs [--orm a,b] <schema> [schema ...]')
@@ -123,9 +127,18 @@ for (const name of schemas) {
         continue
       }
       const ddlUrl = await freshDatabase(plan.dialect, work, `${name}_${orm}_ddl`)
+      // The extensions a source.sql's tables use (vector, hstore, ...), which its CREATE EXTENSION
+      // gave the crud database, the ORM's own tables need too.
+      if (plan.dialect === 'postgresql' && existsSync(sourceSql))
+        for (const [, ext] of readFileSync(sourceSql, 'utf8').matchAll(/^CREATE EXTENSION IF NOT EXISTS ("?[\w-]+"?)/gm))
+          await admin(plan.dialect, `CREATE EXTENSION IF NOT EXISTS ${ext}`, new URL(ddlUrl).pathname.slice(1))
       const ddl = harness.ddl(prepared, join(work, 'plan.json'), ddlUrl)
       if (ddl.error) result.ddl = { error: ddl.error }
       else {
+        if (ddlSqlDir) {
+          mkdirSync(join(ddlSqlDir, name), { recursive: true })
+          writeFileSync(join(ddlSqlDir, name, `${orm}.sql`), dumpTables(plan.dialect, ddlUrl))
+        }
         const diff = prisma(work, ddlUrl, ['migrate', 'diff', '--from-config-datasource', '--to-schema', join(work, 'schema.prisma'), '--script'], true)
         result.ddl = diff.status === 0 ? { diff: cleanDiff(diff.stdout) } : { error: cleanError(diff.stderr || diff.stdout) }
       }
@@ -156,9 +169,8 @@ function about(name) {
   if (!existsSync(file)) return []
   const info = JSON.parse(readFileSync(file, 'utf8'))
   const link = (f) => relative(resultsDir, join(schemasDir, name, f))
-  const diff = existsSync(join(schemasDir, name, 'prisma-diff.sql'))
   const lines = [
-    `Written up from ${info.about}${info.commit ? ` at \`${info.commit.slice(0, 12)}\`` : ''}: [source.sql](${link('source.sql')}) holds the tables its own ORM created (the SQL every ORM below runs against)${diff ? `, and [prisma-diff.sql](${link('prisma-diff.sql')}) what the Prisma schema cannot say about them` : ''}.`,
+    `Written up from ${info.about}${info.commit ? ` at \`${info.commit.slice(0, 12)}\`` : ''}: [source.sql](${link('source.sql')}) holds the tables its own ORM created (the SQL every ORM below runs against), and its [README](${link('README.md')}) holds the SQL each ORM creates against it.`,
   ]
   if (info.fixes?.length) lines.push(`\`prisma db pull\` wrote a schema Prisma refuses; ${info.fixes.length} change${info.fixes.length === 1 ? '' : 's'} made it valid (listed in the schema's header).`)
   return lines
@@ -553,6 +565,33 @@ function prisma(work, url, command, allowFail = false) {
   })
   if (run.status !== 0 && !allowFail) throw new Error(`prisma ${command.join(' ')}: ${(run.stderr || run.stdout).trim().slice(-2000)}`)
   return run
+}
+
+// A database's tables as SQL (--ddl-sql), without what changes from one run to the next.
+function dumpTables(dialect, url) {
+  if (dialect === 'sqlite') {
+    const db = new (require('node:sqlite').DatabaseSync)(url.slice('file:'.length))
+    try {
+      // A virtual table (FTS5, ...) creates its shadow tables itself; they are left out.
+      const shadow = new Set(db.prepare("SELECT name FROM pragma_table_list WHERE type = 'shadow'").all().map((r) => r.name))
+      const rows = db.prepare("SELECT name, sql FROM sqlite_master WHERE sql IS NOT NULL AND name NOT LIKE 'sqlite_%' ORDER BY rowid").all()
+      return rows.filter((r) => !shadow.has(r.name)).map((r) => `${r.sql};`).join('\n\n') + '\n'
+    } finally {
+      db.close()
+    }
+  }
+  const db = new URL(url).pathname.slice(1)
+  const run =
+    dialect === 'postgresql'
+      ? sh(['docker', 'exec', PG.name, 'pg_dump', '-U', 'postgres', '--schema-only', '--no-owner', '--no-privileges', db])
+      : sh(['docker', 'exec', MYSQL.name, 'mysqldump', '-uroot', '-pcompat', '--no-data', '--skip-comments', '--compact', '--triggers', '--routines', db])
+  if (run.status !== 0) return `-- could not dump ${db}: ${cleanError(run.stderr || run.stdout)}\n`
+  return run.stdout
+    .replace(/^\\(un)?restrict .*\n/gm, '')
+    .replace(/^--.*\n/gm, '')
+    .replace(/ AUTO_INCREMENT=\d+/g, '')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/^\n+/, '')
 }
 
 function cleanDiff(sql) {

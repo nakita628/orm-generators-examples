@@ -9,7 +9,53 @@
   "tables": 61,
   "models": 61,
   "prisma": "8.1.0-dev.9",
-  "pulled_at": "2026-11-23T14:46:23.647Z",
+  "pulled_at": "2026-11-24T03:00:14.601Z",
+  "sql": {
+    "prisma": {
+      "status": "error",
+      "error": "Error: ERROR: cannot use column reference in DEFAULT expression"
+    },
+    "drizzle": {
+      "status": "error",
+      "error": "Error: ERROR: syntax error at or near \",\""
+    },
+    "kysely": {
+      "status": "none"
+    },
+    "sqlalchemy": {
+      "status": "error",
+      "error": "psycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression"
+    },
+    "django": {
+      "status": "error",
+      "error": "psycopg.errors.FeatureNotSupported: cannot use column reference in DEFAULT expression"
+    },
+    "gorm": {
+      "status": "error",
+      "error": "ERROR: relation \"users\" does not exist (SQLSTATE 42P01)"
+    },
+    "sea-orm": {
+      "status": "error",
+      "error": "\"chats\": Execution Error: error returned from database: relation \"users\" does not exist"
+    },
+    "ecto": {
+      "status": "none"
+    },
+    "activerecord": {
+      "status": "none"
+    },
+    "eloquent": {
+      "status": "none"
+    },
+    "efcore": {
+      "status": "error",
+      "error": "0A000: cannot use column reference in DEFAULT expression"
+    },
+    "exposed": {
+      "status": "error",
+      "error": "Exception in thread \"main\" org.jetbrains.exposed.v1.exceptions.ExposedSQLException: org.postgresql.util.PSQLException: ERROR: cannot use column reference in DEFAULT expression"
+    }
+  },
   "hekireki": "0.52.2",
-  "checked_at": "2026-11-23T14:48:24.684Z"
+  "checked_at": "2026-11-24T03:02:54.439Z"
 }

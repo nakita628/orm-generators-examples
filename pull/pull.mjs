@@ -1,16 +1,19 @@
 #!/usr/bin/env node
-// Writes up, in Prisma, the SQL that other ORMs generate. A well-known project's own ORM creates
-// its tables from the project's definitions (Django models, a Drizzle schema, a Rails
-// db/schema.rb, ...), the tables are kept as SQL, and `prisma db pull` writes them up as a Prisma
-// schema. Then hekireki generates every ORM's code from that schema, and apps/hekireki/compat
-// runs the code against the tables the project's own ORM created: whether what hekireki writes
-// from a schema it did not see written for Prisma is valid for each ORM, and works.
+// Writes up, in Prisma, the SQL that other ORMs generate, and holds the SQL of every ORM hekireki
+// generates from the write-up to it. A well-known project's own ORM creates its tables from the
+// project's definitions (Django models, a Drizzle schema, a Rails db/schema.rb, ...), the tables
+// are kept as SQL, and `prisma db pull` writes them up as a Prisma schema. Then hekireki generates
+// every ORM's code from that schema, and apps/hekireki/compat runs the code against the tables the
+// project's own ORM created, and has each ORM create tables of its own: whether the code is valid
+// for each ORM and works, and whether the SQL each ORM creates from it is the project's own SQL.
 //
 //   node pull/pull.mjs <orm>/<project> [...]     django/wagtail, drizzle/northwind, activerecord/mastodon
 //   node pull/pull.mjs --random 3                three: never pulled first, then the oldest
 //   node pull/pull.mjs --list                    every source, with when it was last checked
 //   node pull/pull.mjs --pull-only <...>         only the write-up: source.sql and schema.prisma
 //   node pull/pull.mjs --orm django,gorm <...>   check only these of hekireki's ORMs
+//   node pull/pull.mjs --compare-only <...>      hold the SQL already in sql/ to source.sql again,
+//                                                and write the READMEs (no database)
 //   node pull/pull.mjs --hekireki latest <...>   check with another hekireki release (installed in
 //                                                the cache); nothing under pull/ changes, the
 //                                                results go to the cache
@@ -27,19 +30,25 @@
 // A layer's sources.json may also `skip` a source that cannot be pulled, with the reason.
 //
 // What it writes, in pull/<orm>/<project>/ (committed):
-//   source.sql       the tables as the project's ORM created them (pg_dump, mysqldump, sqlite_master)
+//   source.sql       the SQL of the tables the project's own ORM created (pg_dump, mysqldump, or
+//                    SQLite's own schema)
 //   schema.prisma    `prisma db pull` of those tables: the write-up
-//   prisma-diff.sql  what `prisma migrate diff` would run to turn the tables into the schema's,
-//                    that is what the Prisma schema cannot say about them (left out when empty)
-//   source.json      where it came from, the versions, and when it was checked
+//   sql/<orm>.sql    the SQL of the tables each ORM creates on its own from the write-up, dumped the
+//                    way source.sql is: Prisma's (`prisma db push`), and every ORM hekireki
+//                    generates that creates tables; sql/<orm>.diff, the whole diff against
+//                    source.sql, beside each one that differs (lib/sql.mjs)
+//   README.md        each sql/<orm>.sql against source.sql
+//   source.json      where it came from, the versions, when it was checked, the comparison
 // and generated/ (hekireki's output, not committed; a generator that fails leaves
-// generated/<orm>.error). The checks go to pull/<orm>/results/.
+// generated/<orm>.error). The runtime checks go to pull/<orm>/results/, with the matrix of the
+// layer's comparisons.
 import { spawnSync } from 'node:child_process'
 import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { homedir } from 'node:os'
 import { dirname, join, relative, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { compareSql } from './lib/sql.mjs'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const repo = resolve(here, '..')
@@ -76,6 +85,7 @@ let random = 0
 let list = false
 let pullOnly = false
 let hekirekiVersion = null
+let compareOnly = false
 const wanted = []
 for (let i = 0; i < args.length; i++) {
   if (args[i] === '--orm') orms = args[++i].split(',')
@@ -83,6 +93,7 @@ for (let i = 0; i < args.length; i++) {
   else if (args[i] === '--list') list = true
   else if (args[i] === '--pull-only') pullOnly = true
   else if (args[i] === '--hekireki') hekirekiVersion = args[++i]
+  else if (args[i] === '--compare-only') compareOnly = true
   else wanted.push(args[i])
 }
 
@@ -154,6 +165,18 @@ async function main() {
   if (chosen.length === 0) throw new Error('usage: node pull/pull.mjs [--orm a,b] [--pull-only] [--hekireki <version>] (<orm>/<project> ... | --random N | --list)')
 
   mkdirSync(workRoot, { recursive: true })
+  if (compareOnly) {
+    for (const source of chosen) {
+      const infoFile = join(layersDir, source.layer, source.name, 'source.json')
+      if (!existsSync(infoFile)) continue
+      const info = JSON.parse(readFileSync(infoFile, 'utf8'))
+      compareAll(source, info, Object.keys(CREATES).filter((o) => existsSync(join(layersDir, source.layer, source.name, 'sql', `${o}.sql`)) || info.sql?.[o]))
+      writeFileSync(infoFile, JSON.stringify(info, null, 2) + '\n')
+      writeReadme(source, info)
+    }
+    for (const layer of new Set(chosen.map((s) => s.layer))) writeIndex(layer)
+    return
+  }
   if (hekirekiVersion) useHekireki(hekirekiVersion, chosen)
   const failed = []
   for (const source of chosen) {
@@ -203,12 +226,16 @@ async function pullSource(source) {
   const { models, features, fixes } = validate(source, pulledModels, work, url)
   writeFileSync(join(dir, 'schema.prisma'), writeUp(source, models, features, fixes))
 
-  // What the Prisma schema cannot say about the tables.
-  const diff = prisma(work, url, ['migrate', 'diff', '--from-config-datasource', '--to-schema', join(dir, 'schema.prisma'), '--script'])
-  const diffSql = diff.status === 0 ? diff.stdout.trim() : `-- prisma migrate diff failed:\n-- ${tail(diff).replaceAll('\n', '\n-- ')}`
-  const diffFile = join(dir, 'prisma-diff.sql')
-  if (diffSql && !/^-- This is an empty migration\.?$/.test(diffSql)) writeFileSync(diffFile, diffSql + '\n')
-  else rmSync(diffFile, { force: true })
+  // The tables Prisma itself creates from the write-up, dumped the same way: sql/prisma.sql.
+  rmSync(join(dir, 'prisma-diff.sql'), { force: true })
+  const sqlDir = join(dir, 'sql')
+  rmSync(sqlDir, { recursive: true, force: true })
+  mkdirSync(sqlDir, { recursive: true })
+  const pushUrl = await freshDatabase(source.dialect, work, `pull_${source.layer}_${source.name}_prisma`)
+  const push = prisma(work, pushUrl, ['db', 'push', '--schema', join(dir, 'schema.prisma')])
+  writeFileSync(join(sqlDir, 'prisma.sql'), push.status === 0 ? dump(source.dialect, pushUrl) : `-- prisma db push failed:\n-- ${tail(push).replaceAll('\n', '\n-- ')}\n`)
+  dropDatabase(source.dialect, pushUrl)
+  dropDatabase(source.dialect, url)
 
   const info = {
     source: source.key,
@@ -223,7 +250,10 @@ async function pullSource(source) {
     pulled_at: new Date().toISOString(),
   }
   writeFileSync(join(dir, 'source.json'), JSON.stringify(info, null, 2) + '\n')
-  console.log(`${source.key}: ${created} tables, ${info.models} models${existsSync(diffFile) ? ', prisma-diff.sql' : ''}`)
+  compareAll(source, info, ['prisma'])
+  writeFileSync(join(dir, 'source.json'), JSON.stringify(info, null, 2) + '\n')
+  writeReadme(source, info)
+  console.log(`${source.key}: ${created} tables, ${info.models} models`)
 }
 
 const CREATE = {
@@ -471,16 +501,195 @@ function generate(source) {
 // --- 4. the generated code, run against tables made from source.sql -----------------------------
 
 // apps/hekireki/compat/run.mjs over this layer: every ORM's harness loads the generated code and
-// runs it against a database made from source.sql (not from `prisma db push`).
+// runs it against a database made from source.sql (not from `prisma db push`), and each ORM that
+// creates tables creates them on its own, which --ddl-sql keeps as sql/<orm>.sql.
 function check(source) {
   const layer = join(layersDir, source.layer)
-  const run = spawnSync('node', [join(compat, 'run.mjs'), '--schemas', layer, '--results', join(layer, 'results'), '--orm', orms.join(','), source.name], { stdio: 'inherit' })
+  const dir = join(layer, source.name)
+  const ddlSql = join(workRoot, source.layer, source.name, 'ddl-sql')
+  rmSync(ddlSql, { recursive: true, force: true })
+  const run = spawnSync(
+    'node',
+    [join(compat, 'run.mjs'), '--schemas', layer, '--results', join(layer, 'results'), '--ddl-sql', ddlSql, '--orm', orms.join(','), source.name],
+    { stdio: 'inherit' },
+  )
   if (run.status !== 0) throw new Error(`run.mjs exited with ${run.status}`)
-  const infoFile = join(layer, source.name, 'source.json')
+  const sqlDir = join(dir, 'sql')
+  mkdirSync(sqlDir, { recursive: true })
+  // This run's ORMs only: a run with --orm keeps what an earlier one left for the others.
+  for (const orm of orms) for (const ext of ['sql', 'diff']) rmSync(join(sqlDir, `${orm}.${ext}`), { force: true })
+  const dumped = join(ddlSql, source.name)
+  for (const f of existsSync(dumped) ? readdirSync(dumped) : []) cpSync(join(dumped, f), join(sqlDir, f))
+  const infoFile = join(dir, 'source.json')
   const info = JSON.parse(readFileSync(infoFile, 'utf8'))
   info.hekireki = hekirekiVersion ?? hekirekiRequire('hekireki/package.json').version
   info.checked_at = new Date().toISOString()
+  compareAll(source, info, ['prisma', ...orms])
   writeFileSync(infoFile, JSON.stringify(info, null, 2) + '\n')
+  writeReadme(source, info)
+}
+
+// The ORMs that create tables of their own, how, and what the others do instead.
+const CREATES = {
+  prisma: { from: 'Prisma: schema.prisma', how: '`prisma db push`' },
+  drizzle: { from: 'hekireki-drizzle', how: '`drizzle-kit export`' },
+  kysely: { from: 'hekireki-kysely', none: 'writes types only' },
+  sqlalchemy: { from: 'hekireki-sqlalchemy', how: '`metadata.create_all()`' },
+  django: { from: 'hekireki-django', how: '`makemigrations`, `migrate`' },
+  gorm: { from: 'hekireki-gorm', how: '`AutoMigrate`' },
+  'sea-orm': { from: 'hekireki-sea-orm', how: '`Schema::create_table_from_entity`' },
+  ecto: { from: 'hekireki-ecto', none: 'writes schemas only (no migrations)' },
+  activerecord: { from: 'hekireki-activerecord', none: 'writes models only (no migrations)' },
+  eloquent: { from: 'hekireki-eloquent', none: 'writes models only (no migrations)' },
+  efcore: { from: 'hekireki-efcore', how: '`EnsureCreated()`' },
+  exposed: { from: 'hekireki-exposed', how: '`SchemaUtils.create`' },
+}
+
+// Every sql/<orm>.sql against source.sql: info.sql[orm] is `identical`, `names` (the same but for
+// constraint and index names, and order), `differs` (with how many statements each side alone
+// has), or why there is no SQL; sql/<orm>.diff beside every one that is not identical.
+function compareAll(source, info, which = Object.keys(CREATES)) {
+  const dir = join(layersDir, source.layer, source.name)
+  const sqlDir = join(dir, 'sql')
+  const original = readFileSync(join(dir, 'source.sql'), 'utf8')
+  const resultsFile = join(layersDir, source.layer, 'results', `${source.name}.json`)
+  const results = existsSync(resultsFile) ? (JSON.parse(readFileSync(resultsFile, 'utf8')).results ?? []) : []
+  info.sql = Object.fromEntries(Object.entries(info.sql ?? {}).filter(([orm]) => !which.includes(orm)))
+  for (const orm of Object.keys(CREATES).filter((o) => which.includes(o))) {
+    const file = join(sqlDir, `${orm}.sql`)
+    const diffFile = join(sqlDir, `${orm}.diff`)
+    rmSync(diffFile, { force: true })
+    const r = results.find((x) => x.orm === orm)
+    if (!existsSync(file)) {
+      if (CREATES[orm].none) info.sql[orm] = { status: 'none' }
+      else if (orm === 'exposed' && source.dialect !== 'postgresql') info.sql[orm] = { status: 'not-generated' }
+      else if (r?.generatorError || r?.notGenerated) info.sql[orm] = { status: 'not-generated' }
+      else if (r?.ddl?.error) info.sql[orm] = { status: 'error', error: errorLine(r.ddl.error) }
+      else if (r?.fatal) info.sql[orm] = { status: 'error', error: 'the harness did not run' }
+      else if (r || orm === 'prisma') info.sql[orm] = { status: 'missing' }
+      continue
+    }
+    const sql = readFileSync(file, 'utf8')
+    if (!sql.trim()) {
+      info.sql[orm] = { status: 'error', error: 'no tables' }
+      continue
+    }
+    if (/^-- (prisma db push failed|could not dump)/.test(sql)) {
+      info.sql[orm] = { status: 'error', error: errorLine(sql) }
+      continue
+    }
+    const c = compareSql(original, sql, source.dialect)
+    info.sql[orm] = c.identical
+      ? { status: 'identical' }
+      : c.sameButNames
+        ? { status: 'names' }
+        : { status: 'differs', tables: c.tables, onlySource: c.onlySource, onlyHere: c.onlyOther }
+    // The whole diff where the SQL says something else; not for names alone.
+    if (!c.identical && !c.sameButNames) writeFileSync(diffFile, c.diff.replace(/^\+\+\+ other\.sql$/m, `+++ sql/${orm}.sql`))
+    // Against what Prisma itself creates from the same write-up: a difference there is the ORM's
+    // or hekireki's, one only against source.sql is what the write-up does not say.
+    const prismaFile = join(sqlDir, 'prisma.sql')
+    if (orm !== 'prisma' && existsSync(prismaFile) && !/^-- prisma db push failed/.test(readFileSync(prismaFile, 'utf8'))) {
+      const p = compareSql(readFileSync(prismaFile, 'utf8'), sql, source.dialect)
+      const n = p.tables.length + p.onlySource.length + p.onlyOther.length
+      info.sql[orm].prisma = p.identical ? 'identical' : p.sameButNames ? 'names' : `differs:${n}`
+    }
+  }
+}
+
+// The line of an error that says what went wrong: a Python traceback's last exception line, else
+// the first line that says ERROR or Error, else the first line; tools' own chatter left out.
+function errorLine(text) {
+  const lines = text
+    .split('\n')
+    .map((l) => l.replace(/^--\s?/, '').trim())
+    .filter((l) => l && !/^(Loaded Prisma config|Prisma schema loaded|Picked up JAVA_TOOL_OPTIONS|prisma db push failed:?)/i.test(l))
+  const traceback = text.includes('Traceback') ? [...lines].reverse().find((l) => /^[A-Za-z_][\w.]*: \S/.test(l) && !l.startsWith('File ')) : null
+  const said = lines.find((l) => /\b(ERROR|Error|Exception)\b/.test(l))
+  return (traceback ?? said ?? lines[0] ?? '').slice(0, 300)
+}
+
+const MARK = { identical: '= identical', names: '≈ the same but for names', differs: '≠', error: '❌ could not create its tables', none: '—', 'not-generated': 'not generated', missing: '?' }
+
+function sqlCell(c, short = false) {
+  if (!c) return ''
+  if (c.status === 'differs') {
+    const tables = c.tables ?? []
+    const changed = tables.filter((t) => t.lines).length
+    const onlySource = tables.filter((t) => t.only === 'source').length
+    const onlyHere = tables.filter((t) => t.only === 'here').length
+    const n = tables.length + c.onlySource.length + c.onlyHere.length
+    if (short) return `≠ ${n}`
+    const plural = (k, one, many = `${one}s`) => `${k} ${k === 1 ? one : many}`
+    return `≠ ${[
+      changed ? `${plural(changed, 'table')} written differently` : null,
+      onlySource ? `${plural(onlySource, 'table')} only in source.sql` : null,
+      onlyHere ? `${plural(onlyHere, 'table')} only here` : null,
+      c.onlySource.length ? `${plural(c.onlySource.length, 'other statement')} only in source.sql` : null,
+      c.onlyHere.length ? `${plural(c.onlyHere.length, 'other statement')} only here` : null,
+    ]
+      .filter(Boolean)
+      .join(', ')}`
+  }
+  if (short) return { identical: '=', names: '≈', error: '❌', none: '—', 'not-generated': 'not generated', missing: '?' }[c.status]
+  return MARK[c.status]
+}
+
+// pull/<orm>/<project>/README.md: where the tables came from and every ORM's SQL against them.
+function writeReadme(source, info) {
+  const dir = join(layersDir, source.layer, source.name)
+  const about = info.about ?? source.about
+  const rows = Object.entries(CREATES).map(([orm, c]) => {
+    const r = info.sql?.[orm]
+    const file = existsSync(join(dir, 'sql', `${orm}.sql`)) ? `[${orm}.sql](sql/${orm}.sql)` : '—'
+    const against = !r ? 'not checked yet' : r.status === 'none' ? c.none : `${sqlCell(r)}${existsSync(join(dir, 'sql', `${orm}.diff`)) ? ` ([diff](sql/${orm}.diff))` : ''}${r.error ? `: ${r.error.replaceAll('|', '\\|')}` : ''}`
+    const vsPrisma = orm === 'prisma' ? '' : !r?.prisma ? '—' : r.prisma === 'identical' ? '=' : r.prisma === 'names' ? '≈' : `≠ ${r.prisma.split(':')[1]}`
+    return `| ${c.from} | ${c.how ?? '—'} | ${file} | ${against} | ${vsPrisma} |`
+  })
+  // What differs, as a diff: the tables both sides have, column by column, then the statements
+  // only one side has.
+  const cut = (x) => (x.length > 300 ? `${x.slice(0, 300)} …` : x)
+  const details = Object.entries(info.sql ?? {})
+    .filter(([, r]) => r.status === 'differs')
+    .flatMap(([orm, r]) => {
+      const body = [
+        ...(r.tables ?? []).flatMap((t) =>
+          t.only === 'source' ? [`- ${t.name} (the table is only in source.sql)`] : t.only === 'here' ? [`+ ${t.name} (the table is only in sql/${orm}.sql)`] : [`@@ ${t.name}`, ...t.lines.map(cut)],
+        ),
+        ...(r.onlySource.length ? ['@@ only in source.sql', ...r.onlySource.map((x) => `- ${cut(x)}`)] : []),
+        ...(r.onlyHere.length ? [`@@ only in sql/${orm}.sql`, ...r.onlyHere.map((x) => `+ ${cut(x)}`)] : []),
+      ]
+      const shown = body.slice(0, 120)
+      return [
+        '',
+        `<details><summary>${CREATES[orm].from}: ${sqlCell(r).replace(/^≠ /, '')}</summary>`,
+        '',
+        '```diff',
+        ...shown,
+        ...(body.length > shown.length ? [`@@ … ${body.length - shown.length} more lines in sql/${orm}.diff`] : []),
+        '```',
+        '',
+        '</details>',
+      ]
+    })
+  const lines = [
+    `# ${source.key}`,
+    '',
+    `The tables ${ORM_NAMES[source.layer]} creates from ${about}, as SQL: [source.sql](source.sql). \`prisma db pull\` writes them up as [schema.prisma](schema.prisma)${info.fixes?.length ? ` (with ${info.fixes.length} change${info.fixes.length === 1 ? '' : 's'} so that Prisma accepts it, listed in its header)` : ''}, and from that write-up Prisma and every ORM hekireki generates create tables of their own; their SQL is in [sql/](sql), dumped the way source.sql is, and held to it here.`,
+    '',
+    `\`=\` identical · \`≈\` the same but for constraint and index names, and the order of columns and statements · \`≠\` tables written differently, or statements one side has and the other does not. The last column holds each ORM's SQL to what Prisma itself creates from the same write-up: a difference there is the ORM's or hekireki's, one only against source.sql is something the write-up does not say.`,
+    '',
+    '| From the write-up | Creates the tables with | SQL | Against source.sql | Against prisma.sql |',
+    '| --- | --- | --- | --- | --- |',
+    ...rows,
+    '',
+    `${info.models ?? '?'} models, ${info.dialect}. ${info.hekireki ? `hekireki ${info.hekireki}, ` : ''}Prisma ${info.prisma ?? '?'}. The same code run against source.sql's tables: [results/${source.name}.md](../results/${source.name}.md).`,
+    ...details,
+    '',
+    'Written by `node pull/pull.mjs`; do not edit.',
+    '',
+  ]
+  writeFileSync(join(dir, 'README.md'), lines.join('\n'))
 }
 
 function recordFailure(source, e) {
@@ -514,12 +723,41 @@ function writeIndex(layer) {
     intro: `Each project's tables as ${ORM_NAMES[layer]} created them (\`<project>/source.sql\`), written up by \`prisma db pull\` (\`<project>/schema.prisma\`); every ORM hekireki generates from that write-up runs against those tables. Each cell: the runtime checks that passed (insert, read back, update, relations, delete, per model) and whether the tables the ORM creates on its own are the written-up ones. Generated by \`node pull/pull.mjs\`; do not edit.`,
     columns: [
       { title: 'Models', value: (s) => String(info(s.name).models ?? '') },
-      { title: 'Prisma diff', value: (s) => (existsSync(join(layerDir, s.name, 'prisma-diff.sql')) ? `[yes](../${s.name}/prisma-diff.sql)` : 'none') },
       { title: 'hekireki', value: (s) => info(s.name).hekireki ?? '' },
     ],
   })
   const failures = notPulled.length ? `\n## Not pulled\n\n${notPulled.map((f) => `- **${layer}/${f.name}**: ${f.error.split('\n')[0].slice(0, 300)}`).join('\n')}\n` : ''
-  writeFileSync(join(resultsDir, 'README.md'), index + failures)
+  // The SQL each ORM creates from the write-up, against source.sql (pull/<orm>/<project>/README.md).
+  const creating = Object.keys(CREATES).filter((o) => !CREATES[o].none)
+  const compared = readdirSync(layerDir)
+    .filter((name) => existsSync(join(layerDir, name, 'source.json')) && info(name).sql)
+    .sort()
+  const vsPrisma = (c) => (!c?.prisma ? (c ? sqlCell(c, true) : '') : c.prisma === 'identical' ? '=' : c.prisma === 'names' ? '≈' : `≠ ${c.prisma.split(':')[1]}`)
+  const ormColumns = creating.filter((o) => o !== 'prisma')
+  const sqlMatrix = compared.length
+    ? [
+        '',
+        '## The SQL each ORM creates from the write-up',
+        '',
+        '`=` identical · `≈` the same but for constraint and index names, and order · `≠ n` n tables (or other statements) that differ · `❌` could not create its tables. Each project\'s README shows what differs.',
+        '',
+        '### Against source.sql, the project\'s own SQL',
+        '',
+        `| Project | ${creating.join(' | ')} |`,
+        `| --- | ${creating.map(() => '---').join(' | ')} |`,
+        ...compared.map((name) => `| [${name}](../${name}/README.md) | ${creating.map((o) => sqlCell(info(name).sql[o], true) ?? '').join(' | ')} |`),
+        '',
+        '### Against prisma.sql, what Prisma itself creates from the same write-up',
+        '',
+        'What the write-up cannot say (Django\'s identity columns become serial ones, check constraints go) is the same for every ORM, and is left out here: a difference here is the ORM\'s or hekireki\'s.',
+        '',
+        `| Project | ${ormColumns.join(' | ')} |`,
+        `| --- | ${ormColumns.map(() => '---').join(' | ')} |`,
+        ...compared.map((name) => `| [${name}](../${name}/README.md) | ${ormColumns.map((o) => vsPrisma(info(name).sql[o]) ?? '').join(' | ')} |`),
+        '',
+      ].join('\n')
+    : ''
+  writeFileSync(join(resultsDir, 'README.md'), index + sqlMatrix + failures)
 }
 
 // --hekireki: another release, installed beside the work directory with the Prisma this
@@ -548,7 +786,7 @@ function useHekireki(version, chosen) {
     const to = join(layersDir, source.layer, source.name)
     rmSync(to, { recursive: true, force: true })
     mkdirSync(to, { recursive: true })
-    for (const f of ['schema.prisma', 'source.sql', 'source.json', 'prisma-diff.sql']) if (existsSync(join(from, f))) cpSync(join(from, f), join(to, f))
+    for (const f of ['schema.prisma', 'source.sql', 'source.json', 'sql']) if (existsSync(join(from, f))) cpSync(join(from, f), join(to, f), { recursive: true })
   }
 }
 
@@ -573,6 +811,12 @@ async function freshDatabase(dialect, work, name) {
   return `file:${file}`
 }
 
+function dropDatabase(dialect, url) {
+  if (dialect === 'postgresql') psql('postgres', `DROP DATABASE IF EXISTS "${dbName(url)}" WITH (FORCE)`)
+  else if (dialect === 'mysql') mysql(`DROP DATABASE IF EXISTS \`${dbName(url)}\``)
+  else rmSync(url.slice('file:'.length), { force: true })
+}
+
 function up({ name, image, port }) {
   sh(['docker', 'network', 'create', NETWORK])
   const running = sh(['docker', 'ps', '--format', '{{.Image}}', '-f', `name=^${name}$`]).stdout.trim()
@@ -583,8 +827,11 @@ function up({ name, image, port }) {
     if (started.status !== 0) throw new Error(`docker run ${image}: ${started.stderr}`)
   }
   sh(['docker', 'network', 'connect', NETWORK, name])
+  // Over TCP: while the image initializes, a temporary server answers on the socket only.
   for (let i = 0; i < 90; i++) {
-    const ok = image.startsWith('mysql') ? sh(['docker', 'exec', name, 'mysql', '-uroot', '-pcompat', '-e', 'SELECT 1']) : sh(['docker', 'exec', name, 'pg_isready', '-U', 'postgres'])
+    const ok = image.startsWith('mysql')
+      ? sh(['docker', 'exec', name, 'mysql', '-h127.0.0.1', '-uroot', '-pcompat', '-e', 'SELECT 1'])
+      : sh(['docker', 'exec', name, 'pg_isready', '-h', '127.0.0.1', '-U', 'postgres'])
     if (ok.status === 0) return
     spawnSync('sleep', ['1'])
   }
@@ -638,10 +885,12 @@ function dump(dialect, url) {
   if (dialect === 'postgresql') {
     const run = sh(['docker', 'exec', PG.name, 'pg_dump', '-U', 'postgres', '--schema-only', '--no-owner', '--no-privileges', dbName(url)])
     if (run.status !== 0) throw new Error(`pg_dump: ${tail(run)}`)
+    // pg_dump's own comment lines (`-- Name: ...; Type: ...`) go: the statements stay.
     return run.stdout
       .replace(/^\\(un)?restrict .*\n/gm, '')
-      .replace(/^-- Dumped (from database|by pg_dump) version .*\n/gm, '')
+      .replace(/^--.*\n/gm, '')
       .replace(/\n{3,}/g, '\n\n')
+      .replace(/^\n+/, '')
   }
   if (dialect === 'mysql') {
     const run = sh(['docker', 'exec', MYSQL.name, 'mysqldump', '-uroot', '-pcompat', '--no-data', '--skip-comments', '--compact', '--skip-dump-date', '--triggers', '--routines', dbName(url)])

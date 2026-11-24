@@ -26,3 +26,6 @@ outside its schema.rb: Mastodon's `timestamp_id()` id default and the sequences 
 
 `skip`: Discourse, whose db/structure.sql `prisma db pull` writes up with relations between integer
 and bigint columns that `prisma validate` refuses in more places than pull.mjs changes.
+
+Each project's own `README.md` holds the SQL every ORM creates from the write-up (`sql/`) against
+`source.sql`; [results/](results/README.md) has the layer's matrices.
