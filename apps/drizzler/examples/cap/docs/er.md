@@ -250,6 +250,7 @@ erDiagram
         text xStreamInfo "LEGACY"
         timestamp firstViewEmailSentAt
         boolean isScreenshot
+        timestamp archivedAt
         varchar awsRegion "DEPRECATED"
         varchar awsBucket
         varchar videoStartTime
@@ -407,6 +408,40 @@ erDiagram
         varchar source
         timestamp createdAt
     }
+    user_passkeys {
+        varchar id PK
+        varchar userId
+        varchar credentialId
+        varchar credentialIdHash
+        text publicKey
+        bigint counter
+        json transports
+        varchar deviceType
+        boolean backedUp
+        boolean confirmsIdentity
+        varchar aaguid
+        varchar name
+        timestamp createdAt
+        timestamp lastUsedAt
+    }
+    auth_challenges {
+        varchar id PK
+        varchar userId
+        varchar purpose
+        varchar secretHash
+        integer attempts
+        datetime expiresAt
+        timestamp createdAt
+    }
+    email_change_requests {
+        varchar id PK
+        varchar userId
+        varchar newEmail
+        varchar codeHash
+        integer attempts
+        datetime expiresAt
+        timestamp createdAt
+    }
     mobile_push_tokens {
         varchar id PK
         varchar userId
@@ -538,6 +573,7 @@ erDiagram
         varchar videoId FK
         varchar addedById FK
         timestamp addedAt
+        integer position
     }
     video_uploads {
         varchar video_id PK
@@ -778,5 +814,15 @@ erDiagram
         timestamp startedAt
         timestamp finishedAt
         timestamp createdAt
+    }
+    meeting_notes_trial_uses {
+        varchar userId PK
+        varchar meetingId PK
+        integer slot
+        integer notesRuns
+        integer askRuns
+        datetime startedAt
+        datetime completedAt
+        datetime createdAt
     }
 ```

@@ -2,9 +2,9 @@
 
 The schema of Cap, an open-source alternative to Loom: users and auth, organizations and spaces, videos and their uploads, comments, folders, shared and public collections, storage integrations, S3 buckets, notifications, developer API videos and more.
 
-- Source: [CapSoftware/Cap `packages/database/schema.ts`](https://github.com/CapSoftware/Cap/blob/c23d12dfdf671c2732eddb101139f0f6f1f8a588/packages/database/schema.ts), [`helpers.ts`](https://github.com/CapSoftware/Cap/blob/c23d12dfdf671c2732eddb101139f0f6f1f8a588/packages/database/helpers.ts) and [`types/`](https://github.com/CapSoftware/Cap/tree/c23d12dfdf671c2732eddb101139f0f6f1f8a588/packages/database/types) (AGPL-3.0)
+- Source: [CapSoftware/Cap `packages/database/schema.ts`](https://github.com/CapSoftware/Cap/blob/09bdc687c1adc0284916d635c8ad8eca9a46ed59/packages/database/schema.ts), [`helpers.ts`](https://github.com/CapSoftware/Cap/blob/09bdc687c1adc0284916d635c8ad8eca9a46ed59/packages/database/helpers.ts) and [`types/`](https://github.com/CapSoftware/Cap/tree/09bdc687c1adc0284916d635c8ad8eca9a46ed59/packages/database/types) (AGPL-3.0)
 - Dialect: MySQL
-- Covers: 58 MySQL tables in one file, `customType` columns sized from an imported constant (`varchar(${nanoIdLength})`), `int`, `bigint`, `float`, `datetime`, `longtext` and `mediumtext`, `json().$type<...>()` with branded types, `varchar({ enum })` from imported constant lists, composite and `uniqueIndex` keys, `tablesFilter` in `drizzle.config.ts`, and v1 `relations`
+- Covers: 62 MySQL tables in one file, `customType` columns sized from an imported constant (`varchar(${nanoIdLength})`), `int`, `bigint`, `float`, `datetime`, `longtext` and `mediumtext`, `json().$type<...>()` with branded types, `varchar({ enum })` from imported constant lists, composite and `uniqueIndex` keys, `tablesFilter` in `drizzle.config.ts`, and v1 `relations`
 
 ## Changes from upstream
 

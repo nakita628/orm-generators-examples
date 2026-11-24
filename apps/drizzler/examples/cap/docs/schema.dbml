@@ -254,6 +254,7 @@ Table videos {
   xStreamInfo text [note: 'LEGACY']
   firstViewEmailSentAt timestamp
   isScreenshot boolean [not null]
+  archivedAt timestamp
   awsRegion varchar [note: 'DEPRECATED']
   awsBucket varchar
   videoStartTime varchar
@@ -270,6 +271,7 @@ Table videos {
     (orgId, ownerId, folderId) [name: 'org_owner_folder_idx']
     (orgId, ownerId, folderId, effectiveCreatedAt) [name: 'org_owner_folder_effective_idx']
     (orgId, effectiveCreatedAt) [name: 'org_effective_created_idx']
+    (orgId, ownerId, folderId, archivedAt, effectiveCreatedAt) [name: 'org_owner_folder_archived_effective_idx']
     (isScreenshot, transcriptionStatus, createdAt) [name: 'screenshot_transcription_created_idx']
   }
 }
@@ -502,6 +504,56 @@ Table auth_api_keys {
   }
 }
 
+Table user_passkeys {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  credentialId varchar [not null]
+  credentialIdHash varchar [not null]
+  publicKey text [not null]
+  counter bigint [not null]
+  transports json
+  deviceType varchar [not null]
+  backedUp boolean [not null]
+  confirmsIdentity boolean [not null]
+  aaguid varchar
+  name varchar [not null]
+  createdAt timestamp [not null]
+  lastUsedAt timestamp
+  indexes {
+    (credentialIdHash) [unique, name: 'credential_id_hash_idx']
+    (userId) [name: 'user_id_idx']
+  }
+}
+
+Table auth_challenges {
+  id varchar [pk, not null]
+  userId varchar
+  purpose varchar [not null]
+  secretHash varchar [not null]
+  attempts integer [not null]
+  expiresAt datetime [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (secretHash) [unique, name: 'secret_hash_idx']
+    (userId, purpose) [name: 'user_purpose_idx']
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
+Table email_change_requests {
+  id varchar [pk, not null]
+  userId varchar [not null]
+  newEmail varchar [not null]
+  codeHash varchar [not null]
+  attempts integer [not null]
+  expiresAt datetime [not null]
+  createdAt timestamp [not null]
+  indexes {
+    (userId) [name: 'user_id_idx']
+    (expiresAt) [name: 'expires_at_idx']
+  }
+}
+
 Table mobile_push_tokens {
   id varchar [pk, not null]
   userId varchar [not null]
@@ -614,6 +666,7 @@ Table mcp_oauth_codes {
   indexes {
     (codeHash) [unique, name: 'code_hash_idx']
     (expiresAt) [name: 'expires_at_idx']
+    (userId, consumedAt) [name: 'user_consumed_idx']
   }
 }
 
@@ -633,6 +686,7 @@ Table mcp_oauth_tokens {
     (accessHash) [unique, name: 'access_hash_idx']
     (refreshHash) [unique, name: 'refresh_hash_idx']
     (familyId) [name: 'family_id_idx']
+    (userId, revokedAt) [name: 'user_revoked_idx']
     (clientId, revokedAt, refreshExpiresAt) [name: 'client_active_idx']
     (refreshExpiresAt) [name: 'refresh_expires_at_idx']
   }
@@ -700,6 +754,7 @@ Table space_videos {
   videoId varchar [not null]
   addedById varchar [not null]
   addedAt timestamp [not null]
+  position integer
   indexes {
     (folderId) [name: 'folder_id_idx']
     (videoId) [name: 'video_id_idx']
@@ -1043,6 +1098,21 @@ Table developer_video_imports {
   indexes {
     (appId, state) [name: 'dev_imports_app_state_idx']
     (keyId, createdAt) [name: 'dev_imports_key_created_idx']
+  }
+}
+
+Table meeting_notes_trial_uses {
+  userId varchar [not null]
+  meetingId varchar [not null]
+  slot integer [not null]
+  notesRuns integer [not null]
+  askRuns integer [not null]
+  startedAt datetime [not null]
+  completedAt datetime
+  createdAt datetime [not null]
+  indexes {
+    (userId, meetingId) [pk]
+    (userId, slot) [unique, name: 'user_slot_idx']
   }
 }
 

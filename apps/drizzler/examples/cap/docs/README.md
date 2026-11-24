@@ -88,6 +88,17 @@ CREATE TABLE `auth_api_keys` (
 	`createdAt` timestamp NOT NULL DEFAULT (now())
 );
 
+CREATE TABLE `auth_challenges` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15),
+	`purpose` varchar(32) NOT NULL,
+	`secretHash` varchar(64) NOT NULL,
+	`attempts` int NOT NULL DEFAULT 0,
+	`expiresAt` datetime NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `secret_hash_idx` UNIQUE INDEX(`secretHash`)
+);
+
 CREATE TABLE `comments` (
 	`id` varchar(15) PRIMARY KEY,
 	`type` varchar(6) NOT NULL,
@@ -299,6 +310,16 @@ CREATE TABLE `directory_users` (
 	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP
 );
 
+CREATE TABLE `email_change_requests` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15) NOT NULL,
+	`newEmail` varchar(255) NOT NULL,
+	`codeHash` varchar(64) NOT NULL,
+	`attempts` int NOT NULL DEFAULT 0,
+	`expiresAt` datetime NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now())
+);
+
 CREATE TABLE `folders` (
 	`id` varchar(15) PRIMARY KEY,
 	`name` varchar(255) NOT NULL,
@@ -431,6 +452,19 @@ CREATE TABLE `media_processing_budgets` (
 	`reserved_bytes` bigint unsigned NOT NULL DEFAULT 0,
 	`limit_bytes` bigint unsigned NOT NULL,
 	`expires_at` datetime(3) NOT NULL
+);
+
+CREATE TABLE `meeting_notes_trial_uses` (
+	`userId` varchar(15) NOT NULL,
+	`meetingId` varchar(64) NOT NULL,
+	`slot` int NOT NULL,
+	`notesRuns` int NOT NULL DEFAULT 1,
+	`askRuns` int NOT NULL DEFAULT 0,
+	`startedAt` datetime NOT NULL,
+	`completedAt` datetime,
+	`createdAt` datetime NOT NULL,
+	CONSTRAINT PRIMARY KEY(`userId`,`meetingId`),
+	CONSTRAINT `user_slot_idx` UNIQUE INDEX(`userId`,`slot`)
 );
 
 CREATE TABLE `messenger_conversations` (
@@ -639,7 +673,8 @@ CREATE TABLE `space_videos` (
 	`folderId` varchar(15),
 	`videoId` varchar(15) NOT NULL,
 	`addedById` varchar(15) NOT NULL,
-	`addedAt` timestamp NOT NULL DEFAULT (now())
+	`addedAt` timestamp NOT NULL DEFAULT (now()),
+	`position` int
 );
 
 CREATE TABLE `spaces` (
@@ -692,6 +727,24 @@ CREATE TABLE `storage_objects` (
 	`createdAt` timestamp NOT NULL DEFAULT (now()),
 	`updatedAt` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP,
 	CONSTRAINT `integration_key_hash_idx` UNIQUE INDEX(`integrationId`,`objectKeyHash`)
+);
+
+CREATE TABLE `user_passkeys` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15) NOT NULL,
+	`credentialId` varchar(1400) NOT NULL,
+	`credentialIdHash` varchar(64) NOT NULL,
+	`publicKey` text NOT NULL,
+	`counter` bigint unsigned NOT NULL DEFAULT 0,
+	`transports` json,
+	`deviceType` varchar(32) NOT NULL,
+	`backedUp` boolean NOT NULL DEFAULT false,
+	`confirmsIdentity` boolean NOT NULL DEFAULT true,
+	`aaguid` varchar(36),
+	`name` varchar(64) NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`lastUsedAt` timestamp,
+	CONSTRAINT `credential_id_hash_idx` UNIQUE INDEX(`credentialIdHash`)
 );
 
 CREATE TABLE `users` (
@@ -810,6 +863,7 @@ CREATE TABLE `videos` (
 	`xStreamInfo` text,
 	`firstViewEmailSentAt` timestamp,
 	`isScreenshot` boolean NOT NULL DEFAULT false,
+	`archivedAt` timestamp,
 	`awsRegion` varchar(255),
 	`awsBucket` varchar(255),
 	`videoStartTime` varchar(255),
@@ -840,6 +894,10 @@ CREATE INDEX `state_updated_at_idx` ON `agent_api_operations` (`state`,`updatedA
 CREATE INDEX `resource_id_idx` ON `agent_api_operations` (`resourceId`);
 
 CREATE INDEX `user_id_created_at_idx` ON `auth_api_keys` (`userId`,`createdAt`);
+
+CREATE INDEX `user_purpose_idx` ON `auth_challenges` (`userId`,`purpose`);
+
+CREATE INDEX `expires_at_idx` ON `auth_challenges` (`expiresAt`);
 
 CREATE INDEX `video_type_created_idx` ON `comments` (`videoId`,`type`,`createdAt`,`id`);
 
@@ -903,6 +961,10 @@ CREATE INDEX `directory_users_organization_id_idx` ON `directory_users` (`organi
 
 CREATE INDEX `directory_users_user_org_idx` ON `directory_users` (`userId`,`organizationId`);
 
+CREATE INDEX `user_id_idx` ON `email_change_requests` (`userId`);
+
+CREATE INDEX `expires_at_idx` ON `email_change_requests` (`expiresAt`);
+
 CREATE INDEX `organization_id_idx` ON `folders` (`organizationId`);
 
 CREATE INDEX `created_by_id_idx` ON `folders` (`createdById`);
@@ -931,9 +993,13 @@ CREATE INDEX `inactive_created_at_idx` ON `mcp_oauth_clients` (`activatedAt`,`cr
 
 CREATE INDEX `expires_at_idx` ON `mcp_oauth_codes` (`expiresAt`);
 
+CREATE INDEX `user_consumed_idx` ON `mcp_oauth_codes` (`userId`,`consumedAt`);
+
 CREATE INDEX `expires_at_idx` ON `mcp_oauth_registration_quotas` (`expiresAt`);
 
 CREATE INDEX `family_id_idx` ON `mcp_oauth_tokens` (`familyId`);
+
+CREATE INDEX `user_revoked_idx` ON `mcp_oauth_tokens` (`userId`,`revokedAt`);
 
 CREATE INDEX `client_active_idx` ON `mcp_oauth_tokens` (`clientId`,`revokedAt`,`refreshExpiresAt`);
 
@@ -1051,6 +1117,8 @@ CREATE INDEX `video_id_idx` ON `storage_objects` (`videoId`);
 
 CREATE INDEX `owner_id_idx` ON `storage_objects` (`ownerId`);
 
+CREATE INDEX `user_id_idx` ON `user_passkeys` (`userId`);
+
 CREATE INDEX `processing_state_retry_video_idx` ON `video_processing_jobs` (`state`,`next_retry_at`,`video_id`);
 
 CREATE INDEX `processing_state_lease_video_idx` ON `video_processing_jobs` (`state`,`lease_expires_at`,`video_id`);
@@ -1074,6 +1142,8 @@ CREATE INDEX `org_owner_folder_idx` ON `videos` (`orgId`,`ownerId`,`folderId`);
 CREATE INDEX `org_owner_folder_effective_idx` ON `videos` (`orgId`,`ownerId`,`folderId`,`effectiveCreatedAt`);
 
 CREATE INDEX `org_effective_created_idx` ON `videos` (`orgId`,`effectiveCreatedAt`);
+
+CREATE INDEX `org_owner_folder_archived_effective_idx` ON `videos` (`orgId`,`ownerId`,`folderId`,`archivedAt`,`effectiveCreatedAt`);
 
 CREATE INDEX `screenshot_transcription_created_idx` ON `videos` (`isScreenshot`,`transcriptionStatus`,`createdAt`);
 
@@ -1143,6 +1213,9 @@ ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integra
 | [storageIntegrations](#table-storageIntegrations)                       | `storage_integrations`              |                                                                                                 |
 | [storageObjects](#table-storageObjects)                                 | `storage_objects`                   |                                                                                                 |
 | [authApiKeys](#table-authApiKeys)                                       | `auth_api_keys`                     |                                                                                                 |
+| [userPasskeys](#table-userPasskeys)                                     | `user_passkeys`                     |                                                                                                 |
+| [authChallenges](#table-authChallenges)                                 | `auth_challenges`                   |                                                                                                 |
+| [emailChangeRequests](#table-emailChangeRequests)                       | `email_change_requests`             |                                                                                                 |
 | [mobilePushTokens](#table-mobilePushTokens)                             | `mobile_push_tokens`                |                                                                                                 |
 | [mobilePushClaims](#table-mobilePushClaims)                             | `mobile_push_claims`                | One row per push that must send at most once, such as a Cap's view push for a 10-minute window. |
 | [agentApiKeys](#table-agentApiKeys)                                     | `agent_api_keys`                    |                                                                                                 |
@@ -1174,6 +1247,7 @@ ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integra
 | [developerDeliveryLogFiles](#table-developerDeliveryLogFiles)           | `developer_delivery_log_files`      |                                                                                                 |
 | [developerWebhookEndpoints](#table-developerWebhookEndpoints)           | `developer_webhook_endpoints`       |                                                                                                 |
 | [developerVideoImports](#table-developerVideoImports)                   | `developer_video_imports`           |                                                                                                 |
+| [meetingNotesTrialUses](#table-meetingNotesTrialUses)                   | `meeting_notes_trial_uses`          |                                                                                                 |
 
 ## Tables
 
@@ -3126,6 +3200,7 @@ where `folders`.`id` = ?
 | `xStreamInfo`          | `text`      | NULL                                                        |                                      | LEGACY      |
 | `firstViewEmailSentAt` | `timestamp` | NULL                                                        |                                      |             |
 | `isScreenshot`         | `boolean`   | NOT NULL                                                    | `.default(false)`                    |             |
+| `archivedAt`           | `timestamp` | NULL                                                        |                                      |             |
 | `awsRegion`            | `varchar`   | NULL                                                        |                                      | DEPRECATED  |
 | `awsBucket`            | `varchar`   | NULL                                                        |                                      |             |
 | `videoStartTime`       | `varchar`   | NULL                                                        |                                      |             |
@@ -3165,6 +3240,7 @@ CREATE TABLE `videos` (
 	`xStreamInfo` text,
 	`firstViewEmailSentAt` timestamp,
 	`isScreenshot` boolean NOT NULL DEFAULT false,
+	`archivedAt` timestamp,
 	`awsRegion` varchar(255),
 	`awsBucket` varchar(255),
 	`videoStartTime` varchar(255),
@@ -3190,6 +3266,8 @@ CREATE INDEX `org_owner_folder_effective_idx` ON `videos` (`orgId`,`ownerId`,`fo
 
 CREATE INDEX `org_effective_created_idx` ON `videos` (`orgId`,`effectiveCreatedAt`);
 
+CREATE INDEX `org_owner_folder_archived_effective_idx` ON `videos` (`orgId`,`ownerId`,`folderId`,`archivedAt`,`effectiveCreatedAt`);
+
 CREATE INDEX `screenshot_transcription_created_idx` ON `videos` (`isScreenshot`,`transcriptionStatus`,`createdAt`);
 
 ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integrations_id_fkey` FOREIGN KEY (`storageIntegrationId`) REFERENCES `storage_integrations`(`id`) ON DELETE RESTRICT;
@@ -3205,6 +3283,7 @@ ALTER TABLE `videos` ADD CONSTRAINT `videos_storageIntegrationId_storage_integra
 - INDEX `orgId`, `ownerId`, `folderId`
 - INDEX `orgId`, `ownerId`, `folderId`, `effectiveCreatedAt`
 - INDEX `orgId`, `effectiveCreatedAt`
+- INDEX `orgId`, `ownerId`, `folderId`, `archivedAt`, `effectiveCreatedAt`
 - INDEX `isScreenshot`, `transcriptionStatus`, `createdAt`
 
 #### References
@@ -3232,7 +3311,7 @@ db.select().from(videos);
 ```
 
 ```sql
-select `id`, `ownerId`, `orgId`, `name`, `bucket`, `storageIntegrationId`, `duration`, `width`, `height`, `fps`, `metadata`, `public`, `settings`, `transcriptionStatus`, `source`, `folderId`, `createdAt`, `effectiveCreatedAt`, `updatedAt`, `password`, `xStreamInfo`, `firstViewEmailSentAt`, `isScreenshot`, `awsRegion`, `awsBucket`, `videoStartTime`, `audioStartTime`, `jobId`, `jobStatus`, `skipProcessing`
+select `id`, `ownerId`, `orgId`, `name`, `bucket`, `storageIntegrationId`, `duration`, `width`, `height`, `fps`, `metadata`, `public`, `settings`, `transcriptionStatus`, `source`, `folderId`, `createdAt`, `effectiveCreatedAt`, `updatedAt`, `password`, `xStreamInfo`, `firstViewEmailSentAt`, `isScreenshot`, `archivedAt`, `awsRegion`, `awsBucket`, `videoStartTime`, `audioStartTime`, `jobId`, `jobStatus`, `skipProcessing`
 from `videos`
 ```
 
@@ -3254,7 +3333,7 @@ db.query.videos.findMany();
 ```
 
 ```sql
-select `d0`.`id` as `id`, `d0`.`ownerId` as `ownerId`, `d0`.`orgId` as `orgId`, `d0`.`name` as `name`, `d0`.`bucket` as `bucket`, `d0`.`storageIntegrationId` as `storageIntegrationId`, `d0`.`duration` as `duration`, `d0`.`width` as `width`, `d0`.`height` as `height`, `d0`.`fps` as `fps`, `d0`.`metadata` as `metadata`, `d0`.`public` as `public`, `d0`.`settings` as `settings`, `d0`.`transcriptionStatus` as `transcriptionStatus`, `d0`.`source` as `source`, `d0`.`folderId` as `folderId`, `d0`.`createdAt` as `createdAt`, `d0`.`effectiveCreatedAt` as `effectiveCreatedAt`, `d0`.`updatedAt` as `updatedAt`, `d0`.`password` as `password`, `d0`.`xStreamInfo` as `xStreamInfo`, `d0`.`firstViewEmailSentAt` as `firstViewEmailSentAt`, `d0`.`isScreenshot` as `isScreenshot`, `d0`.`awsRegion` as `awsRegion`, `d0`.`awsBucket` as `awsBucket`, `d0`.`videoStartTime` as `videoStartTime`, `d0`.`audioStartTime` as `audioStartTime`, `d0`.`jobId` as `jobId`, `d0`.`jobStatus` as `jobStatus`, `d0`.`skipProcessing` as `skipProcessing`
+select `d0`.`id` as `id`, `d0`.`ownerId` as `ownerId`, `d0`.`orgId` as `orgId`, `d0`.`name` as `name`, `d0`.`bucket` as `bucket`, `d0`.`storageIntegrationId` as `storageIntegrationId`, `d0`.`duration` as `duration`, `d0`.`width` as `width`, `d0`.`height` as `height`, `d0`.`fps` as `fps`, `d0`.`metadata` as `metadata`, `d0`.`public` as `public`, `d0`.`settings` as `settings`, `d0`.`transcriptionStatus` as `transcriptionStatus`, `d0`.`source` as `source`, `d0`.`folderId` as `folderId`, `d0`.`createdAt` as `createdAt`, `d0`.`effectiveCreatedAt` as `effectiveCreatedAt`, `d0`.`updatedAt` as `updatedAt`, `d0`.`password` as `password`, `d0`.`xStreamInfo` as `xStreamInfo`, `d0`.`firstViewEmailSentAt` as `firstViewEmailSentAt`, `d0`.`isScreenshot` as `isScreenshot`, `d0`.`archivedAt` as `archivedAt`, `d0`.`awsRegion` as `awsRegion`, `d0`.`awsBucket` as `awsBucket`, `d0`.`videoStartTime` as `videoStartTime`, `d0`.`audioStartTime` as `audioStartTime`, `d0`.`jobId` as `jobId`, `d0`.`jobStatus` as `jobStatus`, `d0`.`skipProcessing` as `skipProcessing`
 from `videos` as `d0`
 ```
 
@@ -3265,7 +3344,7 @@ db.query.videos.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select `d0`.`id` as `id`, `d0`.`ownerId` as `ownerId`, `d0`.`orgId` as `orgId`, `d0`.`name` as `name`, `d0`.`bucket` as `bucket`, `d0`.`storageIntegrationId` as `storageIntegrationId`, `d0`.`duration` as `duration`, `d0`.`width` as `width`, `d0`.`height` as `height`, `d0`.`fps` as `fps`, `d0`.`metadata` as `metadata`, `d0`.`public` as `public`, `d0`.`settings` as `settings`, `d0`.`transcriptionStatus` as `transcriptionStatus`, `d0`.`source` as `source`, `d0`.`folderId` as `folderId`, `d0`.`createdAt` as `createdAt`, `d0`.`effectiveCreatedAt` as `effectiveCreatedAt`, `d0`.`updatedAt` as `updatedAt`, `d0`.`password` as `password`, `d0`.`xStreamInfo` as `xStreamInfo`, `d0`.`firstViewEmailSentAt` as `firstViewEmailSentAt`, `d0`.`isScreenshot` as `isScreenshot`, `d0`.`awsRegion` as `awsRegion`, `d0`.`awsBucket` as `awsBucket`, `d0`.`videoStartTime` as `videoStartTime`, `d0`.`audioStartTime` as `audioStartTime`, `d0`.`jobId` as `jobId`, `d0`.`jobStatus` as `jobStatus`, `d0`.`skipProcessing` as `skipProcessing`
+select `d0`.`id` as `id`, `d0`.`ownerId` as `ownerId`, `d0`.`orgId` as `orgId`, `d0`.`name` as `name`, `d0`.`bucket` as `bucket`, `d0`.`storageIntegrationId` as `storageIntegrationId`, `d0`.`duration` as `duration`, `d0`.`width` as `width`, `d0`.`height` as `height`, `d0`.`fps` as `fps`, `d0`.`metadata` as `metadata`, `d0`.`public` as `public`, `d0`.`settings` as `settings`, `d0`.`transcriptionStatus` as `transcriptionStatus`, `d0`.`source` as `source`, `d0`.`folderId` as `folderId`, `d0`.`createdAt` as `createdAt`, `d0`.`effectiveCreatedAt` as `effectiveCreatedAt`, `d0`.`updatedAt` as `updatedAt`, `d0`.`password` as `password`, `d0`.`xStreamInfo` as `xStreamInfo`, `d0`.`firstViewEmailSentAt` as `firstViewEmailSentAt`, `d0`.`isScreenshot` as `isScreenshot`, `d0`.`archivedAt` as `archivedAt`, `d0`.`awsRegion` as `awsRegion`, `d0`.`awsBucket` as `awsBucket`, `d0`.`videoStartTime` as `videoStartTime`, `d0`.`audioStartTime` as `audioStartTime`, `d0`.`jobId` as `jobId`, `d0`.`jobStatus` as `jobStatus`, `d0`.`skipProcessing` as `skipProcessing`
 from `videos` as `d0`
 where `d0`.`id` = ?
 limit ?
@@ -3279,8 +3358,8 @@ db.insert(videos).values({ id: "id", ownerId: "ownerId", orgId: "orgId" });
 ```
 
 ```sql
-insert into `videos` (`id`, `ownerId`, `orgId`, `name`, `bucket`, `storageIntegrationId`, `duration`, `width`, `height`, `fps`, `metadata`, `public`, `settings`, `transcriptionStatus`, `source`, `folderId`, `createdAt`, `updatedAt`, `password`, `xStreamInfo`, `firstViewEmailSentAt`, `isScreenshot`, `awsRegion`, `awsBucket`, `videoStartTime`, `audioStartTime`, `jobId`, `jobStatus`, `skipProcessing`)
-values (?, ?, ?, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
+insert into `videos` (`id`, `ownerId`, `orgId`, `name`, `bucket`, `storageIntegrationId`, `duration`, `width`, `height`, `fps`, `metadata`, `public`, `settings`, `transcriptionStatus`, `source`, `folderId`, `createdAt`, `updatedAt`, `password`, `xStreamInfo`, `firstViewEmailSentAt`, `isScreenshot`, `archivedAt`, `awsRegion`, `awsBucket`, `videoStartTime`, `audioStartTime`, `jobId`, `jobStatus`, `skipProcessing`)
+values (?, ?, ?, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
 -- params: ["id","ownerId","orgId"]
 ```
 
@@ -5253,6 +5332,430 @@ where `auth_api_keys`.`id` = ?
 
 </details>
 
+<a id="table-userPasskeys"></a>
+
+### userPasskeys
+
+Table `user_passkeys`.
+
+![userPasskeys](tables/userPasskeys.svg)
+
+| Column             | Type        | Constraints | Default           | Description |
+| ------------------ | ----------- | ----------- | ----------------- | ----------- |
+| `id`               | `varchar`   | PK NOT NULL |                   |             |
+| `userId`           | `varchar`   | NOT NULL    |                   |             |
+| `credentialId`     | `varchar`   | NOT NULL    |                   |             |
+| `credentialIdHash` | `varchar`   | NOT NULL    |                   |             |
+| `publicKey`        | `text`      | NOT NULL    |                   |             |
+| `counter`          | `bigint`    | NOT NULL    | `.default(0)`     |             |
+| `transports`       | `json`      | NULL        |                   |             |
+| `deviceType`       | `varchar`   | NOT NULL    |                   |             |
+| `backedUp`         | `boolean`   | NOT NULL    | `.default(false)` |             |
+| `confirmsIdentity` | `boolean`   | NOT NULL    | `.default(true)`  |             |
+| `aaguid`           | `varchar`   | NULL        |                   |             |
+| `name`             | `varchar`   | NOT NULL    |                   |             |
+| `createdAt`        | `timestamp` | NOT NULL    | `.defaultNow()`   |             |
+| `lastUsedAt`       | `timestamp` | NULL        |                   |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `user_passkeys` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15) NOT NULL,
+	`credentialId` varchar(1400) NOT NULL,
+	`credentialIdHash` varchar(64) NOT NULL,
+	`publicKey` text NOT NULL,
+	`counter` bigint unsigned NOT NULL DEFAULT 0,
+	`transports` json,
+	`deviceType` varchar(32) NOT NULL,
+	`backedUp` boolean NOT NULL DEFAULT false,
+	`confirmsIdentity` boolean NOT NULL DEFAULT true,
+	`aaguid` varchar(36),
+	`name` varchar(64) NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	`lastUsedAt` timestamp,
+	CONSTRAINT `credential_id_hash_idx` UNIQUE INDEX(`credentialIdHash`)
+);
+
+CREATE INDEX `user_id_idx` ON `user_passkeys` (`userId`);
+```
+
+#### Indexes
+
+- UNIQUE `credentialIdHash`
+- INDEX `userId`
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of userPasskeys.
+
+```ts
+db.select().from(userPasskeys);
+```
+
+```sql
+select `id`, `userId`, `credentialId`, `credentialIdHash`, `publicKey`, `counter`, `transports`, `deviceType`, `backedUp`, `confirmsIdentity`, `aaguid`, `name`, `createdAt`, `lastUsedAt`
+from `user_passkeys`
+```
+
+**Count**: How many rows userPasskeys has.
+
+```ts
+db.select({ count: count() }).from(userPasskeys);
+```
+
+```sql
+select count(*)
+from `user_passkeys`
+```
+
+**Find many**: The rows of userPasskeys, through the relational query API.
+
+```ts
+db.query.userPasskeys.findMany();
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`credentialId` as `credentialId`, `d0`.`credentialIdHash` as `credentialIdHash`, `d0`.`publicKey` as `publicKey`, `d0`.`counter` as `counter`, `d0`.`transports` as `transports`, `d0`.`deviceType` as `deviceType`, `d0`.`backedUp` as `backedUp`, `d0`.`confirmsIdentity` as `confirmsIdentity`, `d0`.`aaguid` as `aaguid`, `d0`.`name` as `name`, `d0`.`createdAt` as `createdAt`, `d0`.`lastUsedAt` as `lastUsedAt`
+from `user_passkeys` as `d0`
+```
+
+**Find by primary key**: One row of userPasskeys, through the relational query API.
+
+```ts
+db.query.userPasskeys.findFirst({ where: { id: "id" } });
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`credentialId` as `credentialId`, `d0`.`credentialIdHash` as `credentialIdHash`, `d0`.`publicKey` as `publicKey`, `d0`.`counter` as `counter`, `d0`.`transports` as `transports`, `d0`.`deviceType` as `deviceType`, `d0`.`backedUp` as `backedUp`, `d0`.`confirmsIdentity` as `confirmsIdentity`, `d0`.`aaguid` as `aaguid`, `d0`.`name` as `name`, `d0`.`createdAt` as `createdAt`, `d0`.`lastUsedAt` as `lastUsedAt`
+from `user_passkeys` as `d0`
+where `d0`.`id` = ?
+limit ?
+-- params: ["id",1]
+```
+
+**Insert**: Adds a row to userPasskeys, giving the columns that have no default.
+
+```ts
+db.insert(userPasskeys).values({
+  id: "id",
+  userId: "userId",
+  credentialId: "credentialId",
+  credentialIdHash: "credentialIdHash",
+  publicKey: "publicKey",
+  deviceType: "deviceType",
+  name: "name",
+});
+```
+
+```sql
+insert into `user_passkeys` (`id`, `userId`, `credentialId`, `credentialIdHash`, `publicKey`, `counter`, `transports`, `deviceType`, `backedUp`, `confirmsIdentity`, `aaguid`, `name`, `createdAt`, `lastUsedAt`)
+values (?, ?, ?, ?, ?, default, default, ?, default, default, default, ?, default, default)
+-- params: ["id","userId","credentialId","credentialIdHash","publicKey","deviceType","name"]
+```
+
+**Update**: Changes a row of userPasskeys, found by its primary key.
+
+```ts
+db.update(userPasskeys).set({ userId: "userId" }).where(eq(userPasskeys.id, "id"));
+```
+
+```sql
+update `user_passkeys`
+set `userId` = ?
+where `user_passkeys`.`id` = ?
+-- params: ["userId","id"]
+```
+
+**Delete**: Deletes a row of userPasskeys, found by its primary key.
+
+```ts
+db.delete(userPasskeys).where(eq(userPasskeys.id, "id"));
+```
+
+```sql
+delete from `user_passkeys`
+where `user_passkeys`.`id` = ?
+-- params: ["id"]
+```
+
+</details>
+
+<a id="table-authChallenges"></a>
+
+### authChallenges
+
+Table `auth_challenges`.
+
+![authChallenges](tables/authChallenges.svg)
+
+| Column       | Type        | Constraints | Default         | Description |
+| ------------ | ----------- | ----------- | --------------- | ----------- |
+| `id`         | `varchar`   | PK NOT NULL |                 |             |
+| `userId`     | `varchar`   | NULL        |                 |             |
+| `purpose`    | `varchar`   | NOT NULL    |                 |             |
+| `secretHash` | `varchar`   | NOT NULL    |                 |             |
+| `attempts`   | `int`       | NOT NULL    | `.default(0)`   |             |
+| `expiresAt`  | `datetime`  | NOT NULL    |                 |             |
+| `createdAt`  | `timestamp` | NOT NULL    | `.defaultNow()` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `auth_challenges` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15),
+	`purpose` varchar(32) NOT NULL,
+	`secretHash` varchar(64) NOT NULL,
+	`attempts` int NOT NULL DEFAULT 0,
+	`expiresAt` datetime NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now()),
+	CONSTRAINT `secret_hash_idx` UNIQUE INDEX(`secretHash`)
+);
+
+CREATE INDEX `user_purpose_idx` ON `auth_challenges` (`userId`,`purpose`);
+
+CREATE INDEX `expires_at_idx` ON `auth_challenges` (`expiresAt`);
+```
+
+#### Indexes
+
+- UNIQUE `secretHash`
+- INDEX `userId`, `purpose`
+- INDEX `expiresAt`
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of authChallenges.
+
+```ts
+db.select().from(authChallenges);
+```
+
+```sql
+select `id`, `userId`, `purpose`, `secretHash`, `attempts`, `expiresAt`, `createdAt`
+from `auth_challenges`
+```
+
+**Count**: How many rows authChallenges has.
+
+```ts
+db.select({ count: count() }).from(authChallenges);
+```
+
+```sql
+select count(*)
+from `auth_challenges`
+```
+
+**Find many**: The rows of authChallenges, through the relational query API.
+
+```ts
+db.query.authChallenges.findMany();
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`purpose` as `purpose`, `d0`.`secretHash` as `secretHash`, `d0`.`attempts` as `attempts`, `d0`.`expiresAt` as `expiresAt`, `d0`.`createdAt` as `createdAt`
+from `auth_challenges` as `d0`
+```
+
+**Find by primary key**: One row of authChallenges, through the relational query API.
+
+```ts
+db.query.authChallenges.findFirst({ where: { id: "id" } });
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`purpose` as `purpose`, `d0`.`secretHash` as `secretHash`, `d0`.`attempts` as `attempts`, `d0`.`expiresAt` as `expiresAt`, `d0`.`createdAt` as `createdAt`
+from `auth_challenges` as `d0`
+where `d0`.`id` = ?
+limit ?
+-- params: ["id",1]
+```
+
+**Insert**: Adds a row to authChallenges, giving the columns that have no default.
+
+```ts
+db.insert(authChallenges).values({
+  id: "id",
+  purpose: "purpose",
+  secretHash: "secretHash",
+  expiresAt: new Date("2026-01-01T00:00:00.000Z"),
+});
+```
+
+```sql
+insert into `auth_challenges` (`id`, `userId`, `purpose`, `secretHash`, `attempts`, `expiresAt`, `createdAt`)
+values (?, default, ?, ?, default, ?, default)
+-- params: ["id","purpose","secretHash","2026-01-01 00:00:00.000"]
+```
+
+**Update**: Changes a row of authChallenges, found by its primary key.
+
+```ts
+db.update(authChallenges).set({ userId: "userId" }).where(eq(authChallenges.id, "id"));
+```
+
+```sql
+update `auth_challenges`
+set `userId` = ?
+where `auth_challenges`.`id` = ?
+-- params: ["userId","id"]
+```
+
+**Delete**: Deletes a row of authChallenges, found by its primary key.
+
+```ts
+db.delete(authChallenges).where(eq(authChallenges.id, "id"));
+```
+
+```sql
+delete from `auth_challenges`
+where `auth_challenges`.`id` = ?
+-- params: ["id"]
+```
+
+</details>
+
+<a id="table-emailChangeRequests"></a>
+
+### emailChangeRequests
+
+Table `email_change_requests`.
+
+![emailChangeRequests](tables/emailChangeRequests.svg)
+
+| Column      | Type        | Constraints | Default         | Description |
+| ----------- | ----------- | ----------- | --------------- | ----------- |
+| `id`        | `varchar`   | PK NOT NULL |                 |             |
+| `userId`    | `varchar`   | NOT NULL    |                 |             |
+| `newEmail`  | `varchar`   | NOT NULL    |                 |             |
+| `codeHash`  | `varchar`   | NOT NULL    |                 |             |
+| `attempts`  | `int`       | NOT NULL    | `.default(0)`   |             |
+| `expiresAt` | `datetime`  | NOT NULL    |                 |             |
+| `createdAt` | `timestamp` | NOT NULL    | `.defaultNow()` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `email_change_requests` (
+	`id` varchar(15) PRIMARY KEY,
+	`userId` varchar(15) NOT NULL,
+	`newEmail` varchar(255) NOT NULL,
+	`codeHash` varchar(64) NOT NULL,
+	`attempts` int NOT NULL DEFAULT 0,
+	`expiresAt` datetime NOT NULL,
+	`createdAt` timestamp NOT NULL DEFAULT (now())
+);
+
+CREATE INDEX `user_id_idx` ON `email_change_requests` (`userId`);
+
+CREATE INDEX `expires_at_idx` ON `email_change_requests` (`expiresAt`);
+```
+
+#### Indexes
+
+- INDEX `userId`
+- INDEX `expiresAt`
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of emailChangeRequests.
+
+```ts
+db.select().from(emailChangeRequests);
+```
+
+```sql
+select `id`, `userId`, `newEmail`, `codeHash`, `attempts`, `expiresAt`, `createdAt`
+from `email_change_requests`
+```
+
+**Count**: How many rows emailChangeRequests has.
+
+```ts
+db.select({ count: count() }).from(emailChangeRequests);
+```
+
+```sql
+select count(*)
+from `email_change_requests`
+```
+
+**Find many**: The rows of emailChangeRequests, through the relational query API.
+
+```ts
+db.query.emailChangeRequests.findMany();
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`newEmail` as `newEmail`, `d0`.`codeHash` as `codeHash`, `d0`.`attempts` as `attempts`, `d0`.`expiresAt` as `expiresAt`, `d0`.`createdAt` as `createdAt`
+from `email_change_requests` as `d0`
+```
+
+**Find by primary key**: One row of emailChangeRequests, through the relational query API.
+
+```ts
+db.query.emailChangeRequests.findFirst({ where: { id: "id" } });
+```
+
+```sql
+select `d0`.`id` as `id`, `d0`.`userId` as `userId`, `d0`.`newEmail` as `newEmail`, `d0`.`codeHash` as `codeHash`, `d0`.`attempts` as `attempts`, `d0`.`expiresAt` as `expiresAt`, `d0`.`createdAt` as `createdAt`
+from `email_change_requests` as `d0`
+where `d0`.`id` = ?
+limit ?
+-- params: ["id",1]
+```
+
+**Insert**: Adds a row to emailChangeRequests, giving the columns that have no default.
+
+```ts
+db.insert(emailChangeRequests).values({
+  id: "id",
+  userId: "userId",
+  newEmail: "newEmail",
+  codeHash: "codeHash",
+  expiresAt: new Date("2026-01-01T00:00:00.000Z"),
+});
+```
+
+```sql
+insert into `email_change_requests` (`id`, `userId`, `newEmail`, `codeHash`, `attempts`, `expiresAt`, `createdAt`)
+values (?, ?, ?, ?, default, ?, default)
+-- params: ["id","userId","newEmail","codeHash","2026-01-01 00:00:00.000"]
+```
+
+**Update**: Changes a row of emailChangeRequests, found by its primary key.
+
+```ts
+db.update(emailChangeRequests).set({ userId: "userId" }).where(eq(emailChangeRequests.id, "id"));
+```
+
+```sql
+update `email_change_requests`
+set `userId` = ?
+where `email_change_requests`.`id` = ?
+-- params: ["userId","id"]
+```
+
+**Delete**: Deletes a row of emailChangeRequests, found by its primary key.
+
+```ts
+db.delete(emailChangeRequests).where(eq(emailChangeRequests.id, "id"));
+```
+
+```sql
+delete from `email_change_requests`
+where `email_change_requests`.`id` = ?
+-- params: ["id"]
+```
+
+</details>
+
 <a id="table-mobilePushTokens"></a>
 
 ### mobilePushTokens
@@ -6237,12 +6740,15 @@ CREATE TABLE `mcp_oauth_codes` (
 );
 
 CREATE INDEX `expires_at_idx` ON `mcp_oauth_codes` (`expiresAt`);
+
+CREATE INDEX `user_consumed_idx` ON `mcp_oauth_codes` (`userId`,`consumedAt`);
 ```
 
 #### Indexes
 
 - UNIQUE `codeHash`
 - INDEX `expiresAt`
+- INDEX `userId`, `consumedAt`
 
 <details>
 <summary>Queries and their SQL</summary>
@@ -6385,6 +6891,8 @@ CREATE TABLE `mcp_oauth_tokens` (
 
 CREATE INDEX `family_id_idx` ON `mcp_oauth_tokens` (`familyId`);
 
+CREATE INDEX `user_revoked_idx` ON `mcp_oauth_tokens` (`userId`,`revokedAt`);
+
 CREATE INDEX `client_active_idx` ON `mcp_oauth_tokens` (`clientId`,`revokedAt`,`refreshExpiresAt`);
 
 CREATE INDEX `refresh_expires_at_idx` ON `mcp_oauth_tokens` (`refreshExpiresAt`);
@@ -6395,6 +6903,7 @@ CREATE INDEX `refresh_expires_at_idx` ON `mcp_oauth_tokens` (`refreshExpiresAt`)
 - UNIQUE `accessHash`
 - UNIQUE `refreshHash`
 - INDEX `familyId`
+- INDEX `userId`, `revokedAt`
 - INDEX `clientId`, `revokedAt`, `refreshExpiresAt`
 - INDEX `refreshExpiresAt`
 
@@ -6954,6 +7463,7 @@ Table `space_videos`.
 | `videoId`   | `varchar`   | NOT NULL → [videos.id](#table-videos) |                 |             |
 | `addedById` | `varchar`   | NOT NULL → [users.id](#table-users)   |                 |             |
 | `addedAt`   | `timestamp` | NOT NULL                              | `.defaultNow()` |             |
+| `position`  | `int`       | NULL                                  |                 |             |
 
 #### Definition
 
@@ -6964,7 +7474,8 @@ CREATE TABLE `space_videos` (
 	`folderId` varchar(15),
 	`videoId` varchar(15) NOT NULL,
 	`addedById` varchar(15) NOT NULL,
-	`addedAt` timestamp NOT NULL DEFAULT (now())
+	`addedAt` timestamp NOT NULL DEFAULT (now()),
+	`position` int
 );
 
 CREATE INDEX `folder_id_idx` ON `space_videos` (`folderId`);
@@ -7002,7 +7513,7 @@ db.select().from(spaceVideos);
 ```
 
 ```sql
-select `id`, `spaceId`, `folderId`, `videoId`, `addedById`, `addedAt`
+select `id`, `spaceId`, `folderId`, `videoId`, `addedById`, `addedAt`, `position`
 from `space_videos`
 ```
 
@@ -7024,7 +7535,7 @@ db.query.spaceVideos.findMany();
 ```
 
 ```sql
-select `d0`.`id` as `id`, `d0`.`spaceId` as `spaceId`, `d0`.`folderId` as `folderId`, `d0`.`videoId` as `videoId`, `d0`.`addedById` as `addedById`, `d0`.`addedAt` as `addedAt`
+select `d0`.`id` as `id`, `d0`.`spaceId` as `spaceId`, `d0`.`folderId` as `folderId`, `d0`.`videoId` as `videoId`, `d0`.`addedById` as `addedById`, `d0`.`addedAt` as `addedAt`, `d0`.`position` as `position`
 from `space_videos` as `d0`
 ```
 
@@ -7035,7 +7546,7 @@ db.query.spaceVideos.findFirst({ where: { id: "id" } });
 ```
 
 ```sql
-select `d0`.`id` as `id`, `d0`.`spaceId` as `spaceId`, `d0`.`folderId` as `folderId`, `d0`.`videoId` as `videoId`, `d0`.`addedById` as `addedById`, `d0`.`addedAt` as `addedAt`
+select `d0`.`id` as `id`, `d0`.`spaceId` as `spaceId`, `d0`.`folderId` as `folderId`, `d0`.`videoId` as `videoId`, `d0`.`addedById` as `addedById`, `d0`.`addedAt` as `addedAt`, `d0`.`position` as `position`
 from `space_videos` as `d0`
 where `d0`.`id` = ?
 limit ?
@@ -7054,8 +7565,8 @@ db.insert(spaceVideos).values({
 ```
 
 ```sql
-insert into `space_videos` (`id`, `spaceId`, `folderId`, `videoId`, `addedById`, `addedAt`)
-values (?, ?, default, ?, ?, default)
+insert into `space_videos` (`id`, `spaceId`, `folderId`, `videoId`, `addedById`, `addedAt`, `position`)
+values (?, ?, default, ?, ?, default, default)
 -- params: ["id","spaceId","videoId","addedById"]
 ```
 
@@ -9792,6 +10303,150 @@ db.delete(developerVideoImports).where(eq(developerVideoImports.videoId, "videoI
 delete from `developer_video_imports`
 where `developer_video_imports`.`videoId` = ?
 -- params: ["videoId"]
+```
+
+</details>
+
+<a id="table-meetingNotesTrialUses"></a>
+
+### meetingNotesTrialUses
+
+Table `meeting_notes_trial_uses`.
+
+![meetingNotesTrialUses](tables/meetingNotesTrialUses.svg)
+
+| Column        | Type       | Constraints | Default         | Description |
+| ------------- | ---------- | ----------- | --------------- | ----------- |
+| `userId`      | `varchar`  | PK NOT NULL |                 |             |
+| `meetingId`   | `varchar`  | PK NOT NULL |                 |             |
+| `slot`        | `int`      | NOT NULL    |                 |             |
+| `notesRuns`   | `int`      | NOT NULL    | `.default(1)`   |             |
+| `askRuns`     | `int`      | NOT NULL    | `.default(0)`   |             |
+| `startedAt`   | `datetime` | NOT NULL    |                 |             |
+| `completedAt` | `datetime` | NULL        |                 |             |
+| `createdAt`   | `datetime` | NOT NULL    | `.$defaultFn()` |             |
+
+#### Definition
+
+```sql
+CREATE TABLE `meeting_notes_trial_uses` (
+	`userId` varchar(15) NOT NULL,
+	`meetingId` varchar(64) NOT NULL,
+	`slot` int NOT NULL,
+	`notesRuns` int NOT NULL DEFAULT 1,
+	`askRuns` int NOT NULL DEFAULT 0,
+	`startedAt` datetime NOT NULL,
+	`completedAt` datetime,
+	`createdAt` datetime NOT NULL,
+	CONSTRAINT PRIMARY KEY(`userId`,`meetingId`),
+	CONSTRAINT `user_slot_idx` UNIQUE INDEX(`userId`,`slot`)
+);
+```
+
+#### Indexes
+
+- PRIMARY KEY `userId`, `meetingId`
+- UNIQUE `userId`, `slot`
+
+<details>
+<summary>Queries and their SQL</summary>
+
+**Select**: Every row of meetingNotesTrialUses.
+
+```ts
+db.select().from(meetingNotesTrialUses);
+```
+
+```sql
+select `userId`, `meetingId`, `slot`, `notesRuns`, `askRuns`, `startedAt`, `completedAt`, `createdAt`
+from `meeting_notes_trial_uses`
+```
+
+**Count**: How many rows meetingNotesTrialUses has.
+
+```ts
+db.select({ count: count() }).from(meetingNotesTrialUses);
+```
+
+```sql
+select count(*)
+from `meeting_notes_trial_uses`
+```
+
+**Find many**: The rows of meetingNotesTrialUses, through the relational query API.
+
+```ts
+db.query.meetingNotesTrialUses.findMany();
+```
+
+```sql
+select `d0`.`userId` as `userId`, `d0`.`meetingId` as `meetingId`, `d0`.`slot` as `slot`, `d0`.`notesRuns` as `notesRuns`, `d0`.`askRuns` as `askRuns`, `d0`.`startedAt` as `startedAt`, `d0`.`completedAt` as `completedAt`, `d0`.`createdAt` as `createdAt`
+from `meeting_notes_trial_uses` as `d0`
+```
+
+**Find by primary key**: One row of meetingNotesTrialUses, through the relational query API.
+
+```ts
+db.query.meetingNotesTrialUses.findFirst({ where: { userId: "userId", meetingId: "meetingId" } });
+```
+
+```sql
+select `d0`.`userId` as `userId`, `d0`.`meetingId` as `meetingId`, `d0`.`slot` as `slot`, `d0`.`notesRuns` as `notesRuns`, `d0`.`askRuns` as `askRuns`, `d0`.`startedAt` as `startedAt`, `d0`.`completedAt` as `completedAt`, `d0`.`createdAt` as `createdAt`
+from `meeting_notes_trial_uses` as `d0`
+where ((`d0`.`userId` = ?) and (`d0`.`meetingId` = ?))
+limit ?
+-- params: ["userId","meetingId",1]
+```
+
+**Insert**: Adds a row to meetingNotesTrialUses, giving the columns that have no default.
+
+```ts
+db.insert(meetingNotesTrialUses).values({
+  userId: "userId",
+  meetingId: "meetingId",
+  slot: 1,
+  startedAt: new Date("2026-01-01T00:00:00.000Z"),
+});
+```
+
+```sql
+insert into `meeting_notes_trial_uses` (`userId`, `meetingId`, `slot`, `notesRuns`, `askRuns`, `startedAt`, `completedAt`, `createdAt`)
+values (?, ?, ?, default, default, ?, default, ?)
+-- params: ["userId","meetingId",1,"2026-01-01 00:00:00.000","2026-01-01 00:00:00.000"]
+```
+
+**Update**: Changes a row of meetingNotesTrialUses, found by its primary key.
+
+```ts
+db.update(meetingNotesTrialUses)
+  .set({ slot: 1 })
+  .where(
+    and(
+      eq(meetingNotesTrialUses.userId, "userId"),
+      eq(meetingNotesTrialUses.meetingId, "meetingId"),
+    ),
+  );
+```
+
+```sql
+update `meeting_notes_trial_uses`
+set `slot` = ?
+where ((`meeting_notes_trial_uses`.`userId` = ?) and (`meeting_notes_trial_uses`.`meetingId` = ?))
+-- params: [1,"userId","meetingId"]
+```
+
+**Delete**: Deletes a row of meetingNotesTrialUses, found by its primary key.
+
+```ts
+db.delete(meetingNotesTrialUses).where(
+  and(eq(meetingNotesTrialUses.userId, "userId"), eq(meetingNotesTrialUses.meetingId, "meetingId")),
+);
+```
+
+```sql
+delete from `meeting_notes_trial_uses`
+where ((`meeting_notes_trial_uses`.`userId` = ?) and (`meeting_notes_trial_uses`.`meetingId` = ?))
+-- params: ["userId","meetingId"]
 ```
 
 </details>
