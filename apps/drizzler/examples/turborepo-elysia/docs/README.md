@@ -135,16 +135,15 @@ select count(*)
 from "sys_user"
 ```
 
-**Find many with relations**: The rows of userTable with what they relate to, through the relational query API.
+**Find many**: The rows of userTable, through the relational query API.
 
 ```ts
-db.query.userTable.findMany({ with: { roles: true } });
+db.query.userTable.findMany();
 ```
 
 ```sql
-select "d0"."id" as "id", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."name" as "name", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."role" as "role", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expire_at" as "banExpires", "d0"."phone" as "phone", "d0"."whatsapp" as "whatsapp", "d0"."position" as "position", "d0"."is_active" as "isActive", "d0"."is_super_admin" as "isSuperAdmin", "roles"."r" as "roles"
+select "d0"."id" as "id", "d0"."created_at" as "createdAt", "d0"."updated_at" as "updatedAt", "d0"."name" as "name", "d0"."email" as "email", "d0"."email_verified" as "emailVerified", "d0"."image" as "image", "d0"."role" as "role", "d0"."banned" as "banned", "d0"."ban_reason" as "banReason", "d0"."ban_expire_at" as "banExpires", "d0"."phone" as "phone", "d0"."whatsapp" as "whatsapp", "d0"."position" as "position", "d0"."is_active" as "isActive", "d0"."is_super_admin" as "isSuperAdmin"
 from "sys_user" as "d0"
-left join lateral(select coalesce(json_agg(row_to_json("t".*)), '[]') as "r" from (select "d1"."id" as "id", "d1"."name" as "name", "d1"."description" as "description", "d1"."type" as "type", "d1"."priority" as "priority" from "sys_role" as "d1" inner join "sys_user_role" as "tr0" on "tr0"."role_id" = "d1"."id" where "d0"."id" = "tr0"."user_id") as "t") as "roles" on true
 ```
 
 **Find by primary key**: One row of userTable, through the relational query API.
